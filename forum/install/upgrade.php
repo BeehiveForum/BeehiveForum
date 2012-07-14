@@ -34,13 +34,10 @@ include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "install.inc.php");
 
-// Stop script timing out
 @set_time_limit(0);
 
-// Current datetime for marking admin log entries.
 $current_datetime = date(MYSQL_DATETIME, time());
 
-// Get list of forums.
 if (!($forum_webtag_array = install_get_webtags())) {
 
     $error_html.= "<h2>Could not locate any previous Beehive Forum installations!</h2>\n";
@@ -48,7 +45,6 @@ if (!($forum_webtag_array = install_get_webtags())) {
     return;
 }
 
-// Remove old global Sphinx Search SPHINX_SEARCH_ID table
 $sql = "DROP TABLE IF EXISTS SPHINX_SEARCH_ID";
 
 if (!$result = db_query($sql, $db_install)) {
@@ -57,7 +53,6 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-// IPv6 compatibility on IPADDRESS columns.
 $sql = "ALTER TABLE `SESSIONS` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
 
 if (!$result = db_query($sql, $db_install)) {
@@ -131,8 +126,6 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-// We got this far then everything is okay for all forums.
-// Start by creating and updating the per-forum tables.
 foreach ($forum_webtag_array as $forum_fid => $table_data) {
     
     if (!install_check_column_type($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_ADMIN_LOG", "ENTRY", "longblob")) {
@@ -178,7 +171,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         return;
     }
     
-    // New per-forum Sphinx Search ID table.
     if (!install_table_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_POST_SEARCH_ID")) {
         
         $sql = "CREATE TABLE `{$table_data['PREFIX']}POST_SEARCH_ID` (";
@@ -230,7 +222,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
 
     if (!install_table_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_POLL_QUESTIONS")) {
 
-        // Delete temp POLL_VOTES_NEW table if it exists
         $sql = "DROP TABLE IF EXISTS `{$table_data['PREFIX']}POLL_VOTES_NEW`";
 
         if (!$result = db_query($sql, $db_install)) {
@@ -239,7 +230,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
 
-        // Delete temp USER_POLL_VOTES_NEW table if it exists
         $sql = "DROP TABLE IF EXISTS `{$table_data['PREFIX']}USER_POLL_VOTES_NEW`";
 
         if (!$result = db_query($sql, $db_install)) {
@@ -248,7 +238,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
 
-        // Create new POLL_QUESTIONS table.
         $sql = "CREATE TABLE `{$table_data['PREFIX']}POLL_QUESTIONS`(";
         $sql.= "    TID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "    QUESTION_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
@@ -264,7 +253,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
 
-        // CREATE new POLL_VOTES table.
         $sql = "CREATE TABLE `{$table_data['PREFIX']}POLL_VOTES_NEW`(";
         $sql.= "    TID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "    QUESTION_ID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -280,7 +268,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
 
-        // Create new USER_POLL_VOTES table
         $sql = "CREATE TABLE `{$table_data['PREFIX']}USER_POLL_VOTES_NEW`(";
         $sql.= "    VOTE_ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "    TID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -301,7 +288,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
 
-        // Make sure no polls have empty questions.
         $sql = "UPDATE `{$table_data['PREFIX']}POLL` POLL ";
         $sql.= "INNER JOIN `{$table_data['PREFIX']}THREAD` THREAD ";
         $sql.= "ON (THREAD.TID = POLL.TID) SET POLL.QUESTION = THREAD.TITLE ";
@@ -313,7 +299,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
 
-        // Create new question data for existing polls
         $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_QUESTIONS` ";
         $sql.= "SELECT POLL.TID, IF (MIN_GROUP_ID = 0, POLL_VOTES.GROUP_ID + 1, ";
         $sql.= "POLL_VOTES.GROUP_ID) AS QUESTION_ID, IF (POLL_GROUP_COUNTS.GROUP_COUNT > 1, ";
@@ -333,7 +318,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
 
-        // Convert old POLL_VOTES into their new format
         $sql = "INSERT INTO `{$table_data['PREFIX']}POLL_VOTES_NEW` ";
         $sql.= "SELECT POLL.TID, POLL_QUESTIONS.QUESTION_ID, NULL AS OPTION_ID, ";
         $sql.= "POLL_VOTES.OPTION_NAME, POLL_VOTES.OPTION_ID FROM `{$table_data['PREFIX']}POLL` POLL ";
@@ -347,7 +331,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
 
-        // Convert old USER_POLL_VOTES into the new format
         $sql = "INSERT INTO `{$table_data['PREFIX']}USER_POLL_VOTES_NEW` ";
         $sql.= "SELECT NULL AS VOTE_ID, POLL.TID, POLL_QUESTIONS.QUESTION_ID, ";
         $sql.= "POLL_VOTES_NEW.OPTION_ID, USER_POLL_VOTES.UID, USER_POLL_VOTES.TSTAMP ";
@@ -363,7 +346,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
 
-        // Delete QUESTION column from POLL table.
         $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL` DROP COLUMN QUESTION";
 
         if (!$result = db_query($sql, $db_install)) {
@@ -372,7 +354,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
 
-        // Delete GROUP_ID column from new POLL_QUESTIONS table.
         $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL_QUESTIONS` DROP COLUMN GROUP_ID";
 
         if (!$result = db_query($sql, $db_install)) {
@@ -381,7 +362,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
 
-        // Delete the OPTION_ID_OLD column from new POLL_VOTES table.
         $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL_VOTES_NEW` DROP COLUMN OPTION_ID_OLD";
 
         if (!$result = db_query($sql, $db_install)) {
@@ -390,7 +370,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
 
-        // Delete old POLL_VOTES table
         $sql = "DROP TABLE `{$table_data['PREFIX']}POLL_VOTES`";
 
         if (!$result = db_query($sql, $db_install)) {
@@ -399,7 +378,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
 
-        // Rename POLL_VOTES_NEW table to POLL_VOTES
         $sql = "RENAME TABLE `{$table_data['PREFIX']}POLL_VOTES_NEW` TO `{$table_data['PREFIX']}POLL_VOTES`";
 
         if (!$result = db_query($sql, $db_install)) {
@@ -408,7 +386,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
 
-        // Delete the old USER_POLL_VOTES table.
         $sql = "DROP TABLE `{$table_data['PREFIX']}USER_POLL_VOTES`";
 
         if (!$result = db_query($sql, $db_install)) {
@@ -417,7 +394,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
 
-        // Rename USER_POLL_VOTES_NEW table to USER_POLL_VOTES
         $sql = "RENAME TABLE `{$table_data['PREFIX']}USER_POLL_VOTES_NEW` TO `{$table_data['PREFIX']}USER_POLL_VOTES`";
 
         if (!$result = db_query($sql, $db_install)) {
@@ -429,7 +405,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
 
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", "SHOW_SHARE_LINKS")) {
 
-        // Add field for thread_last_page
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD SHOW_SHARE_LINKS CHAR(1) NOT NULL DEFAULT 'Y'";
 
         if (!$result = db_query($sql, $db_install)) {
@@ -439,7 +414,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         }
     }
 
-    // Remove old Sphinx Search SEARCH_ID column.
     if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_POST", "SEARCH_ID")) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` DROP COLUMN SEARCH_ID";
@@ -451,8 +425,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         }
     }
 
-    // Purge the USER_TRACK.USER_TIME_TOTAL, USER_TIME_BEST and USER_TIME_UPDATED columns
-    // as they were totally calculated incorrectly prior to Beehive Forum 1.1
     $sql = "UPDATE `{$table_data['PREFIX']}USER_TRACK` SET USER_TIME_TOTAL = NULL, USER_TIME_BEST = NULL, USER_TIME_UPDATED = NULL";
 
     if (!$result = db_query($sql, $db_install)) {
@@ -461,7 +433,6 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         return;
     }
     
-    // Add new APPROVED and APPROVED_BY columns for link approval by moderator
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_LINKS", 'APPROVED')) {
     
         $sql = "ALTER TABLE `{$table_data['PREFIX']}LINKS ADD COLUMN `APPROVED` DATETIME NULL AFTER CREATED";
@@ -490,9 +461,341 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }        
     }
+
+    if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", 'DOB_DISPLAY')) {
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN DOB_DISPLAY";
+
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
+
+    if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", 'ANON_LOGON')) {
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN ANON_LOGON";
+
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
+        
+    if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", 'ALLOW_EMAIL')) {
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN ALLOW_EMAIL";
+
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
+        
+    if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", 'USE_EMAIL_ADDR')) {
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN USE_EMAIL_ADDR";
+
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
+        
+    if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", 'ALLOW_PM')) {
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN ALLOW_PM";
+
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE UID UID MEDIUMINT(8) UNSIGNED NOT NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE HOMEPAGE_URL HOMEPAGE_URL VARCHAR(255) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE PIC_URL PIC_URL VARCHAR(255) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE EMAIL_NOTIFY EMAIL_NOTIFY CHAR(1) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE MARK_AS_OF_INT MARK_AS_OF_INT CHAR(1) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE POSTS_PER_PAGE POSTS_PER_PAGE CHAR(3) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE FONT_SIZE FONT_SIZE CHAR(2) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE STYLE STYLE VARCHAR(255) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE EMOTICONS EMOTICONS VARCHAR(255) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE VIEW_SIGS VIEW_SIGS CHAR(1) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE START_PAGE START_PAGE CHAR(3) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE LANGUAGE LANGUAGE VARCHAR(32) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE SHOW_STATS SHOW_STATS CHAR(1) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE IMAGES_TO_LINKS IMAGES_TO_LINKS CHAR(1) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE USE_WORD_FILTER USE_WORD_FILTER CHAR(1) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE USE_ADMIN_FILTER USE_ADMIN_FILTER CHAR(1) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE SHOW_THUMBS SHOW_THUMBS CHAR(2) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE ENABLE_WIKI_WORDS ENABLE_WIKI_WORDS CHAR(1) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE USE_MOVER_SPOILER USE_MOVER_SPOILER CHAR(1) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE USE_LIGHT_MODE_SPOILER USE_LIGHT_MODE_SPOILER CHAR(1) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE USE_OVERFLOW_RESIZE USE_OVERFLOW_RESIZE CHAR(1) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE PIC_AID PIC_AID VARCHAR(32) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE AVATAR_URL AVATAR_URL VARCHAR(255) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE AVATAR_AID AVATAR_AID VARCHAR(32) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE REPLY_QUICK REPLY_QUICK CHAR(1) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE THREADS_BY_FOLDER THREADS_BY_FOLDER CHAR(1) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE THREAD_LAST_PAGE THREAD_LAST_PAGE CHAR(1) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE LEFT_FRAME_WIDTH LEFT_FRAME_WIDTH SMALLINT(4) UNSIGNED NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE SHOW_AVATARS SHOW_AVATARS CHAR(1) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE SHOW_SHARE_LINKS SHOW_SHARE_LINKS CHAR(1) NULL";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE `{$table_data['PREFIX']}USER_PREFS` ";
+    $sql.= "SET UID = IF (LENGTH(TRIM(BOTH FROM UID)) > 0, UID, NULL), ";
+    $sql.= "HOMEPAGE_URL = IF (LENGTH(TRIM(BOTH FROM HOMEPAGE_URL)) > 0, HOMEPAGE_URL, NULL), ";
+    $sql.= "PIC_URL = IF (LENGTH(TRIM(BOTH FROM PIC_URL)) > 0, PIC_URL, NULL), ";
+    $sql.= "EMAIL_NOTIFY = IF (LENGTH(TRIM(BOTH FROM EMAIL_NOTIFY)) > 0, EMAIL_NOTIFY, NULL), ";
+    $sql.= "MARK_AS_OF_INT = IF (LENGTH(TRIM(BOTH FROM MARK_AS_OF_INT)) > 0, MARK_AS_OF_INT, NULL), ";
+    $sql.= "POSTS_PER_PAGE = IF (LENGTH(TRIM(BOTH FROM POSTS_PER_PAGE)) > 0, POSTS_PER_PAGE, NULL), ";
+    $sql.= "FONT_SIZE = IF (LENGTH(TRIM(BOTH FROM FONT_SIZE)) > 0, FONT_SIZE, NULL), ";
+    $sql.= "STYLE = IF (LENGTH(TRIM(BOTH FROM STYLE)) > 0, STYLE, NULL), ";
+    $sql.= "EMOTICONS = IF (LENGTH(TRIM(BOTH FROM EMOTICONS)) > 0, EMOTICONS, NULL), ";
+    $sql.= "VIEW_SIGS = IF (LENGTH(TRIM(BOTH FROM VIEW_SIGS)) > 0, VIEW_SIGS, NULL), ";
+    $sql.= "START_PAGE = IF (LENGTH(TRIM(BOTH FROM START_PAGE)) > 0, START_PAGE, NULL), ";
+    $sql.= "LANGUAGE = IF (LENGTH(TRIM(BOTH FROM LANGUAGE)) > 0, LANGUAGE, NULL), ";
+    $sql.= "SHOW_STATS = IF (LENGTH(TRIM(BOTH FROM SHOW_STATS)) > 0, SHOW_STATS, NULL), ";
+    $sql.= "IMAGES_TO_LINKS = IF (LENGTH(TRIM(BOTH FROM IMAGES_TO_LINKS)) > 0, IMAGES_TO_LINKS, NULL), ";
+    $sql.= "USE_WORD_FILTER = IF (LENGTH(TRIM(BOTH FROM USE_WORD_FILTER)) > 0, USE_WORD_FILTER, NULL), ";
+    $sql.= "USE_ADMIN_FILTER = IF (LENGTH(TRIM(BOTH FROM USE_ADMIN_FILTER)) > 0, USE_ADMIN_FILTER, NULL), ";
+    $sql.= "SHOW_THUMBS = IF (LENGTH(TRIM(BOTH FROM SHOW_THUMBS)) > 0, SHOW_THUMBS, NULL), ";
+    $sql.= "ENABLE_WIKI_WORDS = IF (LENGTH(TRIM(BOTH FROM ENABLE_WIKI_WORDS)) > 0, ENABLE_WIKI_WORDS, NULL), ";
+    $sql.= "USE_MOVER_SPOILER = IF (LENGTH(TRIM(BOTH FROM USE_MOVER_SPOILER)) > 0, USE_MOVER_SPOILER, NULL), ";
+    $sql.= "USE_LIGHT_MODE_SPOILER = IF (LENGTH(TRIM(BOTH FROM USE_LIGHT_MODE_SPOILER)) > 0, USE_LIGHT_MODE_SPOILER, NULL), ";
+    $sql.= "USE_OVERFLOW_RESIZE = IF (LENGTH(TRIM(BOTH FROM USE_OVERFLOW_RESIZE)) > 0, USE_OVERFLOW_RESIZE, NULL), ";
+    $sql.= "PIC_AID = IF (LENGTH(TRIM(BOTH FROM PIC_AID)) > 0, PIC_AID, NULL), ";
+    $sql.= "AVATAR_URL = IF (LENGTH(TRIM(BOTH FROM AVATAR_URL)) > 0, AVATAR_URL, NULL), ";
+    $sql.= "AVATAR_AID = IF (LENGTH(TRIM(BOTH FROM AVATAR_AID)) > 0, AVATAR_AID, NULL), ";
+    $sql.= "REPLY_QUICK = IF (LENGTH(TRIM(BOTH FROM REPLY_QUICK)) > 0, REPLY_QUICK, NULL), ";
+    $sql.= "THREADS_BY_FOLDER = IF (LENGTH(TRIM(BOTH FROM THREADS_BY_FOLDER)) > 0, THREADS_BY_FOLDER, NULL), "; 
+    $sql.= "THREAD_LAST_PAGE = IF (LENGTH(TRIM(BOTH FROM THREAD_LAST_PAGE)) > 0, THREAD_LAST_PAGE, NULL), ";
+    $sql.= "LEFT_FRAME_WIDTH = IF (LENGTH(TRIM(BOTH FROM LEFT_FRAME_WIDTH)) > 0, LEFT_FRAME_WIDTH, NULL),  ";
+    $sql.= "SHOW_AVATARS = IF (LENGTH(TRIM(BOTH FROM SHOW_AVATARS)) > 0, SHOW_AVATARS, NULL), ";
+    $sql.= "SHOW_SHARE_LINKS = IF (LENGTH(TRIM(BOTH FROM SHOW_SHARE_LINKS)) > 0, SHOW_SHARE_LINKS, NULL)";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }    
 }
 
-// Drop the old SFS_CACHE table.
 $sql = "DROP TABLE IF EXISTS SFS_CACHE";
 
 if (!$result = db_query($sql, $db_install)) {
@@ -501,7 +804,6 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }    
 
-// CREATE new SFS_CACHE table.
 $sql = "CREATE TABLE SFS_CACHE (";
 $sql.= "  REQUEST_MD5 varchar(32) NOT NULL, ";
 $sql.= "  RESPONSE longblob NOT NULL, ";
@@ -519,7 +821,6 @@ if (!$result = db_query($sql, $db_install)) {
 
 if (!install_table_exists($db_database, "USER_TOKEN")) {
 
-    // Increase the allowed length of the PASSWD column.
     $sql = "ALTER TABLE USER CHANGE PASSWD PASSWD VARCHAR(255)";
 
     if (!$result = db_query($sql, $db_install)) {
@@ -528,7 +829,6 @@ if (!install_table_exists($db_database, "USER_TOKEN")) {
         return;
     }
 
-    // Add new SALT column to USER table for per-user password salting
     $sql = "ALTER TABLE USER ADD SALT VARCHAR(255) DEFAULT NULL AFTER PASSWD";
 
     if (!$result = db_query($sql, $db_install)) {
@@ -537,8 +837,6 @@ if (!install_table_exists($db_database, "USER_TOKEN")) {
         return;
     }
 
-    // Create USER_TOKEN table used for remembering users who tick
-    // the Remember me box on the login page.
     $sql = "CREATE TABLE USER_TOKEN (";
     $sql.= "  UID mediumint(8) unsigned NOT NULL,";
     $sql.= "  TOKEN varchar(255) NOT NULL,";
@@ -555,7 +853,6 @@ if (!install_table_exists($db_database, "USER_TOKEN")) {
 
 if (!install_column_exists($db_database, "SESSIONS", "USER_AGENT")) {
     
-    // New USER_AGENT column on SESSIONS table.
     $sql = "ALTER TABLE SESSIONS ADD COLUMN USER_AGENT VARCHAR(255) DEFAULT NULL";
     
     if (!$result = db_query($sql, $db_install)) {
@@ -567,7 +864,6 @@ if (!install_column_exists($db_database, "SESSIONS", "USER_AGENT")) {
 
 if (!install_column_exists($db_database, "USER_PREFS", "SHOW_SHARE_LINKS")) {
 
-    // New User preference for thread list folder order
     $sql = "ALTER TABLE USER_PREFS ADD SHOW_SHARE_LINKS CHAR(1) NOT NULL DEFAULT 'Y'";
 
     if (!$result = db_query($sql, $db_install)) {
@@ -575,6 +871,121 @@ if (!install_column_exists($db_database, "USER_PREFS", "SHOW_SHARE_LINKS")) {
         $valid = false;
         return;
     }
+}
+
+if (!install_column_exists($table_data['DATABASE_NAME'], "USER_PREFS", 'LEFT_FRAME_WIDTH')) {
+
+    $sql = "ALTER TABLE USER_PREFS ADD COLUMN LEFT_FRAME_WIDTH SMALLINT(4) DEFAULT '280' NOT NULL AFTER THREAD_LAST_PAGE";
+
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+}
+
+$sql = "ALTER TABLE USER_PREFS CHANGE UID UID MEDIUMINT(8) UNSIGNED NOT NULL";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS CHANGE FIRSTNAME FIRSTNAME VARCHAR(32) NOT NULL";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS CHANGE LASTNAME LASTNAME VARCHAR(32) NOT NULL";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS CHANGE DOB DOB DATE NOT NULL";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS CHANGE HOMEPAGE_URL HOMEPAGE_URL VARCHAR(255) NOT NULL";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS CHANGE PIC_URL PIC_URL VARCHAR(255) NOT NULL";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS CHANGE EMAIL_NOTIFY EMAIL_NOTIFY CHAR(1) DEFAULT 'Y' NOT NULL";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS CHANGE STYLE STYLE VARCHAR(255) DEFAULT 'default' NOT NULL";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS CHANGE EMOTICONS EMOTICONS VARCHAR(255) DEFAULT 'default' NOT NULL";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS CHANGE LANGUAGE LANGUAGE VARCHAR(32) DEFAULT 'en_GB' NOT NULL";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS CHANGE PIC_AID PIC_AID VARCHAR(32) NOT NULL";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS CHANGE AVATAR_URL AVATAR_URL VARCHAR(255) NOT NULL";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE USER_PREFS CHANGE AVATAR_AID AVATAR_AID VARCHAR(32) NOT NULL";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
 }
 
 ?>

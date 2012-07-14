@@ -289,7 +289,7 @@ function html_user_banned()
 
 function html_user_require_approval()
 {
-    html_draw_top("title=", gettext("Approval Required"), "", "robots=noindex,nofollow");
+    html_draw_top(sprintf("title=%s", gettext("Approval Required")), "robots=noindex,nofollow");
     html_error_msg(gettext("Your user account needs to be approved by a forum admin before you can access the requested forum."));
     html_draw_bottom();
 }
@@ -300,7 +300,7 @@ function html_email_confirmation_error()
 
     $user_array = user_get($uid);
 
-    html_draw_top("title=", gettext("Email confirmation required"), "", "robots=noindex,nofollow");
+    html_draw_top(sprintf("title=%s", gettext("Email confirmation required")), "robots=noindex,nofollow");
     html_error_msg(gettext("Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details"), 'confirm_email.php', 'get', array('resend' => gettext("Resend Confirmation")), array('uid' => $user_array['UID'], 'resend' => 'Y'));
     html_draw_bottom();
 }

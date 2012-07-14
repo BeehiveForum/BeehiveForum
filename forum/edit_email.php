@@ -137,34 +137,16 @@ if (isset($_POST['save'])) {
         $user_prefs['ALLOW_EMAIL'] = "N";
     }
 
-    if (isset($_POST['allow_email_global'])) {
-        $user_prefs_global['ALLOW_EMAIL'] = ($_POST['allow_email_global'] == "Y") ? true : false;
-    } else {
-        $user_prefs_global['ALLOW_EMAIL'] = false;
-    }
-
     if (isset($_POST['use_email_addr']) && $_POST['use_email_addr'] == "Y") {
         $user_prefs['USE_EMAIL_ADDR'] = "Y";
     }else {
         $user_prefs['USE_EMAIL_ADDR'] = "N";
     }
 
-    if (isset($_POST['use_email_addr_global'])) {
-        $user_prefs_global['USE_EMAIL_ADDR_GLOBAL'] = ($_POST['use_email_addr_global'] == "Y") ? true : false;
-    } else {
-        $user_prefs_global['USE_EMAIL_ADDR_GLOBAL'] = false;
-    }
-
     if (isset($_POST['allow_pm']) && $_POST['allow_pm'] == "Y") {
         $user_prefs['ALLOW_PM'] = "Y";
     }else {
         $user_prefs['ALLOW_PM'] = "N";
-    }
-
-    if (isset($_POST['allow_pm_global'])) {
-        $user_prefs_global['ALLOW_PM'] = ($_POST['allow_pm_global'] == "Y") ? true : false;
-    } else {
-        $user_prefs_global['ALLOW_PM'] = false;
     }
 
     if (isset($_POST['email_notify']) && $_POST['email_notify'] == "Y") {
@@ -191,22 +173,10 @@ if (isset($_POST['save'])) {
         $user_prefs['ANON_LOGON'] = 0;
     }
 
-    if (isset($_POST['anon_logon_global'])) {
-        $user_prefs_global['ANON_LOGON'] = ($_POST['anon_logon_global'] == "Y") ? true : false;
-    } else {
-        $user_prefs_global['ANON_LOGON'] = false;
-    }
-
     if (isset($_POST['dob_display'])) {
         $user_prefs['DOB_DISPLAY'] = trim(stripslashes_array($_POST['dob_display']));
     }else {
         $user_prefs['DOB_DISPLAY'] = 0;
-    }
-
-    if (isset($_POST['dob_display_global'])) {
-        $user_prefs_global['DOB_DISPLAY'] = ($_POST['dob_display_global'] == "Y") ? true : false;
-    } else {
-        $user_prefs_global['DOB_DISPLAY'] = false;
     }
 
     // User's UID for updating with.
@@ -276,19 +246,19 @@ echo "                  <td align=\"left\" rowspan=\"6\" width=\"1%\">&nbsp;</td
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("allow_email", "Y", gettext("Allow other users to send me emails via my profile"), (isset($user_prefs['ALLOW_EMAIL']) && $user_prefs['ALLOW_EMAIL'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("allow_email_global", "Y", '', (isset($user_prefs['ALLOW_EMAIL_GLOBAL']) ? $user_prefs['ALLOW_EMAIL_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("allow_email_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("use_email_addr", "Y", gettext("Use my email address when sending other users emails via their profiles"), (isset($user_prefs['USE_EMAIL_ADDR']) && $user_prefs['USE_EMAIL_ADDR'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("use_email_addr_global", "Y", '', (isset($user_prefs['USE_EMAIL_ADDR_GLOBAL']) ? $user_prefs['USE_EMAIL_ADDR_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("use_email_addr_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("allow_pm", "Y", gettext("Allow other users to send me personal messages"), (isset($user_prefs['ALLOW_PM']) && $user_prefs['ALLOW_PM'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("allow_pm_global", "Y", '', (isset($user_prefs['ALLOW_PM_GLOBAL']) ? $user_prefs['ALLOW_PM_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("allow_pm_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("email_notify", "Y", gettext("Notify by email of posts to me"), (isset($user_prefs['EMAIL_NOTIFY']) && $user_prefs['EMAIL_NOTIFY'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("email_notify_global", "Y", '', (isset($user_prefs['EMAIL_NOTIFY_GLOBAL']) ? $user_prefs['EMAIL_NOTIFY_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("email_notify_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("email_notify_global", "Y", '', (isset($user_prefs['EMAIL_NOTIFY_GLOBAL']) ? $user_prefs['EMAIL_NOTIFY_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("email_notify_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("pm_notify_email", "Y", gettext("Notify by email of new PM messages to me"), (isset($user_prefs['PM_NOTIFY_EMAIL']) && $user_prefs['PM_NOTIFY_EMAIL'] == "Y") ? true : false), "</td>\n";
@@ -307,27 +277,15 @@ echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
-
-if ($show_set_all) {
-
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Birthday and date of birth display"), "</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-
-}else {
-
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">", gettext("Birthday and date of birth display"), "</td>\n";
-    echo "                </tr>\n";
-}
-
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">", gettext("Birthday and date of birth display"), "</td>\n";
+echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" rowspan=\"6\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_radio("dob_display", USER_DOB_DISPLAY_NONE, gettext("Do not show my age or date of birth to others"), ((isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_NONE) || !isset($user_prefs['DOB_DISPLAY']))), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("dob_display_global", "Y", '', (isset($user_prefs['DOB_DISPLAY_GLOBAL']) ? $user_prefs['DOB_DISPLAY_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("dob_display_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_radio("dob_display", USER_DOB_DISPLAY_AGE, gettext("Show only my age to others"), (isset($user_prefs['DOB_DISPLAY']) && $user_prefs['DOB_DISPLAY'] == USER_DOB_DISPLAY_AGE)), "</td>\n";
@@ -354,27 +312,15 @@ echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
-
-if ($show_set_all) {
-
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Forum anonymity settings"), "</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-
-}else {
-
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">", gettext("Forum anonymity settings"), "</td>\n";
-    echo "                </tr>\n";
-}
-
+echo "                <tr>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">", gettext("Forum anonymity settings"), "</td>\n";
+echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" rowspan=\"5\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_radio("anon_logon", USER_ANON_DISABLED, gettext("List me on the active users display"), ((isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == USER_ANON_DISABLED) || !isset($user_prefs['ANON_LOGON'])) ? true : false), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("anon_logon_global", "Y", '', (isset($user_prefs['ANON_LOGON_GLOBAL']) ? $user_prefs['ANON_LOGON_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("anon_logon_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_radio("anon_logon", USER_ANON_ENABLED, gettext("Browse forum anonymously"), (isset($user_prefs['ANON_LOGON']) && $user_prefs['ANON_LOGON'] == USER_ANON_ENABLED) ? true : false), "</td>\n";

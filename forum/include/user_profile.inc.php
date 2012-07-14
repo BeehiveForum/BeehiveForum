@@ -103,15 +103,15 @@ function user_get_profile($uid)
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT, ";
     $sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
-    $sql.= "USER_PREFS_FORUM.ANON_LOGON AS FORUM_ANON_LOGON, ";
-    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS GLOBAL_ANON_LOGON, ";
+    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON, ";
+    $sql.= "USER_PREFS_GLOBAL.DOB_DISPLAY AS DOB_DISPLAY, ";
+    $sql.= "USER_PREFS_GLOBAL.DOB AS DOB, ";
     $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
     $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
     $sql.= "USER_PEER.RELATIONSHIP, SESSIONS.HASH FROM USER USER ";
+    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ";
     $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
-    $sql.= "ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
     $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$peer_uid') ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID ";
@@ -129,10 +129,8 @@ function user_get_profile($uid)
 
         $user_profile = db_fetch_array($result);
 
-        if (isset($user_profile['FORUM_ANON_LOGON']) && $user_profile['FORUM_ANON_LOGON'] > USER_ANON_DISABLED) {
-            $anon_logon = $user_profile['FORUM_ANON_LOGON'];
-        }elseif (isset($user_profile['GLOBAL_ANON_LOGON']) && $user_profile['GLOBAL_ANON_LOGON'] > USER_ANON_DISABLED) {
-            $anon_logon = $user_profile['GLOBAL_ANON_LOGON'];
+        if (isset($user_profile['ANON_LOGON']) && $user_profile['ANON_LOGON'] > USER_ANON_DISABLED) {
+            $anon_logon = $user_profile['ANON_LOGON'];
         }else {
             $anon_logon = USER_ANON_DISABLED;
         }
@@ -361,7 +359,10 @@ function user_get_profile_image($uid)
 
     if (!$table_data = get_table_prefix()) return false;
 
-    $sql = "SELECT PIC_URL FROM `{$table_data['PREFIX']}USER_PREFS` WHERE UID = '$uid'";
+    $sql = "SELECT COALESCE(USER_PREFS_FORUM.PIC_URL, USER_PREFS_GLOBAL.PIC_URL) AS PIC_URL ";
+    $sql.= "FROM USER LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+    $sql.= "LEFT JOIN {$table_data['PREFIX']}USER_PREFS` USER_PREFS_FORUM ";
+    $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) WHERE USER.UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_get_profile_image)) return false;
 

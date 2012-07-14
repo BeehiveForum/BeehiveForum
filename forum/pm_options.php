@@ -216,7 +216,7 @@ if (!isset($uid)) $uid = session_get_value('UID');
 $user_prefs = user_get_prefs($uid);
 
 // Start output here
-html_draw_top("title=", gettext("Private Message Options"), "", "emoticons.js", 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Private Message Options")), "emoticons.js", 'class=window_title');
 
 echo "<h1>", gettext("Private Message Options"), "</h1>\n";
 

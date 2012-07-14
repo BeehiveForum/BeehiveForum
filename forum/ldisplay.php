@@ -143,7 +143,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 }else {
 
-    light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+    light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
     light_html_display_error_msg(gettext("Invalid Message ID or no Message ID specified."));
     light_html_draw_bottom();
     exit;

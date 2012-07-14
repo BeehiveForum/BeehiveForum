@@ -648,7 +648,7 @@ if ($valid && isset($_POST['send'])) {
     }
 }
 
-light_html_draw_top("title=", gettext("Send New PM"), "", "robots=noindex,nofollow");
+light_html_draw_top(sprintf("title=%s", gettext("Send New PM")), "robots=noindex,nofollow");
 
 // preview message
 if ($valid && isset($_POST['preview'])) {

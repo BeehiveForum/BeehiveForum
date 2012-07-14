@@ -303,7 +303,7 @@ if (isset($_POST['pm_delete_messages'])) {
 
         }else {
 
-            html_draw_top("title=", gettext("Delete Message"), "", 'class=window_title');
+            html_draw_top(sprintf("title=%s", gettext("Delete Message")), 'class=window_title');
             html_display_msg(gettext("Delete"), gettext("Are you sure you want to delete all of the selected messages?"), "pm_messages.php", 'post', array('pm_option_submit' => gettext("Yes"), 'back' => gettext("No")), array('folder' => $current_folder, 'page' => $page, 'process' => $process_messages, 'pm_delete_messages' => gettext("Delete"), 'pm_delete_confirm' => 'Y'), '_self', 'center');
             html_draw_bottom();
             exit;
@@ -722,13 +722,13 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
     echo "      <td align=\"right\" width=\"33%\" valign=\"top\" style=\"white-space: nowrap\">";
 
     if (($current_folder <> PM_FOLDER_SAVED) && ($current_folder <> PM_FOLDER_OUTBOX)) {
-        echo form_submit('pm_save_messages', gettext("Save"), "title=\"", gettext("Save Selected Messages"), "\""), "&nbsp;";
+        echo form_submit('pm_save_messages', gettext("Save"), sprintf('title="%s"', gettext("Save Selected Messages"))), "&nbsp;";
     }
 
     echo form_submit('pm_delete_messages', gettext("Delete")), "&nbsp;";
 
     if ($current_folder != PM_SEARCH_RESULTS) {
-        echo form_submit('pm_export_messages', gettext("Export"), "title=\"", gettext("Export Selected Messages"), "\""), "&nbsp;";
+        echo form_submit('pm_export_messages', gettext("Export"), sprintf('title="%s"', gettext("Export Selected Messages"))), "&nbsp;";
     }
 
     echo "</span></td>\n";

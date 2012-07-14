@@ -161,12 +161,6 @@ if (isset($_POST['save'])) {
         $user_prefs['LANGUAGE'] = "";
     }
 
-    if (isset($_POST['language_global'])) {
-        $user_prefs_global['LANGUAGE'] = ($_POST['language_global'] == "Y") ? true : false;
-    } else {
-        $user_prefs_global['LANGUAGE'] = false;
-    }
-
     if (isset($_POST['view_sigs']) && $_POST['view_sigs'] == "N") {
         $user_prefs['VIEW_SIGS'] = "N";
     }else {
@@ -384,21 +378,26 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['style']) && style_exists(trim(stripslashes_array($_POST['style'])))) {
-
         $user_prefs['STYLE'] = trim(stripslashes_array($_POST['style']));
-        $user_prefs_global['STYLE'] = false;
-
     }else {
-
         $user_prefs['STYLE'] = forum_get_setting('default_style', false, 'default');
+    }
+
+    if (isset($_POST['style_global'])) {
+        $user_prefs_global['STYLE'] = ($_POST['style_global'] == "Y") ? true : false;
+    } else {
         $user_prefs_global['STYLE'] = false;
     }
 
     if (isset($_POST['emoticons'])) {
         $user_prefs['EMOTICONS'] = trim(stripslashes_array($_POST['emoticons']));
-        $user_prefs_global['EMOTICONS'] = false;
     }else {
         $user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons', false, 'default');
+    }
+
+    if (isset($_POST['emoticons_global'])) {
+        $user_prefs_global['EMOTICONS'] = ($_POST['emoticons_global'] == "Y") ? true : false;
+    } else {
         $user_prefs_global['EMOTICONS'] = false;
     }
 
@@ -569,7 +568,7 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", gettext("Preferred language"), ":</td>\n";
 echo "                  <td align=\"left\">", form_dropdown_array("language", htmlentities_array($available_langs), (isset($user_prefs['LANGUAGE']) ? $user_prefs['LANGUAGE'] : 0)), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("language_global", "Y", '', (isset($user_prefs['LANGUAGE_GLOBAL']) ? $user_prefs['LANGUAGE_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("language_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("language_global", "Y", '', (isset($user_prefs['LANGUAGE_GLOBAL']) ? $user_prefs['LANGUAGE_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("language_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
@@ -603,63 +602,63 @@ echo "                  <td align=\"left\" rowspan=\"16\" width=\"1%\">&nbsp;</t
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("threads_by_folder", "Y", gettext("Sort Thread List by folders"), (isset($user_prefs['THREADS_BY_FOLDER']) && $user_prefs['THREADS_BY_FOLDER'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("threads_by_folder_global", "Y", '', (isset($user_prefs['THREADS_BY_FOLDER_GLOBAL']) ? $user_prefs['THREADS_BY_FOLDER_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("threads_by_folder_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("threads_by_folder_global", "Y", '', (isset($user_prefs['THREADS_BY_FOLDER_GLOBAL']) ? $user_prefs['THREADS_BY_FOLDER_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("threads_by_folder_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("view_sigs", "N", gettext("Globally ignore user signatures"), (isset($user_prefs['VIEW_SIGS']) && $user_prefs['VIEW_SIGS'] == "N") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("view_sigs_global", "Y", '', (isset($user_prefs['VIEW_SIGS_GLOBAL']) ? $user_prefs['VIEW_SIGS_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("view_sigs_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("view_sigs_global", "Y", '', (isset($user_prefs['VIEW_SIGS_GLOBAL']) ? $user_prefs['VIEW_SIGS_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("view_sigs_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("mark_as_of_int", "Y", gettext("Automatically mark threads I post in as High Interest"), (isset($user_prefs['MARK_AS_OF_INT']) && $user_prefs['MARK_AS_OF_INT'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("mark_as_of_int_global", "Y", '', (isset($user_prefs['MARK_AS_OF_INT_GLOBAL']) ? $user_prefs['MARK_AS_OF_INT_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("mark_as_of_int_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("mark_as_of_int_global", "Y", '', (isset($user_prefs['MARK_AS_OF_INT_GLOBAL']) ? $user_prefs['MARK_AS_OF_INT_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("mark_as_of_int_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("images_to_links", "Y", gettext("Automatically convert embedded images in posts into links"), (isset($user_prefs['IMAGES_TO_LINKS']) && $user_prefs['IMAGES_TO_LINKS'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\"  style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("images_to_links_global", "Y", '', (isset($user_prefs['IMAGES_TO_LINKS_GLOBAL']) ? $user_prefs['IMAGES_TO_LINKS_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("images_to_links_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\"  style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("images_to_links_global", "Y", '', (isset($user_prefs['IMAGES_TO_LINKS_GLOBAL']) ? $user_prefs['IMAGES_TO_LINKS_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("images_to_links_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("show_thumbs_enabled", "Y", array("", gettext("Show"), " ", form_dropdown_array("show_thumbs", array(ATTACHMENT_THUMB_SMALL => gettext("Small Sized"), ATTACHMENT_THUMB_MEDIUM => gettext("Medium Sized"), ATTACHMENT_THUMB_LARGE => gettext("Large Sized")), (isset($user_prefs['SHOW_THUMBS']) ? ($user_prefs['SHOW_THUMBS'] > 0 ? $user_prefs['SHOW_THUMBS'] : $user_prefs['SHOW_THUMBS'] * -1) : 2)), " ", gettext("thumbnails for image attachments"), ""), (isset($user_prefs['SHOW_THUMBS']) && $user_prefs['SHOW_THUMBS'] > 0) ? true : false, false), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("show_thumbs_global", "Y", '', (isset($user_prefs['SHOW_THUMBS_GLOBAL']) ? $user_prefs['SHOW_THUMBS_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("show_thumbs_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("show_thumbs_global", "Y", '', (isset($user_prefs['SHOW_THUMBS_GLOBAL']) ? $user_prefs['SHOW_THUMBS_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("show_thumbs_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("enable_wiki_words", "Y", gettext("Enable WikiWiki Integration"), (isset($user_prefs['ENABLE_WIKI_WORDS']) && $user_prefs['ENABLE_WIKI_WORDS'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("enable_wiki_words_global", "Y", '', (isset($user_prefs['ENABLE_WIKI_WORDS_GLOBAL']) ? $user_prefs['ENABLE_WIKI_WORDS_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("enable_wiki_words_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("enable_wiki_words_global", "Y", '', (isset($user_prefs['ENABLE_WIKI_WORDS_GLOBAL']) ? $user_prefs['ENABLE_WIKI_WORDS_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("enable_wiki_words_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("use_mover_spoiler", "Y", gettext("Reveal spoilers on mouse over"), (isset($user_prefs['USE_MOVER_SPOILER']) && $user_prefs['USE_MOVER_SPOILER'] == "Y")), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("use_mover_spoiler_global", "Y", '', (isset($user_prefs['USE_MOVER_SPOILER_GLOBAL']) ? $user_prefs['USE_MOVER_SPOILER_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("use_mover_spoiler_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("use_mover_spoiler_global", "Y", '', (isset($user_prefs['USE_MOVER_SPOILER_GLOBAL']) ? $user_prefs['USE_MOVER_SPOILER_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("use_mover_spoiler_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("use_light_mode_spoiler", "Y", gettext("Always show spoilers in Mobile version (uses lighter font colour)"), (isset($user_prefs['USE_LIGHT_MODE_SPOILER']) && $user_prefs['USE_LIGHT_MODE_SPOILER'] == "Y")), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("use_light_mode_spoiler_global", "Y", '', (isset($user_prefs['USE_LIGHT_MODE_SPOILER_GLOBAL']) ? $user_prefs['USE_LIGHT_MODE_SPOILER_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("use_light_mode_spoiler_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("use_light_mode_spoiler_global", "Y", '', (isset($user_prefs['USE_LIGHT_MODE_SPOILER_GLOBAL']) ? $user_prefs['USE_LIGHT_MODE_SPOILER_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("use_light_mode_spoiler_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("show_stats", "Y", gettext("Show forum stats at bottom of message pane"), (isset($user_prefs['SHOW_STATS']) && $user_prefs['SHOW_STATS'] == "Y") ? true : false), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("show_stats_global", "Y", '', (isset($user_prefs['SHOW_STATS_GLOBAL']) ? $user_prefs['SHOW_STATS_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("show_stats_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("show_stats_global", "Y", '', (isset($user_prefs['SHOW_STATS_GLOBAL']) ? $user_prefs['SHOW_STATS_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("show_stats_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("use_word_filter", "Y", gettext("Enable word filter."), (isset($user_prefs['USE_WORD_FILTER']) && $user_prefs['USE_WORD_FILTER'] == "Y")), "&nbsp;<span class=\"smalltext\">[<a href=\"edit_wordfilter.php?webtag=$webtag\">", gettext("Edit Word Filter"), "</a>]</span></td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("use_word_filter_global", "Y", '', (isset($user_prefs['USE_WORD_FILTER_GLOBAL']) ? $user_prefs['USE_WORD_FILTER_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("use_word_filter_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("use_word_filter_global", "Y", '', (isset($user_prefs['USE_WORD_FILTER_GLOBAL']) ? $user_prefs['USE_WORD_FILTER_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("use_word_filter_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("use_overflow_resize", "Y", gettext("Resize images and reflow page to prevent horizontal scrolling."), (isset($user_prefs['USE_OVERFLOW_RESIZE']) && $user_prefs['USE_OVERFLOW_RESIZE'] == "Y")), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("use_overflow_resize_global", "Y", '', (isset($user_prefs['USE_OVERFLOW_RESIZE_GLOBAL']) ? $user_prefs['USE_OVERFLOW_RESIZE_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("use_overflow_resize_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("use_overflow_resize_global", "Y", '', (isset($user_prefs['USE_OVERFLOW_RESIZE_GLOBAL']) ? $user_prefs['USE_OVERFLOW_RESIZE_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("use_overflow_resize_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("reply_quick", "Y", gettext("Use Quick Reply by default. (Full reply in menu)"), (isset($user_prefs['REPLY_QUICK']) && $user_prefs['REPLY_QUICK'] == "Y")), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("reply_quick_global", "Y", '', (isset($user_prefs['REPLY_QUICK_GLOBAL']) ? $user_prefs['REPLY_QUICK_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("reply_quick_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("reply_quick_global", "Y", '', (isset($user_prefs['REPLY_QUICK_GLOBAL']) ? $user_prefs['REPLY_QUICK_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("reply_quick_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("thread_last_page", "Y", gettext("Thread list last post link goes to last page of posts."), (isset($user_prefs['THREAD_LAST_PAGE']) && $user_prefs['THREAD_LAST_PAGE'] == "Y")), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("thread_last_page_global", "Y", '', (isset($user_prefs['THREAD_LAST_PAGE_GLOBAL']) ? $user_prefs['THREAD_LAST_PAGE_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("thread_last_page_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("thread_last_page_global", "Y", '', (isset($user_prefs['THREAD_LAST_PAGE_GLOBAL']) ? $user_prefs['THREAD_LAST_PAGE_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("thread_last_page_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("show_avatars", "Y", gettext("Show user avatars in message headers, visitor log and active user list"), (isset($user_prefs['SHOW_AVATARS']) && $user_prefs['SHOW_AVATARS'] == "Y")), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("show_avatars_global", "Y", '', (isset($user_prefs['SHOW_AVATARS_GLOBAL']) ? $user_prefs['SHOW_AVATARS_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("show_avatars_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("show_avatars_global", "Y", '', (isset($user_prefs['SHOW_AVATARS_GLOBAL']) ? $user_prefs['SHOW_AVATARS_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("show_avatars_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("show_share_links", "Y", gettext("Show social network share links at top of each thread"), (isset($user_prefs['SHOW_SHARE_LINKS']) && $user_prefs['SHOW_SHARE_LINKS'] == "Y")), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("show_share_links_global", "Y", '', (isset($user_prefs['SHOW_SHARE_LINKS_GLOBAL']) ? $user_prefs['SHOW_SHARE_LINKS_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("show_avatars_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("show_share_links_global", "Y", '', (isset($user_prefs['SHOW_SHARE_LINKS_GLOBAL']) ? $user_prefs['SHOW_SHARE_LINKS_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("show_avatars_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -689,17 +688,17 @@ if ($show_set_all) {
 }
 
 echo "                <tr>\n";
-echo "                  <td align=\"left\" rowspan=\"6\" width=\"1%\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" rowspan=\"7\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", gettext("Posts per page"), ":</td>\n";
 echo "                  <td align=\"left\">", form_dropdown_array("posts_per_page", array(10 => 10, 20 => 20, 30 => 30), (isset($user_prefs['POSTS_PER_PAGE']) && is_numeric($user_prefs['POSTS_PER_PAGE'])) ? $user_prefs['POSTS_PER_PAGE'] : 10), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("posts_per_page_global", "Y", '', (isset($user_prefs['POSTS_PER_PAGE_GLOBAL']) ? $user_prefs['POSTS_PER_PAGE_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("posts_per_page_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("posts_per_page_global", "Y", '', (isset($user_prefs['POSTS_PER_PAGE_GLOBAL']) ? $user_prefs['POSTS_PER_PAGE_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("posts_per_page_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", gettext("Font size"), ":</td>\n";
 echo "                  <td align=\"left\">", form_dropdown_array("font_size", array(5 => '5pt', 6 => '6pt', 7 => '7pt', 8 => '8pt', 9 => '9pt', 10 => '10pt', 11 => '11pt', 12 => '12pt', 13 => '13pt', 14 => '14pt', 15 => '15pt'), (isset($user_prefs['FONT_SIZE']) && is_numeric($user_prefs['FONT_SIZE'])) ? $user_prefs['FONT_SIZE'] : 10), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("font_size_global", "Y", '', (isset($user_prefs['FONT_SIZE_GLOBAL']) ? $user_prefs['FONT_SIZE_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("font_size_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("font_size_global", "Y", '', (isset($user_prefs['FONT_SIZE_GLOBAL']) ? $user_prefs['FONT_SIZE_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("font_size_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 
 if (($available_styles = styles_get_available())) {
@@ -707,6 +706,7 @@ if (($available_styles = styles_get_available())) {
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\">", gettext("Forum style"), ":</td>\n";
     echo "                  <td align=\"left\">", form_dropdown_array("style", htmlentities_array($available_styles), (isset($user_prefs['STYLE']) && style_exists($user_prefs['STYLE'])) ? htmlentities_array($user_prefs['STYLE']) : htmlentities_array(forum_get_setting('default_style', false, 'default'))), "</td>\n";
+    echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("style_global", "Y", '', (isset($user_prefs['STYLE_GLOBAL']) ? $user_prefs['STYLE_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("style_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
 }
 
@@ -715,13 +715,14 @@ if (sizeof($available_emoticons) > 1) {
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\">", gettext("Forum emoticons"), " [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" class=\"emoticon_preview_popup\">", gettext("Preview"), "</a>]:</td>\n";
     echo "                  <td align=\"left\">", form_dropdown_array("emoticons", htmlentities_array($available_emoticons), (isset($user_prefs['EMOTICONS']) && in_array($user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? htmlentities_array($user_prefs['EMOTICONS']) : htmlentities_array(forum_get_setting('default_emoticons', false, 'default'))), "</td>\n";
+    echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("emoticons_global", "Y", '', (isset($user_prefs['EMOTICONS_GLOBAL']) ? $user_prefs['EMOTICONS_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("emoticons_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
 }
 
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", gettext("Start page"), ":</td>\n";
 echo "                  <td align=\"left\">", form_dropdown_array("start_page", array(START_PAGE_NORMAL => gettext("Start"), START_PAGE_MESSAGES => gettext("Messages"), START_PAGE_INBOX => gettext("Inbox"), START_PAGE_THREAD_LIST => gettext("Start page with thread list")), (isset($user_prefs['START_PAGE'])) ? $user_prefs['START_PAGE'] : 0), "</td>\n";
-echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("start_page_global", "Y", '', (isset($user_prefs['START_PAGE_GLOBAL']) ? $user_prefs['START_PAGE_GLOBAL'] : false), "title=\"", gettext("Set for all forums?"), "\"") : form_input_hidden("start_page_global", 'Y'), "&nbsp;</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("start_page_global", "Y", '', (isset($user_prefs['START_PAGE_GLOBAL']) ? $user_prefs['START_PAGE_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("start_page_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

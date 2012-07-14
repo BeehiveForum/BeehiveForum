@@ -148,7 +148,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
         light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
         light_html_draw_bottom();
         exit;
@@ -162,7 +162,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
 
-        light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
         light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
         light_html_draw_bottom();
         exit;
@@ -170,7 +170,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
 }else {
 
-    light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+    light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
     light_html_display_error_msg(gettext("No message specified for deletion"));
     light_html_draw_bottom();
     exit;
@@ -197,7 +197,7 @@ if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
 if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
-    light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+    light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
     light_html_display_error_msg(gettext("You cannot delete posts in this folder"));
     light_html_draw_bottom();
     exit;
@@ -205,7 +205,7 @@ if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
 if (!$thread_data = thread_get($tid)) {
 
-    light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+    light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
     light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
     light_html_draw_bottom();
     exit;
@@ -217,7 +217,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
 
     if ((strlen(trim($preview_message['CONTENT'])) < 1) && !thread_is_poll($tid)) {
 
-        light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
         light_post_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -225,7 +225,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
 
     if ((session_get_value('UID') != $preview_message['FROM_UID'] || session_check_perm(USER_PERM_PILLORIED, 0)) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
         light_post_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -233,7 +233,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
 
     if (forum_get_setting('require_post_approval', 'Y') && isset($preview_message['APPROVED']) && $preview_message['APPROVED'] == 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
         light_post_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -241,7 +241,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
 
 }else {
 
-    light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+    light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
     light_html_display_error_msg(sprintf(gettext("Message %s was not found"), $msg));
     light_html_draw_bottom();
     exit;

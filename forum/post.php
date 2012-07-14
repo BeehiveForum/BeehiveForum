@@ -844,7 +844,7 @@ if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !session_chec
     exit;
 }
 
-html_draw_top("title=", gettext("Post message"), "", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "post.js", "attachments.js", "htmltools.js", "emoticons.js", "dictionary.js", 'search.js', 'search_popup.js', 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Post message")), "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "post.js", "attachments.js", "htmltools.js", "emoticons.js", "dictionary.js", 'search.js', 'search_popup.js', 'class=window_title');
 
 echo "<h1>", gettext("Post message"), "</h1>\n";
 

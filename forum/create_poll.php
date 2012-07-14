@@ -839,7 +839,7 @@ if (!$folder_dropdown = folder_draw_dropdown($fid, "fid", "" ,FOLDER_ALLOW_POLL_
     exit;
 }
 
-html_draw_top("title=", gettext("Create Poll"), "", "basetarget=_blank", "onUnload=clearFocus()", "resize_width=785", "post.js", "poll.js", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js", 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Create Poll")), "basetarget=_blank", "onUnload=clearFocus()", "resize_width=785", "post.js", "poll.js", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js", 'class=window_title');
 
 echo "<h1>", gettext("Create Poll"), "</h1>\n";
 
@@ -1112,7 +1112,7 @@ foreach ($poll_questions_array as $question_id => $question) {
     echo "                              <div>\n";
     echo "                                <h2>", gettext("Poll Question"), "</h2>\n";
     echo "                                <div class=\"poll_question_input\">\n";
-    echo "                                  ", form_input_text("poll_questions[{$question_id}][question]", htmlentities_array($question['QUESTION']), 40, 255), "&nbsp;", form_button_html("delete_question[{$question_id}]", 'submit', 'button_image delete_question', sprintf("<img src=\"%s\" alt=\"\" />", html_style_image('delete.png')), "title=\"", gettext("Delete question"), "\""), "\n";
+    echo "                                  ", form_input_text("poll_questions[{$question_id}][question]", htmlentities_array($question['QUESTION']), 40, 255), "&nbsp;", form_button_html("delete_question[{$question_id}]", 'submit', 'button_image delete_question', sprintf("<img src=\"%s\" alt=\"\" />", html_style_image('delete.png')), sprintf('title="%s"', gettext("Delete question"))), "\n";
     echo "                                </div>\n";
     echo "                                <div class=\"poll_question_checkbox\">\n";
     echo "                                  ", form_checkbox("poll_questions[{$question_id}][allow_multi]", "Y", gettext("Allow multiple options to be selected"), (isset($question['ALLOW_MULTI']) && $question['ALLOW_MULTI'] == 'Y')), "\n";
@@ -1123,12 +1123,12 @@ foreach ($poll_questions_array as $question_id => $question) {
     if (isset($question['OPTIONS_ARRAY']) && is_array($question['OPTIONS_ARRAY'])) {
 
         foreach ($question['OPTIONS_ARRAY'] as $option_id => $option) {
-            echo "                                    <li>", form_input_text("poll_questions[{$question_id}][options][{$option_id}]", htmlentities_array($option['OPTION_NAME']), 45, 255), "&nbsp;", form_button_html("delete_option[{$question_id}][{$option_id}]", 'submit', 'button_image delete_option', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), "title=\"", gettext("Delete option"), "\""), "</li>\n";
+            echo "                                    <li>", form_input_text("poll_questions[{$question_id}][options][{$option_id}]", htmlentities_array($option['OPTION_NAME']), 45, 255), "&nbsp;", form_button_html("delete_option[{$question_id}][{$option_id}]", 'submit', 'button_image delete_option', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), sprintf('title="%s"', gettext("Delete option"))), "</li>\n";
         }
 
     } else {
 
-        echo "                                    <li>", form_input_text("poll_questions[{$question_id}][options][0]", '', 45, 255), "&nbsp;", form_button_html("delete_option[{$question_id}][0]", 'submit', 'button_image delete_option', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), "title=\"", gettext("Delete option"), "\""), "</li>\n";
+        echo "                                    <li>", form_input_text("poll_questions[{$question_id}][options][0]", '', 45, 255), "&nbsp;", form_button_html("delete_option[{$question_id}][0]", 'submit', 'button_image delete_option', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), sprintf('title="%s"', gettext("Delete option"))), "</li>\n";
 
         if (isset($_POST['add_option'][$question_id])) {
             echo poll_get_option_html($question_id, 1);

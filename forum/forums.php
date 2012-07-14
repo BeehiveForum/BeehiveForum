@@ -108,7 +108,7 @@ $error_msg_array = array();
 $frame_top_target = html_get_top_frame_name();
 
 // Top of the page.
-html_draw_top("title=", gettext("My Forums"), "", "basetarget=$frame_top_target", 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("My Forums")), "basetarget=$frame_top_target", 'class=window_title');
 
 // Types of available forums.
 $available_forum_views = array(FORUMS_SHOW_ALL, FORUMS_SHOW_FAVS, FORUMS_SHOW_IGNORED);

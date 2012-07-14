@@ -231,7 +231,7 @@ pm_user_prune_folders();
 $pm_messages_frame = html_get_frame_name('pm_messages');
 
 // Draw the header.
-html_draw_top("title=", gettext("Private Messages"), "", "basetarget=$pm_messages_frame", "pm.js", 'pm_popup_disabled');
+html_draw_top(sprintf("title=%s", gettext("Private Messages")), "basetarget=$pm_messages_frame", "pm.js", 'pm_popup_disabled');
 
 if (isset($manage_folder) && is_numeric($manage_folder)) {
 
@@ -401,9 +401,7 @@ if (pm_auto_prune_enabled()) {
     echo "            <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
     echo "          </tr>\n";
     echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"pmbar_text\"><img src=\"", html_style_image('warning.png'), "\" alt=\"", gettext("PM Folder pruning is enabled!"), "\" title=\"", gettext("PM Folder pruning is enabled!"), "\" /> ", gettext("PM Folder pruning is enabled!"), "&nbsp;[<a class=\"help_popup\" title=\"", gettext("This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items
-folders are subject to automatic deletion. Any messages you wish to keep should be moved to
-your 'Saved Items' folder so that they are not deleted."), "\">?</a>]</td>\n";
+    echo "            <td align=\"left\" class=\"pmbar_text\"><img src=\"", html_style_image('warning.png'), "\" alt=\"", gettext("PM Folder pruning is enabled!"), "\" title=\"", gettext("PM Folder pruning is enabled!"), "\" /> ", gettext("PM Folder pruning is enabled!"), "&nbsp;[<a class=\"help_popup\" title=\"", gettext("This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items folders are subject to automatic deletion. Any messages you wish to keep should be moved to your 'Saved Items' folder so that they are not deleted."), "\">?</a>]</td>\n";
     echo "          </tr>\n";
 }
 

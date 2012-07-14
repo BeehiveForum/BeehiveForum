@@ -71,9 +71,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql.= "USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, TUSER.LOGON AS TLOGON, ";
     $sql.= "TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
     $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK, ";
-    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON_GLOBAL, USER_PREFS_FORUM.ANON_LOGON, ";
-    $sql.= "USER_PREFS_FORUM.AVATAR_URL AS AVATAR_URL_FORUM, USER_PREFS_FORUM.AVATAR_AID AS AVATAR_AID_FORUM, ";
-    $sql.= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL, ";
+    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON, COALESCE(USER_PREFS_FORUM.AVATAR_URL, USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, ";
+    $sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_AID, USER_PREFS_GLOBAL.AVATAR_AID) AS AVATAR_AID, ";
     $sql.= "(SELECT $current_timestamp - UNIX_TIMESTAMP(COALESCE(SESSIONS.TIME, 0)) < $active_sess_cutoff FROM SESSIONS ";
     $sql.= "WHERE SESSIONS.FID = {$table_data['FID']} AND SESSIONS.UID = POST.FROM_UID ORDER BY TIME DESC LIMIT 1) AS USER_ACTIVE ";
     $sql.= "FROM `{$table_data['PREFIX']}POST` POST LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
@@ -133,18 +132,6 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
             if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
             if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
-
-            if (isset($message['AVATAR_URL_FORUM']) && strlen($message['AVATAR_URL_FORUM']) > 0) {
-                $message['AVATAR_URL'] = $message['AVATAR_URL_FORUM'];
-            }elseif (isset($message['AVATAR_URL_GLOBAL']) && strlen($message['AVATAR_URL_GLOBAL']) > 0) {
-                $message['AVATAR_URL'] = $message['AVATAR_URL_GLOBAL'];
-            }
-
-            if (isset($message['AVATAR_AID_FORUM']) && is_md5($message['AVATAR_AID_FORUM'])) {
-                $message['AVATAR_AID'] = $message['AVATAR_AID_FORUM'];
-            }elseif (isset($message['AVATAR_AID_GLOBAL']) && is_md5($message['AVATAR_AID_GLOBAL'])) {
-                $message['AVATAR_AID'] = $message['AVATAR_AID_GLOBAL'];
-            }
 
             if (!is_array($messages)) $messages = array();
 

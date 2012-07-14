@@ -1246,7 +1246,7 @@ function poll_get_question_html($question_number)
     $html.= "  <div>\n";
     $html.= "    <h2>". gettext("Poll Question"). "</h2>\n";
     $html.= "    <div class=\"poll_question_input\">\n";
-    $html.= "      ". form_input_text("poll_questions[{$question_number}][question]", '', 40, 255). "&nbsp;". form_button_html("delete_question[{$question_number}]", 'submit', 'button_image delete_question', sprintf("<img src=\"%s\" alt=\"\" />", html_style_image('delete.png')), "title=\"", gettext("Delete question"), "\""). "<br />\n";
+    $html.= "      ". form_input_text("poll_questions[{$question_number}][question]", '', 40, 255). "&nbsp;". form_button_html("delete_question[{$question_number}]", 'submit', 'button_image delete_question', sprintf("<img src=\"%s\" alt=\"\" />", html_style_image('delete.png')), sprintf('title="%s"', gettext("Delete question"))). "<br />\n";
     $html.= "    </div>\n";
     $html.= "    <div class=\"poll_question_checkbox\">\n";
     $html.= "      ". form_checkbox("poll_questions[{$question_number}][allow_multi]", "Y", gettext("Allow multiple options to be selected"), false). "\n";
@@ -1269,7 +1269,7 @@ function poll_get_option_html($question_number, $option_number)
 
     if (!is_numeric($option_number)) return false;
 
-    return sprintf("<li>%s&nbsp;%s</li>\n", form_input_text("poll_questions[{$question_number}][options][{$option_number}]", '', 45, 255), form_button_html("delete_option[{$question_number}][{$option_number}]", 'submit', 'button_image delete_option', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), "title=\"", gettext("Delete option"), "\""));
+    return sprintf("<li>%s&nbsp;%s</li>\n", form_input_text("poll_questions[{$question_number}][options][{$option_number}]", '', 45, 255), form_button_html("delete_option[{$question_number}][{$option_number}]", 'submit', 'button_image delete_option', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), sprintf('title="%s"', gettext("Delete option"))));
 }
 
 function poll_close($tid)

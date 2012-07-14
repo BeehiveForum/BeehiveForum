@@ -696,28 +696,25 @@ function user_get_prefs($uid)
 
     // 2. The user's global prefs, in USER_PREFS:
     $sql = "SELECT USER_PREFS.FIRSTNAME, USER_PREFS.LASTNAME, USER_PREFS.DOB, ";
-    $sql.= "USER_PREFS.HOMEPAGE_URL, USER_PREFS.PIC_URL, USER_PREFS.PIC_AID, ";
-    $sql.= "USER_PREFS.AVATAR_URL, USER_PREFS.AVATAR_AID, USER_PREFS.EMAIL_NOTIFY, ";
-    $sql.= "USER_PREFS.TIMEZONE, TIMEZONES.GMT_OFFSET, TIMEZONES.DST_OFFSET, ";
-    $sql.= "USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, USER_PREFS.THREADS_BY_FOLDER, ";
-    $sql.= "USER_PREFS.POSTS_PER_PAGE, USER_PREFS.FONT_SIZE, USER_PREFS.VIEW_SIGS, ";
-    $sql.= "USER_PREFS.START_PAGE, USER_PREFS.LANGUAGE, USER_PREFS.PM_NOTIFY, ";
-    $sql.= "USER_PREFS.PM_NOTIFY_EMAIL, USER_PREFS.PM_SAVE_SENT_ITEM, ";
-    $sql.= "USER_PREFS.PM_INCLUDE_REPLY, USER_PREFS.PM_AUTO_PRUNE, ";
-    $sql.= "USER_PREFS.PM_EXPORT_TYPE, USER_PREFS.PM_EXPORT_FILE, ";
-    $sql.= "USER_PREFS.PM_EXPORT_ATTACHMENTS, USER_PREFS.PM_EXPORT_STYLE, ";
-    $sql.= "USER_PREFS.PM_EXPORT_WORDFILTER, USER_PREFS.DOB_DISPLAY, ";
-    $sql.= "USER_PREFS.ANON_LOGON, USER_PREFS.SHOW_STATS, ";
-    $sql.= "USER_PREFS.IMAGES_TO_LINKS, USER_PREFS.USE_WORD_FILTER, ";
-    $sql.= "USER_PREFS.USE_ADMIN_FILTER, USER_PREFS.ALLOW_EMAIL, ";
-    $sql.= "USER_PREFS.USE_EMAIL_ADDR, USER_PREFS.ALLOW_PM, USER_PREFS.POST_PAGE, ";
-    $sql.= "USER_PREFS.SHOW_THUMBS, USER_PREFS.USE_MOVER_SPOILER, ";
-    $sql.= "USER_PREFS.USE_LIGHT_MODE_SPOILER, USER_PREFS.ENABLE_WIKI_WORDS, ";
-    $sql.= "USER_PREFS.REPLY_QUICK, USER_PREFS.USE_OVERFLOW_RESIZE, ";
-    $sql.= "USER_PREFS.THREAD_LAST_PAGE, USER_PREFS.SHOW_AVATARS, ";
-    $sql.= "USER_PREFS.SHOW_SHARE_LINKS FROM USER_PREFS ";
-    $sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS.TIMEZONE) ";
-    $sql.= "WHERE UID = '$uid'";
+    $sql.= "USER_PREFS.HOMEPAGE_URL, USER_PREFS.PIC_URL, USER_PREFS.EMAIL_NOTIFY, ";
+    $sql.= "USER_PREFS.TIMEZONE, USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, ";
+    $sql.= "USER_PREFS.POSTS_PER_PAGE, USER_PREFS.FONT_SIZE, USER_PREFS.STYLE, ";
+    $sql.= "USER_PREFS.EMOTICONS, USER_PREFS.VIEW_SIGS, USER_PREFS.START_PAGE, ";
+    $sql.= "USER_PREFS.LANGUAGE, USER_PREFS.PM_NOTIFY, USER_PREFS.PM_NOTIFY_EMAIL, ";
+    $sql.= "USER_PREFS.PM_SAVE_SENT_ITEM, USER_PREFS.PM_INCLUDE_REPLY, ";
+    $sql.= "USER_PREFS.PM_AUTO_PRUNE, USER_PREFS.PM_EXPORT_TYPE, ";
+    $sql.= "USER_PREFS.PM_EXPORT_FILE, USER_PREFS.PM_EXPORT_ATTACHMENTS, USER_PREFS.PM_EXPORT_STYLE, ";
+    $sql.= "USER_PREFS.PM_EXPORT_WORDFILTER, USER_PREFS.DOB_DISPLAY, USER_PREFS.ANON_LOGON, ";
+    $sql.= "USER_PREFS.SHOW_STATS, USER_PREFS.IMAGES_TO_LINKS, USER_PREFS.USE_WORD_FILTER, ";
+    $sql.= "USER_PREFS.USE_ADMIN_FILTER, USER_PREFS.ALLOW_EMAIL, USER_PREFS.USE_EMAIL_ADDR, ";
+    $sql.= "USER_PREFS.ALLOW_PM, USER_PREFS.POST_PAGE, USER_PREFS.SHOW_THUMBS, ";
+    $sql.= "USER_PREFS.ENABLE_WIKI_WORDS, USER_PREFS.USE_MOVER_SPOILER, ";
+    $sql.= "USER_PREFS.USE_LIGHT_MODE_SPOILER, USER_PREFS.USE_OVERFLOW_RESIZE, ";
+    $sql.= "USER_PREFS.PIC_AID, USER_PREFS.AVATAR_URL, USER_PREFS.AVATAR_AID, ";
+    $sql.= "USER_PREFS.REPLY_QUICK, USER_PREFS.THREADS_BY_FOLDER, USER_PREFS.THREAD_LAST_PAGE, ";
+    $sql.= "USER_PREFS.LEFT_FRAME_WIDTH, USER_PREFS.SHOW_AVATARS, USER_PREFS.SHOW_SHARE_LINKS ";
+    $sql.= "FROM USER_PREFS LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS.TIMEZONE) ";
+    $sql.= "WHERE USER_PREFS.UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_get_prefs)) return false;
 
@@ -728,12 +725,11 @@ function user_get_prefs($uid)
     // 3. The user's per-forum prefs, in GLOBAL USER_PREFS (not all prefs are set here e.g. name):
     if (($table_data = get_table_prefix())) {
 
-        $sql = "SELECT HOMEPAGE_URL, PIC_URL, PIC_AID, AVATAR_URL, AVATAR_AID, EMAIL_NOTIFY, ";
-        $sql.= "MARK_AS_OF_INT, POSTS_PER_PAGE, FONT_SIZE, STYLE, EMOTICONS, VIEW_SIGS, START_PAGE, ";
-        $sql.= "LANGUAGE, DOB_DISPLAY, ANON_LOGON, SHOW_STATS, IMAGES_TO_LINKS, USE_WORD_FILTER, ";
-        $sql.= "USE_ADMIN_FILTER, ALLOW_EMAIL, ALLOW_PM, SHOW_THUMBS, ENABLE_WIKI_WORDS, ";
-        $sql.= "USE_MOVER_SPOILER, USE_LIGHT_MODE_SPOILER, USE_OVERFLOW_RESIZE, REPLY_QUICK, ";
-        $sql.= "THREADS_BY_FOLDER, THREAD_LAST_PAGE, USE_EMAIL_ADDR, LEFT_FRAME_WIDTH, ";
+        $sql = "SELECT HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, MARK_AS_OF_INT, POSTS_PER_PAGE, ";
+        $sql.= "FONT_SIZE, STYLE, EMOTICONS, VIEW_SIGS, START_PAGE, LANGUAGE, SHOW_STATS, ";
+        $sql.= "IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, SHOW_THUMBS, ENABLE_WIKI_WORDS, ";
+        $sql.= "USE_MOVER_SPOILER, USE_LIGHT_MODE_SPOILER, USE_OVERFLOW_RESIZE, PIC_AID, AVATAR_URL, ";
+        $sql.= "AVATAR_AID, REPLY_QUICK, THREADS_BY_FOLDER, THREAD_LAST_PAGE, LEFT_FRAME_WIDTH, ";
         $sql.= "SHOW_AVATARS, SHOW_SHARE_LINKS FROM `{$table_data['PREFIX']}USER_PREFS` ";
         $sql.= "WHERE UID = '$uid'";
 
@@ -782,33 +778,35 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     $forum_prefs_array  = array();
 
     // names of preferences that can be set globally
-    $global_pref_names = array('FIRSTNAME', 'LASTNAME', 'DOB', 'HOMEPAGE_URL',
-                               'PIC_URL', 'PIC_AID', 'AVATAR_URL', 'AVATAR_AID',
-                               'EMAIL_NOTIFY', 'TIMEZONE', 'DL_SAVING',
-                               'MARK_AS_OF_INT', 'THREADS_BY_FOLDER', 'POSTS_PER_PAGE',
-                               'FONT_SIZE', 'VIEW_SIGS', 'START_PAGE', 'LANGUAGE',
-                               'PM_NOTIFY', 'PM_NOTIFY_EMAIL', 'PM_SAVE_SENT_ITEM',
-                               'PM_INCLUDE_REPLY', 'PM_AUTO_PRUNE', 'PM_EXPORT_FILE',
-                               'PM_EXPORT_TYPE', 'PM_EXPORT_ATTACHMENTS', 'PM_EXPORT_STYLE',
-                               'PM_EXPORT_WORDFILTER', 'DOB_DISPLAY', 'ANON_LOGON',
-                               'SHOW_STATS', 'IMAGES_TO_LINKS', 'USE_WORD_FILTER',
-                               'USE_ADMIN_FILTER',  'ALLOW_EMAIL', 'USE_EMAIL_ADDR',
-                               'ALLOW_PM', 'POST_PAGE', 'SHOW_THUMBS', 'ENABLE_WIKI_WORDS',
-                               'USE_MOVER_SPOILER', 'USE_LIGHT_MODE_SPOILER',
-                               'USE_OVERFLOW_RESIZE', 'REPLY_QUICK', 'THREAD_LAST_PAGE',
+    $global_pref_names = array('FIRSTNAME', 'LASTNAME', 'DOB', 'HOMEPAGE_URL', 
+                               'PIC_URL', 'EMAIL_NOTIFY', 'TIMEZONE', 'DL_SAVING', 
+                               'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE', 
+                               'STYLE', 'EMOTICONS', 'VIEW_SIGS', 'START_PAGE', 
+                               'LANGUAGE', 'PM_NOTIFY', 'PM_NOTIFY_EMAIL', 
+                               'PM_SAVE_SENT_ITEM', 'PM_INCLUDE_REPLY', 'PM_AUTO_PRUNE', 
+                               'PM_EXPORT_TYPE', 'PM_EXPORT_FILE', 'PM_EXPORT_ATTACHMENTS', 
+                               'PM_EXPORT_STYLE', 'PM_EXPORT_WORDFILTER', 'DOB_DISPLAY', 
+                               'ANON_LOGON', 'SHOW_STATS', 'IMAGES_TO_LINKS', 
+                               'USE_WORD_FILTER', 'USE_ADMIN_FILTER', 'ALLOW_EMAIL', 
+                               'USE_EMAIL_ADDR', 'ALLOW_PM', 'POST_PAGE', 'SHOW_THUMBS', 
+                               'ENABLE_WIKI_WORDS', 'USE_MOVER_SPOILER', 
+                               'USE_LIGHT_MODE_SPOILER', 'USE_OVERFLOW_RESIZE', 
+                               'PIC_AID', 'AVATAR_URL', 'AVATAR_AID', 'REPLY_QUICK', 
+                               'THREADS_BY_FOLDER', 'THREAD_LAST_PAGE', 'LEFT_FRAME_WIDTH', 
                                'SHOW_AVATARS', 'SHOW_SHARE_LINKS');
 
     // names of preferences that can be set on a per-forum basis
-    $forum_pref_names =  array('HOMEPAGE_URL', 'PIC_URL', 'PIC_AID', 'AVATAR_URL',
-                               'AVATAR_AID', 'EMAIL_NOTIFY', 'MARK_AS_OF_INT',
-                               'THREADS_BY_FOLDER', 'POSTS_PER_PAGE', 'FONT_SIZE',
-                               'STYLE', 'VIEW_SIGS', 'START_PAGE', 'LANGUAGE',
-                               'DOB_DISPLAY', 'ANON_LOGON', 'SHOW_STATS',
-                               'IMAGES_TO_LINKS', 'USE_WORD_FILTER', 'USE_ADMIN_FILTER',
-                               'EMOTICONS', 'ALLOW_EMAIL', 'USE_EMAIL_ADDR', 'ALLOW_PM',
-                               'SHOW_THUMBS', 'ENABLE_WIKI_WORDS', 'USE_MOVER_SPOILER',
-                               'USE_LIGHT_MODE_SPOILER', 'USE_OVERFLOW_RESIZE',
-                               'REPLY_QUICK', 'THREAD_LAST_PAGE', 'LEFT_FRAME_WIDTH',
+    $forum_pref_names =  array('HOMEPAGE_URL', 'PIC_URL', 'EMAIL_NOTIFY', 
+                               'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE', 
+                               'STYLE', 'EMOTICONS', 'VIEW_SIGS', 
+                               'START_PAGE', 'LANGUAGE', 'SHOW_STATS', 
+                               'IMAGES_TO_LINKS', 'USE_WORD_FILTER', 
+                               'USE_ADMIN_FILTER', 'SHOW_THUMBS', 
+                               'ENABLE_WIKI_WORDS', 'USE_MOVER_SPOILER', 
+                               'USE_LIGHT_MODE_SPOILER', 'USE_OVERFLOW_RESIZE', 
+                               'PIC_AID', 'AVATAR_URL', 'AVATAR_AID', 
+                               'REPLY_QUICK', 'THREADS_BY_FOLDER', 
+                               'THREAD_LAST_PAGE', 'LEFT_FRAME_WIDTH', 
                                'SHOW_AVATARS', 'SHOW_SHARE_LINKS');
 
     // Loop through the passed preference names and check they're valid
@@ -1064,14 +1062,13 @@ function user_get_forthcoming_birthdays()
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PREFS.DOB, ";
-    $sql.= "IF (DATEDIFF(DATE_FORMAT(USER_PREFS.DOB, '00-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d')) < 0, ";
-    $sql.= "DATEDIFF(DATE_FORMAT(USER_PREFS.DOB, '01-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d')), ";
-    $sql.= "DATEDIFF(DATE_FORMAT(USER_PREFS.DOB, '00-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d'))) AS DAY_COUNT ";
-    $sql.= "FROM USER USER LEFT JOIN USER_PREFS USER_PREFS ON (USER_PREFS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PREFS` USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "WHERE USER_PREFS.DOB > 0 AND (USER_PREFS.DOB_DISPLAY > 1 OR USER_PREFS_GLOBAL.DOB_DISPLAY > 1) ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PREFS_GLOBAL.DOB, ";
+    $sql.= "IF (DATEDIFF(DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '00-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d')) < 0, ";
+    $sql.= "DATEDIFF(DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '01-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d')), ";
+    $sql.= "DATEDIFF(DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '00-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d'))) AS DAY_COUNT ";
+    $sql.= "FROM USER USER LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID ";
+    $sql.= "AND USER_PEER.UID = '$uid') WHERE USER_PREFS_GLOBAL.DOB > 0 AND USER_PREFS_GLOBAL.DOB_DISPLAY > 1 ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "HAVING DAY_COUNT < DATE_FORMAT(LAST_DAY(CURDATE()), '%d') ";

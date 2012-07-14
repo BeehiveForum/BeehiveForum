@@ -343,7 +343,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
 
-        light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
         light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
         light_html_draw_bottom();
         exit;
@@ -357,7 +357,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (!session_check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
-        light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
         light_html_display_error_msg(gettext("You cannot reply to posts in this folder"));
         light_html_draw_bottom();
         exit;
@@ -389,7 +389,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (isset($t_fid) && !session_check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
-        light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
         light_html_display_error_msg(gettext("You cannot create new threads in this folder"));
         light_html_draw_bottom();
         exit;
@@ -440,7 +440,7 @@ if (!$new_thread) {
 
     if (!$reply_message = messages_get($reply_to_tid, $reply_to_pid)) {
 
-        light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
         light_html_display_error_msg(gettext("That post does not exist in this thread!"));
         light_html_draw_bottom();
         exit;
@@ -448,7 +448,7 @@ if (!$new_thread) {
 
     if (!$thread_data = thread_get($reply_to_tid)) {
 
-        light_html_draw_top("title=", gettext("Error"), "", "robots=noindex,nofollow");
+        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
         light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
         light_html_draw_bottom();
         exit;
@@ -556,7 +556,7 @@ if ($valid && isset($_POST['post'])) {
     }
 }
 
-light_html_draw_top("title=", gettext("Post message"), "", "robots=noindex,nofollow");
+light_html_draw_top(sprintf("title=%s", gettext("Post message")), "robots=noindex,nofollow");
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];

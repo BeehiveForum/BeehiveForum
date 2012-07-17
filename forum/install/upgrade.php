@@ -435,7 +435,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_LINKS", 'APPROVED')) {
     
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}LINKS ADD COLUMN `APPROVED` DATETIME NULL AFTER CREATED";
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}LINKS` ADD COLUMN `APPROVED` DATETIME NULL AFTER CREATED";
         
         if (!$result = db_query($sql, $db_install)) {
 
@@ -443,7 +443,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
             return;
         }
     
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}LINKS ADD COLUMN `APPROVED_BY` MEDIUMINT(8) NULL AFTER `APPROVED`";
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}LINKS` ADD COLUMN `APPROVED_BY` MEDIUMINT(8) NULL AFTER `APPROVED`";
         
         if (!$result = db_query($sql, $db_install)) {
 
@@ -453,7 +453,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
         
         $approved_datetime = date(MYSQL_DATETIME, time());
         
-        $sql = "UPDATE `{$table_data['PREFIX']}LINKS SET APPROVED = '$approved_datetime', APPROVED_BY = UID";
+        $sql = "UPDATE `{$table_data['PREFIX']}LINKS` SET APPROVED = '$approved_datetime', APPROVED_BY = UID";
         
         if (!$result = db_query($sql, $db_install)) {
 
@@ -873,7 +873,7 @@ if (!install_column_exists($db_database, "USER_PREFS", "SHOW_SHARE_LINKS")) {
     }
 }
 
-if (!install_column_exists($table_data['DATABASE_NAME'], "USER_PREFS", 'LEFT_FRAME_WIDTH')) {
+if (!install_column_exists($db_database, "USER_PREFS", 'LEFT_FRAME_WIDTH')) {
 
     $sql = "ALTER TABLE USER_PREFS ADD COLUMN LEFT_FRAME_WIDTH SMALLINT(4) DEFAULT '280' NOT NULL AFTER THREAD_LAST_PAGE";
 

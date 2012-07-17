@@ -394,7 +394,7 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
                 echo "                              <td valign=\"top\"  align=\"left\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</td>\n";
             }
 
-            echo "                              <td valign=\"top\"  align=\"right\" style=\"white-space: nowrap\"><span class=\"threadtime\">", format_time($recent_visitor['LAST_LOGON']), "&nbsp;<span class=\"threadtime\"></td>\n";
+            echo "                              <td valign=\"top\"  align=\"right\" style=\"white-space: nowrap\"><span class=\"threadtime\">", format_time($recent_visitor['LAST_LOGON']), "&nbsp;</span></td>\n";
         }
 
         echo "                            </tr>\n";

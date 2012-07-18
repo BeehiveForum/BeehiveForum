@@ -185,6 +185,7 @@ function light_html_draw_top()
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery-1.7.1.min.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery.sprintf.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";
+    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/light.js\"></script>\n";
 
     $message_display_pages = array('admin_post_approve.php', 'create_poll.php',
                                    'delete.php', 'display.php', 'edit.php',
@@ -206,24 +207,25 @@ function light_html_draw_top()
     echo "<body id=\"mobile\">\n";
     echo "<a name=\"top\"></a>\n";
     echo "<div id=\"header\">\n";
+    echo "  <img src=\"", html_style_image('mobile_logo.png'), "\" />\n";
     echo "  <div id=\"nav\">\n";
     echo "    <ul>\n";
+    echo "      <li class=\"menu_toggle\">", gettext("Menu"), "</li>\n";
 
     if (forums_get_available_count() > 1 || !forum_check_webtag_available($webtag)) {
-        echo "      <li><a href=\"lforums.php?webtag=$webtag\">", gettext("My Forums"), "</a></li>\n";
+        echo "      <li class=\"menu_item\"><a href=\"lforums.php?webtag=$webtag\">", gettext("My Forums"), "</a></li>\n";
     }
 
-    echo "      <li><a href=\"lthread_list.php?webtag=$webtag\">", gettext("Messages"), "</a></li>\n";
-    echo "      <li><a href=\"lpm.php?webtag=$webtag\">", gettext("Inbox"), "</a></li>\n";
+    echo "      <li class=\"menu_item\"><a href=\"lthread_list.php?webtag=$webtag\">", gettext("Messages"), "</a></li>\n";
+    echo "      <li class=\"menu_item\"><a href=\"lpm.php?webtag=$webtag\">", gettext("Inbox"), "</a></li>\n";
 
     if (user_is_guest()) {
-        echo "      <li><a href=\"llogon.php?webtag=$webtag\">", gettext("Login"), "</a></li>\n";
+        echo "      <li class=\"menu_item\"><a href=\"llogon.php?webtag=$webtag\">", gettext("Login"), "</a></li>\n";
     } else {
-        echo "      <li><a href=\"llogout.php?webtag=$webtag\">", gettext("Logout"), "</a></li>\n";
+        echo "      <li class=\"menu_item\"><a href=\"llogout.php?webtag=$webtag\">", gettext("Logout"), "</a></li>\n";
     }
 
     echo "    </ul>\n";
-    echo "    <div class=\"clearer\"></div>\n";
     echo "  </div>\n";
     echo "</div>\n";
     echo "<div id=\"content\">\n";

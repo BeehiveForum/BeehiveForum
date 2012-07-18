@@ -144,6 +144,10 @@ body {
     position: relative;
 }
 
+#header img {
+    margin: 5px;
+}
+
 #footer {
 	font-size: 13px;
     text-align: center;
@@ -156,51 +160,64 @@ body {
 
 #footer h6 {
 	font-size: 11px;
-    margin: 0;
+    margin: 20px 0;
 }
 
 #nav {
-	border-bottom: 1px solid rgba(0, 0, 0, 0.5);
-    clear: both;
-    padding: 3px 0 0;
+    background: url("images/mobile_icon.png") no-repeat scroll 90% 5px #6D496D;
+    border-bottom: none;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    border-right: none;
+    min-height: 31px;
+    min-width: 130px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+#nav.menu_open {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.2);
+    padding: 0 0 5px;
 }
 
 #nav ul {
 	border-collapse: collapse;
-    display: table;
-    margin: 5px 0;
+    list-style: none;
+    margin: 0;
     padding: 0;
 }
 
 #nav li {
-	border-color: #FFFFFF;
-    border-style: none;
-    border-width: 1px;
+    border: none;
+    cursor: pointer;
     color: #FFFFFF;
-    display: table-cell;
     font-weight: bold;
-    padding: 0 10px;
 }
 
-#nav li:first-child {
-	padding-left: 5px;
+#nav li.menu_item {
+    display: none;
 }
 
-#nav ul li {
-	border-top-color: none;
-}
-
-#nav ul li + li {
-	border-left-style: solid;
-}
-
-#nav li a {
-	color: #FFFFFF;
+#nav.menu_open li.menu_item {
     display: block;
 }
 
+#nav li a,
+#nav li.menu_toggle {
+	color: #FFFFFF;
+    display: block;
+    padding: 5px 20px;
+}
+
+#nav ul li:first-child a,
+#nav ul li:last-child a,
+#nav li.menu_toggle {
+    padding: 6px 20px 6px;
+}
+
 #content {
-	font-size: 120%;
+	font-size: 13px;
     margin: 10px 5px;
     padding-bottom: 5px;
 }
@@ -414,7 +431,7 @@ h2.thread_title {
 }
 
 .message .edit_text {
-	font-size: 80%;
+	font-size: 10px;
     margin: 10px 0;
 }
 

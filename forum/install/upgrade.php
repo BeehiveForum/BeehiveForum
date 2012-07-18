@@ -45,87 +45,6 @@ if (!($forum_webtag_array = install_get_webtags())) {
     return;
 }
 
-$sql = "DROP TABLE IF EXISTS SPHINX_SEARCH_ID";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "ALTER TABLE `SESSIONS` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "ALTER TABLE `USER` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "DROP TABLE IF EXISTS VISITOR_LOG_NEW";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "CREATE TABLE VISITOR_LOG_NEW (";
-$sql.= "  VID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-$sql.= "  UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-$sql.= "  SID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL,";
-$sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
-$sql.= "  IPADDRESS VARCHAR(255) NOT NULL,";
-$sql.= "  REFERER VARCHAR(255) DEFAULT NULL,";
-$sql.= "  USER_AGENT VARCHAR(255) DEFAULT NULL,";
-$sql.= "  PRIMARY KEY (VID),";
-$sql.= "  UNIQUE KEY UID (UID),";
-$sql.= "  UNIQUE KEY SID (SID),";
-$sql.= "  KEY FORUM (FORUM),";
-$sql.= "  KEY LAST_LOGON (LAST_LOGON)";
-$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "INSERT IGNORE INTO VISITOR_LOG_NEW SELECT NULL AS VID, ";
-$sql.= "IF (UID > 0, UID, NULL) AS UID, IF (SID > 0, SID, NULL) AS SID, ";
-$sql.= "FORUM, LAST_LOGON, IPADDRESS, REFERER, USER_AGENT FROM VISITOR_LOG ";
-$sql.= "ORDER BY LAST_LOGON DESC";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "DROP TABLE IF EXISTS VISITOR_LOG";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
-$sql = "RENAME TABLE VISITOR_LOG_NEW TO VISITOR_LOG";
-
-if (!$result = db_query($sql, $db_install)) {
-
-    $valid = false;
-    return;
-}
-
 foreach ($forum_webtag_array as $forum_fid => $table_data) {
     
     if (!install_check_column_type($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_ADMIN_LOG", "ENTRY", "longblob")) {
@@ -463,6 +382,18 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     }
 
     if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", 'DOB_DISPLAY')) {
+        
+        $sql = "UPDATE USER_PREFS INNER JOIN `{$table_data['PREFIX']}USER_PREFS` ";
+        $sql.= "ON (`{$table_data['PREFIX']}USER_PREFS`.UID = USER_PREFS.UID) ";
+        $sql.= "SET USER_PREFS.DOB_DISPLAY = `{$table_data['PREFIX']}USER_PREFS`.DOB_DISPLAY ";
+        $sql.= "WHERE `{$table_data['PREFIX']}USER_PREFS`.DOB_DISPLAY < 3 ";
+        $sql.= "AND USER_PREFS.DOB_DISPLAY > `{$table_data['PREFIX']}USER_PREFS`.DOB_DISPLAY";
+        
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }           
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN DOB_DISPLAY";
 
@@ -474,6 +405,17 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     }
 
     if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", 'ANON_LOGON')) {
+        
+        $sql = "UPDATE USER_PREFS INNER JOIN `{$table_data['PREFIX']}USER_PREFS` ";
+        $sql.= "ON (`{$table_data['PREFIX']}USER_PREFS`.UID = USER_PREFS.UID) ";
+        $sql.= "SET USER_PREFS.ANON_LOGON = `{$table_data['PREFIX']}USER_PREFS`.ANON_LOGON ";
+        $sql.= "WHERE `{$table_data['PREFIX']}USER_PREFS`.ANON_LOGON = 'Y'";
+        
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }          
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN ANON_LOGON";
 
@@ -485,6 +427,17 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     }
         
     if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", 'ALLOW_EMAIL')) {
+        
+        $sql = "UPDATE USER_PREFS INNER JOIN `{$table_data['PREFIX']}USER_PREFS` ";
+        $sql.= "ON (`{$table_data['PREFIX']}USER_PREFS`.UID = USER_PREFS.UID) ";
+        $sql.= "SET USER_PREFS.ALLOW_EMAIL = `{$table_data['PREFIX']}USER_PREFS`.ALLOW_EMAIL ";
+        $sql.= "WHERE `{$table_data['PREFIX']}USER_PREFS`.ALLOW_EMAIL = 'N'";
+        
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }          
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN ALLOW_EMAIL";
 
@@ -496,6 +449,17 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     }
         
     if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", 'USE_EMAIL_ADDR')) {
+        
+        $sql = "UPDATE USER_PREFS INNER JOIN `{$table_data['PREFIX']}USER_PREFS` ";
+        $sql.= "ON (`{$table_data['PREFIX']}USER_PREFS`.UID = USER_PREFS.UID) ";
+        $sql.= "SET USER_PREFS.USE_EMAIL_ADDR = `{$table_data['PREFIX']}USER_PREFS`.USE_EMAIL_ADDR ";
+        $sql.= "WHERE `{$table_data['PREFIX']}USER_PREFS`.USE_EMAIL_ADDR = 'N' ";
+        
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }        
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN USE_EMAIL_ADDR";
 
@@ -507,6 +471,17 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
     }
         
     if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", 'ALLOW_PM')) {
+
+        $sql = "UPDATE USER_PREFS INNER JOIN `{$table_data['PREFIX']}USER_PREFS` ";
+        $sql.= "ON (`{$table_data['PREFIX']}USER_PREFS`.UID = USER_PREFS.UID) ";
+        $sql.= "SET USER_PREFS.ALLOW_PM = `{$table_data['PREFIX']}USER_PREFS`.ALLOW_PM ";
+        $sql.= "WHERE `{$table_data['PREFIX']}USER_PREFS`.ALLOW_PM = 'N'";
+        
+        if (!$result = db_query($sql, $db_install)) {
+
+            $valid = false;
+            return;
+        }         
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN ALLOW_PM";
 
@@ -793,7 +768,7 @@ foreach ($forum_webtag_array as $forum_fid => $table_data) {
 
         $valid = false;
         return;
-    }    
+    }
 }
 
 $sql = "DROP TABLE IF EXISTS SFS_CACHE";
@@ -854,6 +829,17 @@ if (!install_table_exists($db_database, "USER_TOKEN")) {
 if (!install_column_exists($db_database, "SESSIONS", "USER_AGENT")) {
     
     $sql = "ALTER TABLE SESSIONS ADD COLUMN USER_AGENT VARCHAR(255) DEFAULT NULL";
+    
+    if (!$result = db_query($sql, $db_install)) {
+
+        $valid = false;
+        return;
+    }
+}
+
+if (!install_column_exists($db_database, "VISITOR_LOG", "USER_AGENT")) {
+    
+    $sql = "ALTER TABLE VISITOR_LOG ADD COLUMN USER_AGENT VARCHAR(255) DEFAULT NULL";
     
     if (!$result = db_query($sql, $db_install)) {
 
@@ -981,6 +967,87 @@ if (!$result = db_query($sql, $db_install)) {
 }
 
 $sql = "ALTER TABLE USER_PREFS CHANGE AVATAR_AID AVATAR_AID VARCHAR(32) NOT NULL";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "DROP TABLE IF EXISTS SPHINX_SEARCH_ID";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE `SESSIONS` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE `USER` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "DROP TABLE IF EXISTS VISITOR_LOG_NEW";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE VISITOR_LOG_NEW (";
+$sql.= "  VID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+$sql.= "  SID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  LAST_LOGON DATETIME DEFAULT NULL,";
+$sql.= "  IPADDRESS VARCHAR(255) NOT NULL,";
+$sql.= "  REFERER VARCHAR(255) DEFAULT NULL,";
+$sql.= "  USER_AGENT VARCHAR(255) DEFAULT NULL,";
+$sql.= "  PRIMARY KEY (VID),";
+$sql.= "  UNIQUE KEY UID (UID),";
+$sql.= "  UNIQUE KEY SID (SID),";
+$sql.= "  KEY FORUM (FORUM),";
+$sql.= "  KEY LAST_LOGON (LAST_LOGON)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT IGNORE INTO VISITOR_LOG_NEW SELECT NULL AS VID, ";
+$sql.= "IF (UID > 0, UID, NULL) AS UID, IF (SID > 0, SID, NULL) AS SID, ";
+$sql.= "FORUM, LAST_LOGON, IPADDRESS, REFERER, USER_AGENT FROM VISITOR_LOG ";
+$sql.= "ORDER BY LAST_LOGON DESC";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "DROP TABLE IF EXISTS VISITOR_LOG";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "RENAME TABLE VISITOR_LOG_NEW TO VISITOR_LOG";
 
 if (!$result = db_query($sql, $db_install)) {
 

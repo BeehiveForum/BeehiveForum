@@ -95,7 +95,7 @@ function user_get_profile($uid)
     $user_groups_array = array();
 
     $user_prefs = user_get_prefs($uid);
-
+    
     $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
 
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
@@ -103,9 +103,6 @@ function user_get_profile($uid)
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT, ";
     $sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
-    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON AS ANON_LOGON, ";
-    $sql.= "USER_PREFS_GLOBAL.DOB_DISPLAY AS DOB_DISPLAY, ";
-    $sql.= "USER_PREFS_GLOBAL.DOB AS DOB, ";
     $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
     $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
     $sql.= "USER_PEER.RELATIONSHIP, SESSIONS.HASH FROM USER USER ";
@@ -129,8 +126,8 @@ function user_get_profile($uid)
 
         $user_profile = db_fetch_array($result);
 
-        if (isset($user_profile['ANON_LOGON']) && $user_profile['ANON_LOGON'] > USER_ANON_DISABLED) {
-            $anon_logon = $user_profile['ANON_LOGON'];
+        if (isset($user_prefs['ANON_LOGON']) && ($user_prefs['ANON_LOGON'] > USER_ANON_DISABLED)) {
+            $anon_logon = $user_prefs['ANON_LOGON'];
         }else {
             $anon_logon = USER_ANON_DISABLED;
         }

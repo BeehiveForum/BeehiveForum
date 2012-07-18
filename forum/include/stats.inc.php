@@ -191,7 +191,7 @@ function stats_get_html()
 
                     if ($user['UID'] == $uid) {
 
-                        if (isset($user['ANON_LOGON']) && $user['ANON_LOGON'] > 0) {
+                        if (isset($user['ANON_LOGON']) && $user['ANON_LOGON'] > USER_ANON_DISABLED) {
 
                             $active_user_title = gettext("You (Invisible)");
                             $active_user_class = 'user_stats_curuser';

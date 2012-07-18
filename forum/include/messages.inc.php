@@ -1055,36 +1055,17 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             echo "            <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
             echo "              <tr>\n";
 
-            if (isset($message['ANON_LOGON']) && $message['ANON_LOGON'] > USER_ANON_DISABLED) {
+            if ((isset($message['ANON_LOGON']) && $message['ANON_LOGON'] > USER_ANON_DISABLED) || !isset($message['USER_ACTIVE']) || $message['USER_ACTIVE'] == 0) {
 
                 echo "                <td width=\"25%\" align=\"left\">";
                 echo "                  <img src=\"", html_style_image('status_offline.png'), "\" alt=\"\" title=\"", gettext("Inactive / Offline"), "\" />";
                 echo "                </td>\n";
 
-            }else if (isset($message['ANON_LOGON_GLOBAL']) && $message['ANON_LOGON_GLOBAL'] > USER_ANON_DISABLED) {
-
-                    echo "                <td width=\"25%\" align=\"left\">";
-                    echo "                  <img src=\"", html_style_image('status_offline.png'), "\" alt=\"\" title=\"", gettext("Inactive / Offline"), "\" />";
-                    echo "                </td>\n";
-
-            }else if (isset($message['USER_ACTIVE'])) {
-
-                if ($message['USER_ACTIVE'] == 1) {
-
-                    echo "                <td width=\"25%\" align=\"left\">";
-                    echo "                  <img src=\"", html_style_image('status_online.png'), "\" alt=\"\" title=\"", gettext("Online"), "\" />";
-                    echo "                </td>\n";
-
-                } else {
-
-                    echo "                <td width=\"25%\" align=\"left\">";
-                    echo "                  <img src=\"", html_style_image('status_offline.png'), "\" alt=\"\" title=\"", gettext("Inactive / Offline"), "\" />";
-                    echo "                </td>\n";
-                }
-
             } else {
 
-                echo "                <td width=\"25%\" align=\"left\">&nbsp;</td>";
+                echo "                <td width=\"25%\" align=\"left\">";
+                echo "                  <img src=\"", html_style_image('status_offline.png'), "\" alt=\"\" title=\"", gettext("Inactive / Offline"), "\" />";
+                echo "                </td>\n";
             }
 
             echo "                <td width=\"50%\" style=\"white-space: nowrap\">";

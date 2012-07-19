@@ -378,7 +378,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     list($user_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     // Check if we have any results.
-    if (db_num_rows($result) == 0) {
+    if ((db_num_rows($result) == 0) && ($user_count > 0)) {
         
         $offset = floor(($user_count - 1) / 10) * 10;
         return visitor_log_browse_items($user_search, $profile_items_array, $offset, $sort_by, $sort_dir, $hide_empty, $hide_guests);

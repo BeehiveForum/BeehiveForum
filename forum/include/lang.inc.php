@@ -182,8 +182,8 @@ function lang_get_available($inc_browser_negotiation = true)
     foreach (glob($include_path. '*/messages.po') as $lang) {
         
         $available_langs[] = preg_replace(
-            sprintf('/%s\/([^\/]+)\/messages.po/', preg_quote($include_path, '/')), 
-            '\1', 
+            sprintf('/%s([^\/]+)\/messages.po/', preg_quote($include_path, '/')), 
+            '\\1', 
             $lang
         );
     }

@@ -467,7 +467,7 @@ Note: GeSHi is not created by the Beehive Forum developers.
 =============
 
 Beehive Forum has a simple HTML toolbar built in, but also allows the use of the
-open-source WYSIWYG TinyMCE version 3.1.0 or later by Moxiecode Systems. You can
+open-source WYSIWYG TinyMCE version 3.5.5 or later by Moxiecode Systems. You can
 downloaded TinyMCE from http://tinymce.moxiecode.com/
 
 To install TinyMCE in to your Beehive Forum simply copy everything from the

@@ -10,8 +10,8 @@
 
                 ed.windowManager.open({
                     file: url + '/flash.htm',
-                    width: 380 + parseInt(ed.getLang('example.delta_width', 0)),
-                    height: 130 + parseInt(ed.getLang('example.delta_height', 0)),
+                    width: 420 + parseInt(ed.getLang('example.delta_width', 0)),
+                    height: 140 + parseInt(ed.getLang('example.delta_height', 0)),
                     inline: 1
                 }, {
                     plugin_url: url

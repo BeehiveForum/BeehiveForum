@@ -38,11 +38,11 @@
         getInfo : function() {
 
             return {
-                longname : 'Beehive Forum TinyMCE 3.x Plugin',
+                longname : 'Beehive Forum TinyMCE 3.5.5 Plugin',
                 author : 'Project Beehive Forum',
                 authorurl : 'http://www.beehiveforum.co.uk',
                 infourl : 'http://www.beehiveforum.co.uk',
-                version : '2.0'
+                version : '3.0'
             };
         },
 
@@ -180,8 +180,8 @@
         removeContainer : function() {
 
             var ed = this.editor, dom = tinymce.DOM;
-
-            ed.dom.remove(ed.dom.getParent(ed.selection.getNode(), function(n) {return tinymce.DOM.hasClass(n, 'bhplugincontainer');}), true);
+            
+            ed.dom.remove(ed.dom.select('div.bhplugincontainer'), true);
         }
     });
 

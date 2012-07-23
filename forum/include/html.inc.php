@@ -557,14 +557,26 @@ function html_include_css($script_filepath, $media = 'screen', $id = false)
 function html_draw_top()
 {
     $arg_array = func_get_args();
-    $meta_refresh_delay = false;
-    $meta_refresh_url = false;
 
-    $title = '';
-    $body_class = '';
-    $base_target = '';
+    $title = null;
 
-    $robots = 'noindex,nofollow';
+    $body_class = null;
+
+    $base_target = null;
+    
+    $stylesheet_array = array();
+
+    $meta_refresh = array();
+
+    $robots = null;
+    
+    $frame_set_html = false;
+
+    $pm_popup_disabled = false;
+    
+    $inline_css = null;
+    
+    $emoticons = null;
 
     $webtag = get_webtag();
 
@@ -572,105 +584,76 @@ function html_draw_top()
 
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
-    $frame_set_html = false;
-
-    $pm_popup_disabled = false;
-
     $func_matches = array();
-
-    $emoticons = false;
 
     foreach ($arg_array as $key => $func_args) {
 
-        if (preg_match('/^title=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
-            if (strlen(trim($title)) < 1 && isset($func_matches[1])) $title = $func_matches[1];
+        if (!isset($title) && preg_match('/^title=(.+)?$/Diu', $func_args, $func_matches) > 0) {
+
+            $title = (isset($func_matches[1]) ? $func_matches[1] : null);
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^class=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
-            if (strlen(trim($body_class)) < 1 && isset($func_matches[1])) $body_class = $func_matches[1];
+        if (!isset($body_class) && preg_match('/^class=(.+)?$/Diu', $func_args, $func_matches) > 0) {
+
+            $body_class = (isset($func_matches[1]) ? $func_matches[1] : null);
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^basetarget=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
-            if (strlen(trim($base_target)) < 1 && isset($func_matches[1])) $base_target = $func_matches[1];
+        if (!isset($base_target) && preg_match('/^basetarget=(.+)?$/Diu', $func_args, $func_matches) > 0) {
+
+            $base_target = (isset($func_matches[1]) ? $func_matches[1] : null);
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^onload=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
-            unset($arg_array[$key]);
-        }
+        if (preg_match('/^stylesheet=([^:]+)(:(.+))?$/Diu', $func_args, $func_matches) > 0) {
 
-        if (preg_match('/^onunload=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
-            unset($arg_array[$key]);
-        }
-
-        if (preg_match('/^stylesheet=(([^:]+):([^$]+))?$/Diu', $func_args, $func_matches) > 0) {
-
-            if (isset($func_matches[2]) && isset($func_matches[3])) {
-                $stylesheet_array[] = array('filename' => $func_matches[2], 'media' => $func_matches[3]);
-            }
-
-            unset($arg_array[$key]);
-
-        }elseif (preg_match('/^stylesheet=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
-
-            if (isset($func_matches[1])) {
-                $stylesheet_array[] = array('filename' => $func_matches[1], 'media' => 'screen');
-            }
+            $stylesheet_array[] = array(
+                'filename' => $func_matches[1], 
+                'media' => (isset($func_matches[3]) ? $func_matches[3] : 'screen'),
+            );
 
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^refresh=(([^:]+):([^$]+))?$/Diu', $func_args, $func_matches) > 0) {
-
-            if (isset($func_matches[1]) && is_numeric($func_matches[1])) {
-
-                if (isset($func_matches[2])) {
-
-                     $meta_refresh_delay = $func_matches[1];
-                     $meta_refresh_url = basename($func_matches[2]);
-                }
-            }
+        if (!isset($meta_refresh) && preg_match('/^refresh=([^:]+):(.+)$/Diu', $func_args, $func_matches) > 0) {
+            
+            $meta_refresh['delay'] = isset($func_matches[1]) ? $func_matches[1] : null;
+            $meta_refresh['url'] = isset($func_matches[2]) ? $func_matches[2] : null;
 
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^robots=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
-            if (isset($func_matches[1])) $robots = $func_matches[1];
+        if (!isset($robots) && preg_match('/^robots=(.+)?$/Diu', $func_args, $func_matches) > 0) {
+
+            $robots = (isset($func_matches[1]) ? $func_matches[1] : null);
             unset($arg_array[$key]);
         }
 
         if (preg_match('/^frame_set_html$/Diu', $func_args, $func_matches) > 0) {
+
             $frame_set_html = true;
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^resize_width=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
-            if (isset($func_matches[1])) $resize_width = $func_matches[1];
-            unset($arg_array[$key]);
-        }
-
         if (preg_match('/^pm_popup_disabled$/Diu', $func_args, $func_matches) > 0) {
+            
             $pm_popup_disabled = true;
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^inline_css=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
-            if (isset($func_matches[1])) $inline_css = $func_matches[1];
+        if (!isset($inline_css) && preg_match('/^inline_css=(.+)?$/Diu', $func_args, $func_matches) > 0) {
+            
+            $inline_css = (isset($func_matches[1]) ? $func_matches[1] : null);
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^emoticons=([^$]+)?$/Diu', $func_args, $func_matches) > 0) {
-            if (isset($func_matches[1])) $emoticons = $func_matches[1];
+        if (!isset($emoticons) && preg_match('/^emoticons=(.+)?$/Diu', $func_args, $func_matches) > 0) {
+            
+            $emoticons = (isset($func_matches[1]) ? $func_matches[1] : null);
             unset($arg_array[$key]);
         }
     }
-
-    if (strlen(trim($body_class)) < 1) $body_class = false;
-    if (strlen(trim($base_target)) < 1) $base_target = false;
-
-    if (!isset($resize_width)) $resize_width = 0;
 
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
@@ -716,7 +699,7 @@ function html_draw_top()
             echo "<title>", word_filter_add_ob_tags($forum_name, true), "</title>\n";
         }
 
-    } else if (strlen(trim($title)) > 0) {
+    } else if (isset($title)) {
 
         echo "<title>", word_filter_add_ob_tags($title, true), " - ", htmlentities_array($forum_name), "</title>\n";
 
@@ -736,13 +719,13 @@ function html_draw_top()
 
         echo "<meta name=\"robots\" content=\"noindex,nofollow\" />\n";
 
-    }elseif (strlen(trim($robots)) > 0) {
+    } else if (isset($robots)) {
 
         echo "<meta name=\"robots\" content=\"$robots\" />\n";
     }
 
-    if ($meta_refresh_delay && $meta_refresh_url) {
-        echo "<meta http-equiv=\"refresh\" content=\"{$meta_refresh_delay}; url={$meta_refresh_url}\" />\n";
+    if (isset($meta_refresh['url'], $meta_refresh['delay'])) {
+        echo "<meta http-equiv=\"refresh\" content=\"{$meta_refresh['delay']}; url={$meta_refresh['url']}\" />\n";
     }
 
     printf("<meta name=\"application-name\" content=\"%s\" />\n", word_filter_add_ob_tags($forum_name, true));
@@ -825,12 +808,10 @@ function html_draw_top()
     echo "<link rel=\"stylesheet\" href=\"$style_path_ie6\" type=\"text/css\" />\n";
     echo "<![endif]-->\n";
 
-    if (isset($inline_css) && strlen(trim($inline_css)) > 0) {
+    if (isset($inline_css)) {
 
         echo "<style type=\"text/css\">\n";
-        echo "<!--\n\n";
-        echo trim($inline_css), "\n\n";
-        echo "//-->\n";
+        echo "<!--\n\n", $inline_css, "\n\n//-->\n";
         echo "</style>\n";
     }
 
@@ -1330,7 +1311,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
             $end_page = (($current_page + 2) <= $page_count) ? ($current_page + 2) : $page_count;
             $start_page = $current_page;
 
-        }elseif ($current_page == $page_count) {
+        } else if ($current_page == $page_count) {
 
             $start_page = (($current_page - 2) > 0) ? ($current_page - 2) : 1;
             $end_page = $page_count;
@@ -1346,7 +1327,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
 
                     $end_page = (($start_page + 2) <= $page_count) ? ($start_page + 2) : $page_count;
 
-                }elseif (($end_page + 1) > $page_count) {
+                } else if (($end_page + 1) > $page_count) {
 
                     $start_page = (($end_page - 4) > 0) ? ($end_page - 4) : 1;
                 }
@@ -1400,7 +1381,7 @@ function html_get_forum_uri($append_path = null)
 
             $uri_array['scheme'] = $_SERVER['HTTP_SCHEME'];
 
-        }elseif (isset($_SERVER['HTTPS']) && strlen(trim($_SERVER['HTTPS'])) > 0) {
+        } else if (isset($_SERVER['HTTPS']) && strlen(trim($_SERVER['HTTPS'])) > 0) {
 
             $uri_array['scheme'] = (mb_strtolower($_SERVER['HTTPS']) != 'off') ? 'https' : 'http';
 

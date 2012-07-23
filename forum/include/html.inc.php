@@ -566,7 +566,10 @@ function html_draw_top()
     
     $stylesheet_array = array();
 
-    $meta_refresh = array();
+    $meta_refresh = array(
+        'delay' => null,
+        'url' => null,
+    );
 
     $robots = null;
     
@@ -588,25 +591,25 @@ function html_draw_top()
 
     foreach ($arg_array as $key => $func_args) {
 
-        if (!isset($title) && preg_match('/^title=(.+)?$/Diu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^title=(.+)?$/Disu', $func_args, $func_matches) > 0) {
 
-            $title = (isset($func_matches[1]) ? $func_matches[1] : null);
+            $title = (!isset($title) && isset($func_matches[1]) ? $func_matches[1] : $title);
             unset($arg_array[$key]);
         }
 
-        if (!isset($body_class) && preg_match('/^class=(.+)?$/Diu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^class=(.+)?$/Disu', $func_args, $func_matches) > 0) {
 
-            $body_class = (isset($func_matches[1]) ? $func_matches[1] : null);
+            $body_class = (!isset($body_class) && isset($func_matches[1]) ? $func_matches[1] : $body_class);
             unset($arg_array[$key]);
         }
 
-        if (!isset($base_target) && preg_match('/^basetarget=(.+)?$/Diu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^basetarget=(.+)?$/Disu', $func_args, $func_matches) > 0) {
 
-            $base_target = (isset($func_matches[1]) ? $func_matches[1] : null);
+            $base_target = (!isset($base_target) && isset($func_matches[1]) ? $func_matches[1] : $base_target);
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^stylesheet=([^:]+)(:(.+))?$/Diu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^stylesheet=([^:]+)(:(.+))?$/Disu', $func_args, $func_matches) > 0) {
 
             $stylesheet_array[] = array(
                 'filename' => $func_matches[1], 
@@ -616,7 +619,7 @@ function html_draw_top()
             unset($arg_array[$key]);
         }
 
-        if (!isset($meta_refresh) && preg_match('/^refresh=([^:]+):(.+)$/Diu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^refresh=([^:]+):(.+)$/Disu', $func_args, $func_matches) > 0) {
             
             $meta_refresh['delay'] = isset($func_matches[1]) ? $func_matches[1] : null;
             $meta_refresh['url'] = isset($func_matches[2]) ? $func_matches[2] : null;
@@ -624,33 +627,33 @@ function html_draw_top()
             unset($arg_array[$key]);
         }
 
-        if (!isset($robots) && preg_match('/^robots=(.+)?$/Diu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^robots=(.+)?$/Disu', $func_args, $func_matches) > 0) {
 
-            $robots = (isset($func_matches[1]) ? $func_matches[1] : null);
+            $robots = (!isset($robots) && isset($func_matches[1]) ? $func_matches[1] : $robots);
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^frame_set_html$/Diu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^frame_set_html$/Disu', $func_args, $func_matches) > 0) {
 
             $frame_set_html = true;
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^pm_popup_disabled$/Diu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^pm_popup_disabled$/Disu', $func_args, $func_matches) > 0) {
             
             $pm_popup_disabled = true;
             unset($arg_array[$key]);
         }
-
-        if (!isset($inline_css) && preg_match('/^inline_css=(.+)?$/Diu', $func_args, $func_matches) > 0) {
+        
+        if (preg_match('/^inline_css=(.+)/Disu', $func_args, $func_matches) > 0) {
             
-            $inline_css = (isset($func_matches[1]) ? $func_matches[1] : null);
+            $inline_css = (!isset($inline_css) && isset($func_matches[1]) ? $func_matches[1] : $inline_css);
             unset($arg_array[$key]);
         }
 
-        if (!isset($emoticons) && preg_match('/^emoticons=(.+)?$/Diu', $func_args, $func_matches) > 0) {
+        if (preg_match('/^emoticons=(.+)?$/Disu', $func_args, $func_matches) > 0) {
             
-            $emoticons = (isset($func_matches[1]) ? $func_matches[1] : null);
+            $emoticons = (!isset($emoticons) && isset($func_matches[1]) ? $func_matches[1] : $emoticons);
             unset($arg_array[$key]);
         }
     }
@@ -690,7 +693,7 @@ function html_draw_top()
 
             echo "<title>", word_filter_add_ob_tags($thread_data['TITLE'], true), " - ", word_filter_add_ob_tags($forum_name, true), "</title>\n";
 
-        } else if (strlen(trim($title)) > 0) {
+        } else if (isset($title)) {
 
             echo "<title>", word_filter_add_ob_tags($title, true), " - ", word_filter_add_ob_tags($forum_name, true), "</title>\n";
 

@@ -58,9 +58,9 @@ function light_html_draw_top()
 {
     $arg_array = func_get_args();
 
-    $title = "";
+    $title = null;
 
-    $robots = "index,follow";
+    $robots = null;
 
     $webtag = get_webtag();
 
@@ -74,20 +74,23 @@ function light_html_draw_top()
 
     foreach ($arg_array as $key => $func_args) {
 
-        if (preg_match('/^title=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
-            if (strlen($title) < 1) $title = $func_matches[1];
+        if (preg_match('/^title=(.+)?$/Disu', $func_args, $func_matches) > 0) {
+
+            $title = (!isset($title) && isset($func_matches[1]) ? $func_matches[1] : $title);
             unset($arg_array[$key]);
         }
 
-        if (preg_match('/^robots=([^$]+)$/Diu', $func_args, $func_matches) > 0) {
-            if (strlen($robots) < 1) $robots = $func_matches[1];
+        if (preg_match('/^robots=(.+)?$/Disu', $func_args, $func_matches) > 0) {
+
+            $robots = (!isset($robots) && isset($func_matches[1]) ? $func_matches[1] : $robots);
             unset($arg_array[$key]);
         }
-
-        if (preg_match('/^link=([^:]+):([^$]+)$/Diu', $func_args, $func_matches) > 0) {
+        
+        if (preg_match('/^link=([^:]+):(.+)$/Disu', $func_args, $func_matches) > 0) {
+            
             $link_array[] = array('rel' => $func_matches[1], 'href' => $func_matches[2]);
             unset($arg_array[$key]);
-        }
+        }        
     }
 
     // Default Meta keywords and description.
@@ -117,7 +120,7 @@ function light_html_draw_top()
 
             echo "<title>", word_filter_add_ob_tags($thread_data['TITLE'], true), " - ", word_filter_add_ob_tags($forum_name, true), "</title>\n";
 
-        } else if (strlen(trim($title)) > 0) {
+        } else if (isset($title)) {
 
             echo "<title>", word_filter_add_ob_tags($title, true), " - ", word_filter_add_ob_tags($forum_name, true), "</title>\n";
 
@@ -126,7 +129,7 @@ function light_html_draw_top()
             echo "<title>", word_filter_add_ob_tags($forum_name, true), "</title>\n";
         }
 
-    } else if (strlen(trim($title)) > 0) {
+    } else if (isset($title)) {
 
         echo "<title>", word_filter_add_ob_tags($title, true), " - ", htmlentities_array($forum_name), "</title>\n";
 
@@ -146,7 +149,7 @@ function light_html_draw_top()
 
         echo "<meta name=\"robots\" content=\"noindex,nofollow\" />\n";
 
-    }elseif (strlen(trim($robots)) > 0) {
+    } else if (isset($robots)) {
 
         echo "<meta name=\"robots\" content=\"$robots\" />\n";
     }

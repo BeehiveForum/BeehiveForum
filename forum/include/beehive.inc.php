@@ -44,7 +44,7 @@ function draw_beehive_bar()
     echo "      <a href=\"http://www.beehiveforum.co.uk/support/\" target=\"_blank\">", gettext("Support"), "</a>&nbsp;|&nbsp;\n";
     echo "      <a href=\"http://www.beehiveforum.co.uk/donate/\" target=\"_blank\">", gettext("Donate!"), "</a>\n";
     echo "    </td>\n";
-    echo "    <td width=\"40%\" align=\"right\" class=\"smalltext\">&copy;2002 - ", strftime("Y", time()), " <a href=\"http://www.beehiveforum.co.uk/\" target=\"_blank\">Project&nbsp;Beehive&nbsp;Forum</a></td>\n";
+    echo "    <td width=\"40%\" align=\"right\" class=\"smalltext\">&copy;2002 - ", strftime("%Y", time()), " <a href=\"http://www.beehiveforum.co.uk/\" target=\"_blank\">Project&nbsp;Beehive&nbsp;Forum</a></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
     echo "</div>\n";

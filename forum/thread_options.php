@@ -863,7 +863,7 @@ if ($thread_data['DELETED'] == 'N') {
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Sticky"), ":</td>\n";
 
-            $sticky_year_min = strftime('Y');
+            $sticky_year_min = strftime('%Y');
 
             if ($thread_data['STICKY_UNTIL'] && $thread_data['STICKY'] == "Y") {
 

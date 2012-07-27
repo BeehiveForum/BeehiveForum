@@ -8,7 +8,7 @@ tinyMCE.init({
     theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,|,formatselect,fontselect,fontsizeselect,|,bhspellcheck",
     theme_advanced_buttons2 : "undo,redo,|,cleanup,code,removeformat,|,visualaid,|,tablecontrols",
     theme_advanced_buttons3 : "forecolor,backcolor,|,sub,sup,|,bullist,numlist,|,outdent,indent,|,link,unlink,|,image,|,bhquote,bhcode,bhspoiler,youtube,flash,bhnoemots",
-    extended_valid_elements : "b,marquee,span[class|align|title],div[class|align|id],font[face|size|color|style]",
+    extended_valid_elements : "b,marquee,span[class|align|title|style],div[class|align|id],font[face|size|color|style]",
     invalid_elements : "!doctype|applet|body|base|button|fieldset|form|frame|frameset|head|html|iframe|input|label|legend|link|meta|noframes|noscript|object|optgroup|option|param|plaintext|script|select|style|textarea|title|xmp",
     theme_advanced_toolbar_location : "top",
     theme_advanced_toolbar_align : "left",

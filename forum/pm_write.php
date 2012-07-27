@@ -536,21 +536,21 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $message_author = htmlentities_array(format_user_name($pm_data['FLOGON'], $pm_data['FNICK']));
 
+        $pm_data['CONTENT'] = trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));                
+        $pm_data['CONTENT'] = preg_replace("/(\r\n|\r|\n){2,}/", "\r\n\r\n", $pm_data['CONTENT']);        
+
         if (session_get_value('PM_INCLUDE_REPLY') == 'Y') {
 
             if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
                 $t_content = "<div class=\"quotetext\" id=\"quote\">";
                 $t_content.= "<b>quote: </b>$message_author</div>";
-                $t_content.= "<div class=\"quote\">";
-                $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
-                $t_content.= "</div><p>&nbsp;</p>";
+                $t_content.= "<div class=\"quote\">". trim($pm_data['CONTENT']). "</div><br />";
 
             }else {
 
                 $t_content = "<quote source=\"$message_author\" url=\"\">";
-                $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
-                $t_content.= "</quote>\n\n";
+                $t_content.= $pm_data['CONTENT']. "</quote>\n\n";
             }
 
             // Set the HTML mode to 'with automatic line breaks' so

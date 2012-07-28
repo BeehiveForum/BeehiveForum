@@ -166,8 +166,6 @@ function adsense_check_page_bottom()
 {
     $adsense_display_pages = adsense_display_pages();
     
-    $adsense_message_number = forum_get_setting('adsense_message_number', 1);
-
     $admin_area_files_array = get_available_admin_files();
     $admin_area_files_preg  = implode("|^", array_map('preg_quote_callback', $admin_area_files_array));
 

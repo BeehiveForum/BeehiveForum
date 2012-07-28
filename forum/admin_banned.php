@@ -571,7 +571,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
                 if (($affected_sessions_array = check_affected_sessions($add_new_ban_type, $add_new_ban_data, $add_new_ban_expires))) {
 
                     $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
-                    $affected_sessions_text = sprintf("", gettext("This ban may affect the following active user sessions"), "<ul><li>%s</li></ul>", $affected_sessions_text);
+                    $affected_sessions_text = sprintf("%s<ul><li>%s</li></ul>", gettext("This ban may affect the following active user sessions"), $affected_sessions_text);
 
                     html_display_warning_msg($affected_sessions_text, '420', 'center');
 
@@ -744,7 +744,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
                 if (($affected_sessions_array = check_affected_sessions($ban_data_array['BANTYPE'], $ban_data_array['BANDATA'], $ban_data_array['EXPIRES']))) {
 
                     $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
-                    $affected_sessions_text = sprintf("", gettext("This ban may affect the following active user sessions"), "<ul><li>%s</li></ul>", $affected_sessions_text);
+                    $affected_sessions_text = sprintf("%s<ul><li>%s</li></ul>", gettext("This ban may affect the following active user sessions"), $affected_sessions_text);
 
                     html_display_warning_msg($affected_sessions_text, '420', 'center');
 

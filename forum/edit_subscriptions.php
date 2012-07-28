@@ -143,7 +143,7 @@ if (isset($_POST['save'])) {
                 if (!thread_set_interest($thread, 0)) {
 
                     $thread_title = thread_get_title($thread);
-                    $error_msg_array[] = sprintf("", gettext("Could not update interest on thread '%s'"), "", $thread_title);
+                    $error_msg_array[] = sprintf(gettext("Could not update interest on thread '%s'"), $thread_title);
                     $valid = false;
                 }
             }

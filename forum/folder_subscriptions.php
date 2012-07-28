@@ -141,7 +141,7 @@ if (isset($_POST['save'])) {
 
                 if (!user_set_folder_interest($folder, 0)) {
 
-                    $error_msg_array[] = sprintf("", gettext("Could not update interest on folder '%s'"), "", $folder_title);
+                    $error_msg_array[] = sprintf(gettext("Could not update interest on folder '%s'"), $folder_title);
 
                     $valid = false;
                 }

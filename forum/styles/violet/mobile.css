@@ -145,7 +145,7 @@ body {
 }
 
 #header img {
-    margin: 5px;
+	margin: 5px;
 }
 
 #footer {
@@ -164,7 +164,7 @@ body {
 }
 
 #nav {
-    background: url("images/mobile_icon.png") no-repeat scroll 90% 5px #6D496D;
+	background: url("images/mobile_icon.png") no-repeat scroll 90% 5px #6D496D;
     border-bottom: none;
     border-left: 1px solid rgba(0, 0, 0, 0.1);
     border-right: none;
@@ -177,7 +177,7 @@ body {
 }
 
 #nav.menu_open {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
     padding: 0 0 5px;
 }
@@ -190,18 +190,18 @@ body {
 }
 
 #nav li {
-    border: none;
-    cursor: pointer;
+	border: none;
     color: #FFFFFF;
+    cursor: pointer;
     font-weight: bold;
 }
 
 #nav li.menu_item {
-    display: none;
+	display: none;
 }
 
 #nav.menu_open li.menu_item {
-    display: block;
+	display: block;
 }
 
 #nav li a,
@@ -214,7 +214,7 @@ body {
 #nav ul li:first-child a,
 #nav ul li:last-child a,
 #nav li.menu_toggle {
-    padding: 6px 20px 6px;
+	padding: 6px 20px 6px;
 }
 
 #content {
@@ -301,7 +301,7 @@ body {
 
 .forum ul li,
 .folder ul li {
-    background: url('images/bullet.png') transparent no-repeat scroll 0 4px;
+	background: url('images/bullet.png') transparent no-repeat scroll 0 4px;
     display: table;
     line-height: 200%;
     padding: 0;

@@ -88,6 +88,7 @@ include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
 include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
+include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 // Get Webtag
 $webtag = get_webtag();

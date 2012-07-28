@@ -29,6 +29,7 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
+include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "db.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
@@ -36,6 +37,7 @@ include_once(BH_INCLUDE_PATH. "forum.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "session.inc.php");
 include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort_dir = "ASC", $offset = 0) // setting $invisible to true gets links that are marked as not visible too
@@ -227,8 +229,6 @@ function links_add_folder($fid, $name, $uid, $visible = false)
 
     if (!$table_data = get_table_prefix()) return false;
     
-    $current_datetime = date(MYSQL_DATETIME, time());
-    
     $sql = "INSERT INTO `{$table_data['PREFIX']}LINKS_FOLDERS` (PARENT_FID, NAME, ";
     $sql.= "VISIBLE) VALUES ($fid, '$name', '$visible')";
 
@@ -248,8 +248,6 @@ function links_update_folder($fid, $uid, $name)
     $name = db_escape_string($name);
 
     if (!$table_data = get_table_prefix()) return false;
-    
-    $current_datetime = date(MYSQL_DATETIME, time());
     
     $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}LINKS_FOLDERS` ";
     $sql.= "SET NAME = '$name' WHERE FID = '$fid'";  

@@ -33,6 +33,7 @@ include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
+include_once(BH_INCLUDE_PATH. "light.inc.php");
 
 /**
 * Redirect client to another page.
@@ -90,14 +91,14 @@ function header_redirect($uri, $reason = false)
 
 function header_status($status, $message)
 {
-    if (headers_sent()) return false;
+    if (headers_sent()) return;
     
     if (substr(php_sapi_name(), 0, 3) == 'cgi') {
         header(sprintf('Status: %s %s', $status, $message), true);
     } else if (isset($_SERVER['SERVER_PROTOCOL'])) {
         header(sprintf('%s %s %s', $_SERVER['SERVER_PROTOCOL'], $status, $message), true);
     } else {
-        header(sprintf('HTTP/1.1 %s %s', $_SERVER['SERVER_PROTOCOL'], $status, $message), true);
+        header(sprintf('HTTP/1.1 %s %s', $status, $message), true);
     }
 }
 

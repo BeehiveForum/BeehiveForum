@@ -2263,7 +2263,7 @@ function pm_export_html_top($message = null)
     $html.= "<head>\n";
 
     if (isset($message['SUBJECT']) && isset($message['MID'])) {
-        $html.= sprintf("<title>", gettext("Message"), " %s - %s</title>\n", htmlentities_array($message['MID']), htmlentities_array($message['SUBJECT']));
+        $html.= sprintf("<title>%s - %s</title>\n", gettext("Message"), htmlentities_array($message['SUBJECT']));
     }else {
         $html.= "<title>". gettext("Messages"). "</title>\n";
     }

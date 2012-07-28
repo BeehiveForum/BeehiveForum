@@ -60,6 +60,7 @@ include_once(BH_INCLUDE_PATH. "swift.inc.php");
 include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
 include_once(BH_INCLUDE_PATH. "thread.inc.php");
 include_once(BH_INCLUDE_PATH. "user.inc.php");
+include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
 
 function html_guest_error($final_uri = null)
 {

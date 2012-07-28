@@ -342,7 +342,7 @@ function install_check_php_extensions()
 
     // Initialise the variable store.
     if (!is_array($required_extensions)) {
-        $required_extensions = array('date', 'mbstring', 'gd', 'json', 'mysqli', 'pcre', 'xml');
+        $required_extensions = array('date',  'fileinfo', 'gd', 'gettext', 'json', 'mbstring', 'mysqli', 'pcre', 'xml');
     }
 
     // Get an array of extensions currently loaded by PHP

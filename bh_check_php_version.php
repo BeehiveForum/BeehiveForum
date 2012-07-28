@@ -23,7 +23,8 @@ USA
 
 // Requires PHP PEAR to be installed and Bartlett/PHP_CompatInfo.
 // See: https://github.com/llaville/php-compat-info
-require_once 'Bartlett/PHP/CompatInfo.php';
+require 'Bartlett/PHP/CompatInfo.php';
+require 'Bartlett/PHP/CompatInfo/Autoload.php';
 
 // Prevent time out
 set_time_limit(0);

@@ -21,21 +21,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Array of files to exclude from the matches
-$exclude_files_array = array('de.inc.php', 'en.inc.php', 'fr-ca.inc.php', 'x-hacker.inc.php');
-
 // Array of directories to exclude from the matches
-$exclude_dirs_array = array('forum/geshi', 'forum/tiny_mce', 'forum/install', 'forum/include/languages', 'forum/include/swift');
-
-// Load Language File Function
-function load_language_file($filename)
-{
-    $lang = array();
-
-    include("./forum/include/languages/$filename");
-
-    return $lang;
-}
+$exclude_dirs_array = array(
+    'forum/chat', 
+    'forum/geshi', 
+    'forum/tiny_mce', 
+    'forum/install', 
+    'forum/include/languages', 
+    'forum/include/swift'
+);
 
 // Get array of files in specified directory and sub-directories.
 function get_file_list(&$file_list_array, $path, $extension)
@@ -54,7 +48,7 @@ function get_file_list(&$file_list_array, $path, $extension)
 
                     get_file_list($file_list_array, "$path/$file_name", $extension);
 
-                }else if ((preg_match("/$extension_preg$/iu", $file_name) > 0) && !in_array($file_name, $GLOBALS['exclude_files_array'])) {
+                }else if ((preg_match("/$extension_preg$/iu", $file_name) > 0)) {
 
                     $file_list_array[] = "$path/$file_name";
                 }
@@ -73,9 +67,11 @@ header('Content-Type: text/plain');
 get_file_list($file_list, 'forum', '.php');
 
 // Set the pipes for proc_open.
-$descriptor_spec = array(0 => array("pipe", "r"),
-                         1 => array("pipe", "w"),
-                         2 => array("pipe", "w"));
+$descriptor_spec = array(
+    0 => array("pipe", "r"),
+    1 => array("pipe", "w"),
+    2 => array("pipe", "w")
+);
 
 // Working directory
 $cwd = getcwd();

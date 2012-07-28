@@ -1,168 +1,257 @@
-Project Beehive Forum Change Log (Generated: Sat, 14 Apr 2012 13:34:04)
+Project Beehive Forum Change Log (Generated: Sat, 28 Jul 2012 12:59:48)
 
-Author: Matt Beale
-Date: Sun, 08 Apr 2012 09:31:36
+Author: HeyRatFans
+Date: Fri, 27 Jul 2012
 -----------------------
-Added:   bh_git_log_parse.php for parsing git-log output into MySQL database for changelog
-         generation.
-Fixed:   Undefined index SERVER_PROTOCOL caused by error handler triggering in non-HTTP execution
-         mode.
+Fixed:   TinyMCE seems to remove empty paragraph tags, switched to using <br /> instead.
+Fixed:   Allow style attribute on span tag. TinyMCE seems to have disabled / broken the
+         inline_styles option they have.
+Changed: Compress white-space when quoting a post in a reply.
 
-Date: Fri, 06 Apr 2012 16:54:12
+Date: Thu, 26 Jul 2012
 -----------------------
-Changed: Remove some more really old files that we don't need.
+Fixed:   Incorrect uses of format strings in strftime
 
-Date: Fri, 06 Apr 2012 16:50:51
+Date: Tue, 24 Jul 2012
 -----------------------
-Changed: Remove some really old files that we don't need any more.
-Changed: Increased version number to 1.2.0.
+Fixed:   Incorrect table name VISITOR_LOG_NEW and missing USER_AGENT column in SESSION table in new
+         installs.
 
-Date: Tue, 03 Apr 2012 19:16:56
+Date: Mon, 23 Jul 2012
 -----------------------
-Changed: Added chat (AjaxChat) directory to .gitignore
-Fixed:   Failure redirecting to installer if config.inc.php missing due to trying to check MySQL
-         version.
-Fixed:   Disable HTTP caching if headers already sent.
-Fixed:   Error Handler causing problems if gzip handler doesn't exist (3rd party integration only)
+Fixed:   html_draw_top was not clearing additional arguments if they were already set.
+Fixed:   inline_css argument to html_draw_top was not matching the CSS after the argument correctly.
+Changed: Applied same modifications to html_draw_top to light_html_draw_top.
 
-Date: Sun, 25 Mar 2012 08:20:00
+Date: Sun, 22 Jul 2012
 -----------------------
-Fixed:   Initial page request fails to retrieve session due to failure to return session data from
-         session_restore().
+Changed: Updated Beehive TinyMCE plugin to work with 3.5.5 minimum.
+Changed: Updated readme.txt to indicate minimum TinyMCE version required.
+Fixed:   Height and width on Youtube and Flash plugins.
 
-Date: Thu, 22 Mar 2012 20:34:30
+Date: Sat, 21 Jul 2012
 -----------------------
-Changed: Removed logon_perform_auto function and implement functionality directly in session_check.
+Fixed:   Display of languages in Forum Options included the full path to the locale file.
 
-Date: Mon, 19 Mar 2012 21:28:56
+Date: Thu, 19 Jul 2012
 -----------------------
-Fixed:   Missing filename for english.dic in install_import_dictionary().
-Fixed:   Incorrect path to jQuery, still referencing 1.4.1 in installer.
-Changed: Use try catch blocks instead of if else checks and error suppressors in installer.
-Changed: Disable caching in installer even though it should never cache.
-Changed: Readded website directory to .gitignore.
+Fixed:   Empty Visitor log prevented page from loading due to infinite loop occuring.
 
-Date: Sat, 17 Mar 2012 14:06:26
+Date: Wed, 18 Jul 2012
 -----------------------
-Changed: IPv6 support using filter_var and increasing the column sizes in the database.
-Changed: Replaced IP address in Post menu with text "Ban IP Address"
+Changed: Added some branding to the top banner on Mobile mode and move menu items into a drop down
+         structure.
 
-Date: Fri, 16 Mar 2012 20:23:36
+Date: Tue, 17 Jul 2012
 -----------------------
-Changed: Removed years old reference to CVS in constants.inc.php.
-Changed: Path to forumites gallery changed example code changed.
+Fixed:   Broken HTML in start_left.php
+Fixed:   Broken upgrade script not escaping table names correctly.
 
-Date: Fri, 16 Mar 2012 20:09:27
+Date: Sat, 14 Jul 2012
 -----------------------
-Changed: Update .gitignore to exclude full development environment set-up.
+Fixed:   Broken page titles caused by title argument not being passed correctly.
+Changed: Forum user preferences are now nullable so that they can correctly inherit from global user
+         preferences.
 
-Date: Wed, 14 Mar 2012 20:17:08
+Date: Tue, 10 Jul 2012
 -----------------------
-Fixed:   Incorrect use of thread_get_folder result causing problems in PHP 5.4.
+Changed: Only add entry to ADMIN_LOG if SFS response is not cached.
 
-Date: Sat, 10 Mar 2012 16:44:58
+Date: Mon, 09 Jul 2012
 -----------------------
-Fixed:   Empty thread titles when folder prefix is NULL.
-Fixed:   Missing semi-colon in poll.js breaking IE create_poll.php.
+Fixed:   Language strings in JSON response were missing keys.
+Fixed:   SQL_CALC_FOUND_ROWS missing from visitor_log.inc.php.
+Fixed:   Image Resize code being called too early, changed to use event delegation on img load
+         event.
+Fixed:   jQuery.attr('clientWidth') is no longer valid, changed to prop('clientWidth')
 
-Date: Thu, 08 Mar 2012 18:56:51
+Date: Sat, 07 Jul 2012
 -----------------------
-Fixed:   Call to deprecated function html_get_favicon() in search.inc.php.
-Changed: Added config-dev.inc.php to .gitignore.
+Fixed:   Calls to gettext as an argument to forum_submit_image was creating broken HTML in
+         forums.php, user_rel.php and visitor_log.php.
+Changed: Revert back to old visitor_log_get_recent() function for displaying the recent visitors in
+         start_left.php
+Changed: New schema for VISITOR_LOG table that makes use of MYISAM's relaxed NULL unique constraint
+         to make querying it easier.
 
-Date: Tue, 06 Mar 2012 21:43:30
+Date: Tue, 03 Jul 2012
 -----------------------
-Changed: Cleaned-up .gitignore.
+Fixed:   Date dropdown functions were trying to translate the text "Array".
+Changed: Added lang_get_month_names function for use in date dropdown functions.
 
-Date: Sun, 04 Mar 2012 21:46:38
+Date: Fri, 22 Jun 2012
 -----------------------
-Changed: Removed SVN Revision tags from files. Git doesn't do them. Added .gitignore file.
+Fixed:   Broken links when searching for posts by a user.
 
-Date: Sun, 04 Mar 2012 18:09:37
+Date: Thu, 21 Jun 2012
 -----------------------
-Changed: Correcting file permissions after svn2git run.
+Fixed:   Hard-coded DEFAULT webtag in poll.inc.php
+Fixed:   Missing comma in SQL statement in stats.inc.php
+Changed: Revert back to word filter appying to whole message instead of non-HTML parts.
 
-Date: Sun, 04 Mar 2012 14:01:25
+Date: Wed, 20 Jun 2012
 -----------------------
-Fixed:   SQL was completely wrong and not returning expected results always resulting in folder
-         permissions being used.
+Fixed:   Not escaping filter name in display of filters.
 
-Date: Sat, 03 Mar 2012 16:29:34
+Date: Thu, 14 Jun 2012
 -----------------------
-Added:   Experimental stopforumspam.com support.
-Fixed:   Shutdown Error handler wasn't correctly.
+Changed: All coookies are now marked as HTTP only.
 
-Date: Wed, 29 Feb 2012 08:11:18
+Date: Sun, 10 Jun 2012
 -----------------------
-Fixed:   Undefined variable $post_html when editing a post or PM.
+Changed: Function admin_add_log_entry now accepts only array as it's second argument.
 
-Date: Tue, 28 Feb 2012 21:02:32
+Date: Sat, 09 Jun 2012
 -----------------------
-Fixed:   Editing a post would still trash HTML paragraphs in the signature if the post itself didn't
-         contain paragraphs.
+Changed: Allow session_check_banned to check global ban state of user.
 
-Date: Tue, 28 Feb 2012 18:52:00
+Date: Fri, 08 Jun 2012
 -----------------------
-Changed: Revert change to MessageTextParse that was trying to determine HTML mode from the post
-         body.
-Fixed:   Teh Forum CSS had incorrect font sizes and margins.
+Fixed:   Prevent HTML in word filter from breaking HTML in messages.
 
-Date: Fri, 24 Feb 2012 12:11:19
+Date: Thu, 07 Jun 2012
 -----------------------
-Fixed:   Word Filter not applying to meta keywords, description and title.
-Changed: Removed thread_format_prefix and use CONCAT in SQL queries.
+Fixed:   Reimplement nested tag checking in add_paragraphs and fix infinite loop when HTML with code
+         tags.
 
-Date: Sun, 19 Feb 2012 14:40:53
+Date: Tue, 05 Jun 2012
 -----------------------
-Changed: Some more style changes on Teh Forum gallery (attempt #4)
+Fixed:   Link details shows stale data after submitting edit form.
+Fixed:   Links page was sending page URL query var that we don't use.
 
-Date: Sun, 19 Feb 2012 14:33:03
+Date: Mon, 04 Jun 2012
 -----------------------
-Changed: Some more style changes on Teh Forum gallery (attempt #3)
+Changed: Remove $init_guest_session argument of session_check. Now always intitialise Guest session.
+         Fixes problems with Light mode embedded in index.php.
+Changed: Always show RSS feed links for available folders.
 
-Date: Sun, 19 Feb 2012 14:30:35
+Date: Sun, 03 Jun 2012
 -----------------------
-Changed: Some more style changes on Teh Forum gallery.
+Added:   Link Approval Email Notification for Link Moderators.
 
-Date: Sun, 19 Feb 2012 14:09:09
+Date: Fri, 01 Jun 2012
 -----------------------
-Changed: Added a few more user-agents to mobile mode detection list.
-Changed: Some style changes on Teh Forum gallery.css.
+Changed: Session Restore will now look for a session to reuse before creating a new one.
+Changed: Prune sessions more frequently upon each user's session cutoff being triggered.
+Changed: Removed remove_stale_sessions call from forum maintenance calls.
 
-Date: Wed, 15 Feb 2012 22:29:06
+Date: Tue, 29 May 2012
 -----------------------
-Fixed:   Broken meta tag causing Android Chrome to break (but not stock browser?!)
+Fixed:   Undefined index when editing a post with complicated mix of HTML and auto-paragraphs.
 
-Date: Tue, 14 Feb 2012 21:38:57
+Date: Mon, 28 May 2012
 -----------------------
-Changed: Added mime_content_type support if function is available to aid attachment mine-type
-         discovery.
+Fixed:   Checking wrong POST data for PM_EXPORT_TYPE user preference.
 
-Date: Tue, 14 Feb 2012 20:12:46
+Date: Sat, 26 May 2012
 -----------------------
-Fixed:   Incorrect h3 colour on mobile classes.
-Fixed:   Incorrect colour on poll_accordian class.
-Fixed:   Missing webtag on Mobile mode top banner links.
+Changed: Prevent some XSS vulnerabilities in the cookies we use.
 
-Date: Mon, 13 Feb 2012 19:03:25
+Date: Thu, 24 May 2012
 -----------------------
-Fixed:   Removed device-height argument from Mobile Mode meta viewport. Set minimum scale to 1.0.
-Fixed:   Sphinx Search ID calculation was miles off.
-Changed: Increased line height on thread list to make it easier for people with big thumbs.
+Fixed:   Social links were cropped badly. Moved code into common function in messages.inc.php.
 
-Date: Sun, 12 Feb 2012 14:05:26
+Date: Wed, 23 May 2012
 -----------------------
-Fixed:   Mobile mode support for header_redirect on Microsoft IIS.
-Changed: Some H2 tags are now H3 on mobile mode pages.
-Changed: Increased font-size on Mobile pages.
+Changed: Don't escape frameset attribute values. Make calling code escape them.
+Changed: Function href_cleanup_query_keys now always uses & separator. Use built-in PHP code to
+         build query string.
+Changed: Removed redudant URL query checks in index.php.
 
-Date: Fri, 10 Feb 2012 20:26:18
+Date: Tue, 22 May 2012
 -----------------------
-Fixed:   Mobile mode nav links started at zero when viewing from post #10 onwards.
-Fixed:   Signature HTML was stripping paragraphs regardless of HTML detection in post.
+Fixed:   XSS / HTML inection flaws involving final_uri URL query parameter and frameset tags.
+Fixed:   Removed call to text_captcha->delete_image().
+Fixed:   Session not correctly restoring if user_token cookie was set.
+Changed: Removed session_expired functionality as it's not needed any more.
+Changed: Added ban_check call to register.php so we don't create banned user accounts.
+Changed: sfs_check_banned to take an array of data.
 
-Date: Mon, 06 Feb 2012 15:03:06
+Date: Sun, 20 May 2012
 -----------------------
-Fixed:   Splitting or merging threads incorrectly calculated SEARCH_ID for the new posts, resulting
-         in empty target thread.
+Fixed:   Meta Keywords and Meta Description were being passed through word filter twice if no msg
+         URL query param.
+Fixed:   Multiple calls to session_check() initialised multiple sessions if the user used Remember
+         Me functionality.
+Changed: Function get_request_uri() now returns relative URL.
+Changed: Added optional argument html_guest_error to specify which page to redirect back to after
+         logon instead of guessing it.
+Changed: HTML head now uses relative URLs. Fixes 3rd Party integration.
+Changed: Removed $use_full_path argument from html_get_forum_file_path method.
+Added:   Record user_agent in SESSION and VISITOR_LOG tables.
+
+Date: Sat, 19 May 2012
+-----------------------
+Fixed:   SFS Ban Admin Log entries were showing Unknown User for Guests.
+
+Date: Thu, 17 May 2012
+-----------------------
+Fixed:   Incorrectly using Javascript redirect if web-server didn't add SERVER_SOFTWARE in $_SERVER.
+Changed: Text-captcha now writes images to system temp directory.
+Changed: Added AJAX Chat global forum setting (no UI yet) which shows a 'Chat' link in nav.php.
+
+Date: Tue, 15 May 2012
+-----------------------
+Changed: Always allow Google AdSense Crawler.
+
+Date: Mon, 14 May 2012
+-----------------------
+Changed: Allow final_uri to be a full path.
+Changed: All final_uri parameters now check against get_available_files() list as a minimum.
+
+Date: Sun, 13 May 2012
+-----------------------
+Added:   Option to place text-captcha directory outside of the forum directory.
+Changed: Text-captcha image is now sent as base64 encoded data which allows the text-captcha
+         directory to be placed outside the web root.
+Changed: TinyMCE youtube plugin source files were different in the minified target file and the
+         original source file.
+Fixed:   Huge mess of .gitignore files moved into one file. Correctly excluded TinyMCE files except
+         our own plugins.
+
+Date: Sat, 12 May 2012
+-----------------------
+Changed: Updated installer / upgrader to use new VISITOR_LOG table schema.
+
+Date: Thu, 10 May 2012
+-----------------------
+Changed: Adsense options now have more flexability about where you can place adverts.
+
+Date: Mon, 07 May 2012
+-----------------------
+Changed: Added tehforum style to .gitignore
+
+Date: Sun, 06 May 2012
+-----------------------
+Fixed:   Highlighting search results wasn't working due to changes in how the keywords are matched.
+Changed: Beehive now uses delta+main indexing in Sphinx. Beehive will look for indexes named
+         [WEBTAG] and [WEBTAG]_DELTA.
+
+Date: Sat, 05 May 2012
+-----------------------
+Fixed:   SFS cache was not repopulating cache after it had expired, causing 100% misses all the
+         time.
+Changed: Sphinx examples changed to reference Ubuntu 12.04 LTS sphinxsearch package.
+Changed: Sphinx integration now uses forum's WEBTAG as the index and source names.
+Changed: Installer now drops and recreates SFS_CACHE table every time it is run.
+
+Date: Thu, 26 Apr 2012
+-----------------------
+Added:   Admin Log Record Grouping to help reduce SFS log pollution.
+Fixed:   Admin log prune didn't remember column sorting and direction.
+Changed: Removed forum_uri setting as it's causing too many problems for people.
+
+Date: Thu, 19 Apr 2012
+-----------------------
+Fixed:   StopForumSpam hit was causing error and not logging ban to admin log.
+Changed: Added display of StopForumSpam admin log entries.
+
+Date: Wed, 18 Apr 2012
+-----------------------
+Fixed:   Missing sfs global forum settings added to global_forum_settings array.
+Changed: Added option to disable StopForumSpam integration.
+
+Date: Mon, 16 Apr 2012
+-----------------------
+Changed: Updated release date for 1.2.0
 

@@ -210,7 +210,7 @@ function session_update($user_sess)
         $sql.= "TIME = CAST('$current_datetime' AS DATETIME), ";
         $sql.= "IPADDRESS = '$ipaddress' WHERE HASH = '$sess_hash'";
 
-        if (!$result = db_query($sql, $db_session_update)) return false;
+        if (!db_query($sql, $db_session_update)) return false;
 
         session_update_user_time($user_sess['UID']);
         
@@ -238,8 +238,6 @@ function session_check()
     
     if (!is_array($user_sess)) {
     
-        if (!$db_session_check = db_connect()) return false;
-
         $sess_hash = html_get_cookie('sess_hash', 'is_md5');
         
         if (!($user_sess = session_get($sess_hash)) || ($user_sess['UID'] == 0)) {

@@ -189,9 +189,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     // Forum FID which we'll need later.
     $forum_fid = $table_data['FID'];
 
-    // Forum timezone ID for Guests
-    $timezone_id = forum_get_setting('forum_timezone', false, 27);
-
     // Permitted columns to sort the results by
     $sort_by_array = array_keys($profile_items_array);
 
@@ -224,12 +221,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         'TIMEZONE'        => '(TIMEZONE IS NOT NULL)',
         'LOCAL_TIME'      => '(LOCAL_TIME IS NOT NULL)'
     );
-
-    // Year, Month and Day for Age calculation
-    list($year, $month, $day) = explode('-', date(MYSQL_DATE, time()));
-
-    // Current Date for User's local time
-    $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     // Main Query
     $select_sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
@@ -296,9 +287,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
     // Having clause for filtering NULL columns.
     $having_query_array = array();
 
-    // Null column filtering for Guests
-    $having_visitor_array = array();
-
     // Filter by user name / search engine bot name
     if (($user_search !== false) && strlen(trim($user_search)) > 0) {
 
@@ -323,12 +311,10 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
             if (is_numeric($column)) {
 
                 $having_query_array[] = "(LENGTH(ENTRY_{$column}) > 0) ";
-                $having_visitor_array[] = "(LENGTH(ENTRY_{$column}) > 0) ";
 
             }else {
 
                 $having_query_array[] = $column_null_filter_having_array[$column];
-                $having_visitor_array[] = $column_null_filter_having_array[$column];
             }
         }
     }
@@ -344,12 +330,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $offset, $
         $where_sql = sprintf("WHERE %s", implode(" AND ", $where_query_array));
     }else {
         $where_sql = "";
-    }
-    
-    if (sizeof($having_visitor_array) > 0) {
-        $having_visitor_sql = sprintf("HAVING %s", implode(" AND ", $having_visitor_array));
-    }else {
-        $having_visitor_sql = "";
     }
 
     // Sort direction specified?

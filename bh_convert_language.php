@@ -72,6 +72,11 @@ function get_file_list(&$file_list_array, $path, $extension)
     return sizeof($file_list_array) > 0;
 }
 
+function trim_quotes($string)
+{
+    return trim($string, "'");
+}
+
 set_time_limit(0);
 
 header('Content-Type: text/plain');
@@ -90,9 +95,7 @@ if (get_file_list($file_list_array, 'forum', '.php')) {
 
         preg_match_all('/\$lang\[([^\]]+)\]/', $file_contents, $matches_array);
         
-        $matches_array = array_map(function($match) {
-            return trim($match, "'");
-        }, $matches_array[1]);
+        $matches_array = array_map('trim_quotes', $matches_array[1]);
         
         foreach ($matches_array as $match) {
             

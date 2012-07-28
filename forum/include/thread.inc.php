@@ -925,7 +925,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     $sql.= "PID FROM `{$table_data['PREFIX']}POST` WHERE TID = $tid ";
     $sql.= "AND PID IN ($pid_list) ORDER BY CREATED";
 
-    if (!$result = db_query($sql, $db_thread_split)) {
+    if (!db_query($sql, $db_thread_split)) {
 
         // Unlock the original thread if it wasn't originally locked.
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
@@ -955,11 +955,10 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     $sql.= "SELECT $new_tid, POST.PID FROM `{$table_data['PREFIX']}POST` POST ";
     $sql.= "WHERE POST.TID = '$new_tid'";
     
-    if (!db_query($sql, $db_thread_merge)) {
+    if (!db_query($sql, $db_thread_split)) {
 
-        // Unlock the threads if they weren't originally locked.
-        thread_set_closed($tida, ($threada['CLOSED'] > 0));
-        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+        // Unlock the original thread if it wasn't originally locked.
+        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
 
         // Return error message.
         return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);

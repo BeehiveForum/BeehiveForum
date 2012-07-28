@@ -88,13 +88,15 @@ function lang_detect()
 
         foreach ($accepted as $accept) {
             
-            if (!preg_match('/^([a-z]{1,8}(?:[-_][a-z]{1,8})*)(?:;\s*q=(0(?:\.[0-9]{1,3})?|1(?:\.0{1,3})?))?$/i', $accept, $matches)) {
+            $matches_array = array();
+            
+            if (!preg_match('/^([a-z]{1,8}(?:[-_][a-z]{1,8})*)(?:;\s*q=(0(?:\.[0-9]{1,3})?|1(?:\.0{1,3})?))?$/i', $accept, $matches_array)) {
                 continue;
             }
             
-            $quality = isset($matches[2]) ? (float)$matches[2] : 1.0;
+            $quality = isset($matches_array[2]) ? (float)$matches_array[2] : 1.0;
             
-            $countries = explode('-', $matches[1]);
+            $countries = explode('-', $matches_array[1]);
             $region = array_shift($countries);
         
             $countries2 = explode('_', $region);

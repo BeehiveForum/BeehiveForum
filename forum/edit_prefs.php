@@ -138,7 +138,7 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             $uid = $_GET['profileuid'];
             $admin_edit = true;
 
-        }else {
+        } else {
 
             html_draw_top(sprintf("title=%s", gettext("Error")));
             html_error_msg(gettext("No user specified."));
@@ -146,14 +146,14 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             exit;
         }
 
-    }elseif (isset($_POST['profileuid'])) {
+    } else if (isset($_POST['profileuid'])) {
 
         if (is_numeric($_POST['profileuid'])) {
 
             $uid = $_POST['profileuid'];
             $admin_edit = true;
 
-        }else {
+        } else {
 
             html_draw_top(sprintf("title=%s", gettext("Error")));
             html_error_msg(gettext("No user specified."));
@@ -161,12 +161,12 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             exit;
         }
 
-    }else {
+    } else {
 
         $uid = session_get_value('UID');
     }
 
-}else {
+} else {
 
     $uid = session_get_value('UID');
 }
@@ -236,7 +236,7 @@ if (isset($_POST['save'])) {
                     $valid = false;
                 }
 
-            }else {
+            } else {
 
                 $error_msg_array[] = gettext("A logon name is required");
                 $valid = false;
@@ -253,7 +253,7 @@ if (isset($_POST['save'])) {
                 $valid = false;
             }
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("A nickname is required");
             $valid = false;
@@ -268,7 +268,7 @@ if (isset($_POST['save'])) {
                 $error_msg_array[] = gettext("Invalid email address format");
                 $valid = false;
 
-            }else {
+            } else {
 
                 if (email_is_banned($user_info_new['EMAIL'])) {
 
@@ -283,7 +283,7 @@ if (isset($_POST['save'])) {
                 }
             }
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("Email address is required!");
             $valid = false;
@@ -297,7 +297,7 @@ if (isset($_POST['save'])) {
 
             $user_prefs['DOB'] = sprintf("%04d-%02d-%02d", $dob['YEAR'], $dob['MONTH'], $dob['DAY']);
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("Date of birth is required or is invalid");
             $valid = false;
@@ -338,7 +338,7 @@ if (isset($_POST['save'])) {
                 $error_msg_array[] = gettext("Homepage URL must include http:// schema.");
                 $valid = false;
 
-            }else if (!user_check_pref('HOMEPAGE_URL', $user_prefs['HOMEPAGE_URL'])) {
+            } else if (!user_check_pref('HOMEPAGE_URL', $user_prefs['HOMEPAGE_URL'])) {
 
                 $error_msg_array[] = sprintf(gettext("%s contains invalid characters!"), gettext("Homepage URL"));
                 $valid = false;
@@ -357,7 +357,7 @@ if (isset($_POST['save'])) {
                 $error_msg_array[] = gettext("Picture URL must include http:// schema.");
                 $valid = false;
 
-            }else if (!user_check_pref('PIC_URL', $user_prefs['PIC_URL'])) {
+            } else if (!user_check_pref('PIC_URL', $user_prefs['PIC_URL'])) {
 
                 $error_msg_array[] = sprintf(gettext("%s contains invalid characters!"), gettext("Picture URL"));
                 $valid = false;
@@ -377,46 +377,40 @@ if (isset($_POST['save'])) {
                 $error_msg_array[] = gettext("Invalid Attachment. Check that is hasn't been deleted.");
                 $valid = false;
 
-            }elseif (isset($user_prefs['PIC_URL']) && strlen(trim($user_prefs['PIC_URL'])) > 0) {
+            } else if (isset($user_prefs['PIC_URL']) && strlen(trim($user_prefs['PIC_URL'])) > 0) {
 
                 $error_msg_array[] = gettext("To use an attachment for your profile picture the Picture URL field must be blank.");
                 $valid = false;
 
-            }elseif (($attachment_dir = attachments_check_dir())) {
+            } else if (($attachment_dir = attachments_check_dir())) {
 
-                if (($attachment_details = attachments_get_by_hash($user_prefs['PIC_AID']))) {
+                if (!($attachment_details = attachments_get_by_hash($user_prefs['PIC_AID']))) {
 
-                    $path_parts = pathinfo($attachment_details['filename']);
-
-                    if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_image_types_array)) {
-
-                        if (($image_info = getimagesize("$attachment_dir/{$user_prefs['PIC_AID']}"))) {
-
-                            if (($image_info[0] > 95) || ($image_info[1] > 95)) {
-
-                                $error_msg_array[] = sprintf(gettext("Selected attachment is too large for profile picture. Maximum dimensions are %s"), '95x95px');
-                                $valid = false;
-                            }
-
-                        }else {
-
-                            $error_msg_array[] = sprintf("", gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture."), "", $allowed_image_types);
-                            $valid = false;
-                        }
-
-                    }else {
-
-                        $error_msg_array[] = sprintf("", gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture."), "", $allowed_image_types);
-                        $valid = false;
-                    }
-
-                }else {
-
-                    $error_msg_array[] = sprintf("", gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture."), "", $allowed_image_types);
+                    $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
                     $valid = false;
                 }
 
-            }else {
+                $path_parts = pathinfo($attachment_details['filename']);
+
+                if (!isset($path_parts['extension']) || !in_array($path_parts['extension'], $allowed_image_types_array)) {
+                    
+                    $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
+                    $valid = false;
+                }                    
+
+                if (!($image_info = getimagesize("$attachment_dir/{$user_prefs['PIC_AID']}"))) {
+                    
+                    $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
+                    $valid = false;
+                }
+
+                if (($image_info[0] > 95) || ($image_info[1] > 95)) {
+
+                    $error_msg_array[] = gettext("Selected attachment is too large for profile picture. Maximum dimensions are 95x95px");
+                    $valid = false;
+                }
+
+            } else {
 
                 $error_msg_array[] = gettext("Attachments have been disabled by the forum owner.");
                 $valid = false;
@@ -435,7 +429,7 @@ if (isset($_POST['save'])) {
                 $error_msg_array[] = gettext("Avatar URL must include http:// schema.");
                 $valid = false;
 
-            }else if (!user_check_pref('AVATAR_URL', $user_prefs['AVATAR_URL'])) {
+            } else if (!user_check_pref('AVATAR_URL', $user_prefs['AVATAR_URL'])) {
 
                 $error_msg_array[] = sprintf(gettext("%s contains invalid characters!"), gettext("Avatar URL"));
                 $valid = false;
@@ -455,46 +449,40 @@ if (isset($_POST['save'])) {
                 $error_msg_array[] = gettext("Invalid Attachment. Check that is hasn't been deleted.");
                 $valid = false;
 
-            }elseif (isset($user_prefs['AVATAR_URL']) && strlen(trim($user_prefs['AVATAR_URL'])) > 0) {
+            } else if (isset($user_prefs['AVATAR_URL']) && strlen(trim($user_prefs['AVATAR_URL'])) > 0) {
 
                 $error_msg_array[] = gettext("To use an attachment for your avatar picture the Avatar URL field must be blank.");
                 $valid = false;
 
-            }elseif (($attachment_dir = attachments_check_dir())) {
+            } else if (($attachment_dir = attachments_check_dir())) {
 
-                if (($attachment_details = attachments_get_by_hash($user_prefs['AVATAR_AID']))) {
+                if (!($attachment_details = attachments_get_by_hash($user_prefs['AVATAR_AID']))) {
+                    
+                    $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
+                    $valid = false;
+                }
+                    
+                $path_parts = pathinfo($attachment_details['filename']);
 
-                    $path_parts = pathinfo($attachment_details['filename']);
-
-                    if (isset($path_parts['extension']) && in_array($path_parts['extension'], $allowed_image_types_array)) {
-
-                        if (($image_info = getimagesize("$attachment_dir/{$user_prefs['AVATAR_AID']}"))) {
-
-                            if (($image_info[0] > 95) || ($image_info[1] > 95)) {
-
-                                $error_msg_array[] = sprintf(gettext("Selected attachment is too large for avatar picture. Maximum dimensions are %s"), '15x15px');
-                                $valid = false;
-                            }
-
-                        }else {
-
-                            $error_msg_array[] = sprintf("", gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture."), "", $allowed_image_types);
-                            $valid = false;
-                        }
-
-                    }else {
-
-                        $error_msg_array[] = sprintf("", gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture."), "", $allowed_image_types);
-                        $valid = false;
-                    }
-
-                }else {
-
-                    $error_msg_array[] = sprintf("", gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture."), "", $allowed_image_types);
+                if (!isset($path_parts['extension']) || !in_array($path_parts['extension'], $allowed_image_types_array)) {
+                    
+                    $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
                     $valid = false;
                 }
 
-            }else {
+                if (!($image_info = getimagesize("$attachment_dir/{$user_prefs['AVATAR_AID']}"))) {
+
+                    $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
+                    $valid = false;
+                }
+                    
+                if (($image_info[0] > 95) || ($image_info[1] > 95)) {
+
+                    $error_msg_array[] = gettext("Selected attachment is too large for avatar picture. Maximum dimensions are 15x15px");
+                    $valid = false;
+                }
+
+            } else {
 
                 $error_msg_array[] = gettext("Attachments have been disabled by the forum owner.");
                 $valid = false;
@@ -526,7 +514,7 @@ if (isset($_POST['save'])) {
                             html_draw_bottom();
                             exit;
 
-                        }else {
+                        } else {
 
                             html_draw_top(sprintf("title=%s", gettext("Error")));
                             html_display_msg(gettext("Email address has been changed"), gettext("You have changed your email address, but we were unable to send a confirmation request. Please contact the forum owner for assistance."), 'index.php', 'get', array('continue' => gettext("Continue")), false, '_top');
@@ -542,19 +530,19 @@ if (isset($_POST['save'])) {
                     header_redirect("admin_user.php?webtag=$webtag&uid=$uid&profile_updated=true", gettext("Profile updated."));
                     exit;
 
-                }else {
+                } else {
 
                     header_redirect("edit_prefs.php?webtag=$webtag&updated=true", gettext("Preferences were successfully updated."));
                     exit;
                 }
 
-            }else {
+            } else {
 
                 $error_msg_array[] = gettext("Some or all of your user preferences could not be updated. Please try again later.");
                 $valid = false;
             }
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
             $valid = false;
@@ -572,7 +560,7 @@ if (isset($user_prefs['DOB']) && preg_match('/\d{4,}-\d{2,}-\d{2,}/u', $user_pre
 
     $dob['BLANK_FIELDS'] = ($dob['YEAR'] == 0 || $dob['MONTH'] == 0 || $dob['DAY'] == 0) ? true : false;
 
-}else {
+} else {
 
     $dob['YEAR']  = 0;
     $dob['MONTH'] = 0;
@@ -582,14 +570,14 @@ if (isset($user_prefs['DOB']) && preg_match('/\d{4,}-\d{2,}-\d{2,}/u', $user_pre
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];
-}else {
+} else {
     $aid = md5(uniqid(mt_rand()));
 }
 
 // Check to see if we should show the set for all forums checkboxes
 if ((session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == session_get_value('UID')) && $admin_edit === false)) {
     $show_set_all = (forums_get_available_count() > 1);
-}else {
+} else {
     $show_set_all = false;
 }
 
@@ -612,7 +600,7 @@ if ($admin_edit === true) {
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("User Details"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
 
-}else {
+} else {
 
     html_draw_top("title=", gettext("My Controls"), " - ", gettext("User Details"), "", 'class=window_title');
 
@@ -623,7 +611,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '600', ($admin_edit) ? 'center' : 'left');
 
-}else if (isset($_GET['updated'])) {
+} else if (isset($_GET['updated'])) {
 
     html_display_success_msg(gettext("Preferences were successfully updated."), '600', ($admin_edit) ? 'center' : 'left');
 }
@@ -652,7 +640,7 @@ if ($show_set_all) {
     echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
     echo "                </tr>\n";
 
-}else {
+} else {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"4\">", gettext("User Information"), "</td>\n";
@@ -676,7 +664,7 @@ if ((session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid =
         echo "                  <td align=\"left\">", form_input_text("logon", (isset($user_info['LOGON']) ? htmlentities_array($user_info['LOGON']) : ""), 45, 15, "", "user_pref_field"), "</td>\n";
         echo "                </tr>\n";
 
-    }else {
+    } else {
 
         echo "                <tr>\n";
         echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"150\">", gettext("Username"), ":&nbsp;</td>\n";
@@ -711,7 +699,7 @@ if ((session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid =
     echo "                  <td align=\"left\">&nbsp;</td>\n";
     echo "                </tr>\n";
 
-}else {
+} else {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"150\">", gettext("Username"), ":&nbsp;</td>\n";
@@ -747,7 +735,7 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
         echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
         echo "                </tr>\n";
 
-    }else {
+    } else {
 
         echo "                <tr>\n";
         echo "                  <td align=\"left\" class=\"subhead\" colspan=\"4\">", gettext("Profile Picture (Max 95x95px)"), "</td>\n";
@@ -786,7 +774,7 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
         echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
         echo "                </tr>\n";
 
-    }else {
+    } else {
 
         echo "                <tr>\n";
         echo "                  <td align=\"left\" class=\"subhead\" colspan=\"4\">", gettext("Avatar Picture (Max 16x16px)"), "</td>\n";
@@ -806,7 +794,7 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
     echo "                  <td align=\"left\">", form_dropdown_array("avatar_aid", $image_attachments_array, (isset($user_prefs['AVATAR_AID']) ? htmlentities_array($user_prefs['AVATAR_AID']) : ''), "", "user_pref_dropdown"), "</td>\n";
     echo "                </tr>\n";
 
-}else {
+} else {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"150\" style=\"white-space: nowrap\">", gettext("Picture URL"), ":</td>\n";
@@ -840,7 +828,7 @@ if (forum_get_setting('attachments_enabled', 'Y') && $admin_edit === false) {
     echo "        ", form_submit("save", gettext("Save")), "&nbsp;<a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
     echo "    </tr>\n";
 
-}else {
+} else {
 
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("save", gettext("Save")), "</td>\n";

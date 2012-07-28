@@ -86,7 +86,7 @@ function git_mysql_prepare_table($truncate_table = true)
 
     $sql = "CREATE TABLE IF NOT EXISTS BEEHIVE_GIT_LOG (";
     $sql.= "  LOG_ID MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,";
-    $sql.= "  DATE DATETIME NOT NULL,";
+    $sql.= "  DATE DATE NOT NULL,";
     $sql.= "  AUTHOR VARCHAR( 255 ) NOT NULL,";
     $sql.= "  COMMENTS TEXT NOT NULL";
     $sql.= ") ENGINE=MYISAM";
@@ -125,7 +125,7 @@ function git_mysql_parse($git_log_temp_file)
 
             $sql = sprintf(
                 "INSERT INTO BEEHIVE_GIT_LOG (DATE, AUTHOR, COMMENTS)
-                 VALUES (FROM_UNIXTIME('%s'), '%s', '%s')", 
+                 VALUES (DATE(FROM_UNIXTIME('%s')), '%s', '%s')", 
                 db_escape_string(strtotime((string)$git_log_xml->date)),
                 db_escape_string(trim((string)$git_log_xml->author)),
                 db_escape_string($git_log_message)
@@ -167,26 +167,26 @@ function git_mysql_output_log($log_filename = null)
         
         while (($git_log_entry_array = db_fetch_array($result, DB_RESULT_ASSOC))) {
             
-            if ($git_log_entry_author != $git_log_entry_array['AUTHOR']) {
+            if (preg_match_all('/^(Fixed:|Changed:|Added:)\s*(.+)/im', $git_log_entry_array['COMMENTS'], $git_log_entry_matches_array, PREG_SET_ORDER) > 0) {
+                
+                if ($git_log_entry_author != $git_log_entry_array['AUTHOR']) {
 
-                $git_log_entry_author = $git_log_entry_array['AUTHOR'];
-                printf("Author: %s\r\n", $git_log_entry_author);
+                    $git_log_entry_author = $git_log_entry_array['AUTHOR'];
+                    printf("Author: %s\r\n", $git_log_entry_author);
 
-                if ($git_log_entry_date != $git_log_entry_array['DATE']) {
+                    if ($git_log_entry_date != $git_log_entry_array['DATE']) {
+
+                        $git_log_entry_date = $git_log_entry_array['DATE'];
+                        printf("Date: %s\r\n", gmdate('D, d M Y', $git_log_entry_date));
+                    }
+
+                    echo "-----------------------\r\n";
+
+                } else if ($git_log_entry_date != $git_log_entry_array['DATE']) {
 
                     $git_log_entry_date = $git_log_entry_array['DATE'];
-                    printf("Date: %s\r\n", gmdate('D, d M Y H:i:s', $git_log_entry_date));
-                }
-
-                echo "-----------------------\r\n";
-
-            } else if ($git_log_entry_date != $git_log_entry_array['DATE']) {
-
-                $git_log_entry_date = $git_log_entry_array['DATE'];
-                printf("Date: %s\r\n-----------------------\r\n", gmdate('D, d M Y H:i:s', $git_log_entry_date));
-            }
-            
-            if (preg_match_all('/^(Fixed:|Changed:|Added:)\s*(.+)/im', $git_log_entry_array['COMMENTS'], $git_log_entry_matches_array, PREG_SET_ORDER) > 0) {
+                    printf("Date: %s\r\n-----------------------\r\n", gmdate('D, d M Y', $git_log_entry_date));
+                }                
 
                 foreach ($git_log_entry_matches_array as $git_log_entry_matches) {
                 

@@ -215,7 +215,7 @@ $page_prefs = session_get_post_page_prefs();
 
 $valid = true;
 
-light_html_draw_top(sprintf("title=", gettext("Edit message %s"), "", $edit_msg), "robots=noindex,nofollow");
+light_html_draw_top(sprintf("title=%s %s", gettext("Edit message"), $edit_msg), "robots=noindex,nofollow");
 
 $t_content = "";
 
@@ -608,15 +608,15 @@ if (isset($_POST['preview'])) {
 
         }else {
 
-            echo sprintf("<h3>", gettext("Edit message %s"), "</h3>\n", $edit_msg);
-            echo sprintf("<p>", gettext("Message %s was not found"), "</p>\n", $edit_msg);
+            echo sprintf("<h3>%s %s</h3>", gettext("Edit message"), $edit_msg);
+            echo "<p>", gettext("Message was not found"), "</p>\n";
             exit;
         }
 
     }else{
 
-        echo sprintf("<h3>", gettext("Edit message %s"), "</h3>\n", $edit_msg);
-        echo sprintf("<p>", gettext("Message %s was not found"), "</p>\n", $edit_msg);
+        echo sprintf("<h3>%s %s</h3>", gettext("Edit message"), $edit_msg);
+        echo "<p>", gettext("Message was not found"), "</p>\n";
         exit;
     }
 }
@@ -635,7 +635,7 @@ echo form_input_hidden("t_to_uid", htmlentities_array($to_uid));
 echo form_input_hidden("t_from_uid", htmlentities_array($from_uid));
 
 echo "<div class=\"post\">\n";
-echo sprintf("<h3>", gettext("Edit message %s"), "</h3>\n", $edit_msg);
+echo sprintf("<h3>%s %s</h3>", gettext("Edit message"), $edit_msg);
 echo "<div class=\"post_inner\">\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {

@@ -66,6 +66,7 @@ $forum_settings = forum_get_settings();
 // Fetch Global Forum Settings
 $forum_global_settings = forum_get_global_settings();
 
+include_once(BH_INCLUDE_PATH. "admin.inc.php");
 include_once(BH_INCLUDE_PATH. "constants.inc.php");
 include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
@@ -222,7 +223,7 @@ if (!user_is_guest()) {
             links_delete($lid);
 
             if (session_check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != session_get_value('UID'))) {
-                admin_add_log_entry(DELETE_LINK, array($links['LID'], $links['TITLE'], $links['URI']));
+                admin_add_log_entry(DELETE_LINK, array($link['LID'], $link['TITLE'], $link['URI']));
             }
 
             header_redirect("links.php?webtag=$webtag&fid=$parent_fid");

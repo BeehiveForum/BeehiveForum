@@ -984,7 +984,7 @@ function tidy_html_linebreaks($html)
     $html = preg_replace("/<br( [^>]*)?>(\n)?/iu", "\n", $html);
     $html = preg_replace("/<p( [^>]*)?>/iu", '', $html);
     $html = preg_replace("/<\\/p( [^>]*)?>(\n\n)?/iu", "\n\n", $html);    
-    $html = preg_replace("/\n\s*\n\s*\n\s*/", "\n\n", $html);
+    $html = preg_replace("/\n\\s*\n\\s*\n\\s*/", "\n\n", $html);
     
     return $html;
 }

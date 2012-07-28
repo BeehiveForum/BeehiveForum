@@ -78,6 +78,7 @@ include_once(BH_INCLUDE_PATH. "form.inc.php");
 include_once(BH_INCLUDE_PATH. "format.inc.php");
 include_once(BH_INCLUDE_PATH. "header.inc.php");
 include_once(BH_INCLUDE_PATH. "html.inc.php");
+include_once(BH_INCLUDE_PATH. "ip.inc.php");
 include_once(BH_INCLUDE_PATH. "lang.inc.php");
 include_once(BH_INCLUDE_PATH. "logon.inc.php");
 include_once(BH_INCLUDE_PATH. "perm.inc.php");
@@ -784,7 +785,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
         }else if (($text_captcha_image = $text_captcha->make_image())) {
 
             $forum_owner_email = forum_get_setting('forum_email', false, 'admin@beehiveforum.co.uk');
-            $forum_owner_link  = sprintf("<a href=\"mailto:%s\">", gettext("forum owner"), "</a>", $forum_owner_email);
+            $forum_owner_link  = sprintf("<a href=\"mailto:%s\">%s</a>", $forum_owner_email, gettext("forum owner"));
 
             echo "  <br />\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";

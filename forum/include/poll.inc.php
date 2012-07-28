@@ -868,7 +868,7 @@ function poll_format_vote_counts($poll_data, $user_votes, $guest_votes)
     if (($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] <= time())) {
 
         if ($user_votes > 0 || $guest_votes > 0) {
-            $html.= sprintf("<b>", gettext("%s and %s voted."), "</b>", $user_votes_display, $guest_votes_display);
+            $html.= sprintf(gettext("%s and %s voted."), $user_votes_display, $guest_votes_display);
         }else {
             $html.= gettext("Nobody voted");
         }
@@ -876,7 +876,7 @@ function poll_format_vote_counts($poll_data, $user_votes, $guest_votes)
     } else if ($poll_data['CLOSES'] == 0 || ($poll_data['CLOSES'] > time())) {
 
         if ($user_votes > 0 || $guest_votes > 0) {
-            $html.= sprintf("<b>", gettext("%s and %s have voted."), "</b>", $user_votes_display, $guest_votes_display);
+            $html.= sprintf(gettext("%s and %s have voted."), $user_votes_display, $guest_votes_display);
         }else {
             $html.= gettext("Nobody voted");
         }

@@ -326,8 +326,7 @@ function search_extract_keywords($search_string, $strip_valid = false)
     // and by checking individual words lengths.
     if ($strip_valid === true) {
 
-        $keywords_array_length = preg_grep(sprintf('/^[\+|-]?["]?[\pL\pN\pP\pZ]{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array, PREG_GREP_INVERT);
-        $keywords_array = array_merge($keywords_array_length, $keywords_array_swords);
+        $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?[\pL\pN\pP\pZ]{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array, PREG_GREP_INVERT);
 
     }else {
         

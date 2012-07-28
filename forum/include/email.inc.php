@@ -92,9 +92,6 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
     // Does the recipient want to receive email notifcations?
     if (!isset($to_user_prefs['EMAIL_NOTIFY']) || $to_user_prefs['EMAIL_NOTIFY'] != 'Y') return false;
 
-    // Get the right language for the email
-    if (!$lang = email_get_language($tuid)) return false;
-
     // Get the required variables (forum name, subject, recipient, etc.) and
     // pass them all through the recipient's word filter.
     $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
@@ -110,18 +107,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
     $message_link = html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid");
 
     // Generate the message body.
-    $message_body = wordwrap(sprintf(gettext("Hello %s,
-
-%s posted a message to you on %s.
-
-The subject is: %s.
-
-To read that message and others in the same discussion, go to:
-%s
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Note: If you do not wish to receive email notifications of forum messages posted to you, go to: %s click on My Controls then Email and Privacy, unselect the Email Notification checkbox and press Submit."), $recipient, $message_author, $forum_name, $thread_title, $message_link, $forum_link));
+    $message_body = wordwrap(sprintf(gettext("Hello %s,\r\n\r\n%s posted a message to you on %s.\r\n\r\nThe subject is: %s.\r\n\r\nTo read that message and others in the same discussion, go to:\r\n%s\r\n\r\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n\r\nNote: If you do not wish to receive email notifications of forum messages posted to you, go to: %s click on My Controls then Email and Privacy, unselect the Email Notification checkbox and press Submit."), $recipient, $message_author, $forum_name, $thread_title, $message_link, $forum_link));
 
     // Set the recipient.
     $message->setTo($to_user['EMAIL'], $recipient);
@@ -207,9 +193,6 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
         // Validate the email address before we continue.
         if (!email_address_valid($to_user['EMAIL'])) continue;
 
-        // Get the right language for the email
-        if (!$lang = email_get_language($to_user['UID'])) continue;
-
         // Add the uid to exclude array
         array_push($exclude_user_array, $to_user['UID']);
 
@@ -225,18 +208,7 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
         $message_link = html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid");
 
         // Generate the message body.
-        $message_body = wordwrap(sprintf(gettext("Hello %s,
-
-%s posted a message in a thread you have subscribed to on %s.
-
-The subject is: %s.
-
-To read that message and others in the same discussion, go to:
-%s
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Note: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level at the bottom of the page."), $recipient, $message_author, $forum_name, $thread_title, $message_link, $message_link));
+        $message_body = wordwrap(sprintf(gettext("Hello %s,\r\n\r\n%s posted a message in a thread you have subscribed to on %s.\r\n\r\nThe subject is: %s.\r\n\r\nTo read that message and others in the same discussion, go to:\r\n%s\r\n\r\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n\r\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level at the bottom of the page."), $recipient, $message_author, $forum_name, $thread_title, $message_link, $message_link));
 
         // Add the recipient
         $message->addTo($to_user['EMAIL'], $recipient);
@@ -319,9 +291,6 @@ function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$ex
         // Validate the email address before we continue.
         if (!email_address_valid($to_user['EMAIL'])) continue;
 
-        // Get the right language for the email
-        if (!$lang = email_get_language($to_user['UID'])) continue;
-
         // Add the uid to exclude array
         array_push($exclude_user_array, $to_user['UID']);
 
@@ -340,18 +309,7 @@ function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$ex
         $message_link = html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid");
 
         // Generate the message body.
-        $message_body = wordwrap(sprintf(gettext("Hello %s,
-
-%s posted a message in a folder you are subscribed to on %s.
-
-The subject is: %s.
-
-To read that message and others in the same discussion, go to:
-%s
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Note: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level by clicking on the folder's icon at the top of page."), $recipient, $message_author, $forum_name, $thread_title, $message_link, $forum_link));
+        $message_body = wordwrap(sprintf(gettext("Hello %s,\r\n\r\n%s posted a message in a folder you are subscribed to on %s.\r\n\r\nThe subject is: %s.\r\n\r\nTo read that message and others in the same discussion, go to:\r\n%s\r\n\r\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n\r\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level by clicking on the folder's icon at the top of page."), $recipient, $message_author, $forum_name, $thread_title, $message_link, $forum_link));
 
         // Add the recipient
         $message->setTo($to_user['EMAIL'], $recipient);
@@ -412,9 +370,6 @@ function email_send_pm_notification($tuid, $mid, $fuid)
     // Does the recipient want to receive email notifcations?
     if (!isset($to_user_prefs['PM_NOTIFY_EMAIL']) | $to_user_prefs['PM_NOTIFY_EMAIL'] != 'Y') return false;
 
-    // Get the right language for the email
-    if (!$lang = email_get_language($tuid)) return false;
-
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
     $forum_name      = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
@@ -430,18 +385,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
     $message_link = html_get_forum_uri("index.php?webtag=$webtag&pmid=$mid");
 
     // Generate the message body.
-    $message_body = wordwrap(sprintf(gettext("Hello %s,
-
-%s posted a PM to you on %s.
-
-The subject is: %s.
-
-To read the message go to:
-%s
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Note: If you do not wish to receive email notifications of new PM messages posted to you, go to: %s click My Controls then Email and Privacy, unselect the PM Notification checkbox and press Submit."), $recipient, $message_author, $forum_name, $message_subject, $message_link, $forum_link));
+    $message_body = wordwrap(sprintf(gettext("Hello %s,\r\n\r\n%s posted a PM to you on %s.\r\n\r\nThe subject is: %s.\r\n\r\nTo read the message go to:\r\n%s\r\n\r\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n\r\nNote: If you do not wish to receive email notifications of new PM messages posted to you, go to: %s click My Controls then Email and Privacy, unselect the PM Notification checkbox and press Submit."), $recipient, $message_author, $forum_name, $message_subject, $message_link, $forum_link));
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
@@ -480,9 +424,6 @@ function email_send_pw_reminder($logon)
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
-    // Get the right language for the email
-    if (!$lang = email_get_language($to_user['UID'])) return false;
-
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
     $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $to_user['UID'], true);
@@ -494,13 +435,7 @@ function email_send_pw_reminder($logon)
     $change_pw_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$change_pw_link");
 
     // Generate the message body.
-    $message_body = wordwrap(sprintf(gettext("Hello %s,
-
-You requested this e-mail from %s because you have forgotten your password.
-
-Click the link below (or copy and paste it into your browser) to reset your password:
-
-%s"), $recipient, $forum_name, $change_pw_link));
+    $message_body = wordwrap(sprintf(gettext("Hello %s,\r\n\r\nYou requested this e-mail from %s because you have forgotten your password.\r\n\r\nClick the link below (or copy and paste it into your browser) to reset your password:\r\n\r\n%s"), $recipient, $forum_name, $change_pw_link));
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
@@ -540,9 +475,6 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
-    // Get the right language for the email
-    if (!$lang = email_get_language($to_user['UID'])) return false;
-
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
     $forum_name        = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
@@ -551,13 +483,7 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
     $passwd_changed_by = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid, true);
 
     // Generate the message body.
-    $message_body = wordwrap(sprintf(gettext("Hello %s,
-
-This a notification email to inform you that your password on %s has been changed.
-
-It has been changed to: %s and was changed by: %s.
-
-If you have received this email in error or were not expecting a change to your password please contact the forum owner or a moderator on %s immediately to correct it."), $recipient, $forum_name, $new_password, $passwd_changed_by, $forum_name));
+    $message_body = wordwrap(sprintf(gettext("Hello %s,\r\n\r\nThis a notification email to inform you that your password on %s has been changed.\r\n\r\nIt has been changed to: %s and was changed by: %s.\r\n\r\nIf you have received this email in error or were not expecting a change to your password please contact the forum owner or a moderator on %s immediately to correct it."), $recipient, $forum_name, $new_password, $passwd_changed_by, $forum_name));
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
@@ -595,9 +521,6 @@ function email_send_user_confirmation($tuid)
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
-    // Get the right language for the email
-    if (!$lang = email_get_language($to_user['UID'])) return false;
-
     // Get the forum reply-to email address
     $forum_email = forum_get_setting('forum_email', false, 'admin@beehiveforum.co.uk');
 
@@ -612,17 +535,7 @@ function email_send_user_confirmation($tuid)
     $confirm_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$confirm_link");
 
     // Generate the message body.
-    $message_body = wordwrap(sprintf(gettext("Hello %s,
-
-You recently created a new user account on %s.
-
-Before you can start posting we need to confirm your email address. Don't worry this is quite easy. All you need to do is click the link below (or copy and paste it into your browser):
-
-%s
-
-Once confirmation is complete you may login and start posting immediately.
-
-If you did not create a user account on %s please accept our apologies and forward this email to %s so that the source of it may be investigated."), $recipient, $forum_name, $confirm_link, $forum_name, $forum_email));
+    $message_body = wordwrap(sprintf(gettext("Hello %s,\r\n\r\nYou recently created a new user account on %s.\r\n\r\nBefore you can start posting we need to confirm your email address. Don't worry this is quite easy. All you need to do is click the link below (or copy and paste it into your browser):\r\n\r\n%s\r\n\r\nOnce confirmation is complete you may login and start posting immediately.\r\n\r\nIf you did not create a user account on %s please accept our apologies and forward this email to %s so that the source of it may be investigated."), $recipient, $forum_name, $confirm_link, $forum_name, $forum_email));
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
@@ -660,9 +573,6 @@ function email_send_changed_email_confirmation($tuid)
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
-    // Get the right language for the email
-    if (!$lang = email_get_language($to_user['UID'])) return false;
-
     // Get the forum reply-to email address
     $forum_email = forum_get_setting('forum_email', false, 'admin@beehiveforum.co.uk');
 
@@ -677,17 +587,7 @@ function email_send_changed_email_confirmation($tuid)
     $confirm_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$confirm_link");
 
     // Generate the message body.
-    $message_body = wordwrap(sprintf(gettext("Hello %s,
-
-You recently changed your email on %s.
-
-Before you can start posting again we need to confirm your new email address. Don't worry this is quite easy. All you need to do is click the link below (or copy and paste it into your browser):
-
-%s
-
-Once confirmation is complete you may continue to use the forum as normal.
-
-If you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated."), $recipient, $forum_name, $confirm_link, $forum_name, $forum_email));
+    $message_body = wordwrap(sprintf(gettext("Hello %s,\r\n\r\nYou recently changed your email on %s.\r\n\r\nBefore you can start posting again we need to confirm your new email address. Don't worry this is quite easy. All you need to do is click the link below (or copy and paste it into your browser):\r\n\r\n%s\r\n\r\nOnce confirmation is complete you may continue to use the forum as normal.\r\n\r\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated."), $recipient, $forum_name, $confirm_link, $forum_name, $forum_email));
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
@@ -725,9 +625,6 @@ function email_send_user_approval_notification($tuid)
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
-    // Get the right language for the email
-    if (!$lang = email_get_language($to_user['UID'])) return false;
-
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
     $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
     $subject    = word_filter_apply(sprintf(gettext("New User Approval Notification for %s"), $forum_name), $tuid, true);
@@ -738,19 +635,7 @@ function email_send_user_approval_notification($tuid)
     $admin_users_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_users_link");
 
     // Generate the message body.
-    $message_body = wordwrap(sprintf(gettext("Hello %s,
-
-A new user account has been created on %s.
-
-As you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.
-
-To approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:
-
-%s
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Note: Other Administrators on this forum will also receive this notification and may have already acted upon this request."), $recipient, $forum_name, $admin_users_link));
+    $message_body = wordwrap(sprintf(gettext("Hello %s,\r\n\r\nA new user account has been created on %s.\r\n\r\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\r\n\r\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\r\n\r\n%s\r\n\r\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n\r\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."), $recipient, $forum_name, $admin_users_link));
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
@@ -789,9 +674,6 @@ function email_send_new_user_notification($tuid, $new_user_uid)
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
-    // Get the right language for the email
-    if (!$lang = email_get_language($to_user['UID'])) return false;
-
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
     $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
     $subject    = word_filter_apply(sprintf(gettext("New User Account Notification for %s"), $forum_name), $tuid, true);
@@ -802,13 +684,7 @@ function email_send_new_user_notification($tuid, $new_user_uid)
     $admin_user_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_user_link");
 
     // Generate the message body.
-    $message_body = wordwrap(sprintf(gettext("Hello %s,
-
-A new user account has been created on %s.
-
-To view this user account please visit the Admin Users section and click on the new user or click the link below:
-
-%s"), $recipient, $forum_name, $admin_user_link));
+    $message_body = wordwrap(sprintf(gettext("Hello %s,\r\n\r\nA new user account has been created on %s.\r\n\r\nTo view this user account please visit the Admin Users section and click on the new user or click the link below:\r\n\r\n%s"), $recipient, $forum_name, $admin_user_link));
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
@@ -846,9 +722,6 @@ function email_send_user_approved_notification($tuid)
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
-    // Get the right language for the email
-    if (!$lang = email_get_language($to_user['UID'])) return false;
-
     // Get the forum reply-to email address
     $forum_email = forum_get_setting('forum_email', false, 'admin@beehiveforum.co.uk');
 
@@ -861,13 +734,7 @@ function email_send_user_approved_notification($tuid)
     $forum_link = html_get_forum_uri("index.php?webtag=$webtag");
 
     // Generate the message body.
-    $message_body = wordwrap(sprintf(gettext("Hello %s,
-
-Your user account at %s has been approved. You can login and start posting immediately by clicking the link below:
-
-%s
-
-If you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated."), $recipient, $forum_name, $forum_link, $forum_name, $forum_email));
+    $message_body = wordwrap(sprintf(gettext("Hello %s,\r\n\r\nYour user account at %s has been approved. You can login and start posting immediately by clicking the link below:\r\n\r\n%s\r\n\r\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated."), $recipient, $forum_name, $forum_link, $forum_name, $forum_email));
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
@@ -905,9 +772,6 @@ function email_send_post_approval_notification($tuid)
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
-    // Get the right language for the email
-    if (!$lang = email_get_language($to_user['UID'])) return false;
-
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
     $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
     $subject    = word_filter_apply(sprintf(gettext("Post Approval Notification for %s"), $forum_name), $tuid, true);
@@ -918,19 +782,7 @@ function email_send_post_approval_notification($tuid)
     $admin_post_approval_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_post_approval_link");
 
     // Generate the message body.
-    $message_body = wordwrap(sprintf(gettext("Hello %s,
-
-A new post has been created on %s.
-
-As you are a Moderator on this forum you are required to approve this post before it can be read by other users.
-
-You can approve this post and any others pending approval by visiting the Admin Post Approval section of your forum or by clicking the link below:
-
-%s
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Note: Other Administrators on this forum will also receive this notification and may have already acted upon this request."), $recipient, $forum_name, $admin_post_approval_link));
+    $message_body = wordwrap(sprintf(gettext("Hello %s,\r\n\r\nA new post has been created on %s.\r\n\r\nAs you are a Moderator on this forum you are required to approve this post before it can be read by other users.\r\n\r\nYou can approve this post and any others pending approval by visiting the Admin Post Approval section of your forum or by clicking the link below:\r\n\r\n%s\r\n\r\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n\r\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."), $recipient, $forum_name, $admin_post_approval_link));
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
@@ -968,9 +820,6 @@ function email_send_link_approval_notification($tuid)
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
-    // Get the right language for the email
-    if (!$lang = email_get_language($to_user['UID'])) return false;
-
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
     $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
     $subject    = word_filter_apply(sprintf(gettext("Link Approval Notification for %s"), $forum_name), $tuid, true);
@@ -981,19 +830,7 @@ function email_send_link_approval_notification($tuid)
     $admin_post_approval_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_post_approval_link");
 
     // Generate the message body.
-    $message_body = wordwrap(sprintf(gettext("Hello %s,
-
-A new link has been created on %s.
-
-As you are a Link Moderator on this forum you are required to approve this link before it can be read by other users.
-
-You can approve this link and any others pending approval by visiting the Admin Link Approval section of your forum or by clicking the link below:
-
-%s
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Note: Other Administrators on this forum will also receive this notification and may have already acted upon this request."), $recipient, $forum_name, $admin_post_approval_link));
+    $message_body = wordwrap(sprintf(gettext("Hello %s,\r\n\r\nA new link has been created on %s.\r\n\r\nAs you are a Link Moderator on this forum you are required to approve this link before it can be read by other users.\r\n\r\nYou can approve this link and any others pending approval by visiting the Admin Link Approval section of your forum or by clicking the link below:\r\n\r\n%s\r\n\r\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n\r\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."), $recipient, $forum_name, $admin_post_approval_link));
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
@@ -1032,9 +869,6 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message_body, $use_
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
-    // Get the right language for the email
-    if (!$lang = email_get_language($to_user['UID'])) return false;
-
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
     $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
@@ -1045,7 +879,7 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message_body, $use_
     $message_body = word_filter_apply($message_body, $tuid, true);
 
     // Add the Sent By footer to the message.
-    $message_body.= wordwrap(sprintf("\n\n", gettext("This message was sent from %s by %s"), "", $forum_name, $sent_from));
+    $message_body.= wordwrap(sprintf(gettext("This message was sent from %s by %s"), $forum_name, $sent_from));
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);
@@ -1061,49 +895,6 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message_body, $use_
 
     // Send the email
     return $mailer->send($message) > 0;
-}
-
-// fetches the correct language file for the UID ($to_uid) who the email is being sent to
-function email_get_language($to_uid)
-{
-    // Array to hold our language strings
-    $lang = array();
-
-    // Default language file.
-    $default_language = forum_get_setting('default_language', false, 'en');
-
-    // if the user has expressed a preference for language, use it
-    // if available otherwise use the default language.
-    if (($user_prefs = user_get_prefs($to_uid))) {
-
-        $pref_language = (isset($user_prefs['LANGUAGE']) && strlen(trim($user_prefs['LANGUAGE'])) > 0) ? $user_prefs['LANGUAGE'] : $default_language;
-
-        if (@file_exists(BH_INCLUDE_PATH. "languages/$pref_language/email.inc.php")) {
-
-            require(BH_INCLUDE_PATH. "languages/{$pref_language}/email.inc.php");
-            return $lang;
-
-        }else if (@file_exists(BH_INCLUDE_PATH. "languages/{$pref_language}.inc.php")) {
-
-             require(BH_INCLUDE_PATH. "languages/{$pref_language}.inc.php");
-             return $lang;
-        }
-
-    }else {
-
-        if (@file_exists(BH_INCLUDE_PATH. "languages/{$default_language}/email.inc.php")) {
-
-            require(BH_INCLUDE_PATH. "languages/{$default_language}/email.inc.php");
-            return $lang;
-
-        }else if (@file_exists(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php")) {
-
-             require(BH_INCLUDE_PATH. "languages/{$default_language}.inc.php");
-             return $lang;
-        }
-    }
-
-    return false;
 }
 
 function email_is_unique($email_address, $user_uid = 0)

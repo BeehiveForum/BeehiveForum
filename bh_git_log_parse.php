@@ -7,7 +7,7 @@ This file is part of BeehiveForum.
 
 BeehiveForum is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
+the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 
 BeehiveForum is distributed in the hope that it will be useful,
@@ -163,41 +163,30 @@ function git_mysql_output_log($log_filename = null)
 
         ob_start();
 
-        printf("Project Beehive Forum Change Log (Generated: %s)\r\n\r\n", gmdate('D, d M Y H:i:s'));
+        printf("# Beehive Forum Change Log (Generated: %s)\r\n\r\n", gmdate('D, d M Y H:i:s'));
         
         while (($git_log_entry_array = db_fetch_array($result, DB_RESULT_ASSOC))) {
             
-            if (preg_match_all('/^(Fixed:|Changed:|Added:)\s*(.+)/im', $git_log_entry_array['COMMENTS'], $git_log_entry_matches_array, PREG_SET_ORDER) > 0) {
+            if (preg_match_all('/^((Fixed|Changed|Added):)\s*(.+)/im', $git_log_entry_array['COMMENTS'], $git_log_entry_matches_array, PREG_SET_ORDER) > 0) {
                 
-                if ($git_log_entry_author != $git_log_entry_array['AUTHOR']) {
-
-                    $git_log_entry_author = $git_log_entry_array['AUTHOR'];
-                    printf("Author: %s\r\n", $git_log_entry_author);
-
-                    if ($git_log_entry_date != $git_log_entry_array['DATE']) {
-
-                        $git_log_entry_date = $git_log_entry_array['DATE'];
-                        printf("Date: %s\r\n", gmdate('D, d M Y', $git_log_entry_date));
-                    }
-
-                    echo "-----------------------\r\n";
-
-                } else if ($git_log_entry_date != $git_log_entry_array['DATE']) {
+                if ($git_log_entry_date != $git_log_entry_array['DATE']) {
 
                     $git_log_entry_date = $git_log_entry_array['DATE'];
-                    printf("Date: %s\r\n-----------------------\r\n", gmdate('D, d M Y', $git_log_entry_date));
+                    printf("## Date: %s\n\n", gmdate('D, d M Y', $git_log_entry_date));
                 }                
 
                 foreach ($git_log_entry_matches_array as $git_log_entry_matches) {
                 
-                    $git_log_comment = trim(preg_replace("/(\r|\r\n|\n)/", '', $git_log_entry_matches[2]));
+                    $git_log_comment = trim(preg_replace("/(\r|\r\n|\n)/", '', $git_log_entry_matches[3]));
+                    
+                    $git_log_comment = str_replace('_', '\_', htmlentities($git_log_comment));
 
-                    $git_log_comment_array = explode("\r\n", wordwrap($git_log_comment, 91, "\r\n"));
+                    $git_log_comment_array = explode("\r\n", wordwrap($git_log_comment, (70 - (strlen($git_log_entry_matches[2]) + 4)), "\r\n"));
 
                     foreach ($git_log_comment_array as $line => $git_log_comment_line) {
-
-                        echo $line == 0 ? str_pad($git_log_entry_matches[1], 9, ' ', STR_PAD_RIGHT) : str_repeat(' ', 9);
-                        echo $git_log_comment_line, "\r\n";
+                        
+                        echo ($line == 0) ? sprintf('- %s: ', $git_log_entry_matches[2]) : str_repeat(' ', strlen($git_log_entry_matches[2]) + 4);
+                        echo $git_log_comment_line, "\n";
                     }
                 }
 
@@ -299,14 +288,14 @@ if (isset($modified_date)) {
 
 }else {
 
-    echo "Generate changelog.txt from GIT comments\r\n\r\n";
+    echo "Generate changelog.md Markdown from GIT comments\r\n\r\n";
     echo "Usage: php-bin bh_git_log_parse.php [YYYY-MM-DD] [FILE]\r\n";
     echo "   OR: bh_git_log_parse.php?date=YYYY-MM-DD[&output]\r\n\r\n";
     echo "Examples:\r\n";
     echo "  php-bin bh_git_log_parse.php 2007-01-01\r\n";
-    echo "  php-bin bh_git_log_parse.php 2007-01-01 changelog.txt\r\n";
-    echo "  php-bin bh_git_log_parse.php changelog.txt\r\n\r\n";
-    echo "[FILE] specifies the output filename for the changelog.\r\n";
+    echo "  php-bin bh_git_log_parse.php 2007-01-01 changelog.md\r\n";
+    echo "  php-bin bh_git_log_parse.php changelog.md\r\n\r\n";
+    echo "[FILE] specifies the output filename for the changelog.md\r\n";
     echo "       Only available when run from a shell.\r\n\r\n";
     echo "[YYYY-MM-DD] specifies the date the changelog should start from\r\n\r\n";
     echo "Both arguments can be combined or used separatly to achieve\r\n";

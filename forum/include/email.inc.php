@@ -879,7 +879,7 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message_body, $use_
     $message_body = word_filter_apply($message_body, $tuid, true);
 
     // Add the Sent By footer to the message.
-    $message_body.= wordwrap(sprintf(gettext("This message was sent from %s by %s"), $forum_name, $sent_from));
+    $message_body.= "\r\n\r\n". wordwrap(sprintf(gettext("This message was sent from %s by %s"), $forum_name, $sent_from));
 
     // Add the recipient
     $message->setTo($to_user['EMAIL'], $recipient);

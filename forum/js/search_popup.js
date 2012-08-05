@@ -37,11 +37,13 @@ $(beehive).bind('init', function() {
         
         $search_button.bind('click', function() {
 
-            var popup_query = { 'webtag'   : beehive.webtag,
-                                'obj_id'   : $search_input.attr('id'),
-                                'type'     : $container.hasClass('search_logon') ? 1 : 2,
-                                'multi'    : $container.hasClass('allow_multi') ? 'Y' : 'N',
-                                'selected' : $search_input.val() };
+            var popup_query = { 
+                'webtag' : beehive.webtag,
+                'obj_id' : $search_input.attr('id'),
+                'type' : $container.hasClass('search_logon') ? 1 : 2,
+                'multi' : $container.hasClass('allow_multi') ? 'Y' : 'N',
+                'selected' : $search_input.val() 
+            };
 
             window.open('search_popup.php?' + $.param(popup_query), null, beehive.window_options.join(','));
         });
@@ -54,25 +56,35 @@ $(beehive).bind('init', function() {
         
         if ($container.hasClass('search_logon')) {
         
-            $search_input.autocomplete(beehive.forum_path + '/ajax.php', {
+            $search_input.autocomplete({
                 
-                selectFirst : false,
-                
-                extraParams : { 
-                    'webtag' : beehive.webtag,
-                    'ajax'   : true,
-                    'action' : 'user_autocomplete'
+                'minLength': 2,
+
+                'source': function(request, response) {
+                    
+                    $.ajax({
+                        'cache' : false,
+                        'data' : {
+                            'webtag' : beehive.webtag,
+                            'ajax' : true,
+                            'action' : 'user_autocomplete',
+                            'term' : request.term,
+                        },
+                        'url' : beehive.forum_path + '/ajax.php',
+                        'success': function(data) {
+                            
+                            response($.map(data.results_array, function(item) {
+                                return {
+                                    'label': item.NICKNAME,
+                                    'value': item.LOGON
+                                };
+                            }));
+                        },
+                    });
                 },
-                
-                formatItem : function(item) {
-                    var data = $.parseJSON(item);
-                    return $.sprintf('%s (%s)', data.NICKNAME, data.LOGON);
+                'open': function(){
+                    $('.ui-autocomplete').width($search_input.width());
                 },
-                
-                formatResult : function(item) {
-                    var data = $.parseJSON(item);
-                    return data.LOGON;
-                }
             });
         }
     });

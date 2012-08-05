@@ -21,104 +21,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "dictionary.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'dictionary.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-if (user_is_guest()) {
-
+if (!session::logged_in()) {
     html_guest_error();
-    exit;
 }
 
 // Form Object ID
@@ -126,16 +46,13 @@ if (isset($_POST['obj_id']) && strlen(trim(stripslashes_array($_POST['obj_id']))
 
     $obj_id = trim(stripslashes_array($_POST['obj_id']));
 
-}elseif (isset($_GET['obj_id']) && strlen(trim(stripslashes_array($_GET['obj_id']))) > 0) {
+} else if (isset($_GET['obj_id']) && strlen(trim(stripslashes_array($_GET['obj_id']))) > 0) {
 
     $obj_id = trim(stripslashes_array($_GET['obj_id']));
 
-}else {
+} else {
 
-    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
-    html_error_msg(gettext("No form object specified for return text"));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("No form object specified for return text"));
 }
 
 // Form content
@@ -143,7 +60,7 @@ if (isset($_POST['content']) && strlen(trim(stripslashes_array($_POST['content']
 
     $t_content = trim(stripslashes_array($_POST['content']));
 
-}else {
+} else {
 
     // Apache has a limit on the length an URL query, so we need to
     // send the content to be checked via POST or Javascript.
@@ -162,20 +79,20 @@ if (isset($_POST['content']) && strlen(trim(stripslashes_array($_POST['content']
 // Ignored words
 if (isset($_POST['ignored_words']) && is_array($_POST['ignored_words'])) {
     $t_ignored_words = stripslashes_array($_POST['ignored_words']);
-}else {
+} else {
     $t_ignored_words = array();
 }
 
 // Fetch the current word
 if (isset($_POST['current_word']) && is_numeric($_POST['current_word'])) {
     $current_word = $_POST['current_word'];
-}else {
+} else {
     $current_word = -1;
 }
 
 if (isset($_POST['offset_match']) && is_numeric($_POST['offset_match'])) {
     $offset_match = $_POST['offset_match'];
-}else {
+} else {
     $offset_match = 0;
 }
 
@@ -192,11 +109,7 @@ $dictionary = new dictionary();
 
 // Check it's installed
 if (!$dictionary->is_installed()) {
-
-    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
-    html_error_msg(gettext("No dictionary has been installed. Please contact the forum owner to remedy this."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("No dictionary has been installed. Please contact the forum owner to remedy this."));
 }
 
 // Initialise it
@@ -209,7 +122,7 @@ if (isset($_POST['ignoreall'])) {
     $dictionary->add_ignored_word($dictionary->get_current_word());
     $dictionary->find_next_word();
 
-}else if (isset($_POST['add'])) {
+} else if (isset($_POST['add'])) {
 
     // User wants to add the current word to his dictionary
     if (isset($_POST['word']) && strlen(trim(stripslashes_array($_POST['word']))) > 0) {
@@ -220,7 +133,7 @@ if (isset($_POST['ignoreall'])) {
 
     $dictionary->find_next_word();
 
-}else if (isset($_POST['change'])) {
+} else if (isset($_POST['change'])) {
 
     // User has selected to change the current word
     if (isset($_POST['change_to']) && strlen(trim(stripslashes_array($_POST['change_to']))) > 0) {
@@ -231,7 +144,7 @@ if (isset($_POST['ignoreall'])) {
 
     $dictionary->find_next_word();
 
-}else if (isset($_POST['changeall'])) {
+} else if (isset($_POST['changeall'])) {
 
     // User has selected to change the current word
     if (isset($_POST['change_to']) && strlen(trim(stripslashes_array($_POST['change_to']))) > 0) {
@@ -242,12 +155,12 @@ if (isset($_POST['ignoreall'])) {
 
     $dictionary->find_next_word();
 
-}elseif (isset($_POST['suggest'])) {
+} else if (isset($_POST['suggest'])) {
 
     // Get more suggestions for the current word
     $dictionary->get_more_suggestions();
 
-}else {
+} else {
 
     // We're moving to the next word;
     $dictionary->find_next_word();
@@ -355,7 +268,7 @@ if (($suggestions_array = $dictionary->get_suggestions_array())) {
 
     echo "                                  ", form_dropdown_array("suggestions", $suggestions_array, $dictionary->get_best_suggestion(), "size=\"5\"", "dictionary_best_selection"), "\n";
 
-}else {
+} else {
 
     echo "                                  ", form_dropdown_array("no_suggestions", array(gettext("(no suggestions)")), $dictionary->get_best_suggestion(), "size=\"5\"", "dictionary_best_selection"), "\n";
 }
@@ -387,7 +300,7 @@ if (($dictionary->is_check_complete())) {
     echo "        <td align=\"center\">", form_submit('restart', gettext("Restart")), "&nbsp;", form_button("close", gettext("Close")), "&nbsp;", form_button("cancel", gettext("Cancel Changes")), "</td>\n";
     echo "      </tr>\n";
 
-}else {
+} else {
 
     echo "      <tr>\n";
     echo "        <td align=\"center\">", form_button("close", gettext("Close")), "&nbsp;", form_button("cancel", gettext("Cancel Changes")), "</td>\n";

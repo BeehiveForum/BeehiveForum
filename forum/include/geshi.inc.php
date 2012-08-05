@@ -29,8 +29,8 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
 
 function geshi_error_handler ()
 {
@@ -45,7 +45,7 @@ if (@file_exists("geshi/geshi.php")) {
         throw new Exception('Beehive Forum requires GeSHi 1.0.8.8 or newer');
     }
 
-}else {
+} else {
 
     class GeSHi {
 

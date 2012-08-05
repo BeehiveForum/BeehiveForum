@@ -20,10 +20,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/**
-* Fucntions related to generating the folder moderators lists
-*/
-
 // We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
@@ -32,27 +28,19 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
 
-/**
-* Returns all the mods for a given folder
-*
-* Returns an array of the UIDs of the moderators for a given folder, or false if unsuccesful.
-*
-* @return mixed
-* @param integer $fid Folder ID of folder to find moderators for
-*/
 function mods_list_get_mods($fid)
 {
     if (!$db_mods_list_get_mods = db_connect()) return false;
 
     $mod_list_array = array();
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $forum_fid = $table_data['FID'];
+    if (!($forum_fid = get_forum_fid())) return false;
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
     $sql.= "LEFT JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.UID = USER.UID) ";
@@ -64,7 +52,7 @@ function mods_list_get_mods($fid)
         $user_perm_folder_moderate = USER_PERM_FOLDER_MODERATE;
         $sql.= "AND (GROUP_PERMS.PERM & $user_perm_folder_moderate) > 0 ";
 
-    }else {
+    } else {
 
         $user_perm_admin_tools = USER_PERM_ADMIN_TOOLS;
         $user_perm_folder_moderate = USER_PERM_FOLDER_MODERATE;
@@ -75,17 +63,13 @@ function mods_list_get_mods($fid)
 
     if (!$result = db_query($sql, $db_mods_list_get_mods)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        while (($mod_list_data = db_fetch_array($result))) {
-
-            $mod_list_array[$mod_list_data['UID']] = $mod_list_data;
-        }
-
-        return $mod_list_array;
+    while (($mod_list_data = db_fetch_array($result))) {
+        $mod_list_array[$mod_list_data['UID']] = $mod_list_data;
     }
 
-    return false;
+    return $mod_list_array;
 }
 
 ?>

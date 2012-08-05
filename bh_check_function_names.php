@@ -24,7 +24,7 @@ USA
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./forum/include/");
 
-include_once(BH_INCLUDE_PATH. "format.inc.php");
+require_once BH_INCLUDE_PATH. 'format.inc.php';
 
 // Prevent time out
 set_time_limit(0);

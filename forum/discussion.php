@@ -21,128 +21,46 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "search.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "threads.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
-
-// Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'cache.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'search.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'threads.inc.php';
 
 // Message pane caching
 cache_check_messages();
 
-// Initialise Locale
-lang_init();
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-$uid = session_get_value('UID');
+// User's UID
+$uid = session::get_value('UID');
 
 // Get the user's saved left frame width.
-if (($left_frame_width = session_get_value('LEFT_FRAME_WIDTH')) === false) {
+if (($left_frame_width = session::get_value('LEFT_FRAME_WIDTH')) === false) {
     $left_frame_width = 280;
 }
 
 if (!$folder_info = threads_get_folders()) {
-
-    html_draw_top();
-    html_error_msg(gettext("There are no folders available."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("There are no folders available."));
 }
 
 if (isset($_GET['edit_success']) && validate_msg($_GET['edit_success'])) {
     $edit_success = "&amp;edit_success={$_GET['edit_success']}";
-}else {
+} else {
     $edit_success = "";
 }
 
 if (isset($_GET['delete_success']) && validate_msg($_GET['delete_success'])) {
     $delete_success = "&amp;delete_success={$_GET['delete_success']}";
-}else {
+} else {
     $delete_success = "";
 }
 
@@ -163,15 +81,12 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         html_draw_bottom(true);
 
-    }else {
+    } else {
 
-        html_draw_top();
-        html_error_msg(gettext("No Messages"));
-        html_draw_bottom();
-        exit;
+        html_draw_error(gettext("No Messages"));
     }
 
-}elseif (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+} else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     html_draw_top('frame_set_html', 'pm_popup_disabled');
 
@@ -184,10 +99,10 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     html_draw_bottom(true);
 
-}else if (isset($_GET['right']) && $_GET['right'] == 'search') {
+} else if (isset($_GET['right']) && $_GET['right'] == 'search') {
 
     // Guests can't use this
-    if (user_is_guest()) {
+    if (!session::logged_in()) {
 
         html_guest_error();
         exit;
@@ -206,7 +121,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         html_draw_bottom(true);
 
-    }else {
+    } else {
 
         html_draw_top('frame_set_html', 'pm_popup_disabled');
 
@@ -220,10 +135,10 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
         html_draw_bottom(true);
     }
 
-}else if (isset($_GET['left']) && $_GET['left'] == 'search_results') {
+} else if (isset($_GET['left']) && $_GET['left'] == 'search_results') {
 
     // Guests can't use this
-    if (user_is_guest()) {
+    if (!session::logged_in()) {
 
         html_guest_error();
         exit;
@@ -242,7 +157,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         html_draw_bottom(true);
 
-    }else {
+    } else {
 
         html_draw_top('frame_set_html', 'pm_popup_disabled');
 
@@ -256,7 +171,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
         html_draw_bottom(true);
     }
 
-}else {
+} else {
 
     if (($msg = messages_get_most_recent($uid))) {
 
@@ -271,12 +186,9 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         html_draw_bottom(true);
 
-    }else {
+    } else {
 
-        html_draw_top();
-        html_error_msg(gettext("No Messages"));
-        html_draw_bottom();
-        exit;
+        html_draw_error(gettext("No Messages"));
     }
 }
 

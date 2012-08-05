@@ -73,7 +73,7 @@ if (isset($_SERVER['argc']) && ($_SERVER['argc'] > 1)) {
 
     // Set some options
     $options = array(
-        'debug'       => false,
+        'debug' => false,
         'recurse_dir' => true,
         'ignore_dirs' => array(
             'forum/include/languages',

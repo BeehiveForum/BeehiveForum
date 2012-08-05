@@ -21,16 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/**
-* adsense.inc.php - admin functions
-*
-* Contains Google Adsense related functions.
-*/
-
-/**
-*
-*/
-
 // We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
@@ -39,11 +29,11 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "server.inc.php");
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'server.inc.php';
 
 function adsense_publisher_id()
 {
@@ -94,7 +84,7 @@ function adsense_check_user()
 {
     $adsense_display_users = adsense_display_users();
 
-    if ((user_is_guest()) && ($adsense_display_users == ADSENSE_DISPLAY_GUESTS)) return true;
+    if (!session::logged_in() && ($adsense_display_users == ADSENSE_DISPLAY_GUESTS)) return true;
     if ($adsense_display_users == ADSENSE_DISPLAY_ALL_USERS) return true;
 
     return false;
@@ -102,8 +92,10 @@ function adsense_check_user()
 
 function adsense_slot_id($ad_type)
 {
-    $forum_setting_names_array = array('small'  => 'adsense_small_ad_id',
-                                       'medium' => 'adsense_medium_ad_id');
+    $forum_setting_names_array = array(
+        'small' => 'adsense_small_ad_id',
+        'medium' => 'adsense_medium_ad_id'
+    );
 
     if (!in_array($ad_type, array_keys($forum_setting_names_array))) {
         $ad_type = 'medium';
@@ -137,7 +129,7 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
 
             if (($adsense_display_pages == ADSENSE_DISPLAY_TOP_OF_MESSAGES)) return true;
 
-        }else {
+        } else {
             
             if (($adsense_display_pages == ADSENSE_DISPLAY_BOTTOM_OF_MESSAGES)) {
                 return (($pid + 1) == $thread_length);
@@ -207,7 +199,7 @@ function adsense_output_html()
             echo "  <div style=\"width: {$ad_width}px; margin: auto\">\n";
             echo "    <script type=\"text/javascript\" src=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\"></script>\n";
 
-            if ((user_is_guest()) && ($adsense_display_users == ADSENSE_DISPLAY_GUESTS)) {
+            if (!session::logged_in() && ($adsense_display_users == ADSENSE_DISPLAY_GUESTS)) {
                 echo "  <div class=\"google_adsense_register_note\"><a href=\"index.php?webtag=$webtag&amp;final_uri=register.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">", gettext("Register to remove these adverts."), "</a></div>\n";
             }
 

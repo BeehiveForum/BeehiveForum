@@ -29,14 +29,14 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
-include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
+require_once BH_INCLUDE_PATH. 'text_captcha.inc.php';
 
 // Include Swift Mailer
-include_once(BH_INCLUDE_PATH. "/swift/swift_required.php");
+require_once BH_INCLUDE_PATH. '/swift/swift_required.php';
 
 // Swift Mailer Transport Factory
 abstract class Swift_TransportFactory
@@ -109,7 +109,7 @@ class Swift_MailTransportSingleton
     {
         if (server_os_mswin()) {
             if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP')) return false;
-        }else {
+        } else {
             if (!(bool)@ini_get('sendmail_path')) return false;
         }
 

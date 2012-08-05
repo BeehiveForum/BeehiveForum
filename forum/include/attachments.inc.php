@@ -21,16 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/**
-* attachments.inc.php - attachment upload handling
-*
-* Contains functions to handle the upload, deletion and modification of file attachments
-*/
-
-/**
-*
-*/
-
 // We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
@@ -39,28 +29,18 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-/**
-* attachments_get_upload_tmp_dir
-*
-* Fetches the upload temporary directory as defined in php.ini
-* or as defined by the system environment variable 'TEMP' / 'TMP'
-*
-* @return mixed
-* @param void
-*/
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'server.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 function attachments_get_upload_tmp_dir()
 {
@@ -74,17 +54,6 @@ function attachments_get_upload_tmp_dir()
 
     return false;
 }
-
-/**
-* attachments_check_dir
-*
-* Checks that the specified attachments directory exists and is writable.
-* Attempts to create the directory if it doesn't exist. Returns string
-* containing attachment path if successful, otherwise false.
-*
-* @return mixed
-* @param void
-*/
 
 function attachments_check_dir()
 {
@@ -102,48 +71,6 @@ function attachments_check_dir()
 
     return false;
 }
-
-/**
-* attachments_get_url_query_hash
-*
-* Fetches the attachment hash from the URL, providing support for both
-* newer get_attachment.php/hash/filename and ?hash= methods
-*
-* @return mixed
-* @param boolean $redirect - By reference redirect hint
-*/
-
-function attachments_get_url_query_hash(&$redirect)
-{
-    $attachment_data = array();
-
-    if (isset($_GET['hash']) && is_md5($_GET['hash'])) {
-
-        return $_GET['hash'];
-
-    }else if (preg_match('/\/(get_attachment\.php\/)?([A-Fa-f0-9]{32})/Du', $_SERVER['PHP_SELF'], $attachment_data) > 0) {
-
-        if (isset($attachment_data[2]) && is_md5($attachment_data[2])) {
-
-            $redirect = true;
-            return $attachment_data[2];
-        }
-    }
-
-    return false;
-}
-
-/**
-* attachments_get
-*
-* Fetches the available attachments based on the provided parameters that match $aid
-*
-* @return bool
-* @param integer $uid - User ID
-* @param string $aid - Current post attachment ID (MD5 Hash)
-* @param array $user_attachments - By reference array containing normal attachments
-* @param array $user_attachments - By reference array containing image attachments
-*/
 
 function attachments_get($uid, $aid, &$user_attachments, &$user_image_attachments, $hash_array = array())
 {
@@ -174,7 +101,7 @@ function attachments_get($uid, $aid, &$user_attachments, &$user_image_attachment
         $sql.= "AND PAF.HASH IN ('$hash_list') ";
         $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
 
-    }else {
+    } else {
 
         $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
         $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
@@ -195,41 +122,33 @@ function attachments_get($uid, $aid, &$user_attachments, &$user_image_attachment
                 $filesize = filesize("$attachment_dir/{$attachment['HASH']}");
                 $filesize+= filesize("$attachment_dir/{$attachment['HASH']}.thumb");
 
-                $user_image_attachments[$attachment['HASH']] = array("filename"     => rawurldecode($attachment['FILENAME']),
-                                                                     "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                                                                     "filesize"     => $filesize,
-                                                                     "aid"          => $attachment['AID'],
-                                                                     "hash"         => $attachment['HASH'],
-                                                                     "mimetype"     => $attachment['MIMETYPE'],
-                                                                     "downloads"    => $attachment['DOWNLOADS']);
+                $user_image_attachments[$attachment['HASH']] = array(
+                    "filename" => rawurldecode($attachment['FILENAME']),
+                    "filedate" => filemtime("$attachment_dir/{$attachment['HASH']}"),
+                    "filesize" => $filesize,
+                    "aid" => $attachment['AID'],
+                    "hash" => $attachment['HASH'],
+                    "mimetype" => $attachment['MIMETYPE'],
+                    "downloads" => $attachment['DOWNLOADS']
+                );
 
-            }else {
+            } else {
 
-                $user_attachments[$attachment['HASH']] = array("filename"     => rawurldecode($attachment['FILENAME']),
-                                                               "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                                                               "filesize"     => filesize("$attachment_dir/{$attachment['HASH']}"),
-                                                               "aid"          => $attachment['AID'],
-                                                               "hash"         => $attachment['HASH'],
-                                                               "mimetype"     => $attachment['MIMETYPE'],
-                                                               "downloads"    => $attachment['DOWNLOADS']);
+                $user_attachments[$attachment['HASH']] = array(
+                    "filename" => rawurldecode($attachment['FILENAME']),
+                    "filedate" => filemtime("$attachment_dir/{$attachment['HASH']}"),
+                    "filesize" => filesize("$attachment_dir/{$attachment['HASH']}"),
+                    "aid" => $attachment['AID'],
+                    "hash" => $attachment['HASH'],
+                    "mimetype" => $attachment['MIMETYPE'],
+                    "downloads" => $attachment['DOWNLOADS']
+                );
             }
         }
     }
 
     return (sizeof($user_attachments) > 0 || sizeof($user_image_attachments) > 0);
 }
-
-/**
-* attachments_get_all
-*
-* Fetches the available attachments based on the provided parameters that do not match $aid
-*
-* @return bool
-* @param integer $uid - User ID
-* @param string $aid - Current post attachment ID (MD5 Hash)
-* @param array $user_attachments - By reference array containing normal attachments
-* @param array $user_attachments - By reference array containing image attachments
-*/
 
 function attachments_get_all($uid, $aid, &$user_attachments, &$user_image_attachments)
 {
@@ -261,40 +180,33 @@ function attachments_get_all($uid, $aid, &$user_attachments, &$user_image_attach
                 $filesize = filesize("$attachment_dir/{$attachment['HASH']}");
                 $filesize+= filesize("$attachment_dir/{$attachment['HASH']}.thumb");
 
-                $user_image_attachments[$attachment['HASH']] = array("filename"     => rawurldecode($attachment['FILENAME']),
-                                                                     "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                                                                     "filesize"     => $filesize,
-                                                                     "aid"          => $attachment['AID'],
-                                                                     "hash"         => $attachment['HASH'],
-                                                                     "mimetype"     => $attachment['MIMETYPE'],
-                                                                     "downloads"    => $attachment['DOWNLOADS']);
+                $user_image_attachments[$attachment['HASH']] = array(
+                    "filename" => rawurldecode($attachment['FILENAME']),
+                    "filedate" => filemtime("$attachment_dir/{$attachment['HASH']}"),
+                    "filesize" => $filesize,
+                    "aid" => $attachment['AID'],
+                    "hash" => $attachment['HASH'],
+                    "mimetype" => $attachment['MIMETYPE'],
+                    "downloads" => $attachment['DOWNLOADS']
+                );
 
-            }else {
+            } else {
 
-                $user_attachments[$attachment['HASH']] = array("filename"     => rawurldecode($attachment['FILENAME']),
-                                                               "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                                                               "filesize"     => filesize("$attachment_dir/{$attachment['HASH']}"),
-                                                               "aid"          => $attachment['AID'],
-                                                               "hash"         => $attachment['HASH'],
-                                                               "mimetype"     => $attachment['MIMETYPE'],
-                                                               "downloads"    => $attachment['DOWNLOADS']);
+                $user_attachments[$attachment['HASH']] = array(
+                    "filename" => rawurldecode($attachment['FILENAME']),
+                    "filedate" => filemtime("$attachment_dir/{$attachment['HASH']}"),
+                    "filesize" => filesize("$attachment_dir/{$attachment['HASH']}"),
+                    "aid" => $attachment['AID'],
+                    "hash" => $attachment['HASH'],
+                    "mimetype" => $attachment['MIMETYPE'],
+                    "downloads" => $attachment['DOWNLOADS']
+                );
             }
         }
     }
 
     return (sizeof($user_attachments) > 0 || sizeof($user_image_attachments) > 0);
 }
-
-/**
-* attachments_get_users
-*
-* Fetches the available attachments for the provided User ID
-*
-* @return bool
-* @param integer $uid - User ID
-* @param array $user_attachments - By reference array containing normal attachments
-* @param array $user_attachments - By reference array containing image attachments
-*/
 
 function attachments_get_users($uid, &$user_attachments, &$user_image_attachments, $hash_array = array())
 {
@@ -318,11 +230,10 @@ function attachments_get_users($uid, &$user_attachments, &$user_image_attachment
         $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
         $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
         $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
-        $sql.= "WHERE PAF.UID = '$uid' ";
-        $sql.= "AND PAF.HASH IN ('$hash_list') ";
+        $sql.= "WHERE PAF.UID = '$uid' AND PAF.HASH IN ('$hash_list') ";
         $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
 
-    }else {
+    } else {
 
         $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
         $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
@@ -342,42 +253,33 @@ function attachments_get_users($uid, &$user_attachments, &$user_image_attachment
                 $filesize = filesize("$attachment_dir/{$attachment['HASH']}");
                 $filesize+= filesize("$attachment_dir/{$attachment['HASH']}.thumb");
 
-                $user_image_attachments[$attachment['HASH']] = array("filename"     => rawurldecode($attachment['FILENAME']),
-                                                                     "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                                                                     "filesize"     => $filesize,
-                                                                     "aid"          => $attachment['AID'],
-                                                                     "hash"         => $attachment['HASH'],
-                                                                     "mimetype"     => $attachment['MIMETYPE'],
-                                                                     "downloads"    => $attachment['DOWNLOADS']);
+                $user_image_attachments[$attachment['HASH']] = array(
+                    "filename" => rawurldecode($attachment['FILENAME']),
+                    "filedate" => filemtime("$attachment_dir/{$attachment['HASH']}"),
+                    "filesize" => $filesize,
+                    "aid" => $attachment['AID'],
+                    "hash" => $attachment['HASH'],
+                    "mimetype" => $attachment['MIMETYPE'],
+                    "downloads" => $attachment['DOWNLOADS']
+                );
 
-            }else {
+            } else {
 
-                $user_attachments[$attachment['HASH']] = array("filename"     => rawurldecode($attachment['FILENAME']),
-                                                               "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                                                               "filesize"     => filesize("$attachment_dir/{$attachment['HASH']}"),
-                                                               "aid"          => $attachment['AID'],
-                                                               "hash"         => $attachment['HASH'],
-                                                               "mimetype"     => $attachment['MIMETYPE'],
-                                                               "downloads"    => $attachment['DOWNLOADS']);
+                $user_attachments[$attachment['HASH']] = array(
+                    "filename" => rawurldecode($attachment['FILENAME']),
+                    "filedate" => filemtime("$attachment_dir/{$attachment['HASH']}"),
+                    "filesize" => filesize("$attachment_dir/{$attachment['HASH']}"),
+                    "aid" => $attachment['AID'],
+                    "hash" => $attachment['HASH'],
+                    "mimetype" => $attachment['MIMETYPE'],
+                    "downloads" => $attachment['DOWNLOADS']
+                );
             }
         }
     }
 
     return (sizeof($user_attachments) > 0 || sizeof($user_image_attachments) > 0);
 }
-
-/**
-* attachments_add
-*
-* Adds a record to the database for a new file attachment
-*
-* @return bool
-* @param integer $uid - User ID
-* @param string $aid - Post attachment ID (MD5 Hash)
-* @param integer $fileid - Unique ID of the file for duplicate filenames
-* @param string $filename - Filename of the file attachment
-* @param string $mimetype - MIME type of the file attachment
-*/
 
 function attachments_add($uid, $aid, $fileid, $filename, $mimetype)
 {
@@ -400,22 +302,13 @@ function attachments_add($uid, $aid, $fileid, $filename, $mimetype)
     return true;
 }
 
-/**
-* attachments_delete_by_aid
-*
-* Deletes an attachment by it's Post attachment ID
-*
-* @return void
-* @param string $aid - Post attachment ID (MD5 Hash)
-*/
-
 function attachments_delete_by_aid($aid)
 {
     if (!is_md5($aid)) return false;
 
     if (!$db_attachments_delete_by_aid = db_connect()) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
     // Fetch the attachment to make sure the user
     // is able to delete it, i.e. it belongs to them.
@@ -432,36 +325,27 @@ function attachments_delete_by_aid($aid)
     return true;
 }
 
-/**
-* attachments_delete
-*
-* Deletes an attachment by it's file hash
-*
-* @return void
-* @param string $hash - File attachment ID (MD5 Hash)
-*/
-
 function attachments_delete($hash)
 {
     if (!is_md5($hash)) return false;
 
     if (!$db_attachments_delete = db_connect()) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
     // Fetch the attachment to make sure the user
     // is able to delete it, i.e. it belongs to them.
-    if (($table_data = get_table_prefix())) {
+    if (($table_prefix = get_table_prefix())) {
 
         $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
         $sql.= "PAI.PID, THREAD.FID FROM POST_ATTACHMENT_FILES PAF ";
         $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-        $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = PAI.TID) ";
+        $sql.= "LEFT JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = PAI.TID) ";
         $sql.= "WHERE PAF.HASH = '$hash'";
 
-    }else {
+    } else {
 
         $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
         $sql.= "PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
@@ -471,57 +355,46 @@ function attachments_delete($hash)
 
     if (!$result = db_query($sql, $db_attachments_delete)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        $attachment_data = db_fetch_array($result);
+    $attachment_data = db_fetch_array($result);
 
-        if (!isset($attachment_data['FID'])) $attachment_data['FID'] = 0;
+    if (!isset($attachment_data['FID'])) $attachment_data['FID'] = 0;
 
-        if (($attachment_data['UID'] == $uid) || session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID'])) {
+    if (!(($attachment_data['UID'] == $uid) || session::check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']))) return false;
 
-            // Mark the related post as edited
-            if (isset($attachment_data['TID']) && isset($attachment_data['PID'])) {
+    if (isset($attachment_data['TID']) && isset($attachment_data['PID'])) {
 
-                post_add_edit_text($attachment_data['TID'], $attachment_data['PID']);
+        post_add_edit_text($attachment_data['TID'], $attachment_data['PID']);
 
-                if (session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
+        if (session::check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
 
-                    $log_data = array($attachment_data['TID'], $attachment_data['PID'], $attachment_data['FILENAME']);
-                    admin_add_log_entry(ATTACHMENTS_DELETE, $log_data);
-                }
-            }
+            $log_data = array(
+                $attachment_data['TID'], 
+                $attachment_data['PID'], 
+                $attachment_data['FILENAME']
+            );
 
-            // Delete the attachment record from the database
-            $sql = "DELETE QUICK FROM POST_ATTACHMENT_FILES ";
-            $sql.= "WHERE HASH = '$hash'";
-
-            if (!db_query($sql, $db_attachments_delete)) return false;
-
-            // Check to see if there are anymore attachments with the same AID
-            $sql = "SELECT AID FROM POST_ATTACHMENT_FILES ";
-            $sql.= "WHERE AID = '{$attachment_data['AID']}'";
-
-            if (!db_query($sql, $db_attachments_delete)) return false;
-
-            // Finally delete the file (and it's thumbnail)
-            @unlink("$attachment_dir/$hash");
-            @unlink("$attachment_dir/$hash.thumb");
-
-            return true;
+            admin_add_log_entry(ATTACHMENTS_DELETE, $log_data);
         }
     }
 
-    return false;
-}
+    $sql = "DELETE QUICK FROM POST_ATTACHMENT_FILES ";
+    $sql.= "WHERE HASH = '$hash'";
 
-/**
-* attachments_delete_thumbnail
-*
-* Deletes an attachments thunbnail by it's file hash.
-*
-* @return void
-* @param string $hash - File attachment ID (MD5 Hash)
-*/
+    if (!db_query($sql, $db_attachments_delete)) return false;
+
+    $sql = "SELECT AID FROM POST_ATTACHMENT_FILES ";
+    $sql.= "WHERE AID = '{$attachment_data['AID']}'";
+
+    if (!db_query($sql, $db_attachments_delete)) return false;
+
+    @unlink("$attachment_dir/$hash");
+
+    @unlink("$attachment_dir/$hash.thumb");
+
+    return true;
+}
 
 function attachments_delete_thumbnail($hash)
 {
@@ -529,21 +402,21 @@ function attachments_delete_thumbnail($hash)
 
     if (!$db_attachments_delete_thumbnail = db_connect()) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
     // Fetch the attachment to make sure the user
     // is able to delete it, i.e. it belongs to them.
-    if (($table_data = get_table_prefix())) {
+    if (($table_prefix = get_table_prefix())) {
 
         $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
         $sql.= "PAI.PID, THREAD.FID FROM POST_ATTACHMENT_FILES PAF ";
         $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-        $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = PAI.TID) ";
+        $sql.= "LEFT JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = PAI.TID) ";
         $sql.= "WHERE PAF.HASH = '$hash'";
 
-    }else {
+    } else {
 
         $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
         $sql.= "PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
@@ -553,45 +426,34 @@ function attachments_delete_thumbnail($hash)
 
     if (!$result = db_query($sql, $db_attachments_delete_thumbnail)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        $attachment_data = db_fetch_array($result);
+    $attachment_data = db_fetch_array($result);
 
-        if (!isset($attachment_data['FID'])) $attachment_data['FID'] = 0;
+    if (!isset($attachment_data['FID'])) $attachment_data['FID'] = 0;
 
-        if (($attachment_data['UID'] == $uid) || session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID'])) {
+    if (!(($attachment_data['UID'] == $uid) || session::check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']))) return false;
 
-            // Mark the related post as edited
-            if (isset($attachment_data['TID']) && isset($attachment_data['PID'])) {
+    if (isset($attachment_data['TID']) && isset($attachment_data['PID'])) {
 
-                post_add_edit_text($attachment_data['TID'], $attachment_data['PID']);
+        post_add_edit_text($attachment_data['TID'], $attachment_data['PID']);
 
-                if (session_check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
+        if (session::check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
 
-                    $log_data = array($attachment_data['TID'], $attachment_data['PID'], $attachment_data['FILENAME']);
-                    admin_add_log_entry(ATTACHMENTS_DELETE, $log_data);
-                }
-            }
-
-            // Delete the thumbnail.
-            @unlink("$attachment_dir/$hash.thumb");
-
-            return true;
+            $log_data = array(
+                $attachment_data['TID'], 
+                $attachment_data['PID'], 
+                $attachment_data['FILENAME']
+            );
+            
+            admin_add_log_entry(ATTACHMENTS_DELETE, $log_data);
         }
     }
 
-    return false;
-}
+    @unlink("$attachment_dir/$hash.thumb");
 
-/**
-* attachments_get_free_space
-*
-* Gets the free attachment space for the specified User ID
-*
-* @return integer - Free space in bytes
-* @param integer $uid - User ID for checking per-user attachment space
-* @param md5 hash $aid - Attachment AID for checking per-post attachment space
-*/
+    return true;
+}
 
 function attachments_get_free_space($uid, $aid)
 {
@@ -611,7 +473,7 @@ function attachments_get_free_space($uid, $aid)
 
             return (($max_post_attachment_space - $post_attachment_space) < 0) ? 0 : ($max_post_attachment_space - $post_attachment_space);
 
-        }else {
+        } else {
 
             return (($max_user_attachment_space - $user_attachment_space) < 0) ? 0 : ($max_user_attachment_space - $user_attachment_space);
         }
@@ -626,15 +488,6 @@ function attachments_get_free_space($uid, $aid)
     return 0;
 }
 
-/**
-* attachments_get_free_user_space
-*
-* Gets the free user (global) attachment space for the specified User ID
-*
-* @return integer - Free space in bytes
-* @param integer $uid - User ID for checking per-user attachment space
-*/
-
 function attachments_get_free_user_space($uid)
 {
     $max_user_attachment_space = forum_get_setting('attachments_max_user_space', false, 1048576);
@@ -643,15 +496,6 @@ function attachments_get_free_user_space($uid)
 
     return (($max_user_attachment_space - $user_attachment_space) < 0) ? 0 : ($max_user_attachment_space - $user_attachment_space);
 }
-
-/**
-* attachments_get_free_post_space
-*
-* Gets the free post attachment space for the specified Post AID
-*
-* @return integer - Free space in bytes
-* @param md5 hash $aid - Attachment AID for checking post attachment space
-*/
 
 function attachments_get_free_post_space($aid)
 {
@@ -662,15 +506,6 @@ function attachments_get_free_post_space($aid)
     return (($max_post_attachment_space - $post_attachment_space) < 0) ? 0 : ($max_post_attachment_space - $post_attachment_space);
 }
 
-/**
-* attachments_get_max_space
-*
-* Gets the maximum amount of space available to the user
-*
-* @return integer - Available space in bytes or -1 for no limit.
-* @param integer $uid - User ID for checking per-user attachment space
-*/
-
 function attachments_get_max_space()
 {
     // Get max settings for attachment space (default: 1MB)
@@ -679,21 +514,12 @@ function attachments_get_max_space()
 
     if ($max_user_attachment_space > 0) {
         return $max_user_attachment_space;
-    }else if ($max_post_attachment_space > 0) {
+    } else if ($max_post_attachment_space > 0) {
         return $max_post_attachment_space;
     }
 
     return 0;
 }
-
-/**
-* attachments_get_user_space
-*
-* Gets the amount of space used by the user for all their attachments.
-*
-* @return integer - Used space in bytes.
-* @param integer $uid - User ID for checking per-user attachment space
-*/
 
 function attachments_get_user_space($uid)
 {
@@ -720,15 +546,6 @@ function attachments_get_user_space($uid)
     return $used_attachment_space;
 }
 
-/**
-* attachments_get_post_space
-*
-* Gets the free attachment space for the specified Post AID
-*
-* @return integer - Used space in bytes
-* @param md5 hash $aud - Attachment AID for checking per-post attachment space
-*/
-
 function attachments_get_post_space($aid)
 {
     $used_attachment_space = 0;
@@ -754,16 +571,6 @@ function attachments_get_post_space($aid)
     return $used_attachment_space;
 }
 
-/**
-* attachments_get_id
-*
-* Gets the post attachment ID from the provided Thread ID and Post ID
-*
-* @return mixed
-* @param integer $tid - Thread ID
-* @param integer $pid - Post ID
-*/
-
 function attachments_get_id($tid, $pid)
 {
     if (!$db_attachments_get_id = db_connect()) return false;
@@ -771,34 +578,21 @@ function attachments_get_id($tid, $pid)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $forum_fid = $table_data['FID'];
+    if (!($forum_fid = get_forum_fid())) return false;
 
     $sql = "SELECT AID FROM POST_ATTACHMENT_IDS WHERE ";
     $sql.= "FID = '$forum_fid' AND TID = '$tid' AND PID = '$pid'";
 
     if (!$result = db_query($sql, $db_attachments_get_id)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        list($attachment_id) = db_fetch_array($result, DB_RESULT_NUM);
-        return $attachment_id;
+    list($attachment_id) = db_fetch_array($result, DB_RESULT_NUM);
 
-    }else{
-
-        return false;
-    }
+    return $attachment_id;
 }
-
-/**
-* attachments_get_folder_fid
-*
-* Get the folder ID from the provided post attachment ID
-*
-* @return mixed
-* @param string $aid Post attachment ID (MD5 Hash)
-*/
 
 function attachments_get_folder_fid($aid)
 {
@@ -806,35 +600,24 @@ function attachments_get_folder_fid($aid)
 
     if (!is_md5($aid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $forum_fid = $table_data['FID'];
+    if (!($forum_fid = get_forum_fid())) return false;
 
     $sql = "SELECT FOLDER.FID FROM POST_ATTACHMENT_IDS PAI ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = PAI.TID AND POST.PID = PAI.PID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}POST` POST ON (POST.TID = PAI.TID AND POST.PID = PAI.PID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.AID = '$aid'";
 
     if (!$result = db_query($sql, $db_attachments_get_folder_fid)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        list($folder_fid) = db_fetch_array($result, DB_RESULT_NUM);
-        return $folder_fid;
-    }
+    list($folder_fid) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return false;
+    return $folder_fid;
 }
-
-/**
-* attachments_get_pm_id
-*
-* Gets the PM attachment ID from the provided personal message ID
-*
-* @return mixed
-* @param integer $mid Personal Message ID
-*/
 
 function attachments_get_pm_id($mid)
 {
@@ -846,26 +629,14 @@ function attachments_get_pm_id($mid)
 
     if (!$result = db_query($sql, $db_attachments_get_pm_id)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        list($attachment_id) = db_fetch_array($result, DB_RESULT_NUM);
-        return $attachment_id;
-    }
+    list($attachment_id) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return false;
+    return $attachment_id;
 }
 
-/**
-* attachments_get_message_link
-*
-* Constucts the URI for use in a HTML anchor href attribute for the message that contains the specified attachment.
-*
-* @return mixed
-* @param string $aid - Attachment ID (MD5 Hash)
-* @param bool $get_pm_link - Optional paramter for getting PM link if post link fails
-*/
-
-function attachments_get_message_link($aid, $get_pm_link = true)
+function attachments_get_message_link($aid)
 {
     if (!$db_attachments_get_message_link = db_connect()) return false;
 
@@ -879,35 +650,31 @@ function attachments_get_message_link($aid, $get_pm_link = true)
 
     if (!$result = db_query($sql, $db_attachments_get_message_link)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        list($forum_webtag, $tid, $pid) = db_fetch_array($result, DB_RESULT_NUM);
-        return "messages.php?webtag=$forum_webtag&amp;msg=$tid.$pid";
+    list($forum_webtag, $tid, $pid) = db_fetch_array($result, DB_RESULT_NUM);
 
-    }else if ($get_pm_link) {
-
-        $sql = "SELECT MID FROM PM_ATTACHMENT_IDS WHERE AID = '$aid'";
-
-        if (!$result = db_query($sql, $db_attachments_get_message_link)) return false;
-
-        if (db_num_rows($result) > 0) {
-
-            list($mid) = db_fetch_array($result, DB_RESULT_NUM);
-            return "pm.php?webtag=$webtag&amp;mid=$mid";
-        }
-    }
-
-    return false;
+    return "messages.php?webtag=$forum_webtag&amp;msg=$tid.$pid";
 }
 
-/**
-* attachments_get_count
-*
-* Returns the number of individual attachments a post or PM contains
-*
-* @return integer
-* @param string $aid - Post attachment ID (MD5 Hash)
-*/
+function attachments_get_pm_link($aid)
+{
+    if (!$db_attachments_get_message_link = db_connect()) return false;
+
+    if (!is_md5($aid)) return false;
+
+    $webtag = get_webtag();
+
+    $sql = "SELECT MID FROM PM_ATTACHMENT_IDS WHERE AID = '$aid'";
+
+    if (!$result = db_query($sql, $db_attachments_get_message_link)) return false;
+
+    if (db_num_rows($result) == 0) return false;
+
+    list($mid) = db_fetch_array($result, DB_RESULT_NUM);
+
+    return "pm.php?webtag=$webtag&amp;mid=$mid";
+}
 
 function attachments_get_count($aid)
 {
@@ -927,15 +694,6 @@ function attachments_get_count($aid)
     return $num_attachments;
 }
 
-/**
-* attachments_get_by_hash
-*
-* Fetches the attachment that matches the specified file hash
-*
-* @return mixed
-* @param string $hash - File attachment hash (MD5 Hash)
-*/
-
 function attachments_get_by_hash($hash)
 {
     if (!$db_attachments_get_by_hash = db_connect()) return false;
@@ -949,33 +707,22 @@ function attachments_get_by_hash($hash)
 
     if (!$result = db_query($sql, $db_attachments_get_by_hash)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        $attachment_data = db_fetch_array($result);
+    $attachment_data = db_fetch_array($result);
 
-        if (@file_exists("$attachment_dir/{$attachment_data['HASH']}")) {
+    if (@!file_exists("$attachment_dir/{$attachment_data['HASH']}")) return false;
 
-            return array("filename"  => rawurldecode($attachment_data['FILENAME']),
-                         "filedate"  => filemtime("$attachment_dir/{$attachment_data['HASH']}"),
-                         "filesize"  => filesize("$attachment_dir/{$attachment_data['HASH']}"),
-                         "aid"       => $attachment_data['AID'],
-                         "hash"      => $attachment_data['HASH'],
-                         "mimetype"  => $attachment_data['MIMETYPE'],
-                         "downloads" => $attachment_data['DOWNLOADS']);
-        }
-    }
-
-    return false;
+    return array(
+        "filename" => rawurldecode($attachment_data['FILENAME']),
+        "filedate" => filemtime("$attachment_dir/{$attachment_data['HASH']}"),
+        "filesize" => filesize("$attachment_dir/{$attachment_data['HASH']}"),
+        "aid" => $attachment_data['AID'],
+        "hash" => $attachment_data['HASH'],
+        "mimetype" => $attachment_data['MIMETYPE'],
+        "downloads" => $attachment_data['DOWNLOADS']
+    );
 }
-
-/**
-* attachments_inc_download_count
-*
-* Increments the download count for the specified file hash
-*
-* @return mixed
-* @param string $hash - Post attachment ID (MD5 hash)
-*/
 
 function attachments_inc_download_count($hash)
 {
@@ -991,15 +738,6 @@ function attachments_inc_download_count($hash)
     return true;
 }
 
-/**
-* attachments_embed_check
-*
-* Checks provided content for attachments embedded in HTML image / object tags
-*
-* @return bool
-* @param string $content - string to check
-*/
-
 function attachments_embed_check($content)
 {
     if (forum_get_setting('attachments_allow_embed', 'Y')) return false;
@@ -1008,19 +746,6 @@ function attachments_embed_check($content)
 
     return preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+get_attachment.php.+>/iu", $content_check);
 }
-
-/**
-* attachments_make_link
-*
-* Constucts the correct type of link for the specified attachment / image attachment
-*
-* @return string
-* @param array $attachment - attachment array retrieved from attachments_get / attachments_get_all function
-* @param bool $show_thumbs - Optionally enable or disable the display of thumbnails for supported image attachments (default: true)
-* @param bool $limit_filename - Optionally truncate the filename to 16 characters if it is too long (default: false)
-* @param bool $local_path - Optionally include the path to the attachment (default: false).
-* @param bool $img_tag - Optionally include the HTML to construct the thumbnail / attachment icon (default: true).
-*/
 
 function attachments_make_link($attachment, $show_thumbs = true, $limit_filename = false, $local_path = false, $img_tag = true)
 {
@@ -1043,13 +768,17 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
 
     $webtag = get_webtag();
 
-    if (forum_get_setting('attachment_thumbnails', 'Y') && ((($user_show_thumbs = session_get_value('SHOW_THUMBS')) > 0) || user_is_guest())) {
+    if (forum_get_setting('attachment_thumbnails', 'Y') && ((($user_show_thumbs = session::get_value('SHOW_THUMBS')) > 0) || !session::logged_in())) {
 
-        $thumbnail_size = array(1 => 50, 2 => 100, 3 => 150);
-        $thumbnail_max_size = isset($thumbnail_size[$user_show_thumbs])
-                              ? $thumbnail_size[$user_show_thumbs] : 100;
+        $thumbnail_size = array(
+            1 => 50, 
+            2 => 100, 
+            3 => 150
+        );
+        
+        $thumbnail_max_size = isset($thumbnail_size[$user_show_thumbs]) ? $thumbnail_size[$user_show_thumbs] : 100;
 
-    }else {
+    } else {
 
         $thumbnail_max_size = 100;
         $show_thumbs = false;
@@ -1059,16 +788,10 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
 
         $attachment_href = "attachments/{$attachment['filename']}";
 
-    }else if (forum_get_setting('attachment_use_old_method', 'Y')) {
+    } else {
 
         $attachment_href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}";
         $attachment_href.= "&amp;filename={$attachment['filename']}";
-
-    }else {
-
-        $attachment_href = "get_attachment.php/{$attachment['hash']}/";
-        $attachment_href.= rawurlencode($attachment['filename']);
-        $attachment_href.= "?webtag=$webtag";
     }
 
     if ($img_tag === true) {
@@ -1092,7 +815,7 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
 
             $title_array[] = gettext("Downloaded: 1 time");
 
-        }else {
+        } else {
 
             $title_array[] = sprintf(gettext("Downloaded: %d times"), $attachment['downloads']);
         }
@@ -1139,16 +862,6 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
     return $attachment_href;
 }
 
-/**
-* attachments_thumb_transparency
-*
-* Assigns alpha transparency to an image to correctly create thumbnails from
-* pngs with alpha transparency.
-*
-* @return GD image resource
-* @param GD image resource $im - GD image source from GD image create function.
-*/
-
 function attachments_thumb_transparency($im)
 {
     if (!function_exists('imageantialias')) return $im;
@@ -1173,17 +886,6 @@ function attachments_thumb_transparency($im)
     return $im;
 }
 
-/**
-* attachments_create_thumb
-*
-* Wrapper function for attachments_create_thumb_im and
-* attachments_create_thumb_gd.
-*
-* @param mixed $filepath
-* @param mixed $max_width
-* @param mixed $max_height
-* @return bool
-*/
 function attachments_create_thumb($filehash, $max_width = 150, $max_height = 150)
 {
     // Check attachment thumbnails are enabled.
@@ -1209,15 +911,6 @@ function attachments_create_thumb($filehash, $max_width = 150, $max_height = 150
     }
 }
 
-/**
-* attachments_create_thumb_im
-*
-* Create attachment thumbnail using ImageMagick.
-*
-* @param string $filepath
-* @param mixed $max_width
-* @param mixed $max_height
-*/
 function attachments_create_thumb_im($filehash, $max_width, $max_height)
 {
     if (!is_numeric($max_width)) $max_width = 150;
@@ -1275,17 +968,6 @@ function attachments_create_thumb_im($filehash, $max_width, $max_height)
     return true;
 }
 
-/**
-* attachments_create_thumb_gd
-*
-* Create a thumbnail for the attachment using PHP's GD functionality.
-* If GD is not enabled or the required read/write functions are not
-* available returns false.
-*
-* @return bool
-* @param string $filepath - path to the file attachment on the server
-* @return bool.
-*/
 function attachments_create_thumb_gd($filehash, $max_width, $max_height)
 {
     if (!is_numeric($max_width)) $max_width = 150;
@@ -1298,24 +980,32 @@ function attachments_create_thumb_gd($filehash, $max_width, $max_height)
     $file_path = "$attachment_dir/$filehash";
 
     // Required PHP image create from functions
-    $required_read_functions  = array(1 => 'imagecreatefromgif',
-                                      2 => 'imagecreatefromjpeg',
-                                      3 => 'imagecreatefrompng');
+    $required_read_functions  = array(
+        1 => 'imagecreatefromgif',
+        2 => 'imagecreatefromjpeg',
+        3 => 'imagecreatefrompng'
+    );
 
     // Required PHP image output functions
-    $required_write_functions = array(1 => 'imagegif',
-                                      2 => 'imagejpeg',
-                                      3 => 'imagepng');
+    $required_write_functions = array(
+        1 => 'imagegif',
+        2 => 'imagejpeg',
+        3 => 'imagepng'
+    );
 
     // Required GD read support
-    $required_read_support = array(1 => array('GIF Read Support'),
-                                   2 => array('JPG Support', 'JPEG Support'),
-                                   3 => array('PNG Support'));
+    $required_read_support = array(
+        1 => array('GIF Read Support'),
+        2 => array('JPG Support', 'JPEG Support'),
+        3 => array('PNG Support')
+    );
 
     // Required GD write support
-    $required_write_support = array(1 => array('GIF Create Support'),
-                                    2 => array('JPG Support', 'JPEG Support'),
-                                    3 => array('PNG Support'));
+    $required_write_support = array(
+        1 => array('GIF Create Support'),
+        2 => array('JPG Support', 'JPEG Support'),
+        3 => array('PNG Support')
+    );
 
     // Check the file exists and we can get some image data from it.
     if (!file_exists($file_path) || !($image_info = @getimagesize($file_path))) return false;
@@ -1350,32 +1040,23 @@ function attachments_create_thumb_gd($filehash, $max_width, $max_height)
     if (strcmp($gd_info['GD Version'], '2.0') > -1) {
 
         $dst = imagecreatetruecolor($target_width, $target_height);
+
         $dst = attachments_thumb_transparency($dst);
 
-        imagecopyresampled($dst, $src, 0, 0, 0, 0, $target_width,
-                           $target_height, $image_info[0], $image_info[1]);
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $target_width, $target_height, $image_info[0], $image_info[1]);
 
-    }else {
+    } else {
 
         $dst = imagecreate($target_width, $target_height);
+
         $dst = attachments_thumb_transparency($dst);
 
-        imagecopyresized($dst, $src, 0, 0, 0, 0, $target_width,
-                         $target_height, $image_info[0], $image_info[1]);
+        imagecopyresized($dst, $src, 0, 0, 0, 0, $target_width, $target_height, $image_info[0], $image_info[1]);
     }
 
     return $required_write_functions[$image_info[2]]($dst, "$file_path.thumb");
 }
 
-/**
-* attachments_get_gd_info_key
-*
-* Check that the result from gd_info contains at least one
-* of the keys specified in the array $image_types_array.
-*
-* @param array $image_types_array
-* @return boolean.
-*/
 function attachments_get_gd_info_key($image_types_array)
 {
     if (!function_exists('gd_info') || !($gd_info = gd_info())) return false;
@@ -1393,15 +1074,6 @@ function attachments_get_gd_info_key($image_types_array)
     return false;
 }
 
-/**
-* attachments_get_mime_types
-*
-* Get array of permitted attachment mime types.
-* Returns empty array if no mimetypes set.
-*
-* @param void
-* @return array
-*/
 function attachments_get_mime_types()
 {
     if (($allowed_mimetypes = forum_get_setting('attachment_mime_types'))) {

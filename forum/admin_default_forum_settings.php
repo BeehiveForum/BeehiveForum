@@ -21,99 +21,40 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "attachments.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "sphinx.inc.php");
-include_once(BH_INCLUDE_PATH. "styles.inc.php");
-include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'attachments.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'sphinx.inc.php';
+require_once BH_INCLUDE_PATH. 'styles.inc.php';
+require_once BH_INCLUDE_PATH. 'text_captcha.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
 
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
+// Check we have Admin / Moderator access
+if (!(session::check_perm(USER_PERM_FORUM_TOOLS, 0, 0))) {
+    html_draw_error(gettext("You do not have permission to use this section."));
 }
-
-// Initialise Locale
-lang_init();
 
 // Get the user's post page preferences.
-$page_prefs = session_get_post_page_prefs();
-
-// Check we can access this page.
-if (!(session_check_perm(USER_PERM_FORUM_TOOLS, 0))) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You do not have permission to use this section."));
-    html_draw_bottom();
-    exit;
-}
+$page_prefs = session::get_post_page_prefs();
 
 // Array to hold error messages
 $error_msg_array = array();
@@ -122,38 +63,50 @@ $error_msg_array = array();
 $text_captcha = new captcha(6, 15, 25, 9, 30);
 
 // Array of valid periods for the unread cutoff
-$unread_cutoff_periods = array(UNREAD_MESSAGES_DISABLED       => gettext("Disable unread messages"),
-                               THIRTY_DAYS_IN_SECONDS         => gettext("30 Days"),
-                               SIXTY_DAYS_IN_SECONDS          => gettext("60 Days"),
-                               NINETY_DAYS_IN_SECONDS         => gettext("90 Days"),
-                               HUNDRED_EIGHTY_DAYS_IN_SECONDS => gettext("180 Days"),
-                               YEAR_IN_SECONDS                => gettext("1 year"));
+$unread_cutoff_periods = array(
+    UNREAD_MESSAGES_DISABLED => gettext("Disable unread messages"),
+    THIRTY_DAYS_IN_SECONDS => gettext("30 Days"),
+    SIXTY_DAYS_IN_SECONDS => gettext("60 Days"),
+    NINETY_DAYS_IN_SECONDS => gettext("90 Days"),
+    HUNDRED_EIGHTY_DAYS_IN_SECONDS => gettext("180 Days"),
+    YEAR_IN_SECONDS => gettext("1 year")
+);
 
 // Array of valid periods for the sitemap frequency
-$sitemap_freq_periods = array(DAY_IN_SECONDS  => gettext("Once a day"),
-                              WEEK_IN_SECONDS => gettext("Once a Week"));
+$sitemap_freq_periods = array(
+    DAY_IN_SECONDS => gettext("Once a day"),
+    WEEK_IN_SECONDS => gettext("Once a Week")
+);
 
 // Array of valid Google Adsense ad user account types
-$adsense_user_type_array = array(ADSENSE_DISPLAY_NONE      => gettext("No-one (disabled)"),
-                                 ADSENSE_DISPLAY_ALL_USERS => gettext("All Users"),
-                                 ADSENSE_DISPLAY_GUESTS    => gettext("Guests only"));
+$adsense_user_type_array = array(
+    ADSENSE_DISPLAY_NONE => gettext("No-one (disabled)"),
+    ADSENSE_DISPLAY_ALL_USERS => gettext("All Users"),
+    ADSENSE_DISPLAY_GUESTS => gettext("Guests only")
+);
 
 // Array of valid Google Adsense ad page types
-$adsense_page_type_array = array(ADSENSE_DISPLAY_TOP_OF_ALL_PAGES => gettext("Top of every page"),
-                                 ADSENSE_DISPLAY_TOP_OF_MESSAGES => gettext("Top of messages"),
-                                 ADSENSE_DISPLAY_BOTTOM_OF_ALL_PAGES => gettext("Bottom of every page"),
-                                 ADSENSE_DISPLAY_BOTTOM_OF_MESSAGES => gettext("Bottom of messages"),
-                                 ADSENSE_DISPLAY_ONCE_AFTER_NTH_MSG => gettext("Once only after the nth post"),
-                                 ADSENSE_DISPLAY_AFTER_EVERY_NTH_MSG => gettext("After every nth post"),
-                                 ADSENSE_DISPLAY_AFTER_RANDOM_MSG => gettext("Once after a random post"));
+$adsense_page_type_array = array(
+    ADSENSE_DISPLAY_TOP_OF_ALL_PAGES => gettext("Top of every page"),
+    ADSENSE_DISPLAY_TOP_OF_MESSAGES => gettext("Top of messages"),
+    ADSENSE_DISPLAY_BOTTOM_OF_ALL_PAGES => gettext("Bottom of every page"),
+    ADSENSE_DISPLAY_BOTTOM_OF_MESSAGES => gettext("Bottom of messages"),
+    ADSENSE_DISPLAY_ONCE_AFTER_NTH_MSG => gettext("Once only after the nth post"),
+    ADSENSE_DISPLAY_AFTER_EVERY_NTH_MSG => gettext("After every nth post"),
+    ADSENSE_DISPLAY_AFTER_RANDOM_MSG => gettext("Once after a random post")
+);
 
-$mail_functions_array = array(MAIL_FUNCTION_PHP      => gettext("Use PHP mail function"),
-                              MAIL_FUNCTION_SMTP     => gettext("Use SMTP Server"),
-                              MAIL_FUNCTION_SENDMAIL => gettext("Use Sendmail"));
+$mail_functions_array = array(
+    MAIL_FUNCTION_PHP => gettext("Use PHP mail function"),
+    MAIL_FUNCTION_SMTP => gettext("Use SMTP Server"),
+    MAIL_FUNCTION_SENDMAIL => gettext("Use Sendmail")
+);
                               
 // Array of valid attachment thumbnail methods.
-$attachment_thumbnail_methods = array(ATTACHMENT_THUMBNAIL_IMAGEMAGICK => gettext("Use Imagemagick"), 
-                                      ATTACHMENT_THUMBNAIL_PHPGD       => gettext("Use PHP GD library"));
+$attachment_thumbnail_methods = array(
+    ATTACHMENT_THUMBNAIL_IMAGEMAGICK => gettext("Use Imagemagick"), 
+    ATTACHMENT_THUMBNAIL_PHPGD => gettext("Use PHP GD library")
+);
 
 // Submit code.
 if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_POST['cancel_unread_cutoff'])) {
@@ -164,217 +117,217 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
     if (isset($_POST['forum_name']) && strlen(trim(stripslashes_array($_POST['forum_name']))) > 0) {
         $new_forum_settings['forum_name'] = trim(stripslashes_array($_POST['forum_name']));
-    }else {
+    } else {
         $error_msg_array[] = gettext("You must supply a forum name");
         $valid = false;
     }
 
     if (isset($_POST['forum_desc']) && strlen(trim(stripslashes_array($_POST['forum_desc']))) > 0) {
         $new_forum_settings['forum_desc'] = trim(stripslashes_array($_POST['forum_desc']));
-    }else {
+    } else {
         $new_forum_settings['forum_desc'] = "";
     }
 
     if (isset($_POST['forum_keywords']) && strlen(trim(stripslashes_array($_POST['forum_keywords']))) > 0) {
         $new_forum_settings['forum_keywords'] = trim(stripslashes_array($_POST['forum_keywords']));
-    }else {
+    } else {
         $new_forum_settings['forum_keywords'] = "";
     }
 
     if (isset($_POST['mail_function']) && in_array($_POST['mail_function'], array_keys($mail_functions_array))) {
         $new_forum_settings['mail_function'] = $_POST['mail_function'];
-    }else {
+    } else {
         $new_forum_settings['mail_function'] = forum_get_setting('mail_function', false, YEAR_IN_SECONDS);
     }
 
     if (isset($_POST['smtp_server']) && strlen(trim(stripslashes_array($_POST['smtp_server']))) > 0) {
         $new_forum_settings['smtp_server'] = trim(stripslashes_array($_POST['smtp_server']));
-    }else {
+    } else {
         $new_forum_settings['smtp_server'] = '';
     }
 
     if (isset($_POST['smtp_port']) && is_numeric($_POST['smtp_port']) && $_POST['smtp_port'] > 0 && $_POST['smtp_port'] <= 65535) {
         $new_forum_settings['smtp_port'] = $_POST['smtp_port'];
-    }else {
+    } else {
         $new_forum_settings['smtp_port'] = '';
     }
 
     if (isset($_POST['smtp_username']) && strlen(trim(stripslashes_array($_POST['smtp_username']))) > 0) {
         $new_forum_settings['smtp_username'] = trim(stripslashes_array($_POST['smtp_username']));
-    }else {
+    } else {
         $new_forum_settings['smtp_username'] = '';
     }
 
     if (isset($_POST['smtp_password']) && strlen(trim(stripslashes_array($_POST['smtp_password']))) > 0) {
         $new_forum_settings['smtp_password'] = trim(stripslashes_array($_POST['smtp_password']));
-    }else {
+    } else {
         $new_forum_settings['smtp_password'] = '';
     }
 
     if (isset($_POST['sendmail_path']) && strlen(trim(stripslashes_array($_POST['sendmail_path']))) > 0) {
         $new_forum_settings['sendmail_path'] = trim(stripslashes_array($_POST['sendmail_path']));
-    }else {
+    } else {
         $new_forum_settings['sendmail_path'] = '';
     }
 
     if (isset($_POST['forum_email']) && strlen(trim(stripslashes_array($_POST['forum_email']))) > 0) {
         $new_forum_settings['forum_email'] = trim(stripslashes_array($_POST['forum_email']));
-    }else {
+    } else {
         $new_forum_settings['forum_email'] = "admin@beehiveforum.co.uk";
     }
 
     if (isset($_POST['forum_noreply_email']) && strlen(trim(stripslashes_array($_POST['forum_noreply_email']))) > 0) {
         $new_forum_settings['forum_noreply_email'] = trim(stripslashes_array($_POST['forum_noreply_email']));
-    }else {
+    } else {
         $new_forum_settings['forum_noreply_email'] = "noreply@beehiveforum.co.uk";
     }
 
     if (isset($_POST['content_delivery_domains']) && strlen(trim(stripslashes_array($_POST['content_delivery_domains']))) > 0) {
         $new_forum_settings['content_delivery_domains'] = trim(stripslashes_array($_POST['content_delivery_domains']));
-    }else {
+    } else {
         $new_forum_settings['content_delivery_domains'] = "";
     }
 
     if (isset($_POST['messages_unread_cutoff']) && in_array($_POST['messages_unread_cutoff'], array_keys($unread_cutoff_periods))) {
         $new_forum_settings['messages_unread_cutoff'] = $_POST['messages_unread_cutoff'];
-    }else {
+    } else {
         $new_forum_settings['messages_unread_cutoff'] = forum_get_setting('messages_unread_cutoff', false, YEAR_IN_SECONDS);
     }
 
     if (isset($_POST['search_min_frequency']) && is_numeric($_POST['search_min_frequency'])) {
         $new_forum_settings['search_min_frequency'] = $_POST['search_min_frequency'];
-    }else {
+    } else {
         $new_forum_settings['search_min_frequency'] = 30;
     }
 
     if (isset($_POST['sphinx_search_enabled']) && $_POST['sphinx_search_enabled'] == "Y") {
         $new_forum_settings['sphinx_search_enabled'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['sphinx_search_enabled'] = "N";
     }
 
     if (isset($_POST['sphinx_search_host']) && strlen(trim(stripslashes_array($_POST['sphinx_search_host']))) > 0) {
         $new_forum_settings['sphinx_search_host'] = trim(stripslashes_array($_POST['sphinx_search_host']));
-    }else {
+    } else {
         $new_forum_settings['sphinx_search_host'] = "";
     }
 
     if (isset($_POST['sphinx_search_port']) && is_numeric($_POST['sphinx_search_port'])) {
         $new_forum_settings['sphinx_search_port'] = $_POST['sphinx_search_port'];
-    }else {
+    } else {
         $new_forum_settings['sphinx_search_port'] = '';
     }
 
-    if (isset($_POST['session_cutoff']) && is_numeric($_POST['session_cutoff'])) {
+    if (isset($_POST['session::cutoff']) && is_numeric($_POST['session::cutoff'])) {
         $new_forum_settings['session_cutoff'] = $_POST['session_cutoff'];
-    }else {
+    } else {
         $new_forum_settings['session_cutoff'] = 86400;
     }
 
     if (isset($_POST['active_sess_cutoff']) && is_numeric($_POST['active_sess_cutoff'])) {
 
-        if ($_POST['active_sess_cutoff'] < $_POST['session_cutoff']) {
+        if ($_POST['active_sess_cutoff'] < $_POST['session::cutoff']) {
 
             $new_forum_settings['active_sess_cutoff'] = $_POST['active_sess_cutoff'];
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("Active session timeout cannot be greater than session timeout");
             $valid = false;
         }
 
-    }else {
+    } else {
 
         $new_forum_settings['active_sess_cutoff'] = 900;
     }
 
     if (isset($_POST['allow_new_registrations']) && $_POST['allow_new_registrations'] == "Y") {
         $new_forum_settings['allow_new_registrations'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['allow_new_registrations'] = "N";
     }
 
     if (isset($_POST['require_unique_email']) && $_POST['require_unique_email'] == "Y") {
         $new_forum_settings['require_unique_email'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['require_unique_email'] = "N";
     }
 
     if (isset($_POST['require_email_confirmation']) && $_POST['require_email_confirmation'] == "Y") {
         $new_forum_settings['require_email_confirmation'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['require_email_confirmation'] = "N";
     }
 
     if (isset($_POST['forum_rules_enabled']) && $_POST['forum_rules_enabled'] == "Y") {
         $new_forum_settings['forum_rules_enabled'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['forum_rules_enabled'] = "N";
     }
 
     if (isset($_POST['forum_rules_message']) && strlen(trim(stripslashes_array($_POST['forum_rules_message']))) > 0) {
         $new_forum_settings['forum_rules_message'] = trim(stripslashes_array($_POST['forum_rules_message']));
-    }else {
+    } else {
         $new_forum_settings['forum_rules_message'] = "";
     }
 
     if (isset($_POST['enable_google_analytics']) && $_POST['enable_google_analytics'] == "Y") {
         $new_forum_settings['enable_google_analytics'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['enable_google_analytics'] = "N";
     }
 
     if (isset($_POST['allow_forum_google_analytics']) && $_POST['allow_forum_google_analytics'] == "Y") {
         $new_forum_settings['allow_forum_google_analytics'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['allow_forum_google_analytics'] = "N";
     }
 
     if (isset($_POST['google_analytics_code']) && strlen(trim(stripslashes_array($_POST['google_analytics_code']))) > 0) {
         $new_forum_settings['google_analytics_code'] = trim(stripslashes_array($_POST['google_analytics_code']));
-    }else {
+    } else {
         $new_forum_settings['google_analytics_code'] = "";
     }
 
     if (isset($_POST['adsense_publisher_id']) && strlen(trim(stripslashes_array($_POST['adsense_publisher_id']))) > 0) {
         $new_forum_settings['adsense_publisher_id'] = trim(stripslashes_array($_POST['adsense_publisher_id']));
-    }else {
+    } else {
         $new_forum_settings['adsense_publisher_id'] = '';
     }
 
     if (isset($_POST['adsense_medium_ad_id']) && strlen(trim(stripslashes_array($_POST['adsense_medium_ad_id']))) > 0) {
         $new_forum_settings['adsense_medium_ad_id'] = trim(stripslashes_array($_POST['adsense_medium_ad_id']));
-    }else {
+    } else {
         $new_forum_settings['adsense_medium_ad_id'] = '';
     }
 
     if (isset($_POST['adsense_small_ad_id']) && strlen(trim(stripslashes_array($_POST['adsense_small_ad_id']))) > 0) {
         $new_forum_settings['adsense_small_ad_id'] = trim(stripslashes_array($_POST['adsense_small_ad_id']));
-    }else {
+    } else {
         $new_forum_settings['adsense_small_ad_id'] = '';
     }
 
     if (isset($_POST['adsense_display_users']) && in_array($_POST['adsense_display_users'], array_keys($adsense_user_type_array))) {
         $new_forum_settings['adsense_display_users'] = $_POST['adsense_display_users'];
-    }else {
+    } else {
         $new_forum_settings['adsense_display_users'] = ADSENSE_DISPLAY_NONE;
     }
 
     if (isset($_POST['adsense_display_pages']) && in_array($_POST['adsense_display_pages'], array_keys($adsense_page_type_array))) {
         $new_forum_settings['adsense_display_pages'] = $_POST['adsense_display_pages'];
-    }else {
+    } else {
         $new_forum_settings['adsense_display_pages'] = ADSENSE_DISPLAY_TOP_OF_ALL_PAGES;
     }
 
     if (isset($_POST['adsense_message_number']) && is_numeric($_POST['adsense_message_number'])) {
         $new_forum_settings['adsense_message_number'] = $_POST['adsense_message_number'];
-    }else {
+    } else {
         $new_forum_settings['adsense_message_number'] = 1;
     }
 
     if (isset($_POST['text_captcha_enabled']) && $_POST['text_captcha_enabled'] == "Y") {
         $new_forum_settings['text_captcha_enabled'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['text_captcha_enabled'] = "N";
     }
     
@@ -382,7 +335,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
         $new_forum_settings['text_captcha_dir'] = trim(stripslashes_array($_POST['text_captcha_dir']));
 
-    }elseif (mb_strtoupper($new_forum_settings['text_captcha_enabled']) == "Y") {
+    } else if (mb_strtoupper($new_forum_settings['text_captcha_enabled']) == "Y") {
 
         $error_msg_array[] = gettext("You must supply a directory to save text-captcha images in");
         $valid = false;
@@ -390,37 +343,37 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
     if (isset($_POST['new_user_email_notify']) && $_POST['new_user_email_notify'] == "Y") {
         $new_forum_settings['new_user_email_notify'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['new_user_email_notify'] = "N";
     }
 
     if (isset($_POST['new_user_pm_notify_email']) && $_POST['new_user_pm_notify_email'] == "Y") {
         $new_forum_settings['new_user_pm_notify_email'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['new_user_pm_notify_email'] = "N";
     }
 
     if (isset($_POST['new_user_pm_notify']) && $_POST['new_user_pm_notify'] == "Y") {
         $new_forum_settings['new_user_pm_notify'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['new_user_pm_notify'] = "N";
     }
 
     if (isset($_POST['new_user_mark_as_of_int']) && $_POST['new_user_mark_as_of_int'] == "Y") {
         $new_forum_settings['new_user_mark_as_of_int'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['new_user_mark_as_of_int'] = "N";
     }
 
     if (isset($_POST['show_pms']) && $_POST['show_pms'] == "Y") {
         $new_forum_settings['show_pms'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['show_pms'] = "N";
     }
 
     if (isset($_POST['pm_max_user_messages']) && is_numeric($_POST['pm_max_user_messages'])) {
         $new_forum_settings['pm_max_user_messages'] = $_POST['pm_max_user_messages'];
-    }else {
+    } else {
         $new_forum_settings['pm_max_user_messages'] = 100;
     }
 
@@ -430,18 +383,18 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
             $new_forum_settings['pm_auto_prune'] = $_POST['pm_auto_prune'];
 
-        }else {
+        } else {
 
             $new_forum_settings['pm_auto_prune'] = "-60";
         }
 
-    }else {
+    } else {
 
         if (isset($_POST['pm_auto_prune']) && is_numeric($_POST['pm_auto_prune'])) {
 
             $new_forum_settings['pm_auto_prune'] = $_POST['pm_auto_prune'] * -1;
 
-        }else {
+        } else {
 
             $new_forum_settings['pm_auto_prune'] = "-60";
         }
@@ -449,79 +402,79 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
     if (isset($_POST['pm_allow_attachments']) && $_POST['pm_allow_attachments'] == "Y") {
         $new_forum_settings['pm_allow_attachments'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['pm_allow_attachments'] = "N";
     }
 
     if (isset($_POST['allow_search_spidering']) && $_POST['allow_search_spidering'] == "Y") {
         $new_forum_settings['allow_search_spidering'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['allow_search_spidering'] = "N";
     }
 
     if (isset($_POST['searchbots_show_recent']) && $_POST['searchbots_show_recent'] == "Y") {
         $new_forum_settings['searchbots_show_recent'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['searchbots_show_recent'] = "N";
     }
 
     if (isset($_POST['searchbots_show_active']) && $_POST['searchbots_show_active'] == "Y") {
         $new_forum_settings['searchbots_show_active'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['searchbots_show_active'] = "N";
     }
 
     if (isset($_POST['sitemap_enabled']) && $_POST['sitemap_enabled'] == "Y") {
         $new_forum_settings['sitemap_enabled'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['sitemap_enabled'] = "N";
     }
 
     if (isset($_POST['sitemap_freq']) && in_array($_POST['sitemap_freq'], array_keys($sitemap_freq_periods))) {
         $new_forum_settings['sitemap_freq'] = $_POST['sitemap_freq'];
-    }else {
+    } else {
         $new_forum_settings['sitemap_freq'] = DAY_IN_SECONDS;
     }
 
     if (isset($_POST['allow_username_changes']) && $_POST['allow_username_changes'] == "Y") {
         $new_forum_settings['allow_username_changes'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['allow_username_changes'] = "N";
     }
 
     if (isset($_POST['require_user_approval']) && $_POST['require_user_approval'] == "Y") {
         $new_forum_settings['require_user_approval'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['require_user_approval'] = "N";
     }
 
     if (isset($_POST['send_new_user_email']) && $_POST['send_new_user_email'] == "Y") {
         $new_forum_settings['send_new_user_email'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['send_new_user_email'] = "N";
     }
 
     if (isset($_POST['guest_account_enabled']) && $_POST['guest_account_enabled'] == "Y") {
         $new_forum_settings['guest_account_enabled'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['guest_account_enabled'] = "N";
     }
 
     if (isset($_POST['guest_show_recent']) && $_POST['guest_show_recent'] == "Y") {
         $new_forum_settings['guest_show_recent'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['guest_show_recent'] = "N";
     }
 
     if (isset($_POST['attachments_enabled']) && $_POST['attachments_enabled'] == "Y") {
         $new_forum_settings['attachments_enabled'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['attachments_enabled'] = "N";
     }
 
     if (isset($_POST['attachment_thumbnails']) && $_POST['attachment_thumbnails'] == "Y") {
         $new_forum_settings['attachment_thumbnails'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['attachment_thumbnails'] = "N";
     }
 
@@ -529,7 +482,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
         $new_forum_settings['attachment_dir'] = trim(stripslashes_array($_POST['attachment_dir']));
 
-    }elseif (mb_strtoupper($new_forum_settings['attachments_enabled']) == "Y") {
+    } else if (mb_strtoupper($new_forum_settings['attachments_enabled']) == "Y") {
 
         $error_msg_array[] = gettext("You must supply a directory to save attachments in");
         $valid = false;
@@ -537,7 +490,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
     if (isset($_POST['attachment_mime_types']) && strlen(trim(stripslashes_array($_POST['attachment_mime_types']))) > 0) {
         $new_forum_settings['attachment_mime_types'] = trim(stripslashes_array($_POST['attachment_mime_types']));
-    }else {
+    } else {
         $new_forum_settings['attachment_mime_types'] = "";
     }
     
@@ -549,37 +502,31 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
     if (isset($_POST['attachment_imagemagick_path']) && strlen(trim(stripslashes_array($_POST['attachment_imagemagick_path']))) > 0) {
         $new_forum_settings['attachment_imagemagick_path'] = trim(stripslashes_array($_POST['attachment_imagemagick_path']));
-    }else {
+    } else {
         $new_forum_settings['attachment_imagemagick_path'] = "";
     }
     
     if (isset($_POST['attachments_max_user_space']) && is_numeric($_POST['attachments_max_user_space'])) {
         $new_forum_settings['attachments_max_user_space'] = ($_POST['attachments_max_user_space'] * 1024) * 1024;
-    }else {
+    } else {
         $new_forum_settings['attachments_max_user_space'] = 1048576; // 1MB in bytes
     }
 
     if (isset($_POST['attachments_max_post_space']) && is_numeric($_POST['attachments_max_post_space'])) {
         $new_forum_settings['attachments_max_post_space'] = ($_POST['attachments_max_post_space'] * 1024) * 1024;
-    }else {
+    } else {
         $new_forum_settings['attachments_max_post_space'] = 1048576; // 1MB in bytes
     }
 
     if (isset($_POST['attachments_allow_embed']) && $_POST['attachments_allow_embed'] == "Y") {
         $new_forum_settings['attachments_allow_embed'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['attachments_allow_embed'] = "N";
-    }
-
-    if (isset($_POST['attachment_use_old_method']) && $_POST['attachment_use_old_method'] == "Y") {
-        $new_forum_settings['attachment_use_old_method'] = "Y";
-    }else {
-        $new_forum_settings['attachment_use_old_method'] = "N";
     }
 
     if (isset($_POST['attachment_allow_guests']) && $_POST['attachment_allow_guests'] == "Y") {
         $new_forum_settings['attachment_allow_guests'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['attachment_allow_guests'] = "N";
     }
 
@@ -669,7 +616,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
             header_redirect("admin_default_forum_settings.php?webtag=$webtag&updated=true", gettext("Forum settings successfully updated"));
 
-        }else {
+        } else {
 
             $valid = false;
             $error_msg_array[] = gettext("Failed to update forum settings. Please try again later.");
@@ -688,11 +635,11 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '600', 'center');
 
-}else if (isset($_GET['updated'])) {
+} else if (isset($_GET['updated'])) {
 
     html_display_success_msg(gettext("Preferences were successfully updated."), '600', 'center');
 
-}else {
+} else {
 
     html_display_warning_msg(gettext("<b>Note:</b> These settings affect all forums. Where the setting is duplicated on the individual Forum's settings page that will take precedence over the settings you change here."), '600', 'center');
 }
@@ -1015,7 +962,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">", gettext("Session cut off (seconds)"), ":</td>\n";
-echo "                        <td align=\"left\">", form_input_text("session_cutoff", (isset($forum_global_settings['session_cutoff'])) ? htmlentities_array($forum_global_settings['session_cutoff']) : "86400", 20, 6), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("session::cutoff", (isset($forum_global_settings['session::cutoff'])) ? htmlentities_array($forum_global_settings['session::cutoff']) : "86400", 20, 6), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">", gettext("Active session cut off (seconds)"), ":</td>\n";
@@ -1287,7 +1234,6 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"center\" colspan=\"2\">\n";
 
-
 html_display_warning_msg(gettext("If you do not have a Google AdSense Account you will need to sign up for one by clicking <a href=\"https://www.google.com/adsense/\" target=\"_blank\">here</a>."), '95%', 'center');
 html_display_warning_msg(gettext("If you wish to enable or disable Google AdSense ads on a particular forum you can do so by visiting that forum's Forum Settings page."), '95%', 'center');
 
@@ -1368,7 +1314,7 @@ $tool_type = POST_TOOLBAR_DISABLED;
 
 if ($page_prefs & POST_TOOLBAR_DISPLAY) {
     $tool_type = POST_TOOLBAR_SIMPLE;
-}else if ($page_prefs & POST_TINYMCE_DISPLAY) {
+} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
     $tool_type = POST_TOOLBAR_TINYMCE;
 }
 
@@ -1396,7 +1342,7 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
     echo "                        <td align=\"left\">", $forum_rules->toolbar(true), "</td>\n";
     echo "                      </tr>\n";
 
-}else {
+} else {
 
     $forum_rules->set_tinymce(false);
 }
@@ -1627,10 +1573,6 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">", gettext("Allow embedding of attachments"), ":</td>\n";
 echo "                        <td align=\"left\">", form_radio("attachments_allow_embed", "Y", gettext("Yes"), (isset($forum_global_settings['attachments_allow_embed']) && $forum_global_settings['attachments_allow_embed'] == 'Y')), "&nbsp;", form_radio("attachments_allow_embed", "N", gettext("No"), (isset($forum_global_settings['attachments_allow_embed']) && $forum_global_settings['attachments_allow_embed'] == 'N') || !isset($forum_global_settings['attachments_allow_embed'])), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"270\">", gettext("Use Alternative attachment method"), ":</td>\n";
-echo "                        <td align=\"left\">", form_radio("attachment_use_old_method", "Y", gettext("Yes"), (isset($forum_global_settings['attachment_use_old_method']) && $forum_global_settings['attachment_use_old_method'] == 'Y')), "&nbsp;", form_radio("attachment_use_old_method", "N", gettext("No"), (isset($forum_global_settings['attachment_use_old_method']) && $forum_global_settings['attachment_use_old_method'] == 'N') || !isset($forum_global_settings['attachment_use_old_method'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">", gettext("Allow Guests to access attachments"), ":</td>\n";

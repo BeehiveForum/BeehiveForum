@@ -21,17 +21,52 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
+// We shouldn't be accessing this file directly.
+if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
+    header("Request-URI: ../index.php");
+    header("Content-Location: ../index.php");
+    header("Location: ../index.php");
+    exit;
+}
+
+// Light Mode Detection
+define("BEEHIVEMODE_LIGHT", true);
+
+// Constant to define where the include files are
+define('BH_INCLUDE_PATH', 'include/');
+
+// Enable the error handler
+require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
+
+// Set the error reporting level to report all errors
+error_reporting(E_ALL | E_STRICT);
+
+// Enable the exception handler
+set_exception_handler('bh_exception_handler');
+
+// Enable the error handler
+set_error_handler('bh_error_handler');
+
+// Register shutdown function to check for uncaught errors
+register_shutdown_function('bh_shutdown_handler');
+
 // Set the default timezone
 date_default_timezone_set('UTC');
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
 // Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
+require_once BH_INCLUDE_PATH. 'server.inc.php';
 
 // Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
+require_once BH_INCLUDE_PATH. 'cache.inc.php';
+
+// Installation checking functions
+require_once BH_INCLUDE_PATH. 'install.inc.php';
+
+// Wordfilter
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+
+// Enable the word filter ob filter
+ob_start('word_filter_ob_callback');
 
 // Disable PHP's register_globals
 unregister_globals();
@@ -45,20 +80,11 @@ cache_disable_aol();
 // Disable caching if proxy server detected.
 cache_disable_proxy();
 
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
 // Check that Beehive is installed correctly
 check_install();
 
 // Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
 
 // Fetch Forum Settings
 $forum_settings = forum_get_settings();
@@ -66,50 +92,28 @@ $forum_settings = forum_get_settings();
 // Fetch Global Forum Settings
 $forum_global_settings = forum_get_global_settings();
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-
-// Get webtag
-$webtag = get_webtag();
-
-// Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
+// Initialise the session
+session::init();
 
 // Check to see if the user is banned.
-if (session_user_banned()) {
-
+if (session::user_banned()) {
     html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
-if (!session_user_approved()) {
-
+if (!session::user_approved()) {
     html_user_require_approval();
     exit;
 }
 
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
+// Get the webtag for the current forum
+$webtag = get_webtag();
+
+// Check we have a webtag and have access to the specified forum
+if (!forum_check_webtag_available($webtag) || !forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("forums.php?webtag_error&final_uri=$request_uri");
 }
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// This file is no longer used by Beehive.
-header_redirect("thread_list.php?webtag=$webtag");
 
 ?>

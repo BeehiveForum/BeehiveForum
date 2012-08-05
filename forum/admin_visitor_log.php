@@ -21,114 +21,39 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "banned.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'banned.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
 
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You do not have permission to use this section."));
-    html_draw_bottom();
-    exit;
+// Check we have Admin / Moderator access
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+    html_draw_error(gettext("You do not have permission to use this section."));
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
-}else {
+} else {
     $page = 1;
 }
 
-$start = floor($page - 1) * 10;
-if ($start < 0) $start = 0;
-
-// Array to hold our error messages
 $error_msg_array = array();
 
 if (isset($_POST['prune_log'])) {
@@ -137,7 +62,7 @@ if (isset($_POST['prune_log'])) {
 
     if (isset($_POST['remove_days']) && is_numeric($_POST['remove_days'])) {
         $remove_days = $_POST['remove_days'];
-    }else {
+    } else {
         $remove_days = 0;
     }
 
@@ -148,7 +73,7 @@ if (isset($_POST['prune_log'])) {
             header_redirect("admin_visitor_log.php?webtag=$webtag&pruned=true");
             exit;
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("Failed To Prune Visitor Log");
             $valid = false;
@@ -158,7 +83,7 @@ if (isset($_POST['prune_log'])) {
 
 html_draw_top("title=", gettext("Admin"), " - ", gettext("Visitor Log"), "", 'class=window_title');
 
-$admin_visitor_log_array = admin_get_visitor_log($start, 10);
+$admin_visitor_log_array = admin_get_visitor_log($page);
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Visitor Log"), "</h1>\n";
 
@@ -166,11 +91,11 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '90%', 'center');
 
-}else if (isset($_GET['pruned'])) {
+} else if (isset($_GET['pruned'])) {
 
     html_display_success_msg(gettext("Successfully Pruned Visitor Log"), '90%', 'center');
 
-}else if (sizeof($admin_visitor_log_array['user_array']) < 1) {
+} else if (sizeof($admin_visitor_log_array['user_array']) < 1) {
 
     html_display_warning_msg(gettext("No Visitors Logged"), '90%', 'center');
 }
@@ -201,18 +126,18 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
 
             echo "                   <td class=\"postbody\" align=\"left\" style=\"white-space: nowrap\"><a href=\"{$visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags($visitor['NAME'], true), "</a></td>\n";
 
-        }elseif ($visitor['UID'] > 0) {
+        } else if ($visitor['UID'] > 0) {
 
             echo "                   <td class=\"postbody\" align=\"left\" style=\"white-space: nowrap\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$visitor['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($visitor['LOGON'], $visitor['NICKNAME']), true), "</a></td>\n";
 
-        }else {
+        } else {
 
             echo "                   <td class=\"postbody\" align=\"left\" style=\"white-space: nowrap\">", word_filter_add_ob_tags(format_user_name($visitor['LOGON'], $visitor['NICKNAME']), true), "</td>\n";
         }
 
         if (isset($visitor['LAST_LOGON']) && $visitor['LAST_LOGON'] > 0) {
             echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">", format_time($visitor['LAST_LOGON']), "</td>\n";
-        }else {
+        } else {
             echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">", gettext("Unknown"), "</td>\n";
         }
 
@@ -222,12 +147,12 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
 
                 echo "                   <td class=\"postbody\" align=\"left\" width=\"200\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$visitor['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$visitor['IPADDRESS']}</a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
 
-            }else {
+            } else {
 
                 echo "                   <td class=\"postbody\" align=\"left\" width=\"200\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$visitor['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$visitor['IPADDRESS']}</a>&nbsp;</td>\n";
             }
 
-        }else {
+        } else {
 
             echo "                   <td class=\"postbody\" align=\"left\" width=\"200\">", gettext("Unknown"), "</td>\n";
         }
@@ -245,11 +170,11 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
 
             if (referer_is_banned($visitor['REFERER'])) {
                 echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a>&nbsp;<a href=\"{$visitor['REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;(", gettext("Banned"), ")</td>\n";
-            }else {
+            } else {
                 echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a>&nbsp;<a href=\"{$visitor['REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a></td>\n";
             }
 
-        }else {
+        } else {
 
             echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;", gettext("Unknown"), "</td>\n";
         }
@@ -271,7 +196,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", page_links("admin_visitor_log.php?webtag=$webtag", $start, $admin_visitor_log_array['user_count'], 10), "</td>\n";
+echo "      <td align=\"center\">", html_page_links("admin_visitor_log.php?webtag=$webtag", $page, $admin_visitor_log_array['user_count'], 10), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";

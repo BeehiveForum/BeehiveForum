@@ -21,103 +21,39 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
 
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
+// Check we have Admin / Moderator access
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+    html_draw_error(gettext("You do not have permission to use this section."));
 }
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
-}else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
+} else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
     $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
-}else {
+} else {
     $page = 1;
-}
-
-if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You do not have permission to use this section."));
-    html_draw_bottom();
-    exit;
 }
 
 if (isset($_POST['cancel'])) {
@@ -132,26 +68,26 @@ if (isset($_POST['add'])) {
 
     if (isset($_POST['t_name']) && strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
         $t_name = trim(stripslashes_array($_POST['t_name']));
-    }else {
+    } else {
         $error_msg_array[] = gettext("You must enter a folder name");
         $valid = false;
     }
 
     if (isset($_POST['t_description']) && strlen(trim(stripslashes_array($_POST['t_description']))) > 0) {
         $t_description = trim(stripslashes_array($_POST['t_description']));
-    }else {
+    } else {
         $t_description = "";
     }
 
     if (isset($_POST['t_prefix']) && strlen(trim(stripslashes_array($_POST['t_prefix']))) > 0) {
         $t_prefix = trim(stripslashes_array($_POST['t_prefix']));
-    }else {
+    } else {
         $t_prefix = "";
     }
 
     if (isset($_POST['t_allowed_types']) && is_numeric($_POST['t_allowed_types'])) {
         $t_allowed_types = $_POST['t_allowed_types'];
-    }else {
+    } else {
         $t_allowed_types = FOLDER_ALLOW_ALL_THREAD;
     }
 
@@ -181,7 +117,7 @@ if (isset($_POST['add'])) {
             header_redirect("admin_folders.php?webtag=$webtag&added=true&page=$page");
             exit;
 
-        }else {
+        } else {
 
             $error_msg_array = gettext("Failed to create new folder");
             $valid = false;
@@ -190,11 +126,13 @@ if (isset($_POST['add'])) {
 }
 
 // Make the arrays for the allow post types dropdown
-$allowed_post_types = array(FOLDER_ALLOW_NORMAL_THREAD => gettext("Normal threads only"),
-                            FOLDER_ALLOW_POLL_THREAD   => gettext("Poll threads only"),
-                            FOLDER_ALLOW_ALL_THREAD    => gettext("Both thread types"));
+$allowed_post_types = array(
+    FOLDER_ALLOW_NORMAL_THREAD => gettext("Normal threads only"),
+    FOLDER_ALLOW_POLL_THREAD => gettext("Poll threads only"),
+    FOLDER_ALLOW_ALL_THREAD => gettext("Both thread types")
+);
 
-html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Folders"), " - ", gettext("Add a new folder"), "", 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Admin - Manage Folders - Add a new folder")), 'class=window_title');
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Folders"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add a new folder"), "</h1>\n";
 

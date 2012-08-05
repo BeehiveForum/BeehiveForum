@@ -21,73 +21,32 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "banned.inc.php");
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "email.inc.php");
-include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "ip.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "styles.inc.php");
-include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
-include_once(BH_INCLUDE_PATH. "timezone.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'banned.inc.php';
+require_once BH_INCLUDE_PATH. 'cache.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'email.inc.php';
+require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'ip.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'styles.inc.php';
+require_once BH_INCLUDE_PATH. 'text_captcha.inc.php';
+require_once BH_INCLUDE_PATH. 'timezone.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 // Where are we going after we've logged on?
 if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
@@ -99,29 +58,9 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
     }
 }
 
-// Load the user session
-$user_sess = session_check();
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Initialise Locale
-lang_init();
-
-// Make sure we have a webtag
-$webtag = get_webtag();
-
 // check to see if user registration is available
 if (forum_get_setting('allow_new_registrations', 'N')) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("Sorry, new user registrations are not allowed right now. Please check back later."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("Sorry, new user registrations are not allowed right now. Please check back later."));
 }
 
 // Get an array of available emoticon sets
@@ -144,7 +83,7 @@ $frame_top_target = html_get_top_frame_name();
 
 if (isset($_GET['private_key']) && strlen(trim(stripslashes_array($_GET['private_key']))) > 0) {
     $text_captcha_private_key = trim(stripslashes_array($_GET['private_key']));
-}else {
+} else {
     $text_captcha_private_key = "";
 }
 
@@ -158,14 +97,14 @@ if (forum_get_setting('forum_rules_enabled', 'Y', true)) {
 
             $user_agree_rules = 'Y';
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("You must agree to the forum rules before you can continue.");
             $valid = false;
         }
     }
 
-}else {
+} else {
 
     $user_agree_rules = 'Y';
 }
@@ -184,7 +123,7 @@ if (isset($_POST['register'])) {
 
         $user_agree_rules = 'Y';
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("You must agree to the forum rules before you can continue.");
         $valid = false;
@@ -212,7 +151,7 @@ if (isset($_POST['register'])) {
             $valid = false;
         }
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("A logon name is required");
         $valid = false;
@@ -234,7 +173,7 @@ if (isset($_POST['register'])) {
             $valid = false;
         }
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("A password is required");
         $valid.= false;
@@ -250,7 +189,7 @@ if (isset($_POST['register'])) {
             $valid = false;
         }
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("A confirmation password is required");
         $valid = false;
@@ -266,7 +205,7 @@ if (isset($_POST['register'])) {
             $valid = false;
         }
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("A nickname is required");
         $valid = false;
@@ -281,7 +220,7 @@ if (isset($_POST['register'])) {
             $error_msg_array[] = gettext("Invalid email address format");
             $valid = false;
 
-        }else {
+        } else {
 
             if (email_is_banned($email)) {
 
@@ -296,7 +235,7 @@ if (isset($_POST['register'])) {
             }
         }
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("An email address is required");
         $valid = false;
@@ -311,7 +250,7 @@ if (isset($_POST['register'])) {
         $new_user_prefs['DOB'] = "{$new_user_prefs['DOB_YEAR']}-{$new_user_prefs['DOB_MONTH']}-{$new_user_prefs['DOB_DAY']}";
         $new_user_prefs['DOB_BLANK_FIELDS'] = ($new_user_prefs['DOB_YEAR'] == 0 || $new_user_prefs['DOB_MONTH'] == 0 || $new_user_prefs['DOB_DAY'] == 0) ? true : false;
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("Date of birth is required or is invalid");
         $valid = false;
@@ -319,81 +258,81 @@ if (isset($_POST['register'])) {
 
     if (isset($_POST['firstname']) && strlen(trim(stripslashes_array($_POST['firstname']))) > 0) {
         $new_user_prefs['FIRSTNAME'] = trim(stripslashes_array($_POST['firstname']));
-    }else {
+    } else {
         $new_user_prefs['FIRSTNAME'] = "";
     }
 
     if (isset($_POST['lastname']) && strlen(trim(stripslashes_array($_POST['lastname']))) > 0) {
         $new_user_prefs['LASTNAME'] = trim(stripslashes_array($_POST['lastname']));
-    }else {
+    } else {
         $new_user_prefs['LASTNAME'] = "";
     }
 
     if (isset($_POST['sig_content']) && strlen(trim(stripslashes_array($_POST['sig_content']))) > 0) {
         $sig_content = trim(stripslashes_array($_POST['sig_content']));
-    }else {
+    } else {
         $sig_content = "";
     }
 
     if (isset($_POST['sig_html']) && $_POST['sig_html'] == "Y") {
         $sig_content = fix_html($sig_content);
         $sig_html = "Y";
-    }else {
+    } else {
         $sig_content = stripslashes_array($sig_content);
         $sig_html = "N";
     }
 
     if (isset($_POST['email_notify']) && $_POST['email_notify'] == "Y") {
         $new_user_prefs['EMAIL_NOTIFY'] = "Y";
-    }else {
+    } else {
         $new_user_prefs['EMAIL_NOTIFY'] = "N";
     }
 
     if (isset($_POST['pm_notify_email']) && $_POST['pm_notify_email'] == "Y") {
         $new_user_prefs['PM_NOTIFY_EMAIL'] = "Y";
-    }else {
+    } else {
         $new_user_prefs['PM_NOTIFY_EMAIL'] = "N";
     }
 
     if (isset($_POST['pm_notify']) && $_POST['pm_notify'] == "Y") {
         $new_user_prefs['PM_NOTIFY'] = "Y";
-    }else {
+    } else {
         $new_user_prefs['PM_NOTIFY'] = "N";
     }
 
     if (isset($_POST['mark_as_of_int']) && $_POST['mark_as_of_int'] == "Y") {
         $new_user_prefs['MARK_AS_OF_INT'] = "Y";
-    }else {
+    } else {
         $new_user_prefs['MARK_AS_OF_INT'] = "N";
     }
 
     if (isset($_POST['dl_saving']) && $_POST['dl_saving'] == "Y") {
         $new_user_prefs['DL_SAVING'] = "Y";
-    }else {
+    } else {
         $new_user_prefs['DL_SAVING'] = "N";
     }
 
     if (isset($_POST['timezone']) && in_array($_POST['timezone'], array_keys($available_timezones))) {
         $new_user_prefs['TIMEZONE'] = $_POST['timezone'];
-    }else {
+    } else {
         $new_user_prefs['TIMEZONE'] = forum_get_setting('forum_timezone', false, 27);
     }
 
     if (isset($_POST['language']) && in_array($_POST['language'], $available_langs)) {
         $new_user_prefs['LANGUAGE'] = $_POST['language'];
-    }else {
+    } else {
         $new_user_prefs['LANGUAGE'] = forum_get_setting('default_language', false, 'en');
     }
 
     if (isset($_POST['style']) && style_exists(trim(stripslashes_array($_POST['style'])))) {
         $new_user_prefs['STYLE'] = trim(stripslashes_array($_POST['style']));
-    }else {
+    } else {
         $new_user_prefs['STYLE'] = forum_get_setting('default_style', false, 'default');
     }
 
     if (isset($_POST['emoticons']) && in_array($_POST['emoticons'], $available_emoticons)) {
         $new_user_prefs['EMOTICONS'] = $_POST['emoticons'];
-    }else {
+    } else {
         $new_user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons', false, 'default');
     }
 
@@ -407,7 +346,7 @@ if (isset($_POST['register'])) {
 
                 $private_key = trim(stripslashes_array($_POST['private_key']));
 
-            }else {
+            } else {
 
                 $error_msg_array[] = gettext("A confirmation code is required.");
                 $valid = false;
@@ -458,7 +397,7 @@ if (isset($_POST['register'])) {
         
         $user_data = array(
             'IPADDRESS' => get_ip_address(),
-            'REFERER' => session_get_referer(),
+            'REFERER' => session::get_referer(),
             'LOGON' => $logon,
             'NICKNAME' => $nickname,
             'EMAIL' => $email
@@ -482,7 +421,7 @@ if (isset($_POST['register'])) {
             user_update_sig($new_uid, $sig_content, $sig_html);
 
             // Initialise the new user session.
-            session_init($new_uid);
+            session::init($new_uid);
 
             // Check to see if the user is going somewhere after they have registered.
             $final_uri = (isset($final_uri)) ? rawurlencode($final_uri) : '';
@@ -509,7 +448,7 @@ if (isset($_POST['register'])) {
                     html_draw_bottom();
                     exit;
 
-                }else {
+                } else {
 
                     html_draw_top(sprintf("title=%s", gettext("User Registration")));
                     html_display_msg(gettext("Successfully created user account"), gettext("Your user account has been created but the required confirmation email was not sent. Please contact the forum owner to rectify this. In this meantime please click the continue button to login."), 'index.php', 'get', array('continue' => gettext("Continue")), array('final_uri' => $final_uri), '_top', 'center');
@@ -517,7 +456,7 @@ if (isset($_POST['register'])) {
                     exit;
                 }
 
-            }else {
+            } else {
 
                 html_draw_top(sprintf("title=%s", gettext("User Registration")));
                 html_display_msg(gettext("Successfully created user account"), gettext("Your user account has been created successfully! Click the continue button below to login"), 'index.php', 'get', array('continue' => gettext("Continue")), array('final_uri' => $final_uri), '_top', 'center');
@@ -525,7 +464,7 @@ if (isset($_POST['register'])) {
                 exit;
             }
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("Error creating user record");
             $valid = false;
@@ -782,7 +721,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo form_input_hidden("private_key", htmlentities_array($text_captcha_private_key));
             echo form_input_hidden("public_key", htmlentities_array($text_captcha->get_public_key()));
 
-        }else if (($text_captcha_image = $text_captcha->make_image())) {
+        } else if (($text_captcha_image = $text_captcha->make_image())) {
 
             $forum_owner_email = forum_get_setting('forum_email', false, 'admin@beehiveforum.co.uk');
             $forum_owner_link  = sprintf("<a href=\"mailto:%s\">%s</a>", $forum_owner_email, gettext("forum owner"));
@@ -838,7 +777,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "</form>\n";
     echo "</div>\n";
 
-}else {
+} else {
 
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 

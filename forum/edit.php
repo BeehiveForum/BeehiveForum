@@ -21,116 +21,34 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "attachments.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
-include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "poll.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "thread.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'attachments.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'poll.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'thread.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-if (user_is_guest()) {
-
+if (!session::logged_in()) {
     html_guest_error();
-    exit;
 }
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
@@ -140,33 +58,22 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     list($tid, $pid) = explode('.', $_GET['msg']);
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
-
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("The requested thread could not be found or access was denied."));
-        html_draw_bottom();
-        exit;
+        html_draw_error(gettext("The requested thread could not be found or access was denied."));
     }
 
-}elseif (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
+} else if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     $edit_msg = $_POST['msg'];
 
     list($tid, $pid) = explode('.', $_POST['msg']);
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
-
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("The requested thread could not be found or access was denied."));
-        html_draw_bottom();
-        exit;
+        html_draw_error(gettext("The requested thread could not be found or access was denied."));
     }
 
-}else {
+} else {
 
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("No message specified for editing"), 'discussion.php', 'get', array('back' => gettext("Back")));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("No message specified for editing"), 'discussion.php', 'get', array('back' => gettext("Back")));
 }
 
 if (thread_is_poll($tid) && $pid == 1) {
@@ -175,39 +82,31 @@ if (thread_is_poll($tid) && $pid == 1) {
     exit;
 }
 
-if (session_check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
+if (session::check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
     html_email_confirmation_error();
     exit;
 }
 
-if (!session_check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You cannot edit posts in this folder"));
-    html_draw_bottom();
-    exit;
+if (!session::check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
+    html_draw_error(gettext("You cannot edit posts in this folder"));
 }
 
 if (!$thread_data = thread_get($tid)) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("The requested thread could not be found or access was denied."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("The requested thread could not be found or access was denied."));
 }
 
 // Array to hold error messages
 $error_msg_array = array();
 
 // Check if the user is viewing signatures.
-$show_sigs = (session_get_value('VIEW_SIGS') == 'N') ? false : true;
+$show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
 
 // User UID
-$uid = session_get_value('UID');
+$uid = session::get_value('UID');
 
 // Get the user's post page preferences.
-$page_prefs = session_get_post_page_prefs();
+$page_prefs = session::get_post_page_prefs();
 
 // Form validation
 $valid = true;
@@ -220,11 +119,11 @@ if (isset($_POST['t_post_emots'])) {
 
     if ($_POST['t_post_emots'] == "disabled") {
         $emots_enabled = false;
-    }else {
+    } else {
         $emots_enabled = true;
     }
 
-}else {
+} else {
 
     $emots_enabled = true;
 }
@@ -233,11 +132,11 @@ if (isset($_POST['t_post_links'])) {
 
     if ($_POST['t_post_links'] == "enabled") {
         $links_enabled = true;
-    }else {
+    } else {
         $links_enabled = false;
     }
 
-}else {
+} else {
 
     $links_enabled = false;
 }
@@ -246,11 +145,11 @@ if (isset($_POST['t_check_spelling'])) {
 
     if ($_POST['t_check_spelling'] == "enabled") {
         $spelling_enabled = true;
-    }else {
+    } else {
         $spelling_enabled = false;
     }
 
-}else {
+} else {
 
     $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
 }
@@ -261,31 +160,31 @@ if (isset($_POST['t_post_html'])) {
 
     if ($t_post_html == "enabled_auto") {
         $post_html = POST_HTML_AUTO;
-    }else if ($t_post_html == "enabled") {
+    } else if ($t_post_html == "enabled") {
         $post_html = POST_HTML_ENABLED;
     } else {
         $post_html = POST_HTML_DISABLED;
     }
 
-}else {
+} else {
 
     if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
         $post_html = POST_HTML_AUTO;
-    }else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
+    } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
         $post_html = POST_HTML_ENABLED;
-    }else {
+    } else {
         $post_html = POST_HTML_DISABLED;
     }
 
     if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
         $emots_enabled = false;
-    }else {
+    } else {
         $emots_enabled = true;
     }
 
     if (($page_prefs & POST_AUTO_LINKS) > 0) {
         $links_enabled = true;
-    }else {
+    } else {
         $links_enabled = false;
     }
 }
@@ -307,7 +206,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
     $aid = $_POST['aid'];
 
-}else if (!$aid = attachments_get_id($tid, $pid)) {
+} else if (!$aid = attachments_get_id($tid, $pid)) {
 
     $aid = md5(uniqid(mt_rand()));
 }
@@ -322,11 +221,11 @@ $sig = new MessageText($sig_html, "", $emots_enabled, $links_enabled, false);
 $allow_html = true;
 $allow_sig = true;
 
-if (isset($t_fid) && !session_check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
+if (isset($t_fid) && !session::check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;
 }
 
-if (isset($t_fid) && !session_check_perm(USER_PERM_SIGNATURE, $t_fid)) {
+if (isset($t_fid) && !session::check_perm(USER_PERM_SIGNATURE, $t_fid)) {
     $allow_sig = false;
 }
 
@@ -396,7 +295,7 @@ if (isset($_POST['preview'])) {
 
         $to_uid = $_POST['t_to_uid'];
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("Invalid username!");
         $valid = false;
@@ -406,7 +305,7 @@ if (isset($_POST['preview'])) {
 
         $from_uid = $_POST['t_from_uid'];
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("Invalid username!");
         $valid = false;
@@ -418,7 +317,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (attachments_get_count($aid) > 0 && !session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+    if (attachments_get_count($aid) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
         $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
         $valid = false;
@@ -437,7 +336,7 @@ if (isset($_POST['preview'])) {
             $preview_message['TLOGON'] = gettext("ALL");
             $preview_message['TNICK'] = gettext("ALL");
 
-        }else{
+        } else{
 
             $preview_tuser = user_get($_POST['t_to_uid']);
             $preview_message['TLOGON'] = $preview_tuser['LOGON'];
@@ -452,7 +351,7 @@ if (isset($_POST['preview'])) {
         $preview_message['AID'] = $aid;
     }
 
-}else if (isset($_POST['apply'])) {
+} else if (isset($_POST['apply'])) {
 
     if (!$edit_message = messages_get($tid, $pid, 1)) {
 
@@ -468,7 +367,7 @@ if (isset($_POST['preview'])) {
 
         $to_uid = $_POST['t_to_uid'];
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("Invalid username!");
         $valid = false;
@@ -478,7 +377,7 @@ if (isset($_POST['preview'])) {
 
         $from_uid = $_POST['t_from_uid'];
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("Invalid username!");
         $valid = false;
@@ -490,26 +389,18 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (attachments_get_count($aid) > 0 && !session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+    if (attachments_get_count($aid) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
         $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
         $valid = false;
     }
 
-    if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session_check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
-        html_draw_bottom();
-        exit;
+    if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+        html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
     }
 
-    if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
-        html_draw_bottom();
-        exit;
+    if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+        html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
     }
 
     $preview_message = $edit_message;
@@ -520,7 +411,7 @@ if (isset($_POST['preview'])) {
 
             $t_content_new = $t_content."<div class=\"sig\">$t_sig</div>";
 
-        }else {
+        } else {
 
             $t_content_new = $t_content;
         }
@@ -531,20 +422,20 @@ if (isset($_POST['preview'])) {
 
             post_save_attachment_id($tid, $pid, $aid);
 
-            if (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != $uid) {
+            if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != $uid) {
                 admin_add_log_entry(EDIT_POST, array($t_fid, $tid, $pid));
             }
 
             header_redirect("discussion.php?webtag=$webtag&msg=$edit_msg&edit_success=$edit_msg");
             exit;
 
-        }else{
+        } else{
 
             $error_msg_array[] = gettext("Error updating post");
         }
     }
 
-}else if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
+} else if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
 
     if (!$preview_message = messages_get($tid, $pid, 1)) {
 
@@ -556,14 +447,14 @@ if (isset($_POST['preview'])) {
 
     if (isset($_POST['t_to_uid'])) {
         $to_uid = $_POST['t_to_uid'];
-    }else {
+    } else {
         $error_msg_array[] = gettext("Invalid username!");
         $valid = false;
     }
 
     if (isset($_POST['t_from_uid'])) {
         $from_uid = $_POST['t_from_uid'];
-    }else {
+    } else {
         $error_msg_array[] = gettext("Invalid username!");
         $valid = false;
     }
@@ -572,12 +463,15 @@ if (isset($_POST['preview'])) {
 
         $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
 
-    }elseif (isset($_POST['sig_toggle'])) {
+    } else if (isset($_POST['sig_toggle'])) {
 
         $page_prefs = (double) $page_prefs ^ POST_SIGNATURE_DISPLAY;
     }
 
-    $user_prefs = array('POST_PAGE' => $page_prefs);
+    $user_prefs = array(
+        'POST_PAGE' => $page_prefs
+    );
+    
     $user_prefs_global = array();
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
@@ -586,7 +480,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-}else {
+} else {
 
     if (!$edit_message = messages_get($tid, $pid, 1)) {
 
@@ -602,20 +496,12 @@ if (isset($_POST['preview'])) {
 
         if (($edit_message['CONTENT'] = message_get_content($tid, $pid))) {
 
-            if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session_check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-                html_draw_top(sprintf("title=%s", gettext("Error")));
-                html_error_msg(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
-                html_draw_bottom();
-                exit;
+            if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+                html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
             }
 
-            if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-                html_draw_top(sprintf("title=%s", gettext("Error")));
-                html_error_msg(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
-                html_draw_bottom();
-                exit;
+            if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+                html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
             }
 
             $preview_message = $edit_message;
@@ -655,20 +541,13 @@ if (isset($_POST['preview'])) {
             $t_content = $post->getContent();
             $t_sig = $sig->getContent();
 
-        }else {
+        } else {
 
-            html_draw_top(sprintf("title=%s", gettext("Error")));
-            html_error_msg(sprintf(gettext("Message %s was not found"), $edit_msg), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
-            html_draw_bottom();
-            exit;
+            html_draw_error(sprintf(gettext("Message %s was not found"), $edit_msg), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
         }
 
-    }else{
-
-       html_draw_top(sprintf("title=%s", gettext("Error")));
-       html_error_msg(sprintf(gettext("Message %s was not found"), $edit_msg), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
-       html_draw_bottom();
-       exit;
+    } else{
+        html_draw_error(sprintf(gettext("Message %s was not found"), $edit_msg), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
     }
 }
 
@@ -731,7 +610,7 @@ if ($preview_message['TLOGON'] != gettext("ALL")) {
 
     echo "                        <a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']), true), "</a><br /><br />\n";
 
-}else {
+} else {
 
     echo "                        ", word_filter_add_ob_tags(format_user_name($preview_message['TLOGON'], $preview_message['TNICK']), true), "<br /><br />\n";
 }
@@ -741,7 +620,7 @@ echo "                        ", form_checkbox("t_post_links", "enabled", gettex
 echo "                        ", form_checkbox("t_check_spelling", "enabled", gettext("Automatically check spelling"), $spelling_enabled), "<br />\n";
 echo "                        ", form_checkbox("t_post_emots", "disabled", gettext("Disable emoticons"), !$emots_enabled), "<br /><br />\n";
 
-if (($user_emoticon_pack = session_get_value('EMOTICONS')) === false) {
+if (($user_emoticon_pack = session::get_value('EMOTICONS')) === false) {
     $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
 }
 
@@ -829,7 +708,7 @@ if ($allow_html == true) {
         echo form_radio("t_post_html", "enabled", gettext("Enabled"), $tph_radio == POST_HTML_ENABLED)." \n";
     }
 
-}else {
+} else {
 
     echo form_input_hidden("t_post_html", "disabled");
 }
@@ -846,7 +725,7 @@ echo "&nbsp;".form_submit("preview", gettext("Preview"), "tabindex=\"3\"");
 
 echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&amp;msg=$edit_msg\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
 
-if (forum_get_setting('attachments_enabled', 'Y') && session_check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+if (forum_get_setting('attachments_enabled', 'Y') && session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
     echo "&nbsp;<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
     echo form_input_hidden('aid', htmlentities_array($aid));

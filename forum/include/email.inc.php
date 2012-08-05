@@ -29,19 +29,19 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "pm.inc.php");
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-include_once(BH_INCLUDE_PATH. "swift.inc.php");
-include_once(BH_INCLUDE_PATH. "thread.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'pm.inc.php';
+require_once BH_INCLUDE_PATH. 'server.inc.php';
+require_once BH_INCLUDE_PATH. 'swift.inc.php';
+require_once BH_INCLUDE_PATH. 'thread.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'user_rel.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 function email_address_valid($email)
 {
@@ -137,7 +137,9 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
     if (!$from_user = user_get($fuid)) return false;
 
     // Get the forum details.
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
+    
+    if (!($forum_fid = get_forum_fid())) return false;
 
     // Get the Swift Mailer Transport
     if (!($transport = Swift_TransportFactory::get())) return false;
@@ -160,9 +162,6 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
     // Make sure it only contains numbers and implode it.
     $exclude_user_list = implode(",", array_filter($exclude_user_array, 'is_numeric'));
 
-    // Get the Forum FID
-    $forum_fid = $table_data['FID'];
-
     // Get the forum webtag
     $webtag = get_webtag();
 
@@ -170,7 +169,7 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
     $last_visit_datetime = date(MYSQL_DATETIME, $modified);
 
     $sql = "SELECT USER_THREAD.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL ";
-    $sql.= "FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
+    $sql.= "FROM `{$table_prefix}USER_THREAD` USER_THREAD ";
     $sql.= "LEFT JOIN USER ON (USER.UID = USER_THREAD.UID) ";
     $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.UID = USER_THREAD.UID ";
     $sql.= "AND USER_FORUM.FID = '$forum_fid') WHERE USER_THREAD.TID = '$tid' ";
@@ -242,7 +241,9 @@ function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$ex
     if (!$from_user = user_get($fuid)) return false;
 
     // Get the forum details.
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
+    
+    if (!($forum_fid = get_forum_fid())) return false;
 
     // Get the Swift Mailer Transport
     if (!($transport = Swift_TransportFactory::get())) return false;
@@ -265,9 +266,6 @@ function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$ex
     // Make sure it only contains numbers and implode it.
     $exclude_user_list = implode(",", array_filter($exclude_user_array, 'is_numeric'));
 
-    // Get the Forum FID
-    $forum_fid = $table_data['FID'];
-
     // Get the forum webtag
     $webtag = get_webtag();
 
@@ -275,7 +273,7 @@ function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$ex
     $last_visit_datetime = date(MYSQL_DATETIME, $modified);
 
     $sql = "SELECT USER_FOLDER.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL ";
-    $sql.= "FROM `{$table_data['PREFIX']}USER_FOLDER` USER_FOLDER ";
+    $sql.= "FROM `{$table_prefix}USER_FOLDER` USER_FOLDER ";
     $sql.= "LEFT JOIN USER ON (USER.UID = USER_FOLDER.UID) ";
     $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.UID = USER_FOLDER.UID ";
     $sql.= "AND USER_FORUM.FID = '$forum_fid') WHERE USER_FOLDER.FID = '$fid' ";
@@ -907,7 +905,7 @@ function email_is_unique($email_address, $user_uid = 0)
 
         $sql = "SELECT COUNT(UID) FROM USER WHERE EMAIL = '$email_address'";
 
-    }else {
+    } else {
 
         $sql = "SELECT COUNT(UID) FROM USER WHERE UID <> '$user_uid' ";
         $sql.= "AND EMAIL = '$email_address' ";

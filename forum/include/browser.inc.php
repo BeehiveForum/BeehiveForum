@@ -29,19 +29,9 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
 
-/**
-* browser_check
-*
-* Allows testing of browsers by bitwise constants.
-* Based on code from Wordpress, but changed to not
-* polute global namespace with needless variables
-*
-* @param mixed $browser_check
-* @return bool.
-*/
 function browser_check($browser_check)
 {
     $browser = BROWSER_UNKNOWN;
@@ -52,35 +42,35 @@ function browser_check($browser_check)
 
             $browser = $browser | BROWSER_AOL;
 
-        } elseif (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'lynx') !== false) {
+        } else if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'lynx') !== false) {
 
             $browser = $browser | BROWSER_LYNX;
 
-        } elseif (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'chrome') !== false) {
+        } else if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'chrome') !== false) {
 
             $browser = $browser | BROWSER_CHROME;
 
-        } elseif (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'safari') !== false) {
+        } else if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'safari') !== false) {
 
             $browser = $browser | BROWSER_SAFARI;
 
-        } elseif (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'konqueror') !== false) {
+        } else if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'konqueror') !== false) {
 
             $browser = $browser | BROWSER_KONQUEROR;
 
-        } elseif (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'gecko') !== false) {
+        } else if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'gecko') !== false) {
 
             $browser = $browser | BROWSER_GECKO;
 
-        } elseif ((strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie') !== false)) {
+        } else if ((strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie') !== false)) {
 
             $browser = $browser | BROWSER_MSIE;
 
-        } elseif (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'opera') !== false) {
+        } else if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'opera') !== false) {
 
             $browser = $browser | BROWSER_OPERA;
 
-        } elseif (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'nav') !== false) {
+        } else if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'nav') !== false) {
 
             if (strpos($_SERVER['HTTP_USER_AGENT'], 'Mozilla/4.') !== false) {
 
@@ -106,7 +96,7 @@ function browser_check($browser_check)
 
                 $browser = $browser | BROWSER_MSIE_WIN;
 
-            } elseif (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'mac') !== false) {
+            } else if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'mac') !== false) {
 
                 $browser = $browser | BROWSER_MSIE_MAC;
             }
@@ -116,17 +106,6 @@ function browser_check($browser_check)
     return ($browser & $browser_check) > 0;
 }
 
-/**
-* browser_mobile
-*
-* Check if a browser looks like a mobile browser
-* by testing various aspects of the HTTP request
-* including user-agent, WAP support, HTTP Profile
-* header, etc.
-*
-* @param void
-* @return boolean
-*/
 function browser_mobile()
 {
     $mobile_browser = 0;
@@ -144,17 +123,61 @@ function browser_mobile()
     }
 
     // User Agent from https://code.google.com/p/the-devices-detection/source/list
-    $mobile_agents = array('iPhone', 'iPad', 'iPod', 'incognito', 'webmate', 'dream', 
-                           'CUPCAKE', 'webOS', 's8000', 'Googlebot-Mobile', 'Palm', 
-                           'EudoraWeb', 'Blazer', 'AvantGo', 'Android', 'Windows CE', 
-                           'Cellphone', 'Small', 'MMEF20', 'Danger', 'hiptop', 'Proxinet', 
-                           'ProxiNet', 'Newt', 'PalmOS', 'NetFront', 'SHARP-TQ-GX10', 
-                           'SonyEricsson', 'SymbianOS', 'UP.Browser', 'UP.Link', 
-                           'TS21i-10', 'MOT-V', 'portalmmm', 'DoCoMo', 'Opera Mini', 
-                           'Palm', 'Handspring', 'Nokia', 'Kyocera', 'Samsung', 
-                           'Motorola', 'Mot', 'Smartphone', 'Blackberry', 'WAP', 
-                           'SonyEricsson', 'PlayStation Portable', 'LG', 'MMP', 
-                           'OPWV', 'Symbian', 'EPOC');
+    $mobile_agents = array(
+        'iPhone', 
+        'iPad', 
+        'iPod', 
+        'incognito', 
+        'webmate', 
+        'dream', 
+        'CUPCAKE',
+        'webOS',
+        's8000',
+        'Googlebot-Mobile',
+        'Palm',
+        'EudoraWeb',
+        'Blazer',
+        'AvantGo',
+        'Android',
+        'Windows CE',
+        'Cellphone',
+        'Small',
+        'MMEF20',
+        'Danger',
+        'hiptop',
+        'Proxinet',
+        'ProxiNet',
+        'Newt',
+        'PalmOS',
+        'NetFront',
+        'SHARP-TQ-GX10',
+        'SonyEricsson',
+        'SymbianOS',
+        'UP.Browser',
+        'UP.Link',
+        'TS21i-10',
+        'MOT-V',
+        'portalmmm',
+        'DoCoMo',
+        'Opera Mini',
+        'Palm',
+        'Handspring',
+        'Nokia',
+        'Kyocera',
+        'Samsung',
+        'Motorola',
+        'Mot',
+        'Smartphone',
+        'Blackberry',
+        'WAP',
+        'SonyEricsson',
+        'PlayStation Portable',
+        'LG',
+        'MMP',
+        'OPWV',
+        'Symbian',
+        'EPOC'
+    );
 
     $mobile_agents_preg = implode('|', array_map('preg_quote_callback', $mobile_agents));
 
@@ -180,7 +203,7 @@ function browser_mobile()
         $mobile_browser = 0;
     }
 
-    if (session_is_search_engine() || html_get_cookie('view', 'mobile')) {
+    if (session::is_search_engine() || html_get_cookie('view', 'mobile')) {
         $mobile_browser++;
     }
 

@@ -29,16 +29,16 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'server.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 function logon_perform()
 {
@@ -58,12 +58,12 @@ function logon_perform()
         }
 
         // Initialise Guest user session.
-        session_init(0);
+        session::create(0);
 
         // Success
         return true;
 
-    }else if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
+    } else if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
         // Extract the submitted username
         $user_logon = stripslashes_array($_POST['user_logon']);
@@ -75,7 +75,7 @@ function logon_perform()
         if (($uid = user_logon($user_logon, $user_password))) {
 
             // Initialise a user session.
-            session_init($uid);
+            session::create($uid);
 
             // Check if we should save a token to allow auto logon,
             if (isset($_POST['user_remember']) && ($_POST['user_remember'] == 'Y')) {
@@ -113,7 +113,7 @@ function logon_draw_form($logon_options)
     // Check for previously failed logon.
     if (isset($_GET['logout_success']) && $_GET['logout_success'] == 'true') {
         html_display_success_msg(gettext("You have successfully logged out."), '500', 'center');
-    }else if (isset($_GET['logon_failed']) && !($logon_options & LOGON_FORM_SESSION_EXPIRED)) {
+    } else if (isset($_GET['logon_failed']) && !($logon_options & LOGON_FORM_SESSION_EXPIRED)) {
         html_display_error_msg(gettext("The username or password you supplied is not valid."), '500', 'center');
     }
 
@@ -124,7 +124,7 @@ function logon_draw_form($logon_options)
     // a normal login, otherwise potentially a failed session.
     if (stristr($request_uri, 'logon.php')) {
         echo "  <form accept-charset=\"utf-8\" name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"", html_get_top_frame_name(), "\">\n";
-    }else {
+    } else {
         echo "  <form accept-charset=\"utf-8\" name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
     }
 
@@ -234,7 +234,7 @@ function logon_draw_form($logon_options)
             echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"", html_get_top_frame_name(), "\">", gettext("Delete Cookies"), "</a></p>\n";
             echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;final_uri=$forgot_pw_link\" target=\"", html_get_top_frame_name(), "\">", gettext("Forgotten your password?"), "</a></p>\n";
 
-        }else {
+        } else {
 
             echo "<p class=\"smalltext\">", sprintf(gettext("Don't have an account? %s"), "<a href=\"index.php?webtag=$webtag&amp;final_uri=register.php%3Fwebtag%3D$webtag\" target=\"". html_get_top_frame_name(). "\">", gettext("Register now"), "</a>"), "</p>\n";
             echo "<hr class=\"bhlogonseparator\" />\n";

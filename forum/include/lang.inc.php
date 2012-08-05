@@ -30,24 +30,16 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 }
 
 if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config.inc.php");
+    require_once BH_INCLUDE_PATH. 'config.inc.php';
 }
 
 if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
+    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
 }
 
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
 
-/**
- * lang_init
- * 
- * Initialise gettext functionality in PHP.
- * 
- * @param void
- * @return void
- */
 function lang_init()
 {
     if (!lang_detect()) {
@@ -61,19 +53,9 @@ function lang_init()
     bind_textdomain_codeset('messages', 'UTF-8');
 }
 
-/**
- * lang_detect
- * 
- * Detect the language specified by the user
- * preferences / the browser's HTTP-ACCEPT-LANGUAGE
- * headers
- * 
- * @param void
- * @return string
- */
 function lang_detect()
 {   
-    if (($language = session_get_value('LANGUAGE'))) {
+    if (($language = session::get_value('LANGUAGE'))) {
         
         if (lang_set($language)) {
             return $language;
@@ -126,16 +108,6 @@ function lang_detect()
     return lang_set('en_GB');
 }
 
-/**
- * lang_set
- * 
- * Attempt to set the specified language.
- * Returns the requested language if successful
- * or false on failure.
- * 
- * @param mixed $language
- * @return false | string
- */
 function lang_set($language)
 {
     putenv('LANG='. $language);
@@ -167,14 +139,6 @@ function lang_get_month_names()
     return $month_names;
 }
 
-/**
- * lang_get_available
- * 
- * Get an array of supported languages.
- * 
- * @param bool $inc_browser_negotiation
- * @return string[]
- */
 function lang_get_available($inc_browser_negotiation = true)
 {
     $include_path = BH_INCLUDE_PATH. 'locale/';

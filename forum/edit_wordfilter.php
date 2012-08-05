@@ -21,116 +21,44 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-if (user_is_guest()) {
-
+if (!session::logged_in()) {
     html_guest_error();
-    exit;
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
-}else {
+} else {
     $page = 1;
 }
 
-$start = floor($page - 1) * 10;
-if ($start < 0) $start = 0;
+$word_filter_options = array(
+    WORD_FILTER_TYPE_ALL => gettext("All"),
+    WORD_FILTER_TYPE_WHOLE_WORD => gettext("Whole Word"),
+    WORD_FILTER_TYPE_PREG => gettext("PREG")
+);
 
-$word_filter_options = array(WORD_FILTER_TYPE_ALL => gettext("All"),
-                             WORD_FILTER_TYPE_WHOLE_WORD => gettext("Whole Word"),
-                             WORD_FILTER_TYPE_PREG => gettext("PREG"));
-
-$word_filter_enabled = array(WORD_FILTER_DISABLED => gettext("No"),
-                             WORD_FILTER_ENABLED => gettext("Yes"));
+$word_filter_enabled = array(
+    WORD_FILTER_DISABLED => gettext("No"),
+    WORD_FILTER_ENABLED => gettext("Yes")
+);
 
 $valid = true;
 
@@ -139,7 +67,6 @@ $error_msg_array = array();
 
 // User click cancel
 if (isset($_POST['cancel']) || isset($_POST['delete'])) {
-
     unset($_POST['addfilter'], $_POST['filter_id'], $_GET['addfilter'], $_GET['filter_id']);
 }
 
@@ -168,12 +95,12 @@ if (isset($_POST['delete'])) {
         }
     }
 
-}elseif (isset($_POST['save'])) {
+} else if (isset($_POST['save'])) {
 
     if (isset($_POST['use_admin_filter']) && $_POST['use_admin_filter'] == "Y") {
         $user_prefs['USE_ADMIN_FILTER'] = "Y";
         $user_prefs_global['USE_ADMIN_FILTER'] = false;
-    }else {
+    } else {
         $user_prefs['USE_ADMIN_FILTER'] = "N";
         $user_prefs_global['USE_ADMIN_FILTER'] = false;
     }
@@ -181,63 +108,63 @@ if (isset($_POST['delete'])) {
     if (isset($_POST['use_word_filter']) && $_POST['use_word_filter'] == "Y") {
         $user_prefs['USE_WORD_FILTER'] = "Y";
         $user_prefs_global['USE_WORD_FILTER'] = false;
-    }else {
+    } else {
         $user_prefs['USE_WORD_FILTER'] = "N";
         $user_prefs_global['USE_WORD_FILTER'] = false;
     }
 
-    $uid = session_get_value('UID');
+    $uid = session::get_value('UID');
 
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
         header_redirect("edit_wordfilter.php?webtag=$webtag&updated=true", gettext("Preferences were successfully updated."));
         exit;
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
     }
 
-}elseif (isset($_POST['addfilter_submit'])) {
+} else if (isset($_POST['addfilter_submit'])) {
 
     if (user_get_word_filter_count() > 19) {
 
         $valid = false;
         $error_msg_array[] = gettext("You cannot add any more word filters. Remove some unused ones or edit the existing ones first.");
 
-    }else {
+    } else {
 
         if (isset($_POST['add_new_filter_name']) && strlen(trim(stripslashes_array($_POST['add_new_filter_name']))) > 0) {
            $add_new_filter_name = trim(stripslashes_array($_POST['add_new_filter_name']));
-        }else {
+        } else {
            $valid = false;
            $error_msg_array[] = gettext("You must specify a filter name");
         }
 
         if (isset($_POST['add_new_match_text']) && strlen(trim(stripslashes_array($_POST['add_new_match_text']))) > 0) {
            $add_new_match_text = trim(stripslashes_array($_POST['add_new_match_text']));
-        }else {
+        } else {
            $valid = false;
            $error_msg_array[] = gettext("You must specify matched text");
         }
 
         if (isset($_POST['add_new_filter_option']) && is_numeric($_POST['add_new_filter_option'])) {
            $add_new_filter_option = $_POST['add_new_filter_option'];
-        }else {
+        } else {
            $valid = false;
            $error_msg_array[] = gettext("You must specify a filter option");
         }
 
         if (isset($_POST['add_new_filter_enabled']) && is_numeric($_POST['add_new_filter_enabled'])) {
             $add_new_filter_enabled = $_POST['add_new_filter_enabled'];
-        }else {
+        } else {
             $add_new_filter_enabled = WORD_FILTER_DISABLED;
         }
 
         if (isset($_POST['add_new_replace_text']) && strlen(trim(stripslashes_array($_POST['add_new_replace_text']))) > 0) {
            $add_new_replace_text = trim(stripslashes_array($_POST['add_new_replace_text']));
-        }else {
+        } else {
            $add_new_replace_text = "";
         }
 
@@ -256,45 +183,45 @@ if (isset($_POST['delete'])) {
         }
     }
 
-}elseif (isset($_POST['editfilter_submit'])) {
+} else if (isset($_POST['editfilter_submit'])) {
 
     if (isset($_POST['filter_id']) && is_numeric($_POST['filter_id'])) {
         $filter_id = $_POST['filter_id'];
-    }else {
+    } else {
         $valid = false;
         $error_msg_array[] = gettext("You must specify a filter ID");
     }
 
     if (isset($_POST['filter_name']) && strlen(trim(stripslashes_array($_POST['filter_name']))) > 0) {
         $filter_name = trim(stripslashes_array($_POST['filter_name']));
-    }else {
+    } else {
         $valid = false;
         $error_msg_array[] = gettext("You must specify a filter name");
     }
 
     if (isset($_POST['match_text']) && strlen(trim(stripslashes_array($_POST['match_text']))) > 0) {
         $match_text = trim(stripslashes_array($_POST['match_text']));
-    }else {
+    } else {
         $valid = false;
         $error_msg_array[] = gettext("You must specify matched text");
     }
 
     if (isset($_POST['filter_option']) && is_numeric($_POST['filter_option'])) {
         $filter_option = $_POST['filter_option'];
-    }else {
+    } else {
         $valid = false;
         $error_msg_array[] = gettext("You must specify a filter option");
     }
 
     if (isset($_POST['filter_enabled']) && is_numeric($_POST['filter_enabled'])) {
         $filter_enabled = $_POST['filter_enabled'];
-    }else {
+    } else {
         $filter_enabled = WORD_FILTER_DISABLED;
     }
 
     if (isset($_POST['replace_text']) && strlen(trim(stripslashes_array($_POST['replace_text']))) > 0) {
         $replace_text = trim(stripslashes_array($_POST['replace_text']));
-    }else {
+    } else {
         $replace_text = "";
     }
 
@@ -310,13 +237,13 @@ if (isset($_POST['delete'])) {
             header_redirect($redirect, gettext("Word Filter updated"));
             exit;
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("Failed to update word filter. Check that the filter still exists.");
         }
     }
 
-}elseif (isset($_POST['addfilter'])) {
+} else if (isset($_POST['addfilter'])) {
 
     $redirect = "edit_wordfilter.php?webtag=$webtag&addfilter=true";
     header_redirect($redirect);
@@ -333,7 +260,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
         html_display_error_array($error_msg_array, '600', 'left');
 
-    }elseif (user_get_word_filter_count() > 19) {
+    } else if (user_get_word_filter_count() > 19) {
 
         html_display_error_msg(gettext("You cannot add any more word filters. Remove some unused ones or edit the existing ones first."), '600', 'left');
     }
@@ -401,29 +328,24 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     html_draw_bottom();
 
-}elseif (isset($_POST['filter_id']) || isset($_GET['filter_id'])) {
+} else if (isset($_POST['filter_id']) || isset($_GET['filter_id'])) {
 
     if (isset($_POST['filter_id']) && is_numeric($_POST['filter_id'])) {
 
         $filter_id = $_POST['filter_id'];
 
-    }elseif (isset($_GET['filter_id']) && is_numeric($_GET['filter_id'])) {
+    } else if (isset($_GET['filter_id']) && is_numeric($_GET['filter_id'])) {
 
         $filter_id = $_GET['filter_id'];
 
-    }else {
+    } else {
 
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("You must specify a filter ID"), 'edit_wordfilter.php', 'get', array('back' => gettext("Back")));
-        html_draw_bottom();
-        exit;
+        html_draw_error(gettext("You must specify a filter ID"));
     }
 
     if (!$word_filter_array = user_get_word_filter($filter_id)) {
 
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("Invalid Filter ID"), 'edit_wordfilter.php', 'get', array('back' => gettext("Back")));
-        html_draw_bottom();
+        html_draw_error(gettext("Invalid Filter ID"));
         exit;
     }
 
@@ -499,11 +421,11 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     html_draw_bottom();
 
-}else {
+} else {
 
     html_draw_top("title=", gettext("My Controls"), " - ", gettext("Edit Word Filter"), "", 'class=window_title');
 
-    $word_filter_array = user_get_word_filter_list($start);
+    $word_filter_array = user_get_word_filter_list($page);
 
     echo "<h1>", gettext("Edit Word Filter"), "</h1>\n";
 
@@ -511,11 +433,11 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
         html_display_error_array($error_msg_array, '600', 'left');
 
-    }elseif (isset($_GET['updated'])) {
+    } else if (isset($_GET['updated'])) {
 
         html_display_success_msg(gettext("Word Filter updated"), '600', 'left');
 
-    }else if (sizeof($word_filter_array['word_filter_array']) < 1) {
+    } else if (sizeof($word_filter_array['word_filter_array']) < 1) {
 
         html_display_warning_msg(gettext("No existing word filter entries found. To add a filter click the 'Add New' button below."), '600', 'left');
     }
@@ -563,7 +485,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links("edit_wordfilter.php?webtag=$webtag", $start, $word_filter_array['word_filter_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", html_page_links("edit_wordfilter.php?webtag=$webtag", $page, $word_filter_array['word_filter_count'], 10), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -589,13 +511,13 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("use_word_filter", "Y", gettext("Enable word filter."), session_get_value('USE_WORD_FILTER') == 'Y'), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("use_word_filter", "Y", gettext("Enable word filter."), session::get_value('USE_WORD_FILTER') == 'Y'), "</td>\n";
     echo "                      </tr>\n";
 
     if (!forum_get_setting('force_word_filter', 'Y')) {
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", form_checkbox("use_admin_filter", "Y", gettext("Include admin word filter in my list."), session_get_value('USE_ADMIN_FILTER') == 'Y'), "</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox("use_admin_filter", "Y", gettext("Include admin word filter in my list."), session::get_value('USE_ADMIN_FILTER') == 'Y'), "</td>\n";
         echo "                      </tr>\n";
     }
 

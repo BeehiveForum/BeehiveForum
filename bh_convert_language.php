@@ -24,7 +24,7 @@ USA
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./forum/include/");
 
-include_once(BH_INCLUDE_PATH. "format.inc.php");
+require_once BH_INCLUDE_PATH. 'format.inc.php';
 
 // Prevent time out
 set_time_limit(0);
@@ -61,7 +61,7 @@ function get_file_list(&$file_list_array, $path, $extension)
 
                     get_file_list($file_list_array, "$path/$file_name", $extension);
 
-                }else if ((preg_match("/$extension_preg$/iu", $file_name) > 0) && !in_array("$path/$file_name", $GLOBALS['exclude_files_array'])) {
+                } else if ((preg_match("/$extension_preg$/iu", $file_name) > 0) && !in_array("$path/$file_name", $GLOBALS['exclude_files_array'])) {
 
                     $file_list_array[] = "$path/$file_name";
                 }

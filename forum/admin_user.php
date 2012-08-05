@@ -21,123 +21,62 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "attachments.inc.php");
-include_once(BH_INCLUDE_PATH. "banned.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "email.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "ip.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "poll.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "stats.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "user_profile.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'attachments.inc.php';
+require_once BH_INCLUDE_PATH. 'banned.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'email.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'ip.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'poll.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'stats.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'user_profile.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
 
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Initialise Locale
-lang_init();
-
-if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You do not have permission to use this section."));
-    html_draw_bottom();
-    exit;
+// Check we have Admin / Moderator access
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+    html_draw_error(gettext("You do not have permission to use this section."));
 }
 
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
     $uid = $_GET['uid'];
 
-}else if (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
+} else if (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
 
     $uid = $_POST['uid'];
 
-}else {
+} else {
 
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("No user specified."), 'admin_users.php', 'get', array('back' => gettext("Back")));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("No user specified."), 'admin_users.php', 'get', array('back' => gettext("Back")));
 }
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
-}elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
+} else if (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
     $ret = trim(stripslashes_array($_POST['ret']));
-}else {
+} else {
     $ret = "admin_users.php?webtag=$webtag";
 }
 
@@ -172,11 +111,7 @@ $error_msg_array = array();
 
 // Get the user details.
 if (!$user = admin_user_get($uid)) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("Unknown user account"), 'admin_users.php', 'get', array('back' => gettext("Back")));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("Unknown user account"), 'admin_users.php', 'get', array('back' => gettext("Back")));
 }
 
 // Get the user's post count.
@@ -200,47 +135,47 @@ if (isset($_POST['action_submit'])) {
             header_redirect("edit_prefs.php?webtag=$webtag&profileuid=$uid");
             exit;
 
-        }elseif ($post_action == 'edit_signature') {
+        } else if ($post_action == 'edit_signature') {
 
             header_redirect("edit_signature.php?webtag=$webtag&siguid=$uid");
             exit;
 
-        }elseif ($post_action == 'edit_profile') {
+        } else if ($post_action == 'edit_profile') {
 
             header_redirect("edit_profile.php?webtag=$webtag&profileuid=$uid");
             exit;
 
-        }elseif ($post_action == 'reset_passwd') {
+        } else if ($post_action == 'reset_passwd') {
 
             header_redirect("admin_user.php?webtag=$webtag&uid=$uid&action=reset_passwd");
             exit;
 
-        }elseif ($post_action == 'view_history') {
+        } else if ($post_action == 'view_history') {
 
             header_redirect("admin_user.php?webtag=$webtag&uid=$uid&action=view_history");
             exit;
 
-        }elseif ($post_action == 'user_aliases') {
+        } else if ($post_action == 'user_aliases') {
 
             header_redirect("admin_user.php?webtag=$webtag&uid=$uid&action=user_aliases");
             exit;
 
-        }elseif ($post_action == 'delete_user') {
+        } else if ($post_action == 'delete_user') {
 
             header_redirect("admin_user.php?webtag=$webtag&uid=$uid&action=delete_user");
             exit;
 
-        }elseif ($post_action == 'delete_posts') {
+        } else if ($post_action == 'delete_posts') {
 
             header_redirect("admin_user.php?webtag=$webtag&uid=$uid&action=delete_posts");
             exit;
 
-        }elseif ($post_action == 'post_count') {
+        } else if ($post_action == 'post_count') {
 
             header_redirect("admin_user.php?webtag=$webtag&uid=$uid&action=post_count");
             exit;
 
-        }elseif ($post_action == 'approve_user') {
+        } else if ($post_action == 'approve_user') {
 
             if (forum_get_setting('require_user_approval', 'Y')) {
 
@@ -253,7 +188,7 @@ if (isset($_POST['action_submit'])) {
                         header_redirect("admin_user.php?webtag=$webtag&uid=$uid&approved=true");
                         exit;
 
-                    }else {
+                    } else {
 
                         $error_msg_array[] = sprintf(gettext("Failed to approve user %s"), $user_logon);
                         $valid = false;
@@ -266,7 +201,7 @@ if (isset($_POST['action_submit'])) {
     header_redirect("admin_user.php?webtag=$webtag&uid=$uid");
     exit;
 
-}else if (isset($_POST['post_count_submit'])) {
+} else if (isset($_POST['post_count_submit'])) {
 
     if (isset($_POST['t_reset_post_count']) && $_POST['t_reset_post_count'] == "Y") {
 
@@ -277,13 +212,13 @@ if (isset($_POST['action_submit'])) {
             html_draw_bottom();
             exit;
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("Failed To Reset Post Count");
             $valid = false;
         }
 
-    }else {
+    } else {
 
         if (isset($_POST['t_post_count']) && is_numeric($_POST['t_post_count'])) {
 
@@ -296,7 +231,7 @@ if (isset($_POST['action_submit'])) {
                 html_draw_bottom();
                 exit;
 
-            }else {
+            } else {
 
                 $error_msg_array[] = gettext("Failed To Change User Post Count");
                 $valid = false;
@@ -304,14 +239,10 @@ if (isset($_POST['action_submit'])) {
         }
     }
 
-}else if (isset($_POST['user_history_submit'])) {
+} else if (isset($_POST['user_history_submit'])) {
 
-    if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
-
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("You do not have permission to use this section."), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
-        html_draw_bottom();
-        exit;
+    if (!session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+        html_draw_error(gettext("You do not have permission to use this section."), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
     }
 
     if (isset($_POST['clear_user_history']) && $_POST['clear_user_history'] == "Y") {
@@ -323,30 +254,23 @@ if (isset($_POST['action_submit'])) {
             html_draw_bottom();
             exit;
 
-        }else {
+        } else {
 
-            html_draw_top(sprintf("title=%s", gettext("Error")));
-            html_error_msg(gettext("Failed to clear user history"), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
-            html_draw_bottom();
-            exit;
+            html_draw_error(gettext("Failed to clear user history"), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
         }
     }
 
-}elseif (isset($_POST['reset_passwd_submit'])) {
+} else if (isset($_POST['reset_passwd_submit'])) {
 
-    if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
-
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("You do not have permission to use this section."), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
-        html_draw_bottom();
-        exit;
+    if (!session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+        html_draw_error(gettext("You do not have permission to use this section."), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
     }
 
     if (isset($_POST['t_new_password']) && strlen(trim(stripslashes_array($_POST['t_new_password']))) > 0) {
 
         $t_new_password = trim(stripslashes_array($_POST['t_new_password']));
 
-        if (($user_logon = user_get_logon($uid) && $fuid = session_get_value('UID'))) {
+        if (($user_logon = user_get_logon($uid) && $fuid = session::get_value('UID'))) {
 
             if (admin_reset_user_password($uid, $t_new_password)) {
 
@@ -358,21 +282,13 @@ if (isset($_POST['action_submit'])) {
                 exit;
             }
         }
-
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("Failed To Change Password"), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
-        html_draw_bottom();
-        exit;
+        html_draw_error(gettext("Failed To Change Password"), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
     }
 
-}elseif (isset($_POST['delete_user_confirm'])) {
+} else if (isset($_POST['delete_user_confirm'])) {
 
-    if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
-
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("You do not have permission to use this section."), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
-        html_draw_bottom();
-        exit;
+    if (!session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+        html_draw_error(gettext("You do not have permission to use this section."), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
     }
 
     $delete_content = (isset($_POST['delete_content']) && $_POST['delete_content'] == 'Y');
@@ -384,15 +300,12 @@ if (isset($_POST['action_submit'])) {
         html_draw_bottom();
         exit;
 
-    }else {
+    } else {
 
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("Failed To Delete User"), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
-        html_draw_bottom();
-        exit;
+        html_draw_error(gettext("Failed To Delete User"), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
     }
 
-}else if (isset($_POST['delete_posts_confirm'])) {
+} else if (isset($_POST['delete_posts_confirm'])) {
 
     if (($user_logon = user_get_logon($uid))) {
 
@@ -405,16 +318,13 @@ if (isset($_POST['action_submit'])) {
             html_draw_bottom();
             exit;
 
-        }else {
+        } else {
 
-            html_draw_top(sprintf("title=%s", gettext("Error")));
-            html_error_msg(gettext("Failed to delete user's posts"), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
-            html_draw_bottom();
-            exit;
+            html_draw_error(gettext("Failed to delete user's posts"), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
         }
     }
 
-}elseif (isset($_POST['user_perm_submit'])) {
+} else if (isset($_POST['user_perm_submit'])) {
 
     $valid = true;
 
@@ -441,7 +351,7 @@ if (isset($_POST['action_submit'])) {
 
                 $user_perms = perm_get_forum_user_permissions($uid);
 
-            }else {
+            } else {
 
                 $error_msg_array[] = gettext("Failed to update user status");
                 $valid = false;
@@ -450,7 +360,7 @@ if (isset($_POST['action_submit'])) {
     }
 
     // Global user permissions
-    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+    if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
         $new_global_user_perms = (double) 0;
 
@@ -467,7 +377,7 @@ if (isset($_POST['action_submit'])) {
 
         if (isset($_POST['t_confirm_email']) && $_POST['t_confirm_email'] != 'cancel') {
             $t_confirm_email = (double) USER_PERM_EMAIL_CONFIRM;
-        }else {
+        } else {
             $t_confirm_email = (double) 0;
         }
 
@@ -497,7 +407,7 @@ if (isset($_POST['action_submit'])) {
 
                 $global_user_perm = perm_get_global_user_permissions($uid);
 
-            }else {
+            } else {
 
                 $error_msg_array[] = gettext("Failed to update global user permissions");
                 $valid = false;
@@ -566,7 +476,7 @@ if (isset($_POST['action_submit'])) {
 
 if (isset($_GET['action']) && strlen(trim(stripslashes_array($_GET['action']))) > 0) {
     $action = trim(stripslashes_array($_GET['action']));
-}elseif (isset($_POST['action']) && strlen(trim(stripslashes_array($_POST['action']))) > 0) {
+} else if (isset($_POST['action']) && strlen(trim(stripslashes_array($_POST['action']))) > 0) {
     $action = trim(stripslashes_array($_POST['action']));
 }
 
@@ -574,12 +484,8 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     if ($action == 'reset_passwd') {
 
-        if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
-
-            html_draw_top(sprintf("title=%s", gettext("Error")));
-            html_error_msg(gettext("You do not have permission to use this section."), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid));
-            html_draw_bottom();
-            exit;
+        if (!session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+            html_draw_error(gettext("You do not have permission to use this section."), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid));
         }
 
         html_draw_top("title=$page_title", 'class=window_title');
@@ -636,7 +542,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         html_draw_bottom();
         exit;
 
-    }else if ($action == 'view_history') {
+    } else if ($action == 'view_history') {
 
         html_draw_top("title=$page_title", 'class=window_title');
 
@@ -708,7 +614,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
             echo "                  </td>\n";
             echo "                </tr>\n";
 
-            if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+            if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
                 echo "                <tr>\n";
                 echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -759,7 +665,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
                 echo "  </table>\n";
             }
 
-        }else {
+        } else {
 
             echo "                <tr>\n";
             echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -785,7 +691,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         html_draw_bottom();
         exit;
 
-    }else if ($action == 'user_aliases') {
+    } else if ($action == 'user_aliases') {
 
         html_draw_top("title=$page_title", 'class=window_title');
 
@@ -793,15 +699,19 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         $user_alias_array = array();
 
-        $user_alias_view_types_array = array(USER_ALIAS_IPADDRESS => gettext("IP Address Matches"),
-                                             USER_ALIAS_EMAIL     => gettext("Email Address Matches"),
-                                             USER_ALIAS_PASSWD    => gettext("Password Matches"),
-                                             USER_ALIAS_REFERER   => gettext("HTTP Referer Matches"));
+        $user_alias_view_types_array = array(
+            USER_ALIAS_IPADDRESS => gettext("IP Address Matches"),
+            USER_ALIAS_EMAIL => gettext("Email Address Matches"),
+            USER_ALIAS_PASSWD => gettext("Password Matches"),
+            USER_ALIAS_REFERER => gettext("HTTP Referer Matches")
+        );
 
-        $user_alias_column_header = array(USER_ALIAS_IPADDRESS => gettext("IP"),
-                                          USER_ALIAS_EMAIL     => gettext("Email"),
-                                          USER_ALIAS_PASSWD    => gettext("Password"),
-                                          USER_ALIAS_REFERER   => gettext("Referer"));
+        $user_alias_column_header = array(
+            USER_ALIAS_IPADDRESS => gettext("IP"),
+             USER_ALIAS_EMAIL => gettext("Email"),
+             USER_ALIAS_PASSWD => gettext("Password"),
+             USER_ALIAS_REFERER => gettext("Referer")
+        );
 
         if (isset($_POST['user_alias_view']) && in_array($_POST['user_alias_view'], array_keys($user_alias_view_types_array))) {
             $user_alias_view = $_POST['user_alias_view'];
@@ -811,15 +721,15 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
             $user_alias_array = admin_get_user_ip_matches($user['UID']);
 
-        }else if ($user_alias_view == USER_ALIAS_EMAIL) {
+        } else if ($user_alias_view == USER_ALIAS_EMAIL) {
 
             $user_alias_array = admin_get_user_email_matches($user['UID']);
 
-        }else if ($user_alias_view == USER_ALIAS_PASSWD) {
+        } else if ($user_alias_view == USER_ALIAS_PASSWD) {
 
             $user_alias_array = admin_get_user_passwd_matches($user['UID']);
 
-        }else if ($user_alias_view == USER_ALIAS_REFERER) {
+        } else if ($user_alias_view == USER_ALIAS_REFERER) {
 
             $user_alias_array = admin_get_user_referer_matches($user['UID']);
         }
@@ -879,27 +789,27 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
                         echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['IPADDRESS']}</a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
 
-                    }else {
+                    } else {
 
                         echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['IPADDRESS']}</a>&nbsp;</td>\n";
                     }
 
-                }else if ($user_alias_view == USER_ALIAS_EMAIL) {
+                } else if ($user_alias_view == USER_ALIAS_EMAIL) {
 
                     if (email_is_banned($user_alias['EMAIL'])) {
 
                         echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
 
-                    }else {
+                    } else {
 
                         echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;</td>\n";
                     }
 
-                }else if ($user_alias_view == USER_ALIAS_PASSWD) {
+                } else if ($user_alias_view == USER_ALIAS_PASSWD) {
 
                     echo "                              <td align=\"left\">", gettext("Yes"), "</td>\n";
 
-                }else if ($user_alias_view == USER_ALIAS_REFERER) {
+                } else if ($user_alias_view == USER_ALIAS_REFERER) {
 
                     $user_alias['REFERER_FULL'] = $user_alias['REFERER'];
 
@@ -916,7 +826,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
                         echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user_alias['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['REFERER']}</a>&nbsp;<a href=\"{$user_alias['REFERER_FULL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
 
-                    }else {
+                    } else {
 
                         echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user_alias['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['REFERER']}</a>&nbsp;<a href=\"{$user_alias['REFERER_FULL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;</td>\n";
                     }
@@ -992,14 +902,10 @@ if (isset($action) && strlen(trim($action)) > 0) {
         html_draw_bottom();
         exit;
 
-    }else if ($action == 'delete_user') {
+    } else if ($action == 'delete_user') {
 
-        if (!session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
-
-            html_draw_top(sprintf("title=%s", gettext("Error")));
-            html_error_msg(gettext("You do not have permission to use this section."), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid));
-            html_draw_bottom();
-            exit;
+        if (!session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+            html_draw_error(gettext("You do not have permission to use this section."), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid));
         }
 
         html_draw_top("title=$page_title", 'class=window_title');
@@ -1056,7 +962,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         html_draw_bottom();
         exit;
 
-    }else if ($action == 'delete_posts') {
+    } else if ($action == 'delete_posts') {
 
         html_draw_top("title=$page_title", 'class=window_title');
 
@@ -1109,7 +1015,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         html_draw_bottom();
         exit;
 
-    }else if ($action == 'post_count') {
+    } else if ($action == 'post_count') {
 
         html_draw_top("title=$page_title", 'class=window_title');
 
@@ -1173,19 +1079,19 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '600', 'center');
 
-}else if (isset($success_html) && strlen(trim($success_html)) > 0) {
+} else if (isset($success_html) && strlen(trim($success_html)) > 0) {
 
     html_display_success_msg($success_html, '600', 'center');
 
-}else if (isset($_GET['profile_updated'])) {
+} else if (isset($_GET['profile_updated'])) {
 
     html_display_success_msg(gettext("Profile updated."), '600', 'center');
 
-}else if (isset($_GET['signature_updated'])) {
+} else if (isset($_GET['signature_updated'])) {
 
     html_display_success_msg(gettext("Signature Updated"), '600', 'center');
 
-}elseif (isset($_GET['approved'])) {
+} else if (isset($_GET['approved'])) {
 
     html_display_success_msg(gettext("Successfully approved user"), '600', 'center');
 }
@@ -1197,7 +1103,7 @@ echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
 echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
 
-if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -1230,7 +1136,7 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a> (", gettext("Banned"), ")</td>\n";
             echo "                      </tr>\n";
 
-        }else {
+        } else {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"150\">", gettext("Email address"), ":</td>\n";
@@ -1238,7 +1144,7 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             echo "                      </tr>\n";
         }
 
-    }else {
+    } else {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\">", gettext("Email address"), ":</td>\n";
@@ -1268,7 +1174,7 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
                 echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a> (", gettext("Banned"), ")</td>\n";
                 echo "                      </tr>\n";
 
-            }else {
+            } else {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"150\">", gettext("Sign-up Referer:"), "</td>\n";
@@ -1276,7 +1182,7 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
                 echo "                      </tr>\n";
             }
 
-        }else {
+        } else {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"150\">", gettext("Sign-up Referer:"), "</td>\n";
@@ -1284,35 +1190,35 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             echo "                      </tr>\n";
         }
 
-        if (isset($user['SESSION_REFERER']) && strlen(trim($user['SESSION_REFERER'])) > 0) {
+        if (isset($user['session::REFERER']) && strlen(trim($user['session::REFERER'])) > 0) {
 
             $user['SESSION_REFERER_FULL'] = $user['SESSION_REFERER'];
 
-            if (!$user['SESSION_REFERER'] = split_url($user['SESSION_REFERER'])) {
+            if (!$user['session::REFERER'] = split_url($user['session::REFERER'])) {
 
-                if (mb_strlen($user['SESSION_REFERER_FULL']) > 25) {
+                if (mb_strlen($user['session::REFERER_FULL']) > 25) {
 
-                    $user['SESSION_REFERER'] = mb_substr($user['SESSION_REFERER_FULL'], 0, 25);
+                    $user['SESSION_REFERER'] = mb_substr($user['session::REFERER_FULL'], 0, 25);
                     $user['SESSION_REFERER'].= "&hellip;";
                 }
             }
 
-            if (referer_is_banned($user['SESSION_REFERER'])) {
+            if (referer_is_banned($user['session::REFERER'])) {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"150\">", gettext("Session Referer"), "</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['SESSION_REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['SESSION_REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a> (", gettext("Banned"), ")</td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['session::REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['session::REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a> (", gettext("Banned"), ")</td>\n";
                 echo "                      </tr>\n";
 
-            }else {
+            } else {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"150\">", gettext("Session Referer"), "</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['SESSION_REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['SESSION_REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a></td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['session::REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['session::REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a></td>\n";
                 echo "                      </tr>\n";
             }
 
-        }else {
+        } else {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"150\">", gettext("Session Referer"), "</td>\n";
@@ -1327,11 +1233,11 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
             echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user['IPADDRESS']}</a> (", gettext("Banned"), ")</td>\n";
 
-        }else if (strlen(trim($user['IPADDRESS'])) > 0) {
+        } else if (strlen(trim($user['IPADDRESS'])) > 0) {
 
             echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user['IPADDRESS']}</a></td>\n";
 
-        }else {
+        } else {
 
             echo "                        <td align=\"left\">", gettext("Unknown"), "</td>\n";
         }
@@ -1354,45 +1260,53 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     echo "  </table>\n";
     echo "  <br />\n";
 
-    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+    if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
         if (forum_check_webtag_available($webtag)) {
 
-            $admin_options_dropdown = array('edit_details'   => gettext("Edit User Details"),
-                                            'edit_signature' => gettext("Edit Signature"),
-                                            'edit_profile'   => gettext("Edit Profile"),
-                                            'reset_passwd'   => gettext("Reset Password"),
-                                            'view_history'   => gettext("View User History"),
-                                            'user_aliases'   => gettext("View User Aliases"),
-                                            'post_count'     => gettext("Change Post Count"),
-                                            'delete_user'    => gettext("Delete User"),
-                                            'delete_posts'   => gettext("Delete posts"));
+            $admin_options_dropdown = array(
+                'edit_details' => gettext("Edit User Details"),
+                 'edit_signature' => gettext("Edit Signature"),
+                 'edit_profile' => gettext("Edit Profile"),
+                 'reset_passwd' => gettext("Reset Password"),
+                 'view_history' => gettext("View User History"),
+                 'user_aliases' => gettext("View User Aliases"),
+                 'post_count' => gettext("Change Post Count"),
+                 'delete_user' => gettext("Delete User"),
+                 'delete_posts' => gettext("Delete posts")
+            );
 
-        }else {
+        } else {
 
-            $admin_options_dropdown = array('reset_passwd'   => gettext("Reset Password"),
-                                            'view_history'   => gettext("View User History"),
-                                            'user_aliases'   => gettext("View User Aliases"),
-                                            'delete_user'    => gettext("Delete User"));
+            $admin_options_dropdown = array(
+                'reset_passwd' => gettext("Reset Password"),
+                'view_history' => gettext("View User History"),
+                'user_aliases' => gettext("View User Aliases"),
+                'delete_user' => gettext("Delete User")
+            );
         }
 
-    }else {
+    } else {
 
         if (forum_check_webtag_available($webtag)) {
 
-            $admin_options_dropdown = array('edit_details'   => gettext("Edit User Details"),
-                                            'edit_signature' => gettext("Edit Signature"),
-                                            'edit_profile'   => gettext("Edit Profile"),
-                                            'post_count'     => gettext("Change Post Count"),
-                                            'view_history'   => gettext("View User History"),
-                                            'user_aliases'   => gettext("View User Aliases"),
-                                            'delete_posts'   => gettext("Delete posts"));
+            $admin_options_dropdown = array(
+                'edit_details' => gettext("Edit User Details"),
+                'edit_signature' => gettext("Edit Signature"),
+                'edit_profile' => gettext("Edit Profile"),
+                'post_count' => gettext("Change Post Count"),
+                'view_history' => gettext("View User History"),
+                'user_aliases' => gettext("View User Aliases"),
+                'delete_posts' => gettext("Delete posts")
+            );
 
-        }else {
+        } else {
 
-            $admin_options_dropdown = array('view_history'   => gettext("View User History"),
-                                            'user_aliases'   => gettext("View User Aliases"),
-                                            'delete_posts'   => gettext("Delete posts"));
+            $admin_options_dropdown = array(
+                'view_history' => gettext("View User History"),
+                'user_aliases' => gettext("View User Aliases"),
+                'delete_posts' => gettext("Delete posts")
+            );
         }
     }
 
@@ -1448,7 +1362,7 @@ if (forum_check_webtag_available($webtag)) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"90%\">\n";
 
-    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+    if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">", form_checkbox("t_admintools", USER_PERM_ADMIN_TOOLS, gettext("User has access to forum admin tools"), $user_perms & USER_PERM_ADMIN_TOOLS), "</td>\n";
@@ -1493,7 +1407,7 @@ if (forum_check_webtag_available($webtag)) {
     echo "  <br />\n";
 }
 
-if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
     $global_user_perm = perm_get_global_user_permissions($uid);
 
@@ -1726,8 +1640,7 @@ if (forum_check_webtag_available($webtag)) {
         echo "                  </td>\n";
         echo "                </tr>\n";
 
-
-    }else {
+    } else {
 
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";

@@ -29,23 +29,23 @@ if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) == 'upgr
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "install.inc.php");
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'install.inc.php';
 
 @set_time_limit(0);
 
 $current_datetime = date(MYSQL_DATETIME, time());
 
-if (!($forum_webtag_array = install_get_webtags())) {
+if (!($forum_prefix_array = install_get_table_data())) {
 
     $error_html.= "<h2>Could not locate any previous Beehive Forum installations!</h2>\n";
     $valid = false;
     return;
 }
 
-foreach ($forum_webtag_array as $forum_fid => $table_data) {
+foreach ($forum_prefix_array as $forum_fid => $table_data) {
     
     if (!install_check_column_type($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_ADMIN_LOG", "ENTRY", "longblob")) {
         

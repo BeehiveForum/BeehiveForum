@@ -21,90 +21,40 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Get webtag
-$webtag = get_webtag();
-
-// Start User Session.
-$user_sess = session_check();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 // User font size
-if (($font_size = session_get_value('FONT_SIZE')) === false) {
+if (($font_size = session::get_value('FONT_SIZE')) === false) {
     $font_size = 10;
 }
 
 // User style
-if (($user_style = session_get_value('STYLE')) === false) {
+if (($user_style = session::get_value('STYLE')) === false) {
     $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
 }
 
 // Get the forum path
 $forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
 
-// Initialise Locale
-lang_init();
-
 // Get the user's saved left frame width.
-if (($left_frame_width = session_get_value('LEFT_FRAME_WIDTH')) === false) {
+if (($left_frame_width = session::get_value('LEFT_FRAME_WIDTH')) === false) {
     $left_frame_width = 280;
 }
 
 // Construct the Javascript / JSON array
 $json_data = array(
     'webtag' => $webtag,
-    'uid' => session_get_value('UID'),
+    'uid' => session::get_value('UID'),
     'lang' => array(
         'fixhtmlexplanation' => gettext("This forum uses HTML filtering. Your submitted HTML has been modified by the filters in some way.\n\nTo view your original code, select the 'Submitted code' radio button.\nTo view the modified code, select the 'Corrected code' radio button."),
         'imageresized' => gettext("This image has been resized (original size %dx%d). To view the full-size image click here."),
@@ -128,7 +78,7 @@ $json_data = array(
     'top_frame' => html_get_top_page(),
     'left_frame_width' => $left_frame_width,
     'forum_path' => $forum_path,
-    'use_mover_spoiler' => session_get_value('USE_MOVER_SPOILER'),
+    'use_mover_spoiler' => session::get_value('USE_MOVER_SPOILER'),
     'frames' => array(
         'index' => html_get_frame_name('index'),
         'admin' => html_get_frame_name('admin'),

@@ -29,18 +29,18 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "dictionary.inc.php");
-include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "swift.inc.php");
-include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'dictionary.inc.php';
+require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'swift.inc.php';
+require_once BH_INCLUDE_PATH. 'text_captcha.inc.php';
 
 class TextAreaHTML
 {
@@ -58,7 +58,7 @@ class TextAreaHTML
     {
         if (@file_exists("tiny_mce/tiny_mce.js")) {
 
-            $page_prefs = session_get_post_page_prefs();
+            $page_prefs = session::get_post_page_prefs();
 
             if (($page_prefs & POST_TINYMCE_DISPLAY) && !defined('BEEHIVEMODE_LIGHT')) {
                 $this->tinymce = true;
@@ -211,7 +211,7 @@ class TextAreaHTML
                 $class.= ' tinymce_editor';
             }
 
-        }else {
+        } else {
 
             $class.= ' htmltools';
 

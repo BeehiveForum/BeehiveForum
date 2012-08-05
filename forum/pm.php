@@ -21,105 +21,45 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "pm.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'cache.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'pm.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
 
 // Don't cache this page - fixes problems with Opera.
 cache_disable();
 
-// Get Webtag
-$webtag = get_webtag();
-
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Guests don't have access to PM system.
-if (user_is_guest()) {
-
+if (!session::logged_in()) {
     html_guest_error();
-    exit;
 }
 
 // Array to hold error messages
 $error_msg_array = array();
 
 // Available PM Folders
-$available_folders = array(PM_FOLDER_INBOX, PM_FOLDER_SENT, PM_FOLDER_OUTBOX,
-                           PM_FOLDER_SAVED, PM_FOLDER_DRAFTS, PM_SEARCH_RESULTS);
+$available_folders = array(
+    PM_FOLDER_INBOX, 
+    PM_FOLDER_SENT, 
+    PM_FOLDER_OUTBOX,
+    PM_FOLDER_SAVED, 
+    PM_FOLDER_DRAFTS, 
+    PM_SEARCH_RESULTS
+);
 
-$uid = session_get_value('UID');
+$uid = session::get_value('UID');
 
 // Get the user's saved left frame width.
-if (($left_frame_width = session_get_value('LEFT_FRAME_WIDTH')) === false) {
+if (($left_frame_width = session::get_value('LEFT_FRAME_WIDTH')) === false) {
     $left_frame_width = 280;
 }
 
@@ -140,18 +80,18 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
         $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
         $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder&amp;message_sent=true#message", html_get_frame_name('pm_messages'), 0);
 
-    }elseif (isset($_GET['message_saved'])) {
+    } else if (isset($_GET['message_saved'])) {
 
         $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
         $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder&amp;message_saved=true#message", html_get_frame_name('pm_messages'), 0);
 
-    }else {
+    } else {
 
         $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
         $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder#message", html_get_frame_name('pm_messages'), 0);
     }
 
-}elseif (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+} else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
     $folder = (in_array($_GET['folder'], $available_folders)) ? $_GET['folder'] : PM_FOLDER_INBOX;
 
@@ -160,7 +100,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
         $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
         $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;folder=$folder&message_sent=true", html_get_frame_name('pm_messages'), 0);
 
-    }else {
+    } else {
 
         $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
         $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;folder=$folder", html_get_frame_name('pm_messages'), 0);
@@ -172,7 +112,7 @@ if (isset($_GET['message_sent'])) {
     $frameset->html_frame("pm_folders.php?webtag=$webtag", html_get_frame_name('pm_folders'), 0);
     $frameset->html_frame("pm_messages.php?webtag=$webtag&message_sent=true", html_get_frame_name('pm_messages'), 0);
 
-}else {
+} else {
 
     $frameset->html_frame("pm_folders.php?webtag=$webtag", html_get_frame_name('pm_folders'), 0);
     $frameset->html_frame("pm_messages.php?webtag=$webtag", html_get_frame_name('pm_messages'), 0);

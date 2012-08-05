@@ -21,100 +21,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "pm.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-include_once(BH_INCLUDE_PATH. "zip_lib.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'pm.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH. 'zip_lib.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Initialise Locale
-lang_init();
-
-// Get the user's UID
-$uid = session_get_value('UID');
-
-// Guests can't access PMs
-if (user_is_guest()) {
-
+if (!session::logged_in()) {
     html_guest_error();
-    exit;
 }
 
 // Check that PM system is enabled
@@ -128,15 +56,20 @@ $pm_unread_count = 0;
 // Check for new PMs
 pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
 
+// Get the user's UID
+$uid = session::get_value('UID');
+
 // Get custom folder names array.
 if (!$pm_folder_names_array = pm_get_folder_names()) {
 
-    $pm_folder_names_array = array(PM_FOLDER_INBOX   => gettext("Inbox"),
-                                   PM_FOLDER_SENT    => gettext("Sent Items"),
-                                   PM_FOLDER_OUTBOX  => gettext("Outbox"),
-                                   PM_FOLDER_SAVED   => gettext("Saved Items"),
-                                   PM_FOLDER_DRAFTS  => gettext("Drafts"),
-                                   PM_SEARCH_RESULTS => gettext("Search Results"));
+    $pm_folder_names_array = array(
+        PM_FOLDER_INBOX => gettext("Inbox"),
+        PM_FOLDER_SENT => gettext("Sent Items"),
+        PM_FOLDER_OUTBOX => gettext("Outbox"),
+        PM_FOLDER_SAVED => gettext("Saved Items"),
+        PM_FOLDER_DRAFTS => gettext("Drafts"),
+        PM_SEARCH_RESULTS => gettext("Search Results")
+    );
 }
 
 // Default Folder
@@ -146,19 +79,19 @@ if (isset($_GET['folder'])) {
 
     if ($_GET['folder'] == PM_FOLDER_SENT) {
         $folder = PM_FOLDER_SENT;
-    }else if ($_GET['folder'] == PM_FOLDER_OUTBOX) {
+    } else if ($_GET['folder'] == PM_FOLDER_OUTBOX) {
         $folder = PM_FOLDER_OUTBOX;
-    }else if ($_GET['folder'] == PM_FOLDER_SAVED) {
+    } else if ($_GET['folder'] == PM_FOLDER_SAVED) {
         $folder = PM_FOLDER_SAVED;
     }
 
-}elseif (isset($_POST['folder'])) {
+} else if (isset($_POST['folder'])) {
 
     if ($_POST['folder'] == PM_FOLDER_SENT) {
         $folder = PM_FOLDER_SENT;
-    }else if ($_POST['folder'] == PM_FOLDER_OUTBOX) {
+    } else if ($_POST['folder'] == PM_FOLDER_OUTBOX) {
         $folder = PM_FOLDER_OUTBOX;
-    }else if ($_POST['folder'] == PM_FOLDER_SAVED) {
+    } else if ($_POST['folder'] == PM_FOLDER_SAVED) {
         $folder = PM_FOLDER_SAVED;
     }
 }
@@ -169,7 +102,7 @@ if (isset($_GET['manage_folder'])) {
 
         $manage_folder = $_GET['manage_folder'];
 
-    }else {
+    } else {
 
         html_draw_top(sprintf("title=%s", gettext("Error")));
         html_display_error_msg(gettext("Invalid Folder ID. Check that a folder with this ID exists!"));
@@ -177,13 +110,13 @@ if (isset($_GET['manage_folder'])) {
         exit;
     }
 
-}elseif (isset($_POST['manage_folder'])) {
+} else if (isset($_POST['manage_folder'])) {
 
     if (is_numeric($_POST['manage_folder'])) {
 
         $manage_folder = $_POST['manage_folder'];
 
-    }else {
+    } else {
 
         html_draw_top(sprintf("title=%s", gettext("Error")));
         html_display_error_msg(gettext("Invalid Folder ID. Check that a folder with this ID exists!"));
@@ -203,21 +136,21 @@ if (isset($_POST['save'])) {
             header_redirect("pm_folders.php?webtag=$webtag&manage_folder=$manage_folder&folder_renamed=true");
             exit;
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("Failed to update folder");
             $valid = false;
         }
     }
 
-}elseif (isset($_POST['reset'])) {
+} else if (isset($_POST['reset'])) {
 
     if (pm_reset_folder_name($manage_folder)) {
 
         header_redirect("pm_folders.php?webtag=$webtag&manage_folder=$manage_folder&folder_renamed=true");
         exit;
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("Failed to update folder");
         $valid = false;
@@ -241,7 +174,7 @@ if (isset($manage_folder) && is_numeric($manage_folder)) {
 
         html_display_success_msg(gettext("Successfully Renamed Folder"), '500', 'center', 'pm_rename_success');
 
-    }elseif (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    } else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
         html_display_error_array($error_msg_array, '500', 'center');
     }

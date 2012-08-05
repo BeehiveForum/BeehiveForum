@@ -30,29 +30,20 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 }
 
 if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config.inc.php");
+    require_once BH_INCLUDE_PATH. 'config.inc.php';
 }
 
 if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
+    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
 }
 
-include_once(BH_INCLUDE_PATH. "browser.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "server.inc.php");
+require_once BH_INCLUDE_PATH. 'browser.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'server.inc.php';
 
-/**
-* check_install
-*
-* Check that the config file exists and the installer
-* files have been removed correctly.
-*
-* @param void
-* @return void
-*/
 function check_install()
 {
     // Check the config file exists.
@@ -131,16 +122,6 @@ function check_install()
     }
 }
 
-/**
-* install_incomplete
-*
-* Show error message about incomplete install.
-* Called by the exception handler when it encounters
-* a missing table or column or other SQL error.
-*
-* @param void
-* @return void
-*/
 function install_incomplete()
 {
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
@@ -201,16 +182,6 @@ function install_incomplete()
     exit;
 }
 
-/**
-* install_missing_files
-*
-* Show error message when the Exception handler
-* encounters a missing file that has been tried
-* to be included by the main script.
-*
-* @param void
-* @return void
-*/
 function install_missing_files()
 {
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
@@ -260,16 +231,6 @@ function install_missing_files()
     exit;
 }
 
-/**
-* install_check_mysql_version
-*
-* Check the MySQL Version matches or betters
-* the version required by Beehive Forum to
-* run correctly.
-*
-* @param void
-* @return mixed
-*/
 function install_check_mysql_version()
 {
     // Get the MySQL version.
@@ -326,15 +287,6 @@ function install_check_mysql_version()
     }
 }
 
-/**
-* install_check_php_extensions
-*
-* Check the installed PHP extensions that Beehive
-* requires to function correctly.
-*
-* @param void
-* @return void
-*/
 function install_check_php_extensions()
 {
     // Static variable to store our required extensions.
@@ -342,7 +294,18 @@ function install_check_php_extensions()
 
     // Initialise the variable store.
     if (!is_array($required_extensions)) {
-        $required_extensions = array('date',  'fileinfo', 'gd', 'gettext', 'json', 'mbstring', 'mysqli', 'pcre', 'xml');
+        
+        $required_extensions = array(
+            'date',  
+            'fileinfo', 
+            'gd', 
+            'gettext', 
+            'json', 
+            'mbstring', 
+            'mysqli', 
+            'pcre', 
+            'xml'
+        );
     }
 
     // Get an array of extensions currently loaded by PHP
@@ -439,15 +402,6 @@ function install_check_php_extensions()
     }
 }
 
-/**
-* install_check_php_version
-*
-* Check the current PHP version matches our minimum
-* requirements.
-*
-* @param void
-* @return void.
-*/
 function install_check_php_version()
 {
     // Get and compare the PHP version.
@@ -501,16 +455,7 @@ function install_check_php_version()
     }
 }
 
-/**
-* install_get_webtags
-*
-* Get an array of webtags from the FORUMS
-* table of the current Beehive installation.
-*
-* @param void
-* @return mixed
-*/
-function install_get_webtags()
+function install_get_table_data()
 {
     if (!$db_install_get_webtags = db_connect()) return false;
 
@@ -519,61 +464,27 @@ function install_get_webtags()
 
     if (!$result = db_query($sql, $db_install_get_webtags)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        $forum_webtag_array = array();
+    $forum_table_data_array = array();
 
-        while (($forum_webtags_data = db_fetch_array($result))) {
-            $forum_webtag_array[$forum_webtags_data['FID']] = $forum_webtags_data;
-        }
-
-        return $forum_webtag_array;
+    while (($forum_webtags_data = db_fetch_array($result))) {
+        $forum_table_data_array[$forum_webtags_data['FID']] = $forum_webtags_data;
     }
 
-    return false;
+    return $forum_table_data_array;
 }
 
-/**
-* install_format_table_prefix
-*
-* Format the database name and webtag into a table prefix.
-*
-* @param mixed $database_name
-* @param mixed $webtag
-* @return string
-*/
 function install_format_table_prefix($database_name, $webtag)
 {
     return sprintf('%s`.`%s_', $database_name, $webtag);
 }
 
-/**
-* install_prefix_webtag
-*
-* Prefix the specified table name with the webtag provided.
-* Used by array_walk as a callback in install_check_table_conflicts.
-*
-* Note: $table_name is passed by-reference and is modified directly.
-*
-* @param string $table_name
-* @param mixed $key
-* @param mixed $webtag
-* @return voud.
-*/
 function install_prefix_webtag(&$table_name, $key, $webtag)
 {
     $table_name = sprintf('%s_%s', $webtag, $table_name);
 }
 
-/**
-* install_table_exists
-*
-* Check that the specified table exists.
-*
-* @param mixed $database_name
-* @param string $table_name
-* @return bool
-*/
 function install_table_exists($database_name, $table_name)
 {
     if (!$db_install_table_exists = db_connect()) return false;
@@ -587,16 +498,6 @@ function install_table_exists($database_name, $table_name)
     return (db_num_rows($result) > 0);
 }
 
-/**
-* install_column_exists
-*
-* Check that the specified column exists.
-*
-* @param mixed $database_name
-* @param mixed $table_name
-* @param string $column_name
-* @return bool
-*/
 function install_column_exists($database_name, $table_name, $column_name)
 {
     if (!$db_install_column_exists = db_connect()) return false;
@@ -610,17 +511,6 @@ function install_column_exists($database_name, $table_name, $column_name)
     return (db_num_rows($result) > 0);
 }
 
-/**
-* install_index_exists
-*
-* Check that an index of the specified name exists.
-* Note that this is the name of the index not the name
-* of the column(s) it is attached to.
-*
-* @param mixed $database_name
-* @param mixed $table_name
-* @param mixed $column_name
-*/
 function install_index_exists($database_name, $table_name, $index_name)
 {
     if (!$db_install_index_exists = db_connect()) return false;
@@ -636,16 +526,6 @@ function install_index_exists($database_name, $table_name, $index_name)
     return false;
 }
 
-/**
- * install_check_column_type
- * 
- * Check that a column in a table is of the type specified.
- * 
- * @param mixed $database_name
- * @param mixed $table_name
- * @param mixed $column_name
- * @param mixed $column_type
- */
 function install_check_column_type($database_name, $table_name, $column_name, $column_type)
 {
     if (!$db_install_column_exists = db_connect()) return false;
@@ -661,17 +541,6 @@ function install_check_column_type($database_name, $table_name, $column_name, $c
     return ($column_data['Type'] == $column_type);
 }
 
-/**
-* install_get_table_names
-*
-* Get array of table names used globally by
-* Beehive and per-forum installation (without
-* webtag prefix!)
-*
-* @param mixed &$global_tables
-* @param mixed &$forum_tables
-* @return void
-*/
 function install_get_table_names(&$global_tables, &$forum_tables)
 {
     // Static store of global BH table names
@@ -684,30 +553,68 @@ function install_get_table_names(&$global_tables, &$forum_tables)
     if (!is_array($global_tables_store)) {
 
         // Initislise the global store.
-        $global_tables_store = array('DICTIONARY',          'FORUMS',              'FORUM_SETTINGS',
-                                     'GROUPS',              'GROUP_PERMS',         'GROUP_USERS',
-                                     'PM',                  'PM_ATTACHMENT_IDS',   'PM_CONTENT',
-                                     'PM_FOLDERS',          'PM_SEARCH_RESULTS',   'POST_ATTACHMENT_FILES',
-                                     'POST_ATTACHMENT_IDS', 'SEARCH_ENGINE_BOTS',  'SEARCH_RESULTS',
-                                     'SESSIONS',            'TIMEZONES',           'USER',
-                                     'USER_FORUM',          'USER_HISTORY',        'USER_PREFS',
-                                     'VISITOR_LOG');
+        $global_tables_store = array(
+            'DICTIONARY',
+            'FORUMS',
+            'FORUM_SETTINGS',
+            'GROUPS',
+            'GROUP_PERMS',
+            'GROUP_USERS',
+            'PM',
+            'PM_ATTACHMENT_IDS',
+            'PM_CONTENT',
+            'PM_FOLDERS',
+            'PM_SEARCH_RESULTS',
+            'POST_ATTACHMENT_FILES',
+            'POST_ATTACHMENT_IDS',
+            'SEARCH_ENGINE_BOTS',
+            'SEARCH_RESULTS',
+            'SESSIONS',
+            'TIMEZONES',
+            'USER',
+            'USER_FORUM',
+            'USER_HISTORY',
+            'USER_PREFS',
+            'VISITOR_LOG'
+         );
     }
 
     // Check the per-forum store has been initialised.
     if (!is_array($forum_tables_store)) {
 
         // Initialise the store.
-        $forum_tables_store = array('ADMIN_LOG',      'BANNED',       'FOLDER',
-                                    'FORUM_LINKS',    'LINKS',        'LINKS_COMMENT',
-                                    'LINKS_FOLDERS',  'LINKS_VOTE',   'POLL',
-                                    'POLL_VOTES',     'POST',         'POST_CONTENT',
-                                    'POST_SEARCH_ID', 'PROFILE_ITEM', 'PROFILE_SECTION', 
-                                    'RSS_FEEDS',      'RSS_HISTORY',  'STATS',
-                                    'THREAD',         'THREAD_STATS', 'THREAD_TRACK',
-                                    'USER_FOLDER',    'USER_PEER',    'USER_POLL_VOTES', 
-                                    'USER_PREFS',     'USER_PROFILE', 'USER_SIG',
-                                    'USER_THREAD',    'USER_TRACK',   'WORD_FILTER');
+        $forum_tables_store = array(
+            'ADMIN_LOG',
+            'BANNED',
+            'FOLDER',
+            'FORUM_LINKS',
+            'LINKS',
+            'LINKS_COMMENT',
+            'LINKS_FOLDERS',
+            'LINKS_VOTE',
+            'POLL',
+            'POLL_VOTES',
+            'POST',
+            'POST_CONTENT',
+            'POST_SEARCH_ID',
+            'PROFILE_ITEM',
+            'PROFILE_SECTION',
+            'RSS_FEEDS',
+            'RSS_HISTORY',
+            'STATS',
+            'THREAD',
+            'THREAD_STATS',
+            'THREAD_TRACK',
+            'USER_FOLDER',
+            'USER_PEER',
+            'USER_POLL_VOTES',
+            'USER_PREFS',
+            'USER_PROFILE',
+            'USER_SIG',
+            'USER_THREAD',
+            'USER_TRACK',
+            'WORD_FILTER'
+        );
     }
 
     // Set the by-ref var to the global tables store.
@@ -717,20 +624,6 @@ function install_get_table_names(&$global_tables, &$forum_tables)
     $forum_tables = $forum_tables_store;
 }
 
-/**
-* install_check_table_conflicts
-*
-* Check the specified database for conflicting
-* table names used by Beehive that might stop
-* the installer from completing successfully.
-*
-* @param mixed $database_name
-* @param mixed $webtag
-* @param mixed $check_forum_tables
-* @param mixed $check_global_tables
-* @param mixed $remove_conflicts
-* @return mixed
-*/
 function install_check_table_conflicts($database_name, $webtag, $check_forum_tables, $check_global_tables, $remove_conflicts)
 {
     // Database connection.
@@ -773,16 +666,6 @@ function install_check_table_conflicts($database_name, $webtag, $check_forum_tab
     return sizeof($conflicting_tables_array) > 0 ? $conflicting_tables_array : false;
 }
 
-/**
-* install_remove_table
-*
-* Remove a table from the specified database if
-* it exists.
-*
-* @param mixed $database_name
-* @param mixed $table_name
-* @return bool
-*/
 function install_remove_table($database_name, $table_name)
 {
     if (!$db_install_remove_table = db_connect()) return false;
@@ -794,17 +677,6 @@ function install_remove_table($database_name, $table_name)
     return true;
 }
 
-/**
-* install_remove_indexes
-*
-* Remove all the defined indexes on the specified table.
-* Use with caution, this can take a considerable time
-* to execute.
-*
-* @param mixed $database_name
-* @param string $table_name
-* @return bool
-*/
 function install_remove_indexes($database_name, $table_name)
 {
     if (!$db_install_remove_indexes = db_connect()) return false;
@@ -835,15 +707,6 @@ function install_remove_indexes($database_name, $table_name)
     return true;
 }
 
-/**
-* install_msie_buffer_fix
-*
-* Output something to the output buffer to
-* prevent MSIE from timing out the connection
-*
-* @param void
-* @return void
-*/
 function install_msie_buffer_fix()
 {
     if (browser_check(BROWSER_MSIE)) {
@@ -851,50 +714,43 @@ function install_msie_buffer_fix()
     }
 }
 
-/**
-* install_set_default_forum_settings
-*
-* Set the default forum settings for new installs
-*
-* @param void
-* @return boolean
-*/
 function install_set_default_forum_settings()
 {
     if (!$db_install_set_default_forum_settings = db_connect()) return false;
 
-    $global_settings = array('forum_keywords'             => 'A Beehive Forum, Beehive Forum, Project Beehive Forum',
-                             'forum_desc'                 => 'A Beehive Forum',
-                             'forum_email'                => 'admin@beehiveforum.co.uk',
-                             'forum_noreply_email'        => 'noreply@beehiveforum.co.uk',
-                             'forum_name'                 => 'A Beehive Forum',
-                             'allow_search_spidering'     => 'Y',
-                             'pm_allow_attachments'       => 'Y',
-                             'pm_auto_prune'              => '-60',
-                             'pm_max_user_messages'       => '100',
-                             'show_pms'                   => 'Y',
-                             'new_user_mark_as_of_int'    => 'Y',
-                             'showpopuponnewpm'           => 'Y',
-                             'new_user_pm_notify_email'   => 'Y',
-                             'new_user_email_notify'      => 'Y',
-                             'text_captcha_key'           => md5(uniqid(mt_rand())),
-                             'text_captcha_dir'           => 'text_captcha',
-                             'text_captcha_enabled'       => 'N',
-                             'require_email_confirmation' => 'N',
-                             'require_unique_email'       => 'N',
-                             'allow_new_registrations'    => 'Y',
-                             'active_sess_cutoff'         => '900',
-                             'session_cutoff'             => '86400',
-                             'search_min_frequency'       => '30',
-                             'guest_account_enabled'      => 'Y',
-                             'guest_auto_logon'           => 'Y',
-                             'attachments_enabled'        => 'N',
-                             'attachment_dir'             => 'attachments',
-                             'attachments_max_user_space' => '1048576',
-                             'attachments_max_post_space' => '1048576',
-                             'attachments_allow_embed'    => 'N',
-                             'attachment_use_old_method'  => 'N',
-                             'message_cache_enabled'      => 'N');
+    $global_settings = array(
+        'forum_keywords' => 'A Beehive Forum, Beehive Forum, Project Beehive Forum',
+        'forum_desc' => 'A Beehive Forum',
+        'forum_email' => 'admin@beehiveforum.co.uk',
+        'forum_noreply_email' => 'noreply@beehiveforum.co.uk',
+        'forum_name' => 'A Beehive Forum',
+        'allow_search_spidering' => 'Y',
+        'pm_allow_attachments' => 'Y',
+        'pm_auto_prune' => '-60',
+        'pm_max_user_messages' => '100',
+        'show_pms' => 'Y',
+        'new_user_mark_as_of_int' => 'Y',
+        'showpopuponnewpm' => 'Y',
+        'new_user_pm_notify_email' => 'Y',
+        'new_user_email_notify' => 'Y',
+        'text_captcha_key' => md5(uniqid(mt_rand())),
+        'text_captcha_dir' => 'text_captcha',
+        'text_captcha_enabled' => 'N',
+        'require_email_confirmation' => 'N',
+        'require_unique_email' => 'N',
+        'allow_new_registrations' => 'Y',
+        'active_sess_cutoff' => '900',
+        'session::cutoff' => '86400',
+        'search_min_frequency' => '30',
+        'guest_account_enabled' => 'Y',
+        'guest_auto_logon' => 'Y',
+        'attachments_enabled' => 'N',
+        'attachment_dir' => 'attachments',
+        'attachments_max_user_space' => '1048576',
+        'attachments_max_post_space' => '1048576',
+        'attachments_allow_embed' => 'N',
+        'message_cache_enabled' => 'N'
+    );
 
     foreach ($global_settings as $sname => $svalue) {
 
@@ -910,30 +766,59 @@ function install_set_default_forum_settings()
     return true;
 }
 
-/**
-* install_set_search_bots
-*
-* Set up the search bots for a new installation
-*
-* @param void
-* @return boolean
-*/
 function install_set_search_bots()
 {
     if (!$db_install_set_search_bots = db_connect()) return false;
 
-    $bots_array = array('ia_archiver'      => array('NAME' => 'Alexa', 'URL' => 'http://www.alexa.com/'),
-                        'Ask Jeeves/Teoma' => array('NAME' => 'Ask.com', 'URL' => 'http://www.ask.com/'),
-                        'Baiduspider'      => array('NAME' => 'Baidu', 'URL' => 'http://www.baidu.com/'),
-                        'GameSpyHTTP'      => array('NAME' => 'GameSpy', 'URL' => 'http://www.gamespy.com/'),
-                        'Gigabot'          => array('NAME' => 'Gigablast', 'URL' => 'http://www.gigablast.com/'),
-                        'Googlebot'        => array('NAME' => 'Google', 'URL' => 'http://www.google.com/'),
-                        'Googlebot-Image'  => array('NAME' => 'Google Images', 'URL' => 'http://images.google.com/'),
-                        'Slurp/si'         => array('NAME' => 'Inktomi', 'URL' => 'http://searchmarketing.yahoo.com/'),
-                        'msnbot'           => array('NAME' => 'Bing', 'URL' => 'http://www.bing.com/'),
-                        'Scooter'          => array('NAME' => 'Altavista', 'URL' => 'http://www.altavista.com/'),
-                        'Yahoo! Slurp;'    => array('NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'),
-                        'Yahoo-MMCrawler'  => array('NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'));
+    $bots_array = array(
+        'ia_archiver' => array(
+            'NAME' => 'Alexa', 
+            'URL' => 'http://www.alexa.com/'
+        ),
+        'Ask Jeeves/Teoma' => array(
+            'NAME' => 'Ask.com', 
+            'URL' => 'http://www.ask.com/'
+        ),
+        'Baiduspider' => array(
+            'NAME' => 'Baidu', 
+            'URL' => 'http://www.baidu.com/'
+        ),
+        'GameSpyHTTP' => array(
+            'NAME' => 'GameSpy', 
+            'URL' => 'http://www.gamespy.com/'
+        ),
+        'Gigabot' => array(
+            'NAME' => 'Gigablast', 
+            'URL' => 'http://www.gigablast.com/'
+        ),
+        'Googlebot' => array(
+            'NAME' => 'Google', 
+            'URL' => 'http://www.google.com/'
+        ),
+        'Googlebot-Image' => array(
+            'NAME' => 'Google Images', 
+            'URL' => 'http://images.google.com/'
+        ),
+        'Slurp/si' => array(
+            'NAME' => 'Inktomi', 
+            'URL' => 'http://searchmarketing.yahoo.com/'
+        ),
+        'msnbot' => array(
+            'NAME' => 'Bing', 
+            'URL' => 'http://www.bing.com/'
+        ),
+        'Scooter' => array(
+            'NAME' => 'Altavista', 
+            'URL' => 'http://www.altavista.com/'
+        ),
+        'Yahoo! Slurp;' => array(
+            'NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'
+        ),
+        'Yahoo-MMCrawler' => array(
+            'NAME' => 'Yahoo!', 
+            'URL' => 'http://www.yahoo.com/'
+        ),
+    );
 
     foreach ($bots_array as $agent => $details) {
 
@@ -950,43 +835,87 @@ function install_set_search_bots()
     return true;
 }
 
-/**
-* install_set_timezones
-*
-* Set the available timezones for a new install
-*
-* @param void
-* @return boolean
-*/
 function install_set_timezones()
 {
     if (!$db_install_set_timezones = db_connect()) return false;
 
-    $timezones_array = array(1  => array(-12, 0),  2  => array(-11, 0),  3  => array(-10, 0),
-                             4  => array(-9, 1),   5  => array(-8, 1),   6  => array(-7, 0),
-                             7  => array(-7, 1),   8  => array(-7, 1),   9  => array(-6, 0),
-                             10 => array(-6, 1),   11 => array(-6, 1),   12 => array(-6, 0),
-                             13 => array(-5, 0),   14 => array(-5, 1),   15 => array(-5, 0),
-                             16 => array(-4, 1),   17 => array(-4, 0),   18 => array(-4, 1),
-                             19 => array(-3.5, 1), 20 => array(-3, 1),   21 => array(-3, 0),
-                             22 => array(-3, 1),   23 => array(-2, 1),   24 => array(-1, 1),
-                             25 => array(-1, 0),   26 => array(0, 0),    27 => array(0, 1),
-                             28 => array(1, 1),    29 => array(1, 1),    30 => array(1, 1),
-                             31 => array(1, 1),    32 => array(1, 0),    33 => array(2, 1),
-                             34 => array(2, 1),    35 => array(2, 1),    36 => array(2, 0),
-                             37 => array(2, 1),    38 => array(2, 0),    39 => array(3, 1),
-                             40 => array(3, 0),    41 => array(3, 1),    42 => array(3, 0),
-                             43 => array(3.5, 1),  44 => array(4, 0),    45 => array(4, 1),
-                             46 => array(4.5, 0),  47 => array(5, 1),    48 => array(5, 0),
-                             49 => array(5.5, 0),  50 => array(5.75, 0), 51 => array(6, 1),
-                             52 => array(6, 0),    53 => array(6, 0),    54 => array(6.5, 0),
-                             55 => array(7, 0),    56 => array(7, 1),    57 => array(8, 0),
-                             58 => array(8, 1),    59 => array(8, 0),    60 => array(8, 0),
-                             61 => array(8, 0),    62 => array(9, 0),    63 => array(9, 0),
-                             64 => array(9, 1),    65 => array(9.5, 1),  66 => array(9.5, 0),
-                             67 => array(10, 0),   68 => array(10, 1),   69 => array(10, 0),
-                             70 => array(10, 1),   71 => array(10, 1),   72 => array(11, 0),
-                             73 => array(12, 1),   74 => array(12, 0),   75 => array(13, 0));
+    $timezones_array = array(
+        1 => array(-12, 0),
+        2 => array(-11, 0),
+        3 => array(-10, 0),
+        4 => array(-9, 1),
+        5 => array(-8, 1),
+        6 => array(-7, 0),
+        7 => array(-7, 1),
+        8 => array(-7, 1),
+        9 => array(-6, 0),
+        10 => array(-6, 1),
+        11 => array(-6, 1),
+        12 => array(-6, 0),
+        13 => array(-5, 0),
+        14 => array(-5, 1),
+        15 => array(-5, 0),
+        16 => array(-4, 1),
+        17 => array(-4, 0),
+        18 => array(-4, 1),
+        19 => array(-3.5, 1),
+        20 => array(-3, 1),
+        21 => array(-3, 0),
+        22 => array(-3, 1),
+        23 => array(-2, 1),
+        24 => array(-1, 1),
+        25 => array(-1, 0),
+        26 => array(0, 0),
+        27 => array(0, 1),
+        28 => array(1, 1),
+        29 => array(1, 1),
+        30 => array(1, 1),
+        31 => array(1, 1),
+        32 => array(1, 0),
+        33 => array(2, 1),
+        34 => array(2, 1),
+        35 => array(2, 1),
+        36 => array(2, 0),
+        37 => array(2, 1),
+        38 => array(2, 0),
+        39 => array(3, 1),
+        40 => array(3, 0),
+        41 => array(3, 1),
+        42 => array(3, 0),
+        43 => array(3.5, 1),
+        44 => array(4, 0),
+        45 => array(4, 1),
+        46 => array(4.5, 0),
+        47 => array(5, 1),
+        48 => array(5, 0),
+        49 => array(5.5, 0),
+        50 => array(5.75, 0),
+        51 => array(6, 1),
+        52 => array(6, 0),
+        53 => array(6, 0),
+        54 => array(6.5, 0),
+        55 => array(7, 0),
+        56 => array(7, 1),
+        57 => array(8, 0),
+        58 => array(8, 1),
+        59 => array(8, 0),
+        60 => array(8, 0),
+        61 => array(8, 0),
+        62 => array(9, 0),
+        63 => array(9, 0),
+        64 => array(9, 1),
+        65 => array(9.5, 1),
+        66 => array(9.5, 0),
+        67 => array(10, 0),
+        68 => array(10, 1),
+        69 => array(10, 0),
+        70 => array(10, 1),
+        71 => array(10, 1),
+        72 => array(11, 0),
+        73 => array(12, 1),
+        74 => array(12, 0),
+        75 => array(13, 0),
+    );
 
     foreach ($timezones_array as $tzid => $tz_data) {
 
@@ -1004,14 +933,6 @@ function install_set_timezones()
     return true;
 }
 
-/**
-* install_import_dictionary
-*
-* Import a dictionary file into the DICTIONARY table
-*
-* @param mixed $dictionary_path
-* @return boolean
-*/
 function install_import_dictionary($dictionary_path)
 {
     if (!@file_exists("$dictionary_path/english.dic")) return false;

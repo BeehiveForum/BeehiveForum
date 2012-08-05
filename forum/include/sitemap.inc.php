@@ -21,16 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/**
-* sitemap.inc.php - sitemap functions
-*
-* Contains sitemap related functions.
-*/
-
-/**
-*
-*/
-
 // We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
@@ -39,22 +29,13 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-/**
-* Get Available Forums
-*
-* Gets available forums for use in sitemap. Password protected and restricted forums are excluded.
-*
-* return mixed
-* param void
-*/
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'server.inc.php';
 
 function sitemap_get_available_forums()
 {
@@ -70,15 +51,6 @@ function sitemap_get_available_forums()
     return $result;
 }
 
-/**
-* Get Forum Threads
-*
-* Gets all threads accessible to Guests.
-*
-* return mixed
-* param string $webtag - Forum Webtag to fetch the threads for.
-*/
-
 function sitemap_forum_get_threads($forum_fid)
 {
     if (!$db_sitemap_forum_get_threads = db_connect()) return false;
@@ -90,11 +62,11 @@ function sitemap_forum_get_threads($forum_fid)
     $user_perm_guest_access = USER_PERM_GUEST_ACCESS;
 
     // Get the table prefix from the forum fid
-    if (!($table_data = forum_get_table_prefix($forum_fid))) return false;
+    if (!($table_prefix = forum_get_table_prefix($forum_fid))) return false;
 
     $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
-    $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD ";
-    $sql.= "INNER JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
+    $sql.= "FROM `{$table_prefix}THREAD` THREAD ";
+    $sql.= "INNER JOIN `{$table_prefix}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE FOLDER.PERM & $user_perm_guest_access > 0 ";
     $sql.= "ORDER BY THREAD.TID";
@@ -105,16 +77,6 @@ function sitemap_forum_get_threads($forum_fid)
 
     return $result;
 }
-
-/**
-* Get sitemap path
-*
-* Finds the sitemap path and checks that the sitemap file
-* exists and is writable by PHP
-*
-* return boolean
-* param void
-*/
 
 function sitemap_get_dir()
 {
@@ -140,15 +102,6 @@ function sitemap_get_dir()
     // If the write check failed return false;
     return false;
 }
-
-/**
-* Generate sitemap
-*
-* Generates the sitemap file!
-*
-* return boolean
-* param void
-*/
 
 function sitemap_create_file()
 {
@@ -245,15 +198,15 @@ function sitemap_create_file()
 
                 $change_frequency = "yearly";
 
-            }else if ($thread_last_modified < time() - (30 * DAY_IN_SECONDS)) {
+            } else if ($thread_last_modified < time() - (30 * DAY_IN_SECONDS)) {
 
                 $change_frequency = "monthly";
 
-            }else if ($thread_last_modified < time() - (4 * DAY_IN_SECONDS)) {
+            } else if ($thread_last_modified < time() - (4 * DAY_IN_SECONDS)) {
 
                 $change_frequency = "weekly";
 
-            }else {
+            } else {
 
                 $change_frequency = "daily";
             }

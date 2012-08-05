@@ -29,11 +29,11 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "search.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'search.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
 
 function sphinx_search_connect()
 {
@@ -52,11 +52,11 @@ function sphinx_search_connect()
 
 function sphinx_search_execute($search_arguments, &$error)
 {
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $forum_fid = $table_data['FID'];
+    if (!($forum_fid = get_forum_fid())) return false;
 
     // Swift connection.
     if (!$sphinx_connection = sphinx_search_connect()) {
@@ -116,7 +116,7 @@ function sphinx_search_execute($search_arguments, &$error)
 
         $where_sql.= "AND MATCH('$search_string')";
 
-    }else {
+    } else {
 
         if (!isset($search_arguments['user_uid_array']) || sizeof($search_arguments['user_uid_array']) < 1) {
 
@@ -128,7 +128,7 @@ function sphinx_search_execute($search_arguments, &$error)
     // If the user wants results grouped by thread (TID) then do so.
     if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS) {
         $group_sql = "GROUP BY tid";
-    }else {
+    } else {
         $group_sql = "";
     }
 
@@ -193,8 +193,8 @@ function sphinx_search_execute($search_arguments, &$error)
         $sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, ";
         $sql.= "RELEVANCE) SELECT '$uid' AS UID, '$forum_fid' AS FORUM, FOLDER.FID, THREAD.TID, POST.PID, THREAD.BY_UID, ";
         $sql.= "POST.FROM_UID, POST.TO_UID, POST.CREATED, THREAD.LENGTH, {$search_result['weight']} AS RELEVANCE ";
-        $sql.= "FROM `{$table_data['PREFIX']}POST` POST INNER JOIN `{$table_data['PREFIX']}THREAD` ";
-        $sql.= "THREAD ON (THREAD.TID = POST.TID) INNER JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ";
+        $sql.= "FROM `{$table_prefix}POST` POST INNER JOIN `{$table_prefix}THREAD` ";
+        $sql.= "THREAD ON (THREAD.TID = POST.TID) INNER JOIN `{$table_prefix}FOLDER` FOLDER ";
         $sql.= "ON (FOLDER.FID = THREAD.FID) WHERE THREAD.TID = '{$search_result['tid']}' ";
         $sql.= "AND POST.PID = '{$search_result['pid']}' AND THREAD.LENGTH > 0 ";
         $sql.= "AND THREAD.DELETED = 'N'";

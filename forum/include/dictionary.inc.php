@@ -29,12 +29,12 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
 
 class dictionary {
 
@@ -156,7 +156,7 @@ class dictionary {
 
             if ($key == $this->current_word) {
                 $pretty_content.= sprintf('<span class="highlight" id="highlighted_word">%s</span>', nl2br(htmlentities_array($word)));
-            }else {
+            } else {
                 $pretty_content.= nl2br(htmlentities_array($word));
             }
         }
@@ -170,7 +170,7 @@ class dictionary {
 
         $word = db_escape_string(trim($word));
 
-        if (($uid = session_get_value('UID')) === false) return false;
+        if (($uid = session::get_value('UID')) === false) return false;
 
         $sql = "INSERT IGNORE INTO DICTIONARY (WORD, SOUND, UID) ";
         $sql.= "VALUES ('$word', SOUNDEX('$word'), '$uid')";
@@ -188,7 +188,7 @@ class dictionary {
 
             $this->content_array[$this->current_word] = mb_strtolower($change_to);
 
-        }elseif (ucfirst($current_word) == $current_word) {
+        } else if (ucfirst($current_word) == $current_word) {
 
             $this->content_array[$this->current_word] = ucfirst($change_to);
         }
@@ -253,7 +253,7 @@ class dictionary {
         $offset = $this->offset_match;
 
         // The current user's UID
-        if (($uid = session_get_value('UID')) === false) return;
+        if (($uid = session::get_value('UID')) === false) return;
 
         // Exact match
         $sql = "SELECT WORD FROM DICTIONARY WHERE WORD = '$word' ";
@@ -283,7 +283,7 @@ class dictionary {
                 $this->suggestions_array[$spelling_data['WORD']] = $spelling_data['WORD'];
             }
 
-        }else {
+        } else {
 
             if ($this->offset_match == 0) {
 

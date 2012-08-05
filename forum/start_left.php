@@ -21,118 +21,39 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "attachments.inc.php");
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "thread.inc.php");
-include_once(BH_INCLUDE_PATH. "threads.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "visitor_log.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
-
-// Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'attachments.inc.php';
+require_once BH_INCLUDE_PATH. 'cache.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'thread.inc.php';
+require_once BH_INCLUDE_PATH. 'threads.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'visitor_log.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Start left caching
 cache_check_start_page();
 
-// Initialise Locale
-lang_init();
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
 // Number of posts per page
-if (($posts_per_page = session_get_value('POSTS_PER_PAGE'))) {
+if (($posts_per_page = session::get_value('POSTS_PER_PAGE'))) {
 
     if ($posts_per_page < 10) $posts_per_page = 10;
     if ($posts_per_page > 30) $posts_per_page = 30;
 
-}else {
+} else {
 
     $posts_per_page = 20;
 }
@@ -172,7 +93,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
             if ($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) {
                 echo "                        <td valign=\"top\" align=\"center\" style=\"white-space: nowrap\" width=\"25\"><img src=\"", html_style_image('unread_thread.png'), "\" name=\"t{$thread['TID']}\" alt=\"", gettext("Unread Messages"), "\" title=\"", gettext("Unread Messages"), "\" /></td>\n";
-            }else {
+            } else {
                 echo "                        <td valign=\"top\" align=\"center\" style=\"white-space: nowrap\" width=\"25\"><img src=\"", html_style_image('bullet.png'), "\" name=\"t{$thread['TID']}\" alt=\"", gettext("Read Thread"), "\" title=\"", gettext("Read Thread"), "\" /></td>\n";
             }
 
@@ -184,7 +105,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
                     $number.= sprintf(gettext("%d new"), $thread['LENGTH']);
                     $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
 
-                }else {
+                } else {
 
                     $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
                     $number.= sprintf(gettext("%d new"), $thread['LENGTH']);
@@ -193,7 +114,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
                 $latest_post = 1;
 
-            }elseif ($thread['LAST_READ'] < $thread['LENGTH']) {
+            } else if ($thread['LAST_READ'] < $thread['LENGTH']) {
 
                 $new_posts = $thread['LENGTH'] - $thread['LAST_READ'];
 
@@ -203,7 +124,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
                     $number.= sprintf(gettext("%d new of %d"), $new_posts, $thread['LENGTH']);
                     $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
 
-                }else {
+                } else {
 
                     $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
                     $number.= sprintf(gettext("%d new of %d"), $new_posts, $thread['LENGTH']);
@@ -212,14 +133,14 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
                 $latest_post = $thread['LAST_READ'] + 1;
 
-            }else {
+            } else {
 
                 if ($thread['LENGTH'] > 1) {
 
                     $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
                     $number.= "{$thread['LENGTH']}<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
 
-                }else {
+                } else {
 
                     $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
                     $number.= "1<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
@@ -352,13 +273,13 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
         
             echo "                            <tr>\n";
 
-            if (session_get_value('SHOW_AVATARS') == 'Y') {
+            if (session::get_value('SHOW_AVATARS') == 'Y') {
 
                 if (isset($recent_visitor['AVATAR_URL']) && strlen($recent_visitor['AVATAR_URL']) > 0) {
 
                     echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"25\"><img src=\"{$recent_visitor['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
 
-                }else if (isset($recent_visitor['AVATAR_AID']) && is_md5($recent_visitor['AVATAR_AID'])) {
+                } else if (isset($recent_visitor['AVATAR_AID']) && is_md5($recent_visitor['AVATAR_AID'])) {
 
                     $attachment = attachments_get_by_hash($recent_visitor['AVATAR_AID']);
 
@@ -366,17 +287,17 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
 
                         echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"25\"><img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
 
-                    }else {
+                    } else {
 
                         echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\" width=\"25\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"", gettext('User'), "\" title=\"", gettext('User'), "\" /></td>\n";
                     }
 
-                }else {
+                } else {
 
                     echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\" width=\"25\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"", gettext('User'), "\" title=\"", gettext('User'), "\" /></td>\n";
                 }
 
-            }else {
+            } else {
 
                 echo "                   <td valign=\"top\"  align=\"left\" class=\"postbody\" width=\"25\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"", gettext('User'), "\" title=\"", gettext('User'), "\" /></td>\n";
             }
@@ -385,11 +306,11 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
 
                 echo "                              <td valign=\"top\"  align=\"left\"><a href=\"{$recent_visitor['URL']}\" target=\"_blank\">", word_filter_add_ob_tags(htmlentities_array($recent_visitor['NAME'])), "</a></td>\n";
 
-            }elseif ($recent_visitor['UID'] > 0) {
+            } else if ($recent_visitor['UID'] > 0) {
 
                 echo "                              <td valign=\"top\"  align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$recent_visitor['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</a></td>\n";
 
-            }else {
+            } else {
 
                 echo "                              <td valign=\"top\"  align=\"left\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</td>\n";
             }
@@ -404,7 +325,7 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
     echo "                        </td>\n";
     echo "                      </tr>\n";
 
-}else {
+} else {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", gettext('No Visitors Logged'), "</td>\n";

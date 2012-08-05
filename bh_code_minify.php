@@ -44,7 +44,7 @@ function get_file_list(&$file_list_array, $path, $extension)
 
                     get_file_list($file_list_array, "$path/$file_name", $extension);
 
-                }else if ((preg_match("/$extension_preg$/iu", $file_name) > 0) && !in_array($file_name, $GLOBALS['exclude_files_array'])) {
+                } else if ((preg_match("/$extension_preg$/iu", $file_name) > 0) && !in_array($file_name, $GLOBALS['exclude_files_array'])) {
 
                     $file_list_array[] = "$path/$file_name";
                 }

@@ -21,95 +21,40 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "poll.inc.php");
-include_once(BH_INCLUDE_PATH. "links.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "thread.inc.php");
-include_once(BH_INCLUDE_PATH. "threads.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'poll.inc.php';
+require_once BH_INCLUDE_PATH. 'links.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'thread.inc.php';
+require_once BH_INCLUDE_PATH. 'threads.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
+if (!session::logged_in()) {
 
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
 
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
+// Check we have Admin / Moderator access
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+    html_draw_error(gettext("You do not have permission to use this section."));
 }
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
 
 // Array to hold error messages
 $error_msg_array = array();
@@ -120,9 +65,6 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 } else {
     $page = 1;
 }
-
-$start = floor($page - 1) * 10;
-if ($start < 0) $start = 0;
 
 // Are we returning somewhere?
 if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
@@ -136,7 +78,12 @@ if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
 // validate the return to page
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
-    $available_files = array('admin_link_approve.php', 'links_detail.php', 'links.php');
+    $available_files = array(
+        'admin_link_approve.php', 
+        'links_detail.php', 
+        'links.php'
+    );
+    
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
     if (!preg_match("/^$available_files_preg/u", $ret)) {
@@ -157,10 +104,7 @@ if (isset($_POST['lid'])) {
 
     } else {
 
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("Invalid link id or link not found"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
-        html_draw_bottom();
-        exit;
+        html_draw_error(gettext("Invalid link id or link not found"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
     }
 
 } else if (isset($_GET['lid'])) {
@@ -171,31 +115,20 @@ if (isset($_POST['lid'])) {
 
     } else {
 
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("Invalid link id or link not found"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
-        html_draw_bottom();
-        exit;
+        html_draw_error(gettext("Invalid link id or link not found"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
     }
 }
 
 if (isset($lid) && is_numeric($lid)) {
 
-    if (!session_check_perm(USER_PERM_LINKS_MODERATE, 0)) {
-
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("Cannot edit links"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
-        html_draw_bottom();
-        exit;
+    if (!session::check_perm(USER_PERM_LINKS_MODERATE, 0)) {
+        html_draw_error(gettext("Cannot edit links"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
     }
     
     if (($link = links_get_single($lid, false))) {
         
         if (isset($link['APPROVED']) && ($link['APPROVED'] > 0)) {
-
-            html_draw_top(sprintf("title=%s", gettext("Error")));
-            html_error_msg(gettext("Link does not require approval"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
-            html_draw_bottom();
-            exit;
+            html_draw_error(gettext("Link does not require approval"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
         }
         
         if (isset($_POST['approve'])) {
@@ -226,7 +159,7 @@ if (isset($lid) && is_numeric($lid)) {
 
             if (links_delete($lid)) {
 
-                if (session_check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != session_get_value('UID'))) {
+                if (session::check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != session::get_value('UID'))) {
                     admin_add_log_entry(DELETE_LINK, array($lid));
                 }
 
@@ -317,26 +250,14 @@ if (isset($lid) && is_numeric($lid)) {
         html_draw_bottom();
     
     } else {        
-
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("Invalid link ID!"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
-        html_draw_bottom();
-        exit;
+        html_draw_error(gettext("Invalid link ID!"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
     }    
 
 } else {
 
-    if (!session_check_perm(USER_PERM_LINKS_MODERATE, 0)) {
-
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("You do not have permission to use this section."));
-        html_draw_bottom();
-        exit;
-    }
-
     html_draw_top("title=", gettext("Admin"), " - ", gettext("Link Approval Queue"), "", 'class=window_title');
 
-    $link_approval_array = admin_get_link_approval_queue($start);
+    $link_approval_array = admin_get_link_approval_queue($page);
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Link Approval Queue"), "</h1>\n";
 
@@ -388,7 +309,7 @@ if (isset($lid) && is_numeric($lid)) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_link_approve.php?webtag=$webtag&ret=$ret", $start, $link_approval_array['link_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_link_approve.php?webtag=$webtag&ret=$ret", $page, $link_approval_array['link_count'], 10), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";

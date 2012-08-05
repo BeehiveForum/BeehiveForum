@@ -21,108 +21,27 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "styles.inc.php");
-include_once(BH_INCLUDE_PATH. "timezone.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'styles.inc.php';
+require_once BH_INCLUDE_PATH. 'timezone.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Guests can't access this page.
-if (user_is_guest()) {
-
+if (!session::logged_in()) {
     html_guest_error();
-    exit;
 }
 
 // Array to hold error messages.
@@ -145,25 +64,25 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['timezone']) && in_array($_POST['timezone'], array_keys($available_timezones))) {
         $user_prefs['TIMEZONE'] = $_POST['timezone'];
-    }else {
+    } else {
         $user_prefs['TIMEZONE'] = forum_get_setting('forum_timezone', false, 27);
     }
 
     if (isset($_POST['dl_saving']) && $_POST['dl_saving'] == "Y") {
         $user_prefs['DL_SAVING'] = "Y";
-    }else {
+    } else {
         $user_prefs['DL_SAVING'] = "N";
     }
 
     if (isset($_POST['language'])) {
         $user_prefs['LANGUAGE'] = trim(stripslashes_array($_POST['language']));
-    }else {
+    } else {
         $user_prefs['LANGUAGE'] = "";
     }
 
     if (isset($_POST['view_sigs']) && $_POST['view_sigs'] == "N") {
         $user_prefs['VIEW_SIGS'] = "N";
-    }else {
+    } else {
         $user_prefs['VIEW_SIGS'] = "Y";
     }
 
@@ -175,7 +94,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['threads_by_folder']) && $_POST['threads_by_folder'] == "Y") {
         $user_prefs['THREADS_BY_FOLDER'] = "Y";
-    }else {
+    } else {
         $user_prefs['THREADS_BY_FOLDER'] = "N";
     }
 
@@ -187,7 +106,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['mark_as_of_int']) && $_POST['mark_as_of_int'] == "Y") {
         $user_prefs['MARK_AS_OF_INT'] = "Y";
-    }else {
+    } else {
         $user_prefs['MARK_AS_OF_INT'] = "N";
     }
 
@@ -199,7 +118,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['images_to_links']) && $_POST['images_to_links'] == "Y") {
         $user_prefs['IMAGES_TO_LINKS'] = "Y";
-    }else {
+    } else {
         $user_prefs['IMAGES_TO_LINKS'] = "N";
     }
 
@@ -209,10 +128,9 @@ if (isset($_POST['save'])) {
         $user_prefs_global['IMAGES_TO_LINKS'] = false;
     }
 
-
     if (isset($_POST['use_word_filter']) && $_POST['use_word_filter'] == "Y") {
         $user_prefs['USE_WORD_FILTER'] = "Y";
-    }else {
+    } else {
         $user_prefs['USE_WORD_FILTER'] = "N";
     }
 
@@ -226,15 +144,15 @@ if (isset($_POST['save'])) {
 
         if (isset($_POST['show_thumbs']) && is_numeric($_POST['show_thumbs'])) {
             $user_prefs['SHOW_THUMBS'] = $_POST['show_thumbs'];
-        }else {
+        } else {
             $user_prefs['SHOW_THUMBS'] = 2;
         }
 
-    }else {
+    } else {
 
         if (isset($_POST['show_thumbs']) && is_numeric($_POST['show_thumbs'])) {
             $user_prefs['SHOW_THUMBS'] = $_POST['show_thumbs'] * -1;
-        }else {
+        } else {
             $user_prefs['SHOW_THUMBS'] = -2;
         }
     }
@@ -247,103 +165,103 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['use_mover_spoiler']) && $_POST['use_mover_spoiler'] == "Y") {
         $user_prefs['USE_MOVER_SPOILER'] = "Y";
-    }else {
+    } else {
         $user_prefs['USE_MOVER_SPOILER'] = "N";
     }
 
     if (isset($_POST['use_mover_spoiler_global'])) {
         $user_prefs_global['USE_MOVER_SPOILER'] = ($_POST['use_mover_spoiler_global'] == "Y") ? true : false;
-    }else {
+    } else {
         $user_prefs_global['USE_MOVER_SPOILER'] = false;
     }
 
     if (isset($_POST['use_light_mode_spoiler']) && $_POST['use_light_mode_spoiler'] == "Y") {
         $user_prefs['USE_LIGHT_MODE_SPOILER'] = "Y";
-    }else {
+    } else {
         $user_prefs['USE_LIGHT_MODE_SPOILER'] = "N";
     }
 
     if (isset($_POST['use_light_mode_spoiler_global'])) {
         $user_prefs_global['USE_LIGHT_MODE_SPOILER'] = ($_POST['use_light_mode_spoiler_global'] == "Y") ? true : false;
-    }else {
+    } else {
         $user_prefs_global['USE_LIGHT_MODE_SPOILER'] = false;
     }
 
     if (isset($_POST['use_overflow_resize']) && $_POST['use_overflow_resize'] == "Y") {
         $user_prefs['USE_OVERFLOW_RESIZE'] = "Y";
-    }else {
+    } else {
         $user_prefs['USE_OVERFLOW_RESIZE'] = "N";
     }
 
     if (isset($_POST['use_overflow_resize_global'])) {
         $user_prefs_global['USE_OVERFLOW_RESIZE'] = ($_POST['use_overflow_resize_global'] == "Y") ? true : false;
-    }else {
+    } else {
         $user_prefs_global['USE_OVERFLOW_RESIZE'] = false;
     }
 
     if (isset($_POST['reply_quick']) && ($_POST['reply_quick'] == "Y")) {
         $user_prefs['REPLY_QUICK'] = 'Y';
-    }else {
+    } else {
         $user_prefs['REPLY_QUICK'] = 'N';
     }
 
     if (isset($_POST['reply_quick_global'])) {
         $user_prefs_global['REPLY_QUICK'] = ($_POST['reply_quick_global'] == "Y") ? true : false;
-    }else {
+    } else {
         $user_prefs_global['REPLY_QUICK'] = false;
     }
 
     if (isset($_POST['thread_last_page']) && ($_POST['thread_last_page'] == "Y")) {
         $user_prefs['THREAD_LAST_PAGE'] = 'Y';
-    }else {
+    } else {
         $user_prefs['THREAD_LAST_PAGE'] = 'N';
     }
 
     if (isset($_POST['thread_last_page_global'])) {
         $user_prefs_global['THREAD_LAST_PAGE'] = ($_POST['thread_last_page_global'] == "Y") ? true : false;
-    }else {
+    } else {
         $user_prefs_global['THREAD_LAST_PAGE'] = false;
     }
 
     if (isset($_POST['show_avatars']) && ($_POST['show_avatars'] == "Y")) {
         $user_prefs['SHOW_AVATARS'] = 'Y';
-    }else {
+    } else {
         $user_prefs['SHOW_AVATARS'] = 'N';
     }
 
     if (isset($_POST['show_avatars_global'])) {
         $user_prefs_global['SHOW_AVATARS'] = ($_POST['show_avatars_global'] == "Y") ? true : false;
-    }else {
+    } else {
         $user_prefs_global['SHOW_AVATARS'] = false;
     }
 
     if (isset($_POST['show_share_links']) && ($_POST['show_share_links'] == "Y")) {
         $user_prefs['SHOW_SHARE_LINKS'] = 'Y';
-    }else {
+    } else {
         $user_prefs['SHOW_SHARE_LINKS'] = 'N';
     }
 
     if (isset($_POST['show_share_links_global'])) {
         $user_prefs_global['SHOW_SHARE_LINKS'] = ($_POST['show_share_links_global'] == "Y") ? true : false;
-    }else {
+    } else {
         $user_prefs_global['SHOW_SHARE_LINKS'] = false;
     }
 
     if (isset($_POST['enable_wiki_words']) && $_POST['enable_wiki_words'] == "Y") {
         $user_prefs['ENABLE_WIKI_WORDS'] = "Y";
-    }else {
+    } else {
         $user_prefs['ENABLE_WIKI_WORDS'] = "N";
     }
 
     if (isset($_POST['enable_wiki_words_global'])) {
         $user_prefs_global['ENABLE_WIKI_WORDS'] = ($_POST['enable_wiki_words_global'] == "Y") ? true : false;
-    }else {
+    } else {
         $user_prefs_global['ENABLE_WIKI_WORDS'] = false;
     }
 
     if (isset($_POST['show_stats']) && $_POST['show_stats'] == "Y") {
         $user_prefs['SHOW_STATS'] = "Y";
-    }else {
+    } else {
         $user_prefs['SHOW_STATS'] = "N";
     }
 
@@ -355,7 +273,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['posts_per_page'])) {
         $user_prefs['POSTS_PER_PAGE'] = trim(stripslashes_array($_POST['posts_per_page']));
-    }else {
+    } else {
         $user_prefs['POSTS_PER_PAGE'] = 20;
     }
 
@@ -367,7 +285,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['font_size'])) {
         $user_prefs['FONT_SIZE'] = trim(stripslashes_array($_POST['font_size']));
-    }else {
+    } else {
         $user_prefs['FONT_SIZE'] = 10;
     }
 
@@ -379,7 +297,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['style']) && style_exists(trim(stripslashes_array($_POST['style'])))) {
         $user_prefs['STYLE'] = trim(stripslashes_array($_POST['style']));
-    }else {
+    } else {
         $user_prefs['STYLE'] = forum_get_setting('default_style', false, 'default');
     }
 
@@ -391,7 +309,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['emoticons'])) {
         $user_prefs['EMOTICONS'] = trim(stripslashes_array($_POST['emoticons']));
-    }else {
+    } else {
         $user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons', false, 'default');
     }
 
@@ -403,7 +321,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['start_page'])) {
         $user_prefs['START_PAGE'] = trim(stripslashes_array($_POST['start_page']));
-    }else {
+    } else {
         $user_prefs['START_PAGE'] = 0;
     }
 
@@ -422,7 +340,7 @@ if (isset($_POST['save'])) {
 
             $user_prefs['POST_PAGE'] |= POST_TOOLBAR_DISPLAY;
 
-        }else if ($_POST['toolbar_toggle'] == POST_TOOLBAR_TINYMCE) {
+        } else if ($_POST['toolbar_toggle'] == POST_TOOLBAR_TINYMCE) {
 
             $user_prefs['POST_PAGE'] |= POST_TINYMCE_DISPLAY;
         }
@@ -454,18 +372,18 @@ if (isset($_POST['save'])) {
 
             $user_prefs['POST_PAGE'] |= POST_TEXT_DEFAULT;
 
-        }else if ($_POST['post_html'] == POST_HTML_AUTO) {
+        } else if ($_POST['post_html'] == POST_HTML_AUTO) {
 
             $user_prefs['POST_PAGE'] |= POST_AUTOHTML_DEFAULT;
 
-        }else {
+        } else {
 
             $user_prefs['POST_PAGE'] |= POST_HTML_DEFAULT;
         }
     }
 
     // User's UID for updating with.
-    $uid = session_get_value('UID');
+    $uid = session::get_value('UID');
 
     // Update USER_PREFS
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
@@ -474,14 +392,14 @@ if (isset($_POST['save'])) {
         header_redirect("forum_options.php?webtag=$webtag&updated=true", gettext("Preferences were successfully updated."));
         exit;
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
     }
 }
 
-if (!isset($uid)) $uid = session_get_value('UID');
+if (!isset($uid)) $uid = session::get_value('UID');
 
 // Get User Prefs
 $user_prefs = user_get_prefs($uid);
@@ -506,7 +424,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '600', 'left');
 
-}else if (isset($_GET['updated'])) {
+} else if (isset($_GET['updated'])) {
 
     html_display_success_msg(gettext("Preferences were successfully updated."), '600', 'left', 'preferences_updated');
 }
@@ -555,7 +473,7 @@ if ($show_set_all) {
     echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
     echo "                </tr>\n";
 
-}else {
+} else {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"4\">", gettext("Language"), "</td>\n";
@@ -590,7 +508,7 @@ if ($show_set_all) {
     echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
     echo "                </tr>\n";
 
-}else {
+} else {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">", gettext("Display"), "</td>\n";
@@ -680,7 +598,7 @@ if ($show_set_all) {
     echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
     echo "                </tr>\n";
 
-}else {
+} else {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"4\">", gettext("Style"), "</td>\n";

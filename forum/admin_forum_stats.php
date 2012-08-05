@@ -23,99 +23,35 @@ USA
 
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "attachments.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "profile.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "stats.inc.php");
-include_once(BH_INCLUDE_PATH. "timezone.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "user_profile.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'attachments.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'profile.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'stats.inc.php';
+require_once BH_INCLUDE_PATH. 'timezone.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'user_profile.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
 
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You do not have permission to use this section."));
-    html_draw_bottom();
-    exit;
+// Check we have Admin / Moderator access
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+    html_draw_error(gettext("You do not have permission to use this section."));
 }
 
 // User count is used by a few stats. Get it once here.
@@ -234,7 +170,7 @@ if (($most_subscribed_thread = stats_get_most_subscribed_thread()) !== false) {
     echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$most_subscribed_thread['TID']}.1\">", word_filter_add_ob_tags($most_subscribed_thread['TITLE'], true), "</a> (", number_format($most_subscribed_thread['SUBSCRIBERS'], 0, '.', ','), " ", gettext("Subscribers"), ")</td>\n";
     echo "                </tr>\n";
 
-}else {
+} else {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"300\">", gettext("Most popular thread by subscription"), ":&nbsp;</td>\n";
@@ -402,7 +338,7 @@ if ((($most_downloaded_attachment = stats_get_most_downloaded_attachment()) !== 
     echo "                  <td align=\"left\">$attachment_href (Msg: <a href=\"index.php?webtag=$webtag&amp;msg={$most_downloaded_attachment['msg']}\">{$most_downloaded_attachment['msg']}</a>)</td>\n";
     echo "                </tr>\n";
 
-}else {
+} else {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"300\">", gettext("Most downloaded attachment"), ":&nbsp;</td>\n";
@@ -458,7 +394,7 @@ if (($most_popular_timezone = stats_get_most_popular_timezone()) !== false) {
     echo "                  <td align=\"left\">", timezone_id_to_string($most_popular_timezone['TIMEZONE']), " (", number_format($most_popular_timezone['USER_COUNT'], 0, '.', ','), " ", gettext("Users"), ")</td>\n";
     echo "                </tr>\n";
 
-}else {
+} else {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"300\">", gettext("Most used Time zone"), ":&nbsp;</td>\n";
@@ -473,7 +409,7 @@ if (($most_popular_emoticon_pack = stats_get_most_popular_emoticon_pack()) !== f
     echo "                  <td align=\"left\">{$most_popular_emoticon_pack['EMOTICONS']} (", number_format($most_popular_emoticon_pack['USER_COUNT'], 0, '.', ','), " ", gettext("Users"), ")</td>\n";
     echo "                </tr>\n";
 
-}else {
+} else {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"300\">", gettext("Most used Time zone"), ":&nbsp;</td>\n";
@@ -620,7 +556,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" rowspan=\"19\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 
-if (($active_user_count = stats_get_active_session_count()) !== false) {
+if (($active_user_count = stats_get_active_session::count()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"300\">", gettext("Total number of active users"), "&nbsp;</td>\n";
@@ -774,7 +710,7 @@ if (($average_age = stats_get_average_age()) !== false) {
     echo "                  <td align=\"left\">", number_format($average_age, 2, '.', ','), "</td>\n";
     echo "                </tr>\n";
 
-}else {
+} else {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"300\">", gettext("Average age"), ":&nbsp;</td>\n";
@@ -789,7 +725,7 @@ if (($most_popular_birthday = stats_get_most_popular_birthday()) !== false) {
     echo "                  <td align=\"left\">", format_birthday($most_popular_birthday['DOB']), " (", number_format($most_popular_birthday['DOB_COUNT'], 0, '.', ','), " ", gettext("Users"), ")</td>\n";
     echo "                </tr>\n";
 
-}else {
+} else {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"300\">", gettext("Most popular birthday"), ":&nbsp;</td>\n";
@@ -829,7 +765,7 @@ if (($relationship_count = stats_get_relationships_count()) !== false) {
     echo "                  <td align=\"left\">", number_format($relationship_count, 0, '.', ','), "</td>\n";
     echo "                </tr>\n";
 
-}else {
+} else {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"300\">", gettext("Average age"), ":&nbsp;</td>\n";

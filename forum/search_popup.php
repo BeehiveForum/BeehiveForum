@@ -23,114 +23,34 @@ USA
 
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "thread.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'thread.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-if (user_is_guest()) {
-
+if (!session::logged_in()) {
     html_guest_error();
-    exit;
 }
 
 // Check if we're allowed multiple-select.
 if (isset($_POST['multi']) && $_POST['multi'] == 'Y') {
     $multi = 'Y';
-}elseif (isset($_GET['multi']) && $_GET['multi'] == 'Y') {
+} else if (isset($_GET['multi']) && $_GET['multi'] == 'Y') {
     $multi = 'Y';
-}else {
+} else {
     $multi = 'N';
 }
 
@@ -139,16 +59,13 @@ if (isset($_GET['type']) && in_array($_GET['type'], array(SEARCH_LOGON, SEARCH_T
 
     $type = $_GET['type'];
 
-}else if (isset($_POST['type']) && in_array($_POST['type'], array(SEARCH_LOGON, SEARCH_THREAD))) {
+} else if (isset($_POST['type']) && in_array($_POST['type'], array(SEARCH_LOGON, SEARCH_THREAD))) {
 
     $type = $_POST['type'];
 
-}else {
+} else {
 
-    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
-    html_error_msg(gettext("You must specify type of search to perform"), 'search_popup.php', 'post', array('close_popup' => gettext("Close")));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("You must specify type of search to perform"));
 }
 
 // Check the multi selection with the type
@@ -159,24 +76,21 @@ if (isset($_POST['obj_id']) && strlen(trim(stripslashes_array($_POST['obj_id']))
 
     $obj_id = trim(stripslashes_array($_POST['obj_id']));
 
-}elseif (isset($_GET['obj_id']) && strlen(trim(stripslashes_array($_GET['obj_id']))) > 0) {
+} else if (isset($_GET['obj_id']) && strlen(trim(stripslashes_array($_GET['obj_id']))) > 0) {
 
     $obj_id = trim(stripslashes_array($_GET['obj_id']));
 
-}else {
+} else {
 
-    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
-    html_error_msg(gettext("No form object specified for return text"), 'search_popup.php', 'post', array('close_popup' => gettext("Close")));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("No form object specified for return text"));
 }
 
 // Current selection
 if (isset($_POST['selected']) && is_array($_POST['selected'])) {
     $selected_array = array_unique($_POST['selected']);
-}else if (isset($_GET['selected']) && strlen(trim(stripslashes_array($_GET['selected']))) > 0) {
+} else if (isset($_GET['selected']) && strlen(trim(stripslashes_array($_GET['selected']))) > 0) {
     $selected_array = array_unique(preg_split("/[;|,]/u", trim(stripslashes_array($_GET['selected']))));
-}else {
+} else {
     $selected_array = array();
 }
 
@@ -215,7 +129,7 @@ $error_msg_array = array();
 // Selection for page links
 if (is_array($selected_array) && sizeof($selected_array) > 0) {
     $selected = implode(';', $selected_array);
-}else {
+} else {
     $selected = "";
 }
 
@@ -229,7 +143,7 @@ if (isset($search_query) && strlen(trim($search_query)) > 0) {
 
         $search_results_array = user_search($search_query, $selected_array);
 
-    }else if ($type == SEARCH_THREAD) {
+    } else if ($type == SEARCH_THREAD) {
 
         $search_results_array = thread_search($search_query, $selected_array);
     }
@@ -243,11 +157,11 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '450', 'center');
 
-}elseif (isset($search_results_array['results_array']) && sizeof($search_results_array['results_array']) < 1 && sizeof($selected_array) < 1) {
+} else if (isset($search_results_array['results_array']) && sizeof($search_results_array['results_array']) < 1 && sizeof($selected_array) < 1) {
 
     html_display_warning_msg(gettext("Search Returned No Results"), '450', 'center');
 
-}else {
+} else {
 
     echo "<br />\n";
 }
@@ -279,7 +193,7 @@ if (sizeof($selected_array) > 0 || (isset($search_results_array['results_array']
 
 if (sizeof($selected_array) > 0) {
 
-    foreach($selected_array as $selected_option) {
+    foreach ($selected_array as $selected_option) {
 
         if (($type == SEARCH_LOGON) && ($user_data = user_get_by_logon($selected_option))) {
 
@@ -381,7 +295,7 @@ if ($type == SEARCH_LOGON) {
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"100\">", gettext("Username"), ":</td>\n";
 
-}elseif ($type == SEARCH_THREAD) {
+} else if ($type == SEARCH_THREAD) {
 
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"left\">", gettext("Search For Thread"), "</td>\n";

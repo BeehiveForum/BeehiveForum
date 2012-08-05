@@ -21,102 +21,37 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
 
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
+// Check we have Admin / Moderator access
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+    html_draw_error(gettext("You do not have permission to use this section."));
 }
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
 
 // Get the user's post page preferences.
-$page_prefs = session_get_post_page_prefs();
-
-// Check to see if the user can access this page.
-if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You do not have permission to use this section."));
-    html_draw_bottom();
-    exit;
-}
+$page_prefs = session::get_post_page_prefs();
 
 // Array to hold error messages
 $error_msg_array = array();
@@ -124,7 +59,7 @@ $error_msg_array = array();
 // Check to see if we're submitting new page or retrieving the old one.
 if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
     $t_content = trim(stripslashes_array($_POST['t_content']));
-}else {
+} else {
     $t_content = forum_get_setting('start_page', false, '');
 }
 
@@ -133,7 +68,7 @@ $tool_type = POST_TOOLBAR_DISABLED;
 
 if ($page_prefs & POST_TOOLBAR_DISPLAY) {
     $tool_type = POST_TOOLBAR_SIMPLE;
-}else if ($page_prefs & POST_TINYMCE_DISPLAY) {
+} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
     $tool_type = POST_TOOLBAR_TINYMCE;
 }
 
@@ -144,7 +79,9 @@ $startpage_editor_message = new MessageText(POST_HTML_AUTO, $t_content, true, tr
 if (isset($_POST['save'])) {
 
     // New array of forum settings.
-    $new_forum_settings = array('start_page' => $startpage_editor_message->getContent());
+    $new_forum_settings = array(
+        'start_page' => $startpage_editor_message->getContent()
+    );
 
     // Save the settings.
     if (forum_save_settings($new_forum_settings)) {
@@ -160,7 +97,7 @@ if (isset($_POST['save'])) {
     // Save failed. Show error message.
     $error_msg_array[] = gettext("Start page could not be saved. Please try again.");
 
-}elseif (isset($_POST['upload'])) {
+} else if (isset($_POST['upload'])) {
 
     // Check the temp file is set.
     if (isset($_FILES['cssfile']['tmp_name']) && strlen(trim($_FILES['cssfile']['tmp_name'])) > 0) {
@@ -171,7 +108,7 @@ if (isset($_POST['save'])) {
             // Upload failed. Don't bother going into detail.
             $error_msg_array[] = gettext("CSS style sheet could not be uploaded. Please try again.");
 
-        }else if (isset($_FILES['cssfile']['type']) && trim(stripslashes_array($_FILES['cssfile']['type'])) == 'text/css') {
+        } else if (isset($_FILES['cssfile']['type']) && trim(stripslashes_array($_FILES['cssfile']['type'])) == 'text/css') {
 
             // Get path info for uploaded file.
             $path_parts = pathinfo($_FILES['cssfile']['name']);
@@ -184,7 +121,9 @@ if (isset($_POST['save'])) {
                 if (($start_page_css = @file_get_contents($_FILES['cssfile']['tmp_name']))) {
 
                     // New array of forum settings.
-                    $new_forum_settings = array('start_page_css' => $start_page_css);
+                    $new_forum_settings = array(
+                        'start_page_css' => $start_page_css
+                    );
 
                     // Save the settings.
                     if (forum_save_settings($new_forum_settings)) {
@@ -218,12 +157,12 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '700', 'center');
 
-}elseif (isset($_GET['updated'])) {
+} else if (isset($_GET['updated'])) {
 
     $start_page_link = sprintf("<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">%s</a>", gettext("View updated Start Page"));
     html_display_success_msg(sprintf(gettext("Start Page updated. %s"), $start_page_link), '700', 'center');
 
-}elseif (isset($_GET['uploaded'])) {
+} else if (isset($_GET['uploaded'])) {
 
     $start_page_link = sprintf("<a href=\"start_main.php?webtag=$webtag\" target=\"_blank\">%s</a>", gettext("View updated Start Page"));
     html_display_success_msg(sprintf(gettext("CSS style sheet uploaded. %s"), $start_page_link), '700', 'center');
@@ -257,7 +196,7 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
     echo "                        <td align=\"left\">", $startpage_editor->toolbar(true), "</td>\n";
     echo "                      </tr>\n";
 
-}else {
+} else {
 
     $startpage_editor->set_tinymce(false);
 }

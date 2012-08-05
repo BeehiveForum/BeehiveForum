@@ -29,21 +29,10 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
 
-/**
-* styles_get_available
-* 
-* Get the styles available on the forum. Returns
-* a key value pair array with the key as the name
-* of the style and the value the name of the directory
-* the style is in.
-* 
-* @param void
-* @return mixed 
-*/
 function styles_get_available()
 {
     // Array to store our styles in.
@@ -67,7 +56,7 @@ function styles_get_available()
             // Add the style to the list with the contents of desc.txt as the name.
             $available_forum_styles[$file] = htmlentities_array(trim(file_get_contents("styles/$file/desc.txt")));
 
-        }else {
+        } else {
 
             // Add the style to the list using the directory name
             $available_forum_styles[$file] = htmlentities_array(trim($file));
@@ -90,14 +79,6 @@ function styles_get_available()
     return $available_forum_styles;
 }
 
-/**
-* style_exists
-* 
-* Check a named style exists.
-* 
-* @param string $style_path
-* @return bool.
-*/
 function style_exists($style_path)
 {
     // Check the style path is a string.

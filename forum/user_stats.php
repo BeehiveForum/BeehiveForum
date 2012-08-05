@@ -21,108 +21,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "stats.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Get webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'stats.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
 
 // User's UID
-$uid = session_get_value('UID');
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri() );
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-if (user_is_guest()) {
-
-    html_guest_error();
-    exit;
-}
+$uid = session::get_value('UID');
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
@@ -133,7 +53,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
         $user_prefs['SHOW_STATS'] = "Y";
         $user_prefs_global['SHOW_STATS'] = false;
 
-    }else {
+    } else {
 
         $user_prefs['SHOW_STATS'] = "N";
         $user_prefs_global['SHOW_STATS'] = false;
@@ -144,18 +64,14 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
         header_redirect("messages.php?webtag=$webtag&msg=$msg&setstats=1", gettext("Stats Display Changed"));
         exit;
 
-    }else {
+    } else {
 
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("Some or all of your user account details could not be updated. Please try again later."), 'messages.php', 'get', array('back' => gettext("Back")), array('msg' => $msg, 'setstats' => 1));
-        html_draw_bottom();
+        html_draw_error(gettext("Some or all of your user account details could not be updated. Please try again later."));
     }
 
-}else {
+} else {
 
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("Invalid Message ID or no Message ID specified."));
-    html_draw_bottom();
+    html_draw_error(gettext("Invalid Message ID or no Message ID specified."));
 }
 
 ?>

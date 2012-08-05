@@ -21,114 +21,33 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "beehive.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "poll.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "thread.inc.php");
-include_once(BH_INCLUDE_PATH. "threads.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'beehive.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'poll.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'thread.inc.php';
+require_once BH_INCLUDE_PATH. 'threads.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Guests can't use this
-if (user_is_guest()) {
-
+if (!session::logged_in()) {
     html_guest_error();
-    exit;
 }
 
 // Check that required variables are set
@@ -137,45 +56,37 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $msg = $_GET['msg'];
     list($tid, $pid) = explode(".", $_GET['msg']);
 
-}elseif (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
+} else if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     $msg = $_POST['msg'];
     list($tid, $pid) = explode(".", $_POST['msg']);
 
-}else {
+} else {
 
-    html_draw_top(sprintf("title=%s", gettext("The requested thread could not be found or access was denied.")));
-    html_error_msg(gettext("The requested thread could not be found or access was denied."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("The requested thread could not be found or access was denied."));
 }
 
 // Get the folder ID for the current message
 if (!$fid = thread_get_folder($tid)) {
-
-    html_draw_top(sprintf("title=%s", gettext("The requested thread could not be found or access was denied.")));
-    html_error_msg(gettext("The requested thread could not be found or access was denied."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("The requested thread could not be found or access was denied."));
 }
 
 // UID of the current user.
-$uid = session_get_value('UID');
+$uid = session::get_value('UID');
 
 // Get the existing thread data.
 if (!$thread_data = thread_get($tid, true)) {
-
-    html_draw_top(sprintf("title=%s", gettext("The requested thread could not be found or access was denied.")));
-    html_error_msg(gettext("The requested thread could not be found or access was denied."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("The requested thread could not be found or access was denied."));
 }
 
 // Array to hold error messages
 $error_msg_array = array();
 
 // Array of valid thread deletion types
-$thread_delete_valid_types = array(THREAD_DELETE_PERMENANT, THREAD_DELETE_NON_PERMENANT);
+$thread_delete_valid_types = array(
+    THREAD_DELETE_PERMENANT, 
+    THREAD_DELETE_NON_PERMENANT
+);
 
 // Back button clicked.
 if (isset($_POST['back'])) {
@@ -201,7 +112,7 @@ if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
     header_redirect("messages.php?webtag=$webtag&msg=$msg&markasread=0");
     exit;
 
-}elseif (isset($_POST['setinterest']) && is_numeric($_POST['setinterest'])) {
+} else if (isset($_POST['setinterest']) && is_numeric($_POST['setinterest'])) {
 
     $thread_interest = $_POST['setinterest'];
 
@@ -232,7 +143,7 @@ if (isset($_POST['save'])) {
                 $valid = false;
             }
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("Failed to update thread read status");
             $valid = false;
@@ -251,7 +162,7 @@ if (isset($_POST['save'])) {
     }
 
     // Admin Options
-    if (session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) {
+    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) {
 
         if (isset($_POST['rename']) && strlen(trim(stripslashes_array($_POST['rename']))) > 0) {
 
@@ -263,12 +174,12 @@ if (isset($_POST['save'])) {
 
                     post_add_edit_text($tid, 1);
 
-                    if (session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+                    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
                         admin_add_log_entry(RENAME_THREAD, array($tid, $thread_data['TITLE'], $t_rename));
                     }
 
-                }else {
+                } else {
 
                     $error_msg_array[] = gettext("Failed to rename thread");
                     $valid = false;
@@ -282,19 +193,19 @@ if (isset($_POST['save'])) {
 
             if (folder_is_valid($t_move) && ($t_move !== $thread_data['FID'])) {
 
-                if ((session_check_perm(USER_PERM_FOLDER_MODERATE, $t_move) || (session_check_perm(USER_PERM_THREAD_MOVE, $t_move) && ($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) && thread_change_folder($tid, $t_move)) {
+                if ((session::check_perm(USER_PERM_FOLDER_MODERATE, $t_move) || (session::check_perm(USER_PERM_THREAD_MOVE, $t_move) && ($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) && thread_change_folder($tid, $t_move)) {
 
                     $new_folder_title = folder_get_title($t_move);
                     $old_folder_title = folder_get_title($thread_data['FID']);
 
                     post_add_edit_text($tid, 1);
 
-                    if (session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+                    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
                         admin_add_log_entry(MOVED_THREAD, array($tid, $thread_data['TITLE'], $old_folder_title, $new_folder_title));
                     }
 
-                }else {
+                } else {
 
                     $error_msg_array[] = gettext("Failed to move thread to specified folder");
                     $valid = false;
@@ -303,7 +214,7 @@ if (isset($_POST['save'])) {
         }
     }
 
-    if (session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
         if (isset($_POST['closed']) && is_numeric($_POST['closed'])) {
 
@@ -317,7 +228,7 @@ if (isset($_POST['save'])) {
 
                     admin_add_log_entry(($t_closed > 0) ? CLOSED_THREAD : OPENED_THREAD, array($tid, $thread_data['TITLE']));
 
-                }else {
+                } else {
 
                     $error_msg_array[] = gettext("Failed to update thread closed status");
                     $valid = false;
@@ -337,7 +248,7 @@ if (isset($_POST['save'])) {
 
                     admin_add_log_entry(($t_admin_lock > 0) ? LOCKED_THREAD : UNLOCKED_THREAD, array($tid, $thread_data['TITLE']));
 
-                }else {
+                } else {
 
                     $error_msg_array[] = gettext("Failed to update thread lock status");
                     $valid = false;
@@ -372,20 +283,20 @@ if (isset($_POST['save'])) {
 
                                 admin_add_log_entry(CREATE_THREAD_STICKY, array($tid, $thread_data['TITLE']));
 
-                            }else {
+                            } else {
 
                                 $error_msg_array[] = gettext("Failed to update thread sticky status");
                                 $valid = false;
                             }
                         }
 
-                    }else {
+                    } else {
 
                         $error_msg_array[] = gettext("Failed to update thread sticky status");
                         $valid = false;
                     }
 
-                }else {
+                } else {
 
                     if (thread_set_sticky($tid, true)) {
 
@@ -393,7 +304,7 @@ if (isset($_POST['save'])) {
 
                         admin_add_log_entry(CREATE_THREAD_STICKY, array($tid, $thread_data['TITLE']));
 
-                    }else {
+                    } else {
 
                         $error_msg_array[] = gettext("Failed to update thread sticky status");
                         $valid = false;
@@ -401,7 +312,7 @@ if (isset($_POST['save'])) {
                 }
             }
 
-        }else if (isset($_POST['sticky']) && $_POST['sticky'] == "N") {
+        } else if (isset($_POST['sticky']) && $_POST['sticky'] == "N") {
 
             $t_sticky = $_POST['sticky'];
 
@@ -413,7 +324,7 @@ if (isset($_POST['save'])) {
 
                     admin_add_log_entry(REMOVE_THREAD_STICKY, array($tid, $thread_data['TITLE']));
 
-                }else {
+                } else {
 
                     $error_msg_array[] = gettext("Failed to update thread sticky status");
                     $valid = false;
@@ -444,7 +355,7 @@ if (isset($_POST['save'])) {
 
                             admin_add_log_entry(THREAD_MERGE, $merge_result);
 
-                        }else {
+                        } else {
 
                             $error_msg_array[] = $error_str;
                             $valid = false;
@@ -452,7 +363,7 @@ if (isset($_POST['save'])) {
                     }
                 }
 
-            }elseif ($_POST['thread_merge_split'] == THREAD_TYPE_SPLIT) {
+            } else if ($_POST['thread_merge_split'] == THREAD_TYPE_SPLIT) {
 
                 if (isset($_POST['split_thread']) && is_numeric($_POST['split_thread']) && $_POST['split_thread'] > 1) {
 
@@ -469,7 +380,7 @@ if (isset($_POST['save'])) {
 
                             admin_add_log_entry(THREAD_SPLIT, $split_result);
 
-                        }else {
+                        } else {
 
                             $error_msg_array[] = $error_str;
                             $valid = false;
@@ -490,7 +401,7 @@ if (isset($_POST['save'])) {
                     post_add_edit_text($tid, 1);
                     admin_add_log_entry(DELETE_USER_THREAD_POSTS, array($tid, $thread_data['TITLE'], $user_logon));
 
-                }else {
+                } else {
 
                     $error_msg_array[] = sprintf(gettext("Failed to delete posts by selected user"), $user_logon);
                     $valid = false;
@@ -515,7 +426,7 @@ if (isset($_POST['save'])) {
                     html_draw_bottom();
                     exit;
 
-                }else {
+                } else {
 
                     $error_msg_array[] = gettext("Failed to delete thread.");
                     $valid = false;
@@ -538,7 +449,7 @@ if (isset($_POST['save'])) {
                     html_draw_bottom();
                     exit;
 
-                }else {
+                } else {
 
                     $error_msg_array[] = gettext("Failed to un-delete thread");
                     $valid = false;
@@ -564,11 +475,11 @@ if ($thread_data['DELETED'] == 'N') {
 
         html_display_error_array($error_msg_array, '600', 'center');
 
-    }else if (isset($_GET['updated'])) {
+    } else if (isset($_GET['updated'])) {
 
         html_display_success_msg(gettext("Updates saved successfully"), '600', 'center');
 
-    }else if (thread_is_poll($tid)) {
+    } else if (thread_is_poll($tid)) {
 
         html_display_warning_msg(gettext("To rename this thread you must edit the poll."), '600', 'center');
     }
@@ -623,7 +534,7 @@ if ($thread_data['DELETED'] == 'N') {
     echo "          </tr>\n";
     echo "        </table>\n";
 
-    if (session_check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) {
+    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) {
 
         if (!thread_is_poll($tid)) {
 
@@ -658,7 +569,7 @@ if ($thread_data['DELETED'] == 'N') {
             echo "          </tr>\n";
             echo "        </table>\n";
 
-        }else {
+        } else {
 
             echo "        <br />\n";
             echo "        <table class=\"box\" width=\"100%\">\n";
@@ -688,7 +599,7 @@ if ($thread_data['DELETED'] == 'N') {
             echo "        </table>\n";
         }
 
-        if (session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+        if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
             $thread_available_pids = thread_get_unmoved_posts($tid);
 
@@ -733,7 +644,7 @@ if ($thread_data['DELETED'] == 'N') {
                 echo "          </tr>\n";
                 echo "        </table>\n";
 
-            }else if (!thread_is_poll($tid) && !$thread_available_pids) {
+            } else if (!thread_is_poll($tid) && !$thread_available_pids) {
 
                 echo "        <br />\n";
                 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -778,7 +689,7 @@ if ($thread_data['DELETED'] == 'N') {
                 echo "          </tr>\n";
                 echo "        </table>\n";
 
-            }else if (!thread_is_poll($tid) && $thread_available_pids) {
+            } else if (!thread_is_poll($tid) && $thread_available_pids) {
 
                 $thread_available_pids = array('&nbsp;') + $thread_available_pids;
 
@@ -875,7 +786,7 @@ if ($thread_data['DELETED'] == 'N') {
                     $sticky_year_min = $sticky_year;
                 }
 
-            }else {
+            } else {
 
                 $sticky_year  = 0;
                 $sticky_month = 0;
@@ -1020,7 +931,7 @@ if ($thread_data['DELETED'] == 'N') {
 
     html_draw_bottom();
 
-}else if (session_check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+} else if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
     html_draw_top("title=", gettext("Thread Options"), " - {$thread_data['TITLE']}", "basetarget=_blank", 'class=window_title');
 
@@ -1030,7 +941,7 @@ if ($thread_data['DELETED'] == 'N') {
 
         html_display_error_array($error_msg_array, '600', 'center');
 
-    }else if (isset($_GET['updated'])) {
+    } else if (isset($_GET['updated'])) {
 
         html_display_success_msg(gettext("Updates saved successfully"), '600', 'center');
     }
@@ -1086,12 +997,9 @@ if ($thread_data['DELETED'] == 'N') {
 
     html_draw_bottom();
 
-}else {
+} else {
 
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You cannot edit posts in this folder"));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("You cannot edit posts in this folder"));
 }
 
 ?>

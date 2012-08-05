@@ -21,151 +21,62 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'links.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "links.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
-
-// Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
+// Check links section is enabled.
 if (!forum_get_setting('show_links', 'Y')) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You may not access this section."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("You may not access this section."));
 }
 
 if (isset($_POST['lid']) && is_numeric($_POST['lid'])) {
 
     $lid = $_POST['lid'];
 
-}else if (isset($_GET['lid']) && is_numeric($_GET['lid'])) {
+} else if (isset($_GET['lid']) && is_numeric($_GET['lid'])) {
 
     $lid = $_GET['lid'];
 
-}else {
+} else {
 
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You must provide a link ID!"));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("You must provide a link ID!"));
 }
 
 if (isset($_POST['parent_fid']) && is_numeric($_POST['parent_fid'])) {
 
     $parent_fid = $_POST['parent_fid'];
 
-}else if (isset($_GET['parent_fid']) && is_numeric($_GET['parent_fid'])) {
+} else if (isset($_GET['parent_fid']) && is_numeric($_GET['parent_fid'])) {
 
     $parent_fid = $_GET['parent_fid'];
 
-}else {
+} else {
 
     $parent_fid = 1;
 }
 
-$uid = session_get_value('UID');
+$uid = session::get_value('UID');
 
 $creator_uid = links_get_creator_uid($lid);
 
-$user_perm_links_moderate = session_check_perm(USER_PERM_LINKS_MODERATE, 0);
+$user_perm_links_moderate = session::check_perm(USER_PERM_LINKS_MODERATE, 0);
 
 if (!$link = links_get_single($lid, !$user_perm_links_moderate)) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("Invalid link ID!"));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("Invalid link ID!"));
 }
 
 $error_msg_array = array();
@@ -177,7 +88,7 @@ if (isset($_POST['cancel'])) {
     exit;
 }
 
-if (!user_is_guest()) {
+if (session::logged_in()) {
 
     $valid = true;
 
@@ -188,13 +99,13 @@ if (!user_is_guest()) {
             links_vote($lid, $_POST['vote'], $uid);
             $success_msg = gettext("Your vote has been recorded");
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("You must choose a rating!");
             $valid = false;
         }
 
-    }else if (isset($_POST['clearvote'])) {
+    } else if (isset($_POST['clearvote'])) {
 
         links_clear_vote($lid, $uid);
         $success_msg = gettext("Your vote has been cleared");
@@ -209,7 +120,7 @@ if (!user_is_guest()) {
             links_add_comment($lid, $uid, $comment);
             $success_msg = gettext("Your comment was added.");
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("You must type a comment!");
             $valid = false;
@@ -222,20 +133,20 @@ if (!user_is_guest()) {
 
             links_delete($lid);
 
-            if (session_check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != session_get_value('UID'))) {
+            if (session::check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != session::get_value('UID'))) {
                 admin_add_log_entry(DELETE_LINK, array($link['LID'], $link['TITLE'], $link['URI']));
             }
 
             header_redirect("links.php?webtag=$webtag&fid=$parent_fid");
             exit;
 
-        }else {
+        } else {
 
             if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
 
                 $fid = $_POST['fid'];
 
-            }else {
+            } else {
 
                 $error_msg_array[] = gettext("No Folder ID specified");
                 $valid = false;
@@ -245,7 +156,7 @@ if (!user_is_guest()) {
 
                 $uri = $_POST['uri'];
 
-            }else {
+            } else {
 
                 $error_msg_array[] = gettext("That is not a valid URI!");
                 $valid = false;
@@ -255,7 +166,7 @@ if (!user_is_guest()) {
 
                 $title = trim(stripslashes_array($_POST['title']));
 
-            }else {
+            } else {
 
                 $error_msg_array[] = gettext("You must specify a name!");
                 $valid = false;
@@ -263,7 +174,7 @@ if (!user_is_guest()) {
 
             if (isset($_POST['description']) && strlen(trim(stripslashes_array($_POST['description']))) > 0) {
                 $description = trim(stripslashes_array($_POST['description']));
-            }else {
+            } else {
                 $description = "";
             }
 
@@ -271,7 +182,7 @@ if (!user_is_guest()) {
                 
                 links_update($lid, $fid, $uid, $title, $uri, $description);
                 
-                if (session_check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != session_get_value('UID'))) {
+                if (session::check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != session::get_value('UID'))) {
                     admin_add_log_entry(DELETE_LINK, array($lid));
                 }
                 
@@ -285,7 +196,7 @@ if (!user_is_guest()) {
 
                 links_change_visibility($lid, false);
 
-            }elseif (!isset($_POST['hide']) || (isset($_POST['hide']) && $_POST['hide'] != "confirm")) {
+            } else if (!isset($_POST['hide']) || (isset($_POST['hide']) && $_POST['hide'] != "confirm")) {
 
                 links_change_visibility($lid, true);
             }
@@ -306,7 +217,7 @@ if (isset($_GET['delete_comment']) && is_numeric($_GET['delete_comment'])) {
 
             $success_msg = gettext("Comment was deleted.");
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("Comment could not be deleted.");
             $valid = false;
@@ -326,7 +237,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '600', 'center');
 
-}else if (isset($success_msg) && strlen($success_msg) > 0) {
+} else if (isset($success_msg) && strlen($success_msg) > 0) {
 
     html_display_success_msg($success_msg, '600', 'center');
 }
@@ -376,7 +287,7 @@ if (isset($link['RATING']) && is_numeric($link['RATING'])) {
         echo "                      <td align=\"left\">", number_format($link['RATING'], 1, ".", ","), " (1 ", gettext("Vote"), ")</td>\n";
         echo "                    </tr>\n";
 
-    }else {
+    } else {
 
         echo "                    <tr>\n";
         echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", gettext("Rating"), ":</td>\n";
@@ -384,7 +295,7 @@ if (isset($link['RATING']) && is_numeric($link['RATING'])) {
         echo "                    </tr>\n";
     }
 
-}else {
+} else {
 
     echo "                    <tr>\n";
     echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", gettext("Rating"), ":</td>\n";
@@ -407,7 +318,7 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "<br />\n";
 
-if (!user_is_guest()) {
+if (session::logged_in()) {
 
     $vote = links_get_vote($lid, $uid);
     $vote = $vote ? $vote : -1;
@@ -479,7 +390,7 @@ if (($comments_array = links_get_comments($lid))) {
             echo "                  <td align=\"left\" class=\"subhead\">", sprintf(gettext("Comment by %s"), $profile_link), " <a href=\"links_detail.php?webtag=$webtag&amp;delete_comment={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[", gettext("Delete"), "]</a></td>\n";
             echo "                </tr>\n";
 
-        }else {
+        } else {
 
             echo "                <tr>\n";
             echo "                  <td align=\"left\" class=\"subhead\">", sprintf(gettext("Comment by %s"), $profile_link), "</td>\n";
@@ -510,7 +421,7 @@ if (($comments_array = links_get_comments($lid))) {
     echo "  <br />\n";
 }
 
-if (!user_is_guest()) {
+if (session::logged_in()) {
 
     echo "<form accept-charset=\"utf-8\" name=\"link_comment\" action=\"links_detail.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";

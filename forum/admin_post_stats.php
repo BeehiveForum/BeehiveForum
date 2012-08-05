@@ -23,104 +23,42 @@ USA
 
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "profile.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "stats.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "user_profile.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'profile.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'stats.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'user_profile.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
 
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You do not have permission to use this section."));
-    html_draw_bottom();
-    exit;
+// Check we have Admin / Moderator access
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+    html_draw_error(gettext("You do not have permission to use this section."));
 }
 
 // Array to hold error messages
 $error_msg_array = array();
 
 // Empty array for the stats
-$user_stats_array = array('user_stats' => array());
+$user_stats_array = array(
+    'user_stats' => array()
+);
 
 // Submit code
 if (isset($_POST['update'])) {
@@ -129,42 +67,42 @@ if (isset($_POST['update'])) {
 
     if (isset($_POST['from_day']) && is_numeric($_POST['from_day'])) {
         $from_day = $_POST['from_day'];
-    }else {
+    } else {
         $error_msg_array[] = gettext("Must choose a start day");
         $valid = false;
     }
 
     if (isset($_POST['from_month']) && is_numeric($_POST['from_month'])) {
         $from_month = $_POST['from_month'];
-    }else {
+    } else {
         $error_msg_array[] = gettext("Must choose a start month");
         $valid = false;
     }
 
     if (isset($_POST['from_year']) && is_numeric($_POST['from_year'])) {
         $from_year = $_POST['from_year'];
-    }else {
+    } else {
         $error_msg_array[] = gettext("Must choose a start year");
         $valid = false;
     }
 
     if (isset($_POST['to_day']) && is_numeric($_POST['to_day'])) {
         $to_day = $_POST['to_day'];
-    }else {
+    } else {
         $error_msg_array[] = gettext("Must choose an end day");
         $valid = false;
     }
 
     if (isset($_POST['to_month']) && is_numeric($_POST['to_month'])) {
         $to_month = $_POST['to_month'];
-    }else {
+    } else {
         $error_msg_array[] = gettext("Must choose an end month");
         $valid = false;
     }
 
     if (isset($_POST['to_year']) && is_numeric($_POST['to_year'])) {
         $to_year = $_POST['to_year'];
-    }else {
+    } else {
         $error_msg_array[] = gettext("Must choose an end year");
         $valid = false;
     }
@@ -179,14 +117,14 @@ if (isset($_POST['update'])) {
             $error_msg_array[] = gettext("Start period is ahead of end period");
             $valid = false;
 
-        }else {
+        } else {
 
             $num_days = ((($stats_end - $stats_start) / 60) / 60) / 24;
             $user_stats_array = stats_get_post_tallys($stats_start, $stats_end);
         }
     }
 
-}else {
+} else {
 
     $from_day = 1; $from_month = date('n'); $from_year = date('Y');
     $to_day = date('t'); $to_month = date('n'); $to_year = date('Y');
@@ -207,7 +145,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '700', 'center');
 
-}else if (sizeof($user_stats_array['user_stats']) < 1) {
+} else if (sizeof($user_stats_array['user_stats']) < 1) {
 
     html_display_warning_msg(gettext("No post data recorded for this period."), '700', 'center');
 }
@@ -251,7 +189,7 @@ if (sizeof($user_stats_array['user_stats']) > 0) {
     echo "                  <td colspan=\"6\" align=\"center\">", gettext("Total posts for this period"), ": {$user_stats_array['post_count']}</td>\n";
     echo "                </tr>\n";
 
-}else {
+} else {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" colspan=\"6\">&nbsp;</td>\n";

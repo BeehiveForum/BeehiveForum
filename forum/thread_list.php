@@ -21,104 +21,31 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "light.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "pm.inc.php");
-include_once(BH_INCLUDE_PATH. "rss_feed.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "thread.inc.php");
-include_once(BH_INCLUDE_PATH. "threads.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get webtag
-$webtag = get_webtag();
-
-// Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'cache.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'light.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'pm.inc.php';
+require_once BH_INCLUDE_PATH. 'rss_feed.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'thread.inc.php';
+require_once BH_INCLUDE_PATH. 'threads.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Thread List Cache Control
 cache_check_thread_list();
-
-// Initialise Locale
-lang_init();
 
 // Check the RSS feeds
 rss_feed_check_feeds();
@@ -128,12 +55,6 @@ $error_msg_array = array();
 
 // Array of available thread list views.
 $available_views = thread_list_available_views();
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
 
 // Get the folders the user can see.
 if (!($available_folders = folder_get_available_array())) {
@@ -148,19 +69,19 @@ if (isset($_REQUEST['folder']) && in_array($_REQUEST['folder'], $available_folde
 }
 
 // View offset.
-if (isset($_REQUEST['start_from']) && is_numeric($_REQUEST['start_from'])) {
-    $start_from = $_REQUEST['start_from'];
+if (isset($_REQUEST['page']) && is_numeric($_REQUEST['page'])) {
+    $page = $_REQUEST['page'];
 } else {
-    $start_from = 0;
+    $page = 1;
 }
 
 // View mode
-if (isset($_REQUEST['thread_mode']) && is_numeric($_REQUEST['thread_mode'])) {
-    $thread_mode = $_REQUEST['thread_mode'];
+if (isset($_REQUEST['mode']) && is_numeric($_REQUEST['mode'])) {
+    $mode = $_REQUEST['mode'];
 }
 
 // Number of posts per page
-if (($posts_per_page = session_get_value('POSTS_PER_PAGE'))) {
+if (($posts_per_page = session::get_value('POSTS_PER_PAGE'))) {
 
     if ($posts_per_page < 10) $posts_per_page = 10;
     if ($posts_per_page > 30) $posts_per_page = 30;
@@ -171,7 +92,7 @@ if (($posts_per_page = session_get_value('POSTS_PER_PAGE'))) {
 }
 
 // Check that required variables are set
-if (user_is_guest()) {
+if (!session::logged_in()) {
 
     // default to UID 0 if no other UID specified
     $uid = 0;
@@ -179,21 +100,21 @@ if (user_is_guest()) {
     // non-logged in users can only display "All" threads
     // or those in the past x days, since the other options
     // would be impossible
-    if (!isset($thread_mode) || ($thread_mode != ALL_DISCUSSIONS && $thread_mode != TODAYS_DISCUSSIONS && $thread_mode != TWO_DAYS_BACK && $thread_mode != SEVEN_DAYS_BACK)) {
-        $thread_mode = ALL_DISCUSSIONS;
+    if (!isset($mode) || ($mode != ALL_DISCUSSIONS && $mode != TODAYS_DISCUSSIONS && $mode != TWO_DAYS_BACK && $mode != SEVEN_DAYS_BACK)) {
+        $mode = ALL_DISCUSSIONS;
     }
 
 } else {
 
-    $uid = session_get_value('UID');
+    $uid = session::get_value('UID');
 
     $threads_any_unread = threads_any_unread();
 
-    if (isset($thread_mode) && is_numeric($thread_mode)) {
+    if (isset($mode) && is_numeric($mode)) {
 
-        html_set_cookie("thread_mode_{$webtag}", $thread_mode);
+        html_set_cookie("thread_mode_{$webtag}", $mode);
 
-        if ($thread_mode == SEARCH_RESULTS) {
+        if ($mode == SEARCH_RESULTS) {
 
             header_redirect("search.php?webtag=$webtag&offset=0");
             exit;
@@ -201,10 +122,10 @@ if (user_is_guest()) {
 
     } else {
 
-        $thread_mode = html_get_cookie("thread_mode_{$webtag}", 'is_numeric', UNREAD_DISCUSSIONS);
+        $mode = html_get_cookie("thread_mode_{$webtag}", 'is_numeric', UNREAD_DISCUSSIONS);
 
-        if ($thread_mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
-            $thread_mode = ALL_DISCUSSIONS;
+        if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
+            $mode = ALL_DISCUSSIONS;
         }
     }
 
@@ -226,7 +147,7 @@ if (user_is_guest()) {
 
                     if (threads_mark_read($thread_data)) {
 
-                        header_redirect("thread_list.php?webtag=$webtag&thread_mode=$thread_mode&folder=$folder&mark_read_success=true");
+                        header_redirect("thread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
                         exit;
 
                     } else {
@@ -240,7 +161,7 @@ if (user_is_guest()) {
 
                 if (threads_mark_all_read()) {
 
-                    header_redirect("thread_list.php?webtag=$webtag&thread_mode=$thread_mode&folder=$folder&mark_read_success=true");
+                    header_redirect("thread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
                     exit;
 
                 } else {
@@ -253,7 +174,7 @@ if (user_is_guest()) {
 
                 if (threads_mark_50_read()) {
 
-                    header_redirect("thread_list.php?webtag=$webtag&thread_mode=$thread_mode&folder=$folder&mark_read_success=true");
+                    header_redirect("thread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
                     exit;
 
                 } else {
@@ -266,7 +187,7 @@ if (user_is_guest()) {
 
                 if (threads_mark_folder_read($folder)) {
 
-                    header_redirect("thread_list.php?webtag=$webtag&thread_mode=$thread_mode&folder=$folder&mark_read_success=true");
+                    header_redirect("thread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
                     exit;
 
                 } else {
@@ -292,116 +213,113 @@ if (user_is_guest()) {
 html_draw_top('thread_list.js');
 
 // Fetch the right threads for whichever mode is selected
-switch ($thread_mode) {
+switch ($mode) {
 
     case UNREAD_DISCUSSIONS:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_unread($uid, $folder, $start_from);
+        list($thread_info, $folder_order, $thread_count) = threads_get_unread($uid, $folder, $page);
         break;
 
     case UNREAD_DISCUSSIONS_TO_ME:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_unread_to_me($uid, $folder, $start_from);
+        list($thread_info, $folder_order, $thread_count) = threads_get_unread_to_me($uid, $folder, $page);
         break;
 
     case TODAYS_DISCUSSIONS:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_by_days($uid, $folder, $start_from, 1);
+        list($thread_info, $folder_order, $thread_count) = threads_get_by_days($uid, $folder, $page, 1);
         break;
 
     case UNREAD_TODAY:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_days($uid, $folder, $start_from);
+        list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_days($uid, $folder, $page);
         break;
 
     case TWO_DAYS_BACK:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_by_days($uid, $folder, $start_from, 2);
+        list($thread_info, $folder_order, $thread_count) = threads_get_by_days($uid, $folder, $page, 2);
         break;
 
     case SEVEN_DAYS_BACK:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_by_days($uid, $folder, $start_from, 7);
+        list($thread_info, $folder_order, $thread_count) = threads_get_by_days($uid, $folder, $page, 7);
         break;
 
     case HIGH_INTEREST:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($uid, $folder, $start_from, THREAD_INTERESTED);
+        list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($uid, $folder, $page, THREAD_INTERESTED);
         break;
 
     case UNREAD_HIGH_INTEREST:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_interest($uid, $folder, $start_from, THREAD_INTERESTED);
+        list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_interest($uid, $folder, $page, THREAD_INTERESTED);
         break;
 
     case RECENTLY_SEEN:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_recently_viewed($uid, $folder, $start_from);
+        list($thread_info, $folder_order, $thread_count) = threads_get_recently_viewed($uid, $folder, $page);
         break;
 
     case IGNORED_THREADS:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($uid, $folder, $start_from, THREAD_IGNORED);
+        list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($uid, $folder, $page, THREAD_IGNORED);
         break;
 
     case BY_IGNORED_USERS:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_by_relationship($uid, $folder, $start_from, USER_IGNORED_COMPLETELY);
+        list($thread_info, $folder_order, $thread_count) = threads_get_by_relationship($uid, $folder, $page, USER_IGNORED_COMPLETELY);
         break;
 
     case SUBSCRIBED_TO:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($uid, $folder, $start_from, THREAD_SUBSCRIBED);
+        list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($uid, $folder, $page, THREAD_SUBSCRIBED);
         break;
 
     case STARTED_BY_FRIEND:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_by_relationship($uid, $folder, $start_from, USER_FRIEND);
+        list($thread_info, $folder_order, $thread_count) = threads_get_by_relationship($uid, $folder, $page, USER_FRIEND);
         break;
 
     case UNREAD_STARTED_BY_FRIEND:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_relationship($uid, $folder, $start_from, USER_FRIEND);
+        list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_relationship($uid, $folder, $page, USER_FRIEND);
         break;
 
     case STARTED_BY_ME:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_started_by_me($uid, $folder, $start_from);
+        list($thread_info, $folder_order, $thread_count) = threads_get_started_by_me($uid, $folder, $page);
         break;
 
     case POLL_THREADS:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_polls($uid, $folder, $start_from);
+        list($thread_info, $folder_order, $thread_count) = threads_get_polls($uid, $folder, $page);
         break;
 
     case STICKY_THREADS:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_sticky($uid, $folder, $start_from);
+        list($thread_info, $folder_order, $thread_count) = threads_get_sticky($uid, $folder, $page);
         break;
 
     case MOST_UNREAD_POSTS:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_longest_unread($uid, $folder, $start_from);
+        list($thread_info, $folder_order, $thread_count) = threads_get_longest_unread($uid, $folder, $page);
         break;
 
     case DELETED_THREADS:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_deleted($uid, $folder, $start_from);
+        list($thread_info, $folder_order, $thread_count) = threads_get_deleted($uid, $folder, $page);
         break;
 
     default:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_all($uid, $folder, $start_from);
+        list($thread_info, $folder_order, $thread_count) = threads_get_all($uid, $folder, $page);
         break;
 }
 
 // Now, the actual bit that displays the threads...
 // Get folder FIDs and titles
 if (!$folder_info = threads_get_folders()) {
-
-    html_error_msg(gettext("There are no folders available."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("There are no folders available."));
 }
 
 // Get total number of messages for each folder
@@ -411,7 +329,7 @@ $folder_msgs = threads_get_folder_msgs();
 if (!is_array($folder_order)) $folder_order = array();
 
 // Check the folder display order.
-if (session_get_value('THREADS_BY_FOLDER') == 'Y') {
+if (session::get_value('THREADS_BY_FOLDER') == 'Y') {
     $folder_order = array_keys($folder_info);
 }
 
@@ -425,7 +343,7 @@ if (isset($_REQUEST['msg']) && validate_msg($_REQUEST['msg'])) {
         if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
         // Check the folder display order / user is a guest.
-        if ((session_get_value('THREADS_BY_FOLDER') != 'Y') || user_is_guest()) {
+        if ((session::get_value('THREADS_BY_FOLDER') != 'Y') || !session::logged_in()) {
 
             // Remove the folder from the list of folders.
             if (in_array($thread['FID'], $folder_order)) {
@@ -463,7 +381,7 @@ if (isset($folder) && is_numeric($folder)) {
     array_unshift($folder_order, $folder);
 }
 
-if (session_get_value('UID') > 0) {
+if (session::get_value('UID') > 0) {
 
     // Array to hold our ignored folders in.
     $ignored_folders = array();
@@ -496,7 +414,7 @@ if (session_get_value('UID') > 0) {
 }
 
 // Draw discussion dropdown
-thread_list_draw_top($thread_mode, $folder);
+thread_list_draw_top($mode, $folder);
 
 // If no threads are returned, say something to that effect
 if (isset($_REQUEST['mark_read_success'])) {
@@ -507,13 +425,13 @@ if (isset($_REQUEST['mark_read_success'])) {
 
     if (is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
 
-        $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;folder=$folder&amp;thread_mode=0\">%s</a>", gettext("click here"));
-        html_display_warning_msg(sprintf(gettext("No &quot;%s&quot; in &quot;%s&quot; folder. Please select another folder, or %s for all threads."), $available_views[$thread_mode], $folder_title, $all_discussions_link), '100%', 'left');
+        $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;folder=$folder&amp;mode=0\">%s</a>", gettext("click here"));
+        html_display_warning_msg(sprintf(gettext("No &quot;%s&quot; in &quot;%s&quot; folder. Please select another folder, or %s for all threads."), $available_views[$mode], $folder_title, $all_discussions_link), '100%', 'left');
 
-    }else {
+    } else {
 
-        $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=0\">%s</a>", gettext("click here"));
-        html_display_warning_msg(sprintf(gettext("No &quot;%s&quot; available. Please %s for all threads."), $available_views[$thread_mode], $all_discussions_link), '100%', 'left');
+        $all_discussions_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;mode=0\">%s</a>", gettext("click here"));
+        html_display_warning_msg(sprintf(gettext("No &quot;%s&quot; available. Please %s for all threads."), $available_views[$mode], $all_discussions_link), '100%', 'left');
     }
 
 } else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -522,19 +440,19 @@ if (isset($_REQUEST['mark_read_success'])) {
 
 } else if (is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
 
-    $all_folders_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode\">%s</a>", gettext("click here"));
-    html_display_warning_msg(sprintf(gettext("Viewing &quot;%s&quot; in &quot;%s&quot; only. To view threads in all folders %s."), $available_views[$thread_mode], $folder_title, $all_folders_link), '100%', 'left');
+    $all_folders_link = sprintf("<a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode\">%s</a>", gettext("click here"));
+    html_display_warning_msg(sprintf(gettext("Viewing &quot;%s&quot; in &quot;%s&quot; only. To view threads in all folders %s."), $available_views[$mode], $folder_title, $all_folders_link), '100%', 'left');
 
 } else {
 
     echo "<br />";
 }
 
-if (($start_from > 0) && !is_numeric($folder)) {
+if (($page > 1) && !is_numeric($folder)) {
 
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\"><img src=\"", html_style_image('current_thread.png'), "\" alt=\"", gettext("Previous 50 threads"), "\" title=\"", gettext("Previous 50 threads"), "\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;start_from=", ($start_from - 50), "\" title=\"", gettext("Show previous 50 threads"), "\">", gettext("Previous 50 threads"), "</a></td>\n";
+    echo "    <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\"><img src=\"", html_style_image('current_thread.png'), "\" alt=\"", gettext("Previous 50 threads"), "\" title=\"", gettext("Previous 50 threads"), "\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page - 1), "\" title=\"", gettext("Show previous 50 threads"), "\">", gettext("Previous 50 threads"), "</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";
@@ -568,10 +486,10 @@ foreach ($folder_order as $folder_number) {
             echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 550x400\"><img src=\"".html_style_image('folder.png')."\" alt=\"", gettext("Folder"), "\" title=\"", gettext("Folder"), "\" border=\"0\" /></a>\n";
         }
 
-        echo "            <a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder_number\" title=\"", word_filter_add_ob_tags($folder_info[$folder_number]['DESCRIPTION'], true), "\">", word_filter_add_ob_tags($folder_info[$folder_number]['TITLE'], true), "</a>\n";
+        echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder_number\" title=\"", word_filter_add_ob_tags($folder_info[$folder_number]['DESCRIPTION'], true), "\">", word_filter_add_ob_tags($folder_info[$folder_number]['TITLE'], true), "</a>\n";
         echo "          </td>\n";
 
-        if (session_get_value('UID') > 0) {
+        if (session::get_value('UID') > 0) {
             echo "          <td align=\"left\" class=\"folderpostnew\" style=\"white-space: nowrap\"><a href=\"mods_list.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 580x450\" id=\"mods_list_$folder_number\"><img src=\"". html_style_image('mods_list.png'). "\" border=\"0\" alt=\"", gettext("View moderators"), "\" title=\"", gettext("View moderators"), "\" /></a></td>";
         }
 
@@ -581,7 +499,7 @@ foreach ($folder_order as $folder_number) {
         echo "  </tr>\n";
         echo "</table>\n";
 
-        if ((user_is_guest()) || ($folder_info[$folder_number]['INTEREST'] > FOLDER_IGNORED) || ($thread_mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($folder) && $folder == $folder_number)) {
+        if ((!session::logged_in()) || ($folder_info[$folder_number]['INTEREST'] > FOLDER_IGNORED) || ($mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($folder) && $folder == $folder_number)) {
 
             echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
             echo "  <tr>\n";
@@ -598,7 +516,7 @@ foreach ($folder_order as $folder_number) {
 
                     echo "            <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
                     echo "              <tr>\n";
-                    echo "                <td align=\"left\" class=\"threads_top_left\" valign=\"top\" width=\"50%\" style=\"white-space: nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder={$folder_number}\" class=\"folderinfo\" title=\"", gettext("View messages in this folder only"), "\">";
+                    echo "                <td align=\"left\" class=\"threads_top_left\" valign=\"top\" width=\"50%\" style=\"white-space: nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder={$folder_number}\" class=\"folderinfo\" title=\"", gettext("View messages in this folder only"), "\">";
 
                     if (isset($folder_msgs[$folder_number]) && $folder_msgs[$folder_number] > 0) {
                         echo $folder_msgs[$folder_number];
@@ -622,10 +540,10 @@ foreach ($folder_order as $folder_number) {
                     echo "</td>\n";
                     echo "              </tr>\n";
 
-                    if (($start_from > 0) && is_numeric($folder) && ($folder_number == $folder)) {
+                    if (($page > 1) && is_numeric($folder) && ($folder_number == $folder)) {
 
                         echo "              <tr>\n";
-                        echo "                <td align=\"left\" class=\"threads_left_right\" colspan=\"2\"><a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder&amp;start_from=", ($start_from - 50), "\" class=\"folderinfo\" title=\"", gettext("Show previous 50 threads"), "\">", gettext("Previous 50 threads"), "</a></td>\n";
+                        echo "                <td align=\"left\" class=\"threads_left_right\" colspan=\"2\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder&amp;page=", ($page - 1), "\" class=\"folderinfo\" title=\"", gettext("Show previous 50 threads"), "\">", gettext("Previous 50 threads"), "</a></td>\n";
                         echo "              </tr>\n";
                     }
 
@@ -757,7 +675,7 @@ foreach ($folder_order as $folder_number) {
 
                         echo "                  <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
                         echo "                    <tr>\n";
-                        echo "                      <td align=\"left\" colspan=\"3\"><a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder&amp;start_from=". ($start_from + 50). "\" class=\"folderinfo\" title=\"", gettext("Show next 50 threads"), "\">", gettext("Next 50 threads"), "</a></td>\n";
+                        echo "                      <td align=\"left\" colspan=\"3\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder&amp;page=", ($page + 1), "\" class=\"folderinfo\" title=\"", gettext("Show next 50 threads"), "\">", gettext("Next 50 threads"), "</a></td>\n";
                         echo "                    </tr>\n";
                         echo "                  </table>\n";
                     }
@@ -770,7 +688,7 @@ foreach ($folder_order as $folder_number) {
 
                     echo "            <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
                     echo "              <tr>\n";
-                    echo "                <td align=\"left\" class=\"threads_top_left_bottom\" valign=\"top\" width=\"50%\" style=\"white-space: nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder={$folder_number}\" class=\"folderinfo\" title=\"", gettext("View messages in this folder only"), "\">";
+                    echo "                <td align=\"left\" class=\"threads_top_left_bottom\" valign=\"top\" width=\"50%\" style=\"white-space: nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder={$folder_number}\" class=\"folderinfo\" title=\"", gettext("View messages in this folder only"), "\">";
 
                     if (isset($folder_msgs[$folder_number]) && $folder_msgs[$folder_number] > 0) {
                         echo $folder_msgs[$folder_number];
@@ -801,7 +719,7 @@ foreach ($folder_order as $folder_number) {
                 // Only display the additional folder info if the user DOESN'T have the folder on ignore
                 echo "            <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
                 echo "              <tr>\n";
-                echo "                <td class=\"threads_top_left_bottom\" align=\"left\" valign=\"top\" width=\"50%\" style=\"white-space: nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder={$folder_number}\" class=\"folderinfo\" title=\"", gettext("View messages in this folder only"), "\">";
+                echo "                <td class=\"threads_top_left_bottom\" align=\"left\" valign=\"top\" width=\"50%\" style=\"white-space: nowrap\"><a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder={$folder_number}\" class=\"folderinfo\" title=\"", gettext("View messages in this folder only"), "\">";
 
                 if (isset($folder_msgs[$folder_number])) {
                     echo $folder_msgs[$folder_number];
@@ -812,7 +730,7 @@ foreach ($folder_order as $folder_number) {
                 echo "&nbsp;", gettext("threads"), "</a></td>\n";
                 echo "                <td align=\"left\" class=\"threads_top_right_bottom\" valign=\"top\" width=\"50%\" style=\"white-space: nowrap\">";
 
-                if (session_check_perm(USER_PERM_THREAD_CREATE, $folder_number)) {
+                if (session::check_perm(USER_PERM_THREAD_CREATE, $folder_number)) {
 
                     echo "<a href=\"";
                     echo $folder_info[$folder_number]['ALLOWED_TYPES']&FOLDER_ALLOW_NORMAL_THREAD ? "post.php?webtag=$webtag" : (forum_get_setting('allow_polls', 'Y') ? "create_poll.php?webtag=$webtag" : "");
@@ -849,7 +767,7 @@ if (!is_numeric($folder) && ($thread_count >= 50)) {
     echo "  <td colspan=\"2\">&nbsp;</td>\n";
     echo "</tr>\n";
     echo "<tr>\n";
-    echo "  <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\"><img src=\"", html_style_image('current_thread.png'), "\" alt=\"", gettext("Next 50 threads"), "\" title=\"", gettext("Next 50 threads"), "\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;start_from=", ($start_from + 50), "\" title=\"", gettext("Show next 50 threads"), "\">", gettext("Next 50 threads"), "</a></td>\n";
+    echo "  <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\"><img src=\"", html_style_image('current_thread.png'), "\" alt=\"", gettext("Next 50 threads"), "\" title=\"", gettext("Next 50 threads"), "\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page + 1), "\" title=\"", gettext("Show next 50 threads"), "\">", gettext("Next 50 threads"), "</a></td>\n";
     echo "</tr>\n";
 }
 
@@ -858,7 +776,7 @@ echo "    <td align=\"left\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 
-if (!user_is_guest()) {
+if (session::logged_in()) {
 
     echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
     echo "  <tr>\n";
@@ -869,11 +787,15 @@ if (!user_is_guest()) {
     echo "    <td align=\"left\" class=\"smalltext\">\n";
     echo "      <form accept-charset=\"utf-8\" name=\"f_mark\" method=\"post\" action=\"thread_list.php\">\n";
     echo "        ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-    echo "        ", form_input_hidden("mode", htmlentities_array($thread_mode)), "\n";
-    echo "        ", form_input_hidden("start_from", htmlentities_array($start_from)), "\n";
+    echo "        ", form_input_hidden("mode", htmlentities_array($mode)), "\n";
+    echo "        ", form_input_hidden("page", htmlentities_array($page)), "\n";
     echo "        ", form_input_hidden('mark_read_confirm', 'N'), "\n";
 
-    $labels = array(gettext("All Discussions"), gettext("Next 50 discussions"));
+    $labels = array(
+        gettext("All Discussions"), 
+        gettext("Next 50 discussions")
+    );
+    
     $selected_option = THREAD_MARK_READ_ALL;
 
     if (sizeof($visible_threads_array) > 0) {

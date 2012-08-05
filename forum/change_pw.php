@@ -21,65 +21,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Initialise Locale
-lang_init();
-
-// Check we have a webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 // Array to hold error messages
 $error_msg_array = array();
@@ -93,7 +46,7 @@ if (isset($_POST['save'])) {
 
         $uid = $_POST['u'];
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("Invalid user account specified. Check email for correct link");
         $valid = false;
@@ -103,7 +56,7 @@ if (isset($_POST['save'])) {
 
         $key = $_POST['h'];
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("Invalid user key provided. Check email for correct link");
         $valid = false;
@@ -113,7 +66,7 @@ if (isset($_POST['save'])) {
 
         $pw = $_POST['pw'];
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("You must enter a new password");
         $valid = false;
@@ -123,7 +76,7 @@ if (isset($_POST['save'])) {
 
         $cpw = $_POST['cpw'];
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("You must confirm your new password");
         $valid = false;
@@ -159,7 +112,7 @@ if (isset($_POST['save'])) {
             html_draw_bottom();
             exit;
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("Update failed");
             $valid = false;
@@ -172,20 +125,13 @@ if (isset($_REQUEST['u']) && isset($_REQUEST['h'])) {
     $uid = $_GET['u'];
     $key = $_GET['h'];
 
-}else {
+} else {
 
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("Required information not found"));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("Required information not found"));
 }
 
 if (!$user = user_get_by_passhash($uid, $key)) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("Required information not found"));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("Required information not found"));
 }
 
 html_draw_top("title=", gettext("Change Password"), "", 'class=window_title');

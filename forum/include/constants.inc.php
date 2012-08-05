@@ -21,15 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/**
-* Constants used throughout Beehive.
-*
-* It may well be easier to view the actual file - the layout's better.
-*/
-
-/**
-*/
-
 // Beehive Version
 define('BEEHIVE_VERSION', "1.2.0-GIT");
 

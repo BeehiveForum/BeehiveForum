@@ -30,16 +30,16 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 }
 
 if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config.inc.php");
+    require_once BH_INCLUDE_PATH. 'config.inc.php';
 }
 
 if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
+    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
 }
 
 // Include files we need.
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
 
 function db_get_connection_vars(&$db_server, &$db_port, &$db_username, &$db_password, &$db_database)
 {
@@ -138,7 +138,7 @@ function db_affected_rows($connection_id)
     return false;
 }
 
-function db_fetch_array($result, $result_type = DB_RESULT_BOTH)
+function db_fetch_array($result, $result_type = DB_RESULT_ASSOC)
 {
     if (($result_array = mysqli_fetch_array($result, $result_type))) {
         return $result_array;
@@ -164,7 +164,7 @@ function db_error($connection_id = false)
             return $errstr;
         }
 
-    }else {
+    } else {
 
         if (($errstr = mysqli_error())) {
             return $errstr;
@@ -182,7 +182,7 @@ function db_errno($connection_id = false)
             return $errno;
         }
 
-    }else {
+    } else {
 
         if (($errno = mysqli_errno())) {
             return $errno;

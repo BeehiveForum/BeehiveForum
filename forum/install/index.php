@@ -34,23 +34,23 @@ define("BEEHIVEMODE_INSTALL", true);
 define("BH_FORUM_PATH", "../");
 
 // Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
+require_once BH_INCLUDE_PATH. 'install.inc.php';
 
 // Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
 
 if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config.inc.php");
+    require_once BH_INCLUDE_PATH. 'config.inc.php';
 }
 
 if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
+    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
 }
 
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
+require_once BH_INCLUDE_PATH. 'cache.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
 
 // Disable caching.
 cache_disable();
@@ -75,7 +75,7 @@ if (isset($_POST['install_method'])) {
 
         $install_method = $_POST['install_method'];
 
-    }else {
+    } else {
 
         $error_array[] = "You must choose an installation method.\n";
         $valid = false;
@@ -97,7 +97,7 @@ if (isset($_POST['install_method'])) {
             $valid = false;
         }
 
-    }else {
+    } else {
 
         if (isset($install_method) && ($install_method < 2)) {
 
@@ -108,13 +108,13 @@ if (isset($_POST['install_method'])) {
 
     if (isset($_POST['db_server']) && strlen(trim(stripslashes_array($_POST['db_server']))) > 0) {
         $db_server = trim(stripslashes_array($_POST['db_server']));
-    }else {
+    } else {
         $db_server = '';
     }
 
     if (isset($_POST['db_port']) && is_numeric($_POST['db_port'])) {
         $db_port = $_POST['db_port'];
-    }else {
+    } else {
         $db_port = '';
     }
 
@@ -122,7 +122,7 @@ if (isset($_POST['install_method'])) {
 
         $db_database = trim(stripslashes_array($_POST['db_database']));
 
-    }else {
+    } else {
 
         $error_array[] = "You must supply a database name.\n";
         $valid = false;
@@ -130,19 +130,19 @@ if (isset($_POST['install_method'])) {
 
     if (isset($_POST['db_username']) && strlen(trim(stripslashes_array($_POST['db_username']))) > 0) {
         $db_username = trim(stripslashes_array($_POST['db_username']));
-    }else {
+    } else {
         $db_username = '';
     }
 
     if (isset($_POST['db_password']) && strlen(trim(stripslashes_array($_POST['db_password']))) > 0) {
         $db_password = trim(stripslashes_array($_POST['db_password']));
-    }else {
+    } else {
         $db_password = '';
     }
 
     if (isset($_POST['db_cpassword']) && strlen(trim(stripslashes_array($_POST['db_cpassword']))) > 0) {
         $db_cpassword = trim(stripslashes_array($_POST['db_cpassword']));
-    }else {
+    } else {
         $db_cpassword = "";
     }
 
@@ -150,28 +150,28 @@ if (isset($_POST['install_method'])) {
 
         if (isset($_POST['admin_username']) && strlen(trim(stripslashes_array($_POST['admin_username']))) > 0) {
             $admin_username = trim(stripslashes_array($_POST['admin_username']));
-        }else {
+        } else {
             $error_array[] = "You must supply a username for your administrator account.\n";
             $valid = false;
         }
 
         if (isset($_POST['admin_password']) && strlen(trim(stripslashes_array($_POST['admin_password']))) > 0) {
             $admin_password = trim(stripslashes_array($_POST['admin_password']));
-        }else {
+        } else {
             $error_array[] = "You must supply a password for your administrator account.\n";
             $valid = false;
         }
 
         if (isset($_POST['admin_cpassword']) && strlen(trim(stripslashes_array($_POST['admin_cpassword']))) > 0) {
             $admin_cpassword = trim(stripslashes_array($_POST['admin_cpassword']));
-        }else {
+        } else {
             $error_array[] = "You must confirm the password for your administrator account.\n";
             $valid = false;
         }
 
         if (isset($_POST['admin_email']) && strlen(trim(stripslashes_array($_POST['admin_email']))) > 0) {
             $admin_email = trim(stripslashes_array($_POST['admin_email']));
-        }else {
+        } else {
             $error_array[] = "You must supply an email address for your administrator account.\n";
             $valid = false;
         }
@@ -179,19 +179,19 @@ if (isset($_POST['install_method'])) {
 
     if (isset($_POST['remove_conflicts']) && $_POST['remove_conflicts'] == 'Y') {
         $remove_conflicts = true;
-    }else {
+    } else {
         $remove_conflicts = false;
     }
 
     if (isset($_POST['skip_dictionary']) && $_POST['skip_dictionary'] == 'Y') {
         $skip_dictionary = true;
-    }else {
+    } else {
         $skip_dictionary = false;
     }
 
     if (isset($_POST['enable_error_reports']) && $_POST['enable_error_reports'] == 'Y') {
         $enable_error_reports = true;
-    }else {
+    } else {
         $enable_error_reports = false;
     }
 
@@ -261,7 +261,7 @@ if (isset($_POST['install_method'])) {
                             $config_saved = true;
                         }
 
-                    }else {
+                    } else {
 
                         $config_saved = true;
                     }
@@ -317,7 +317,7 @@ if (isset($_POST['install_method'])) {
                     echo "  </tr>\n";
                     echo "</table>\n";
 
-                }else {
+                } else {
 
                     echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
                     echo "  <tr>\n";
@@ -398,7 +398,7 @@ if (isset($_POST['install_method'])) {
         }
     }
 
-}elseif (isset($_POST['download_config'])) {
+} else if (isset($_POST['download_config'])) {
 
     $config_file = "";
 
@@ -430,7 +430,7 @@ if (isset($_POST['install_method'])) {
 
         if (isset($_POST['enable_error_reports']) && ($_POST['enable_error_reports'] == 'Y')) {
             $enable_error_reports = true;
-        }else {
+        } else {
             $enable_error_reports = false;
         }
 
@@ -456,7 +456,7 @@ if (isset($_POST['install_method'])) {
             echo $config_file;
             exit;
 
-        }else {
+        } else {
 
             // Database details
             $config_file = str_replace('{db_server}',   "", $config_file);
@@ -551,7 +551,7 @@ if (isset($_POST['install_method'])) {
             exit;
         }
 
-    }else {
+    } else {
 
         $error_array[] = "Could not complete installation. Error was: failed to read config.inc.php\n";
     }

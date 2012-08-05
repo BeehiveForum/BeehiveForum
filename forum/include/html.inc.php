@@ -30,37 +30,37 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 }
 
 if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config.inc.php");
+    require_once BH_INCLUDE_PATH. 'config.inc.php';
 }
 
 if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
+    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
 }
 
-include_once(BH_INCLUDE_PATH. "adsense.inc.php");
-include_once(BH_INCLUDE_PATH. "browser.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
-include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "pm.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-include_once(BH_INCLUDE_PATH. "styles.inc.php");
-include_once(BH_INCLUDE_PATH. "swift.inc.php");
-include_once(BH_INCLUDE_PATH. "text_captcha.inc.php");
-include_once(BH_INCLUDE_PATH. "thread.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+require_once BH_INCLUDE_PATH. 'adsense.inc.php';
+require_once BH_INCLUDE_PATH. 'browser.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'pm.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'server.inc.php';
+require_once BH_INCLUDE_PATH. 'styles.inc.php';
+require_once BH_INCLUDE_PATH. 'swift.inc.php';
+require_once BH_INCLUDE_PATH. 'text_captcha.inc.php';
+require_once BH_INCLUDE_PATH. 'thread.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 function html_guest_error($final_uri = null)
 {
@@ -81,27 +81,16 @@ function html_guest_error($final_uri = null)
 
     if (preg_match("/^$popup_files_preg/", $final_uri) > 0) {
 
-        html_draw_top("title=", gettext("Sorry, you need to be logged in to use this feature."), "", 'pm_popup_disabled', 'robots=noindex,nofollow');
-        html_error_msg(gettext("Sorry, you need to be logged in to use this feature."), false, 'post', array('close_popup' => gettext("Close")));
-        html_draw_bottom();
+        html_draw_error(gettext("Sorry, you need to be logged in to use this feature."), false, 'post', array('close_popup' => gettext("Close")));
 
-    }else if (preg_match("/^$available_support_pages_preg/", $final_uri) > 0) {
+    } else if (preg_match("/^$available_support_pages_preg/", $final_uri) > 0) {
 
-        html_draw_top("title=", gettext("Sorry, you need to be logged in to use this feature."), "", 'pm_popup_disabled', 'robots=noindex,nofollow');
-        html_error_msg(gettext("Sorry, you need to be logged in to use this feature."));
-        html_draw_bottom();
+        html_draw_error(gettext("Sorry, you need to be logged in to use this feature."));
 
-    }else {
+    } else {
 
-        html_draw_top("title=", gettext("Sorry, you need to be logged in to use this feature."), "", 'pm_popup_disabled', 'robots=noindex,nofollow');
-        html_error_msg(gettext("Sorry, you need to be logged in to use this feature."), html_get_forum_file_path('logout.php'), 'post', array('submit' => gettext("Login now"), 'register' => gettext("Register")), array('final_uri' => $final_uri), $frame_top_target);
-        html_draw_bottom();
+        html_draw_error(gettext("Sorry, you need to be logged in to use this feature."), html_get_forum_file_path('logout.php'), 'post', array('submit' => gettext("Login now"), 'register' => gettext("Register")), array('final_uri' => $final_uri), $frame_top_target);
     }
-}
-
-function html_error_msg($error_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left", $id = false)
-{
-     html_display_msg(gettext("Error"), $error_msg, $href, $method, $button_array, $var_array, $target, $align, $id);
 }
 
 function html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left", $id = false)
@@ -111,10 +100,19 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
     if (!is_string($header_text)) return;
     if (!is_string($string_msg)) return;
 
-    $available_methods = array('get', 'post');
+    $available_methods = array(
+        'get', 
+        'post'
+    );
+
     if (!in_array($method, $available_methods)) $method = 'get';
 
-    $available_alignments = array('left', 'center', 'right');
+    $available_alignments = array(
+        'left', 
+        'center', 
+        'right'
+    );
+
     if (!in_array($align, $available_alignments)) $align = 'left';
 
     echo "<h1>$header_text</h1>\n";
@@ -205,7 +203,12 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
         return;
     }
 
-    $available_alignments = array('left', 'center', 'right');
+    $available_alignments = array(
+        'left', 
+        'center', 
+        'right'
+    );
+
     if (!in_array($align, $available_alignments)) $align = 'left';
 
     echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
@@ -231,7 +234,12 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
 
     if (!is_string($string_msg)) return;
 
-    $available_alignments = array('left', 'center', 'right');
+    $available_alignments = array(
+        'left', 
+        'center', 
+        'right'
+    );
+
     if (!in_array($align, $available_alignments)) $align = 'left';
 
     echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
@@ -250,7 +258,12 @@ function html_display_error_msg($string_msg, $width = '600', $align = 'center', 
 
     if (!is_string($string_msg)) return;
 
-    $available_alignments = array('left', 'center', 'right');
+    $available_alignments = array(
+        'left', 
+        'center', 
+        'right'
+    );
+
     if (!in_array($align, $available_alignments)) $align = 'left';
 
     echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
@@ -269,7 +282,12 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
 
     if (!is_string($string_msg)) return;
 
-    $available_alignments = array('left', 'center', 'right');
+    $available_alignments = array(
+        'left', 
+        'center', 
+        'right'
+    );
+
     if (!in_array($align, $available_alignments)) $align = 'left';
 
     echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
@@ -290,27 +308,21 @@ function html_user_banned()
 
 function html_user_require_approval()
 {
-    html_draw_top(sprintf("title=%s", gettext("Approval Required")), "robots=noindex,nofollow");
-    html_error_msg(gettext("Your user account needs to be approved by a forum admin before you can access the requested forum."));
-    html_draw_bottom();
+    html_draw_error(gettext("Your user account needs to be approved by a forum admin before you can access the requested forum."));
 }
 
 function html_email_confirmation_error()
 {
-    if (($uid = session_get_value('UID')) === false) return;
+    if (($uid = session::get_value('UID')) === false) return;
 
     $user_array = user_get($uid);
 
-    html_draw_top(sprintf("title=%s", gettext("Email confirmation required")), "robots=noindex,nofollow");
-    html_error_msg(gettext("Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details"), 'confirm_email.php', 'get', array('resend' => gettext("Resend Confirmation")), array('uid' => $user_array['UID'], 'resend' => 'Y'));
-    html_draw_bottom();
+    html_draw_error(gettext("Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details"), 'confirm_email.php', 'get', array('resend' => gettext("Resend Confirmation")), array('uid' => $user_array['UID'], 'resend' => 'Y'), sprintf("title=%s", gettext("Email confirmation required")), "robots=noindex,nofollow");
 }
 
 function html_message_type_error()
 {
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You cannot post this thread type as there are no available folders that allow it."));
-    html_draw_bottom();
+    html_draw_error(gettext("You cannot post this thread type as there are no available folders that allow it."));
 }
 
 function html_get_user_style_path()
@@ -319,7 +331,7 @@ function html_get_user_style_path()
 
     if ($user_style === false) {
 
-        if (!($user_style = session_get_value('STYLE'))) {
+        if (!($user_style = session::get_value('STYLE'))) {
             $user_style = html_get_cookie('forum_style', false, forum_get_setting('default_style', false, 'default'));
         }
 
@@ -375,7 +387,7 @@ function html_get_emoticon_style_sheet($emoticon_set = false)
 
         $user_emoticons = basename($emoticon_set);
 
-    } else if (($user_emoticons = session_get_value('EMOTICONS')) === false) {
+    } else if (($user_emoticons = session::get_value('EMOTICONS')) === false) {
 
         $user_emoticons = forum_get_setting('default_emoticons');
     }
@@ -403,10 +415,12 @@ function html_get_forum_description()
 
 function html_get_forum_content_rating()
 {
-    $content_ratings_array = array(FORUM_RATING_GENERAL    => 'General',
-                                   FORUM_RATING_FOURTEEN   => '14 Years',
-                                   FORUM_RATING_MATURE     => 'Mature',
-                                   FORUM_RATING_RESTRICTED => 'Restricted');
+    $content_ratings_array = array(
+        FORUM_RATING_GENERAL => 'General',
+        FORUM_RATING_FOURTEEN => '14 Years',
+        FORUM_RATING_MATURE => 'Mature',
+        FORUM_RATING_RESTRICTED => 'Restricted',
+    );
 
     if (!($forum_content_rating = forum_get_setting('forum_content_rating'))) {
         return $content_ratings_array[FORUM_RATING_GENERAL];
@@ -663,7 +677,7 @@ function html_draw_top()
 
     if ($frame_set_html === false) {
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-    }else {
+    } else {
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">\n";
     }
 
@@ -752,7 +766,7 @@ function html_draw_top()
         printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", _('My Controls'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=user.php%3Fwebtag%3D$webtag")), html_style_image('msie/user_controls.ico', true, true));
     }
 
-    if (!user_is_guest() && (session_check_perm(USER_PERM_FORUM_TOOLS, 0) || session_check_perm(USER_PERM_ADMIN_TOOLS, 0) || session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
+    if (session::logged_in() && (session::check_perm(USER_PERM_FORUM_TOOLS, 0) || session::check_perm(USER_PERM_ADMIN_TOOLS, 0) || session::get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
         printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", _('Admin'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_style_image('msie/admintool.ico', true, true));
     }
 
@@ -820,14 +834,14 @@ function html_draw_top()
     }
 
     // Font size (not for Guests)
-    if (!user_is_guest()) {
+    if (session::logged_in()) {
         html_include_css(html_get_forum_file_path(sprintf('font_size.php?webtag=%s', $webtag)), 'screen', 'user_font');
     }
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 
     html_include_javascript(html_get_forum_file_path('js/jquery-1.7.1.min.js'));
-    html_include_javascript(html_get_forum_file_path('js/jquery.autocomplete.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery-ui-1.8.22.autocomplete.min.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.parsequery.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.url.js'));
@@ -836,22 +850,42 @@ function html_draw_top()
     if ($frame_set_html === false) {
 
         // Check for any new PMs.
-        if (!user_is_guest()) {
+        if (session::logged_in()) {
 
             // Check to see if the PM popup is disabled on the current page.
             if ($pm_popup_disabled === false) {
 
                 // Pages we don't want the popup to appear on
-                $pm_popup_disabled_pages = array('admin.php', 'attachments.php', 'change_pw.php',
-                                                 'confirm_email.php', 'dictionary.php', 'discussion.php',
-                                                 'display_emoticons.php', 'edit_attachments.php', 'email.php',
-                                                 'font_size.php', 'forgot_pw.php', 'get_attachment.php',
-                                                 'index.php', 'mods_list.php', 'nav.php',
-                                                 'pm.php', 'pm_edit.php', 'pm_folders.php',
-                                                 'pm_messages.php', 'pm_options.php', 'poll_results.php',
-                                                 'start.php', 'search_popup.php', 'threads_rss.php',
-                                                 'user.php', 'user_font.php', 'user_profile.php',
-                                                 'user_stats.php');
+                $pm_popup_disabled_pages = array(
+                    'admin.php', 
+                    'attachments.php', 
+                    'change_pw.php',
+                    'confirm_email.php', 
+                    'dictionary.php', 
+                    'discussion.php',
+                    'display_emoticons.php',
+                    'edit_attachments.php',
+                    'email.php',
+                    'font_size.php',
+                    'forgot_pw.php',
+                    'get_attachment.php',
+                    'index.php',
+                    'mods_list.php',
+                    'nav.php',
+                    'pm.php',
+                    'pm_edit.php',
+                    'pm_folders.php',
+                    'pm_messages.php',
+                    'pm_options.php',
+                    'poll_results.php',
+                    'start.php',
+                    'search_popup.php',
+                    'threads_rss.php',
+                    'user.php',
+                    'user_font.php',
+                    'user_profile.php',
+                    'user_stats.php',
+                );
 
                 // Check that we're not on one of the pages.
                 if ((!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages))) {
@@ -860,26 +894,44 @@ function html_draw_top()
             }
 
             // Overflow auto-resize functionality.
-            $resize_images_page = array('admin_post_approve.php', 'create_poll.php',
-                                        'delete.php', 'display.php', 'edit.php',
-                                        'edit_poll.php', 'edit_signature.php',
-                                        'messages.php', 'post.php', 'pm_write.php',
-                                        'pm_edit.php', 'pm_messages.php');
+            $resize_images_page = array(
+                'admin_post_approve.php', 
+                'create_poll.php',
+                'delete.php', 
+                'display.php', 
+                'edit.php',
+                'edit_poll.php', 
+                'edit_signature.php',
+                'messages.php', 
+                'post.php', 
+                'pm_write.php',
+                'pm_edit.php', 
+                'pm_messages.php'
+            );
 
             if (in_array(basename($_SERVER['PHP_SELF']), $resize_images_page)) {
 
-                if (session_get_value('USE_OVERFLOW_RESIZE') == 'Y') {
+                if (session::get_value('USE_OVERFLOW_RESIZE') == 'Y') {
 
                     html_include_javascript(html_get_forum_file_path('js/overflow.js'));
                 }
             }
 
             // Mouseover spoiler pages
-            $message_display_pages = array('admin_post_approve.php', 'create_poll.php',
-                                           'delete.php', 'display.php', 'edit.php',
-                                           'edit_poll.php', 'edit_signature.php',
-                                           'ldisplay.php', 'lmessages.php',
-                                           'lpost.php', 'messages.php', 'post.php');
+            $message_display_pages = array(
+                'admin_post_approve.php', 
+                'create_poll.php',
+                'delete.php', 
+                'display.php', 
+                'edit.php',
+                'edit_poll.php', 
+                'edit_signature.php',
+                'ldisplay.php', 
+                'lmessages.php',
+                'lpost.php', 
+                'messages.php', 
+                'post.php',
+            );
 
             if (in_array(basename($_SERVER['PHP_SELF']), $message_display_pages)) {
 
@@ -888,7 +940,9 @@ function html_draw_top()
         }
 
         // Stats Display pages
-        $stats_display_pages = array('messages.php');
+        $stats_display_pages = array(
+            'messages.php'
+        );
 
         if (in_array(basename($_SERVER['PHP_SELF']), $stats_display_pages)) {
             html_include_javascript(html_get_forum_file_path('js/stats.js'));
@@ -901,19 +955,19 @@ function html_draw_top()
 
         if (($func_args == "htmltools.js") && @file_exists(html_get_forum_file_path('tiny_mce/tiny_mce.js'))) {
 
-            $page_prefs = session_get_post_page_prefs();
+            $page_prefs = session::get_post_page_prefs();
 
             if ($page_prefs & POST_TINYMCE_DISPLAY) {
 
                 html_include_javascript(html_get_forum_file_path('tiny_mce/tiny_mce.js'));
                 html_include_javascript(html_get_forum_file_path('js/tiny_mce.js'));
 
-            }else {
+            } else {
 
                 html_include_javascript(html_get_forum_file_path("js/$func_args"));
             }
 
-        }else {
+        } else {
 
             html_include_javascript(html_get_forum_file_path("js/$func_args"));
         }
@@ -935,7 +989,7 @@ function html_draw_top()
         echo "</script>\n";
     }
 
-    if ((forum_get_setting('show_share_links', 'Y')) && (session_get_value('SHOW_SHARE_LINKS') == 'Y')) {
+    if ((forum_get_setting('show_share_links', 'Y')) && (session::get_value('SHOW_SHARE_LINKS') == 'Y')) {
 
         echo "<script type=\"text/javascript\" src=\"https://apis.google.com/js/plusone.js\">\n";
         echo "{lang: 'en-GB'}\n";
@@ -994,6 +1048,14 @@ function html_draw_bottom($frame_set_html = false)
     echo "</html>\n";
 }
 
+function html_draw_error($error_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left", $id = false)
+{
+    html_draw_top(gettext('Error'));
+    html_display_msg(gettext("Error"), $error_msg, $href, $method, $button_array, $var_array, $target, $align, $id);
+    html_draw_bottom();
+    exit;
+}
+
 class html_frameset
 {
     private $frames_array = array();
@@ -1040,7 +1102,7 @@ class html_frameset_rows extends html_frameset
 
         $frames_array = parent::get_frames();
 
-        foreach($frames_array as $frame) {
+        foreach ($frames_array as $frame) {
             $frame->output_html();
         }
 
@@ -1074,7 +1136,7 @@ class html_frameset_cols extends html_frameset
 
         $frames_array = parent::get_frames();
 
-        foreach($frames_array as $frame) {
+        foreach ($frames_array as $frame) {
             $frame->output_html();
         }
 
@@ -1101,7 +1163,7 @@ class html_frame
 
         if (browser_check(BROWSER_WEBKIT)) {
             $this->frameborder = 1;
-        }else {
+        } else {
             $this->frameborder = (is_numeric($frameborder)) ? $frameborder : 0;
         }
 
@@ -1139,7 +1201,7 @@ function html_get_google_analytics_code()
             }
         }
 
-    }else {
+    } else {
 
         if (forum_get_global_setting('enable_google_analytics', 'Y')) {
 
@@ -1184,9 +1246,17 @@ function html_output_adsense_settings()
 
 function html_js_safe_str($str)
 {
-    $unsafe_chars_tbl = array('\\' => '\\\\',  "'"  => "\\'",   '"'  => '\\"',
-                              "\r" => '\\r',   "\n" => '\\n',   '<'  => '\\074',
-                              '>'  => '\\076', '&'  => '\\046', '--' => '\\055\\055');
+    $unsafe_chars_tbl = array(
+        '\\' => '\\\\',  
+        "'" => "\\'",   
+        '"' => '\\"',
+        "\r" => '\\r',   
+        "\n" => '\\n',   
+        '<' => '\\074',
+        '>' => '\\076', 
+        '&' => '\\046', 
+        '--' => '\\055\\055'
+    );
 
     return strtr($str, $unsafe_chars_tbl);
 }
@@ -1243,7 +1313,7 @@ function html_get_cookie($cookie_name, $callback = false, $default = false)
 
                 return ($callback($_COOKIE[$cookie_name])) ? $_COOKIE[$cookie_name] : $default;
 
-            }else if (is_string($callback)) {
+            } else if (is_string($callback)) {
 
                 return mb_strtoupper($_COOKIE[$cookie_name]) == mb_strtoupper($callback);
             }
@@ -1262,8 +1332,6 @@ function html_remove_all_cookies()
     }
 }
 
-// Remove named $keys from the query of a URI
-// $keys can be an array or a single key to remove
 function href_cleanup_query_keys($uri, $remove_keys = null)
 {
     $uri_array = parse_url($uri);
@@ -1286,16 +1354,11 @@ function href_cleanup_query_keys($uri, $remove_keys = null)
     return build_url_str($uri_array);
 }
 
-// Draws Page links (i.e.: Pages: [1] 2 3 4 ... >>)
-function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "page")
+function html_page_links($uri, $page, $record_count, $rows_per_page, $page_var = "page")
 {
-    $page_count   = ceil($total_rows / $rows_per_page);
-    $current_page = ceil($offset / $rows_per_page) + 1;
-
-    if ($current_page > $page_count) $current_page = $page_count;
-    if ($current_page < 1) $current_page = 1;
-
     $uri = href_cleanup_query_keys($uri, $page_var);
+    
+    $page_count = ceil($record_count / $rows_per_page);
 
     $sep = strstr($uri, '?') ? "&amp;" : "?";
 
@@ -1303,27 +1366,27 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
 
         echo "<span class=\"pagenum_text\">", gettext("Pages"), "&nbsp;($page_count):&nbsp;";
 
-    }else {
+    } else {
 
         echo "<span class=\"pagenum_text\">", gettext("Pages"), ":&nbsp;";
     }
 
     if ($page_count > 1) {
 
-        if ($current_page == 1) {
+        if ($page == 1) {
 
-            $end_page = (($current_page + 2) <= $page_count) ? ($current_page + 2) : $page_count;
-            $start_page = $current_page;
+            $end_page = (($page + 2) <= $page_count) ? ($page + 2) : $page_count;
+            $start_page = $page;
 
-        } else if ($current_page == $page_count) {
+        } else if ($page == $page_count) {
 
-            $start_page = (($current_page - 2) > 0) ? ($current_page - 2) : 1;
+            $start_page = (($page - 2) > 0) ? ($page - 2) : 1;
             $end_page = $page_count;
 
-        }else {
+        } else {
 
-            $start_page = (($current_page - 2) > 0) ? ($current_page - 2) : 1;
-            $end_page   = (($current_page + 2) <= $page_count) ? ($current_page + 2) : $page_count;
+            $start_page = (($page - 2) > 0) ? ($page - 2) : 1;
+            $end_page   = (($page + 2) <= $page_count) ? ($page + 2) : $page_count;
 
             if (($end_page - $start_page) < 2) {
 
@@ -1347,12 +1410,12 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
             }
         }
 
-        for ($page = $start_page; $page <= $end_page; $page++) {
+        for ($next_page = $start_page; $next_page <= $end_page; $next_page++) {
 
-            if ($page == $current_page) {
-                echo "<a href=\"{$uri}{$sep}{$page_var}={$page}\" target=\"_self\"><span class=\"pagenum_current\">$page</span></a>&nbsp;";
-            }else {
-                echo "<a href=\"{$uri}{$sep}{$page_var}={$page}\" target=\"_self\">{$page}</a>&nbsp;";
+            if ($next_page == $page) {
+                echo "<a href=\"{$uri}{$sep}{$page_var}={$next_page}\" target=\"_self\"><span class=\"pagenum_current\">$next_page</span></a>&nbsp;";
+            } else {
+                echo "<a href=\"{$uri}{$sep}{$page_var}={$next_page}\" target=\"_self\">{$next_page}</a>&nbsp;";
             }
         }
 
@@ -1365,7 +1428,7 @@ function page_links($uri, $offset, $total_rows, $rows_per_page, $page_var = "pag
             }
         }
 
-    }else {
+    } else {
 
         echo "<a href=\"{$uri}{$sep}{$page_var}=1\" target=\"_self\"><b>[1]</b></a>&nbsp;";
     }
@@ -1389,7 +1452,7 @@ function html_get_forum_uri($append_path = null)
 
             $uri_array['scheme'] = (mb_strtolower($_SERVER['HTTPS']) != 'off') ? 'https' : 'http';
 
-        }else {
+        } else {
 
             $uri_array['scheme'] = 'http';
         }
@@ -1403,12 +1466,12 @@ function html_get_forum_uri($append_path = null)
 
                 list($uri_array['host'], $uri_array['port']) = explode(':', $_SERVER['HTTP_HOST']);
 
-            }else {
+            } else {
 
                 $uri_array['host'] = $_SERVER['HTTP_HOST'];
             }
 
-        }else if (isset($_SERVER['SERVER_NAME']) && strlen(trim($_SERVER['SERVER_NAME'])) > 0) {
+        } else if (isset($_SERVER['SERVER_NAME']) && strlen(trim($_SERVER['SERVER_NAME'])) > 0) {
 
             $uri_array['host'] = $_SERVER['SERVER_NAME'];
         }
@@ -1431,7 +1494,7 @@ function html_get_forum_uri($append_path = null)
 
             $path = @parse_url($_SERVER['PATH_INFO']);
 
-        }else {
+        } else {
 
             $path = @parse_url($_SERVER['PHP_SELF']);
         }

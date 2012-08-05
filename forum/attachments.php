@@ -21,110 +21,34 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "attachments.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'attachments.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Initialise Locale
-lang_init();
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
 
 // If attachments are disabled then no need to go any further.
 if (forum_get_setting('attachments_enabled', 'N')) {
-
-    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
-    html_error_msg(gettext("Attachments have been disabled by the forum owner."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("Attachments have been disabled by the forum owner."));
 }
 
 // If the attachments directory is undefined we can't go any further
 if (!$attachment_dir = attachments_check_dir()) {
-
-    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
-    html_error_msg(gettext("Attachments have been disabled by the forum owner."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("Attachments have been disabled by the forum owner."));
 }
 
 // If no AID we must stop.
@@ -132,27 +56,17 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 
     $aid = $_GET['aid'];
 
-}else if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
+} else if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
     $aid = $_POST['aid'];
 
-}else {
+} else {
 
-    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
-    html_error_msg(gettext("AID not specified."));
-    html_draw_bottom();
-    exit;
-}
-
-// Guests can't do attachments.
-if (user_is_guest()) {
-
-    html_guest_error();
-    exit;
+    html_draw_error(gettext("AID not specified."));
 }
 
 // User's UID
-$uid = session_get_value('UID');
+$uid = session::get_value('UID');
 
 // Maximum attachment space
 $max_attachment_space = attachments_get_max_space();
@@ -194,7 +108,7 @@ if (isset($_POST['upload'])) {
 
                     $upload_failure[] = $filename;
 
-                }else {
+                } else {
 
                     $file_size = $_FILES['userfile']['size'][$i];
                     $temp_file = $_FILES['userfile']['tmp_name'][$i];
@@ -213,7 +127,7 @@ if (isset($_POST['upload'])) {
                             unlink($temp_file);
                         }
 
-                    }else if (($max_attachment_space > 0) && ($users_free_space < $file_size)) {
+                    } else if (($max_attachment_space > 0) && ($users_free_space < $file_size)) {
 
                         $upload_failure[] = $filename;
 
@@ -222,7 +136,7 @@ if (isset($_POST['upload'])) {
                             unlink($temp_file);
                         }
 
-                    }else {
+                    } else {
 
                         $unique_file_id = md5(uniqid(mt_rand()));
 
@@ -241,7 +155,7 @@ if (isset($_POST['upload'])) {
 
                             $upload_success[] = $filename;
 
-                        }else {
+                        } else {
 
                             if (@file_exists($temp_file)) {
                                 unlink($temp_file);
@@ -255,7 +169,7 @@ if (isset($_POST['upload'])) {
         }
     }
 
-}elseif (isset($_POST['delete_confirm'])) {
+} else if (isset($_POST['delete_confirm'])) {
 
     $valid = true;
 
@@ -280,7 +194,7 @@ if (isset($_POST['upload'])) {
         }
     }
 
-}elseif (isset($_POST['delete'])) {
+} else if (isset($_POST['delete'])) {
 
     $hash_array = array();
 
@@ -386,7 +300,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '600', 'center');
 
-}else {
+} else {
 
     if (isset($upload_success) && is_array($upload_success) && sizeof($upload_success) > 0) {
         html_display_success_msg(sprintf(gettext("Successfully Uploaded: %s"), htmlentities_array(implode(", ", $upload_success))), '600', 'left');
@@ -500,7 +414,7 @@ if (attachments_get($uid, $aid, $attachments_array, $image_attachments_array)) {
         }
     }
 
-}else {
+} else {
 
     echo "                <tr>\n";
     echo "                  <td width=\"25\" class=\"subhead_checkbox\">&nbsp;</td>\n";
@@ -547,12 +461,27 @@ if (attachments_get_all($uid, $aid, $attachments_array, $image_attachments_array
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y"), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">$attachment_link</td>\n";
+                
+                if (!is_md5($aid) && is_md5($attachment['aid'])) {
+                    
+                    echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">";
+                    
+                    if (($message_link = attachments_get_message_link($attachment['aid']))) {
+                        
+                        echo "<a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a>";
+                    
+                    } else if (($message_link = attachments_get_pm_link($attachment['aid']))) {
+                        
+                        echo "<a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a>";
+                    
+                    } else {
+                        
+                        echo '&nbsp;';
+                    }
+                    
+                    echo "</td>\n";
 
-                if (is_md5($attachment['aid']) && $message_link = attachments_get_message_link($attachment['aid'])) {
-
-                    echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a></td>\n";
-
-                }else {
+                } else {
 
                     echo "                  <td align=\"left\">&nbsp;</td>\n";
                 }
@@ -576,11 +505,26 @@ if (attachments_get_all($uid, $aid, $attachments_array, $image_attachments_array
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y"), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
-                if (is_md5($attachment['aid']) && $message_link = attachments_get_message_link($attachment['aid'])) {
+                if (!is_md5($aid) && is_md5($attachment['aid'])) {
+                    
+                    echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">";
+                    
+                    if (($message_link = attachments_get_message_link($attachment['aid']))) {
+                        
+                        echo "<a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a>";
+                    
+                    } else if (($message_link = attachments_get_pm_link($attachment['aid']))) {
+                        
+                        echo "<a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a>";
+                    
+                    } else {
+                        
+                        echo '&nbsp;';
+                    }
+                    
+                    echo "</td>\n";
 
-                    echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a></td>\n";
-
-                }else {
+                } else {
 
                     echo "                  <td align=\"left\">&nbsp;</td>\n";
                 }
@@ -594,7 +538,7 @@ if (attachments_get_all($uid, $aid, $attachments_array, $image_attachments_array
         }
     }
 
-}else {
+} else {
 
     echo "                <tr>\n";
     echo "                  <td width=\"25\" class=\"subhead\">&nbsp;</td>\n";

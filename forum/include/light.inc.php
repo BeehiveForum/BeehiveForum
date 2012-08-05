@@ -29,33 +29,35 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "adsense.inc.php");
-include_once(BH_INCLUDE_PATH. "attachments.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "myforums.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "pm.inc.php");
-include_once(BH_INCLUDE_PATH. "poll.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "thread.inc.php");
-include_once(BH_INCLUDE_PATH. "threads.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+require_once BH_INCLUDE_PATH. 'adsense.inc.php';
+require_once BH_INCLUDE_PATH. 'attachments.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'myforums.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'pm.inc.php';
+require_once BH_INCLUDE_PATH. 'poll.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'thread.inc.php';
+require_once BH_INCLUDE_PATH. 'threads.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'user_rel.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 function light_html_draw_top()
 {
+    if (defined('BEEHIVE_LIGHT_INCLUDE')) return;
+    
     $arg_array = func_get_args();
 
     $title = null;
@@ -88,7 +90,11 @@ function light_html_draw_top()
         
         if (preg_match('/^link=([^:]+):(.+)$/Disu', $func_args, $func_matches) > 0) {
             
-            $link_array[] = array('rel' => $func_matches[1], 'href' => $func_matches[2]);
+            $link_array[] = array(
+                'rel' => $func_matches[1], 
+                'href' => $func_matches[2]
+            );
+            
             unset($arg_array[$key]);
         }        
     }
@@ -190,15 +196,24 @@ function light_html_draw_top()
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";
     echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/light.js\"></script>\n";
 
-    $message_display_pages = array('admin_post_approve.php', 'create_poll.php',
-                                   'delete.php', 'display.php', 'edit.php',
-                                   'edit_poll.php', 'edit_signature.php',
-                                   'ldisplay.php', 'lmessages.php',
-                                   'lpost.php', 'messages.php', 'post.php');
+    $message_display_pages = array(
+        'admin_post_approve.php', 
+        'create_poll.php',
+        'delete.php', 
+        'display.php', 
+        'edit.php',
+        'edit_poll.php', 
+        'edit_signature.php',
+        'ldisplay.php', 
+        'lmessages.php',
+        'lpost.php', 
+        'messages.php', 
+        'post.php'
+    );
 
     if (in_array(basename($_SERVER['PHP_SELF']), $message_display_pages)) {
 
-        if (session_get_value('USE_MOVER_SPOILER') == "Y") {
+        if (session::get_value('USE_MOVER_SPOILER') == "Y") {
 
             echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/spoiler.js\"></script>\n";
         }
@@ -222,7 +237,7 @@ function light_html_draw_top()
     echo "      <li class=\"menu_item\"><a href=\"lthread_list.php?webtag=$webtag\">", gettext("Messages"), "</a></li>\n";
     echo "      <li class=\"menu_item\"><a href=\"lpm.php?webtag=$webtag\">", gettext("Inbox"), "</a></li>\n";
 
-    if (user_is_guest()) {
+    if (!session::logged_in()) {
         echo "      <li class=\"menu_item\"><a href=\"llogon.php?webtag=$webtag\">", gettext("Login"), "</a></li>\n";
     } else {
         echo "      <li class=\"menu_item\"><a href=\"llogout.php?webtag=$webtag\">", gettext("Logout"), "</a></li>\n";
@@ -242,12 +257,14 @@ function light_html_draw_top()
 
 function light_html_draw_bottom()
 {
+    if (defined('BEEHIVE_LIGHT_INCLUDE')) return;
+    
     $webtag = get_webtag();
 
     echo "</div>\n";
     echo "<div id=\"footer\">\n";
 
-    if (!session_is_search_engine()) {
+    if (!session::is_search_engine()) {
 
         echo "  <div id=\"footer_links\">\n";
         echo "    <a href=\"#top\">", gettext("Top"), "</a> &middot; <a href=\"index.php?webtag=$webtag&amp;view=full\">", gettext("Desktop Version"), "</a>\n";
@@ -268,7 +285,7 @@ function light_draw_logon_form($error_msg_array = array())
 
     if (isset($_GET['logout_success']) && $_GET['logout_success'] == 'true') {
         light_html_display_success_msg(gettext("You have successfully logged out."));
-    }else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    } else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         light_html_display_error_array($error_msg_array);
     }
 
@@ -287,11 +304,11 @@ function light_draw_logon_form($error_msg_array = array())
 
         if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
             echo "  <div class=\"logon_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", htmlentities_array($password_array[0]), 20, 32, ''), form_input_hidden("user_passhash", htmlentities_array($passhash_array[0])), "</div>\n";
-        }else {
+        } else {
             echo "  <div class=\"logon_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", "", 20, 32, ''), form_input_hidden("user_passhash", ""), "</div>\n";
         }
 
-    }else {
+    } else {
 
         echo "  <div class=\"logon_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", "", 20, 32, ''), form_input_hidden("user_passhash", ""), "</div>\n";
     }
@@ -309,7 +326,7 @@ function light_draw_messages($tid, $pid)
 
     forum_check_webtag_available($webtag);
 
-    if (!$thread_data = thread_get($tid, session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+    if (!$thread_data = thread_get($tid, session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
         light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
         return;
@@ -353,7 +370,7 @@ function light_draw_messages($tid, $pid)
                     light_html_display_warning_msg(sprintf(gettext("<b>Threads Merged:</b> This thread was merged from %s"), $thread_link));
                 }
 
-            }elseif ($tracking_data['TRACK_TYPE'] == THREAD_TYPE_SPLIT) { // Thread Split
+            } else if ($tracking_data['TRACK_TYPE'] == THREAD_TYPE_SPLIT) { // Thread Split
 
                 if ($tracking_data['TID'] == $tid) {
 
@@ -382,11 +399,11 @@ function light_draw_messages($tid, $pid)
 
                 if ($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
                     $message['CONTENT'] = message_get_content($tid, $message['PID']);
-                }else {
+                } else {
                     $message['CONTENT'] = gettext("Ignored"); // must be set to something or will show as deleted
                 }
 
-            }else {
+            } else {
 
               $message['CONTENT'] = message_get_content($tid, $message['PID']);
 
@@ -399,13 +416,13 @@ function light_draw_messages($tid, $pid)
                     light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], true, $thread_data['CLOSED'], false, false);
                     $last_pid = $message['PID'];
 
-                }else {
+                } else {
 
                     light_message_display($tid, $message, $thread_data['LENGTH'], $pid, $thread_data['FID'], true, $thread_data['CLOSED'], true, true, false);
                     $last_pid = $message['PID'];
                 }
 
-            }else {
+            } else {
 
                 light_message_display($tid, $message, $thread_data['LENGTH'], $pid, $thread_data['FID'], true, $thread_data['CLOSED'], true, false, false);
                 $last_pid = $message['PID'];
@@ -423,7 +440,7 @@ function light_draw_messages($tid, $pid)
     echo "<div class=\"message_page_footer\">\n";
     echo "<ul>\n";
 
-    if (($thread_data['CLOSED'] == 0 && session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
+    if (($thread_data['CLOSED'] == 0 && session::check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || session::check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
         echo "<li><a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.0\" class=\"reply_all\">", gettext("Reply to All"), "</a></li>\n";
     }
 
@@ -440,12 +457,12 @@ function light_draw_messages($tid, $pid)
 
     light_messages_nav_strip($tid, $pid, $thread_data['LENGTH'], 10);
 
-    if (($msg_count > 0 && !user_is_guest())) {
+    if (($msg_count > 0 && !session::logged_in())) {
         messages_update_read($tid, $last_pid, $thread_data['LAST_READ'], $thread_data['LENGTH'], $thread_data['MODIFIED']);
     }
 }
 
-function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false, $start_from = 0)
+function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page = 1)
 {
     $webtag = get_webtag();
 
@@ -457,7 +474,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
     $visible_threads_array = array();
 
-    if (($uid = session_get_value('UID')) === false) return;
+    if (($uid = session::get_value('UID')) === false) return;
 
     echo "<div id=\"thread_view\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
@@ -469,8 +486,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
     }
 
     echo "<ul>\n";
-    echo "<li>", light_threads_draw_discussions_dropdown($thread_mode), "</li>\n";
-
+    echo "<li>", light_threads_draw_discussions_dropdown($mode), "</li>\n";
 
     echo "<li class=\"right_col\">", light_form_submit("go", gettext("Go!")), "</li>\n";
     echo "</ul>\n";
@@ -478,106 +494,106 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
     echo "</div>\n";
 
     // Get the right threads for whichever mode is selected
-    switch ($thread_mode) {
+    switch ($mode) {
 
         case UNREAD_DISCUSSIONS:
 
-            list($thread_info, $folder_order) = threads_get_unread($uid, $folder, $start_from);
+            list($thread_info, $folder_order) = threads_get_unread($uid, $folder, $page);
             break;
 
         case UNREAD_DISCUSSIONS_TO_ME:
 
-            list($thread_info, $folder_order) = threads_get_unread_to_me($uid, $folder, $start_from);
+            list($thread_info, $folder_order) = threads_get_unread_to_me($uid, $folder, $page);
             break;
 
         case TODAYS_DISCUSSIONS:
 
-            list($thread_info, $folder_order) = threads_get_by_days($uid, $folder, $start_from, 1);
+            list($thread_info, $folder_order) = threads_get_by_days($uid, $folder, $page, 1);
             break;
 
         case UNREAD_TODAY:
 
-            list($thread_info, $folder_order) = threads_get_unread_by_days($uid, $folder, $start_from);
+            list($thread_info, $folder_order) = threads_get_unread_by_days($uid, $folder, $page);
             break;
 
         case TWO_DAYS_BACK:
 
-            list($thread_info, $folder_order) = threads_get_by_days($uid, $folder, $start_from, 2);
+            list($thread_info, $folder_order) = threads_get_by_days($uid, $folder, $page, 2);
             break;
 
         case SEVEN_DAYS_BACK:
 
-            list($thread_info, $folder_order) = threads_get_by_days($uid, $folder, $start_from, 7);
+            list($thread_info, $folder_order) = threads_get_by_days($uid, $folder, $page, 7);
             break;
 
         case HIGH_INTEREST:
 
-            list($thread_info, $folder_order) = threads_get_by_interest($uid, $folder, $start_from, 1);
+            list($thread_info, $folder_order) = threads_get_by_interest($uid, $folder, $page, 1);
             break;
 
         case UNREAD_HIGH_INTEREST:
 
-            list($thread_info, $folder_order) = threads_get_unread_by_interest($uid, $folder, $start_from, 1);
+            list($thread_info, $folder_order) = threads_get_unread_by_interest($uid, $folder, $page, 1);
             break;
 
         case RECENTLY_SEEN:
 
-            list($thread_info, $folder_order) = threads_get_recently_viewed($uid, $folder, $start_from);
+            list($thread_info, $folder_order) = threads_get_recently_viewed($uid, $folder, $page);
             break;
 
         case IGNORED_THREADS:
 
-            list($thread_info, $folder_order) = threads_get_by_interest($uid, $folder, $start_from, -1);
+            list($thread_info, $folder_order) = threads_get_by_interest($uid, $folder, $page, -1);
             break;
 
         case BY_IGNORED_USERS:
 
-            list($thread_info, $folder_order) = threads_get_by_relationship($uid, $folder, $start_from, USER_IGNORED_COMPLETELY);
+            list($thread_info, $folder_order) = threads_get_by_relationship($uid, $folder, $page, USER_IGNORED_COMPLETELY);
             break;
 
         case SUBSCRIBED_TO:
 
-            list($thread_info, $folder_order) = threads_get_by_interest($uid, $folder, $start_from, 2);
+            list($thread_info, $folder_order) = threads_get_by_interest($uid, $folder, $page, 2);
             break;
 
         case STARTED_BY_FRIEND:
 
-            list($thread_info, $folder_order) = threads_get_by_relationship($uid, $folder, $start_from, USER_FRIEND);
+            list($thread_info, $folder_order) = threads_get_by_relationship($uid, $folder, $page, USER_FRIEND);
             break;
 
         case UNREAD_STARTED_BY_FRIEND:
 
-            list($thread_info, $folder_order) = threads_get_unread_by_relationship($uid, $folder, $start_from, USER_FRIEND);
+            list($thread_info, $folder_order) = threads_get_unread_by_relationship($uid, $folder, $page, USER_FRIEND);
             break;
 
         case STARTED_BY_ME:
 
-            list($thread_info, $folder_order) = threads_get_started_by_me($uid, $folder, $start_from);
+            list($thread_info, $folder_order) = threads_get_started_by_me($uid, $folder, $page);
             break;
 
         case POLL_THREADS:
 
-            list($thread_info, $folder_order) = threads_get_polls($uid, $folder, $start_from);
+            list($thread_info, $folder_order) = threads_get_polls($uid, $folder, $page);
             break;
 
         case STICKY_THREADS:
 
-            list($thread_info, $folder_order) = threads_get_sticky($uid, $folder, $start_from);
+            list($thread_info, $folder_order) = threads_get_sticky($uid, $folder, $page);
             break;
 
         case MOST_UNREAD_POSTS:
 
-            list($thread_info, $folder_order) = threads_get_longest_unread($uid, $folder, $start_from);
+            list($thread_info, $folder_order) = threads_get_longest_unread($uid, $folder, $page);
             break;
 
         case DELETED_THREADS:
 
-            list($thread_info, $folder_order) = threads_get_deleted($uid, $folder, $start_from);
+            list($thread_info, $folder_order) = threads_get_deleted($uid, $folder, $page);
             break;
 
         default:
 
-            list($thread_info, $folder_order) = threads_get_all($uid, $folder, $start_from);
+            list($thread_info, $folder_order) = threads_get_all($uid, $folder, $page);
             break;
     }
 
@@ -595,7 +611,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
     // Check that the folder order is a valid array.
     // While we're here we can also check to see how the user
     // has decided to display the thread list.
-    if (!is_array($folder_order) || (session_get_value('THREADS_BY_FOLDER') == 'Y')) {
+    if (!is_array($folder_order) || (session::get_value('THREADS_BY_FOLDER') == 'Y')) {
         $folder_order = array_keys($folder_info);
     }
 
@@ -608,7 +624,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
-            if ((session_get_value('THREADS_BY_FOLDER') == 'N') || user_is_guest()) {
+            if ((session::get_value('THREADS_BY_FOLDER') == 'N') || !session::logged_in()) {
 
                 if (in_array($thread['FID'], $folder_order)) {
                     array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
@@ -621,7 +637,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
             if (isset($thread_info[$tid])) {
                 unset($thread_info[$tid]);
-            }else {
+            } else {
                 array_pop($thread_info);
             }
 
@@ -631,7 +647,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
     // Work out if any folders have no messages and add them.
     // Seperate them by INTEREST level
-    if (session_get_value('UID') > 0) {
+    if (session::get_value('UID') > 0) {
 
         if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
@@ -641,11 +657,11 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
                 $selected_folder = $thread['FID'];
             }
 
-        }elseif (isset($_GET['folder'])) {
+        } else if (isset($_GET['folder'])) {
 
             $selected_folder = $_GET['folder'];
 
-        }else {
+        } else {
 
             $selected_folder = 0;
         }
@@ -655,7 +671,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
         while (list($fid, $folder_data) = each($folder_info)) {
             if ($folder_data['INTEREST'] == FOLDER_NOINTEREST || (isset($selected_folder) && $selected_folder == $fid)) {
                 if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $folder_order[] = $fid;
-            }else {
+            } else {
                 if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $ignored_folders[] = $fid;
             }
         }
@@ -664,7 +680,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
         // This will make them appear at the bottom of the thread list.
         $folder_order = array_merge($folder_order, $ignored_folders);
 
-    }else {
+    } else {
 
         while (list($fid, $folder_data) = each($folder_info)) {
             if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
@@ -680,13 +696,13 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
         if (is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
 
-            $all_discussions_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;folder=$folder&amp;thread_mode=0\">%s</a>", gettext("click here"));
-            light_html_display_warning_msg(sprintf(gettext("No &quot;%s&quot; in &quot;%s&quot; folder. Please select another folder, or %s for all threads."), $available_views[$thread_mode], $folder_title, $all_discussions_link), '100%', 'left');
+            $all_discussions_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;folder=$folder&amp;mode=0\">%s</a>", gettext("click here"));
+            light_html_display_warning_msg(sprintf(gettext("No &quot;%s&quot; in &quot;%s&quot; folder. Please select another folder, or %s for all threads."), $available_views[$mode], $folder_title, $all_discussions_link), '100%', 'left');
 
-        }else {
+        } else {
 
-            $all_discussions_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=0\">%s</a>", gettext("click here"));
-            light_html_display_warning_msg(sprintf(gettext("No &quot;%s&quot; available. Please %s for all threads."), $available_views[$thread_mode], $all_discussions_link), '100%', 'left');
+            $all_discussions_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;mode=0\">%s</a>", gettext("click here"));
+            light_html_display_warning_msg(sprintf(gettext("No &quot;%s&quot; available. Please %s for all threads."), $available_views[$mode], $all_discussions_link), '100%', 'left');
         }
 
     } else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -695,12 +711,12 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
     } else if (is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
 
-        $all_folders_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode\">%s</a>", gettext("click here"));
-        light_html_display_warning_msg(sprintf(gettext("Viewing &quot;%s&quot; in &quot;%s&quot; only. To view threads in all folders %s."), $available_views[$thread_mode], $folder_title, $all_folders_link), '100%', 'left');
+        $all_folders_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode\">%s</a>", gettext("click here"));
+        light_html_display_warning_msg(sprintf(gettext("Viewing &quot;%s&quot; in &quot;%s&quot; only. To view threads in all folders %s."), $available_views[$mode], $folder_title, $all_folders_link), '100%', 'left');
     }
 
-    if (($start_from > 0) && !is_numeric($folder)) {
-        echo "<div class=\"thread_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;start_from=", ($start_from - 50), "\">", gettext("Previous 50 threads"), "</a></div>\n";
+    if (($page > 1) && !is_numeric($folder)) {
+        echo "<div class=\"thread_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page - 1), "\">", gettext("Previous 50 threads"), "</a></div>\n";
     }
 
     // Iterate through the information we've just got and display it in the right order
@@ -709,10 +725,10 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
         if (isset($folder_info[$folder_number]) && is_array($folder_info[$folder_number])) {
 
             echo "<div class=\"folder\">\n";
-            echo "  <h3><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder_number\">", word_filter_add_ob_tags($folder_info[$folder_number]['TITLE'], true), "</a></h3>";
+            echo "  <h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder_number\">", word_filter_add_ob_tags($folder_info[$folder_number]['TITLE'], true), "</a></h3>";
             echo "  <div class=\"folder_inner\">\n";
 
-            if ((user_is_guest()) || ($folder_info[$folder_number]['INTEREST'] > FOLDER_IGNORED) || ($thread_mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
+            if ((!session::logged_in()) || ($folder_info[$folder_number]['INTEREST'] > FOLDER_IGNORED) || ($mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
 
                 if (is_array($thread_info)) {
 
@@ -720,7 +736,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
                     if (isset($folder_msgs[$folder_number])) {
                         echo $folder_msgs[$folder_number];
-                    }else {
+                    } else {
                         echo "0";
                     }
 
@@ -735,8 +751,8 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
 
                     echo "  </div>\n";
 
-                    if (($start_from > 0) && is_numeric($folder) && ($folder_number == $folder)) {
-                        echo "<div class=\"folder_navigation\"><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder&amp;start_from=", ($start_from - 50), "\">", gettext("Previous 50 threads"), "</a></div>\n";
+                    if (($page > 1) && is_numeric($folder) && ($folder_number == $folder)) {
+                        echo "<div class=\"folder_navigation\"><a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder&amp;page=", ($page - 1), "\">", gettext("Previous 50 threads"), "</a></div>\n";
                     }
 
                     $folder_list_start = false;
@@ -761,7 +777,7 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
                                 $number = "[{$thread['LENGTH']}&nbsp;new]";
                                 $latest_post = 1;
 
-                            }elseif ($thread['LAST_READ'] < $thread['LENGTH']) {
+                            } else if ($thread['LAST_READ'] < $thread['LENGTH']) {
 
                                 $new_posts = $thread['LENGTH'] - $thread['LAST_READ'];
                                 $number = "[{$new_posts}&nbsp;new&nbsp;of&nbsp;{$thread['LENGTH']}]";
@@ -809,16 +825,16 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
                     }
 
                     if (is_numeric($folder) && ($folder_number == $folder)) {
-                        echo "<div class=\"folder_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder&amp;start_from=", ($start_from + 50), "\">", gettext("Next 50 threads"), "</a></div>\n";
+                        echo "<div class=\"folder_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder&amp;page=", ($page + 1), "\">", gettext("Next 50 threads"), "</a></div>\n";
                     }
 
                 } else if ($folder_info[$folder_number]['INTEREST'] != -1) {
 
-                    echo "<div class=\"folder_info\"><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;folder=$folder_number\">";
+                    echo "<div class=\"folder_info\"><a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder_number\">";
 
                     if (isset($folder_msgs[$folder_number])) {
                         echo $folder_msgs[$folder_number];
-                    }else {
+                    } else {
                         echo "0";
                     }
 
@@ -839,22 +855,26 @@ function light_draw_thread_list($thread_mode = ALL_DISCUSSIONS, $folder = false,
         }
     }
 
-    if ($thread_mode == ALL_DISCUSSIONS && !isset($folder)) {
-        echo "<div class=\"thread_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;thread_mode=$thread_mode&amp;start_from=", ($start_from + 50), "\">", gettext("Next 50 threads"), "</a></div>\n";
+    if ($mode == ALL_DISCUSSIONS && !isset($folder)) {
+        echo "<div class=\"thread_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page + 1), "\">", gettext("Next 50 threads"), "</a></div>\n";
     }
 
-    if (!user_is_guest()) {
+    if (!session::logged_in()) {
 
         echo "<div id=\"thread_mark_read\">\n";
         echo "<h3>", gettext("Mark as Read"), "</h3>\n";
         echo "<form accept-charset=\"utf-8\" name=\"f_mark\" method=\"post\" action=\"lthread_list.php\">\n";
 
         echo form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
-        echo form_input_hidden("mode", htmlentities_array($thread_mode)), "\n";
-        echo form_input_hidden("start_from", htmlentities_array($start_from)), "\n";
+        echo form_input_hidden("mode", htmlentities_array($mode)), "\n";
+        echo form_input_hidden("page", htmlentities_array($page)), "\n";
         echo form_input_hidden("mark_read_confirm", 'N'), "\n";
 
-        $labels = array(gettext("All Discussions"), gettext("Next 50 discussions"));
+        $labels = array(
+            gettext("All Discussions"), 
+            gettext("Next 50 discussions")
+        );
+        
         $selected_option = THREAD_MARK_READ_ALL;
 
         if (sizeof($visible_threads_array) > 0) {
@@ -899,27 +919,29 @@ function light_draw_pm_inbox()
 
     if (!($pm_folder_names_array = pm_get_folder_names())) {
 
-        $pm_folder_names_array = array(PM_FOLDER_INBOX   => gettext("Inbox"),
-                                       PM_FOLDER_SENT    => gettext("Sent Items"),
-                                       PM_FOLDER_OUTBOX  => gettext("Outbox"),
-                                       PM_FOLDER_SAVED   => gettext("Saved Items"),
-                                       PM_FOLDER_DRAFTS  => gettext("Drafts"));
+        $pm_folder_names_array = array(
+            PM_FOLDER_INBOX => gettext("Inbox"),
+            PM_FOLDER_SENT => gettext("Sent Items"),
+            PM_FOLDER_OUTBOX => gettext("Outbox"),
+            PM_FOLDER_SAVED => gettext("Saved Items"),
+            PM_FOLDER_DRAFTS => gettext("Drafts")
+        );
     }
 
     // Check to see which page we should be on
-    if (isset($_GET['start_from']) && is_numeric($_GET['start_from'])) {
-        $start_from = $_GET['start_from'];
-    }else if (isset($_POST['start_from']) && is_numeric($_POST['start_from'])) {
-        $start_from = $_POST['start_from'];
-    }else {
-        $start_from = 0;
+    if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+        $page = $_GET['page'];
+    } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
+        $page = $_POST['page'];
+    } else {
+        $page = 1;
     }
 
     if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
         $mid = ($_GET['mid'] > 0) ? $_GET['mid'] : 0;
-    }else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+    } else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
         $mid = ($_GET['pmid'] > 0) ? $_GET['pmid'] : 0;
-    }else if (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
+    } else if (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
         $mid = ($_POST['mid'] > 0) ? $_POST['mid'] : 0;
     }
 
@@ -929,27 +951,27 @@ function light_draw_pm_inbox()
 
         if ($_GET['folder'] == PM_FOLDER_INBOX) {
             $folder = PM_FOLDER_INBOX;
-        }else if ($_GET['folder'] == PM_FOLDER_SENT) {
+        } else if ($_GET['folder'] == PM_FOLDER_SENT) {
             $folder = PM_FOLDER_SENT;
-        }else if ($_GET['folder'] == PM_FOLDER_OUTBOX) {
+        } else if ($_GET['folder'] == PM_FOLDER_OUTBOX) {
             $folder = PM_FOLDER_OUTBOX;
-        }else if ($_GET['folder'] == PM_FOLDER_SAVED) {
+        } else if ($_GET['folder'] == PM_FOLDER_SAVED) {
             $folder = PM_FOLDER_SAVED;
-        }else if ($_GET['folder'] == PM_FOLDER_DRAFTS) {
+        } else if ($_GET['folder'] == PM_FOLDER_DRAFTS) {
             $folder = PM_FOLDER_DRAFTS;
         }
 
-    }elseif (isset($_POST['folder'])) {
+    } else if (isset($_POST['folder'])) {
 
         if ($_POST['folder'] == PM_FOLDER_INBOX) {
             $folder = PM_FOLDER_INBOX;
-        }else if ($_POST['folder'] == PM_FOLDER_SENT) {
+        } else if ($_POST['folder'] == PM_FOLDER_SENT) {
             $folder = PM_FOLDER_SENT;
-        }else if ($_POST['folder'] == PM_FOLDER_OUTBOX) {
+        } else if ($_POST['folder'] == PM_FOLDER_OUTBOX) {
             $folder = PM_FOLDER_OUTBOX;
-        }else if ($_POST['folder'] == PM_FOLDER_SAVED) {
+        } else if ($_POST['folder'] == PM_FOLDER_SAVED) {
             $folder = PM_FOLDER_SAVED;
-        }else if ($_POST['folder'] == PM_FOLDER_DRAFTS) {
+        } else if ($_POST['folder'] == PM_FOLDER_DRAFTS) {
             $folder = PM_FOLDER_DRAFTS;
         }
     }
@@ -1003,9 +1025,9 @@ function light_draw_pm_inbox()
 
         if (isset($_GET['message_sent'])) {
             light_html_display_success_msg(gettext("Message sent successfully."));
-        }else if (isset($_GET['deleted'])) {
+        } else if (isset($_GET['deleted'])) {
             light_html_display_success_msg(gettext("Successfully deleted selected messages"));
-        }else if (isset($_GET['message_saved'])) {
+        } else if (isset($_GET['message_saved'])) {
             light_html_display_success_msg(gettext("Message was successfully saved to 'Drafts' folder"));
         }
 
@@ -1015,13 +1037,13 @@ function light_draw_pm_inbox()
 
         echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder\" class=\"folder_list_link\">", gettext("Back to folder list"), "</a>";
 
-    }else {
+    } else {
 
         if (isset($_GET['message_sent'])) {
             light_html_display_success_msg(gettext("Message sent successfully."));
-        }else if (isset($_GET['deleted'])) {
+        } else if (isset($_GET['deleted'])) {
             light_html_display_success_msg(gettext("Successfully deleted selected messages"));
-        }else if (isset($_GET['message_saved'])) {
+        } else if (isset($_GET['message_saved'])) {
             light_html_display_success_msg(gettext("Message was successfully saved to 'Drafts' folder"));
         }
 
@@ -1045,29 +1067,29 @@ function light_draw_pm_inbox()
 
             if ($folder == PM_FOLDER_INBOX) {
 
-                $pm_messages_array = pm_get_inbox(false, false, $start_from, 20);
+                $pm_messages_array = pm_get_inbox(false, false, $page, 20);
 
-            }elseif ($folder == PM_FOLDER_SENT) {
+            } else if ($folder == PM_FOLDER_SENT) {
 
-                $pm_messages_array = pm_get_sent(false, false, $start_from, 20);
+                $pm_messages_array = pm_get_sent(false, false, $page, 20);
 
-            }elseif ($folder == PM_FOLDER_OUTBOX) {
+            } else if ($folder == PM_FOLDER_OUTBOX) {
 
-                $pm_messages_array = pm_get_outbox(false, false, $start_from, 20);
+                $pm_messages_array = pm_get_outbox(false, false, $page, 20);
 
-            }elseif ($folder == PM_FOLDER_SAVED) {
+            } else if ($folder == PM_FOLDER_SAVED) {
 
-                $pm_messages_array = pm_get_saved_items(false, false, $start_from, 20);
+                $pm_messages_array = pm_get_saved_items(false, false, $page, 20);
 
-            }elseif ($folder == PM_FOLDER_DRAFTS) {
+            } else if ($folder == PM_FOLDER_DRAFTS) {
 
-                $pm_messages_array = pm_get_drafts(false, false, $start_from, 20);
+                $pm_messages_array = pm_get_drafts(false, false, $page, 20);
             }
 
             if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
 
-                if ($start_from > 0) {
-                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;start_from=", ($start_from - 20), "\">", gettext("Previous"), "</a></div>\n";
+                if ($page> 1) {
+                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;page=", ($page - 1), "\">", gettext("Previous"), "</a></div>\n";
                 }
 
                 echo "<ul>\n";
@@ -1089,10 +1111,10 @@ function light_draw_pm_inbox()
 
                 echo "</ul>\n";
 
-                $more_messages = $pm_message_count_array[$folder] - $start_from - 20;
+                $more_messages = $pm_message_count_array[$folder] - $page - 1;
 
                 if ($more_messages > 0) {
-                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;start_from=", ($start_from + 20), "\">", gettext("Next"), "</a></div>\n";
+                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;page=", ($page + 1), "\">", gettext("Next"), "</a></div>\n";
                 }
             }
 
@@ -1128,19 +1150,17 @@ function light_draw_my_forums()
 
     if (isset($_GET['page']) && is_numeric($_GET['page'])) {
         $page = $_GET['page'];
-        $start = floor($page - 1) * 20;
-    }else {
+    } else {
         $page = 1;
-        $start = 0;
     }
 
     if (isset($_GET['webtag_error'])) {
         light_html_display_error_msg(gettext("Invalid forum FID or forum not found"));
     }
 
-    if (!user_is_guest()) {
+    if (session::logged_in()) {
 
-        $forums_array = get_my_forums(FORUMS_SHOW_ALL, $start);
+        $forums_array = get_my_forums(FORUMS_SHOW_ALL, $page);
 
         if (isset($forums_array['forums_array']) && sizeof($forums_array['forums_array']) > 0) {
 
@@ -1160,16 +1180,16 @@ function light_draw_my_forums()
 
                         echo sprintf(gettext("%s Unread Messages"), number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), " (", sprintf(gettext("%s Unread &quot;To: Me&quot;"), number_format($forum['UNREAD_TO_ME'], 0, ",", ",")), ")\n";
 
-                    }else {
+                    } else {
 
                         echo sprintf(gettext("%s Unread &quot;To: Me&quot;"), number_format($forum['UNREAD_TO_ME'], 0, ".", ","));
                     }
 
-                }else if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
+                } else if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
 
                     echo sprintf(gettext("%s Unread Messages"), number_format($forum['UNREAD_MESSAGES'], 0, ".", ","));
 
-                }else {
+                } else {
 
                     echo gettext("No Unread Messages");
                 }
@@ -1180,7 +1200,7 @@ function light_draw_my_forums()
 
                 if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {
                     echo "<span class=\"forum_last_visit\">", gettext("Last Visited"), ": ", format_time($forum['LAST_VISIT']), "</span>\n";
-                }else {
+                } else {
                     echo "<span class=\"forum_last_visit\">", gettext("Last Visited"), ": ", gettext("Never"), "</span>\n";
                 }
                 
@@ -1190,16 +1210,16 @@ function light_draw_my_forums()
                 echo "</div>\n";
             }
 
-            echo page_links("lforums.php?webtag=$webtag", $start, $forums_array['forums_count'], 10);
+            echo html_page_links("lforums.php?webtag=$webtag", $page, $forums_array['forums_count'], 10);
 
-        }else {
+        } else {
 
             echo "<h3>", gettext("There are no forums available. Please login to view your forums."), "</h3>\n";
         }
 
-    }else {
+    } else {
 
-        $forums_array = get_forum_list($start);
+        $forums_array = get_forum_list($page);
 
         if (isset($forums_array['forums_array']) && sizeof($forums_array['forums_array']) > 0) {
 
@@ -1211,9 +1231,9 @@ function light_draw_my_forums()
                 echo "</div>\n";
             }
 
-            echo page_links("lforums.php?webtag=$webtag", $start, $forums_array['forums_count'], 10);
+            echo html_page_links("lforums.php?webtag=$webtag", $page, $forums_array['forums_count'], 10);
 
-        }else {
+        } else {
 
             echo "<h3>", gettext("There are no forums available. Please login to view your forums."), "</h3>\n";
         }
@@ -1340,7 +1360,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
     $poll_display.= form_input_hidden('webtag', htmlentities_array($webtag));
     $poll_display.= form_input_hidden('tid', htmlentities_array($tid));
 
-    if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && (session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
+    if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && (session::get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
 
         foreach ($poll_results as $question_id => $poll_question) {
 
@@ -1368,7 +1388,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
             }
         }
 
-    }else {
+    } else {
 
         if ($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS || ($poll_data['CLOSES'] > 0 && $poll_data['CLOSES'] < time())) {
 
@@ -1382,7 +1402,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
             $poll_display.= "</div>\n";
 
-        }else {
+        } else {
 
             $poll_display.= "<div class=\"poll_results\">\n";
 
@@ -1412,7 +1432,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
                 $poll_display.= poll_display_user_votes($user_poll_votes_array);
             }
 
-        }else {
+        } else {
 
             if (is_array($user_poll_votes_array) && sizeof($user_poll_votes_array) > 0) {
 
@@ -1430,7 +1450,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
                     $poll_display.= "<div class=\"poll_type_warning\">". gettext("<b>Warning</b>: This is a public ballot. Your name will be visible next to the option you vote for."). "</div>\n";
                 }
 
-            } else if (session_get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false))) {
+            } else if (session::get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false))) {
 
                 $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('pollsubmit', gettext("Vote")). "</div>";
 
@@ -1446,7 +1466,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
     $poll_data['CONTENT'] = $poll_display;
 
-    $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(session_get_value('UID'), $poll_data['FROM_UID']);
+    $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(session::get_value('UID'), $poll_data['FROM_UID']);
 
     light_message_display($tid, $poll_data, $msg_count, 1, $folder_fid, $in_list, $closed, $limit_text, true, $is_preview);
 }
@@ -1491,7 +1511,7 @@ function light_poll_graph_display($options_array)
 
 function light_message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $is_preview = false)
 {
-    $perm_is_moderator = session_check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
+    $perm_is_moderator = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
 
     $post_edit_time = forum_get_setting('post_edit_time', false, 0);
     $post_edit_grace_period = forum_get_setting('post_edit_grace_period', false, 0);
@@ -1503,7 +1523,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     $attachments_array = array();
     $image_attachments_array = array();
 
-    if (($uid = session_get_value('UID')) === false) return;
+    if (($uid = session::get_value('UID')) === false) return;
 
     if ((!isset($message['CONTENT']) || $message['CONTENT'] == "") && !$is_preview) {
 
@@ -1563,7 +1583,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     echo "<div class=\"message\">\n";
 
-    if (session_get_value('IMAGES_TO_LINKS') == 'Y') {
+    if (session::get_value('IMAGES_TO_LINKS') == 'Y') {
 
         $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/iu', '[img: <a\1href="\2"\3>\4</a>]', $message['CONTENT']);
         $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/iu', '[img: <a href="\1">\1</a>]', $message['CONTENT']);
@@ -1586,7 +1606,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if ($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
         echo "<span class=\"user_friend\" title=\"", gettext("Friend"), "\">[F]</span>";
-    }else if (($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
+    } else if (($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
         echo "<span class=\"user_enemy\" title=\"", gettext("Ignored user"), "\">[E]</span>";
     }
 
@@ -1599,7 +1619,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
         echo gettext("Ignored message");
 
-    }else {
+    } else {
 
         if ($in_list) {
 
@@ -1618,7 +1638,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
         if ($message['TO_RELATIONSHIP'] & USER_FRIEND) {
             echo "<span class=\"user_friend\" title=\"", gettext("Friend"), "\">[F]</span>";
-        }else if (($message['TO_RELATIONSHIP'] & USER_IGNORED)) {
+        } else if (($message['TO_RELATIONSHIP'] & USER_IGNORED)) {
             echo "<span class=\"user_enemy\" title=\"", gettext("Ignored user"), "\">[E]</span>";
         }
 
@@ -1631,7 +1651,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
             }
         }
 
-    }else {
+    } else {
 
         echo "", gettext("To"), ": ", gettext("ALL"), "";
     }
@@ -1657,7 +1677,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
                 echo "<a href=\"#a{$tid}_{$message['REPLY_TO_PID']}\" target=\"_self\">$tid.{$message['REPLY_TO_PID']}</a>";
 
-            }else {
+            } else {
 
                 echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['REPLY_TO_PID']}\">$tid.{$message['REPLY_TO_PID']}</a>";
             }
@@ -1665,7 +1685,6 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     }
 
     echo "</div>\n";
-
 
     if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
         $message['CONTENT'] = message_apply_formatting($message['CONTENT'], true, true);
@@ -1740,17 +1759,17 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
         $links_array = array();
 
-        if (!$closed && session_check_perm(USER_PERM_POST_CREATE, $folder_fid)) {
+        if (!$closed && session::check_perm(USER_PERM_POST_CREATE, $folder_fid)) {
 
             $links_array[] = "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" class=\"reply\">". gettext("Reply"). "</a>";
         }
 
-        if (($uid == $message['FROM_UID'] && session_check_perm(USER_PERM_POST_DELETE, $folder_fid) && !session_check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
+        if (($uid == $message['FROM_UID'] && session::check_perm(USER_PERM_POST_DELETE, $folder_fid) && !session::check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
 
             $links_array[] = "<a href=\"ldelete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"delete\">". gettext("Delete"). "</a>";
         }
 
-        if ((!(session_check_perm(USER_PERM_PILLORIED, 0)) && ((($uid != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($uid == $message['FROM_UID'])) && session_check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
+        if ((!(session::check_perm(USER_PERM_PILLORIED, 0)) && ((($uid != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($uid == $message['FROM_UID'])) && session::check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
             if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
 
@@ -1772,7 +1791,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
 function light_spoiler_enable($message)
 {
-    if (session_get_value('USE_LIGHT_MODE_SPOILER') == "Y") {
+    if (session::get_value('USE_LIGHT_MODE_SPOILER') == "Y") {
         return preg_replace('/<(div|span) class="spoiler">/iu', '<\1 class="spoiler_light">', $message);
     }
 
@@ -1801,7 +1820,7 @@ function light_messages_nav_strip($tid, $pid, $length, $ppp)
 
     if ($pid < 2 && $length < $ppp) {
         return;
-    }else if ($pid < 1) {
+    } else if ($pid < 1) {
         $pid = 1;
     }
 
@@ -1815,7 +1834,7 @@ function light_messages_nav_strip($tid, $pid, $length, $ppp)
             
             $navbits[0] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">". mess_nav_range(1, $spid - 1). "</a>";
 
-        }else {
+        } else {
 
             $c = 0;
             $navbits[0] = mess_nav_range(1,$spid-1);
@@ -1823,7 +1842,7 @@ function light_messages_nav_strip($tid, $pid, $length, $ppp)
 
         $i = 1;
 
-    }else {
+    } else {
 
         $i = 0;
     }
@@ -1835,7 +1854,7 @@ function light_messages_nav_strip($tid, $pid, $length, $ppp)
             $c = $i;
             $navbits[$i] = mess_nav_range($spid, $spid + ($ppp - 1));
 
-        }else {
+        } else {
 
             $navbits[$i] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.". ($spid == 0 ? 1 : $spid). "\">". mess_nav_range($spid == 0 ? 1 : $spid, $spid + ($ppp - 1)). "</a>";
         }
@@ -1852,7 +1871,7 @@ function light_messages_nav_strip($tid, $pid, $length, $ppp)
             $c = $i;
             $navbits[$i] = mess_nav_range($spid,$length);
 
-        }else {
+        } else {
 
             $navbits[$i] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$spid\">". mess_nav_range($spid,$length). "</a>";
         }
@@ -1874,7 +1893,7 @@ function light_messages_nav_strip($tid, $pid, $length, $ppp)
 
                 $html.= "\n&nbsp;". $navbits[$i];
 
-            }else if (abs($c - $i) == 4) {
+            } else if (abs($c - $i) == 4) {
 
                 $html.= "\n&nbsp;&hellip;";
             }
@@ -1888,14 +1907,14 @@ function light_messages_nav_strip($tid, $pid, $length, $ppp)
 
 function light_html_guest_error()
 {
-    light_html_display_msg(gettext("Login"), gettext("Sorry, you need to be logged in to use this feature."), 'llogout.php', 'get', array('login' => gettext("Login now")));
+    light_html_draw_error(gettext("Login"), gettext("Sorry, you need to be logged in to use this feature."), 'llogout.php', 'get', array('login' => gettext("Login now")));
 }
 
 function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")
 {
     if (!$db_folder_draw_dropdown = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return "";
+    if (!($table_prefix = get_table_prefix())) return "";
 
     $available_folders = array();
 
@@ -1903,40 +1922,36 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
     $access_allowed = USER_PERM_THREAD_CREATE;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION ";
-    $sql.= "FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
+    $sql.= "FROM `{$table_prefix}FOLDER` FOLDER ";
     $sql.= "WHERE FOLDER.ALLOWED_TYPES & $allowed_types > 0 ";
     $sql.= "OR FOLDER.ALLOWED_TYPES IS NULL ";
     $sql.= "ORDER BY FOLDER.FID ";
 
     if (!$result = db_query($sql, $db_folder_draw_dropdown)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        while (($folder_order = db_fetch_array($result))) {
+    while (($folder_order = db_fetch_array($result))) {
 
-            if (user_is_guest()) {
+        if (!session::logged_in()) {
 
-                if (session_check_perm(USER_PERM_GUEST_ACCESS, $folder_order['FID'])) {
+            if (session::check_perm(USER_PERM_GUEST_ACCESS, $folder_order['FID'])) {
 
-                    $available_folders[$folder_order['FID']] = htmlentities_array($folder_order['TITLE']);
-                }
-
-            }else {
-
-                if (session_check_perm($access_allowed, $folder_order['FID']) || ($default_fid == $folder_order['FID'])) {
-
-                    $available_folders[$folder_order['FID']] = htmlentities_array($folder_order['TITLE']);
-                }
+                $available_folders[$folder_order['FID']] = htmlentities_array($folder_order['TITLE']);
             }
-        }
 
-        if (sizeof($available_folders) > 0) {
+        } else {
 
-            return light_form_dropdown_array($field_name.$suffix, $available_folders, $default_fid);
+            if (session::check_perm($access_allowed, $folder_order['FID']) || ($default_fid == $folder_order['FID'])) {
+
+                $available_folders[$folder_order['FID']] = htmlentities_array($folder_order['TITLE']);
+            }
         }
     }
 
-    return false;
+    if (sizeof($available_folders) == 0) return false;
+
+    return light_form_dropdown_array($field_name. $suffix, $available_folders, $default_fid);
 }
 
 function light_form_textarea($name, $value = "", $rows = 0, $cols = 0, $custom_html = '')
@@ -2000,7 +2015,7 @@ function light_form_input_password($name, $value = "", $width = 0, $maxlength = 
 
 function light_html_message_type_error()
 {
-    light_html_display_error_msg(gettext("You cannot post this thread type as there are no available folders that allow it."));
+    light_html_draw_error(gettext("You cannot post this thread type as there are no available folders that allow it."));
 }
 
 function light_attachments_make_link($attachment)
@@ -2020,41 +2035,45 @@ function light_attachments_make_link($attachment)
     return "<a href=\"$href\" target=\"_blank\">{$attachment['filename']}</a>";
 }
 
-function light_threads_draw_discussions_dropdown($thread_mode)
+function light_threads_draw_discussions_dropdown($mode)
 {
     $unread_cutoff_stamp = forum_get_unread_cutoff();
 
-    if (user_is_guest()) {
+    if (!session::logged_in()) {
 
-        $available_views = array(ALL_DISCUSSIONS    => gettext("All Discussions"),
-                                 TODAYS_DISCUSSIONS => gettext("Today's Discussions"),
-                                 TWO_DAYS_BACK      => gettext("2 Days Back"),
-                                 SEVEN_DAYS_BACK    => gettext("7 Days Back"));
+        $available_views = array(
+            ALL_DISCUSSIONS => gettext("All Discussions"),
+            TODAYS_DISCUSSIONS => gettext("Today's Discussions"),
+            TWO_DAYS_BACK => gettext("2 Days Back"),
+            SEVEN_DAYS_BACK => gettext("7 Days Back")
+        );
+            
+    } else {
 
-    }else {
+        $available_views = array(
+            ALL_DISCUSSIONS => gettext("All Discussions"),
+            UNREAD_DISCUSSIONS => gettext("Unread Discussions"),
+            UNREAD_DISCUSSIONS_TO_ME => gettext("Unread &quot;To: Me&quot;"),
+            TODAYS_DISCUSSIONS => gettext("Today's Discussions"),
+            UNREAD_TODAY => gettext("Unread today"),
+            TWO_DAYS_BACK => gettext("2 Days Back"),
+            SEVEN_DAYS_BACK => gettext("7 Days Back"),
+            HIGH_INTEREST => gettext("High Interest"),
+            UNREAD_HIGH_INTEREST => gettext("Unread High Interest"),
+            RECENTLY_SEEN => gettext("I've recently seen"),
+            IGNORED_THREADS => gettext("I've ignored"),
+            BY_IGNORED_USERS => gettext("By ignored users"),
+            SUBSCRIBED_TO => gettext("I've subscribed to"),
+            STARTED_BY_FRIEND => gettext("Started by friend"),
+            UNREAD_STARTED_BY_FRIEND => gettext("Unread started by friend"),
+            STARTED_BY_ME => gettext("Started by me"),
+            POLL_THREADS => gettext("Polls"),
+            STICKY_THREADS => gettext("Sticky Threads"),
+            MOST_UNREAD_POSTS => gettext("Most unread posts"),
+            DELETED_THREADS => gettext("Deleted Threads")
+        );
 
-        $available_views = array(ALL_DISCUSSIONS          => gettext("All Discussions"),
-                                 UNREAD_DISCUSSIONS       => gettext("Unread Discussions"),
-                                 UNREAD_DISCUSSIONS_TO_ME => gettext("Unread &quot;To: Me&quot;"),
-                                 TODAYS_DISCUSSIONS       => gettext("Today's Discussions"),
-                                 UNREAD_TODAY             => gettext("Unread today"),
-                                 TWO_DAYS_BACK            => gettext("2 Days Back"),
-                                 SEVEN_DAYS_BACK          => gettext("7 Days Back"),
-                                 HIGH_INTEREST            => gettext("High Interest"),
-                                 UNREAD_HIGH_INTEREST     => gettext("Unread High Interest"),
-                                 RECENTLY_SEEN            => gettext("I've recently seen"),
-                                 IGNORED_THREADS          => gettext("I've ignored"),
-                                 BY_IGNORED_USERS         => gettext("By ignored users"),
-                                 SUBSCRIBED_TO            => gettext("I've subscribed to"),
-                                 STARTED_BY_FRIEND        => gettext("Started by friend"),
-                                 UNREAD_STARTED_BY_FRIEND => gettext("Unread started by friend"),
-                                 STARTED_BY_ME            => gettext("Started by me"),
-                                 POLL_THREADS             => gettext("Polls"),
-                                 STICKY_THREADS           => gettext("Sticky Threads"),
-                                 MOST_UNREAD_POSTS        => gettext("Most unread posts"),
-                                 DELETED_THREADS          => gettext("Deleted Threads"));
-
-        if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+        if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
             if ($unread_cutoff_stamp === false) {
 
@@ -2064,7 +2083,7 @@ function light_threads_draw_discussions_dropdown($thread_mode)
                 unset($available_views[UNREAD_STARTED_BY_FRIEND], $available_views[MOST_UNREAD_POSTS]);
             }
 
-        }else {
+        } else {
 
             // Remove Admin Deleted Threads option.
             unset($available_views[DELETED_THREADS]);
@@ -2080,12 +2099,12 @@ function light_threads_draw_discussions_dropdown($thread_mode)
         }
     }
 
-    return light_form_dropdown_array("thread_mode", $available_views, $thread_mode);
+    return light_form_dropdown_array("mode", $available_views, $mode);
 }
 
 function light_post_edit_refuse()
 {
-    light_html_display_error_msg(gettext("You are not permitted to edit this message."));
+    light_html_draw_error(gettext("You are not permitted to edit this message."));
 }
 
 function light_html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
@@ -2094,10 +2113,11 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
 
     forum_check_webtag_available($webtag);
 
-    if (!is_string($header_text)) return;
-    if (!is_string($string_msg)) return;
+    $available_methods = array(
+        'get', 
+        'post'
+    );
 
-    $available_methods = array('get', 'post');
     if (!in_array($method, $available_methods)) $method = 'get';
 
     if (is_string($href) && strlen(trim($href)) > 0) {
@@ -2140,10 +2160,6 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
 
 function light_html_display_error_array($error_list_array)
 {
-    $error_list_array = array_filter($error_list_array, 'is_string');
-
-    if (sizeof($error_list_array) < 1) return;
-
     echo "<div class=\"message_box message_error\">\n";
     echo "  <h3>", gettext("The following errors were encountered:"), "</h3>\n";
     echo "  <ul>\n";
@@ -2154,8 +2170,6 @@ function light_html_display_error_array($error_list_array)
 
 function light_html_display_success_msg($string_msg)
 {
-    if (!is_string($string_msg)) return;
-
     echo "<div class=\"message_box message_success\">\n";
     echo "  <h3>", $string_msg, "</h3>\n";
     echo "</div>\n";
@@ -2163,8 +2177,6 @@ function light_html_display_success_msg($string_msg)
 
 function light_html_display_warning_msg($string_msg)
 {
-    if (!is_string($string_msg)) return;
-
     echo "<div class=\"message_box message_warning\">\n";
     echo "  <h3>", $string_msg, "</h3>\n";
     echo "</div>\n";
@@ -2172,35 +2184,37 @@ function light_html_display_warning_msg($string_msg)
 
 function light_html_display_error_msg($string_msg)
 {
-    if (!is_string($string_msg)) return;
-
     echo "<div class=\"message_box message_error\">\n";
     echo "  <h3>", $string_msg, "</h3>\n";
     echo "</div>\n";
 }
 
+function light_html_draw_error($error_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
+{
+    light_html_draw_top();
+    light_html_display_msg(gettext('Error'), $error_msg, $href, $method, $button_array, $var_array, $target);
+    light_html_draw_bottom();
+}
+
 function light_html_user_require_approval()
 {
-    light_html_display_error_msg(gettext("Your user account needs to be approved by a forum admin before you can access the requested forum."));
+    light_html_draw_error(gettext("Your user account needs to be approved by a forum admin before you can access the requested forum."));
 }
 
 function light_pm_error_refuse()
 {
-    light_html_display_error_msg(gettext("Cannot view PM. Message does not exist or it is inaccessible by you"));
+    light_html_draw_error(gettext("Cannot view PM. Message does not exist or it is inaccessible by you"));
 }
 
-function light_pm_post_edit_refuse()
+function light_pm_edit_refuse()
 {
-    light_html_display_error_msg(gettext("Cannot edit this PM. It has already been viewed by the recipient or the message does not exist or it is inaccessible by you"));
+    light_html_draw_error(gettext("Cannot edit this PM. It has already been viewed by the recipient or the message does not exist or it is inaccessible by you"));
 }
 
 function light_pm_enabled()
 {
     if (!forum_get_setting('show_pms', 'Y')) {
-
-        light_html_display_error_msg(gettext("Personal Messages have been disabled by the forum owner."));
-        light_html_draw_bottom();
-        exit;
+        light_html_draw_error(gettext("Personal Messages have been disabled by the forum owner."));
     }
 
     return true;
@@ -2220,7 +2234,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
         echo "<span>", gettext("From"), ": ", word_filter_add_ob_tags(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']), true), "</span>\n";
 
-    }else {
+    } else {
 
         if (isset($pm_message_array['RECIPIENTS']) && strlen(trim($pm_message_array['RECIPIENTS'])) > 0) {
 
@@ -2232,17 +2246,17 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
             echo "<span>", gettext("To"), ": ", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span>\n";
 
-        }elseif (is_array($pm_message_array['TLOGON'])) {
+        } else if (is_array($pm_message_array['TLOGON'])) {
 
             $recipient_array = array_unique($pm_message_array['TLOGON']);
 
             echo "<span>", gettext("To"), ": ", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span>\n";
 
-        }else if (isset($pm_message_array['TO_UID']) && is_numeric($pm_message_array['TO_UID'])) {
+        } else if (isset($pm_message_array['TO_UID']) && is_numeric($pm_message_array['TO_UID'])) {
 
             echo "<span>", gettext("To"), ": ", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), true), "</span>\n";
 
-        }else {
+        } else {
 
             echo "<span>", gettext("To"), ": <span class=\"norecipients\">", gettext("No Recipients"), "</span></span>\n";
         }
@@ -2258,7 +2272,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
         echo word_filter_add_ob_tags($pm_message_array['SUBJECT'], true), "</b>\n";
 
-    }else {
+    } else {
 
         echo "<span class=\"no_subject\">", gettext("No Subject"), "</span>\n";
     }
@@ -2329,18 +2343,18 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
             $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" class=\"forward\">". gettext("Forward"). "</a>";
             $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
 
-        }elseif ($folder == PM_FOLDER_OUTBOX) {
+        } else if ($folder == PM_FOLDER_OUTBOX) {
 
             $links_array[] = "<a href=\"lpm_edit.php?webtag=$webtag&amp;mid={$pm_message_array['MID']}\" class=\"edit\">". gettext("Edit"). "</a>";
             $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" class=\"forward\">". gettext("Forward"). "</a>";
             $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
 
-        }elseif ($folder == PM_FOLDER_DRAFTS) {
+        } else if ($folder == PM_FOLDER_DRAFTS) {
 
             $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$pm_message_array['MID']}\" class=\"edit\">". gettext("Edit"). "</a>";
             $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
 
-        }else {
+        } else {
 
             $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" class=\"forward\">". gettext("Forward"). "</a>";
             $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
@@ -2356,9 +2370,6 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
 function light_pm_check_messages()
 {
-    // Disable if we're including light mode functionality.
-    if (defined('BEEHIVE_LIGHT_INCLUDE')) return;
-
     // Check if this function has be called multiple times in one request.
     static $light_pm_check_messages_done = false;
 
@@ -2383,7 +2394,7 @@ function light_pm_check_messages()
 
         $pm_notification = gettext("You have 1 new message. Would you like to go to your Inbox now?");
 
-    }elseif ($pm_new_count == 1 && $pm_outbox_count == 1) {
+    } else if ($pm_new_count == 1 && $pm_outbox_count == 1) {
 
         $pm_notification = gettext("You have 1 new message.
 
@@ -2391,17 +2402,17 @@ You also have 1 message awaiting delivery. To receive this message please clear 
 
 Would you like to go to your Inbox now?");
 
-    }elseif ($pm_new_count == 0 && $pm_outbox_count == 1) {
+    } else if ($pm_new_count == 0 && $pm_outbox_count == 1) {
 
         $pm_notification = gettext("You have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.
 
 Would you like to go to your Inbox now?");
 
-    }elseif ($pm_new_count > 1 && $pm_outbox_count == 0) {
+    } else if ($pm_new_count > 1 && $pm_outbox_count == 0) {
 
         $pm_notification = sprintf(gettext("You have %d new messages. Would you like to go to your Inbox now?"), $pm_new_count);
 
-    }elseif ($pm_new_count > 1 && $pm_outbox_count == 1) {
+    } else if ($pm_new_count > 1 && $pm_outbox_count == 1) {
 
         $pm_notification = sprintf(gettext("You have %d new messages.
 
@@ -2409,7 +2420,7 @@ You also have 1 message awaiting delivery. To receive this message please clear 
 
 Would you like to go to your Inbox now?"), $pm_new_count);
 
-    }elseif ($pm_new_count > 1 && $pm_outbox_count > 1) {
+    } else if ($pm_new_count > 1 && $pm_outbox_count > 1) {
 
         $pm_notification = sprintf(gettext("You have %d new messages.
 
@@ -2417,7 +2428,7 @@ You also have %d messages awaiting delivery. To receive these message please cle
 
 Would you like to go to your Inbox now?"), $pm_new_count, $pm_outbox_count);
 
-    }elseif ($pm_new_count == 1 && $pm_outbox_count > 1) {
+    } else if ($pm_new_count == 1 && $pm_outbox_count > 1) {
 
         $pm_notification = sprintf(gettext("You have 1 new message.
 
@@ -2425,7 +2436,7 @@ You also have %d messages awaiting delivery. To receive these messages please cl
 
 Would you like to go to your Inbox now?"), $pm_outbox_count);
 
-    }elseif ($pm_new_count == 0 && $pm_outbox_count > 1) {
+    } else if ($pm_new_count == 0 && $pm_outbox_count > 1) {
 
         $pm_notification = sprintf(gettext("You have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.
 

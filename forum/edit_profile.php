@@ -21,113 +21,33 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "profile.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "user_profile.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'profile.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'user_profile.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-if (user_is_guest()) {
-
+if (!session::logged_in()) {
     html_guest_error();
-    exit;
 }
 
 $admin_edit = false;
 
-if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     if (isset($_GET['profileuid'])) {
 
@@ -136,32 +56,26 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             $uid = $_GET['profileuid'];
             $admin_edit = true;
 
-        }else {
+        } else {
 
-            html_draw_top(sprintf("title=%s", gettext("Error")));
-            html_error_msg(gettext("No user specified."));
-            html_draw_bottom();
-            exit;
+            html_draw_error(gettext("No user specified."));
         }
 
-    }elseif (isset($_POST['profileuid'])) {
+    } else if (isset($_POST['profileuid'])) {
 
         if (is_numeric($_POST['profileuid'])) {
 
             $uid = $_POST['profileuid'];
             $admin_edit = true;
 
-        }else {
+        } else {
 
-            html_draw_top(sprintf("title=%s", gettext("Error")));
-            html_error_msg(gettext("No user specified."));
-            html_draw_bottom();
-            exit;
+            html_draw_error(gettext("No user specified."));
         }
 
-    }else {
+    } else {
 
-        $uid = session_get_value('UID');
+        $uid = session::get_value('UID');
     }
 
     if (isset($_POST['cancel'])) {
@@ -170,17 +84,13 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
         exit;
     }
 
-}else {
+} else {
 
-    $uid = session_get_value('UID');
+    $uid = session::get_value('UID');
 }
 
-if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != session_get_value('UID'))) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You do not have permission to use this section."));
-    html_draw_bottom();
-    exit;
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != session::get_value('UID'))) {
+    html_draw_error(gettext("You do not have permission to use this section."));
 }
 
 // Fetch array of profile items.
@@ -216,11 +126,11 @@ if (isset($_POST['save'])) {
 
                     $privacy = (isset($profile_items_array[$piid]['PRIVACY']) ? $profile_items_array[$piid]['PRIVACY'] : 0);
 
-                }elseif (isset($_POST['t_entry_private'][$piid]) && $_POST['t_entry_private'][$piid] == 'Y') {
+                } else if (isset($_POST['t_entry_private'][$piid]) && $_POST['t_entry_private'][$piid] == 'Y') {
 
                     $privacy = PROFILE_ITEM_PRIVATE;
 
-                }else {
+                } else {
 
                     $privacy = PROFILE_ITEM_PUBLIC;
                 }
@@ -239,7 +149,7 @@ if (isset($_POST['save'])) {
                     header_redirect("admin_user.php?webtag=$webtag&uid=$uid&profile_updated=true", gettext("Profile updated."));
                     exit;
 
-                }else {
+                } else {
 
                     header_redirect("edit_profile.php?webtag=$webtag&uid=$uid&profile_updated=true", gettext("Profile updated."));
                     exit;
@@ -259,7 +169,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
         echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Profile"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
-    }else {
+    } else {
 
         html_draw_top("title=", gettext("My Controls"), " - ", gettext("Edit Profile"), "", 'class=window_title');
 
@@ -270,7 +180,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
         html_display_error_array($error_msg_array, '600', ($admin_edit) ? 'center' : 'left');
 
-    }elseif (isset($_GET['profile_updated'])) {
+    } else if (isset($_GET['profile_updated'])) {
 
         html_display_success_msg(gettext("Profile updated."), '600', ($admin_edit) ? 'center' : 'left');
     }
@@ -327,7 +237,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
                 echo "                        <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
                 echo "                      </tr>\n";
 
-            }else {
+            } else {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" class=\"subhead\" colspan=\"3\">{$profile_item['SECTION_NAME']}</td>\n";
@@ -350,35 +260,35 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
             if ($profile_item['TYPE'] == PROFILE_ITEM_RADIO) {
                 echo "                        <td align=\"left\" valign=\"top\">", form_radio_array("t_entry[{$profile_item['PIID']}]", $profile_item_options_array, (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY']))), "</td>\n";
-            }else {
+            } else {
                 echo "                        <td align=\"left\" valign=\"top\">", form_dropdown_array("t_entry[{$profile_item['PIID']}]", $profile_item_options_array, (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY'])), false, 'bhinputprofileitem'), "</td>\n";
             }
 
             if ($admin_edit === false) {
                 echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", '', (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), sprintf("title=%s", gettext("Friends only?"))), "</td>\n";
-            }else {
+            } else {
                 echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
             }
 
-        }elseif ($profile_item['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
+        } else if ($profile_item['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
 
             echo "                        <td align=\"left\" valign=\"top\">", form_textarea("t_entry[{$profile_item['PIID']}]", (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY'])), false, false, false, 'bhinputprofileitem'), "</td>\n";
 
             if ($admin_edit === false) {
                 echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", '', (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), sprintf("title=%s", gettext("Friends only?"))), "</td>\n";
-            }else {
+            } else {
                 echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
             }
 
             echo "                      </tr>\n";
 
-        }else {
+        } else {
 
             echo "                        <td align=\"left\" valign=\"top\">", form_input_text("t_entry[{$profile_item['PIID']}]", (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY'])), false, false, false, 'bhinputprofileitem'), "</td>\n";
 
             if ($admin_edit === false) {
                 echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", '', (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), sprintf("title=%s", gettext("Friends only?"))), "</td>\n";
-            }else {
+            } else {
                 echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
             }
         }
@@ -405,7 +315,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
         echo "            <td align=\"center\">", form_submit("save", gettext("Save")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
         echo "          </tr>\n";
 
-    }else {
+    } else {
 
         echo "          <tr>\n";
         echo "            <td align=\"center\">", form_submit("save", gettext("Save")), "</td>\n";
@@ -422,11 +332,9 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
     html_draw_bottom();
 
-}else {
+} else {
 
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("The forum owner has not set up Profiles."));
-    html_draw_bottom();
+    html_draw_error(gettext("The forum owner has not set up Profiles."));
 }
 
 ?>

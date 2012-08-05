@@ -21,114 +21,34 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "attachments.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'attachments.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-if (user_is_guest()) {
-
+if (!session::logged_in()) {
     html_guest_error();
-    exit;
 }
 
 $admin_edit = false;
 
-if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     if (isset($_GET['siguid'])) {
 
@@ -137,32 +57,26 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             $uid = $_GET['siguid'];
             $admin_edit = true;
 
-        }else {
+        } else {
 
-            html_draw_top(sprintf("title=%s", gettext("Error")));
-            html_error_msg(gettext("No user specified."));
-            html_draw_bottom();
-            exit;
+            html_draw_error(gettext("No user specified."));
         }
 
-    }elseif (isset($_POST['siguid'])) {
+    } else if (isset($_POST['siguid'])) {
 
         if (is_numeric($_POST['siguid'])) {
 
             $uid = $_POST['siguid'];
             $admin_edit = true;
 
-        }else {
+        } else {
 
-            html_draw_top(sprintf("title=%s", gettext("Error")));
-            html_error_msg(gettext("No user specified."));
-            html_draw_bottom();
-            exit;
+            html_draw_error(gettext("No user specified."));
         }
 
-    }else {
+    } else {
 
-        $uid = session_get_value('UID');
+        $uid = session::get_value('UID');
     }
 
     if (isset($_POST['cancel'])) {
@@ -171,17 +85,13 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
         exit;
     }
 
-}else {
+} else {
 
-    $uid = session_get_value('UID');
+    $uid = session::get_value('UID');
 }
 
-if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != session_get_value('UID'))) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You do not have permission to use this section."));
-    html_draw_bottom();
-    exit;
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != session::get_value('UID'))) {
+    html_draw_error(gettext("You do not have permission to use this section."));
 }
 
 $valid = true;
@@ -192,25 +102,25 @@ if (isset($_POST['save']) || isset($_POST['preview'])) {
 
     if (isset($_POST['sig_content']) && strlen(trim(stripslashes_array($_POST['sig_content']))) > 0) {
         $t_sig_content = trim(stripslashes_array($_POST['sig_content']));
-    }else {
+    } else {
         $t_sig_content = "";
     }
 
     if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == "Y") {
         $t_t_post_html = "Y";
-    }else {
+    } else {
         $t_t_post_html = "N";
     }
 
     if (isset($_POST['sig_global']) && $_POST['sig_global'] == 'Y') {
         $t_sig_global = 'Y';
-    }else {
+    } else {
         $t_sig_global = 'N';
     }
 
     if ($t_t_post_html == "Y") $t_sig_content = fix_html($t_sig_content);
 
-    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0) && $admin_edit === true) $t_sig_global = 'N';
+    if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0) && $admin_edit === true) $t_sig_global = 'N';
 
     if (attachments_embed_check($t_sig_content) && $t_t_post_html == "Y") {
 
@@ -231,14 +141,14 @@ if (isset($_POST['save'])) {
                 $redirect_uri = "admin_user.php?webtag=$webtag&signature_updated=true&uid=$uid";
                 header_redirect($redirect_uri, gettext("Signature Updated"));
 
-            }else {
+            } else {
 
                 if ($t_sig_global == 'Y' && forums_get_available_count() > 1) {
 
                     $redirect_uri = "edit_signature.php?webtag=$webtag&updated_global=true";
                     header_redirect($redirect_uri, gettext("Signature Updated For All Forums"));
 
-                }else {
+                } else {
 
                     $redirect_uri = "edit_signature.php?webtag=$webtag&updated=true";
                     header_redirect($redirect_uri, gettext("Signature Updated"));
@@ -249,7 +159,10 @@ if (isset($_POST['save'])) {
 }
 
 // Initialise the $user_sig array
-$user_sig = array('SIG_CONTENT' => '', 't_post_html' => 'N');
+$user_sig = array(
+    'SIG_CONTENT' => '', 
+    't_post_html' => 'N'
+);
 
 // Get the User's Signature
 if (!user_get_sig($uid, $user_sig['SIG_CONTENT'], $user_sig['t_post_html'])) {
@@ -267,7 +180,7 @@ if ($admin_edit === true) {
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
-}else {
+} else {
 
     html_draw_top("title=", gettext("My Controls"), " - ", gettext("Edit Signature"), "", "basetarget=_blank", "onUnload=clearFocus()", "resize_width=600", "dictionary.js", "htmltools.js", "post.js", 'class=window_title');
 
@@ -278,11 +191,11 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '600', 'left');
 
-}else if (isset($_GET['updated'])) {
+} else if (isset($_GET['updated'])) {
 
     html_display_success_msg(gettext("Signature Updated"), '600', 'left');
 
-}else if (isset($_GET['updated_global'])) {
+} else if (isset($_GET['updated_global'])) {
 
     html_display_success_msg(gettext("Signature Updated For All Forums"), '600', 'left');
 }
@@ -299,18 +212,18 @@ if (isset($t_sig_content)) {
 
         $sig_code = htmlentities_array(tidy_html($t_sig_content, false, false));
 
-    }else {
+    } else {
 
         $sig_code = $t_sig_content;
     }
 
-}else {
+} else {
 
     if ($t_post_html == "Y") {
 
         $sig_code = htmlentities_array(tidy_html($user_sig['SIG_CONTENT'], false, false));
 
-    }else {
+    } else {
 
         $sig_code = $user_sig['SIG_CONTENT'];
     }
@@ -323,9 +236,9 @@ echo "<br />\n";
 if ($admin_edit === true) echo "<div align=\"center\">\n";
 
 // Check to see if we should show the set for all forums checkboxes
-if ((session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == session_get_value('UID')) && $admin_edit === false)) {
+if ((session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == session::get_value('UID')) && $admin_edit === false)) {
     $show_set_all = (forums_get_available_count() > 1);
-}else {
+} else {
     $show_set_all = false;
 }
 
@@ -360,7 +273,7 @@ if (isset($_POST['preview'])) {
 
         if ($t_t_post_html == "Y") {
             $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig_content</div>";
-        }else {
+        } else {
             $preview_message['CONTENT'].= "<div class=\"sig\">". make_html($t_sig_content). "</div>";
         }
 
@@ -403,19 +316,19 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 
-$page_prefs = session_get_post_page_prefs();
+$page_prefs = session::get_post_page_prefs();
 
 $tool_type = POST_TOOLBAR_DISABLED;
 
 if ($page_prefs & POST_TOOLBAR_DISPLAY) {
     $tool_type = POST_TOOLBAR_SIMPLE;
-}else if ($page_prefs & POST_TINYMCE_DISPLAY) {
+} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
     $tool_type = POST_TOOLBAR_TINYMCE;
 }
 
 if ($tool_type <> POST_TOOLBAR_DISABLED) {
     echo $tools->toolbar();
-}else {
+} else {
     $tools->set_tinymce(false);
 }
 
@@ -444,7 +357,7 @@ if ($admin_edit === true) {
     echo "      <td align=\"center\">", form_submit("save", gettext("Save")), "&nbsp;", form_submit("preview", gettext("Preview")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
     echo "    </tr>\n";
 
-}else {
+} else {
 
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit("save", gettext("Save")), "&nbsp;", form_submit("preview", gettext("Preview")), "</td>\n";
@@ -475,7 +388,7 @@ if ((!$tools->get_tinymce())) {
     echo "                        <td align=\"left\">", form_checkbox("t_post_html", "Y", gettext("Signature contains HTML code"), $t_post_html), "</td>\n";
     echo "                      </tr>\n";
 
-}else {
+} else {
 
     echo "                    ", form_input_hidden("t_post_html", "Y");
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
@@ -487,7 +400,7 @@ if ($show_set_all) {
     echo "                        <td align=\"left\">", form_checkbox("sig_global", "Y", gettext("Save signature for use on all forums"), (isset($t_sig_global) && $t_sig_global == 'Y')), "</td>\n";
     echo "                      </tr>\n";
 
-}else {
+} else {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", form_input_hidden("sig_global", 'Y'), "</td>\n";
@@ -507,8 +420,6 @@ echo "        </table>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-
-
 
 echo "</form>\n";
 

@@ -21,95 +21,31 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
 
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You do not have permission to use this section."));
-    html_draw_bottom();
-    exit;
+// Check we have Admin / Moderator access
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+    html_draw_error(gettext("You do not have permission to use this section."));
 }
 
 // Types of admin log entries
@@ -185,11 +121,11 @@ $admin_log_type_array = array(
 );
 
 $admin_log_group_type_array = array(
-    ADMIN_LOG_GROUP_NONE   => gettext("Do Not Group"),
-    ADMIN_LOG_GROUP_YEAR   => gettext("Group by Year"),
-    ADMIN_LOG_GROUP_MONTH  => gettext("Group by Month"),
-    ADMIN_LOG_GROUP_DAY    => gettext("Group by Day"),
-    ADMIN_LOG_GROUP_HOUR   => gettext("Group by Hour"),
+    ADMIN_LOG_GROUP_NONE => gettext("Do Not Group"),
+    ADMIN_LOG_GROUP_YEAR => gettext("Group by Year"),
+    ADMIN_LOG_GROUP_MONTH => gettext("Group by Month"),
+    ADMIN_LOG_GROUP_DAY => gettext("Group by Day"),
+    ADMIN_LOG_GROUP_HOUR => gettext("Group by Hour"),
     ADMIN_LOG_GROUP_MINUTE => gettext("Group by Minute"),
     ADMIN_LOG_GROUP_SECOND => gettext("Group by Second")
 );
@@ -231,12 +167,9 @@ if (isset($_GET['sort_dir'])) {
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
-}else {
+} else {
     $page = 1;
 }
-
-$start = floor($page - 1) * 20;
-if ($start < 0) $start = 0;
 
 // Array to hold our error messages
 $error_msg_array = array();
@@ -250,7 +183,7 @@ if (isset($_POST['prune_log'])) {
 
         $remove_type = $_POST['remove_type'];
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("You must specify an action type to remove");
         $valid = false;
@@ -258,7 +191,7 @@ if (isset($_POST['prune_log'])) {
 
     if (isset($_POST['remove_days']) && is_numeric($_POST['remove_days'])) {
         $remove_days = $_POST['remove_days'];
-    }else {
+    } else {
         $remove_days = 0;
     }
 
@@ -269,7 +202,7 @@ if (isset($_POST['prune_log'])) {
             header_redirect("admin_viewlog.php?webtag=$webtag&sort_dir=$sort_dir&sort_by=$sort_by&group_by=$group_by&pruned=true");
             exit;
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("Failed To Prune Admin Log");
             $valid = false;
@@ -279,7 +212,7 @@ if (isset($_POST['prune_log'])) {
 
 html_draw_top("title=", gettext("Admin"), " - ", gettext("Admin Access Log"), "", 'class=window_title');
 
-$admin_log_array = admin_get_log_entries($start, $group_by, $sort_by, $sort_dir);
+$admin_log_array = admin_get_log_entries($page, $group_by, $sort_by, $sort_dir);
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Admin Access Log"), "</h1>\n";
 
@@ -287,15 +220,15 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '75%', 'center');
 
-}else if (isset($_GET['pruned'])) {
+} else if (isset($_GET['pruned'])) {
 
     html_display_success_msg(gettext("Successfully Pruned Admin Log"), '75%', 'center');
 
-}else if (sizeof($admin_log_array['admin_log_array']) < 1) {
+} else if (sizeof($admin_log_array['admin_log_array']) < 1) {
 
     html_display_warning_msg(gettext("Admin Log is empty"), '75%', 'center');
 
-}else {
+} else {
 
     html_display_warning_msg(gettext("This list shows the last actions sanctioned by users with Admin privileges."), '75%', 'center');
 }
@@ -312,31 +245,31 @@ echo "                <tr>\n";
 
 if ($sort_by == 'CREATED' && $sort_dir == 'ASC') {
     echo "                    <td class=\"subhead_sort_asc\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Date/Time"), "</a></td>\n";
-}elseif ($sort_by == 'CREATED' && $sort_dir == 'DESC') {
+} else if ($sort_by == 'CREATED' && $sort_dir == 'DESC') {
     echo "                    <td class=\"subhead_sort_desc\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Date/Time"), "</a></td>\n";
-}elseif ($sort_dir == 'ASC') {
+} else if ($sort_dir == 'ASC') {
     echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Date/Time"), "</a></td>\n";
-}else {
+} else {
     echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Date/Time"), "</a></td>\n";
 }
 
 if ($sort_by == 'UID' && $sort_dir == 'ASC') {
     echo "                    <td class=\"subhead_sort_asc\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a></td>\n";
-}elseif ($sort_by == 'UID' && $sort_dir == 'DESC') {
+} else if ($sort_by == 'UID' && $sort_dir == 'DESC') {
     echo "                    <td class=\"subhead_sort_desc\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a></td>\n";
-}elseif ($sort_dir == 'ASC') {
+} else if ($sort_dir == 'ASC') {
     echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a></td>\n";
-}else {
+} else {
     echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a></td>\n";
 }
 
 if ($sort_by == 'ACTION' && $sort_dir == 'ASC') {
     echo "                    <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Action"), "</a></td>\n";
-}elseif ($sort_by == 'ACTION' && $sort_dir == 'DESC') {
+} else if ($sort_by == 'ACTION' && $sort_dir == 'DESC') {
     echo "                    <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Action"), "</a></td>\n";
-}elseif ($sort_dir == 'ASC') {
+} else if ($sort_dir == 'ASC') {
     echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Action"), "</a></td>\n";
-}else {
+} else {
     echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Action"), "</a></td>\n";
 }
 
@@ -344,11 +277,11 @@ if (isset($group_by) && $group_by != ADMIN_LOG_GROUP_NONE) {
 
     if ($sort_by == 'COUNT' && $sort_dir == 'ASC') {
         echo "                    <td class=\"subhead_sort_asc\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;group_by=$group_by&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a></td>\n";
-    }elseif ($sort_by == 'COUNT' && $sort_dir == 'DESC') {
+    } else if ($sort_by == 'COUNT' && $sort_dir == 'DESC') {
         echo "                    <td class=\"subhead_sort_desc\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a></td>\n";
-    }elseif ($sort_dir == 'ASC') {
+    } else if ($sort_dir == 'ASC') {
         echo "                    <td class=\"subhead\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a></td>\n";
-    }else {
+    } else {
         echo "                    <td class=\"subhead\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a></td>\n";
     }    
 }
@@ -605,7 +538,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                     $admin_link = sprintf("<a href=\"index.php?webtag=$webtag&final_uri=%s\" target=\"_blank\">%s</a>", rawurlencode($forum_link), $entry_array[1]);
                     $action_text = sprintf(gettext("Edited Forum Link: '%s'"), $admin_link);
 
-                }else {
+                } else {
 
                     $action_text = sprintf(gettext("Edited Forum Links"));
                 }
@@ -677,11 +610,13 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
             case UPDATED_BAN:
 
-                $admin_log_ban_types = array(BAN_TYPE_IP    => gettext("IP ban"),
-                                             BAN_TYPE_LOGON => gettext("Logon ban"),
-                                             BAN_TYPE_NICK  => gettext("Nickname ban"),
-                                             BAN_TYPE_EMAIL => gettext("Email ban"),
-                                             BAN_TYPE_REF   => gettext("Referer ban"));
+                $admin_log_ban_types = array(
+                    BAN_TYPE_IP => gettext("IP ban"),
+                    BAN_TYPE_LOGON => gettext("Logon ban"),
+                    BAN_TYPE_NICK => gettext("Nickname ban"),
+                    BAN_TYPE_EMAIL => gettext("Email ban"),
+                    BAN_TYPE_REF => gettext("Referer ban")
+                );
 
                 $ban_link = sprintf("admin_banned.php?webtag=$webtag&amp;ban_id=%s", $entry_array[0]);
                 $admin_link = sprintf("<a href=\"index.php?webtag=$webtag&final_uri=%s\" target=\"_blank\">%s</a>", rawurlencode($ban_link), $entry_array[4]);
@@ -719,7 +654,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                     $admin_user_link = sprintf("admin_user.php?webtag=$webtag&uid=%s", $entry_array[3]);
                     $admin_user_link = sprintf($index_link, rawurlencode($admin_user_link), $entry_array[4]);
 
-                }else {
+                } else {
 
                     $admin_user_link = gettext("Guest");
                 }
@@ -741,7 +676,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                     $admin_user_link = sprintf("admin_user.php?webtag=$webtag&uid=%s", $entry_array[3]);
                     $admin_user_link = sprintf($index_link, rawurlencode($admin_user_link), $entry_array[4]);
 
-                }else {
+                } else {
 
                     $admin_user_link = gettext("Guest");
                 }
@@ -763,7 +698,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                     $admin_user_link = sprintf("admin_user.php?webtag=$webtag&uid=%s", $entry_array[3]);
                     $admin_user_link = sprintf($index_link, rawurlencode($admin_user_link), $entry_array[4]);
 
-                }else {
+                } else {
 
                     $admin_user_link = gettext("Guest");
                 }
@@ -785,7 +720,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                     $admin_user_link = sprintf("admin_user.php?webtag=$webtag&uid=%s", $entry_array[3]);
                     $admin_user_link = sprintf($index_link, rawurlencode($admin_user_link), $entry_array[4]);
 
-                }else {
+                } else {
 
                     $admin_user_link = gettext("Guest");
                 }
@@ -807,7 +742,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                     $admin_user_link = sprintf("admin_user.php?webtag=$webtag&amp;uid=%s", $entry_array[3]);
                     $admin_user_link = sprintf($index_link, rawurlencode($admin_user_link), $entry_array[4]);
 
-                }else {
+                } else {
 
                     $admin_user_link = gettext("Guest");
                 }
@@ -826,7 +761,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
                     $admin_user_link = sprintf("admin_user.php?webtag=$webtag&uid=%s", $entry_array[3]);
                     $admin_user_link = sprintf($index_link, rawurlencode($admin_user_link), $entry_array[1]);
 
-                }else {
+                } else {
 
                     $admin_user_link = gettext("Guest");
                 }
@@ -870,7 +805,7 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
         if ($auto_update === true) {
             echo "                    <td align=\"left\" valign=\"top\">", gettext("none"), "</td>\n";
-        }else {
+        } else {
             echo "                    <td align=\"left\" valign=\"top\"><a href=\"admin_user.php?webtag=$webtag&amp;uid=", $admin_log_entry['UID'], "\">", word_filter_add_ob_tags(format_user_name($admin_log_entry['LOGON'], $admin_log_entry['NICKNAME']), true), "</a></td>\n";
         }
 
@@ -897,7 +832,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_viewlog.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir&group_by=$group_by", $start, $admin_log_array['admin_log_count'], 20), "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_viewlog.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir&group_by=$group_by", $page, $admin_log_array['admin_log_count'], 20), "</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";

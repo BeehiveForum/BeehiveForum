@@ -21,14 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/**
-* User relation functions
-*/
-
-/**
-*/
-
-// We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -36,10 +28,10 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 function user_rel_update($uid, $peer_uid, $relationship, $nickname = "")
 {
@@ -49,9 +41,9 @@ function user_rel_update($uid, $peer_uid, $relationship, $nickname = "")
     if (!is_numeric($peer_uid)) return false;
     if (!is_numeric($relationship)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "INSERT INTO `{$table_data['PREFIX']}USER_PEER` (UID, PEER_UID, RELATIONSHIP, PEER_NICKNAME) ";
+    $sql = "INSERT INTO `{$table_prefix}USER_PEER` (UID, PEER_UID, RELATIONSHIP, PEER_NICKNAME) ";
     $sql.= "VALUES ('$uid', '$peer_uid', '$relationship', NULL) ON DUPLICATE KEY UPDATE ";
     $sql.= "RELATIONSHIP = VALUES(RELATIONSHIP), PEER_NICKNAME = NULL";
 
@@ -63,7 +55,7 @@ function user_rel_update($uid, $peer_uid, $relationship, $nickname = "")
 
         $nickname = db_escape_string($nickname);
 
-        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_PEER` (UID, PEER_UID, PEER_NICKNAME) ";
+        $sql = "INSERT INTO `{$table_prefix}USER_PEER` (UID, PEER_UID, PEER_NICKNAME) ";
         $sql.= "VALUES ('$uid', '$peer_uid', '$nickname') ON DUPLICATE KEY UPDATE ";
         $sql.= "PEER_NICKNAME = VALUES(PEER_NICKNAME)";
 
@@ -73,41 +65,25 @@ function user_rel_update($uid, $peer_uid, $relationship, $nickname = "")
     return true;
 }
 
-
-/**
-* Gets relationship between two users
-*
-* Gets relationships set by $uid of $peer_uid. For example,
-* if someone of UID 2 has set the admin (UID 1) as a friend
-* (not the other way round), calling user_get_relationship(2, 1)
-* will return USER_FRIEND. Note: This has no bearing on
-* what user_get_relationship(1, 2) will return.
-*
-* @return integer
-* @param integer - $uid UID of user who set the relations
-* @param integer - $peer_uid UID of user who is being related to
-*/
 function user_get_relationship($uid, $peer_uid)
 {
-    if (!$db_user_get_relationship = db_connect()) return false;
+    if (!$db_user_get_relationship = db_connect()) return 0;
 
-    if (!is_numeric($uid)) return false;
-    if (!is_numeric($peer_uid)) return false;
+    if (!is_numeric($uid)) return 0;
+    if (!is_numeric($peer_uid)) return 0;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return 0;
 
-    $sql = "SELECT RELATIONSHIP FROM `{$table_data['PREFIX']}USER_PEER` ";
+    $sql = "SELECT RELATIONSHIP FROM `{$table_prefix}USER_PEER` ";
     $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
-    if (!$result = db_query($sql, $db_user_get_relationship)) return false;
+    if (!$result = db_query($sql, $db_user_get_relationship)) return 0;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0 ) return 0;
 
-        list($peer_relationship) = db_fetch_array($result);
-        return $peer_relationship;
-    }
+    list($peer_relationship) = db_fetch_array($result);
 
-    return 0;
+    return $peer_relationship;
 }
 
 ?>

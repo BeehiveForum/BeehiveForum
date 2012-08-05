@@ -21,83 +21,30 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "browser.inc.php");
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "light.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "pm.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "threads.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'browser.inc.php';
+require_once BH_INCLUDE_PATH. 'cache.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'light.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'pm.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'threads.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 // Embedded light mode in this script.
 define('BEEHIVE_LIGHT_INCLUDE', true);
 
-// Don't cache this page - fixes problems with Opera.
+// Don't cache this page
 cache_disable();
-
-// Start user session
-$user_sess = session_check();
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-$webtag = get_webtag();
 
 forum_check_webtag_available($webtag);
 
@@ -118,7 +65,7 @@ $top_html = html_get_top_page();
 
 $hide_navigation = false;
 
-if (!browser_mobile() && !session_is_search_engine()) {
+if (!browser_mobile() && !session::is_search_engine()) {
 
     if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
 
@@ -151,7 +98,7 @@ if (!browser_mobile() && !session_is_search_engine()) {
 
     html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
 
-    $navsize = session_get_value('FONT_SIZE');
+    $navsize = session::get_value('FONT_SIZE');
     $navsize = max((is_numeric($navsize) ? $navsize * 2 : 22), 22);
 
     if (forum_check_webtag_available($webtag)) {
@@ -172,7 +119,7 @@ if (!browser_mobile() && !session_is_search_engine()) {
 
             } else {
 
-                if (($start_page = session_get_value('START_PAGE'))) {
+                if (($start_page = session::get_value('START_PAGE'))) {
 
                     if ($start_page == START_PAGE_MESSAGES) {
                         $final_uri = "discussion.php?webtag=$webtag";
@@ -191,7 +138,7 @@ if (!browser_mobile() && !session_is_search_engine()) {
             }
         }
 
-    }else {
+    } else {
 
         if (get_webtag()) {
 
@@ -216,7 +163,7 @@ if (!browser_mobile() && !session_is_search_engine()) {
                 $final_uri = "forums.php?webtag=$webtag&amp;webtag_error=true";
             }
 
-        }else {
+        } else {
 
             $final_uri = "forums.php";
         }
@@ -240,105 +187,85 @@ if (!browser_mobile() && !session_is_search_engine()) {
 
     echo "<noframes>\n";
     echo "<body>\n";
+}
 
-} else {
+if (forum_check_webtag_available($webtag)) {
 
-    if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-        light_html_draw_top();
+        list($tid, $pid) = explode('.', $_GET['msg']);
+
+        light_draw_messages($tid, $pid);
+
+    } else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+
+        if (!session::logged_in()) {
+            light_html_guest_error();
+        }
+
+        light_pm_enabled();
+
+        pm_user_prune_folders();
+
+        light_draw_pm_inbox();
 
     } else {
 
-        light_html_draw_top();
-    }
-}
+        if (!($available_folders = folder_get_available_array())) {
+            $available_folders = array();
+        }
 
-if (html_get_cookie('logon') && user_is_guest()) {
+        if (isset($_REQUEST['folder']) && in_array($_REQUEST['folder'], $available_folders)) {
+            $folder = $_REQUEST['folder'];
+        } else {
+            $folder = false;
+        }
 
-    light_draw_logon_form();
+        if (isset($_REQUEST['start_from']) && is_numeric($_REQUEST['start_from'])) {
+            $start_from = $_REQUEST['start_from'];
+        } else {
+            $start_from = 0;
+        }
 
-} else {
+        if (isset($_REQUEST['thread_mode']) && is_numeric($_REQUEST['thread_mode'])) {
+            $thread_mode = $_REQUEST['thread_mode'];
+        }
 
-    if (forum_check_webtag_available($webtag)) {
+        if (!session::logged_in()) {
 
-        if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-
-            list($tid, $pid) = explode('.', $_GET['msg']);
-
-            light_draw_messages($tid, $pid);
-
-        } else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
-
-            if (user_is_guest()) {
-
-                light_html_guest_error();
-                exit;
+            if (!isset($thread_mode) || ($thread_mode != ALL_DISCUSSIONS && $thread_mode != TODAYS_DISCUSSIONS && $thread_mode != TWO_DAYS_BACK && $thread_mode != SEVEN_DAYS_BACK)) {
+                $thread_mode = ALL_DISCUSSIONS;
             }
-
-            light_pm_enabled();
-
-            pm_user_prune_folders();
-
-            light_draw_pm_inbox();
 
         } else {
 
-            if (!($available_folders = folder_get_available_array())) {
-                $available_folders = array();
-            }
+            $uid = session::get_value('UID');
 
-            if (isset($_REQUEST['folder']) && in_array($_REQUEST['folder'], $available_folders)) {
-                $folder = $_REQUEST['folder'];
+            $threads_any_unread = threads_any_unread();
+
+            if (isset($thread_mode) && is_numeric($thread_mode)) {
+
+                html_set_cookie("thread_mode_{$webtag}", $thread_mode);
+
             } else {
-                $folder = false;
-            }
 
-            if (isset($_REQUEST['start_from']) && is_numeric($_REQUEST['start_from'])) {
-                $start_from = $_REQUEST['start_from'];
-            } else {
-                $start_from = 0;
-            }
+                $thread_mode = html_get_cookie("thread_mode_{$webtag}", 'is_numeric', UNREAD_DISCUSSIONS);
 
-            if (isset($_REQUEST['thread_mode']) && is_numeric($_REQUEST['thread_mode'])) {
-                $thread_mode = $_REQUEST['thread_mode'];
-            }
-
-            if (user_is_guest()) {
-
-                if (!isset($thread_mode) || ($thread_mode != ALL_DISCUSSIONS && $thread_mode != TODAYS_DISCUSSIONS && $thread_mode != TWO_DAYS_BACK && $thread_mode != SEVEN_DAYS_BACK)) {
+                if ($thread_mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
                     $thread_mode = ALL_DISCUSSIONS;
                 }
-
-            } else {
-
-                $uid = session_get_value('UID');
-
-                $threads_any_unread = threads_any_unread();
-
-                if (isset($thread_mode) && is_numeric($thread_mode)) {
-
-                    html_set_cookie("thread_mode_{$webtag}", $thread_mode);
-
-                } else {
-
-                    $thread_mode = html_get_cookie("thread_mode_{$webtag}", 'is_numeric', UNREAD_DISCUSSIONS);
-
-                    if ($thread_mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
-                        $thread_mode = ALL_DISCUSSIONS;
-                    }
-                }
             }
-
-            light_draw_thread_list($thread_mode, $folder, $start_from);
         }
 
-    } else {
-
-        light_draw_my_forums();
+        light_draw_thread_list($thread_mode, $folder, $start_from);
     }
+
+} else {
+
+    light_draw_my_forums();
 }
 
-if (!browser_mobile() && !session_is_search_engine()) {
+if (!browser_mobile() && !session::is_search_engine()) {
 
     echo "</body>\n";
     echo "</noframes>\n";

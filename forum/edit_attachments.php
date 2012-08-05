@@ -21,93 +21,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "attachments.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'attachments.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
 
 // Array to hold error messages
 $error_msg_array = array();
@@ -116,34 +48,14 @@ $error_msg_array = array();
 $attachments_array = array();
 $image_attachments_array = array();
 
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
 // If attachments are disabled then no need to go any further.
 if (forum_get_setting('attachments_enabled', 'N')) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("Attachments have been disabled by the forum owner."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("Attachments have been disabled by the forum owner."));
 }
 
 // If the attachments directory is undefined we can't go any further
 if (!$attachment_dir = attachments_check_dir()) {
-
-    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
-    html_error_msg(gettext("Attachments have been disabled by the forum owner."));
-    html_draw_bottom();
-    exit;
-}
-
-if (user_is_guest()) {
-
-    html_guest_error();
-    exit;
+    html_draw_error(gettext("Attachments have been disabled by the forum owner."));
 }
 
 // Get any UID from the GET or POST request
@@ -152,24 +64,24 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
     $uid = $_GET['uid'];
 
-}elseif (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
+} else if (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
 
     $uid = $_POST['uid'];
 
-}else {
+} else {
 
-    $uid = session_get_value('UID');
+    $uid = session::get_value('UID');
 }
 
 if (isset($_GET['popup']) && is_numeric($_GET['popup'])) {
 
     $popup = $_GET['popup'];
 
-}elseif (isset($_POST['popup']) && is_numeric($_POST['popup'])) {
+} else if (isset($_POST['popup']) && is_numeric($_POST['popup'])) {
 
     $popup = $_POST['popup'];
 
-}else {
+} else {
 
     $popup = 0;
 }
@@ -180,26 +92,18 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
     $aid = $_GET['aid'];
 
     if (!$t_fid = attachments_get_folder_fid($aid)) {
-
-        html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
-        html_error_msg(gettext("AID not specified."));
-        html_draw_bottom();
-        exit;
+        html_draw_error(gettext("AID not specified."));
     }
 
-}elseif (isset($_POST['aid']) && is_md5($_POST['aid'])) {
+} else if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
     $aid = $_POST['aid'];
 
     if (!$t_fid = attachments_get_folder_fid($aid)) {
-
-        html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
-        html_error_msg(gettext("AID not specified."));
-        html_draw_bottom();
-        exit;
+        html_draw_error(gettext("AID not specified."));
     }
 
-}else {
+} else {
 
     $aid = false;
     $t_fid = 0;
@@ -208,12 +112,8 @@ if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
 // Check that the UID we have belongs to the current user
 // or that it is an admin if we're viewing another user's
 // attachments.
-if (($uid != session_get_value('UID')) && !(session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
-
-    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
-    html_error_msg(gettext("You do not have permission to use this section."));
-    html_draw_bottom();
-    exit;
+if (($uid != session::get_value('UID')) && !(session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
+    html_draw_error(gettext("You do not have permission to use this section."));
 }
 
 // Total attachment space used
@@ -224,7 +124,7 @@ if (is_md5($aid)) {
 
     $users_free_space = attachments_get_free_post_space($aid);
 
-}else {
+} else {
 
     $users_free_space = attachments_get_free_user_space($uid);
 }
@@ -255,7 +155,7 @@ if (isset($_POST['delete_confirm'])) {
         }
     }
 
-}elseif (isset($_POST['delete_thumbs_confirm'])) {
+} else if (isset($_POST['delete_thumbs_confirm'])) {
 
     $valid = true;
 
@@ -280,7 +180,7 @@ if (isset($_POST['delete_confirm'])) {
         }
     }
 
-}elseif (isset($_POST['delete']) || isset($_POST['delete_thumbs'])) {
+} else if (isset($_POST['delete']) || isset($_POST['delete_thumbs'])) {
 
     $hash_array = array();
 
@@ -301,7 +201,7 @@ if (isset($_POST['delete_confirm'])) {
                 html_draw_top("title=", gettext("Delete Thumbnails"), "", 'pm_popup_disabled', 'class=window_title');
                 echo "<h1>", gettext("Delete Thumbnails"), "</h1>\n";
 
-            }else {
+            } else {
 
                 html_draw_top("title=", gettext("Delete attachments"), "", 'pm_popup_disabled', 'class=window_title');
                 echo "<h1>", gettext("Delete attachments"), "</h1>\n";
@@ -333,7 +233,7 @@ if (isset($_POST['delete_confirm'])) {
                 echo "                        <td align=\"left\">", gettext("Are you sure you want to delete the selected attachments thumbnails?"), "</td>\n";
                 echo "                      </tr>\n";
 
-            }else {
+            } else {
 
                 echo "                <tr>\n";
                 echo "                  <td align=\"left\" class=\"subhead\">", gettext("Delete attachments"), "</td>\n";
@@ -397,7 +297,7 @@ if (isset($_POST['delete_confirm'])) {
                 echo "      <td align=\"center\">", form_submit("delete_thumbs_confirm", gettext("Confirm")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
                 echo "    </tr>\n";
 
-            }else {
+            } else {
 
                 echo "    <tr>\n";
                 echo "      <td align=\"center\">", form_submit("delete_confirm", gettext("Confirm")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
@@ -439,7 +339,7 @@ if (is_md5($aid)) {
 
     $attachment_result = attachments_get($uid, $aid, $attachments_array, $image_attachments_array);
 
-}else {
+} else {
 
     $attachment_result = attachments_get_users($uid, $attachments_array, $image_attachments_array);
 }
@@ -453,7 +353,7 @@ if ($attachment_result) {
         echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">", gettext("Attachments for this message"), "</td>\n";
         echo "                </tr>\n";
 
-    }else {
+    } else {
 
         echo "                <tr>\n";
         echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_main", "toggle_main"), "</td>\n";
@@ -471,11 +371,26 @@ if ($attachment_result) {
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("attachments_delete[{$attachment['hash']}]", "Y"), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
-                if (!is_md5($aid) && is_md5($attachment['aid']) && $message_link = attachments_get_message_link($attachment['aid'])) {
+                if (!is_md5($aid) && is_md5($attachment['aid'])) {
+                    
+                    echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">";
+                    
+                    if (($message_link = attachments_get_message_link($attachment['aid']))) {
+                        
+                        echo "<a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a>";
+                    
+                    } else if (($message_link = attachments_get_pm_link($attachment['aid']))) {
+                        
+                        echo "<a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a>";
+                    
+                    } else {
+                        
+                        echo '&nbsp;';
+                    }
+                    
+                    echo "</td>\n";
 
-                    echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a></td>\n";
-
-                }else {
+                } else {
 
                     echo "                  <td align=\"left\">&nbsp;</td>\n";
                 }
@@ -499,11 +414,26 @@ if ($attachment_result) {
                 echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("attachments_delete[{$attachment['hash']}]", "Y"), "</td>\n";
                 echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
-                if (!is_md5($aid) && is_md5($attachment['aid']) && $message_link = attachments_get_message_link($attachment['aid'])) {
+                if (!is_md5($aid) && is_md5($attachment['aid'])) {
+                    
+                    echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">";
+                    
+                    if (($message_link = attachments_get_message_link($attachment['aid']))) {
+                        
+                        echo "<a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a>";
+                    
+                    } else if (($message_link = attachments_get_pm_link($attachment['aid']))) {
+                        
+                        echo "<a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a>";
+                    
+                    } else {
+                        
+                        echo '&nbsp;';
+                    }
+                    
+                    echo "</td>\n";
 
-                    echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a></td>\n";
-
-                }else {
+                } else {
 
                     echo "                  <td align=\"left\">&nbsp;</td>\n";
                 }
@@ -517,7 +447,7 @@ if ($attachment_result) {
         }
     }
 
-}else {
+} else {
 
     if (is_md5($aid)) {
 
@@ -526,7 +456,7 @@ if ($attachment_result) {
         echo "                  <td align=\"left\" colspan=\"4\" class=\"subhead\">", gettext("Attachments for this message"), "</td>\n";
         echo "                </tr>\n";
 
-    }else {
+    } else {
 
         echo "                <tr>\n";
         echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"25\">&nbsp;</td>\n";
@@ -552,7 +482,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 
-if ($uid == session_get_value('UID') && is_md5($aid)) {
+if ($uid == session::get_value('UID') && is_md5($aid)) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -562,7 +492,7 @@ if ($uid == session_get_value('UID') && is_md5($aid)) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
 
-    if (attachments_get_all(session_get_value('UID'), $aid, $attachments_array, $image_attachments_array)) {
+    if (attachments_get_all(session::get_value('UID'), $aid, $attachments_array, $image_attachments_array)) {
 
         echo "                <tr>\n";
         echo "                  <td class=\"subhead_checkbox\" width=\"1%\">", form_checkbox("toggle_other", "toggle_other"), "</td>\n";
@@ -579,11 +509,26 @@ if ($uid == session_get_value('UID') && is_md5($aid)) {
                     echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y"), "</td>\n";
                     echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
-                    if (is_md5($attachment['aid']) && $message_link = attachments_get_message_link($attachment['aid'])) {
+                    if (!is_md5($aid) && is_md5($attachment['aid'])) {
+                        
+                        echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">";
+                        
+                        if (($message_link = attachments_get_message_link($attachment['aid']))) {
+                            
+                            echo "<a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a>";
+                        
+                        } else if (($message_link = attachments_get_pm_link($attachment['aid']))) {
+                            
+                            echo "<a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a>";
+                        
+                        } else {
+                            
+                            echo '&nbsp;';
+                        }
+                        
+                        echo "</td>\n";
 
-                        echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a></td>\n";
-
-                    }else {
+                    } else {
 
                         echo "                  <td align=\"left\">&nbsp;</td>\n";
                     }
@@ -607,11 +552,26 @@ if ($uid == session_get_value('UID') && is_md5($aid)) {
                     echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("delete_other_attachment[{$attachment['hash']}]", "Y"), "</td>\n";
                     echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">$attachment_link</td>\n";
 
-                    if (is_md5($attachment['aid']) && $message_link = attachments_get_message_link($attachment['aid'])) {
+                    if (!is_md5($aid) && is_md5($attachment['aid'])) {
+                        
+                        echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\">";
+                        
+                        if (($message_link = attachments_get_message_link($attachment['aid']))) {
+                            
+                            echo "<a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a>";
+                        
+                        } else if (($message_link = attachments_get_pm_link($attachment['aid']))) {
+                            
+                            echo "<a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a>";
+                        
+                        } else {
+                            
+                            echo '&nbsp;';
+                        }
+                        
+                        echo "</td>\n";
 
-                        echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" class=\"postbody\"><a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a></td>\n";
-
-                    }else {
+                    } else {
 
                         echo "                  <td align=\"left\">&nbsp;</td>\n";
                     }
@@ -625,7 +585,7 @@ if ($uid == session_get_value('UID') && is_md5($aid)) {
             }
         }
 
-    }else {
+    } else {
 
         echo "                <tr>\n";
         echo "                  <td class=\"subhead_checkbox\" width=\"20\">&nbsp;</td>\n";
@@ -694,7 +654,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 
-if ($uid == session_get_value('UID')) {
+if ($uid == session::get_value('UID')) {
 
     if (!is_md5($aid)) $aid = md5(uniqid(mt_rand()));
 
@@ -717,7 +677,7 @@ if ($uid == session_get_value('UID')) {
         echo "    </tr>\n";
     }
 
-}elseif (session_check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+} else if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
     if ($popup == 1) {
 
@@ -725,7 +685,7 @@ if ($uid == session_get_value('UID')) {
         echo "      <td align=\"center\">", form_submit('delete', gettext("Delete")), "&nbsp;", form_submit('delete_thumbs', gettext("Delete Thumbnails")), "&nbsp;", form_submit('close', gettext("Close")), "</td>\n";
         echo "    </tr>\n";
 
-    }else {
+    } else {
 
         echo "    <tr>\n";
         echo "      <td align=\"center\">", form_submit('delete', gettext("Delete")), "&nbsp;", form_button('complete', gettext("Close")), "</td>\n";

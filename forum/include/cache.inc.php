@@ -21,16 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/**
-* cache.inc.php - cache functions
-*
-* Contains HTTP cache and PEAR CacheLite related functions.
-*/
-
-/**
-*
-*/
-
 // We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
@@ -40,25 +30,15 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 }
 
 // Include files we need.
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-
-/**
-* Prevent caching of a page.
-*
-* Prevents caching of a page by sending headers which indicate that the page
-* is always modified.
-*
-* @return boolean
-* @param void
-*/
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'server.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
 
 function cache_disable()
 {
@@ -75,14 +55,6 @@ function cache_disable()
     return true;
 }
 
-/**
-* cache_disable_aol
-*
-* Disable HTTP cache if AOL browser is detected.
-*
-* @param void
-* @return void
-*/
 function cache_disable_aol()
 {
     if (!browser_check(BROWSER_AOL)) return false;
@@ -90,19 +62,11 @@ function cache_disable_aol()
     return cache_disable();
 }
 
-/**
-* cache_disable_proxy
-*
-* Disable HTTP caching if a proxy server is detected.
-*
-* @param void
-* @return void
-*/
 function cache_disable_proxy()
 {
     $proxy_headers_array = get_proxy_cache_headers();
 
-    foreach($proxy_headers_array as $proxy_header) {
+    foreach ($proxy_headers_array as $proxy_header) {
 
         if (isset($_SERVER[$proxy_header]) && strlen(trim($_SERVER[$proxy_header])) > 0) {
 
@@ -113,22 +77,11 @@ function cache_disable_proxy()
     return false;
 }
 
-/**
-* Check cache of thread list
-*
-* Checks MODIFIED and LAST_READ_AT columns of THREAD and USER_THREAD
-* tables to generate last modified HTTP header for caching of the
-* thread list.
-*
-* @return mixed - boolean or no return (exit)
-* @param void
-*/
-
 function cache_check_thread_list()
 {
     if (!$db_thread_list_check_cache_header = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     if (!cache_check_enabled()) return false;
 
@@ -142,7 +95,7 @@ function cache_check_thread_list()
         return false;
     }
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
     // If we're looking at a specific folder add it's ID to the query.
     if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
@@ -151,26 +104,26 @@ function cache_check_thread_list()
 
         $sql = "SELECT * FROM (SELECT UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
         $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED ";
-        $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD) AS THREAD_DATA, ";
+        $sql.= "FROM `{$table_prefix}THREAD` THREAD) AS THREAD_DATA, ";
         $sql.= "(SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
-        $sql.= "FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
+        $sql.= "FROM `{$table_prefix}USER_THREAD` USER_THREAD ";
         $sql.= "WHERE USER_THREAD.UID = '$uid') AS USER_THREAD_DATA, ";
         $sql.= "(SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
         $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
-        $sql.= "FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
+        $sql.= "FROM `{$table_prefix}FOLDER` FOLDER ";
         $sql.= "WHERE FOLDER.FID = '$folder') AS FOLDER_DATA";
 
     } else {
 
         $sql = "SELECT * FROM (SELECT UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
         $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED ";
-        $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD) AS THREAD_DATA, ";
+        $sql.= "FROM `{$table_prefix}THREAD` THREAD) AS THREAD_DATA, ";
         $sql.= "(SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
-        $sql.= "FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
+        $sql.= "FROM `{$table_prefix}USER_THREAD` USER_THREAD ";
         $sql.= "WHERE USER_THREAD.UID = '$uid') AS USER_THREAD_DATA, ";
         $sql.= "(SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
         $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
-        $sql.= "FROM `{$table_data['PREFIX']}FOLDER` FOLDER) AS FOLDER_DATA";
+        $sql.= "FROM `{$table_prefix}FOLDER` FOLDER) AS FOLDER_DATA";
     }
 
     if (!$result = db_query($sql, $db_thread_list_check_cache_header)) return false;
@@ -210,22 +163,11 @@ function cache_check_thread_list()
     return true;
 }
 
-/**
-* Check cache of start left pane
-*
-* Checks MODIFIED and LAST_LOGON columns of THREAD and VISITOR_LOG
-* tables to generate last modified HTTP header for caching of
-* start_left.php
-*
-* @return mixed - boolean or no return (exit)
-* @param void
-*/
-
 function cache_check_start_page()
 {
     if (!$db_forum_startpage_check_cache_header = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     if (!cache_check_enabled()) return false;
 
@@ -239,18 +181,18 @@ function cache_check_start_page()
         return false;
     }
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
     // Get the thread, folder and user read last modified dates
     $sql = "SELECT * FROM (SELECT UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
     $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED ";
-    $sql.= "FROM `{$table_data['PREFIX']}THREAD` THREAD) AS THREAD_DATA, ";
+    $sql.= "FROM `{$table_prefix}THREAD` THREAD) AS THREAD_DATA, ";
     $sql.= "(SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
-    $sql.= "FROM `{$table_data['PREFIX']}USER_THREAD` USER_THREAD ";
+    $sql.= "FROM `{$table_prefix}USER_THREAD` USER_THREAD ";
     $sql.= "WHERE USER_THREAD.UID = '$uid') AS USER_THREAD_DATA, ";
     $sql.= "(SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
     $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
-    $sql.= "FROM `{$table_data['PREFIX']}FOLDER` FOLDER) AS FOLDER_DATA";
+    $sql.= "FROM `{$table_prefix}FOLDER` FOLDER) AS FOLDER_DATA";
 
     if (!$result = db_query($sql, $db_forum_startpage_check_cache_header)) return false;
 
@@ -288,22 +230,11 @@ function cache_check_start_page()
     return true;
 }
 
-/**
-* Check cache of messages pane
-*
-* Checks CREATED and VOTED columns of POST and USER_POLL_VOTES
-* tables to generate last modified HTTP header for caching of
-* messages.php
-*
-* @return mixed - boolean or no return (exit)
-* @param void
-*/
-
 function cache_check_messages()
 {
     if (!$db_messages_check_cache_header = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     if (!cache_check_enabled()) return false;
 
@@ -333,16 +264,16 @@ function cache_check_messages()
 
         $sql = "SELECT * FROM (SELECT UNIX_TIMESTAMP(MAX(POST.CREATED)) AS CREATED, ";
         $sql.= "UNIX_TIMESTAMP(MAX(POST.VIEWED)) AS VIEWED, UNIX_TIMESTAMP(MAX(POST.APPROVED)) AS APPROVED, ";
-        $sql.= "UNIX_TIMESTAMP(MAX(POST.EDITED)) AS EDITED FROM `{$table_data['PREFIX']}POST` POST ";
+        $sql.= "UNIX_TIMESTAMP(MAX(POST.EDITED)) AS EDITED FROM `{$table_prefix}POST` POST ";
         $sql.= "WHERE POST.TID = '$tid') AS POST_DATA, (SELECT UNIX_TIMESTAMP(MAX(USER_POLL_VOTES.VOTED)) ";
-        $sql.= "AS POLL_VOTE FROM `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
+        $sql.= "AS POLL_VOTE FROM `{$table_prefix}USER_POLL_VOTES` USER_POLL_VOTES ";
         $sql.= "WHERE USER_POLL_VOTES.TID = '$tid') AS POLL_DATA";
 
-    }else {
+    } else {
 
         $sql = "SELECT UNIX_TIMESTAMP(MAX(CREATED)) AS CREATED, ";
         $sql.= "0 AS VIEWED, 0 AS APPROVED, 0 AS EDITED, 0 AS POLL_VOTE ";
-        $sql.= "FROM `{$table_data['PREFIX']}POST`";
+        $sql.= "FROM `{$table_prefix}POST`";
     }
 
     if (!$result = db_query($sql, $db_messages_check_cache_header)) return false;
@@ -381,18 +312,10 @@ function cache_check_messages()
     return true;
 }
 
-/**
-* Check cache config var
-*
-* Checks the cache config var in config.inc.php to see if the cache
-* has been forcefully disabled.
-*
-* @return mixed
-* @param void
-*/
-
 function cache_check_enabled()
 {
+    if (defined('BEEHIVE_DEVELOPER_MODE')) return false;
+    
     $http_cache_enabled = (isset($GLOBALS['http_cache_enabled'])) ? $GLOBALS['http_cache_enabled'] : false;
 
     if (isset($http_cache_enabled) && $http_cache_enabled === false) {
@@ -401,16 +324,6 @@ function cache_check_enabled()
 
     return true;
 }
-
-/**
-* Check cache header.
-*
-* Checks appropriate HTTP headers for cache hits. Prevents client
-* from hitting pages already in cache. Default cache is 5 minutes.
-*
-* @return mixed - void or no return (exit)
-* @param string $seconds - Interval to check for cache (default: 5 minutes)
-*/
 
 function cache_check_last_modified($last_modified)
 {
@@ -444,15 +357,6 @@ function cache_check_last_modified($last_modified)
     return true;
 }
 
-/**
-* Check cache etag header.
-*
-* Checks appropriate HTTP etag header for cache hits.
-*
-* @return mixed - void or no return (exit)
-* @param string $local_etag - ETag for comparison
-*/
-
 function cache_check_etag($local_etag)
 {
     if (browser_check(BROWSER_AOL)) return false;
@@ -463,13 +367,13 @@ function cache_check_etag($local_etag)
 
     if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && strlen(trim($_SERVER['HTTP_IF_NONE_MATCH'])) > 0) {
         $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
-    }else {
+    } else {
         $remote_etag = false;
     }
 
     if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
         $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
-    }else {
+    } else {
         $remote_last_modified = false;
     }
 

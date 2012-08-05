@@ -21,112 +21,44 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "forum_links.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "links.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'forum_links.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'links.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
 
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-// Check user has access to this script
-if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You do not have permission to use this section."));
-    html_draw_bottom();
-    exit;
+// Check we have Admin / Moderator access
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+    html_draw_error(gettext("You do not have permission to use this section."));
 }
 
 // Get page number and offset for SQL queries.
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
-}elseif (isset($_POST['page']) && is_numeric($_POST['page'])) {
+} else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
     $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
-}else {
+} else {
     $page = 1;
 }
-
-$start = floor($page - 1) * 10;
-if ($start < 0) $start = 0;
 
 // Array to hold error messages
 $error_msg_array = array();
@@ -152,7 +84,7 @@ if (isset($_POST['delete'])) {
 
                     admin_add_log_entry(DELETE_FORUM_LINKS, array($forum_link['TITLE']));
 
-                }else {
+                } else {
 
                     $error_msg_array[] = sprintf(gettext("Failed to remove forum link '%s'"), $forum_link['TITLE']);
                     $valid = false;
@@ -167,46 +99,48 @@ if (isset($_POST['delete'])) {
         }
     }
 
-}elseif (isset($_POST['toplinksubmit'])) {
+} else if (isset($_POST['toplinksubmit'])) {
 
     $valid = true;
 
     if (isset($_POST['t_top_link_title']) && strlen(trim(stripslashes_array($_POST['t_top_link_title']))) > 0) {
         $t_top_link_title = trim(stripslashes_array($_POST['t_top_link_title']));
-    }else {
+    } else {
         $error_msg_array[] = gettext("No top level link title specified");
         $valid = false;
     }
 
     if (isset($_POST['t_old_top_link_title']) && strlen(trim(stripslashes_array($_POST['t_old_top_link_title']))) > 0) {
         $t_old_top_link_title = trim(stripslashes_array($_POST['t_old_top_link_title']));
-    }else {
+    } else {
         $t_old_top_link_title = "";
     }
 
     if ($valid) {
 
-        $new_forum_settings = array('forum_links_top_link' => $t_top_link_title);
+        $new_forum_settings = array(
+            'forum_links_top_link' => $t_top_link_title
+        );
 
         if (forum_save_settings($new_forum_settings)) {
 
             admin_add_log_entry(EDIT_TOP_LINK_CAPTION, array($t_top_link_title, $t_old_top_link_title));
             header_redirect("admin_forum_links.php?webtag=$webtag&page=$page&updated=true");
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("Failed to update forum settings. Please try again later.");
             $valid = false;
         }
     }
 
-}elseif (isset($_POST['addlinksubmit'])) {
+} else if (isset($_POST['addlinksubmit'])) {
 
     $valid = true;
 
     if (isset($_POST['t_title']) && strlen(trim(stripslashes_array($_POST['t_title']))) > 0) {
         $t_title = trim(stripslashes_array($_POST['t_title']));
-    }else {
+    } else {
         $valid = false;
         $error_msg_array[] = gettext("You must enter a link title");
     }
@@ -220,7 +154,7 @@ if (isset($_POST['delete'])) {
             $valid = false;
         }
 
-    }else {
+    } else {
 
         $t_uri = "";
     }
@@ -232,14 +166,14 @@ if (isset($_POST['delete'])) {
             admin_add_log_entry(ADD_FORUM_LINKS, array($t_new_lid, $t_title));
             header_redirect("admin_forum_links.php?webtag=$webtag&page=$page&added=true");
 
-        }else {
+        } else {
 
             $error_msg_array[] = sprintf(gettext("Failed to add new forum link '%s'"), $t_title);
             $valid = false;
         }
     }
 
-}elseif (isset($_POST['updatelinksubmit'])) {
+} else if (isset($_POST['updatelinksubmit'])) {
 
     $valid = true;
 
@@ -249,7 +183,7 @@ if (isset($_POST['delete'])) {
 
         if (isset($_POST['t_title']) && strlen(trim(stripslashes_array($_POST['t_title']))) > 0) {
             $t_title = trim(stripslashes_array($_POST['t_title']));
-        }else {
+        } else {
             $valid = false;
             $error_msg_array[] = gettext("You must enter a link title");
         }
@@ -263,20 +197,20 @@ if (isset($_POST['delete'])) {
                 $valid = false;
             }
 
-        }else {
+        } else {
 
             $t_uri = "";
         }
 
         if (isset($_POST['t_old_title']) && strlen(trim(stripslashes_array($_POST['t_old_title']))) > 0) {
             $t_old_title = trim(stripslashes_array($_POST['t_old_title']));
-        }else {
+        } else {
             $t_old_title = "";
         }
 
         if (isset($_POST['t_old_uri']) && strlen(trim(stripslashes_array($_POST['t_old_uri']))) > 0) {
             $t_old_uri = trim(stripslashes_array($_POST['t_old_uri']));
-        }else {
+        } else {
             $t_old_uri = "";
         }
 
@@ -287,7 +221,7 @@ if (isset($_POST['delete'])) {
                 admin_add_log_entry(EDIT_FORUM_LINKS, array($lid, $t_title));
                 header_redirect("admin_forum_links.php?webtag=$webtag&page=$page&edited=true");
 
-            }else {
+            } else {
 
                 $error_msg_array[] = sprintf(gettext("Failed to update forum link '%s'"), $t_title);
                 $valid = false;
@@ -295,7 +229,7 @@ if (isset($_POST['delete'])) {
         }
     }
 
-}elseif (isset($_POST['addlink'])) {
+} else if (isset($_POST['addlink'])) {
 
     header_redirect("admin_forum_links.php?webtag=$webtag&page=$page&addlink=true");
     exit;
@@ -391,30 +325,23 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
     html_draw_bottom();
 
-}elseif (isset($_POST['lid']) || isset($_GET['lid'])) {
+} else if (isset($_POST['lid']) || isset($_GET['lid'])) {
 
     if (isset($_POST['lid']) && is_numeric($_POST['lid'])) {
 
         $lid = $_POST['lid'];
 
-    }elseif (isset($_GET['lid']) && is_numeric($_GET['lid'])) {
+    } else if (isset($_GET['lid']) && is_numeric($_GET['lid'])) {
 
         $lid = $_GET['lid'];
 
-    }else {
+    } else {
 
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("Invalid link id or link not found"), 'admin_forum_links.php', 'get', array('back' => gettext("Back")));
-        html_draw_bottom();
-        exit;
+        html_draw_error(gettext("Invalid link id or link not found"), 'admin_forum_links.php', 'get', array('back' => gettext("Back")));
     }
 
     if (!$forum_link = forum_links_get_link($lid)) {
-
-        html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_error_msg(gettext("Invalid link id or link not found"), 'admin_forum_links.php', 'get', array('back' => gettext("Back")));
-        html_draw_bottom();
-        exit;
+        html_draw_error(gettext("Invalid link id or link not found"), 'admin_forum_links.php', 'get', array('back' => gettext("Back")));
     }
 
     html_draw_top("title=", gettext("Admin"), " - ", gettext("Forum Links"), " - ", gettext("Edit Link"), " - {$forum_link['TITLE']}", 'class=window_title');
@@ -478,11 +405,11 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
     html_draw_bottom();
 
-}else {
+} else {
 
     html_draw_top("title=", gettext("Admin"), " - ", gettext("Edit Forum Links"), "", 'class=window_title');
 
-    $forum_links_array = forum_links_get_links_by_page($start);
+    $forum_links_array = forum_links_get_links_by_page($page);
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> ", gettext("Edit Forum Links"), "</h1>\n";
 
@@ -490,27 +417,27 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
         html_display_error_array($error_msg_array, '500', 'center');
 
-    }else if (isset($_GET['added'])) {
+    } else if (isset($_GET['added'])) {
 
         html_display_success_msg(gettext("Successfully added new forum link"), '500', 'center');
 
-    }else if (isset($_GET['edited'])) {
+    } else if (isset($_GET['edited'])) {
 
         html_display_success_msg(gettext("Successfully edited forum link"), '500', 'center');
 
-    }else if (isset($_GET['deleted'])) {
+    } else if (isset($_GET['deleted'])) {
 
         html_display_success_msg(gettext("Successfully removed selected links"), '500', 'center');
 
-    }else if (isset($_GET['updated'])) {
+    } else if (isset($_GET['updated'])) {
 
         html_display_success_msg(gettext("Preferences were successfully updated."), '500', 'center');
 
-    }else if (sizeof($forum_links_array['forum_links_array']) < 1) {
+    } else if (sizeof($forum_links_array['forum_links_array']) < 1) {
 
         html_display_warning_msg(gettext("Links added here appear in a drop down in the top right of the frame set. To add a link click the 'Add New' button below."), '500', 'center');
 
-    }else {
+    } else {
 
         html_display_warning_msg(gettext("Links added here appear in a drop down in the top right of the frame set."), '500', 'center');
     }
@@ -535,36 +462,12 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
     if (sizeof($forum_links_array['forum_links_array']) > 0) {
 
-        $link_index = $start;
-
         foreach ($forum_links_array['forum_links_array'] as $key => $forum_link) {
-
-            $link_index++;
 
             echo "                <tr>\n";
             echo "                  <td valign=\"top\" align=\"center\" width=\"1%\">", form_checkbox("t_delete[{$forum_link['LID']}]", "Y", false), "</td>\n";
-
-            if ($forum_links_array['forum_links_count'] == 1) {
-
-                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags($forum_link['TITLE'], true), "</a></td>\n";
-                echo "                  <td align=\"right\">&nbsp;</td>\n";
-
-            }elseif ($link_index == $forum_links_array['forum_links_count']) {
-
-                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags($forum_link['TITLE'], true), "</a></td>\n";
-                echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\"", "move_down_ctrl_disabled"), "</td>\n";
-
-            }elseif ($link_index > 1) {
-
-                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags($forum_link['TITLE'], true), "</a></td>\n";
-                echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
-
-            }else {
-
-                echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags($forum_link['TITLE'], true), "</a></td>\n";
-                echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
-            }
-
+            echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags($forum_link['TITLE'], true), "</a></td>\n";
+            echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
             echo "                </tr>\n";
         }
     }
@@ -582,7 +485,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_forum_links.php?webtag=$webtag", $start, $forum_links_array['forum_links_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_forum_links.php?webtag=$webtag", $page, $forum_links_array['forum_links_count'], 10), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";

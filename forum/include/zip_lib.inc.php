@@ -21,30 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/**
-* zip_lib.inc.php - Zip Creation Class Library
-*
-* Taken from phpMyAdmin 2.6.4.
-*
-* Zip file creation class.
-* Makes zip files.
-*
-* Based on :
-*
-*  http://www.zend.com/codex.php?id=535&single=1
-*  By Eric Mueller <eric@themepark.com>
-*
-*  http://www.zend.com/codex.php?id=470&single=1
-*  by Denis125 <webmaster@atlant.ru>
-*
-*  a patch from Peter Listiak <mlady@users.sourceforge.net> for last modified
-*  date and time of the compressed file
-*/
-
-/**
-*
-*/
-
 // We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");

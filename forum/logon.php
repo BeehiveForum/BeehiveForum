@@ -21,69 +21,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'beehive.inc.php';
+require_once BH_INCLUDE_PATH. 'cache.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "beehive.inc.php");
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Initialise Locale
-lang_init();
-
-// Fetch the forum webtag
-$webtag = get_webtag();
+// Don't cache this page
+cache_disable();
 
 // Retrieve the final_uri request
 if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
@@ -94,30 +50,17 @@ if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri
         $final_uri = href_cleanup_query_keys($_GET['final_uri']);
     }
 
-}else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+} else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $final_uri = "discussion.php?webtag=$webtag&amp;msg=". $_GET['msg'];
 
-}else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+} else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
     $final_uri = "discussion.php?webtag=$webtag&amp;folder=". $_GET['folder'];
 
-}else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+} else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
     $final_uri = "pm.php?webtag=$webtag&amp;mid=". $_GET['pmid'];
-}
-
-// Don't cache this page - fixes problems with Opera.
-cache_disable();
-
-// Logon script doesn't redirect if the session isn't created
-$user_sess = session_check();
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
 }
 
 // Delete the user's cookie as requested and send them back to the login form.
@@ -130,12 +73,12 @@ if (isset($_GET['deletecookie']) && ($_GET['deletecookie'] == 'yes')) {
         $final_uri = rawurlencode($final_uri);
         header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", gettext("Cookies successfully deleted"));
 
-    }else {
+    } else {
 
         header_redirect("index.php?webtag=$webtag", gettext("Cookies successfully deleted"));
     }
 
-}elseif (isset($_POST['logon']) || isset($_POST['guest_logon'])) {
+} else if (isset($_POST['logon']) || isset($_POST['guest_logon'])) {
 
     if (logon_perform(true)) {
 
@@ -144,33 +87,33 @@ if (isset($_GET['deletecookie']) && ($_GET['deletecookie'] == 'yes')) {
             $final_uri = rawurlencode($final_uri);
             header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", gettext("You logged in successfully."));
 
-        }else {
+        } else {
 
             header_redirect("index.php?webtag=$webtag", gettext("You logged in successfully."));
         }
 
-    }else {
+    } else {
 
         if (isset($final_uri)) {
 
             $final_uri = rawurlencode(sprintf("logon.php?webtag=$webtag&logon_failed=true&final_uri=%s", rawurlencode($final_uri)));
             header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", gettext("The username or password you supplied is not valid."));
 
-        }else {
+        } else {
 
             $final_uri = rawurlencode("logon.php?webtag=$webtag&logon_failed=true");
             header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", gettext("The username or password you supplied is not valid."));
         }
     }
 
-}elseif (isset($_POST['other_logon'])) {
+} else if (isset($_POST['other_logon'])) {
 
     if (isset($final_uri)) {
 
         $final_uri = rawurlencode($final_uri);
         header_redirect("index.php?webtag=$webtag&other_logon=true&final_uri=$final_uri");
 
-    }else {
+    } else {
 
         header_redirect("index.php?webtag=$webtag&other_logon=true");
     }

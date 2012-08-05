@@ -29,11 +29,11 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
 
 // Create a form field
 function form_field($name, $value = false, $width = false, $maxchars = false, $type = "text", $custom_html = false, $class = "bhinputtext")
@@ -165,20 +165,20 @@ function form_dropdown_array($name, $options_array, $default = false, $custom_ht
 
                 $html.= form_dropdown_objgroup_array($option_key, $option_text['subitems'], $default, $group_class);
 
-            }elseif (is_array($option_text) && isset($option_text['name']) && strlen(trim($option_text['name'])) > 0) {
+            } else if (is_array($option_text) && isset($option_text['name']) && strlen(trim($option_text['name'])) > 0) {
 
                 $option_text_name = trim($option_text['name']);
 
                 if (isset($option_text['class']) && strlen(trim($option_text['class'])) > 0) {
                     $option_text_class = trim($option_text['class']);
-                }else {
+                } else {
                     $option_text_class = '';
                 }
 
                 $selected = (mb_strtolower($option_key) == mb_strtolower($default)) ? " selected=\"selected\"" : "";
                 $html.= "  <option value=\"{$option_key}\" class=\"$option_text_class\"$selected>$option_text_name</option>";
 
-            }elseif (!is_array($option_text)) {
+            } else if (!is_array($option_text)) {
 
                 $selected = (mb_strtolower($option_key) == mb_strtolower($default)) ? " selected=\"selected\"" : "";
                 $html.= "  <option value=\"{$option_key}\"$selected>$option_text</option>";
@@ -203,20 +203,20 @@ function form_dropdown_objgroup_array($name, $options_array, $default = false, $
 
                 $html.= form_dropdown_objgroup_array($option_key, $option_text['subitems'], $default, $class);
 
-            }elseif (is_array($option_text) && isset($option_text['name']) && strlen(trim($option_text['name'])) > 0) {
+            } else if (is_array($option_text) && isset($option_text['name']) && strlen(trim($option_text['name'])) > 0) {
 
                 $option_text_name = trim($option_text['name']);
 
                 if (isset($option_text['class']) && strlen(trim($option_text['class'])) > 0) {
                     $option_text_class = trim($option_text['class']);
-                }else {
+                } else {
                     $option_text_class = '';
                 }
 
                 $selected = (mb_strtolower($option_key) == mb_strtolower($default)) ? " selected=\"selected\"" : "";
                 $html.= "  <option value=\"{$option_key}\" class=\"$option_text_class\"$selected>$option_text_name</option>";
 
-            }elseif (!is_array($option_text)) {
+            } else if (!is_array($option_text)) {
 
                 $selected = (mb_strtolower($option_key) == mb_strtolower($default)) ? " selected=\"selected\"" : "";
                 $html.= "  <option value=\"{$option_key}\"$selected>$option_text</option>";
@@ -273,7 +273,7 @@ function form_checkbox($name, $value, $text = '', $checked = false, $custom_html
 
                 $html.= $text_part;
 
-            }else {
+            } else {
 
                 $html.= "</label>$text_part<label for=\"$id\">";
             }
@@ -281,7 +281,7 @@ function form_checkbox($name, $value, $text = '', $checked = false, $custom_html
 
         $html.= "</label>";
 
-    }elseif (strlen(trim($text)) > 0) {
+    } else if (strlen(trim($text)) > 0) {
 
         $html.= "<label for=\"$id\">$text</label>";
     }
@@ -319,7 +319,7 @@ function form_radio($name, $value, $text = '', $checked = false, $custom_html = 
 
                 $html.= $text_part;
 
-            }else {
+            } else {
 
                 $html.= "</label>$text_part<label for=\"$id\">";
             }
@@ -327,7 +327,7 @@ function form_radio($name, $value, $text = '', $checked = false, $custom_html = 
 
         $html.= "</label>";
 
-    }elseif (strlen(trim($text)) > 0) {
+    } else if (strlen(trim($text)) > 0) {
 
         $html.= "<label for=\"$id\">$text</label>";
     }
@@ -444,9 +444,12 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true,
 
         $birthday_days   = array_merge(array('&nbsp;'), range(1, 31));
         $birthday_months = array_merge(array('&nbsp;'), lang_get_month_names());
-        $birthday_years  = array('&nbsp;') + range_keys(1900, date('Y', time()));
+        
+        $birthday_years  = array(
+            '&nbsp;'
+        ) + range_keys(1900, date('Y', time()));
 
-    }else {
+    } else {
 
         $birthday_days   = range_keys(1, 31);
         $birthday_months = lang_get_month_names();
@@ -468,11 +471,15 @@ function form_date_dropdowns($year = 0, $month = 0, $day = 0, $prefix = false, $
     // can be represented as a UNIX timestamp currently
     if (is_numeric($start_year) && $start_year > 0 && $start_year < 2037) {
 
-        $years = array('&nbsp;') + range_keys($start_year, 2037);
+        $years = array(
+            '&nbsp;'
+        ) + range_keys($start_year, 2037);
 
-    }else {
+    } else {
 
-        $years = array('&nbsp;') + range_keys(date('Y', time()), 2037);
+        $years = array(
+            '&nbsp;'
+        ) + range_keys(date('Y', time()), 2037);
     }
 
     $days   = array_merge(array('&nbsp;'), range(1, 31));

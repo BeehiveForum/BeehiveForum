@@ -21,115 +21,36 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "adsense.inc.php");
-include_once(BH_INCLUDE_PATH. "beehive.inc.php");
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "poll.inc.php");
-include_once(BH_INCLUDE_PATH. "rss_feed.inc.php");
-include_once(BH_INCLUDE_PATH. "search.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "thread.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
-
-// Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'adsense.inc.php';
+require_once BH_INCLUDE_PATH. 'beehive.inc.php';
+require_once BH_INCLUDE_PATH. 'cache.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'poll.inc.php';
+require_once BH_INCLUDE_PATH. 'rss_feed.inc.php';
+require_once BH_INCLUDE_PATH. 'search.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'thread.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 // Message pane caching
 cache_check_messages();
 
-// Initialise Locale
-lang_init();
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
 // User UID for fetching recent message
-$uid = session_get_value('UID');
+$uid = session::get_value('UID');
 
 // Check that required variables are set
 // default to display most recent discussion for user
@@ -138,16 +59,13 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $msg = $_GET['msg'];
     list($tid, $pid) = explode('.', $msg);
 
-}else if (($msg = messages_get_most_recent($uid))) {
+} else if (($msg = messages_get_most_recent($uid))) {
 
     list($tid, $pid) = explode('.', $msg);
 
-}else {
+} else {
 
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("Invalid Message ID or no Message ID specified."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("Invalid Message ID or no Message ID specified."));
 }
 
 // Poll stuff
@@ -165,24 +83,18 @@ if (isset($_POST['pollsubmit'])) {
 
                 poll_vote($tid, $poll_votes_array);
 
-            }else {
+            } else {
 
-                html_draw_top(sprintf("title=%s", gettext("Error")));
-                html_error_msg(gettext("You must vote in every group."), 'messages.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
-                html_draw_bottom();
-                exit;
+                html_draw_error(gettext("You must pick and answer for every question"));
             }
 
-        }else {
+        } else {
 
-            html_draw_top(sprintf("title=%s", gettext("Error")));
-            html_error_msg(gettext("You must select an option to vote for!"), 'messages.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
-            html_draw_bottom();
-            exit;
+            html_draw_error(gettext("You must select an answer to vote for"));
         }
     }
 
-}elseif (isset($_POST['pollclose'])) {
+} else if (isset($_POST['pollclose'])) {
 
     if (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
 
@@ -192,7 +104,7 @@ if (isset($_POST['pollsubmit'])) {
 
             poll_close($tid);
 
-        }else {
+        } else {
 
             html_draw_top(sprintf("title=%s", gettext("Error")));
             poll_confirm_close($tid);
@@ -201,7 +113,7 @@ if (isset($_POST['pollsubmit'])) {
         }
     }
 
-}elseif (isset($_POST['pollchangevote'])) {
+} else if (isset($_POST['pollchangevote'])) {
 
     if (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
 
@@ -213,41 +125,29 @@ if (isset($_POST['pollsubmit'])) {
     }
 }
 
-if (($posts_per_page = session_get_value('POSTS_PER_PAGE'))) {
+if (($posts_per_page = session::get_value('POSTS_PER_PAGE'))) {
 
     if ($posts_per_page < 10) $posts_per_page = 10;
     if ($posts_per_page > 30) $posts_per_page = 30;
 
-}else {
+} else {
 
     $posts_per_page = 20;
 }
 
 // Check the thread exists.
-if (!$thread_data = thread_get($tid, session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("The requested thread could not be found or access was denied."));
-    html_draw_bottom();
-    exit;
+if (!$thread_data = thread_get($tid, session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+    html_draw_error(gettext("The requested thread could not be found or access was denied."));
 }
 
 // Check it's in a folder we can view.
 if (!$folder_data = folder_get($thread_data['FID'])) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("The requested folder could not be found or access was denied."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("The requested folder could not be found or access was denied."));
 }
 
 // Get the messages.
 if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("That post does not exist in this thread!"));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("That post does not exist in this thread!"));
 }
 
 html_draw_top("title={$thread_data['TITLE']}", "class=window_title", "post.js", "poll.js", "htmltools.js", "basetarget=_blank");
@@ -261,9 +161,9 @@ if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
     }
 }
 
-$show_sigs = (session_get_value('VIEW_SIGS') == 'N') ? false : true;
+$show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
 
-$page_prefs = session_get_post_page_prefs();
+$page_prefs = session::get_post_page_prefs();
 
 $msg_count = count($messages);
 
@@ -284,7 +184,7 @@ echo "</table>\n";
 if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
     if ($_GET['markasread'] > 0) {
         html_display_success_msg(gettext("Thread Read Status Updated Successfully"), '96%', 'center');
-    }else {
+    } else {
         html_display_error_msg(gettext("Failed to update thread read status"), '96%', 'center');
     }
 }
@@ -292,7 +192,7 @@ if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
 if (isset($_GET['setinterest'])) {
     if ($_GET['setinterest'] > 0) {
         html_display_success_msg(gettext("Thread Interest Status Updated Successfully"), '96%', 'center');
-    }else {
+    } else {
         html_display_error_msg(gettext("Failed to update thread interest"), '96%', 'center');
     }
 }
@@ -301,23 +201,23 @@ if (isset($_GET['relupdated'])) {
 
     html_display_success_msg(gettext("Relationships Updated!"), '96%', 'center');
 
-}else if (isset($_GET['setstats'])) {
+} else if (isset($_GET['setstats'])) {
 
     html_display_success_msg(gettext("Stats Display Changed"), '96%', 'center');
 
-}else if (isset($_GET['edit_success']) && validate_msg($_GET['edit_success'])) {
+} else if (isset($_GET['edit_success']) && validate_msg($_GET['edit_success'])) {
 
     html_display_success_msg(sprintf(gettext("Successfully edited post %s"), $_GET['edit_success']), '96%', 'center');
 
-}else if (isset($_GET['delete_success']) && validate_msg($_GET['delete_success'])) {
+} else if (isset($_GET['delete_success']) && validate_msg($_GET['delete_success'])) {
 
     html_display_success_msg(sprintf(gettext("Successfully deleted post %s"), $_GET['delete_success']), '96%', 'center');
 
-}elseif (isset($_GET['delete_success']) && validate_msg($_GET['delete_success'])) {
+} else if (isset($_GET['delete_success']) && validate_msg($_GET['delete_success'])) {
 
     html_display_success_msg(sprintf(gettext("Successfully deleted post %s"), $_GET['delete_success']), '96%', 'center');
 
-}else if (isset($_GET['post_approve_success']) && validate_msg($_GET['post_approve_success'])) {
+} else if (isset($_GET['post_approve_success']) && validate_msg($_GET['post_approve_success'])) {
 
     html_display_success_msg(sprintf(gettext("Successfully approved post %s"), $_GET['post_approve_success']), '96%', 'center');
 }
@@ -356,7 +256,7 @@ if (($tracking_data_array = thread_get_tracking_data($tid))) {
                 echo "  </tr>\n";
             }
 
-        }elseif ($tracking_data['TRACK_TYPE'] == THREAD_TYPE_SPLIT) { // Thread Split
+        } else if ($tracking_data['TRACK_TYPE'] == THREAD_TYPE_SPLIT) { // Thread Split
 
             if ($tracking_data['TID'] == $tid) {
 
@@ -465,11 +365,11 @@ if ($msg_count > 0) {
 
             if ($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
                 $message['CONTENT'] = message_get_content($tid, $message['PID']);
-            }else {
+            } else {
                 $message['CONTENT'] = gettext("Ignored"); // must be set to something or will show as deleted
             }
 
-        }else {
+        } else {
 
           $message['CONTENT'] = message_get_content($tid, $message['PID']);
 
@@ -482,13 +382,13 @@ if ($msg_count > 0) {
                 poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, $show_sigs, false, $highlight_array);
                 $last_pid = $message['PID'];
 
-            }else {
+            } else {
 
                 message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, true, $show_sigs, false, $highlight_array);
                 $last_pid = $message['PID'];
             }
 
-        }else {
+        } else {
 
             message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, false, $show_sigs, false, $highlight_array);
             $last_pid = $message['PID'];
@@ -502,7 +402,7 @@ if ($msg_count > 0) {
     }
 }
 
-if ($msg_count > 0 && !user_is_guest() && !isset($_GET['markasread'])) {
+if ($msg_count > 0 && !session::logged_in() && !isset($_GET['markasread'])) {
     messages_update_read($tid, $last_pid, $thread_data['LAST_READ'], $thread_data['LENGTH'], $thread_data['MODIFIED']);
 }
 
@@ -510,30 +410,30 @@ echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
 
-if (($thread_data['CLOSED'] == 0 && session_check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || session_check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
+if (($thread_data['CLOSED'] == 0 && session::check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || session::check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
 
     echo "    <td width=\"33%\" align=\"left\" style=\"white-space: nowrap\" class=\"postbody\">";
     echo "      <img src=\"". html_style_image('reply_all.png') ."\" alt=\"", gettext("Reply to All"), "\" title=\"", gettext("Reply to All"), "\" border=\"0\" /> ";
     echo "      <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\" id=\"reply_0\"><b>", gettext("Reply to All"), "</b></a>\n";
     echo "    </td>\n";
 
-}else {
+} else {
 
     echo "    <td width=\"33%\" align=\"left\" class=\"postbody\">&nbsp;</td>\n";
 }
 
-if (!user_is_guest()) {
+if (session::logged_in()) {
 
     if ($thread_data['LENGTH'] > 0) {
 
         echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"". html_style_image('thread_options.png') ."\" alt=\"", gettext("Edit Thread Options"), "\" title=\"", gettext("Edit Thread Options"), "\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>", gettext("Edit Thread Options"), "</b></a></td>\n";
 
-    }else {
+    } else {
 
         echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"". html_style_image('thread_options.png') ."\" alt=\"", gettext("Undelete Thread"), "\" title=\"", gettext("Undelete Thread"), "\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>", gettext("Undelete Thread"), "</b></a></td>\n";
     }
 
-}else {
+} else {
 
     echo "    <td width=\"33%\" align=\"center\" class=\"postbody\">&nbsp;</td>\n";
 }
@@ -544,14 +444,14 @@ if ($last_pid < $thread_data['LENGTH']) {
 
     echo "    <td width=\"33%\" align=\"right\" style=\"white-space: nowrap\" class=\"postbody\">", form_quick_button("messages.php", gettext("Keep reading&hellip;"), array('msg' => "$tid.$next_pid")), "</td>\n";
 
-}else {
+} else {
 
     echo "    <td width=\"33%\" align=\"center\" class=\"postbody\">&nbsp;</td>\n";
 }
 
 echo "  </tr>\n";
 
-if (!user_is_guest()) {
+if (session::logged_in()) {
 
     echo "  <tr>\n";
     echo "    <td colspan=\"3\" align=\"center\" class=\"postbody\"><img src=\"". html_style_image('quickreplyall.png') ."\" alt=\"", gettext("Quick Reply to All"), "\" title=\"", gettext("Quick Reply to All"), "\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" rel=\"$tid.0\" class=\"quick_reply_link\"><b>", gettext("Quick Reply to All"), "</b></a></td>\n";

@@ -29,13 +29,13 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "ip.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "timezone.inc.php");
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'ip.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'timezone.inc.php';
 
 function user_count()
 {
@@ -61,7 +61,7 @@ function user_exists($logon, $check_uid = false)
         $sql = "SELECT COUNT(UID) AS USER_COUNT FROM USER ";
         $sql.= "WHERE LOGON = '$logon' AND UID <> '$check_uid'";
 
-    }else {
+    } else {
 
         $sql = "SELECT COUNT(UID) AS USER_COUNT FROM USER ";
         $sql.= "WHERE LOGON = '$logon'";
@@ -84,9 +84,9 @@ function user_create($logon, $password, $nickname, $email)
     $nickname = db_escape_string($nickname);
     $email = db_escape_string($email);
 
-    if (($http_referer = session_get_value('REFERER'))) {
+    if (($http_referer = session::get_value('REFERER'))) {
         $http_referer = db_escape_string($http_referer);
-    }else {
+    } else {
         $http_referer = "";
     }
 
@@ -128,14 +128,14 @@ function user_update($uid, $logon, $nickname, $email)
     $sql.= "WHERE UID = '$uid' ORDER BY MODIFIED DESC ";
     $sql.= "LIMIT 0, 1";
 
-    if (!$result_check = db_query($sql, $db_user_update)) return false;
+    if (!$result = db_query($sql, $db_user_update)) return false;
 
     // If there is some existing data we need to retrieve the
     // data and compare it to the new details.
-    if (db_num_rows($result_check) > 0) {
+    if (db_num_rows($result) > 0) {
 
         // Get the old data from the database and escape it so the strcmp works.
-        $user_history_array = array_map('db_escape_string', db_fetch_array($result_check));
+        $user_history_array = array_map('db_escape_string', db_fetch_array($result));
 
         // Check the data against that passed to the function.
         if ((strcmp($user_history_array['LOGON'], $logon) <> 0) || (strcmp($user_history_array['NICKNAME'], $nickname) <> 0) || (strcmp($user_history_array['EMAIL'], $email) <> 0)) {
@@ -149,7 +149,7 @@ function user_update($uid, $logon, $nickname, $email)
             if (!db_query($sql, $db_user_update)) return false;
         }
 
-    }else {
+    } else {
 
         // No previous data so we just save what we have.
         $sql = "INSERT INTO USER_HISTORY (UID, LOGON, NICKNAME, EMAIL, MODIFIED) ";
@@ -205,9 +205,9 @@ function user_increment_post_count($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
     $sql.= "SET POST_COUNT = POST_COUNT + 1 WHERE UID = '$uid'";
 
     if (!db_query($sql, $db_user_increment_post_count)) return false;
@@ -222,9 +222,9 @@ function user_update_post_count($uid, $post_count)
     if (!is_numeric($uid)) return false;
     if (!is_numeric($post_count)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
     $sql.= "SET POST_COUNT = '$post_count' WHERE UID = '$uid'";
 
     if (!db_query($sql, $db_user_update_post_count)) return false;
@@ -238,9 +238,9 @@ function user_reset_post_count($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
     $sql.= "SET POST_COUNT = NULL WHERE UID = '$uid'";
 
     if (!db_query($sql, $db_user_reset_post_count)) return false;
@@ -468,40 +468,36 @@ function user_get($uid)
 
     if (!is_numeric($uid)) return false;
 
-    $sess_uid = session_get_value('UID');
+    $sess_uid = session::get_value('UID');
 
-    if ((!$table_data = get_table_prefix()) || ($uid == $sess_uid)) {
+    if ((!$table_prefix = get_table_prefix()) || ($uid == $sess_uid) || ($uid == 0)) {
 
         $sql = "SELECT UID, LOGON, PASSWD, NICKNAME, USER.EMAIL, ";
         $sql.= "IPADDRESS, REFERER FROM USER WHERE UID = '$uid'";
 
-    }else {
+    } else {
 
         $sql = "SELECT USER.UID, USER.LOGON, USER.PASSWD, USER.NICKNAME, ";
         $sql.= "USER.EMAIL, USER.IPADDRESS, USER.REFERER, USER_PEER.PEER_NICKNAME FROM USER ";
-        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+        $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
         $sql.= "WHERE USER.UID = '$uid'";
     }
 
     if (!$result = db_query($sql, $db_user_get)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        $user_get = db_fetch_array($result);
+    $user_get = db_fetch_array($result);
 
-        if (isset($user_get['PEER_NICKNAME'])) {
+    if (isset($user_get['PEER_NICKNAME'])) {
 
-            if (!is_null($user_get['PEER_NICKNAME']) && strlen($user_get['PEER_NICKNAME']) > 0) {
-
-                $user_get['NICKNAME'] = $user_get['PEER_NICKNAME'];
-            }
+        if (!is_null($user_get['PEER_NICKNAME']) && strlen($user_get['PEER_NICKNAME']) > 0) {
+            $user_get['NICKNAME'] = $user_get['PEER_NICKNAME'];
         }
-
-        return $user_get;
     }
 
-    return false;
+    return $user_get;
 }
 
 function user_get_by_passhash($uid, $passhash)
@@ -518,13 +514,11 @@ function user_get_by_passhash($uid, $passhash)
 
     if (!$result = db_query($sql, $db_user_get)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        $user_get = db_fetch_array($result);
-        return $user_get;
-    }
+    $user_get = db_fetch_array($result);
 
-    return false;
+    return $user_get;
 }
 
 function user_get_logon($uid)
@@ -537,13 +531,11 @@ function user_get_logon($uid)
 
     if (!$result = db_query($sql, $db_user_get_logon)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        list($logon) = db_fetch_array($result, DB_RESULT_NUM);
-        return $logon;
-    }
+    list($logon) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return false;
+    return $logon;
 }
 
 function user_get_nickname($uid)
@@ -556,13 +548,11 @@ function user_get_nickname($uid)
 
     if (!$result = db_query($sql, $db_user_get_nickname)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        list($nickname) = db_fetch_array($result, DB_RESULT_NUM);
-        return $nickname;
-    }
+    list($nickname) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return false;
+    return $nickname;
 }
 
 function user_get_email($uid)
@@ -575,13 +565,11 @@ function user_get_email($uid)
 
     if (!$result = db_query($sql, $db_user_get_email)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        list($email) = db_fetch_array($result, DB_RESULT_NUM);
-        return $email;
-    }
+    list($email) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return false;
+    return $email;
 }
 
 function user_get_referer($uid)
@@ -594,13 +582,11 @@ function user_get_referer($uid)
 
     if (!$result = db_query($sql, $db_user_get_referer)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        list($referer) = db_fetch_array($result, DB_RESULT_NUM);
-        return $referer;
-    }
+    list($referer) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return false;
+    return $referer;
 }
 
 function user_get_passwd($uid)
@@ -613,13 +599,11 @@ function user_get_passwd($uid)
 
     if (!$result = db_query($sql, $db_user_get_passwd)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        list($passwd) = db_fetch_array($result, DB_RESULT_NUM);
-        return $passwd;
-    }
+    list($passwd) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return false;
+    return $passwd;
 }
 
 function user_get_by_logon($logon)
@@ -634,13 +618,11 @@ function user_get_by_logon($logon)
 
     if (!$result = db_query($sql, $db_user_get_by_logon)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        $user_array = db_fetch_array($result);
-        return $user_array;
-    }
+    $user_array = db_fetch_array($result);
 
-    return false;
+    return $user_array;
 }
 
 function user_get_sig($uid, &$content, &$html)
@@ -649,19 +631,17 @@ function user_get_sig($uid, &$content, &$html)
 
     if (!is_numeric($uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "SELECT CONTENT, HTML FROM `{$table_data['PREFIX']}USER_SIG` WHERE UID = '$uid'";
+    $sql = "SELECT CONTENT, HTML FROM `{$table_prefix}USER_SIG` WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_get_sig)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        list($content, $html) = db_fetch_array($result, DB_RESULT_NUM);
-        return true;
-    }
+    list($content, $html) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return false;
+    return true;
 }
 
 function user_get_last_ip_address($uid)
@@ -674,13 +654,11 @@ function user_get_last_ip_address($uid)
 
     if (!$result = db_query($sql, $db_user_get_last_ip_address)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        list($ipaddress) = db_fetch_array($result, DB_RESULT_NUM);
-        return $ipaddress;
-    }
+    list($ipaddress) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return false;
+    return $ipaddress;
 }
 
 function user_get_prefs($uid)
@@ -723,14 +701,14 @@ function user_get_prefs($uid)
     }
 
     // 3. The user's per-forum prefs, in GLOBAL USER_PREFS (not all prefs are set here e.g. name):
-    if (($table_data = get_table_prefix())) {
+    if (($table_prefix = get_table_prefix())) {
 
         $sql = "SELECT HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, MARK_AS_OF_INT, POSTS_PER_PAGE, ";
         $sql.= "FONT_SIZE, STYLE, EMOTICONS, VIEW_SIGS, START_PAGE, LANGUAGE, SHOW_STATS, ";
         $sql.= "IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, SHOW_THUMBS, ENABLE_WIKI_WORDS, ";
         $sql.= "USE_MOVER_SPOILER, USE_LIGHT_MODE_SPOILER, USE_OVERFLOW_RESIZE, PIC_AID, AVATAR_URL, ";
         $sql.= "AVATAR_AID, REPLY_QUICK, THREADS_BY_FOLDER, THREAD_LAST_PAGE, LEFT_FRAME_WIDTH, ";
-        $sql.= "SHOW_AVATARS, SHOW_SHARE_LINKS FROM `{$table_data['PREFIX']}USER_PREFS` ";
+        $sql.= "SHOW_AVATARS, SHOW_SHARE_LINKS FROM `{$table_prefix}USER_PREFS` ";
         $sql.= "WHERE UID = '$uid'";
 
         if (!$result = db_query($sql, $db_user_get_prefs)) return false;
@@ -778,36 +756,91 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     $forum_prefs_array  = array();
 
     // names of preferences that can be set globally
-    $global_pref_names = array('FIRSTNAME', 'LASTNAME', 'DOB', 'HOMEPAGE_URL', 
-                               'PIC_URL', 'EMAIL_NOTIFY', 'TIMEZONE', 'DL_SAVING', 
-                               'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE', 
-                               'STYLE', 'EMOTICONS', 'VIEW_SIGS', 'START_PAGE', 
-                               'LANGUAGE', 'PM_NOTIFY', 'PM_NOTIFY_EMAIL', 
-                               'PM_SAVE_SENT_ITEM', 'PM_INCLUDE_REPLY', 'PM_AUTO_PRUNE', 
-                               'PM_EXPORT_TYPE', 'PM_EXPORT_FILE', 'PM_EXPORT_ATTACHMENTS', 
-                               'PM_EXPORT_STYLE', 'PM_EXPORT_WORDFILTER', 'DOB_DISPLAY', 
-                               'ANON_LOGON', 'SHOW_STATS', 'IMAGES_TO_LINKS', 
-                               'USE_WORD_FILTER', 'USE_ADMIN_FILTER', 'ALLOW_EMAIL', 
-                               'USE_EMAIL_ADDR', 'ALLOW_PM', 'POST_PAGE', 'SHOW_THUMBS', 
-                               'ENABLE_WIKI_WORDS', 'USE_MOVER_SPOILER', 
-                               'USE_LIGHT_MODE_SPOILER', 'USE_OVERFLOW_RESIZE', 
-                               'PIC_AID', 'AVATAR_URL', 'AVATAR_AID', 'REPLY_QUICK', 
-                               'THREADS_BY_FOLDER', 'THREAD_LAST_PAGE', 'LEFT_FRAME_WIDTH', 
-                               'SHOW_AVATARS', 'SHOW_SHARE_LINKS');
+    $global_pref_names = array(
+        'FIRSTNAME', 
+        'LASTNAME', 
+        'DOB', 
+        'HOMEPAGE_URL', 
+        'PIC_URL', 
+        'EMAIL_NOTIFY', 
+        'TIMEZONE', 
+        'DL_SAVING', 
+        'MARK_AS_OF_INT', 
+        'POSTS_PER_PAGE', 
+        'FONT_SIZE', 
+        'STYLE', 
+        'EMOTICONS', 
+        'VIEW_SIGS', 
+        'START_PAGE', 
+        'LANGUAGE', 
+        'PM_NOTIFY', 
+        'PM_NOTIFY_EMAIL', 
+        'PM_SAVE_SENT_ITEM', 
+        'PM_INCLUDE_REPLY', 
+        'PM_AUTO_PRUNE', 
+        'PM_EXPORT_TYPE', 
+        'PM_EXPORT_FILE', 
+        'PM_EXPORT_ATTACHMENTS', 
+        'PM_EXPORT_STYLE', 
+        'PM_EXPORT_WORDFILTER', 
+        'DOB_DISPLAY', 
+        'ANON_LOGON', 
+        'SHOW_STATS', 
+        'IMAGES_TO_LINKS', 
+        'USE_WORD_FILTER', 
+        'USE_ADMIN_FILTER', 
+        'ALLOW_EMAIL', 
+        'USE_EMAIL_ADDR', 
+        'ALLOW_PM', 
+        'POST_PAGE', 
+        'SHOW_THUMBS', 
+        'ENABLE_WIKI_WORDS', 
+        'USE_MOVER_SPOILER', 
+        'USE_LIGHT_MODE_SPOILER', 
+        'USE_OVERFLOW_RESIZE', 
+        'PIC_AID', 
+        'AVATAR_URL', 
+        'AVATAR_AID', 
+        'REPLY_QUICK', 
+        'THREADS_BY_FOLDER', 
+        'THREAD_LAST_PAGE', 
+        'LEFT_FRAME_WIDTH', 
+        'SHOW_AVATARS', 
+        'SHOW_SHARE_LINKS'
+    );
 
     // names of preferences that can be set on a per-forum basis
-    $forum_pref_names =  array('HOMEPAGE_URL', 'PIC_URL', 'EMAIL_NOTIFY', 
-                               'MARK_AS_OF_INT', 'POSTS_PER_PAGE', 'FONT_SIZE', 
-                               'STYLE', 'EMOTICONS', 'VIEW_SIGS', 
-                               'START_PAGE', 'LANGUAGE', 'SHOW_STATS', 
-                               'IMAGES_TO_LINKS', 'USE_WORD_FILTER', 
-                               'USE_ADMIN_FILTER', 'SHOW_THUMBS', 
-                               'ENABLE_WIKI_WORDS', 'USE_MOVER_SPOILER', 
-                               'USE_LIGHT_MODE_SPOILER', 'USE_OVERFLOW_RESIZE', 
-                               'PIC_AID', 'AVATAR_URL', 'AVATAR_AID', 
-                               'REPLY_QUICK', 'THREADS_BY_FOLDER', 
-                               'THREAD_LAST_PAGE', 'LEFT_FRAME_WIDTH', 
-                               'SHOW_AVATARS', 'SHOW_SHARE_LINKS');
+    $forum_pref_names =  array(
+        'HOMEPAGE_URL',
+        'PIC_URL',
+        'EMAIL_NOTIFY',
+        'MARK_AS_OF_INT',
+        'POSTS_PER_PAGE',
+        'FONT_SIZE',
+        'STYLE',
+        'EMOTICONS',
+        'VIEW_SIGS',
+        'START_PAGE',
+        'LANGUAGE',
+        'SHOW_STATS',
+        'IMAGES_TO_LINKS',
+        'USE_WORD_FILTER',
+        'USE_ADMIN_FILTER',
+        'SHOW_THUMBS',
+        'ENABLE_WIKI_WORDS',
+        'USE_MOVER_SPOILER',
+        'USE_LIGHT_MODE_SPOILER',
+        'USE_OVERFLOW_RESIZE',
+        'PIC_AID',
+        'AVATAR_URL',
+        'AVATAR_AID',
+        'REPLY_QUICK',
+        'THREADS_BY_FOLDER',
+        'THREAD_LAST_PAGE',
+        'LEFT_FRAME_WIDTH',
+        'SHOW_AVATARS',
+        'SHOW_SHARE_LINKS'
+    );
 
     // Loop through the passed preference names and check they're valid
     // and whether the value needs to go in the global or forum USER_PREFS table.
@@ -822,7 +855,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
                     $global_prefs_array[$pref_name] = $pref_setting;
                 }
 
-            }else {
+            } else {
 
                 if (in_array($pref_name, $forum_pref_names)) {
 
@@ -872,7 +905,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         }
     }
 
-    if ((sizeof($forum_prefs_array) > 0) && ($table_data = get_table_prefix())) {
+    if ((sizeof($forum_prefs_array) > 0) && ($table_prefix = get_table_prefix())) {
 
         // Concat the column names together, escaping them and enclosing them in backticks.
         $column_names = implode("`, `", array_map('db_escape_string', array_keys($forum_prefs_array)));
@@ -885,7 +918,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         $column_update_values = implode(", ", array_map('user_update_prefs_callback', array_keys($forum_prefs_array)));
 
         // Construct the query and run it.
-        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_PREFS` (`UID`, `$column_names`) ";
+        $sql = "INSERT INTO `{$table_prefix}USER_PREFS` (`UID`, `$column_names`) ";
         $sql.= "VALUES('$uid', '$column_insert_values') ON DUPLICATE KEY UPDATE $column_update_values ";
 
         if (!db_query($sql, $db_user_update_prefs)) return false;
@@ -1017,11 +1050,11 @@ function user_update_sig($uid, $content, $html, $global_update = false)
             if (!db_query($sql, $db_user_update_sig)) return false;
         }
 
-    }else {
+    } else {
 
-        if (!$table_data = get_table_prefix()) return false;
+        if (!($table_prefix = get_table_prefix())) return false;
 
-        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_SIG` (UID, CONTENT, HTML) ";
+        $sql = "INSERT INTO `{$table_prefix}USER_SIG` (UID, CONTENT, HTML) ";
         $sql.= "VALUES ('$uid', '$content', '$html') ON DUPLICATE KEY UPDATE ";
         $sql.= "CONTENT = VALUES(CONTENT), HTML = VALUES(HTML)";
 
@@ -1034,11 +1067,6 @@ function user_update_sig($uid, $content, $html, $global_update = false)
 function user_update_global_sig($uid, $value, $global = true)
 {
     return user_update_prefs($uid, array('VIEW_SIGS' => ($value == 'N') ? 'N' : 'Y'), array('VIEW_SIGS' => $global));
-}
-
-function user_is_guest()
-{
-    return (session_get_value('UID') == 0);
 }
 
 function user_guest_enabled()
@@ -1054,9 +1082,9 @@ function user_get_forthcoming_birthdays()
 {
     if (!$db_user_get_forthcoming_birthdays = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $uid = session_get_value('UID');
+    $uid = session::get_value('UID');
 
     // Constants for user relationship
     $user_ignored = USER_IGNORED;
@@ -1067,7 +1095,7 @@ function user_get_forthcoming_birthdays()
     $sql.= "DATEDIFF(DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '01-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d')), ";
     $sql.= "DATEDIFF(DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '00-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d'))) AS DAY_COUNT ";
     $sql.= "FROM USER USER LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID ";
     $sql.= "AND USER_PEER.UID = '$uid') WHERE USER_PREFS_GLOBAL.DOB > 0 AND USER_PREFS_GLOBAL.DOB_DISPLAY > 1 ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 OR USER_PEER.RELATIONSHIP IS NULL) ";
@@ -1077,25 +1105,22 @@ function user_get_forthcoming_birthdays()
 
     if (!$result = db_query($sql, $db_user_get_forthcoming_birthdays)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        $user_birthdays_array = array();
+    $user_birthdays_array = array();
 
-        while (($user_birthday_data = db_fetch_array($result))) {
+    while (($user_birthday_data = db_fetch_array($result))) {
 
-            if (isset($user_birthday_data['PEER_NICKNAME'])) {
-                if (!is_null($user_birthday_data['PEER_NICKNAME']) && strlen($user_birthday_data['PEER_NICKNAME']) > 0) {
-                    $user_birthday_data['NICKNAME'] = $user_birthday_data['PEER_NICKNAME'];
-                }
+        if (isset($user_birthday_data['PEER_NICKNAME'])) {
+            if (!is_null($user_birthday_data['PEER_NICKNAME']) && strlen($user_birthday_data['PEER_NICKNAME']) > 0) {
+                $user_birthday_data['NICKNAME'] = $user_birthday_data['PEER_NICKNAME'];
             }
-
-            $user_birthdays_array[] = $user_birthday_data;
         }
 
-        return $user_birthdays_array;
+        $user_birthdays_array[] = $user_birthday_data;
     }
 
-    return false;
+    return $user_birthdays_array;
 }
 
 function user_search_array_clean($user_search)
@@ -1107,11 +1132,9 @@ function user_search($user_search)
 {
     if (!$db_user_search = db_connect()) return false;
 
-    $table_data = get_table_prefix();
-
     $user_array = array();
 
-    $uid = session_get_value('UID');
+    $uid = session::get_value('UID');
 
     $user_search_array = explode(";", $user_search);
     $user_search_array = array_map('user_search_array_clean', $user_search_array);
@@ -1120,11 +1143,11 @@ function user_search($user_search)
     $user_search_nickname = implode("%' OR NICKNAME LIKE '", $user_search_array);
 
     // Include join to USER_PEER table if we have a valid forum.
-    if (isset($table_data['PREFIX'])) {
+    if (($table_prefix = get_table_prefix())) {
 
         // Main query.
         $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-        $sql.= "USER_PEER.RELATIONSHIP FROM USER LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+        $sql.= "USER_PEER.RELATIONSHIP FROM USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
         $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
         $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
@@ -1149,25 +1172,26 @@ function user_search($user_search)
     list($user_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
     // Check if we have any results.
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        while (($user_data = db_fetch_array($result))) {
+    while (($user_data = db_fetch_array($result))) {
 
-            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
-                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
-                }
+        if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+            if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
             }
-
-            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
-            if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
-
-            $user_array[$user_data['UID']] = $user_data;
         }
+
+        if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
+        if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
+
+        $user_array[$user_data['UID']] = $user_data;
     }
 
-    return array('results_count' => $user_count,
-                 'results_array' => $user_array);
+    return array(
+        'results_count' => $user_count,
+        'results_array' => $user_array
+    );
 }
 
 function user_get_ip_addresses($uid)
@@ -1176,24 +1200,22 @@ function user_get_ip_addresses($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $user_ip_addresses_array = array();
 
     // Fetch the last 20 IP addresses from the POST table
-    $sql = "SELECT DISTINCT IPADDRESS FROM `{$table_data['PREFIX']}POST` ";
+    $sql = "SELECT DISTINCT IPADDRESS FROM `{$table_prefix}POST` ";
     $sql.= "WHERE FROM_UID = '$uid' ORDER BY TID DESC LIMIT 0, 10";
 
     if (!$result = db_query($sql, $db_user_get_ip_addresses)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        while (($user_ip_addresses_row = db_fetch_array($result))) {
+    while (($user_ip_addresses_row = db_fetch_array($result))) {
 
-            if (strlen($user_ip_addresses_row['IPADDRESS']) > 0) {
-
-                $user_ip_addresses_array[] = $user_ip_addresses_row['IPADDRESS'];
-            }
+        if (strlen($user_ip_addresses_row['IPADDRESS']) > 0) {
+            $user_ip_addresses_array[] = $user_ip_addresses_row['IPADDRESS'];
         }
     }
 
@@ -1206,16 +1228,16 @@ function user_get_friends($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $user_rel = USER_FRIEND;
 
-    $sess_uid = session_get_value('UID');
+    $sess_uid = session::get_value('UID');
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "USER_PEER.RELATIONSHIP FROM `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+    $sql.= "USER_PEER.RELATIONSHIP FROM `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
     $sql.= "WHERE USER.UID IS NOT NULL AND USER_PEER.UID = '$uid' ";
     $sql.= "AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
@@ -1223,84 +1245,78 @@ function user_get_friends($uid)
 
     if (!$result = db_query($sql, $db_user_get_peers)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        $user_get_peers_array = array();
+    $user_get_peers_array = array();
 
-        while (($user_data = db_fetch_array($result))) {
+    while (($user_data = db_fetch_array($result))) {
 
-            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
-                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
-                }
+        if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+            if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
             }
-
-            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
-            if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
-
-            $user_get_peers_array[] = $user_data;
         }
 
-        return $user_get_peers_array;
+        if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
+        if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
+
+        $user_get_peers_array[] = $user_data;
     }
 
-    return false;
+    return $user_get_peers_array;
 }
 
-function user_get_relationships($uid, $offset = 0)
+function user_get_relationships($uid, $page = 1)
 {
     if (!$db_user_get_relationships = db_connect()) return false;
 
     $user_get_peers_array = array();
 
     if (!is_numeric($uid)) return false;
-    if (!is_numeric($offset)) return false;
+    
+    if (!is_numeric($page) || ($page < 1)) $page = 1;
 
-    $offset = abs($offset);
+    $offset = calculate_page_offset($page, 10);
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, USER_PEER.PEER_NICKNAME ";
-    $sql.= "FROM `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+    $sql.= "FROM `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
     $sql.= "WHERE USER_PEER.UID = '$uid' AND USER.UID IS NOT NULL ";
     $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_user_get_relationships)) return false;
 
-    // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_user_get_relationships)) return false;
 
     list($user_get_peers_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
-    // Check if we have any results.
-    if (db_num_rows($result) > 0) {
-
-        while (($user_data = db_fetch_array($result))) {
-
-            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
-                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
-                }
-            }
-
-            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
-            if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
-
-            $user_get_peers_array[$user_data['UID']] = $user_data;
-        }
-
-    }else if ($user_get_peers_count > 0) {
-
-        $offset = floor(($user_get_peers_count - 1) / 10) * 10;
-        return user_get_relationships($uid, $offset);
+    if ((db_num_rows($result) == 0) && ($user_get_peers_count > 0) && ($page > 1)) {
+        return user_get_relationships($uid, $page - 1);
     }
 
-    return array('user_count' => $user_get_peers_count,
-                 'user_array' => $user_get_peers_array);
+    while (($user_data = db_fetch_array($result))) {
+
+        if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+            if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
+            }
+        }
+
+        if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
+        if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
+
+        $user_get_peers_array[$user_data['UID']] = $user_data;
+    }
+
+    return array(
+        'user_count' => $user_get_peers_count,
+        'user_array' => $user_get_peers_array
+    );
 }
 
 function user_get_peer_relationship($uid, $peer_uid)
@@ -1310,9 +1326,9 @@ function user_get_peer_relationship($uid, $peer_uid)
     if (!is_numeric($uid)) return false;
     if (!is_numeric($peer_uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "SELECT RELATIONSHIP FROM `{$table_data['PREFIX']}USER_PEER` ";
+    $sql = "SELECT RELATIONSHIP FROM `{$table_prefix}USER_PEER` ";
     $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
     if (!$result = db_query($sql, $db_user_get_peer_relationship)) return false;
@@ -1333,10 +1349,10 @@ function user_get_peer_nickname($uid, $peer_uid)
     if (!is_numeric($uid)) return false;
     if (!is_numeric($peer_uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS NICKNAME ";
-    $sql.= "FROM USER LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+    $sql.= "FROM USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = '$peer_uid'";
 
@@ -1351,20 +1367,21 @@ function user_get_peer_nickname($uid, $peer_uid)
     return user_get_nickname($peer_uid);
 }
 
-function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
+function user_search_relationships($user_search, $page = 1, $exclude_uid = 0)
 {
     if (!$db_user_search = db_connect()) return false;
 
-    if (!is_numeric($offset)) return false;
-    if (!is_numeric($exclude_uid)) return false;
+    if (!is_numeric($page) || ($page < 1)) $page = 1;
 
-    $offset = abs($offset);
+    if (!is_numeric($exclude_uid)) $exclude_uid = 0;
 
-    if (!$table_data = get_table_prefix()) return false;
+    $offset = calculate_page_offset($page, 10);
+
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $user_search_peers_array = array();
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
     $user_search_array = explode(";", $user_search);
     $user_search_array = array_map('user_search_array_clean', $user_search_array);
@@ -1374,7 +1391,7 @@ function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
-    $sql.= "FROM USER USER LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+    $sql.= "FROM USER USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
     $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
@@ -1382,85 +1399,76 @@ function user_search_relationships($user_search, $offset = 0, $exclude_uid = 0)
 
     if (!$result = db_query($sql, $db_user_search)) return false;
 
-    // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_user_search)) return false;
 
     list($user_search_peers_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
-    // Check if we have any results.
-    if (db_num_rows($result) > 0) {
+    if ((db_num_rows($result) == 0) && ($user_search_peers_count > 0) && ($page > 1)) {
+        return user_search_relationships($user_search, $page - 1, $exclude_uid);
+    }
+        
+    while (($user_data = db_fetch_array($result))) {
 
-        while (($user_data = db_fetch_array($result))) {
-
-            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
-                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
-                }
+        if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+            if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
             }
-
-            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
-            if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
-
-            $user_search_peers_array[$user_data['UID']] = $user_data;
         }
 
-    }else if ($user_search_peers_count > 0) {
+        if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
+        if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
 
-        $offset = floor(($user_search_peers_count - 1) / 10) * 10;
-        return user_search_relationships($user_search, $offset, $exclude_uid);
+        $user_search_peers_array[$user_data['UID']] = $user_data;
     }
 
-    return array('user_count' => $user_search_peers_count,
-                 'user_array' => $user_search_peers_array);
+    return array(
+        'user_count' => $user_search_peers_count,
+        'user_array' => $user_search_peers_array
+    );
 }
 
-function user_get_word_filter_list($offset)
+function user_get_word_filter_list($page)
 {
     if (!$db_user_get_word_filter_list = db_connect()) return false;
 
-    if (!is_numeric($offset)) $offset = 0;
+    if (!is_numeric($page)) $page = 1;
 
-    $offset = abs($offset);
+    $offset = calculate_page_offset($page, 10);
 
     $word_filter_array = array();
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS FID, FILTER_NAME, MATCH_TEXT, ";
     $sql.= "REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED ";
-    $sql.= "FROM `{$table_data['PREFIX']}WORD_FILTER` ";
+    $sql.= "FROM `{$table_prefix}WORD_FILTER` ";
     $sql.= "WHERE UID = '$uid' ORDER BY FID ";
     $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_user_get_word_filter_list)) return false;
 
-    // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_user_get_word_filter_list)) return false;
 
     list($word_filter_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
-    // Check if we have any results.
-    if (db_num_rows($result) > 0) {
-
-        while (($word_filter_data = db_fetch_array($result))) {
-
-            $word_filter_array[$word_filter_data['FID']] = $word_filter_data;
-        }
-
-    }else if ($word_filter_count > 0) {
-
-        $offset = floor(($word_filter_count - 1) / 10) * 10;
-        return user_get_word_filter_list($offset);
+    if ((db_num_rows($result) == 0) && ($word_filter_count > 0) && ($page > 1)) {
+        return user_get_word_filter_list($page - 1);
     }
 
-    return array('word_filter_count' => $word_filter_count,
-                 'word_filter_array' => $word_filter_array);
+    while (($word_filter_data = db_fetch_array($result))) {
+        $word_filter_array[$word_filter_data['FID']] = $word_filter_data;
+    }
+
+    return array(
+        'word_filter_count' => $word_filter_count,
+        'word_filter_array' => $word_filter_array
+    );
 }
 
 function user_get_word_filter($filter_id)
@@ -1469,36 +1477,34 @@ function user_get_word_filter($filter_id)
 
     if (!is_numeric($filter_id)) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, ";
-    $sql.= "FILTER_ENABLED FROM `{$table_data['PREFIX']}WORD_FILTER` ";
+    $sql.= "FILTER_ENABLED FROM `{$table_prefix}WORD_FILTER` ";
     $sql.= "WHERE FID = '$filter_id' AND UID = '$uid' ";
     $sql.= "ORDER BY FID";
 
     if (!$result = db_query($sql, $db_user_get_word_filter)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        $word_filter_array = db_fetch_array($result);
-        return $word_filter_array;
-    }
+    $word_filter_array = db_fetch_array($result);
 
-    return false;
+    return $word_filter_array;
 }
 
 function user_get_word_filter_count()
 {
     if (!$db_user_get_word_filter_count = db_connect()) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COUNT(FID) AS FILTER_COUNT ";
-    $sql.= "FROM `{$table_data['PREFIX']}WORD_FILTER` ";
+    $sql.= "FROM `{$table_prefix}WORD_FILTER` ";
     $sql.= "WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_get_word_filter_count)) return false;
@@ -1512,11 +1518,11 @@ function user_clear_word_filter()
 {
     if (!$db_user_clear_word_filter = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
-    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}WORD_FILTER` WHERE UID = '$uid'";
+    $sql = "DELETE QUICK FROM `{$table_prefix}WORD_FILTER` WHERE UID = '$uid'";
 
     if (!db_query($sql, $db_user_clear_word_filter)) return false;
 
@@ -1534,11 +1540,11 @@ function user_add_word_filter($filter_name, $match_text, $replace_text, $filter_
     if (!is_numeric($filter_option)) return false;
     if (!is_numeric($filter_enabled)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
-    $sql = "INSERT INTO `{$table_data['PREFIX']}WORD_FILTER` ";
+    $sql = "INSERT INTO `{$table_prefix}WORD_FILTER` ";
     $sql.= "(UID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED) ";
     $sql.= "VALUES ('$uid', '$filter_name', '$match_text', '$replace_text', '$filter_option', '$filter_enabled')";
 
@@ -1560,11 +1566,11 @@ function user_update_word_filter($filter_id, $filter_name, $match_text, $replace
     $match_text   = db_escape_string($match_text);
     $replace_text = db_escape_string($replace_text);
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}WORD_FILTER` SET FILTER_NAME = '$filter_name', ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_prefix}WORD_FILTER` SET FILTER_NAME = '$filter_name', ";
     $sql.= "MATCH_TEXT = '$match_text', REPLACE_TEXT = '$replace_text', ";
     $sql.= "FILTER_TYPE = '$filter_option', FILTER_ENABLED = '$filter_enabled' ";
     $sql.= "WHERE UID = '$uid' AND FID = '$filter_id'";
@@ -1580,11 +1586,11 @@ function user_delete_word_filter($filter_id)
 
     if (!is_numeric($filter_id)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
-    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}WORD_FILTER` ";
+    $sql = "DELETE QUICK FROM `{$table_prefix}WORD_FILTER` ";
     $sql.= "WHERE UID = '$uid' AND FID = '$filter_id'";
 
     if (!db_query($sql, $db_user_delete_word_filter)) return false;
@@ -1598,9 +1604,9 @@ function user_is_active($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $forum_fid = $table_data['FID'];
+    if (!($forum_fid = get_forum_fid())) return false;
 
     $sql = "SELECT COUNT(*) FROM SESSIONS WHERE UID = '$uid' ";
     $sql.= "AND FID = '$forum_fid'";
@@ -1662,37 +1668,27 @@ function user_prefs_prep_attachments($image_attachments_array)
     return $attachments_array_prepared;
 }
 
-/**
-* Get Local Time.
-*
-* Get's user's local time as a Unix timestamp by checking their timezone,
-* GMT and DST offsets and day light savings settings.
-*
-* @return integer
-* @param void
-*/
-
 function user_get_local_time()
 {
-    if (($timezone_id = session_get_value('TIMEZONE')) === false) {
+    if (($timezone_id = session::get_value('TIMEZONE')) === false) {
         $timezone_id = forum_get_setting('forum_timezone', false, 27);
     }
 
-    if (($gmt_offset = session_get_value('GMT_OFFSET')) === false) {
+    if (($gmt_offset = session::get_value('GMT_OFFSET')) === false) {
         $gmt_offset = forum_get_setting('forum_gmt_offset', false, 0);
     }
 
-    if (($dst_offset = session_get_value('DST_OFFSET')) === false) {
+    if (($dst_offset = session::get_value('DST_OFFSET')) === false) {
         $dst_offset = forum_get_setting('forum_dst_offset', false, 0);
     }
 
-    if (($dl_saving = session_get_value('DL_SAVING')) === false) {
+    if (($dl_saving = session::get_value('DL_SAVING')) === false) {
         $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
     }
 
     if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
         $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS) + ($dst_offset * HOUR_IN_SECONDS);
-    }else {
+    } else {
         $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS);
     }
 
@@ -1705,9 +1701,9 @@ function user_get_posts($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "SELECT TID, PID FROM `{$table_data['PREFIX']}POST` WHERE FROM_UID = '$uid'";
+    $sql = "SELECT TID, PID FROM `{$table_prefix}POST` WHERE FROM_UID = '$uid'";
 
     if (!$result = db_query($sql, $db_user_get_posts)) return false;
 

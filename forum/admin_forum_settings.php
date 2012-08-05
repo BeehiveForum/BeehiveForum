@@ -21,123 +21,64 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "styles.inc.php");
-include_once(BH_INCLUDE_PATH. "timezone.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'styles.inc.php';
+require_once BH_INCLUDE_PATH. 'timezone.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
 
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
+// Check we have Admin / Moderator access
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+    html_draw_error(gettext("You do not have permission to use this section."));
 }
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
 
 // Get the user's post page preferences.
-$page_prefs = session_get_post_page_prefs();
-
-// Check to see if the user can access this page.
-if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You do not have permission to use this section."));
-    html_draw_bottom();
-    exit;
-}
+$page_prefs = session::get_post_page_prefs();
 
 // Content Ratings
-$content_ratings_array = array(FORUM_RATING_GENERAL    => 'General',
-                               FORUM_RATING_FOURTEEN   => '14 Years',
-                               FORUM_RATING_MATURE     => 'Mature',
-                               FORUM_RATING_RESTRICTED => 'Restricted');
+$content_ratings_array = array(
+    FORUM_RATING_GENERAL => 'General',
+    FORUM_RATING_FOURTEEN => '14 Years',
+    FORUM_RATING_MATURE => 'Mature',
+    FORUM_RATING_RESTRICTED => 'Restricted'
+);
 
 // Array of valid Google Adsense ad user account types
-$adsense_user_type_array = array(ADSENSE_DISPLAY_NONE      => gettext("No-one (disabled)"),
-                                 ADSENSE_DISPLAY_ALL_USERS => gettext("All Users"),
-                                 ADSENSE_DISPLAY_GUESTS    => gettext("Guests only"));
+$adsense_user_type_array = array(
+    ADSENSE_DISPLAY_NONE => gettext("No-one (disabled)"),
+    ADSENSE_DISPLAY_ALL_USERS => gettext("All Users"),
+    ADSENSE_DISPLAY_GUESTS => gettext("Guests only")
+);
 
 // Array of valid Google Adsense ad page types
-$adsense_page_type_array = array(ADSENSE_DISPLAY_TOP_OF_ALL_PAGES => gettext("Top of every page"),
-                                 ADSENSE_DISPLAY_TOP_OF_MESSAGES => gettext("Top of messages"),
-                                 ADSENSE_DISPLAY_BOTTOM_OF_ALL_PAGES => gettext("Bottom of every page"),
-                                 ADSENSE_DISPLAY_BOTTOM_OF_MESSAGES => gettext("Bottom of messages"),
-                                 ADSENSE_DISPLAY_ONCE_AFTER_NTH_MSG => gettext("Once only after the nth post"),
-                                 ADSENSE_DISPLAY_AFTER_EVERY_NTH_MSG => gettext("After every nth post"),
-                                 ADSENSE_DISPLAY_AFTER_RANDOM_MSG => gettext("Once after a random post"));
+$adsense_page_type_array = array(
+    ADSENSE_DISPLAY_TOP_OF_ALL_PAGES => gettext("Top of every page"),
+    ADSENSE_DISPLAY_TOP_OF_MESSAGES => gettext("Top of messages"),
+    ADSENSE_DISPLAY_BOTTOM_OF_ALL_PAGES => gettext("Bottom of every page"),
+    ADSENSE_DISPLAY_BOTTOM_OF_MESSAGES => gettext("Bottom of messages"),
+    ADSENSE_DISPLAY_ONCE_AFTER_NTH_MSG => gettext("Once only after the nth post"),
+    ADSENSE_DISPLAY_AFTER_EVERY_NTH_MSG => gettext("After every nth post"),
+    ADSENSE_DISPLAY_AFTER_RANDOM_MSG => gettext("Once after a random post")
+);
 
 // Array to hold error messages.
 $error_msg_array = array();
@@ -160,7 +101,7 @@ if (isset($_POST['changepermissions'])) {
     header_redirect($redirect_uri);
     exit;
 
-}elseif (isset($_POST['changepassword'])) {
+} else if (isset($_POST['changepassword'])) {
 
     $redirect_uri = "admin_forum_set_passwd.php?webtag=$webtag&fid={$forum_settings['fid']}";
     $redirect_uri.= "&ret=". rawurlencode(get_request_uri(true, false));
@@ -168,39 +109,39 @@ if (isset($_POST['changepermissions'])) {
     header_redirect($redirect_uri);
     exit;
 
-}elseif (isset($_POST['save'])) {
+} else if (isset($_POST['save'])) {
 
     $valid = true;
 
     if (isset($_POST['forum_name']) && strlen(trim(stripslashes_array($_POST['forum_name']))) > 0) {
         $new_forum_settings['forum_name'] = trim(stripslashes_array($_POST['forum_name']));
-    }else {
+    } else {
         $error_msg_array[] = gettext("You must supply a forum name");
         $valid = false;
     }
 
     if (isset($_POST['forum_email']) && strlen(trim(stripslashes_array($_POST['forum_email']))) > 0) {
         $new_forum_settings['forum_email'] = trim(stripslashes_array($_POST['forum_email']));
-    }else {
+    } else {
         $error_msg_array[] = gettext("You must supply a forum email address");
         $valid = false;
     }
 
     if (isset($_POST['forum_desc']) && strlen(trim(stripslashes_array($_POST['forum_desc']))) > 0) {
         $new_forum_settings['forum_desc'] = trim(stripslashes_array($_POST['forum_desc']));
-    }else {
+    } else {
         $new_forum_settings['forum_desc'] = "";
     }
 
     if (isset($_POST['forum_content_rating']) && is_numeric($_POST['forum_content_rating'])) {
         $new_forum_settings['forum_content_rating'] = $_POST['forum_content_rating'];
-    }else {
+    } else {
         $new_forum_settings['forum_content_rating'] = FORUM_RATING_GENERAL;
     }
 
     if (isset($_POST['forum_keywords']) && strlen(trim(stripslashes_array($_POST['forum_keywords']))) > 0) {
         $new_forum_settings['forum_keywords'] = trim(stripslashes_array($_POST['forum_keywords']));
-    }else {
+    } else {
         $new_forum_settings['forum_keywords'] = "";
     }
 
@@ -208,7 +149,7 @@ if (isset($_POST['changepermissions'])) {
 
         $new_forum_settings['default_style'] = trim(stripslashes_array($_POST['default_style']));
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("You must choose a default forum style");
         $valid = false;
@@ -223,7 +164,7 @@ if (isset($_POST['changepermissions'])) {
             $valid = false;
         }
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("You must choose default forum emoticons");
         $valid = false;
@@ -233,7 +174,7 @@ if (isset($_POST['changepermissions'])) {
 
         $new_forum_settings['default_language'] = $_POST['default_language'];
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("You must choose a default forum language");
         $valid = false;
@@ -243,32 +184,32 @@ if (isset($_POST['changepermissions'])) {
 
         if (isset($_POST['enable_google_analytics']) && $_POST['enable_google_analytics'] == "Y") {
             $new_forum_settings['enable_google_analytics'] = "Y";
-        }else {
+        } else {
             $new_forum_settings['enable_google_analytics'] = "N";
         }
 
         if (isset($_POST['google_analytics_code']) && strlen(trim(stripslashes_array($_POST['google_analytics_code']))) > 0) {
             $new_forum_settings['google_analytics_code'] = trim(stripslashes_array($_POST['google_analytics_code']));
-        }else {
+        } else {
             $new_forum_settings['google_analytics_code'] = "";
         }
     }
 
-    if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+    if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         if (isset($_POST['adsense_display_users']) && in_array($_POST['adsense_display_users'], array_keys($adsense_user_type_array))) {
             $new_forum_settings['adsense_display_users'] = $_POST['adsense_display_users'];
-        }else {
+        } else {
             $new_forum_settings['adsense_display_users'] = ADSENSE_DISPLAY_NONE;
         }
 
         if (isset($_POST['adsense_display_pages']) && in_array($_POST['adsense_display_pages'], array_keys($adsense_page_type_array))) {
             $new_forum_settings['adsense_display_pages'] = $_POST['adsense_display_pages'];
-        }else {
+        } else {
             $new_forum_settings['adsense_display_pages'] = ADSENSE_DISPLAY_TOP_OF_ALL_PAGES;
         }
 
-    }else {
+    } else {
 
         $new_forum_settings['adsense_display_users'] = forum_get_global_setting('adsense_display_users', false, ADSENSE_DISPLAY_NONE);
         $new_forum_settings['adsense_display_pages'] = forum_get_global_setting('adsense_display_pages', false, ADSENSE_DISPLAY_TOP_OF_ALL_PAGES);
@@ -276,13 +217,13 @@ if (isset($_POST['changepermissions'])) {
 
     if (isset($_POST['forum_timezone']) && is_numeric($_POST['forum_timezone'])) {
         $new_forum_settings['forum_timezone'] = $_POST['forum_timezone'];
-    }else {
+    } else {
         $new_forum_settings['forum_timezone'] = 27;
     }
 
     if (isset($_POST['forum_dl_saving']) && $_POST['forum_dl_saving'] == "Y") {
         $new_forum_settings['forum_dl_saving'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['forum_dl_saving'] = "N";
     }
 
@@ -292,139 +233,139 @@ if (isset($_POST['changepermissions'])) {
 
     if (isset($_POST['closed_message']) && strlen(trim(stripslashes_array($_POST['closed_message']))) > 0) {
         $new_forum_settings['closed_message'] = trim(stripslashes_array($_POST['closed_message']));
-    }else {
+    } else {
         $new_forum_settings['closed_message'] = "";
     }
 
     if (isset($_POST['restricted_message']) && strlen(trim(stripslashes_array($_POST['restricted_message']))) > 0) {
         $new_forum_settings['restricted_message'] = trim(stripslashes_array($_POST['restricted_message']));
-    }else {
+    } else {
         $new_forum_settings['restricted_message'] = "";
     }
 
     if (isset($_POST['password_protected_message']) && strlen(trim(stripslashes_array($_POST['password_protected_message']))) > 0) {
         $new_forum_settings['password_protected_message'] = trim(stripslashes_array($_POST['password_protected_message']));
-    }else {
+    } else {
         $new_forum_settings['password_protected_message'] = "";
     }
 
     if (isset($_POST['require_post_approval']) && $_POST['require_post_approval'] == "Y") {
         $new_forum_settings['require_post_approval'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['require_post_approval'] = "N";
     }
 
     if (isset($_POST['allow_post_editing']) && $_POST['allow_post_editing'] == "Y") {
         $new_forum_settings['allow_post_editing'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['allow_post_editing'] = "N";
     }
 
     if (isset($_POST['post_edit_time']) && is_numeric($_POST['post_edit_time'])) {
         $new_forum_settings['post_edit_time'] = $_POST['post_edit_time'];
-    }else {
+    } else {
         $new_forum_settings['post_edit_time'] = 0;
     }
 
     if (isset($_POST['post_edit_grace_period']) && is_numeric($_POST['post_edit_grace_period'])) {
         $new_forum_settings['post_edit_grace_period'] = $_POST['post_edit_grace_period'];
-    }else {
+    } else {
         $new_forum_settings['post_edit_grace_period'] = 0;
     }
 
     if (isset($_POST['maximum_post_length']) && is_numeric($_POST['maximum_post_length'])) {
         $new_forum_settings['maximum_post_length'] = $_POST['maximum_post_length'];
-    }else {
+    } else {
         $new_forum_settings['maximum_post_length'] = 6226;
     }
 
     if (isset($_POST['minimum_post_frequency']) && is_numeric($_POST['minimum_post_frequency'])) {
         $new_forum_settings['minimum_post_frequency'] = $_POST['minimum_post_frequency'];
-    }else {
+    } else {
         $new_forum_settings['minimum_post_frequency'] = 0;
     }
 
     if (isset($_POST['enable_wiki_integration']) && $_POST['enable_wiki_integration'] == "Y") {
         $new_forum_settings['enable_wiki_integration'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['enable_wiki_integration'] = "N";
     }
 
     if (isset($_POST['enable_wiki_quick_links']) && $_POST['enable_wiki_quick_links'] == "Y") {
         $new_forum_settings['enable_wiki_quick_links'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['enable_wiki_quick_links'] = "N";
     }
 
     if (isset($_POST['wiki_integration_uri']) && strlen(trim(stripslashes_array($_POST['wiki_integration_uri']))) > 0) {
         $new_forum_settings['wiki_integration_uri'] = trim(stripslashes_array($_POST['wiki_integration_uri']));
-    }else {
+    } else {
         $new_forum_settings['wiki_integration_uri'] = "";
     }
 
     if (isset($_POST['show_links']) && $_POST['show_links'] == "Y") {
         $new_forum_settings['show_links'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['show_links'] = "N";
     }
 
     if (isset($_POST['require_link_approval']) && $_POST['require_link_approval'] == "Y") {
         $new_forum_settings['require_link_approval'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['require_link_approval'] = "N";
     }
 
     if (isset($_POST['show_share_links']) && $_POST['show_share_links'] == "Y") {
         $new_forum_settings['show_share_links'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['show_share_links'] = "N";
     }
 
     if (isset($_POST['allow_polls']) && $_POST['allow_polls'] == "Y") {
         $new_forum_settings['allow_polls'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['allow_polls'] = "N";
     }
 
     if (isset($_POST['poll_allow_guests']) && $_POST['poll_allow_guests'] == "Y") {
         $new_forum_settings['poll_allow_guests'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['poll_allow_guests'] = "N";
     }
 
     if (isset($_POST['show_stats']) && $_POST['show_stats'] == "Y") {
         $new_forum_settings['show_stats'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['show_stats'] = "N";
     }
 
     if (isset($_POST['allow_search_spidering']) && $_POST['allow_search_spidering'] == "Y") {
         $new_forum_settings['allow_search_spidering'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['allow_search_spidering'] = "N";
     }
 
     if (isset($_POST['searchbots_show_recent']) && $_POST['searchbots_show_recent'] == "Y") {
         $new_forum_settings['searchbots_show_recent'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['searchbots_show_recent'] = "N";
     }
 
     if (isset($_POST['searchbots_show_active']) && $_POST['searchbots_show_active'] == "Y") {
         $new_forum_settings['searchbots_show_active'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['searchbots_show_active'] = "N";
     }
 
     if (isset($_POST['guest_account_enabled']) && $_POST['guest_account_enabled'] == "Y") {
         $new_forum_settings['guest_account_enabled'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['guest_account_enabled'] = "N";
     }
 
     if (isset($_POST['guest_show_recent']) && $_POST['guest_show_recent'] == "Y") {
         $new_forum_settings['guest_show_recent'] = "Y";
-    }else {
+    } else {
         $new_forum_settings['guest_show_recent'] = "N";
     }
 
@@ -435,7 +376,7 @@ if (isset($_POST['changepermissions'])) {
             admin_add_log_entry(EDIT_FORUM_SETTINGS, array($new_forum_settings['forum_name']));
             header_redirect("admin_forum_settings.php?webtag=$webtag&updated=true", gettext("Forum settings successfully updated"));
 
-        }else {
+        } else {
 
             $valid = false;
             $error_msg_array[] = gettext("Failed to update forum settings. Please try again later.");
@@ -452,7 +393,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '600', 'center');
 
-}else if (isset($_GET['updated'])) {
+} else if (isset($_GET['updated'])) {
 
     html_display_success_msg(gettext("Preferences were successfully updated."), '600', 'center');
 }
@@ -612,7 +553,7 @@ if (!isset($forum_settings['access_level']) || $forum_settings['access_level'] >
         echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                      </tr>\n";
 
-    }elseif ($forum_settings['access_level'] == FORUM_PASSWD_PROTECTED) {
+    } else if ($forum_settings['access_level'] == FORUM_PASSWD_PROTECTED) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -677,7 +618,7 @@ $tool_type = POST_TOOLBAR_DISABLED;
 
 if ($page_prefs & POST_TOOLBAR_DISPLAY) {
     $tool_type = POST_TOOLBAR_SIMPLE;
-}else if ($page_prefs & POST_TINYMCE_DISPLAY) {
+} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
     $tool_type = POST_TOOLBAR_TINYMCE;
 }
 
@@ -712,7 +653,7 @@ if ($tool_type <> POST_TOOLBAR_DISABLED) {
     echo "                        <td align=\"left\">", $closed_message->toolbar(true), "</td>\n";
     echo "                      </tr>\n";
 
-}else {
+} else {
 
     $closed_message->set_tinymce(false);
 }
@@ -923,7 +864,7 @@ if (forum_get_global_setting('allow_forum_google_analytics', 'Y')) {
     echo "  <br />\n";
 }
 
-if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
+if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";

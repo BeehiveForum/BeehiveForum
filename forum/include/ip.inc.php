@@ -21,10 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/**
- * Contains functions for fetching and checking IP addresses.
- */
-
 // We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
@@ -33,16 +29,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-/**
- * Get Client IP
- * 
- * Get the client IP Address from the HTTP headers
- * provided by the web-server.
- *
- * @author Matt Beale
- * @param void
- * @return string | mixed
- */
 function get_ip_address()
 {
     if (isset($_SERVER['REMOTE_ADDR']) && filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) {
@@ -52,15 +38,6 @@ function get_ip_address()
     return false;
 }
 
-/**
- * Validate IP Address
- * 
- * Check IP Address to make sure it is correctly formatted.
- *
- * @author Matt Beale
- * @param string $ip
- * @return boolean
- */
 function check_ip_address($ip)
 {
     return filter_var($ip, FILTER_VALIDATE_IP);

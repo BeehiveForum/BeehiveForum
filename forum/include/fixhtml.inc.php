@@ -21,24 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/** A range of functions for filtering/cleaning posted HTML
-*
-* fix_html - strips illegal tags; enforces correct nesting of tags; converts BH custom tags; more!
-* clean_attributes - strips illegal attributes; makes sure attributes are put in quotes etc.
-* tidy_html - unconverts BH custom tags; removes auto-links
-* tidy_html_code_tag_callback - Used by tidy_html to convert <code> tags
-* tidy_html_pre_tag_callback - Used by tidy_html to convert <code> tags
-* clean_styles - stops absolute CSS positioning; stops a javascript hack
-* add_paragraphs - fancier version of nl2br. Can add <p> tags but this is temperamental at times
-* make_html - equivalent of fix_html when HTML isn't used - converts links to HTML, calls add_paragraphs
-* make_links - automatically turns http://... mailto:... ...@... text into HTML links
-*
-*/
-
-/**
-*
-*/
-
 // We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
@@ -47,29 +29,12 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
-include_once(BH_INCLUDE_PATH. "geshi.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
+require_once BH_INCLUDE_PATH. 'geshi.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
 
-/**
-* Processes html to prevent it breaking the forum (e.g. close open tags, filter certain tags)
-*
-* First splits $html into text/html and runs through it 'cleaning' (e.g. '>' becomes '&gt;' and
-* tags in $bad_tags are converted to text) and converting custom tags like <code>/<quote>. The
-* GeSHi code highlighter is called at this step.
-* Next, now that the code is 'clean', every tag is checked to make sure it opens/closes and
-* is nested correctly. Singular tags (e.g. <hr />) have closing tags removed.
-* Finally the code is reconstructed. If $links = true then http://.. etc. are converted to
-* HTML links at this point.
-*
-* @return string
-* @param string $html HTML to be parsed
-* @param boolean $emoticons Toggle to allow emoticons (default=true). 'false' just sets $html = "<noemots>$html</noemots>";
-* @param boolean $links Toggle to automatically convert http://.. etc. to HTML links (default=true)
-* @param array $bad_tags Illegal tags to be filtered (there is a default: array("plaintext", "applet", ...))
-*/
 function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('plaintext', 'applet', 'body', 'html', 'head', 'title', 'base', 'meta', '!doctype', 'button', 'embed', 'fieldset', 'form', 'frame', 'frameset', 'iframe', 'input', 'label', 'legend', 'link', 'noframes', 'noscript', 'optgroup', 'option', 'param', 'script', 'select', 'style', 'textarea', 'xmp'))
 {
     $fix_html_code_text = 'code:';
@@ -95,7 +60,105 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
         $html_parts = preg_split('/<([^<>]+)>/u', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-        $html_tags = array('a', 'abbr', 'acronym', 'address', 'applet', 'area', 'b', 'base', 'basefont', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'dd', 'del', 'dfn', 'dir', 'div', 'dl', 'dt', 'em', 'fieldset', 'flash', 'font', 'form', 'frame', 'frameset', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'isindex', 'kbd', 'label', 'legend', 'li', 'link', 'map', 'marquee', 'menu', 'meta', 'noemots', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'p', 'param', 'pre', 'q', 'quote', 's', 'samp', 'script', 'select', 'small', 'span', 'spoiler', 'strike', 'strong', 'style', 'sub', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'title', 'tr', 'tt', 'u', 'ul', 'var', 'youtube');
+        $html_tags = array(
+            'a',
+            'abbr',
+            'acronym',
+            'address',
+            'applet',
+            'area',
+            'b',
+            'base',
+            'basefont',
+            'bdo',
+            'big',
+            'blockquote',
+            'body',
+            'br',
+            'button',
+            'caption',
+            'center',
+            'cite',
+            'code',
+            'col',
+            'colgroup',
+            'dd',
+            'del',
+            'dfn',
+            'dir',
+            'div',
+            'dl',
+            'dt',
+            'em',
+            'fieldset',
+            'flash',
+            'font',
+            'form',
+            'frame',
+            'frameset',
+            'h1',
+            'h2',
+            'h3',
+            'h4',
+            'h5',
+            'h6',
+            'head',
+            'hr',
+            'html',
+            'i',
+            'iframe',
+            'img',
+            'input',
+            'ins',
+            'isindex',
+            'kbd',
+            'label',
+            'legend',
+            'li',
+            'link',
+            'map',
+            'marquee',
+            'menu',
+            'meta',
+            'noemots',
+            'noframes',
+            'noscript',
+            'object',
+            'ol',
+            'optgroup',
+            'option',
+            'p',
+            'param',
+            'pre',
+            'q',
+            'quote',
+            's',
+            'samp',
+            'script',
+            'select',
+            'small',
+            'span',
+            'spoiler',
+            'strike',
+            'strong',
+            'style',
+            'sub',
+            'sup',
+            'table',
+            'tbody',
+            'td',
+            'textarea',
+            'tfoot',
+            'th',
+            'thead',
+            'title',
+            'tr',
+            'tt',
+            'u',
+            'ul',
+            'var',
+            'youtube'
+        );
 
         $html_tags = array_diff($html_tags, $bad_tags);
 
@@ -373,7 +436,9 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                         } else {
 
-                            $flash_attr_array = array('data' => sprintf('"%s"', $matches_array[1]));
+                            $flash_attr_array = array(
+                                'data' => sprintf('"%s"', $matches_array[1])
+                            );
 
                             $matches_array = array();
 
@@ -399,7 +464,9 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                                 $flash_wmode = $matches_array[1];
                             }
 
-                            $flash_html_parts = array(sprintf('object type="application/x-shockwave-flash" %s', implode_assoc($flash_attr_array, '=', ' ')));
+                            $flash_html_parts = array(
+                                sprintf('object type="application/x-shockwave-flash" %s', implode_assoc($flash_attr_array, '=', ' '))
+                            );
 
                             array_push($flash_html_parts, '', sprintf('param name="movie" value=%s /', $flash_attr_array['data']));
 
@@ -434,25 +501,70 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
         $last_tag = array();
 
-        $single_tags = array('br', 'img', 'hr', 'area', 'param');
+        $single_tags = array(
+            'br', 
+            'img', 
+            'hr', 
+            'area', 
+            'param'
+        );
 
-        $no_nest = array('p'  => array('table', 'li'),
-                         'li' => array('ul', 'ol'),
-                         'td' => array('tr'),
-                         'tr' => array('table'));
+        $no_nest = array(
+            'p' => array(
+                'table', 
+                'li'
+            ),
+            'li' => array(
+                'ul', 
+                'ol'
+            ),
+            'td' => array(
+                'tr'
+            ),
+            'tr' => array(
+                'table'
+            )
+        );
 
-        $nest = array('td'       => array('tr'),
-                      'th'       => array('tr'),
-                      'tr'       => array('table'),
-                      'tbody'    => array('table'),
-                      'tfoot'    => array('table'),
-                      'thead'    => array('table'),
-                      'caption'  => array('table'),
-                      'colgroup' => array('table'),
-                      'col'      => array('table'),
-                      'map'      => array('area'),
-                      'param'    => array('object'),
-                      'li'       => array('ul', 'ol'));
+        $nest = array(
+            'td' => array(
+                'tr'
+            ),
+            'th' => array(
+                'tr'
+            ),
+            'tr' => array(
+                'table'
+            ),
+            'tbody' => array(
+                'table'
+            ),
+            'tfoot' => array(
+                'table'
+            ),
+            'thead' => array(
+                'table'
+            ),
+            'caption' => array(
+                'table'
+            ),
+            'colgroup' => array(
+                'table'
+            ),
+            'col' => array(
+                'table'
+            ),
+            'map' => array(
+                'area'
+            ),
+            'param' => array(
+                'object'
+            ),
+            'li' => array(
+                'ul', 
+                'ol'
+            ),
+        );
 
         for ($i = 0; $i < count($html_parts); $i++) {
 
@@ -508,8 +620,9 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                         // previous tag hasn't been closed
                         } else if ($last_tag2 != $tag) {
 
-                            // wrap white-text
-                            $ta = array('/'. $last_tag2, '');
+                            $ta = array(
+                                '/'. $last_tag2, ''
+                            );
 
                             $ws = array();
 
@@ -585,8 +698,13 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                             if ($tmptmptmp == 1) {
 
                                 $tmp_nest = $tag;
+                                
                                 $last_tag2 = array_pop($last_tag);
-                                $tmp_tags = array($last_tag2);
+                                
+                                $tmp_tags = array(
+                                    $last_tag2
+                                );
+                                
                                 $tmp_len = $i;
 
                                 while (isset($nest[$tmp_nest])) {
@@ -609,7 +727,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                                 $tmp_len = count($last_tag);
 
-                                for ($j = 0; $j < count($tmp_tags); $j++){
+                                for ($j = 0; $j < count($tmp_tags); $j++) {
 
                                     if (strlen($tmp_tags[$j]) > 0) {
 
@@ -651,7 +769,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
 
                             if ($open_tags[$tag] > $opencount) {
 
-                                for($j = count($last_tag) - 2; $j >= 0; $j--) {
+                                for ($j = count($last_tag) - 2; $j >= 0; $j--) {
 
                                     if ($last_tag[$j] == $tag) {
 
@@ -687,7 +805,7 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
                             }
                         }
 
-                    } else if(substr($html_parts[$i], -2) != ' /') {
+                    } else if (substr($html_parts[$i], -2) != ' /') {
 
                         if (substr($html_parts[$i], -1) != '/') {
 
@@ -786,59 +904,203 @@ function fix_html($html, $emoticons = true, $links = true, $bad_tags = array('pl
     }
 }
 
-/**
-* Limits HTML tags to certain attributes
-*
-* Every tag can be assigned an array of valid attributes. There is also an array of
-* globally valid attributes. This function strips invalid attributes and makes sure
-* that valid attributes are properly formed.
-* e.g. clean_attributes('a href=file.htm onclick=alert("hi")') returns 'a href="file.htm"'
-*
-* @return string
-* @param string $tag Everything between the < and > (e.g. $tag = 'a href="file.html"').
-*/
 function clean_attributes($tag)
 {
-    $valid = array();
-    $valid['_global'] = array('style', 'align', 'class', 'id', 'title', 'dir', 'lang', 'accesskey', 'tabindex');
-
-    $valid['a'] = array('href', 'title');
-    $valid['hr'] = array('size', 'width', 'noshade');
-    $valid['br'] = array('clear');
-    $valid['font'] = array('size', 'color', 'face');
-    $valid['blockquote'] = array('cite');
-    $valid['pre'] = array('width');
-
-    $valid['del'] = array('cite', 'datetime');
-    $valid['ins'] = array('cite', 'datetime');
-
-    $valid['iframe'] = array('src', 'width', 'height', 'class', 'frameborder', 'allowfullscreen');
-    $valid['img'] = array('src', 'width', 'height', 'alt', 'border', 'usemap', 'longdesc', 'vspace', 'hspace', 'ismap');
-    $valid['map'] = array('name');
-    $valid['area'] = array('shape', 'coords', 'href', 'alt', 'nohref');
-
-    $valid['table'] = array('border', 'cellspacing', 'cellpadding', 'width', 'height', 'summary', 'bgcolor', 'background', 'frame', 'rules', 'bordercolor');
-    $valid['tbody'] = array('char', 'charoff', 'valign');
-    $valid['tfoot'] = $valid['tbody'];
-    $valid['thead'] = $valid['tbody'];
-    $valid['td'] = array('abbr', 'axis', 'background', 'bgcolor', 'char', 'charoff', 'colspan', 'height', 'headers', 'rowspan', 'scope', 'valign', 'width', 'nowrap');
-    $valid['th'] = $valid['td'];
-    $valid['tr'] = array('bgcolor', 'char', 'charoff', 'valign');
-
-    $valid['colgroup'] = array('span', 'width', 'char', 'charoff', 'valign');
-    $valid['col'] = $valid['colgroup'];
-
-    $valid['ul'] = array('type', 'start');
-    $valid['ol'] = $valid['ul'];
-    $valid['il'] = $valid['ul'];
-
-    $valid['marquee'] = array('direction', 'behavior', 'loop', 'scrollamount', 'scrolldelay', 'height', 'width', 'hspace', 'vspace');
-
-    $valid['object'] = array('data', 'type', 'width', 'height');
-
-    $valid['param'] = array('name', 'value');
-
-    $urls = array('href', 'background', 'src', 'pluginspage', 'pluginurl');
+    $valid = array(
+        '_global' => array(
+            'style',
+            'align',
+            'class',
+            'id',
+            'title',
+            'dir',
+            'lang',
+            'accesskey',
+            'tabindex',
+        ),
+        'a' => array(
+            'href',
+            'title'
+        ),
+        'hr' => array(
+            'size',
+            'width',
+            'noshade'
+        ),
+        'br' => array(
+            'clear'
+        ),
+        'font' => array(
+            'size',
+            'color',
+            'face'
+        ),
+        'blockquote' => array(
+            'cite'
+        ),
+        'pre' => array(
+            'width'
+        ),
+        'del' => array(
+            'cite',
+            'datetime'
+        ),
+        'ins' => array(
+            'cite',
+            'datetime'
+        ),
+        'iframe' => array(
+            'src',
+            'width',
+            'height',
+            'class',
+            'frameborder',
+            'allowfullscreen'
+        ),
+        'img' => array(
+            'src',
+            'width',
+            'height',
+            'alt',
+            'border',
+            'usemap',
+            'longdesc',
+            'vspace',
+            'hspace',
+            'ismap'
+        ),
+        'map' => array(
+            'name'
+        ),
+        'area' => array(
+            'shape',
+            'coords',
+            'href',
+            'alt',
+            'nohref'
+        ),
+        'table' => array(
+            'border',
+            'cellspacing',
+            'cellpadding',
+            'width',
+            'height',
+            'summary',
+            'bgcolor',
+            'background',
+            'frame',
+            'rules',
+            'bordercolor'
+        ),
+        'tbody' => array(
+            'char',
+            'charoff',
+            'valign'
+        ),
+        'tfoot' => array(
+            'char',
+            'charoff',
+            'valign'
+        ),
+        'thead' => array(
+            'char',
+            'charoff',
+            'valign'
+        ),
+        'th' => array(
+            'abbr',
+            'axis',
+            'background',
+            'bgcolor',
+            'char',
+            'charoff',
+            'colspan',
+            'height',
+            'headers',
+            'rowspan',
+            'scope',
+            'valign',
+            'width',
+            'nowrap'
+        ),
+        'td' => array(
+            'abbr',
+            'axis',
+            'background',
+            'bgcolor',
+            'char',
+            'charoff',
+            'colspan',
+            'height',
+            'headers',
+            'rowspan',
+            'scope',
+            'valign',
+            'width',
+            'nowrap'
+        ),
+        'tr' => array(
+            'bgcolor',
+            'char',
+            'charoff',
+            'valign'
+        ),
+        'colgroup' => array(
+            'span',
+            'width',
+            'char',
+            'charoff',
+            'valign'
+        ),
+        'col' => array(
+            'span',
+            'width',
+            'char',
+            'charoff',
+            'valign'
+        ),
+        'ul' => array(
+            'type',
+            'start'
+        ),
+        'ol' => array(
+            'type',
+            'start'
+        ),
+        'il' => array(
+            'type',
+            'start'
+        ),
+        'marquee' => array(
+            'direction',
+            'behavior',
+            'loop',
+            'scrollamount',
+            'scrolldelay',
+            'height',
+            'width',
+            'hspace',
+            'vspace'
+        ),
+        'object' => array(
+            'data',
+            'type',
+            'width',
+            'height'
+        ),
+        'param' => array(
+            'name',
+            'value'
+        ),
+    );
+    
+    $urls = array(
+        'href', 
+        'background', 
+        'src', 
+        'pluginspage', 
+        'pluginurl'
+    );
 
     $split_tag = preg_split("/\\s+/u", $tag);
 
@@ -878,7 +1140,7 @@ function clean_attributes($tag)
 
     if (in_array($tag_name, $valid_tags)) {
 
-        for($i = 1; $i < count($split_tag); $i++) {
+        for ($i = 1; $i < count($split_tag); $i++) {
 
             $attrib = explode('=', $split_tag[$i]);
 
@@ -910,7 +1172,7 @@ function clean_attributes($tag)
                     $attrib_value = clean_styles($attrib_value);
                 }
 
-                if (in_array(substr($tmp_attrib,0,-1), $urls)) {
+                if (in_array(substr($tmp_attrib, 0, -1), $urls)) {
 
                     $attrib_value = preg_replace("/javascript:/ixu", '', $attrib_value);
                 }
@@ -923,7 +1185,7 @@ function clean_attributes($tag)
 
     } else {
 
-        for($i = 1; $i < count($split_tag); $i++) {
+        for ($i = 1; $i < count($split_tag); $i++) {
 
             $attrib = explode('=', $split_tag[$i]);
 
@@ -972,13 +1234,6 @@ function clean_attributes($tag)
     return $new_tag;
 }
 
-/**
-* Convert line breaks.
-* 
-* Convert HTML line breaks (<p>, <br />) into real line-breaks (\n)
-* 
-* @param mixed $html
-*/
 function tidy_html_linebreaks($html)
 {
     $html = preg_replace("/<br( [^>]*)?>(\n)?/iu", "\n", $html);
@@ -989,20 +1244,6 @@ function tidy_html_linebreaks($html)
     return $html;
 }
 
-/**
-* Literally tidies HTML
-*
-* After fix_html is run this function reverses the conversion of custom BH tags like
-* <quote> and <code>. If $links is set to true then links of the form
-* <a href="http://..">http://..</a> are converted back to the text http://..
-* If $linebreaks is set to true then <br /> and <p>..</p> are converted into newline
-* characters.
-*
-* @return string
-* @param string $html The HTML to be tidied.
-* @param boolean $linebreaks Toggle if <br /> and <p> tags are to be converted (default=true)
-* @param boolean $links Toggle if HTML links are to be converted to text (default=true)
-*/
 function tidy_html($html, $linebreaks = true, $links = true)
 {
     // turn <br /> and <p>...</p> back into linebreaks
@@ -1136,7 +1377,9 @@ function tidy_html_flash_tag_callback($matches_array)
         return '';
     }
 
-    $flash_html_attr = array('src' => sprintf('"%s"', $matches_array[1]));
+    $flash_html_attr = array(
+        'src' => sprintf('"%s"', $matches_array[1])
+    );
 
     if (isset($matches_array[3]) && is_numeric($matches_array[3])) {
         $flash_html_attr['width'] = sprintf('"%s"', $matches_array[3]);
@@ -1185,26 +1428,11 @@ function tidy_tiny_mce_flash_object_tag_callback($matches_array)
     return sprintf('<img class="mceItem flash" src="tiny_mce/plugins/flash/img/blank.gif" alt="%s;wmode=%s" %s />', urlencode($matches_array[1]), urlencode($flash_wmode), implode_assoc($flash_html_attr, '=', ' '));
 }
 
-/**
-* Used by tidy_html to convert <code> tags
-*
-* @return string
-* @param array $matches Array returned by preg_replace_callback
-*/
 function tidy_html_pre_tag_callback($matches)
 {
     return sprintf('<pre class="code">%s</pre>', strip_tags($matches[1]));
 }
 
-/**
-* 'Cleans' inline styles
-*
-* Called by clean_attributes function, this function prevents absolute CSS positioning and
-* prevents some XSS javascript hacks (at the expense of background images through inline CSS).
-*
-* @return string
-* @param string $style The inline CSS style text (e.g. <span style="font:italic"> would need $style="font:italic")
-*/
 function clean_styles($style)
 {
     // Prevent inline comments
@@ -1214,19 +1442,56 @@ function clean_styles($style)
     $style = preg_replace('/url\(|expression\(/ixu', '', $style);
 
     // Array of premitted CSS attributes
-    $valid_attributes_array = array('font-family', 'font-style', 'font-variant', 'font-weight',
-                                    'font-size', 'font', 'color', 'background-color', 'word-spacing',
-                                    'letter-spacing', 'text-decoration', 'vertical-align',
-                                    'text-transform', 'text-align', 'text-indent', 'line-height',
-                                    'margin-top', 'margin-bottom', 'margin-left', 'margin-right',
-                                    'margin', 'padding-top', 'padding-bottom', 'padding-left',
-                                    'padding-right', 'padding', 'border-top-width', 'border-top-width',
-                                    'border-right-width', 'border-bottom-width', 'border-left-width',
-                                    'border-width', 'border-color', 'border-style', 'border-top',
-                                    'border-right', 'border-bottom', 'border-left', 'border',
-                                    'width', 'height', 'float', 'clear', 'white-space',
-                                    'list-style-type', 'list-style-image', 'list-style-position',
-                                    'list-style');
+    $valid_attributes_array = array(
+        'font-family',
+        'font-style',
+        'font-variant',
+        'font-weight',
+        'font-size',
+        'font',
+        'color',
+        'background-color',
+        'word-spacing',
+        'letter-spacing',
+        'text-decoration',
+        'vertical-align',
+        'text-transform',
+        'text-align',
+        'text-indent',
+        'line-height',
+        'margin-top',
+        'margin-bottom',
+        'margin-left',
+        'margin-right',
+        'margin',
+        'padding-top',
+        'padding-bottom',
+        'padding-left',
+        'padding-right',
+        'padding',
+        'border-top-width',
+        'border-top-width',
+        'border-right-width',
+        'border-bottom-width',
+        'border-left-width',
+        'border-width',
+        'border-color',
+        'border-style',
+        'border-top',
+        'border-right',
+        'border-bottom',
+        'border-left',
+        'border',
+        'width',
+        'height',
+        'float',
+        'clear',
+        'white-space',
+        'list-style-type',
+        'list-style-image',
+        'list-style-position',
+        'list-style',
+    );
 
     // Convert arrays to strings for regular express matching
     $valid_attributes_preg = implode("$|^", array_map('preg_quote_callback', $valid_attributes_array));
@@ -1265,16 +1530,6 @@ function clean_styles($style)
     return '';
 }
 
-/**
-* Support function for clean_styles
-*
-* Called by clean_styles function, this function restricts the minimum and maximum
-* size of a unit (px, pt, em) for the top, left, margin, padding, height and width
-* CSS attributes to prevent disruption of the forum by use of malicious CSS.
-*
-* @return string
-* @param array $matches is the matches from a regular expression used in preg_replace_callback.
-*/
 function clean_styles_restrict($value)
 {
     $matches = array();
@@ -1320,52 +1575,61 @@ function clean_styles_restrict($value)
     return $value;
 }
 
-/**
-* Adds <br /> and <p>..</p> tags to text.
-*
-* This is similar to the PHP function nl2br() but it only adds tags to text, e.g.:
-* <code>Demo text
-* <ul>
-*   <li>Unordered list
-*       First entry</li>
-* </ul>
-* End demo</code>
-* This would become:
-* <code>Demo text<br />
-* <ul>
-*   <li>Unordered list<br />
-*       First entry</li>
-* </ul>
-* End demo</code>
-* This function can also add <p>..</p> tags but this functionality is experimental.
-*
-* @return string
-* @param string $html The HTML which needs <br /> and <p> tags adding.
-* @param boolean $br_only Toggle indicates not to use <p> tags (default=true)
-*/
 function add_paragraphs($html, $br_only = true)
 {
     $html = str_replace("\r", '', $html);
 
-    $tags = array('table', 'div', 'pre', 'ul', 'ol', 'object', 'font');
+    $tags = array(
+        'table', 
+        'div', 
+        'pre', 
+        'ul', 
+        'ol', 
+        'object', 
+        'font'
+    );
 
     $tags_nest = array(
-        'table' => array('td', 'th'),
-        'ul' => array('li'),
-        'ol' => array('li'),
-        'div' => array(true),
-        'pre' => array(false),
-        'object' => array(false),
-        'font' => array(true, true),
-        'a' => array(true, true),
-        'span' => array(true, true),        
+        'table' => array(
+            'td', 
+            'th'
+        ),
+        'ul' => array(
+            'li'
+        ),
+        'ol' => array(
+            'li'
+        ),
+        'div' => array(
+            true
+        ),
+        'pre' => array(
+            false
+        ),
+        'object' => array(
+            false
+        ),
+        'font' => array(
+            true, 
+            true
+        ),
+        'a' => array(
+            true, 
+            true
+        ),
+        'span' => array(
+            true, 
+            true
+        ),        
     );
 
     $current_tag = '';
 
     $html_pos = 0;
 
-    $html_array = array($html);
+    $html_array = array(
+        $html
+    );
 
     while (strlen(trim($html_array[count($html_array) - 1])) > 0) {
 
@@ -1643,15 +1907,6 @@ function add_paragraphs($html, $br_only = true)
     return $return;
 }
 
-/**
-* Converts plain text into HTML by adding linebreaks/links
-*
-* @return string
-* @param string $html The text to be converted to HTML
-* @param boolean $br_only Toggle to only use <br /> tags and not <p> tags (default=false)
-* @param boolean $emoticons Toggle to allow emoticons in message (default=true), false just sets $html = "<noemots>$html</noemots>"
-* @param boolean $links Toggle to allow automatic conversion of text links to HTML (default=true)
-*/
 function make_html($html, $br_only = false, $emoticons = true, $links = true)
 {
     $html = htmlentities_array($html);
@@ -1669,12 +1924,6 @@ function make_html($html, $br_only = false, $emoticons = true, $links = true)
     return $html;
 }
 
-/**
-* Converts text links/email address into HTML
-*
-* @return string
-* @param string $html Text to be parsed for links.
-*/
 function make_links($html)
 {
     $html = ' '. $html;

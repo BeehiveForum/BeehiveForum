@@ -21,110 +21,41 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "attachments.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "email.inc.php");
-include_once(BH_INCLUDE_PATH. "emoticons.inc.php");
-include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "htmltools.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "pm.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'attachments.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'email.inc.php';
+require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'pm.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Initialise Locale
-lang_init();
-
-// Get the user's UID
-$uid = session_get_value('UID');
-
-// Guests can't access this page.
-if (user_is_guest()) {
-
+if (!session::logged_in()) {
     html_guest_error();
-    exit;
 }
 
 // Check that PM system is enabled
 pm_enabled();
 
+// Get the user's UID
+$uid = session::get_value('UID');
+
 // Get the user's post page preferences.
-$page_prefs = session_get_post_page_prefs();
+$page_prefs = session::get_post_page_prefs();
 
 // Prune old messages for the current user
 pm_user_prune_folders();
@@ -134,23 +65,20 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
     $mid = $_GET['mid'];
 
-}elseif (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
+} else if (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
 
     $mid = $_POST['mid'];
 
-}else {
+} else {
 
-    html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
-    html_error_msg(gettext("No message specified for editing"));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("No message specified for editing"));
 }
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
     $aid = $_POST['aid'];
 
-}else if (!$aid = attachments_get_pm_id($mid)) {
+} else if (!$aid = attachments_get_pm_id($mid)) {
 
     $aid = md5(uniqid(mt_rand()));
 }
@@ -169,11 +97,11 @@ if (isset($_POST['t_post_emots'])) {
 
     if ($_POST['t_post_emots'] == "disabled") {
         $emots_enabled = false;
-    }else {
+    } else {
         $emots_enabled = true;
     }
 
-}else {
+} else {
 
     $emots_enabled = true;
 }
@@ -182,11 +110,11 @@ if (isset($_POST['t_post_links'])) {
 
     if ($_POST['t_post_links'] == "enabled") {
         $links_enabled = true;
-    }else {
+    } else {
         $links_enabled = false;
     }
 
-}else {
+} else {
 
     $links_enabled = false;
 }
@@ -195,11 +123,11 @@ if (isset($_POST['t_check_spelling'])) {
 
     if ($_POST['t_check_spelling'] == "enabled") {
         $spelling_enabled = true;
-    }else {
+    } else {
         $spelling_enabled = false;
     }
 
-}else {
+} else {
 
     $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
 }
@@ -210,7 +138,7 @@ if (isset($_POST['t_post_html'])) {
 
     if ($t_post_html == "enabled_auto") {
         $post_html = POST_HTML_AUTO;
-    }else if ($t_post_html == "enabled") {
+    } else if ($t_post_html == "enabled") {
         $post_html = POST_HTML_ENABLED;
     } else {
         $post_html = POST_HTML_DISABLED;
@@ -228,13 +156,13 @@ if (isset($_POST['t_post_html'])) {
 
     if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
         $emots_enabled = false;
-    }else {
+    } else {
         $emots_enabled = true;
     }
 
     if (($page_prefs & POST_AUTO_LINKS) > 0) {
         $links_enabled = true;
-    }else {
+    } else {
         $links_enabled = false;
     }
 }
@@ -247,7 +175,7 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
         $t_subject = trim(stripslashes_array($_POST['t_subject']));
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("Enter a subject for the message");
         $valid = false;
@@ -266,7 +194,7 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
             $valid = false;
         }
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("Enter some content for the message");
         $valid = false;
@@ -285,15 +213,12 @@ if ($valid && isset($_POST['preview'])) {
         $pm_message_array['SUBJECT'] = $t_subject;
         $pm_message_array['FOLDER'] = PM_FOLDER_OUTBOX;
 
-    }else {
+    } else {
 
-        html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
-        pm_post_edit_refuse();
-        html_draw_bottom();
-        exit;
+        pm_edit_refuse();
     }
 
-}else if ($valid && isset($_POST['apply'])) {
+} else if ($valid && isset($_POST['apply'])) {
 
     if (($pm_message_array = pm_message_get($mid))) {
 
@@ -304,18 +229,15 @@ if ($valid && isset($_POST['preview'])) {
             header_redirect("pm.php?webtag=$webtag&mid=$mid");
             exit;
 
-        }else {
+        } else {
 
             $error_msg_array[] = gettext("Error creating PM! Please try again in a few minutes");
             $valid = false;
         }
 
-    }else {
+    } else {
 
-        html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
-        pm_post_edit_refuse();
-        html_draw_bottom();
-        exit;
+        pm_edit_refuse();
     }
 
 } else if (isset($_POST['emots_toggle'])) {
@@ -335,19 +257,22 @@ if ($valid && isset($_POST['preview'])) {
 
     if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
         $to_radio = $_POST['to_radio'];
-    }else {
+    } else {
         $to_radio = 1;
     }
 
     if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
         $t_to_uid = $_POST['t_to_uid'];
-    }else {
+    } else {
         $t_to_uid = 0;
     }
 
     $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
 
-    $user_prefs = array('POST_PAGE' => $page_prefs);
+    $user_prefs = array(
+        'POST_PAGE' => $page_prefs
+    );
+    
     $user_prefs_global = array();
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
@@ -356,16 +281,12 @@ if ($valid && isset($_POST['preview'])) {
         $valid = false;
     }
 
-}else {
+} else {
 
     if (($pm_message_array = pm_message_get($mid))) {
 
         if ($pm_message_array['TYPE'] != PM_OUTBOX) {
-
-            html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
-            pm_post_edit_refuse();
-            html_draw_bottom();
-            exit;
+            pm_edit_refuse();
         }
 
         $parsed_message = new MessageTextParse(pm_get_content($mid), $emots_enabled, $links_enabled);
@@ -387,12 +308,9 @@ if ($valid && isset($_POST['preview'])) {
 
         $t_subject = $pm_message_array['SUBJECT'];
 
-    }else {
+    } else {
 
-        html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
-        pm_post_edit_refuse();
-        html_draw_bottom();
-        exit;
+        pm_edit_refuse();
     }
 }
 
@@ -460,7 +378,7 @@ echo "                          ".form_checkbox("t_post_emots", "disabled", gett
 echo "                        </td>\n";
 echo "                      </tr>\n";
 
-if (($user_emoticon_pack = session_get_value('EMOTICONS')) === false) {
+if (($user_emoticon_pack = session::get_value('EMOTICONS')) === false) {
     $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
 }
 
@@ -560,7 +478,7 @@ if ($allow_html == true) {
         echo "              <br />";
     }
 
-}else {
+} else {
 
     echo form_input_hidden("t_post_html", "disabled");
 }

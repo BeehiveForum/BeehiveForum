@@ -30,21 +30,13 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 }
 
 if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config.inc.php");
+    require_once BH_INCLUDE_PATH. 'config.inc.php';
 }
 
 if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
+    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
 }
 
-/**
-* server_os_mswin
-*
-* Checks to see if the server is running MS Windows.
-*
-* @return boolean
-* @param void
-*/
 function server_os_mswin()
 {
     if (defined('PHP_OS')) {
@@ -58,15 +50,6 @@ function server_os_mswin()
     return false;
 }
 
-/**
-* server_get_cpu_load
-*
-* Fetches the current server CPU load. Returns a percentage on Win32 and the
-* result of /proc/loadavg on *nix.
-*
-* @return mixed
-* @param void
-*/
 function server_get_cpu_load()
 {
     $cpu_load  = 0;
@@ -90,7 +73,7 @@ function server_get_cpu_load()
             return "$cpu_load%";
         }
 
-    }else {
+    } else {
 
         if (@file_exists('/proc/loadavg')) {
 
@@ -104,14 +87,6 @@ function server_get_cpu_load()
     return false;
 }
 
-/**
-* get_available_files
-*
-* Returns an array of Beehive Forum PHP files (forum path only)
-*
-* @return string
-* @param void
-*/
 function get_available_files()
 {
     return array('admin.php', 'admin_banned.php',
@@ -167,14 +142,6 @@ function get_available_files()
                  'visitor_log.php', 'chat/index.php');
 }
 
-/**
-* get_available_admin_files
-*
-* Returns an array of Beehive Forum PHP files (forum path only)
-*
-* @return array
-* @param void
-*/
 function get_available_admin_files()
 {
     return array('admin_banned.php', 'admin_default_forum_settings.php',
@@ -192,14 +159,6 @@ function get_available_admin_files()
                  'admin_visitor_log.php', 'admin_wordfilter.php');
 }
 
-/**
-* get_available_user_control_files
-*
-* Returns an array of Beehive Forum PHP files (forum path only)
-*
-* @return array
-* @param void
-*/
 function get_available_user_control_files()
 {
     return array('edit_prefs.php', 'edit_profile.php', 'edit_password.php',
@@ -208,47 +167,30 @@ function get_available_user_control_files()
                  'folder_subscriptions.php', 'forum_options.php', 'pm_options.php');
 }
 
-/**
-* get_available_js_popup_files_preg
-*
-* Returns a regular expression to match Beehive's available popups URLs.
-*
-* @return string
-* @param void
-*/
 function get_available_js_popup_files_preg()
 {
-    $popup_files_preg_array = array('^attachments\.php', '^dictionary\.php', '^display_emoticons\.php',
-                                    '^edit_attachments\.php', '^email\.php', '^folder_options\.php',
-                                    '^mods_list\.php', '^poll_results\.php', '^search_popup\.php',
-                                    '^search\.php.+show_stop_words=true', '^user_profile\.php');
+    $popup_files_preg_array = array(
+        '^attachments\.php',
+        '^dictionary\.php',
+        '^display_emoticons\.php',
+        '^edit_attachments\.php',
+        '^email\.php',
+        '^folder_options\.php',
+        '^mods_list\.php',
+        '^poll_results\.php',
+        '^search_popup\.php',
+        '^search\.php.+show_stop_words=true',
+        '^user_profile\.php'
+    );
 
     return implode("|", $popup_files_preg_array);
 }
 
-/**
-* get_available_support_files
-*
-* Returns an array of Beehive Forum PHP files that are used to
-* change font size, toggle stats display, etc.
-*
-* @return array
-* @param void
-*/
 function get_available_support_files()
 {
     return array('font_size.php', 'user_font.php', 'user_stats.php');
 }
 
-/**
-* get_proxy_cache_headers
-*
-* Get an array of headers used by caching proxy
-* servers.
-*
-* @param void
-* @return array
-*/
 function get_proxy_cache_headers()
 {
     return array('HTTP_VIA', 'HTTP_X_FORWARDED_FOR', 'HTTP_FORWARDED_FOR',
@@ -258,16 +200,6 @@ function get_proxy_cache_headers()
                  'CLIENT_IP', 'FORWARDED_FOR_IP', 'HTTP_PROXY_CONNECTION');
 }
 
-/**
-* mkdir_recursive
-*
-* Checks for the existance of a directory structure and creates the path
-* if it doesn't exist.
-*
-* @param string $path_name
-* @param integer $mode
-* @return bool
-*/
 function mkdir_recursive($path_name, $mode)
 {
     if (!@is_dir(dirname($path_name))) mkdir_recursive(dirname($path_name), $mode);
@@ -275,14 +207,6 @@ function mkdir_recursive($path_name, $mode)
     return @is_dir($path_name);
 }
 
-/**
-* rmdir_recursive
-*
-* Removes a directory and all the files it contains.
-*
-* @param string $path
-* @return bool
-*/
 function rmdir_recursive($path)
 {
     $path = rtrim($path, '/');
@@ -295,7 +219,7 @@ function rmdir_recursive($path)
 
             unlink("$path/$file");
 
-        }elseif (@is_dir("$path/$file") && $file != '.' && $file != '..') {
+        } else if (@is_dir("$path/$file") && $file != '.' && $file != '..') {
 
             if (!rmdir_recursive("$path/$file")) return false;
         }
@@ -308,15 +232,6 @@ function rmdir_recursive($path)
     return true;
 }
 
-/**
-* copy_recursive
-*
-* Copy a directory recursively from source to dest.
-*
-* @param mixed $source
-* @param mixed $dest
-* @return bool.
-*/
 function copy_recursive($source, $dest)
 {
     $source = rtrim($source, '/');
@@ -343,20 +258,17 @@ function copy_recursive($source, $dest)
     return true;
 }
 
-/**
-* unregister_globals
-*
-* Unregister PHP's global variables by iterating through the $GLOBALS array
-* and removing all REQUEST (inc. GET and POST), SESSION, SERVER, ENV, FILES.
-*
-* @param string $pathname - Path to create
-* @return boolean
-*/
 function unregister_globals()
 {
     if (ini_get('register_globals')) {
 
-        $super_globals_array = array('_REQUEST', '_SESSION', '_SERVER', '_ENV', '_FILES');
+        $super_globals_array = array(
+            '_REQUEST', 
+            '_SESSION', 
+            '_SERVER', 
+            '_ENV', 
+            '_FILES'
+        );
 
         foreach ($super_globals_array as $super_global) {
 
@@ -374,16 +286,6 @@ function unregister_globals()
     }
 }
 
-/**
-* set_server_protocol
-*
-* Set the $_SERVER['SERVER_PROTOCOL'] to allow CGI
-* compliant Status headers to be sent instead of
-* RFC2616 compliant HTTP/1.1 header
-*
-* @param void
-* @return void
-*/
 function set_server_protocol()
 {
     if (!isset($_SERVER['SERVER_PROTOCOL']) || ($_SERVER['SERVER_PROTOCOL'] != 'HTTP/1.0' && $_SERVER['SERVER_PROTOCOL'] != 'HTTP/1.1')) {

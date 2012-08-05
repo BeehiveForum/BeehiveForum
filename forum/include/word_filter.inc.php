@@ -21,7 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -29,22 +28,11 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-
-/**
-* Get Word Filter entries
-*
-* Gets the word filter entries for the specified user UID. Don't call this function
-* directly. Instead you should use word_filter_get_by_uid() or word_filter_get_by_sess_uid()
-*
-* @return bool
-* @param integer $uid - User UID
-* @param array $word_filter_array - By Reference array containing entries from database.
-*/
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 function word_filter_get($uid, &$word_filter_array)
 {
@@ -54,10 +42,10 @@ function word_filter_get($uid, &$word_filter_array)
 
     if (!is_array($word_filter_array)) $word_filter_array = array();
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT FID, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE ";
-    $sql.= "FROM `{$table_data['PREFIX']}WORD_FILTER` ";
+    $sql.= "FROM `{$table_prefix}WORD_FILTER` ";
     $sql.= "WHERE UID = '$uid' AND FILTER_ENABLED = 1 ";
     $sql.= "ORDER BY FID ";
 
@@ -65,33 +53,22 @@ function word_filter_get($uid, &$word_filter_array)
 
     if (!$result = db_query($sql, $db_word_filter_get)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        while (($word_filter_data = db_fetch_array($result))) {
-
-            $word_filter_array[] = $word_filter_data;
-        }
+    while (($word_filter_data = db_fetch_array($result))) {
+        $word_filter_array[] = $word_filter_data;
     }
 
     return true;
 }
 
-/**
-* Get Word Filter entries for session user
-*
-* Gets the word filter entries for the current user by getting UID from their session
-*
-* @return array
-* @param void
-*/
-
 function word_filter_get_by_sess_uid()
 {
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
     $word_filter_array = array();
 
-    if (session_get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_setting('force_word_filter', 'Y', false)) {
+    if (session::get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_setting('force_word_filter', 'Y', false)) {
 
         if (!word_filter_get(0, $word_filter_array)) {
 
@@ -99,7 +76,7 @@ function word_filter_get_by_sess_uid()
         }
     }
 
-    if (session_get_value('USE_WORD_FILTER') == "Y") {
+    if (session::get_value('USE_WORD_FILTER') == "Y") {
 
         if (!word_filter_get($uid, $word_filter_array)) {
 
@@ -109,15 +86,6 @@ function word_filter_get_by_sess_uid()
 
     return word_filter_prepare($word_filter_array);
 }
-
-/**
-* Get Word Filter entries for the specified user UID
-*
-* Gets the word filter entries for the specified user UID.
-*
-* @return array
-* @param integer $uid - User UID
-*/
 
 function word_filter_get_by_uid($uid)
 {
@@ -153,16 +121,6 @@ function word_filter_get_by_uid($uid)
     return word_filter_prepare($word_filter_array);
 }
 
-/**
-* Prepare word filter
-*
-* Seperates the results from the above functions into a multi-dimensional
-* array to be used by the applying functions below.
-*
-* @return array
-* @param array $word_filter_array - array of results from the database query.
-*/
-
 function word_filter_prepare($word_filter_array)
 {
     if (!is_array($word_filter_array)) return false;
@@ -176,7 +134,7 @@ function word_filter_prepare($word_filter_array)
 
             $pattern_array[] = sprintf('/\b%s\b/iu', preg_quote($filter['MATCH_TEXT'], "/"));
 
-        }elseif ($filter['FILTER_TYPE'] == WORD_FILTER_TYPE_PREG) {
+        } else if ($filter['FILTER_TYPE'] == WORD_FILTER_TYPE_PREG) {
 
             if (!preg_match('/^\/(.*)[^\]\/[imsxeADSUXu]*$/Diu', $filter['MATCH_TEXT'])) {
                 $filter['MATCH_TEXT'] = "/{$filter['MATCH_TEXT']}/iu";
@@ -184,7 +142,7 @@ function word_filter_prepare($word_filter_array)
 
             $pattern_array[] = $filter['MATCH_TEXT'];
 
-        }else {
+        } else {
 
             $pattern_array[] = sprintf("/%s/iu", preg_quote($filter['MATCH_TEXT'], "/"));
         }
@@ -193,13 +151,13 @@ function word_filter_prepare($word_filter_array)
 
             $replace_array[] = $filter['REPLACE_TEXT'];
 
-        }else {
+        } else {
 
             if ($filter['FILTER_TYPE'] == WORD_FILTER_TYPE_PREG) {
 
                 $replace_array[] = "****";
 
-            }else {
+            } else {
 
                 $replace_array[] = str_repeat("*", mb_strlen($filter['MATCH_TEXT']));
             }
@@ -210,22 +168,9 @@ function word_filter_prepare($word_filter_array)
                  'replace_array' => $replace_array);
 }
 
-/**
-* Add word filter OB tags
-*
-* Adds output buffering compatible word filter tags to the content.
-* Only to be used by content you want to be handled by the output
-* buffer to the client. If you want to parse a string simply pass
-* it through word_filter_apply.
-*
-* @return string
-* @param string $content - string to be wrapped in OB tags.
-* @param bool $escape_html - Whether to escape HTML using htmlentities_array
-*/
-
 function word_filter_add_ob_tags($content, $strip_html = false)
 {
-    if (($rand_hash = session_get_value('RAND_HASH')) === false) {
+    if (($rand_hash = session::get_value('RAND_HASH')) === false) {
         return $content;
     }
 
@@ -236,18 +181,9 @@ function word_filter_add_ob_tags($content, $strip_html = false)
     return sprintf('<%1$s_%3$s>%2$s</%1$s_%3$s>', $strip_html, $content, $rand_hash);
 }
 
-/**
-* Remove word filter OB tags
-*
-* Removes the output buffering compatible word filter tags.
-*
-* @return string
-* @param string $content - string to remove the OB tags from.
-*/
-
 function word_filter_rem_ob_tags($content)
 {
-    if (($rand_hash = session_get_value('RAND_HASH')) === false) {
+    if (($rand_hash = session::get_value('RAND_HASH')) === false) {
         return $content;
     }
 
@@ -256,20 +192,9 @@ function word_filter_rem_ob_tags($content)
     return preg_replace(sprintf('/<\/?(strip|nostrip)_%s>/uU', $rand_hash), "", $content);
 }
 
-/**
-* Word filter OB function
-*
-* Used by the PHP output buffering function to filter content
-* sent to the client. Will only filter content wrapped by
-* word_filter_add_ob_tags().
-*
-* @return string
-* @param string $content - string to remove the OB tags from.
-*/
-
-function word_filter_obstart($content)
+function word_filter_ob_callback($content)
 {
-    if (($rand_hash = session_get_value('RAND_HASH')) === false) {
+    if (($rand_hash = session::get_value('RAND_HASH')) === false) {
         return $content;
     }
 
@@ -307,16 +232,6 @@ function word_filter_obstart($content)
     return implode('', $content_array);
 }
 
-/**
-* Apply word filter
-*
-* Apply specified user's word filter to string.
-*
-* @return string
-* @param string $content - string to remove the OB tags from.
-* @param integer $uid - User UID.
-*/
-
 function word_filter_apply($content, $uid, $strip_html = false)
 {
     if (!is_numeric($uid)) return $content;
@@ -333,15 +248,6 @@ function word_filter_apply($content, $uid, $strip_html = false)
 
     return $content;
 }
-
-/**
-* Restrict PREG word filters
-*
-* The /../e preg modifier allows PHP code to be used in the replacement - bad!
-*
-* @return string
-* @param array $matches - matches from preg_match / preg_match_all call.
-*/
 
 function word_filter_apply_limit_preg($matches)
 {

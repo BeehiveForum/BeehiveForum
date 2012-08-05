@@ -29,24 +29,11 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "light.inc.php");
-
-/**
-* Redirect client to another page.
-*
-* Redirect client to another page. For Apache and other servers sends
-* appropriate HTTP headers to correctly redirect the client to the
-* specified address. For IIS we use Javascript and a backup form
-* button to click.
-*
-* @return none - Functions exits code execution.
-* @param string $uri - Address to redirect the client to.
-* @param string $reason - Option text message advising the client why they're being redirected
-*/
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'light.inc.php';
 
 function header_redirect($uri, $reason = false)
 {
@@ -58,7 +45,7 @@ function header_redirect($uri, $reason = false)
         header("Location: $uri");
         exit;
 
-    }else {
+    } else {
 
         defined('BEEHIVEMODE_LIGHT') ? light_html_draw_top() : html_draw_top();
 

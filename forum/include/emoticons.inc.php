@@ -21,16 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/**
-* emoticons.inc.php - emoticon functions
-*
-* Contains emoticon related functions.
-*/
-
-/**
-*
-*/
-
 // We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
@@ -39,23 +29,13 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "browser.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-
-/**
-* Initialise emoticons.
-*
-* Initislises the user's emoticon pack by pre-loading the definitions into a static array.
-* If the user doesn't have an emoticon pack the forum default pack is used instead.
-*
-* @return mixed - Boolean false on failure, array on success.
-* @param void
-*/
+require_once BH_INCLUDE_PATH. 'browser.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
 
 function emoticons_initialise()
 {
@@ -65,7 +45,7 @@ function emoticons_initialise()
 
         // Get the user's emoticon set from their sesion.
         // Fall back to using the forum default or Beehive default.
-        if (($user_emots = session_get_value('EMOTICONS')) === false) {
+        if (($user_emots = session::get_value('EMOTICONS')) === false) {
             $user_emots = forum_get_setting('default_emoticons', false, 'default');
         }
 
@@ -94,7 +74,7 @@ function emoticons_initialise()
                 }
             }
 
-        }else {
+        } else {
 
             if (@file_exists("emoticons/$user_emots/definitions.php")) {
                 include ("emoticons/$user_emots/definitions.php");
@@ -133,16 +113,6 @@ function emoticons_initialise()
     return $emoticons_array;
 }
 
-/**
-* Apply emoticons to content
-*
-* Applies the emoticons to the specified string. Automatically initialises the emoticons
-* if not already done by the script.
-*
-* @return string
-* @param string $content - string to convert
-*/
-
 function emoticons_apply($content)
 {
     // Try and initialise the emoticons.
@@ -174,17 +144,6 @@ function emoticons_apply($content)
     // Return the content.
     return $content;
 }
-
-/**
-* Get available emoticons.
-*
-* Retrieve a list of available emoticons on the Beehive installation.
-* Optionally choose to include or exclude the text only and 'none'
-* emoticon packs.
-*
-* @return array
-* @param boolean $include_text_none - Set to false to exclude the text only / none packs.
-*/
 
 function emoticons_get_available($include_text_none = true)
 {
@@ -220,50 +179,17 @@ function emoticons_get_available($include_text_none = true)
     return $available_sets;
 }
 
-/**
-* Emoticon Sort call back
-*
-* Call back function used to sort the emoticons into length. Prevents similar named
-* but shorter emoticons from converting the longer match text of other emoticons.
-* Used by uksort in emoticons_initialise function.
-*
-* @return boolean
-* @param string $a - String to compare
-* @param string $b - String to compare
-*/
-
 function sort_by_length_callback($a, $b)
 {
     if ($a == $b) return 0;
     return (mb_strlen($a) > mb_strlen($b) ? -1 : 1);
 }
 
-/**
-* Check emoticon set exists.
-*
-* Checks that the emoticon set's style.css actually exists on disk
-*
-* @return boolean
-* @param string $emoticon_set - Emoticon set to check
-*/
-
 function emoticons_set_exists($emoticon_set)
 {
     $emoticon_set = basename($emoticon_set);
     return (@file_exists("emoticons/$emoticon_set/style.css") || $emoticon_set == "text" || $emoticon_set == "none");
 }
-
-/**
-* Preview emoticon pack
-*
-* Generates HTML for empoticon pack preview with clickable icons to add emoticon to form field.
-*
-* @return string
-* @param string $emoticon_set - Emoticon set to preview
-* @param string $width - Width in pixels of preview box
-* @param string $height - Height in pixels of the preview box
-* @param string $display_limit - Number of emoticons to show in preview.
-*/
 
 function emoticons_preview($emoticon_set, $width = 190, $height = 100, $display_limit = 35)
 {

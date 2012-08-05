@@ -21,17 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/**
-* admin.inc.php - admin functions
-*
-* Contains admin related functions.
-*/
-
-/**
-*
-*/
-
-// We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -39,33 +28,24 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "banned.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "email.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
+require_once BH_INCLUDE_PATH. 'banned.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'email.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
-/**
-* Add log entry
-*
-* Adds an entry to the ADMIN_LOG table.
-*
-* @param integer $action - Action ID (see constants.inc.php)
-* @param mixed $data - Data to insert into the log
-* @return bool
-*/
 function admin_add_log_entry($action, array $data = array())
 {
     if (!$db_admin_add_log_entry = db_connect()) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
     if (!is_numeric($action)) return false;
     
@@ -73,25 +53,15 @@ function admin_add_log_entry($action, array $data = array())
 
     $data = db_escape_string(base64_encode(serialize($data)));
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "INSERT INTO `{$table_data['PREFIX']}ADMIN_LOG` (CREATED, UID, ACTION, ENTRY) ";
+    $sql = "INSERT INTO `{$table_prefix}ADMIN_LOG` (CREATED, UID, ACTION, ENTRY) ";
     $sql.= "VALUES (CAST('$current_datetime' AS DATETIME), '$uid', '$action', '$data')";
 
     if (!db_query($sql, $db_admin_add_log_entry)) return false;
 
     return true;
 }
-
-/**
-* Clears admin log
-*
-* Clears the forum admin log
-*
-* @return bool
-* @param integer $remove_type - Action ID (see constants.inc.php) type to remove. (0 = All)
-* @param mixed $remove_days - Remove entries older than days.
-*/
 
 function admin_prune_log($remove_type, $remove_days)
 {
@@ -100,11 +70,11 @@ function admin_prune_log($remove_type, $remove_days)
     if (!is_numeric($remove_type)) return false;
     if (!is_numeric($remove_days)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $remove_days_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($remove_days * DAY_IN_SECONDS));
 
-    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}ADMIN_LOG` ";
+    $sql = "DELETE QUICK FROM `{$table_prefix}ADMIN_LOG` ";
     $sql.= "WHERE CREATED < CAST('$remove_days_datetime' AS DATETIME) ";
     $sql.= "AND (ACTION = '$remove_type' OR '$remove_type' = 0)";
 
@@ -113,40 +83,37 @@ function admin_prune_log($remove_type, $remove_days)
     return true;
 }
 
-/**
-* Fetches admin log entries
-*
-* Fetches the available admin log entries into an array
-*
-* @return array
-* @param integer $offset - Offset of the rows returned by the query
-* @param string $sort_by - Column to sort the results by
-* @param string $sort_dir - Direction to sort the results by
-*/
-
-function admin_get_log_entries($offset, $group_by = 'DAY', $sort_by = 'CREATED', $sort_dir = 'DESC')
+function admin_get_log_entries($page = 1, $group_by = 'DAY', $sort_by = 'CREATED', $sort_dir = 'DESC')
 {
     if (!$db_admin_get_log_entries = db_connect()) return false;
 
     $group_by_array = array(
-        ADMIN_LOG_GROUP_NONE   => 'ADMIN_LOG.ID',
-        ADMIN_LOG_GROUP_YEAR   => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y')",
-        ADMIN_LOG_GROUP_MONTH  => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y%m')",
-        ADMIN_LOG_GROUP_DAY    => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y%m%d')",
-        ADMIN_LOG_GROUP_HOUR   => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y%m%d%H')",
+        ADMIN_LOG_GROUP_NONE => 'ADMIN_LOG.ID',
+        ADMIN_LOG_GROUP_YEAR => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y')",
+        ADMIN_LOG_GROUP_MONTH => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y%m')",
+        ADMIN_LOG_GROUP_DAY => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y%m%d')",
+        ADMIN_LOG_GROUP_HOUR => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y%m%d%H')",
         ADMIN_LOG_GROUP_MINUTE => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y%m%d%H%i')",
         ADMIN_LOG_GROUP_SECOND => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y%m%d%H%i%s')",
     );
     
-    $sort_by_array = array('CREATED', 'UID', 'ACTION', 'COUNT');
+    $sort_by_array = array(
+        'CREATED', 
+        'UID', 
+        'ACTION', 
+        'COUNT'
+    );
     
-    $sort_dir_array = array('ASC', 'DESC');
+    $sort_dir_array = array(
+        'ASC', 
+        'DESC'
+    );
 
     $admin_log_array = array();
 
-    if (!is_numeric($offset)) $offset = 0;
+    if (!is_numeric($page) || ($page < 1)) $page = 1;
 
-    $offset = abs($offset);
+    $offset = calculate_page_offset($page, 10);
     
     if (!isset($group_by_array[$group_by])) $group_by = ADMIN_LOG_GROUP_NONE;
 
@@ -154,17 +121,17 @@ function admin_get_log_entries($offset, $group_by = 'DAY', $sort_by = 'CREATED',
 
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS ADMIN_LOG.ID, ADMIN_LOG.UID, ADMIN_LOG.ACTION, ";
     $sql.= "ADMIN_LOG.ENTRY, UNIX_TIMESTAMP(MAX(ADMIN_LOG.CREATED)) AS CREATED, ";
     $sql.= "{$group_by_array[$group_by]} AS GROUP_BY, COUNT(*) AS COUNT, ";
     $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
-    $sql.= "FROM `{$table_data['PREFIX']}ADMIN_LOG` ADMIN_LOG ";
+    $sql.= "FROM `{$table_prefix}ADMIN_LOG` ADMIN_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = ADMIN_LOG.UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = ADMIN_LOG.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "GROUP BY GROUP_BY, ADMIN_LOG.UID, ADMIN_LOG.ACTION, ADMIN_LOG.ENTRY ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
@@ -178,95 +145,70 @@ function admin_get_log_entries($offset, $group_by = 'DAY', $sort_by = 'CREATED',
 
     list($admin_log_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
-    if (db_num_rows($result) > 0) {
+    if ((db_num_rows($result) == 0) && ($admin_log_count > 0) && ($page > 1)) {
+        return admin_get_log_entries($page - 1, $sort_by, $sort_dir);
+    }
+    
+    while (($admin_log_data = db_fetch_array($result))) {
 
-        while (($admin_log_data = db_fetch_array($result))) {
-
-            if (isset($admin_log_data['LOGON']) && isset($admin_log_data['PEER_NICKNAME'])) {
-                if (!is_null($admin_log_data['PEER_NICKNAME']) && strlen($admin_log_data['PEER_NICKNAME']) > 0) {
-                    $admin_log_data['NICKNAME'] = $admin_log_data['PEER_NICKNAME'];
-                }
+        if (isset($admin_log_data['LOGON']) && isset($admin_log_data['PEER_NICKNAME'])) {
+            if (!is_null($admin_log_data['PEER_NICKNAME']) && strlen($admin_log_data['PEER_NICKNAME']) > 0) {
+                $admin_log_data['NICKNAME'] = $admin_log_data['PEER_NICKNAME'];
             }
-
-            if (!isset($admin_log_data['LOGON'])) $admin_log_data['LOGON'] = gettext("Unknown user");
-            if (!isset($admin_log_data['NICKNAME'])) $admin_log_data['NICKNAME'] = "";
-            
-            $admin_log_data['ENTRY'] = unserialize(base64_decode($admin_log_data['ENTRY']));
-
-            $admin_log_array[] = $admin_log_data;
         }
 
-    }else if ($admin_log_count > 0) {
+        if (!isset($admin_log_data['LOGON'])) $admin_log_data['LOGON'] = gettext("Unknown user");
+        if (!isset($admin_log_data['NICKNAME'])) $admin_log_data['NICKNAME'] = "";
+        
+        $admin_log_data['ENTRY'] = unserialize(base64_decode($admin_log_data['ENTRY']));
 
-        $offset = floor(($admin_log_count - 1) / 10) * 10;
-        return admin_get_log_entries($offset, $sort_by, $sort_dir);
+        $admin_log_array[] = $admin_log_data;
     }
 
-    return array('admin_log_count' => $admin_log_count,
-                 'admin_log_array' => $admin_log_array);
+    return array(
+        'admin_log_count' => $admin_log_count,
+        'admin_log_array' => $admin_log_array
+    );
 }
 
-/**
-* Fetches admin word filter list
-*
-* Fetches the available word filter entries into an array
-*
-* @return array
-* @param integer $offset - Offset for results
-*/
-
-function admin_get_word_filter_list($offset)
+function admin_get_word_filter_list($page = 1)
 {
     if (!$db_admin_get_word_filter = db_connect()) return false;
 
-    if (!is_numeric($offset)) $offset = 0;
+    if (!is_numeric($page) || ($page < 1)) $page = 1;
 
-    // Ensure offset is positive.
-    $offset = abs($offset);
+    $offset = calculate_page_offset($page, 10);
 
     $word_filter_array = array();
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, ";
-    $sql.= "FILTER_TYPE, FILTER_ENABLED FROM `{$table_data['PREFIX']}WORD_FILTER` ";
+    $sql.= "FILTER_TYPE, FILTER_ENABLED FROM `{$table_prefix}WORD_FILTER` ";
     $sql.= "WHERE UID = 0 ORDER BY FID ";
     $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_admin_get_word_filter)) return false;
 
-    // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_admin_get_word_filter)) return false;
 
     list($word_filter_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
-    if (db_num_rows($result) > 0) {
-
-        while (($word_filter_data = db_fetch_array($result))) {
-
-            $word_filter_array[$word_filter_data['FID']] = $word_filter_data;
-        }
-
-    }else if ($word_filter_count > 0) {
-
-        $offset = floor(($word_filter_count - 1) / 10) * 10;
-        return admin_get_word_filter_list($offset);
+    if ((db_num_rows($result) == 0) && ($word_filter_count > 0) && ($page > 1)) {
+        return admin_get_word_filter_list($page - 1);
+    }
+    
+    while (($word_filter_data = db_fetch_array($result))) {
+        $word_filter_array[$word_filter_data['FID']] = $word_filter_data;
     }
 
-    return array('word_filter_count' => $word_filter_count,
-                 'word_filter_array' => $word_filter_array);
+    return array(
+        'word_filter_count' => $word_filter_count,
+        'word_filter_array' => $word_filter_array
+    );
 }
-
-/**
-* Fetches specified admin word filter
-*
-* Fetches the specified admin word filter entry data.
-*
-* @return mixed - array on success, false on failure.
-* @param integer $filter_id - Word Filter entry to retrieve from database.
-*/
 
 function admin_get_word_filter($filter_id)
 {
@@ -274,31 +216,20 @@ function admin_get_word_filter($filter_id)
 
     if (!is_numeric($filter_id)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, ";
-    $sql.= "FILTER_ENABLED FROM `{$table_data['PREFIX']}WORD_FILTER` ";
+    $sql.= "FILTER_ENABLED FROM `{$table_prefix}WORD_FILTER` ";
     $sql.= "WHERE UID = 0 AND FID = '$filter_id' ORDER BY FID";
 
     if (!$result = db_query($sql, $db_admin_get_word_filter)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        $word_filter_array = db_fetch_array($result);
-        return $word_filter_array;
-    }
+    $word_filter_array = db_fetch_array($result);
 
-    return false;
+    return $word_filter_array;
 }
-
-/**
-* Delete an entry in the word filter
-*
-* Fetches the available attachments based on the provided parameters that match $aid
-*
-* @return bool
-* @param integer $id - Filter entry ID
-*/
 
 function admin_delete_word_filter($filter_id)
 {
@@ -306,9 +237,9 @@ function admin_delete_word_filter($filter_id)
 
     if (!is_numeric($filter_id)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}WORD_FILTER` ";
+    $sql = "DELETE QUICK FROM `{$table_prefix}WORD_FILTER` ";
     $sql.= "WHERE UID = 0 AND FID = '$filter_id'";
 
     if (!db_query($sql, $db_user_delete_word_filter)) return false;
@@ -316,38 +247,18 @@ function admin_delete_word_filter($filter_id)
     return true;
 }
 
-/**
-* Clear admin word filter
-*
-* Removes all word filter entries from the admin defined word filter
-*
-* @return bool
-* @param void
-*/
-
 function admin_clear_word_filter()
 {
     if (!$db_admin_clear_word_filter = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "DELETE QUICK FROM `{$table_data['PREFIX']}WORD_FILTER` WHERE UID = 0";
+    $sql = "DELETE QUICK FROM `{$table_prefix}WORD_FILTER` WHERE UID = 0";
 
     if (!db_query($sql, $db_admin_clear_word_filter)) return false;
 
     return true;
 }
-
-/**
-* Add entry to admin word filter
-*
-* Adds an entry to the admin defined word filter
-*
-* @return bool
-* @param string $match - String to match. May be all, word or PCRE
-* @param string $replace - String to replace with. May be all, word or PCRE
-* @param integer $filter_option - Type of filtering to perform (0: all, 1: word, 2: PCRE)
-*/
 
 function admin_add_word_filter($filter_name, $match_text, $replace_text, $filter_option, $filter_enabled)
 {
@@ -360,9 +271,9 @@ function admin_add_word_filter($filter_name, $match_text, $replace_text, $filter
     if (!is_numeric($filter_option)) $filter_option = WORD_FILTER_TYPE_ALL;
     if (!is_numeric($filter_enabled)) $filter_enabled = WORD_FILTER_ENABLED;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "INSERT INTO `{$table_data['PREFIX']}WORD_FILTER` ";
+    $sql = "INSERT INTO `{$table_prefix}WORD_FILTER` ";
     $sql.= "(UID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED) ";
     $sql.= "VALUES (0, '$filter_name', '$match_text', '$replace_text', '$filter_option', '$filter_enabled')";
 
@@ -370,17 +281,6 @@ function admin_add_word_filter($filter_name, $match_text, $replace_text, $filter
 
     return true;
 }
-
-/**
-* Update entry in admin word filter
-*
-* Updates an entry in the admin defined word filter
-*
-* @return bool
-* @param string $match - String to match. May be all, word or PCRE
-* @param string $replace - String to replace with. May be all, word or PCRE
-* @param integer $filter_option - Type of filtering to perform (0: all, 1: word, 2: PCRE)
-*/
 
 function admin_update_word_filter($filter_id, $filter_name, $match_text, $replace_text, $filter_option, $filter_enabled)
 {
@@ -395,9 +295,9 @@ function admin_update_word_filter($filter_id, $filter_name, $match_text, $replac
     $match_text   = db_escape_string($match_text);
     $replace_text = db_escape_string($replace_text);
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}WORD_FILTER` SET FILTER_NAME = '$filter_name', ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_prefix}WORD_FILTER` SET FILTER_NAME = '$filter_name', ";
     $sql.= "MATCH_TEXT = '$match_text', REPLACE_TEXT = '$replace_text', ";
     $sql.= "FILTER_TYPE = '$filter_option', FILTER_ENABLED = '$filter_enabled' ";
     $sql.= "WHERE UID = 0 AND FID = '$filter_id'";
@@ -407,44 +307,32 @@ function admin_update_word_filter($filter_id, $filter_name, $match_text, $replac
     return true;
 }
 
-/**
-* Search for a user
-*
-* Searches for a user account and returns logon, nickname and last visit timestamp
-*
-* @return array
-* @param string $usersearch - Logon or Nickname to search for
-* @param string $sort_by - Column to sort the results by
-* @param string $sort_dir - Direction to sort results by
-* @param integer $offset - Offset of the rows returned by the query
-*/
-
-function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'DESC', $filter = ADMIN_USER_FILTER_NONE, $offset = 0)
+function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'DESC', $filter = ADMIN_USER_FILTER_NONE, $page = 1)
 {
     if (!$db_admin_user_search = db_connect()) return false;
 
-    $sort_by_array  = array('LOGON'      => 'USER.LOGON',
-                            'LAST_VISIT' => 'USER_FORUM.LAST_VISIT',
-                            'REGISTERED' => 'USER.REGISTERED',
-                            'REFERER'    => 'SESSIONS.REFERER');
+    $sort_by_array  = array(
+        'LOGON' => 'USER.LOGON',
+        'LAST_VISIT' => 'USER_FORUM.LAST_VISIT',
+        'REGISTERED' => 'USER.REGISTERED',
+        'REFERER' => 'SESSIONS.REFERER'
+    );
 
     if (!in_array($sort_dir, array('ASC', 'DESC'))) $sort_dir = 'ASC';
 
-    if (!is_numeric($offset)) $offset = 0;
+    if (!is_numeric($page) || ($page < 1)) $page = 1;
+    
     if (!is_numeric($filter)) $filter = ADMIN_USER_FILTER_NONE;
 
-    // Ensure offset is positive.
-    $offset = abs($offset);
-
-    if (($table_data = get_table_prefix())) {
-        $forum_fid = $table_data['FID'];
-    }else {
+    $offset = calculate_page_offset($page, 10);
+    
+    if (!($forum_fid = get_forum_fid())) {
         $forum_fid = 0;
     }
 
     if (in_array($sort_by, array_keys($sort_by_array))) {
         $sort_by_array[$sort_by];
-    }else {
+    } else {
         $sort_by = 'USER_FORUM.LAST_VISIT';
     }
 
@@ -460,43 +348,42 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
 
     switch ($filter) {
 
-        case ADMIN_USER_FILTER_ONLINE: // Online Users
-            $user_fetch_sql = "WHERE SESSIONS.HASH IS NOT NULL ";
+        case ADMIN_USER_FILTER_ONLINE:
+
+            $user_fetch_sql = "WHERE SESSIONS.ID IS NOT NULL ";
             $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
             $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
-
             break;
 
-        case ADMIN_USER_FILTER_OFFLINE: // Offline Users
-            $user_fetch_sql = "WHERE SESSIONS.HASH IS NULL ";
+        case ADMIN_USER_FILTER_OFFLINE:
+
+            $user_fetch_sql = "WHERE SESSIONS.ID IS NULL ";
             $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
             $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
-
             break;
 
-        case ADMIN_USER_FILTER_APPROVAL: // Users awaiting approval
+        case ADMIN_USER_FILTER_APPROVAL:
+
             $user_fetch_sql = "WHERE USER.APPROVED IS NULL ";
             $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
             $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
-
             break;
 
-        case ADMIN_USER_FILTER_BANNED: // Banned users
+        case ADMIN_USER_FILTER_BANNED:
+
             $user_fetch_sql = "WHERE PERMS.PERM & $up_banned > 0 ";
             $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
             $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
-
             break;
 
         default:
 
             $user_fetch_sql = "WHERE (USER.LOGON LIKE '$user_search%' ";
             $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
-
             break;
     }
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.ID, ";
     $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT ";
     $sql.= "FROM USER LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID ";
@@ -508,71 +395,56 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
     $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
     $sql.= "WHERE GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = 0 ";
     $sql.= "GROUP BY GROUP_USERS.UID) AS PERMS ON (PERMS.UID = USER_FORUM.UID) ";
-    $sql.= "$user_fetch_sql GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
+    $sql.= "$user_fetch_sql GROUP BY USER.UID ORDER BY $sort_by $sort_dir ";
+    $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_admin_user_search)) return false;
 
-    // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_admin_user_search)) return false;
 
     list($user_get_all_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
-    if (db_num_rows($result) > 0) {
-
-        while (($user_data = db_fetch_array($result))) {
-
-            $user_get_all_array[$user_data['UID']] = $user_data;
-        }
-
-    }else if ($user_get_all_count > 0) {
-
-        $offset = floor(($user_get_all_count - 1) / 10) * 10;
-        return admin_user_get_all($sort_by, $sort_dir, $filter, $offset);
+    if ((db_num_rows($result) == 0) && ($user_get_all_count > 0) && ($page > 1)) {
+        return admin_user_get_all($sort_by, $sort_dir, $filter, $page - 1);
     }
 
-    return array('user_count' => $user_get_all_count,
-                 'user_array' => $user_get_all_array);
+    while (($user_data = db_fetch_array($result))) {
+        $user_get_all_array[$user_data['UID']] = $user_data;
+    }
+
+    return array(
+        'user_count' => $user_get_all_count,
+        'user_array' => $user_get_all_array
+    );
 }
 
-/**
-* Fetch list of users
-*
-* Fetch a list of registered user accounts inc. logons, nicknames and last visit timestamp
-*
-* @return array
-* @param string $sort_by - Column to sort the results by
-* @param string $sort_dir - Direction to sort results by
-* @param integer $offset - Offset of the rows returned by the query
-*/
-
-function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter = ADMIN_USER_FILTER_NONE, $offset = 0)
+function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter = ADMIN_USER_FILTER_NONE, $page = 1)
 {
     if (!$db_user_get_all = db_connect()) return false;
 
-    $sort_by_array  = array('LOGON'      => 'USER.LOGON',
-                            'LAST_VISIT' => 'USER_FORUM.LAST_VISIT',
-                            'REGISTERED' => 'USER.REGISTERED',
-                            'ACTIVE'     => 'SESSIONS.HASH');
+    $sort_by_array  = array(
+        'LOGON' => 'USER.LOGON',
+        'LAST_VISIT' => 'USER_FORUM.LAST_VISIT',
+        'REGISTERED' => 'USER.REGISTERED',
+        'ACTIVE' => 'SESSIONS.ID'
+    );
 
     if (!in_array($sort_dir, array('ASC', 'DESC'))) $sort_dir = 'ASC';
 
-    if (!is_numeric($offset)) $offset = 0;
+    if (!is_numeric($page) || ($page < 1)) $page = 1;
     if (!is_numeric($filter)) $filter = ADMIN_USER_FILTER_NONE;
 
-    // Ensure offset is positive.
-    $offset = abs($offset);
+    $offset = calculate_page_offset($page, 10);
 
-    if (($table_data = get_table_prefix())) {
-        $forum_fid = $table_data['FID'];
-    }else {
+    if (!($forum_fid = get_forum_fid())) {
         $forum_fid = 0;
-    }
+    }    
 
     if (in_array($sort_by, array_keys($sort_by_array))) {
         $sort_by = $sort_by_array[$sort_by];
-    }else {
+    } else {
         $sort_by = 'USER_FORUM.LAST_VISIT';
     }
 
@@ -586,22 +458,22 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
 
     switch ($filter) {
 
-        case ADMIN_USER_FILTER_ONLINE: // Online Users
-            $user_fetch_sql = "WHERE SESSIONS.HASH IS NOT NULL";
+        case ADMIN_USER_FILTER_ONLINE:
+            $user_fetch_sql = "WHERE SESSIONS.ID IS NOT NULL";
 
             break;
 
-        case ADMIN_USER_FILTER_OFFLINE: // Offline Users
-            $user_fetch_sql = "WHERE SESSIONS.HASH IS NULL";
+        case ADMIN_USER_FILTER_OFFLINE:
+            $user_fetch_sql = "WHERE SESSIONS.ID IS NULL";
 
             break;
 
-        case ADMIN_USER_FILTER_APPROVAL: // Users awaiting approval
+        case ADMIN_USER_FILTER_APPROVAL:
             $user_fetch_sql = "WHERE USER.APPROVED IS NULL";
 
             break;
 
-        case ADMIN_USER_FILTER_BANNED: // Banned users
+        case ADMIN_USER_FILTER_BANNED:
             $user_fetch_sql = "WHERE PERMS.PERM & $up_banned > 0";
 
             break;
@@ -612,7 +484,7 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
             break;
     }
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.HASH, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.ID, ";
     $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT ";
     $sql.= "FROM USER LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID ";
@@ -624,42 +496,30 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
     $sql.= "WHERE GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = 0 ";
     $sql.= "GROUP BY GROUP_USERS.UID) AS PERMS ON (PERMS.UID = USER_FORUM.UID) ";
-    $sql.= "$user_fetch_sql GROUP BY USER.UID ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
+    $sql.= "$user_fetch_sql GROUP BY USER.UID ORDER BY $sort_by $sort_dir ";
+    $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_user_get_all)) return false;
 
-    // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_user_get_all)) return false;
 
     list($user_get_all_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
-    if (db_num_rows($result) > 0) {
-
-        while (($user_data = db_fetch_array($result))) {
-
-            $user_get_all_array[$user_data['UID']] = $user_data;
-        }
-
-    }else if ($user_get_all_count > 0) {
-
-        $offset = floor(($user_get_all_count - 1) / 10) * 10;
-        return admin_user_get_all($sort_by, $sort_dir, $filter, $offset);
+    if ((db_num_rows($result) == 0) && ($user_get_all_count > 0) && ($page > 1)) {
+        return admin_user_get_all($sort_by, $sort_dir, $filter, $page - 1);
+    }
+        
+    while (($user_data = db_fetch_array($result))) {
+        $user_get_all_array[$user_data['UID']] = $user_data;
     }
 
-    return array('user_count' => $user_get_all_count,
-                 'user_array' => $user_get_all_array);
+    return array(
+        'user_count' => $user_get_all_count,
+        'user_array' => $user_get_all_array
+    );
 }
-
-/**
-* Fetch user
-*
-* Fetch the details for the specified user.
-*
-* @return mixed - Array on success boolean false on failure.
-* @param integer $uid - UID of the user account to fetch.
-*/
 
 function admin_user_get($uid)
 {
@@ -667,14 +527,12 @@ function admin_user_get($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if (($table_data = get_table_prefix())) {
-        $forum_fid = $table_data['FID'];
-    }else {
+    if (!($forum_fid = get_forum_fid())) {
         $forum_fid = 0;
-    }
+    }    
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL, ";
-    $sql.= "USER.IPADDRESS, SESSIONS.HASH, SESSIONS.REFERER AS SESSION_REFERER, ";
+    $sql.= "USER.IPADDRESS, SESSIONS.ID, SESSIONS.REFERER AS SESSION_REFERER, ";
     $sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
     $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
@@ -683,23 +541,12 @@ function admin_user_get($uid)
 
     if (!$result = db_query($sql, $db_admin_user_get)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        $admin_user_get = db_fetch_array($result);
-        return $admin_user_get;
-    }
+    $admin_user_get = db_fetch_array($result);
 
-    return false;
+    return $admin_user_get;
 }
-
-/**
-* End user session
-*
-* Ends the session of the specified user
-*
-* @return bool
-* @param integer $uid - UID of the user account to end session for.
-*/
 
 function admin_session_end($uid)
 {
@@ -707,9 +554,9 @@ function admin_session_end($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $forum_fid = $table_data['FID'];
+    if (!($forum_fid = get_forum_fid())) return false;
 
     $sql = "DELETE QUICK FROM SESSIONS WHERE UID = '$uid' ";
     $sql.= "AND FID = '$forum_fid'";
@@ -718,15 +565,6 @@ function admin_session_end($uid)
 
     return true;
 }
-
-/**
-* Get user attachments
-*
-* Fetches the attachments for the available user
-*
-* @return mixed
-* @param integer $uid - UID of the user account to fetch attachments for.
-*/
 
 function admin_get_users_attachments($uid, &$user_attachments, &$user_image_attachments, $hash_array = false)
 {
@@ -752,7 +590,7 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
         $sql.= "WHERE PAF.UID = '$uid' AND PAF.HASH IN ('$hash_list') ";
         $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
 
-    }else {
+    } else {
 
         $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
         $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
@@ -772,27 +610,31 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
                 $filesize = filesize("$attachment_dir/{$attachment['HASH']}");
                 $filesize+= filesize("$attachment_dir/{$attachment['HASH']}.thumb");
 
-                $user_image_attachments[] = array("filename"     => rawurldecode($attachment['FILENAME']),
-                                                  "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                                                  "filesize"     => $filesize,
-                                                  "aid"          => $attachment['AID'],
-                                                  "hash"         => $attachment['HASH'],
-                                                  "mimetype"     => $attachment['MIMETYPE'],
-                                                  "downloads"    => $attachment['DOWNLOADS'],
-                                                  "forum_fid"    => is_numeric($attachment['FID']) ? $attachment['FID'] : 0,
-                                                  "forum_webtag" => $attachment['WEBTAG']);
+                $user_image_attachments[] = array(
+                    "filename" => rawurldecode($attachment['FILENAME']),
+                    "filedate" => filemtime("$attachment_dir/{$attachment['HASH']}"),
+                    "filesize" => $filesize,
+                    "aid" => $attachment['AID'],
+                    "hash" => $attachment['HASH'],
+                    "mimetype" => $attachment['MIMETYPE'],
+                    "downloads" => $attachment['DOWNLOADS'],
+                    "forum_fid" => is_numeric($attachment['FID']) ? $attachment['FID'] : 0,
+                    "forum_webtag" => $attachment['WEBTAG']
+                );
 
-            }else {
+            } else {
 
-                $user_attachments[] = array("filename"     => rawurldecode($attachment['FILENAME']),
-                                            "filedate"     => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                                            "filesize"     => filesize("$attachment_dir/{$attachment['HASH']}"),
-                                            "aid"          => $attachment['AID'],
-                                            "hash"         => $attachment['HASH'],
-                                            "mimetype"     => $attachment['MIMETYPE'],
-                                            "downloads"    => $attachment['DOWNLOADS'],
-                                            "forum_fid"    => is_numeric($attachment['FID']) ? $attachment['FID'] : 0,
-                                            "forum_webtag" => $attachment['WEBTAG']);
+                $user_attachments[] = array(
+                    "filename" => rawurldecode($attachment['FILENAME']),
+                    "filedate" => filemtime("$attachment_dir/{$attachment['HASH']}"),
+                    "filesize" => filesize("$attachment_dir/{$attachment['HASH']}"),
+                    "aid" => $attachment['AID'],
+                    "hash" => $attachment['HASH'],
+                    "mimetype" => $attachment['MIMETYPE'],
+                    "downloads" => $attachment['DOWNLOADS'],
+                    "forum_fid" => is_numeric($attachment['FID']) ? $attachment['FID'] : 0,
+                    "forum_webtag" => $attachment['WEBTAG']
+                );
             }
         }
     }
@@ -800,25 +642,13 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
     return (sizeof($user_attachments) > 0 || sizeof($user_image_attachments) > 0);
 }
 
-/**
-* Fetch list of forums
-*
-* Fetches a list of forums.
-*
-* @return mixed
-* @param integer $start - Offset for results.
-*/
-
-function admin_get_forum_list($offset)
+function admin_get_forum_list($page = 1)
 {
     if (!$db_admin_get_forum_list = db_connect()) return false;
 
-    if (!is_numeric($offset)) return false;
+    if (!is_numeric($page) || ($page < 1)) $page = 1;
 
-    $forums_array = array();
-
-    // Ensure offset is positive.
-    $offset = abs($offset);
+    $offset = calculate_page_offset($page, 10);
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS FORUMS.FID, FORUMS.WEBTAG, FORUMS.DEFAULT_FORUM, ";
     $sql.= "FORUMS.ACCESS_LEVEL, FORUM_SETTINGS.SVALUE AS FORUM_NAME FROM FORUMS ";
@@ -828,44 +658,34 @@ function admin_get_forum_list($offset)
 
     if (!$result = db_query($sql, $db_admin_get_forum_list)) return false;
 
-    // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_admin_get_forum_list)) return false;
 
     list($forums_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
-    if (db_num_rows($result) > 0) {
+    if ((db_num_rows($result) == 0) && ($forums_count > 0) && ($page > 1)) {
+        return admin_get_forum_list($page - 1);
+    }
+    
+    $forums_array = array();
 
-        while (($forum_data = db_fetch_array($result))) {
+    while (($forum_data = db_fetch_array($result))) {
 
-            if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
+        if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
 
-            if (($post_count = admin_forum_get_post_count($forum_data['FID']))) {
-                $forum_data['MESSAGES'] = $post_count;
-            }
-
-            $forums_array[] = $forum_data;
+        if (($post_count = admin_forum_get_post_count($forum_data['FID']))) {
+            $forum_data['MESSAGES'] = $post_count;
         }
 
-    }else if ($forums_count > 0) {
-
-        $offset = floor(($forums_count - 1) / 10) * 10;
-        return admin_get_forum_list($offset);
+        $forums_array[] = $forum_data;
     }
 
-    return array('forums_array' => $forums_array,
-                 'forums_count' => $forums_count);
+    return array(
+        'forums_array' => $forums_array,
+        'forums_count' => $forums_count
+    );
 }
-
-/**
-* Fetch post count
-*
-* Fetches post count of specified forum.
-*
-* @return array
-* @param integer $fid - Forum FID.
-*/
 
 function admin_forum_get_post_count($fid)
 {
@@ -873,89 +693,72 @@ function admin_forum_get_post_count($fid)
 
     if (!is_numeric($fid)) return false;
 
-    if (($table_data = forum_get_table_prefix($fid))) {
+    if (!($table_prefix = forum_get_table_prefix($fid))) return false;
 
-        $sql = "SELECT COUNT(PID) FROM `{$table_data['PREFIX']}POST`";
+    $sql = "SELECT COUNT(PID) FROM `{$table_prefix}POST`";
 
-        if (!$result = db_query($sql, $db_admin_forum_get_post_count)) return false;
+    if (!$result = db_query($sql, $db_admin_forum_get_post_count)) return false;
 
-        list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
 
-        return $post_count;
-    }
-
-    return false;
+    return $post_count;
 }
 
-/**
-* Fetch ban data
-*
-* Fetches available ban data from database.
-*
-* @return array
-* @param string $sort_by - Optional column to sort results by (default: ID)
-* @param string $sort_dir - Optional sort direction for results (default: ASC);
-* @param integer $offset - Offset for results
-*/
-
-function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $offset = 0)
+function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $page = 1)
 {
     if (!$db_admin_get_bandata = db_connect()) return false;
 
-    $sort_by_array = array('ID', 'BANTYPE', 'BANDATA', 'COMMENT', 'EXPIRES');
-    $sort_dir_array = array('ASC', 'DESC');
+    $sort_by_array = array(
+        'ID', 
+        'BANTYPE', 
+        'BANDATA', 
+        'COMMENT', 
+        'EXPIRES'
+    );
+
+    $sort_dir_array = array(
+        'ASC', 
+        'DESC'
+    );
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'ID';
+
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'ASC';
 
-    if (!is_numeric($offset)) $offset = 0;
+    if (!is_numeric($page) || ($page < 1)) $page = 1;
 
-    // Ensure offset is positive.
-    $offset = abs($offset);
+    $offset = calculate_page_offset($page, 10);
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $ban_data_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS ID, BANTYPE, BANDATA, COMMENT, ";
-    $sql.= "UNIX_TIMESTAMP(EXPIRES) AS EXPIRES FROM `{$table_data['PREFIX']}BANNED` ";
+    $sql.= "UNIX_TIMESTAMP(EXPIRES) AS EXPIRES FROM `{$table_prefix}BANNED` ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_admin_get_bandata)) return false;
 
-    // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_admin_get_bandata)) return false;
 
     list($ban_data_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
-    if (db_num_rows($result) > 0) {
-
-        while (($ban_data = db_fetch_array($result))) {
-
-            $ban_data_array[$ban_data['ID']] = $ban_data;
-        }
-
-    }else if ($ban_data_count > 0) {
-
-        $offset = floor(($ban_data_count - 1) / 10) * 10;
-        return admin_get_ban_data($sort_by, $sort_dir, $offset);
+    if ((db_num_rows($result) == 0) && ($ban_data_count > 0) && ($page > 1)) {
+        return admin_get_ban_data($sort_by, $sort_dir, $page - 1);
+    }
+    
+    while (($ban_data = db_fetch_array($result))) {
+        $ban_data_array[$ban_data['ID']] = $ban_data;
     }
 
-    return array('ban_count' => $ban_data_count,
-                 'ban_array' => $ban_data_array);
+    return array(
+        'ban_count' => $ban_data_count,
+        'ban_array' => $ban_data_array
+    );
 }
-
-/**
-* Fetch ban data by ban ID
-*
-* Fetches available ban data from database for the specified ban ID.
-*
-* @return array
-* @param string $ban_id - ID of ban to return.
-*/
 
 function admin_get_ban($ban_id)
 {
@@ -963,32 +766,21 @@ function admin_get_ban($ban_id)
 
     if (!is_numeric($ban_id)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT ID, BANTYPE, BANDATA, COMMENT, UNIX_TIMESTAMP(EXPIRES) AS EXPIRES, ";
     $sql.= "DAY(EXPIRES) AS EXPIRESDAY, MONTH(EXPIRES) AS EXPIRESMONTH, ";
-    $sql.= "YEAR(EXPIRES) AS EXPIRESYEAR FROM `{$table_data['PREFIX']}BANNED` ";
+    $sql.= "YEAR(EXPIRES) AS EXPIRESYEAR FROM `{$table_prefix}BANNED` ";
     $sql.= "WHERE ID = '$ban_id'";
 
     if (!$result = db_query($sql, $db_admin_get_bandata)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        $ban_data_array = db_fetch_array($result);
-        return $ban_data_array;
-    }
+    $ban_data_array = db_fetch_array($result);
 
-    return false;
+    return $ban_data_array;
 }
-
-/**
-* Check user is approved
-*
-* Check that specified user is approved.
-*
-* @return boolean
-* @param integer $uid - User UID
-*/
 
 function admin_user_approved($uid)
 {
@@ -1005,27 +797,17 @@ function admin_user_approved($uid)
     return $user_approved_count > 0;
 }
 
-/**
-* Fetch post approval queue.
-*
-* Fetches list of posts awaiting approval from database.
-*
-* @return array
-* @param string $offset - Optional offset for results
-*/
-
-function admin_get_post_approval_queue($offset = 0)
+function admin_get_post_approval_queue($page = 1)
 {
     if (!$db_admin_get_post_approval_queue = db_connect()) return false;
 
-    if (!is_numeric($offset)) $offset = 0;
+    if (!is_numeric($page) || ($page < 1)) $page = 1;
 
-    // Ensure offset is positive.
-    $offset = abs($offset);
+    $offset = calculate_page_offset($page, 10);
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($folder_list = session_get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
+    if (($folder_list = session::get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
         $fidlist = implode(',', $folder_list);
     }
 
@@ -1034,10 +816,10 @@ function admin_get_post_approval_queue($offset = 0)
     $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.TITLE AS FOLDER_TITLE, ";
     $sql.= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql.= "USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
-    $sql.= "CONCAT(POST.TID, '.', POST.PID) AS MSG FROM `{$table_data['PREFIX']}POST` POST ";
+    $sql.= "CONCAT(POST.TID, '.', POST.PID) AS MSG FROM `{$table_prefix}POST` POST ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE POST.APPROVED IS NULL AND THREAD.FID IN ($fidlist) ";
     $sql.= "LIMIT $offset, 10";
 
@@ -1050,107 +832,79 @@ function admin_get_post_approval_queue($offset = 0)
 
     list($post_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
-    if (db_num_rows($result) > 0) {
-
-        while (($post_array = db_fetch_array($result))) {
-
-            $post_approval_array[] = $post_array;
-        }
-
-    }else if ($post_count > 0) {
-
-        $offset = floor(($post_count - 1) / 10) * 10;
-        return admin_get_post_approval_queue($offset);
+    if ((db_num_rows($result) == 0) && ($post_count > 0) && ($page > 1)) {
+        return admin_get_post_approval_queue($page - 1);
     }
 
-    return array('post_count' => $post_count,
-                 'post_array' => $post_approval_array);
+    while (($post_array = db_fetch_array($result))) {
+        $post_approval_array[] = $post_array;
+    }
+
+    return array(
+        'post_count' => $post_count,
+        'post_array' => $post_approval_array
+    );
 }
 
-/**
-* Fetch link approval queue.
-*
-* Fetches list of links awaiting approval from database.
-*
-* @return array
-* @param string $offset - Optional offset for results
-*/
-
-function admin_get_link_approval_queue($offset = 0)
+function admin_get_link_approval_queue($page = 1)
 {
     if (!$db_admin_get_link_approval_queue = db_connect()) return false;
 
-    if (!is_numeric($offset)) $offset = 0;
+    if (!is_numeric($page) || ($page < 1)) $page = 0;
 
-    $offset = abs($offset);
+    $offset = calculate_page_offset($page, 10);
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    if (!session_check_perm(USER_PERM_LINKS_MODERATE, 0)) return false;
+    if (!session::check_perm(USER_PERM_LINKS_MODERATE, 0)) return false;
 
     $link_approval_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS LINKS_FOLDERS.NAME AS FOLDER_TITLE, ";
     $sql.= "LINKS.LID, LINKS.URI, LINKS.TITLE, LINKS.DESCRIPTION, USER.UID, ";
     $sql.= "USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED ";
-    $sql.= "FROM `{$table_data['PREFIX']}LINKS` LINKS LEFT JOIN USER USER ON (USER.UID = LINKS.UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}LINKS_FOLDERS` LINKS_FOLDERS ON (LINKS_FOLDERS.FID = LINKS.FID) ";
+    $sql.= "FROM `{$table_prefix}LINKS` LINKS LEFT JOIN USER USER ON (USER.UID = LINKS.UID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}LINKS_FOLDERS` LINKS_FOLDERS ON (LINKS_FOLDERS.FID = LINKS.FID) ";
     $sql.= "WHERE LINKS.APPROVED IS NULL ";
     $sql.= "LIMIT $offset, 10";
 
     if (!$result = db_query($sql, $db_admin_get_link_approval_queue)) return false;
 
-    // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_admin_get_link_approval_queue)) return false;
 
     list($link_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
-    if (db_num_rows($result) > 0) {
-
-        while (($link_array = db_fetch_array($result))) {
-
-            $link_approval_array[] = $link_array;
-        }
-
-    }else if ($link_count > 0) {
-
-        $offset = floor(($link_count - 1) / 10) * 10;
-        return admin_get_link_approval_queue($offset);
+    if ((db_num_rows($result) == 0) && ($link_count > 0) && ($page > 1)) {
+        return admin_get_link_approval_queue($page - 1);
+    }
+        
+    while (($link_array = db_fetch_array($result))) {
+        $link_approval_array[] = $link_array;
     }
 
-    return array('link_count' => $link_count,
-                 'link_array' => $link_approval_array);
+    return array(
+        'link_count' => $link_count,
+        'link_array' => $link_approval_array
+    );
 }
 
-/**
-* Fetch visitor log from database.
-*
-* Fetches an extended list of visitors from database including HTTP referer
-* which isn't shown on the normal visitor log.
-*
-* @return array
-* @param integer $offset - offset for results
-* @param integer $limit  - limit for number of results
-*/
-
-function admin_get_visitor_log($offset)
+function admin_get_visitor_log($page = 1)
 {
     if (!$db_admin_get_visitor_log = db_connect()) return false;
 
-    if (!is_numeric($offset)) $offset = 0;
+    if (!is_numeric($page) || ($page < 1)) $page = 0;
 
-    // Ensure offset is positive.
-    $offset = abs($offset);
+    $offset = calculate_page_offset($page, 10);
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
+    
+    if (!($forum_fid = get_forum_fid())) return false;
 
     $users_get_recent_array = array();
 
-    $uid = session_get_value('UID');
-
-    $forum_fid = $table_data['FID'];
+    $uid = session::get_value('UID');
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS VISITOR_LOG.UID, USER.LOGON, ";
     $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
@@ -1158,7 +912,7 @@ function admin_get_visitor_log($offset)
     $sql.= "VISITOR_LOG.IPADDRESS, VISITOR_LOG.REFERER, ";
     $sql.= "SEB.SID, SEB.NAME, SEB.URL FROM VISITOR_LOG VISITOR_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS SEB ";
     $sql.= "ON (SEB.SID = VISITOR_LOG.SID) ";
@@ -1168,68 +922,56 @@ function admin_get_visitor_log($offset)
 
     if (!$result = db_query($sql, $db_admin_get_visitor_log)) return false;
 
-    // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_admin_get_visitor_log)) return false;
 
     list($users_get_recent_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
-    if (db_num_rows($result) > 0) {
+    if ((db_num_rows($result) == 0) && ($users_get_recent_count > 0) && ($page > 1)) {
+        return admin_get_visitor_log($page - 1);
+    }        
 
-        while (($visitor_array = db_fetch_array($result))) {
+    while (($visitor_array = db_fetch_array($result))) {
 
-            if (isset($visitor_array['LOGON']) && isset($visitor_array['PEER_NICKNAME'])) {
-                if (!is_null($visitor_array['PEER_NICKNAME']) && strlen($visitor_array['PEER_NICKNAME']) > 0) {
-                    $visitor_array['NICKNAME'] = $visitor_array['PEER_NICKNAME'];
-                }
+        if (isset($visitor_array['LOGON']) && isset($visitor_array['PEER_NICKNAME'])) {
+            if (!is_null($visitor_array['PEER_NICKNAME']) && strlen($visitor_array['PEER_NICKNAME']) > 0) {
+                $visitor_array['NICKNAME'] = $visitor_array['PEER_NICKNAME'];
             }
+        }
 
-            if ($visitor_array['UID'] == 0) {
+        if ($visitor_array['UID'] == 0) {
 
-                $visitor_array['LOGON']    = gettext("Guest");
-                $visitor_array['NICKNAME'] = gettext("Guest");
+            $visitor_array['LOGON']    = gettext("Guest");
+            $visitor_array['NICKNAME'] = gettext("Guest");
 
-            }elseif (!isset($visitor_array['LOGON']) || is_null($visitor_array['LOGON'])) {
+        } else if (!isset($visitor_array['LOGON']) || is_null($visitor_array['LOGON'])) {
 
-                $visitor_array['LOGON'] = gettext("Unknown user");
-                $visitor_array['NICKNAME'] = "";
-            }
+            $visitor_array['LOGON'] = gettext("Unknown user");
+            $visitor_array['NICKNAME'] = "";
+        }
 
-            if (isset($visitor_array['REFERER']) && strlen(trim($visitor_array['REFERER'])) > 0) {
+        if (isset($visitor_array['REFERER']) && strlen(trim($visitor_array['REFERER'])) > 0) {
 
-                $forum_uri_preg = preg_quote(html_get_forum_uri(), '/');
+            $forum_uri_preg = preg_quote(html_get_forum_uri(), '/');
 
-                if (preg_match("/^$forum_uri_preg/iu", trim($visitor_array['REFERER'])) > 0) {
-                    $visitor_array['REFERER'] = "";
-                }
-
-            }else {
-
+            if (preg_match("/^$forum_uri_preg/iu", trim($visitor_array['REFERER'])) > 0) {
                 $visitor_array['REFERER'] = "";
             }
 
-            $users_get_recent_array[] = $visitor_array;
+        } else {
+
+            $visitor_array['REFERER'] = "";
         }
 
-    }else if ($users_get_recent_count > 0) {
-
-        $offset = floor(($users_get_recent_count - 1) / 10) * 10;
-        return admin_get_visitor_log($offset);
+        $users_get_recent_array[] = $visitor_array;
     }
 
-    return array('user_count' => $users_get_recent_count,
-                 'user_array' => $users_get_recent_array);
+    return array(
+        'user_count' => $users_get_recent_count,
+        'user_array' => $users_get_recent_array
+    );
 }
-
-/**
-* Clears visitor log
-*
-* Clears the forum visitor log
-*
-* @return bool
-* @param void
-*/
 
 function admin_prune_visitor_log($remove_days)
 {
@@ -1237,9 +979,9 @@ function admin_prune_visitor_log($remove_days)
 
     if (!is_numeric($remove_days)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $forum_fid = $table_data['FID'];
+    if (!($forum_fid = get_forum_fid())) return false;
 
     $remove_days_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($remove_days * DAY_IN_SECONDS));
 
@@ -1251,102 +993,75 @@ function admin_prune_visitor_log($remove_days)
     return true;
 }
 
-/**
-* Fetch list of user aliases
-*
-* Fetches a list of aliases (IP Address matches) from database
-* for the specified user UID.
-*
-* @return array
-* @param integer $uid - User UID for searching.
-*/
-
 function admin_get_user_ip_matches($uid)
 {
     if (!$db_admin_get_user_ip_matches = db_connect()) return false;
 
     if (!is_numeric($uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    // Initialise arrays
     $user_ip_address_array = array();
-    $user_aliases_array = array();
 
-    // Session UID
-    $sess_uid = session_get_value('UID');
+    $sess_uid = session::get_value('UID');
 
-    // Fetch the user's last 10 IP addresses from the POST table
-    $sql = "SELECT DISTINCT IPADDRESS FROM `{$table_data['PREFIX']}POST` ";
-    $sql.= "WHERE FROM_UID = '$uid' AND IPADDRESS IS NOT NULL LIMIT 0, 10";
+    $sql = "SELECT DISTINCT IPADDRESS FROM `{$table_prefix}POST` ";
+    $sql.= "WHERE FROM_UID = '$uid' AND IPADDRESS IS NOT NULL LIMIT 10";
 
     if (!$result = db_query($sql, $db_admin_get_user_ip_matches)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        while (($user_get_aliases_row = db_fetch_array($result))) {
+    while (($user_get_aliases_row = db_fetch_array($result))) {
 
-            if (strlen(trim($user_get_aliases_row['IPADDRESS'])) > 0) {
-
-                $user_ip_address_array[] = $user_get_aliases_row['IPADDRESS'];
-            }
+        if (strlen(trim($user_get_aliases_row['IPADDRESS'])) > 0) {
+            $user_ip_address_array[] = $user_get_aliases_row['IPADDRESS'];
         }
     }
 
     if (($ipaddress = user_get_last_ip_address($uid))) {
         $user_ip_address_array[] = $ipaddress;
     }
+    
+    if (sizeof($user_ip_address_array) == 0) return false;
 
-    // Search the POST table for any matches - limit 10 matches
     $user_ip_address_list = implode("', '", $user_ip_address_array);
 
-    if (strlen($user_ip_address_list) > 0) {
+    $sql = "SELECT DISTINCT POST.FROM_UID AS UID, USER.LOGON, ";
+    $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, POST.IPADDRESS ";
+    $sql.= "FROM `{$table_prefix}POST` POST ";
+    $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
+    $sql.= "LEFT JOIN `{$table_prefix}RSS_FEEDS` RSS_FEEDS ";
+    $sql.= "ON (RSS_FEEDS.UID = USER.UID) WHERE POST.FROM_UID <> $uid ";
+    $sql.= "AND ((POST.IPADDRESS IN ('$user_ip_address_list')) ";
+    $sql.= "OR (USER.IPADDRESS IN ('$user_ip_address_list'))) ";
+    $sql.= "AND RSS_FEEDS.UID IS NOT NULL ";
+    $sql.= "LIMIT 0, 10";
 
-        $sql = "SELECT DISTINCT POST.FROM_UID AS UID, USER.LOGON, ";
-        $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, POST.IPADDRESS ";
-        $sql.= "FROM `{$table_data['PREFIX']}POST` POST ";
-        $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
-        $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
-        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
-        $sql.= "LEFT JOIN `{$table_data['PREFIX']}RSS_FEEDS` RSS_FEEDS ";
-        $sql.= "ON (RSS_FEEDS.UID = USER.UID) WHERE POST.FROM_UID <> $uid ";
-        $sql.= "AND ((POST.IPADDRESS IN ('$user_ip_address_list')) ";
-        $sql.= "OR (USER.IPADDRESS IN ('$user_ip_address_list'))) ";
-        $sql.= "AND RSS_FEEDS.UID IS NOT NULL ";
-        $sql.= "LIMIT 0, 10";
+    if (!$result = db_query($sql, $db_admin_get_user_ip_matches)) return false;
 
-        if (!$result = db_query($sql, $db_admin_get_user_ip_matches)) return false;
+    if (db_num_rows($result) == 0) return false;
+    
+    $user_aliases_array = array();
 
-        if (db_num_rows($result) > 0) {
+    while (($user_aliases = db_fetch_array($result))) {
 
-            while (($user_aliases = db_fetch_array($result))) {
-
-                if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
-                    if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
-                        $user_aliases['NICKNAME'] = $user_aliases['PEER_NICKNAME'];
-                    }
-                }
-
-                if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = gettext("Unknown user");
-                if (!isset($user_aliases['NICKNAME'])) $user_aliases['NICKNAME'] = "";
-
-                $user_aliases_array[$user_aliases['UID']] = $user_aliases;
+        if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
+            if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
+                $user_aliases['NICKNAME'] = $user_aliases['PEER_NICKNAME'];
             }
         }
+
+        if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = gettext("Unknown user");
+        if (!isset($user_aliases['NICKNAME'])) $user_aliases['NICKNAME'] = "";
+
+        $user_aliases_array[$user_aliases['UID']] = $user_aliases;
     }
 
     return $user_aliases_array;
 }
-
-/**
-* Fetch list of user aliases
-*
-* Fetches a list of aliases (Email Address matches) from database
-* for the specified user UID.
-*
-* @return array
-* @param integer $uid - User UID for searching.
-*/
 
 function admin_get_user_email_matches($uid)
 {
@@ -1354,55 +1069,44 @@ function admin_get_user_email_matches($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     // Initialise array
     $user_email_aliases_array = array();
 
     // Session UID
-    $sess_uid = session_get_value('UID');
+    $sess_uid = session::get_value('UID');
 
     // Get the user's email address
     $user_email_address = user_get_email($uid);
 
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER.EMAIL FROM USER ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
     $sql.= "WHERE (USER.EMAIL = '$user_email_address') ";
     $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
 
     if (!$result = db_query($sql, $db_admin_get_user_email_matches)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        while (($user_aliases = db_fetch_array($result))) {
+    while (($user_aliases = db_fetch_array($result))) {
 
-            if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
-                if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
-                    $user_aliases['NICKNAME'] = $user_aliases['PEER_NICKNAME'];
-                }
+        if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
+            if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
+                $user_aliases['NICKNAME'] = $user_aliases['PEER_NICKNAME'];
             }
-
-            if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = gettext("Unknown user");
-            if (!isset($user_aliases['NICKNAME'])) $user_aliases['NICKNAME'] = "";
-
-            $user_email_aliases_array[$user_aliases['UID']] = $user_aliases;
         }
+
+        if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = gettext("Unknown user");
+        if (!isset($user_aliases['NICKNAME'])) $user_aliases['NICKNAME'] = "";
+
+        $user_email_aliases_array[$user_aliases['UID']] = $user_aliases;
     }
 
     return $user_email_aliases_array;
 }
-
-/**
-* Fetch list of user aliases
-*
-* Fetches a list of aliases (HTTP Referer matches) from database
-* for the specified user UID.
-*
-* @return array
-* @param integer $uid - User UID for searching.
-*/
 
 function admin_get_user_referer_matches($uid)
 {
@@ -1410,55 +1114,41 @@ function admin_get_user_referer_matches($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    // Initialise array
     $user_referer_aliases_array = array();
 
-    // Session UID
-    $sess_uid = session_get_value('UID');
+    $sess_uid = session::get_value('UID');
 
-    // Get the user's referer
     $user_http_referer = user_get_referer($uid);
 
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER.REFERER FROM USER ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
     $sql.= "WHERE USER.REFERER = '$user_http_referer' ";
     $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
 
     if (!$result = db_query($sql, $db_admin_get_user_referer_matches)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        while (($user_aliases = db_fetch_array($result))) {
+    while (($user_aliases = db_fetch_array($result))) {
 
-            if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
-                if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
-                    $user_aliases['NICKNAME'] = $user_aliases['PEER_NICKNAME'];
-                }
+        if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
+            if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
+                $user_aliases['NICKNAME'] = $user_aliases['PEER_NICKNAME'];
             }
-
-            if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = gettext("Unknown user");
-            if (!isset($user_aliases['NICKNAME'])) $user_aliases['NICKNAME'] = "";
-
-            $user_referer_aliases_array[$user_aliases['UID']] = $user_aliases;
         }
+
+        if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = gettext("Unknown user");
+        if (!isset($user_aliases['NICKNAME'])) $user_aliases['NICKNAME'] = "";
+
+        $user_referer_aliases_array[$user_aliases['UID']] = $user_aliases;
     }
 
     return $user_referer_aliases_array;
 }
-
-/**
-* Fetch list of user aliases
-*
-* Fetches a list of aliases (Password matches) from database
-* for the specified user UID.
-*
-* @return array
-* @param integer $uid - User UID for searching.
-*/
 
 function admin_get_user_passwd_matches($uid)
 {
@@ -1466,55 +1156,44 @@ function admin_get_user_passwd_matches($uid)
 
     if (!is_numeric($uid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     // Initialise array
     $user_passwd_aliases_array = array();
 
     // Session UID
-    $sess_uid = session_get_value('UID');
+    $sess_uid = session::get_value('UID');
 
     // Get the user's email address
     $user_passwd = user_get_passwd($uid);
 
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER.PASSWD FROM USER ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
     $sql.= "WHERE (USER.PASSWD = '$user_passwd') ";
     $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
 
     if (!$result = db_query($sql, $db_admin_get_user_passwd_matches)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        while (($user_aliases = db_fetch_array($result))) {
+    while (($user_aliases = db_fetch_array($result))) {
 
-            if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
-                if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
-                    $user_aliases['NICKNAME'] = $user_aliases['PEER_NICKNAME'];
-                }
+        if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
+            if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
+                $user_aliases['NICKNAME'] = $user_aliases['PEER_NICKNAME'];
             }
-
-            if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = gettext("Unknown user");
-            if (!isset($user_aliases['NICKNAME'])) $user_aliases['NICKNAME'] = "";
-
-            $user_passwd_aliases_array[$user_aliases['UID']] = $user_aliases;
         }
+
+        if (!isset($user_aliases['LOGON'])) $user_aliases['LOGON'] = gettext("Unknown user");
+        if (!isset($user_aliases['NICKNAME'])) $user_aliases['NICKNAME'] = "";
+
+        $user_passwd_aliases_array[$user_aliases['UID']] = $user_aliases;
     }
 
     return $user_passwd_aliases_array;
 }
-
-/**
-* Fetch user history
-*
-* Fetches user account changes including logon, nickname, email address
-* and password changes made to a user account.
-*
-* @return array
-* @param integer $uid - User UID to get history for
-*/
 
 function admin_get_user_history($uid)
 {
@@ -1528,68 +1207,60 @@ function admin_get_user_history($uid)
 
     if (!$result = db_query($sql, $db_admin_get_user_history)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        list($logon, $nickname, $email) = db_fetch_array($result, DB_RESULT_NUM);
+    list($logon, $nickname, $email) = db_fetch_array($result, DB_RESULT_NUM);
 
-        $sql = "SELECT LOGON, NICKNAME, EMAIL, UNIX_TIMESTAMP(MODIFIED) ";
-        $sql.= "FROM USER_HISTORY WHERE UID = '$uid' ";
-        $sql.= "ORDER BY MODIFIED DESC ";
-        $sql.= "LIMIT 0, 10";
+    $sql = "SELECT LOGON, NICKNAME, EMAIL, UNIX_TIMESTAMP(MODIFIED) ";
+    $sql.= "FROM USER_HISTORY WHERE UID = '$uid' ";
+    $sql.= "ORDER BY MODIFIED DESC LIMIT 10";
 
-        if (!$result = db_query($sql, $db_admin_get_user_history)) return false;
+    if (!$result = db_query($sql, $db_admin_get_user_history)) return false;
 
-        if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-            $user_history_data_old = "";
-            $user_history_data = "";
+    $user_history_data_old = '';
 
-            while (($user_history_row = db_fetch_array($result, DB_RESULT_NUM))) {
+    $user_history_data = '';
 
-                $user_history_data_array = array();
+    while (($user_history_row = db_fetch_array($result, DB_RESULT_NUM))) {
 
-                list($logon_old, $nickname_old, $email_old, $modified_date) = $user_history_row;
+        $user_history_data_array = array();
 
-                if ($logon != $logon_old) {
-                    $user_history_data_array[] = sprintf(gettext("Changed Logon from %s to %s"), $logon_old, $logon);
-                }
+        list($logon_old, $nickname_old, $email_old, $modified_date) = $user_history_row;
 
-                if ($nickname != $nickname_old) {
-                    $user_history_data_array[] = sprintf(gettext("Changed Nickname from %s to %s"), $nickname_old, $nickname);
-                }
+        if ($logon != $logon_old) {
+            $user_history_data_array[] = sprintf(gettext("Changed Logon from %s to %s"), $logon_old, $logon);
+        }
 
-                if ($email != $email_old) {
-                    $user_history_data_array[] = sprintf(gettext("Changed Email from %s to %s"), $email_old, $email);
-                }
+        if ($nickname != $nickname_old) {
+            $user_history_data_array[] = sprintf(gettext("Changed Nickname from %s to %s"), $nickname_old, $nickname);
+        }
 
-                if (sizeof($user_history_data_array) > 0) {
+        if ($email != $email_old) {
+            $user_history_data_array[] = sprintf(gettext("Changed Email from %s to %s"), $email_old, $email);
+        }
 
-                    $user_history_data = implode(". ", $user_history_data_array);
+        if (sizeof($user_history_data_array) > 0) {
 
-                    if ($user_history_data != $user_history_data_old) {
+            $user_history_data = implode(". ", $user_history_data_array);
 
-                        $user_history_array[] = array('MODIFIED' => $modified_date,
-                                                      'DATA'     => $user_history_data);
-                    }
-                }
+            if ($user_history_data != $user_history_data_old) {
 
-                list($logon, $nickname, $email) = $user_history_row;
-                $user_history_data_old = $user_history_data;
+                $user_history_array[] = array(
+                    'MODIFIED' => $modified_date,
+                    'DATA' => $user_history_data
+                );
             }
         }
+
+        list($logon, $nickname, $email) = $user_history_row;
+
+        $user_history_data_old = $user_history_data;
     }
 
     return $user_history_array;
 }
-
-/**
-* Clear user history
-*
-* Clear user history for the speicifed user account.
-*
-* @return array
-* @param integer $uid - UID of user to clear history from.
-*/
 
 function admin_clear_user_history($uid)
 {
@@ -1603,15 +1274,6 @@ function admin_clear_user_history($uid)
 
     return (db_affected_rows($db_admin_clear_user_history) > 0);
 }
-
-/**
-* Approve user account
-*
-* Approve the specified user account.
-*
-* @return array
-* @param integer $uid - UID of user account to approve.
-*/
 
 function admin_approve_user($uid)
 {
@@ -1628,16 +1290,6 @@ function admin_approve_user($uid)
 
     return (db_affected_rows($db_admin_approve_user) > 0);
 }
-
-/**
-* Delete user account
-*
-* Delete the specified user account.
-*
-* @return array
-* @param integer $uid - UID of user account to delete.
-* @param boolean $delete_content - Optional - Optionally delete all content made by user.
-*/
 
 function admin_delete_user($uid, $delete_content = false)
 {
@@ -1657,7 +1309,7 @@ function admin_delete_user($uid, $delete_content = false)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     // UID of current user
-    $admin_uid = session_get_value('UID');
+    $admin_uid = session::get_value('UID');
 
     // Before we delete we verify the user account exists and that
     // the user is not the current user account.
@@ -1861,41 +1513,22 @@ function admin_delete_user($uid, $delete_content = false)
     return false;
 }
 
-/**
-* Delete user's posts.
-*
-* Delete users posts from the current forum.
-*
-* @return array
-* @param integer $uid - UID of user account to delete posts for.
-*/
-
 function admin_delete_users_posts($uid)
 {
     if (!$db_admin_delete_users_posts = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     if (!is_numeric($uid)) return false;
 
-    $sql = "INSERT INTO `{$table_data['PREFIX']}POST_CONTENT` (TID, PID, CONTENT) ";
-    $sql.= "SELECT TID, PID, NULL FROM `{$table_data['PREFIX']}POST` WHERE FROM_UID = '$uid' ";
+    $sql = "INSERT INTO `{$table_prefix}POST_CONTENT` (TID, PID, CONTENT) ";
+    $sql.= "SELECT TID, PID, NULL FROM `{$table_prefix}POST` WHERE FROM_UID = '$uid' ";
     $sql.= "ON DUPLICATE KEY UPDATE CONTENT = VALUES(CONTENT)";
 
     if (!db_query($sql, $db_admin_delete_users_posts)) return false;
 
     return true;
 }
-
-/**
-* Format affected session array
-*
-* Helper function for check_affected_sessions that formats an affected
-* session array into a human readable output.
-*
-* @return string
-* @param array $affected_session - Array of affected session data from check_affected_sessions() function.
-*/
 
 function admin_prepare_affected_sessions($affected_session)
 {
@@ -1908,23 +1541,13 @@ function admin_prepare_affected_sessions($affected_session)
         $affected_session_text.= word_filter_add_ob_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), true);
         $affected_session_text.= "</a></li>\n";
 
-    }else {
+    } else {
 
         $affected_session_text = word_filter_add_ob_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), true);
     }
 
     return $affected_session_text;
 }
-
-/**
-* Send user approval notification
-*
-* Sends an email to all global forum admins to notify them that
-* a user account requires approval.
-*
-* @return boolean
-* @param void
-*/
 
 function admin_send_user_approval_notification()
 {
@@ -1953,16 +1576,6 @@ function admin_send_user_approval_notification()
 
     return $notification_success;
 }
-
-/**
-* Send user approval notification
-*
-* Sends an email to all global forum admins to notify them that
-* a new user account has been created.
-*
-* @return boolean
-* @param integer $new_user_uid - New User account UID
-*/
 
 function admin_send_new_user_notification($new_user_uid)
 {
@@ -1993,25 +1606,15 @@ function admin_send_new_user_notification($new_user_uid)
     return $notification_success;
 }
 
-/**
-* Send post approval notification
-*
-* Sends an email to all global forum admins and folder moderators
-* to notify them that a new post or thread has been created that
-* requires approval
-*
-* @return boolean
-* @param integer $fid - Folder where the post or thread was created.
-*/
 function admin_send_post_approval_notification($fid)
 {
     if (!$db_admin_send_post_approval_notification = db_connect()) return false;
 
     if (!is_numeric($fid)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $forum_fid = $table_data['FID'];
+    if (!($forum_fid = get_forum_fid())) return false;
 
     $user_perm_folder_moderate = USER_PERM_FOLDER_MODERATE;
 
@@ -2037,22 +1640,13 @@ function admin_send_post_approval_notification($fid)
     return $notification_success;
 }
 
-/**
-* Send link approval notification
-*
-* Sends an email to all link moderators to notify 
-* them that a new link has been created that requires 
-* approval
-*
-* @return boolean
-*/
 function admin_send_link_approval_notification()
 {
     if (!$db_admin_send_link_approval_notification = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $forum_fid = $table_data['FID'];
+    if (!($forum_fid = get_forum_fid())) return false;
 
     $user_perm_links_moderate = USER_PERM_LINKS_MODERATE;
 

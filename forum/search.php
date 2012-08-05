@@ -21,72 +21,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "pm.inc.php");
-include_once(BH_INCLUDE_PATH. "poll.inc.php");
-include_once(BH_INCLUDE_PATH. "search.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "thread.inc.php");
-include_once(BH_INCLUDE_PATH. "threads.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'pm.inc.php';
+require_once BH_INCLUDE_PATH. 'poll.inc.php';
+require_once BH_INCLUDE_PATH. 'search.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'thread.inc.php';
+require_once BH_INCLUDE_PATH. 'threads.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Open Search support (FireFox 2.0+, IE7+ etc.)
 if (isset($_GET['opensearch'])) {
@@ -94,58 +50,23 @@ if (isset($_GET['opensearch'])) {
 }
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-if (user_is_guest()) {
+if (!session::logged_in()) {
     html_guest_error();
-    exit;
 }
 
 if (isset($_GET['sort_by'])) {
 
     if ($_GET['sort_by'] == SEARCH_SORT_NUM_REPLIES) {
         $sort_by = SEARCH_SORT_NUM_REPLIES;
-    } elseif ($_GET['sort_by'] == SEARCH_SORT_FOLDER_NAME) {
+    } else if ($_GET['sort_by'] == SEARCH_SORT_FOLDER_NAME) {
         $sort_by = SEARCH_SORT_FOLDER_NAME;
-    } elseif ($_GET['sort_by'] == SEARCH_SORT_AUTHOR_NAME) {
+    } else if ($_GET['sort_by'] == SEARCH_SORT_AUTHOR_NAME) {
         $sort_by = SEARCH_SORT_AUTHOR_NAME;
     } else {
         $sort_by = SEARCH_SORT_CREATED;
     }
 
-}else {
+} else {
 
     $sort_by = SEARCH_SORT_CREATED;
 }
@@ -158,129 +79,62 @@ if (isset($_GET['sort_dir'])) {
         $sort_dir = SEARCH_SORT_ASC;
     }
 
-}else {
+} else {
 
     $sort_dir = SEARCH_SORT_DESC;
 }
 
 if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
     $search_folder_fid = $_POST['fid'];
-}else {
+} else {
     $search_folder_fid = 0;
 }
 
-// Drop down date from options
-$search_date_from_array = array(SEARCH_FROM_TODAY             => gettext("Today"),
-                                SEARCH_FROM_YESTERDAY         => gettext("Yesterday"),
-                                SEARCH_FROM_DAYBEFORE         => gettext("Day before yesterday"),
-                                SEARCH_FROM_ONE_WEEK_AGO      => sprintf(gettext("%s week ago"), 1),
-                                SEARCH_FROM_TWO_WEEKS_AGO     => sprintf(gettext("%s weeks ago"), 2),
-                                SEARCH_FROM_THREE_WEEKS_AGO   => sprintf(gettext("%s weeks ago"), 3),
-                                SEARCH_FROM_ONE_MONTH_AGO     => sprintf(gettext("%s month ago"), 1),
-                                SEARCH_FROM_TWO_MONTHS_AGO    => sprintf(gettext("%s months ago"), 2),
-                                SEARCH_FROM_THREE_MONTHS_AGO  => sprintf(gettext("%s months ago"), 3),
-                                SEARCH_FROM_SIX_MONTHS_AGO    => sprintf(gettext("%s months ago"), 6),
-                                SEARCH_FROM_ONE_YEAR_AGO      => sprintf(gettext("%s year ago"), 1),
-                                SEARCH_FROM_BEGINNING_OF_TIME => gettext("Beginning of time"));
+$search_date_from_array = array(
+    SEARCH_FROM_TODAY => gettext("Today"),
+    SEARCH_FROM_YESTERDAY => gettext("Yesterday"),
+    SEARCH_FROM_DAYBEFORE => gettext("Day before yesterday"),
+    SEARCH_FROM_ONE_WEEK_AGO => sprintf(gettext("%s week ago"), 1),
+    SEARCH_FROM_TWO_WEEKS_AGO => sprintf(gettext("%s weeks ago"), 2),
+    SEARCH_FROM_THREE_WEEKS_AGO => sprintf(gettext("%s weeks ago"), 3),
+    SEARCH_FROM_ONE_MONTH_AGO => sprintf(gettext("%s month ago"), 1),
+    SEARCH_FROM_TWO_MONTHS_AGO => sprintf(gettext("%s months ago"), 2),
+    SEARCH_FROM_THREE_MONTHS_AGO => sprintf(gettext("%s months ago"), 3),
+    SEARCH_FROM_SIX_MONTHS_AGO => sprintf(gettext("%s months ago"), 6),
+    SEARCH_FROM_ONE_YEAR_AGO => sprintf(gettext("%s year ago"), 1),
+    SEARCH_FROM_BEGINNING_OF_TIME => gettext("Beginning of time")
+);
 
-// Drop down date to options
-$search_date_to_array = array(SEARCH_TO_NOW              => gettext("Now"),
-                              SEARCH_TO_TODAY            => gettext("Today"),
-                              SEARCH_TO_YESTERDAY        => gettext("Yesterday"),
-                              SEARCH_TO_DAYBEFORE        => gettext("Day before yesterday"),
-                              SEARCH_TO_ONE_WEEK_AGO     => sprintf(gettext("%s week ago"), 1),
-                              SEARCH_TO_TWO_WEEKS_AGO    => sprintf(gettext("%s weeks ago"), 2),
-                              SEARCH_TO_THREE_WEEKS_AGO  => sprintf(gettext("%s weeks ago"), 3),
-                              SEARCH_TO_ONE_MONTH_AGO    => sprintf(gettext("%s month ago"), 1),
-                              SEARCH_TO_TWO_MONTHS_AGO   => sprintf(gettext("%s months ago"), 2),
-                              SEARCH_TO_THREE_MONTHS_AGO => sprintf(gettext("%s months ago"), 3),
-                              SEARCH_TO_SIX_MONTHS_AGO   => sprintf(gettext("%s months ago"), 6),
-                              SEARCH_TO_ONE_YEAR_AGO     => sprintf(gettext("%s year ago"), 1));
+$search_date_to_array = array(
+    SEARCH_TO_NOW => gettext("Now"),
+    SEARCH_TO_TODAY => gettext("Today"),
+    SEARCH_TO_YESTERDAY => gettext("Yesterday"),
+    SEARCH_TO_DAYBEFORE => gettext("Day before yesterday"),
+    SEARCH_TO_ONE_WEEK_AGO => sprintf(gettext("%s week ago"), 1),
+    SEARCH_TO_TWO_WEEKS_AGO => sprintf(gettext("%s weeks ago"), 2),
+    SEARCH_TO_THREE_WEEKS_AGO => sprintf(gettext("%s weeks ago"), 3),
+    SEARCH_TO_ONE_MONTH_AGO => sprintf(gettext("%s month ago"), 1),
+    SEARCH_TO_TWO_MONTHS_AGO => sprintf(gettext("%s months ago"), 2),
+    SEARCH_TO_THREE_MONTHS_AGO => sprintf(gettext("%s months ago"), 3),
+    SEARCH_TO_SIX_MONTHS_AGO => sprintf(gettext("%s months ago"), 6),
+    SEARCH_TO_ONE_YEAR_AGO => sprintf(gettext("%s year ago"), 1)
+);
 
-// Drop down sort by options
-$search_sort_by_array = array(SEARCH_SORT_CREATED     => gettext("Last post date"),
-                              SEARCH_SORT_NUM_REPLIES => gettext("Number of replies"),
-                              SEARCH_SORT_FOLDER_NAME => gettext("Folder name"),
-                              SEARCH_SORT_AUTHOR_NAME => gettext("Author name"),
-                              SEARCH_SORT_RELEVANCE   => gettext("Relevancy"));
+$search_sort_by_array = array(
+    SEARCH_SORT_CREATED => gettext("Last post date"),
+    SEARCH_SORT_NUM_REPLIES => gettext("Number of replies"),
+    SEARCH_SORT_FOLDER_NAME => gettext("Folder name"),
+    SEARCH_SORT_AUTHOR_NAME => gettext("Author name"),
+    SEARCH_SORT_RELEVANCE => gettext("Relevancy")
+);
 
-// Drop down sort dir options
-$search_sort_dir_array = array(SEARCH_SORT_ASC  => gettext("Oldest first"),
-                               SEARCH_SORT_DESC => gettext("Newest first"));
+$search_sort_dir_array = array(
+    SEARCH_SORT_ASC => gettext("Oldest first"),
+    SEARCH_SORT_DESC => gettext("Newest first")
+);
 
-// Get a list of available folders.
 if (!$folder_dropdown = folder_search_dropdown($search_folder_fid)) {
-
-    html_draw_top();
-    html_error_msg(gettext("There are no folders available."));
-    html_draw_bottom();
-    exit;
-}
-
-if (isset($_GET['show_stop_words'])) {
-
-    html_draw_top("title=", gettext("MySQL stopword list"), "", 'pm_popup_disabled');
-
-    $mysql_fulltext_stopwords = array();
-
-    include(BH_INCLUDE_PATH. "search_stopwords.inc.php");
-    
-    $mysql_fulltext_stopwords = array_values($mysql_fulltext_stopwords);
-
-    echo "<h1>", gettext("MySQL stopword list"), "</h1>\n";
-    echo "<br />\n";
-    echo "<div align=\"center\">\n";
-    echo "<form accept-charset=\"utf-8\" id=\"search_stop_words\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
-    echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
-    echo "  ", form_input_hidden("show_stop_words", "yes"), "\n";
-    echo "  <table cellpadding=\"5\" cellspacing=\"0\" width=\"540\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\" valign=\"top\" width=\"100%\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table width=\"100%\" border=\"0\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">", gettext("MySQL stopword list"), "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-    echo "                    <table width=\"95%\" border=\"0\">\n";
-    echo "                      <tr>\n";
-
-    foreach ($mysql_fulltext_stopwords as $index => $mysql_fulltext_stopword) {
-
-        if ((($index++) % 4) == 0) {
-
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-        }
-
-        echo "                        <td align=\"left\" class=\"postbody\">{$mysql_fulltext_stopword}</td>\n";
-    }
-
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"center\">&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_button('close_popup', gettext("Close")), "</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "</form>\n";
-    echo "</div>\n";
-
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("There are no folders available."));
 }
 
 $min_length = 4;
@@ -290,7 +144,7 @@ search_get_word_lengths($min_length, $max_length);
 
 if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || isset($_GET['search_string']) || isset($_GET['logon'])) && !isset($_GET['search_error'])) {
 
-    $offset = 0;
+    $page = 1;
 
     $search_arguments = array();
 
@@ -298,7 +152,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
     if (isset($_GET['search_string']) && strlen(trim(stripslashes_array($_GET['search_string']))) > 0) {
         $search_arguments['search_string'] = trim(stripslashes_array($_GET['search_string']));
-    }else if (isset($_POST['search_string']) && strlen(trim(stripslashes_array($_POST['search_string']))) > 0) {
+    } else if (isset($_POST['search_string']) && strlen(trim(stripslashes_array($_POST['search_string']))) > 0) {
         $search_arguments['search_string'] = trim(stripslashes_array($_POST['search_string']));
     }
 
@@ -310,7 +164,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
         $search_arguments['username'] = trim(stripslashes_array($_POST['username']));
 
-    }elseif (isset($_GET['logon']) && strlen(trim(stripslashes_array($_GET['logon']))) > 0) {
+    } else if (isset($_GET['logon']) && strlen(trim(stripslashes_array($_GET['logon']))) > 0) {
 
         $search_arguments['username'] = trim(stripslashes_array($_GET['logon']));
         $search_arguments['user_include'] = SEARCH_FILTER_USER_POSTS;
@@ -324,7 +178,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
     if (isset($_POST['user_include']) && is_numeric($_POST['user_include'])) {
         $search_arguments['user_include'] = $_POST['user_include'];
-    }elseif (isset($_GET['user_include']) && is_numeric($_GET['user_include'])) {
+    } else if (isset($_GET['user_include']) && is_numeric($_GET['user_include'])) {
         $search_arguments['user_include'] = $_GET['user_include'];
     }
 
@@ -364,13 +218,13 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
             header_redirect($redirect_uri);
             exit;
 
-        }else {
+        } else {
 
             header_redirect("search.php?webtag=$webtag&search_success=true&sort_by=$sort_by&sort_dir=$sort_dir");
             exit;
         }
 
-    }else if (isset($_GET['search_string']) || isset($_GET['logon'])) {
+    } else if (isset($_GET['search_string']) || isset($_GET['logon'])) {
 
         $redirect_uri = "index.php?webtag=$webtag&final_uri=discussion.php";
         $redirect_uri.= "%3Fwebtag%3D$webtag%26right%3Dsearch";
@@ -379,7 +233,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         header_redirect($redirect_uri);
         exit;
 
-    }else {
+    } else {
 
         switch ($error) {
 
@@ -410,11 +264,11 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         }
     }
 
-}elseif (isset($_GET['offset']) && is_numeric($_GET['offset'])) {
+} else if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 
-    $offset = $_GET['offset'];
+    $page = $_GET['page'];
 
-    if (($search_results_array = search_fetch_results($offset, $sort_by, $sort_dir))) {
+    if (($search_results_array = search_fetch_results($page, $sort_by, $sort_dir))) {
 
         html_draw_top('search.js', 'search_popup.js');
 
@@ -424,11 +278,11 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         echo "<h1>", gettext("Search Results"), "</h1>\n";
         echo "<img src=\"", html_style_image('search.png'), "\" alt=\"", gettext("Found"), "\" title=\"", gettext("Found"), "\" />&nbsp;", gettext("Found"), ": {$search_results_array['result_count']} ", gettext("matches"), "<br />\n";
 
-        if ($offset >= 20) {
-            echo "<img src=\"".html_style_image('current_thread.png')."\" alt=\"", gettext("Previous page"), "\" title=\"", gettext("Previous page"), "\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset - 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">", gettext("Previous page"), "</a>\n";
+        if ($page > 1) {
+            echo "<img src=\"".html_style_image('current_thread.png')."\" alt=\"", gettext("Previous page"), "\" title=\"", gettext("Previous page"), "\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;page=", $page - 1, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">", gettext("Previous page"), "</a>\n";
         }
 
-        echo "<ol start=\"", $offset + 1, "\">\n";
+        echo "<ol start=\"", (($page * 20) - 20) + 1, "\">\n";
 
         foreach ($search_results_array['result_array'] as $search_result) {
 
@@ -444,14 +298,14 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
                     // Limit thread title to 20 characters.
                     if (mb_strlen($message['TITLE']) > 20) {
                         $message['TITLE'] = word_filter_add_ob_tags(mb_substr($message['TITLE'], 0, 20), true). "&hellip;";
-                    }else {
+                    } else {
                         $message['TITLE'] = word_filter_add_ob_tags($message['TITLE'], true);
                     }
 
                     // Limit displayed post content to 35 characters
                     if (mb_strlen($message['CONTENT']) > 35) {
                         $message['CONTENT'] = word_filter_add_ob_tags(mb_substr($message['CONTENT'], 0, 35), true). "&hellip;";
-                    }else {
+                    } else {
                         $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT'], true);
                     }
 
@@ -460,7 +314,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
                         echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
                         echo "<span class=\"smalltext\"><b>", gettext("From"), ":</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']), true), ", ", format_time($search_result['CREATED']), "</span></p></li>\n";
 
-                    }else {
+                    } else {
 
                         echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
                         echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>", gettext("From"), ":</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']), true), ", ", format_time($search_result['CREATED']), "</span></p></li>\n";
@@ -471,14 +325,14 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
         echo "</ol>\n";
 
-        if ($search_results_array['result_count'] >  (sizeof($search_results_array['result_array']) + $offset)) {
-            echo "<img src=\"", html_style_image('current_thread.png'), "\" alt=\"", gettext("Find more"), "\" title=\"", gettext("Find more"), "\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;offset=", $offset + 20, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">", gettext("Find more"), "</a><br />\n";
+        if ($search_results_array['result_count'] > (sizeof($search_results_array['result_array']) + ($page * 20))) {
+            echo "<img src=\"", html_style_image('current_thread.png'), "\" alt=\"", gettext("Find more"), "\" title=\"", gettext("Find more"), "\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;page=", $page + 1, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">", gettext("Find more"), "</a><br />\n";
         }
 
         echo "<br />\n";
         echo "<form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"search.php\" target=\"_self\">\n";
         echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
-        echo "  ", form_input_hidden("offset", isset($offset) ? htmlentities_array($offset) : 0), "\n";
+        echo "  ", form_input_hidden("page", isset($page) ? htmlentities_array($page) : 1), "\n";
         echo "  <table cellpadding=\"2\" cellspacing=\"0\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\" class=\"smalltext\" colspan=\"2\">", gettext("Sort Results"), ":</td>\n";
@@ -496,7 +350,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         echo "</form>\n";
         echo "<br />\n";
 
-    }else {
+    } else {
 
         html_draw_top('search.js', 'search_popup.js');
 
@@ -551,16 +405,16 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '500', 'center');
 
-}elseif (isset($_GET['search_success'])) {
+} else if (isset($_GET['search_success'])) {
 
     $frame_target = html_get_frame_name('left');
-    $results_link = sprintf("<a href=\"search.php?webtag=$webtag&amp;offset=0&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"$frame_target\">%s</a>", gettext("Click here to view results."));
+    $results_link = sprintf("<a href=\"search.php?webtag=$webtag&amp;page=1&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"$frame_target\">%s</a>", gettext("Click here to view results."));
 
     echo "<div id=\"search_success\">\n";
     html_display_success_msg(sprintf(gettext("Search successfully completed. %s"), $results_link), '500', 'center');
     echo "</div>\n";
 
-}elseif (isset($_GET['search_error']) && is_numeric($_GET['search_error'])) {
+} else if (isset($_GET['search_error']) && is_numeric($_GET['search_error'])) {
 
     $search_error = $_GET['search_error'];
 
@@ -583,7 +437,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
             break;
     }
 
-}elseif (isset($search_no_matches) && $search_no_matches == true) {
+} else if (isset($search_no_matches) && $search_no_matches == true) {
 
     html_display_warning_msg(gettext("Search Returned No Results"), '500', 'center');
 }

@@ -21,113 +21,43 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
 
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
+// Check we have Admin / Moderator access
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) || (forum_get_setting('access_level', false, 0) == FORUM_DISABLED)) {
+    html_draw_error(gettext("You do not have permission to use this section."));
 }
 
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0)) || (forum_get_setting('access_level', false, 0) == FORUM_DISABLED)) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You do not have permission to use this section."));
-    html_draw_bottom();
-    exit;
-}
-
-if (!$forum_fid = forum_get_setting('fid')) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You do not have permission to use this section."));
-    html_draw_bottom();
-    exit;
-}
+$forum_fid = forum_get_setting('fid');
 
 if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
     $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
-}elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
+} else if (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
     $ret = trim(stripslashes_array($_POST['ret']));
-}else {
+} else {
     $ret = "admin_forums.php?webtag=$webtag";
 }
 
@@ -156,40 +86,30 @@ if (isset($_POST['enable'])) {
 }
 
 if (!forum_get_setting('access_level', 1, false)) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("Forum is not set to Restricted Mode. Do you want to enable it now?"), 'admin_forum_access.php', 'post', array('enable' => gettext("Enable"), 'back' => gettext("Back")), array('ret' => $ret), false, 'center');
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("Forum is not set to Restricted Mode. Do you want to enable it now?"), 'admin_forum_access.php', 'post', array('enable' => gettext("Enable"), 'back' => gettext("Back")), array('ret' => $ret), false, 'center');
 }
 
-if (isset($_GET['main_page']) && is_numeric($_GET['main_page'])) {
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $main_page = $_GET['main_page'];
-    $start_main = floor($main_page - 1) * 10;
-}else if (isset($_POST['main_page']) && is_numeric($_POST['main_page'])) {
+} else if (isset($_POST['main_page']) && is_numeric($_POST['main_page'])) {
     $main_page = $_POST['main_page'];
-    $start_main = floor($main_page - 1) * 10;
-}else {
+} else {
     $main_page = 1;
-    $start_main = 0;
 }
 
 if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $search_page = $_GET['search_page'];
-    $start_search = floor($search_page - 1) * 10;
-}else if (isset($_POST['search_page']) && is_numeric($_POST['search_page'])) {
+} else if (isset($_POST['search_page']) && is_numeric($_POST['search_page'])) {
     $search_page = $_POST['search_page'];
-    $start_search = floor($search_page - 1) * 10;
-}else {
+} else {
     $search_page = 1;
-    $start_search = 0;
 }
 
 if (isset($_POST['user_search']) && strlen(trim(stripslashes_array($_POST['user_search']))) > 0) {
     $user_search = trim(stripslashes_array($_POST['user_search']));
-}else if (isset($_GET['user_search']) && strlen(trim(stripslashes_array($_GET['user_search']))) > 0) {
+} else if (isset($_GET['user_search']) && strlen(trim(stripslashes_array($_GET['user_search']))) > 0) {
     $user_search = trim(stripslashes_array($_GET['user_search']));
-}else {
+} else {
     $user_search = '';
 }
 
@@ -212,7 +132,7 @@ if (isset($_POST['add'])) {
                     $forum_name = forum_get_name($forum_fid);
                     admin_add_log_entry(CHANGE_FORUM_ACCESS, array($forum_name, $user_logon));
 
-                }else {
+                } else {
 
                     $error_msg_array[] = sprintf(gettext("Failed to add permissions for user '%s'"), $user_logon);
                     $valid = false;
@@ -230,7 +150,7 @@ if (isset($_POST['add'])) {
         }
     }
 
-}elseif (isset($_POST['remove'])) {
+} else if (isset($_POST['remove'])) {
 
     $valid = true;
 
@@ -245,7 +165,7 @@ if (isset($_POST['add'])) {
                     $forum_name = forum_get_name($forum_fid);
                     admin_add_log_entry(CHANGE_FORUM_ACCESS, array($forum_name, $user_logon));
 
-                }else {
+                } else {
 
                     $error_msg_array[] = sprintf(gettext("Failed to remove permissions from user '%s'"), $user_logon);
                     $valid = false;
@@ -266,7 +186,7 @@ if (isset($_POST['add'])) {
 
 html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Forum Permissions"), "", 'class=window_title');
 
-$user_permissions_array = forum_get_permissions($forum_fid, $start_main);
+$user_permissions_array = forum_get_permissions($forum_fid, $main_page);
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Forum Permissions"), "</h1>\n";
 
@@ -274,11 +194,11 @@ if (isset($_GET['added'])) {
 
     html_display_success_msg(gettext("Successfully added permissions for selected users"), '500', 'center');
 
-}else if (isset($_GET['removed'])) {
+} else if (isset($_GET['removed'])) {
 
     html_display_success_msg(gettext("Successfully removed permissions from selected users"), '500', 'center');
 
-}else if (sizeof($user_permissions_array['user_array']) < 1) {
+} else if (sizeof($user_permissions_array['user_array']) < 1) {
 
     html_display_warning_msg(gettext("No existing users permissions found. To grant permission to users search for them below."), '500', 'center');
 }
@@ -333,7 +253,7 @@ if (sizeof($user_permissions_array['user_array']) > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_forum_access.php?webtag=$webtag&user_search=$user_search&search_page=$search_page", $start_main, $user_permissions_array['user_count'], 10, "main_page"), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_forum_access.php?webtag=$webtag&user_search=$user_search&search_page=$search_page", $main_page, $user_permissions_array['user_count'], 10, "main_page"), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -342,7 +262,7 @@ if (sizeof($user_permissions_array['user_array']) > 0) {
     echo "      <td align=\"center\">", form_submit("remove", gettext("Remove Selected Users")), "</td>\n";
     echo "    </tr>\n";
 
-}else {
+} else {
 
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -358,7 +278,7 @@ echo "<br />\n";
 
 if (isset($user_search) && strlen(trim($user_search)) > 0) {
 
-    $user_search_array = admin_user_search($user_search, 'LOGON', 'ASC', 0, $start_search);
+    $user_search_array = admin_user_search($user_search, 'LOGON', 'ASC', 0, $search_page);
 
     if (sizeof($user_search_array['user_array']) < 1) {
         html_display_warning_msg(gettext("Search Returned No Results"), '500', 'center');
@@ -412,7 +332,7 @@ if (isset($user_search) && strlen(trim($user_search)) > 0) {
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td class=\"postbody\" align=\"center\">", page_links("admin_forum_access.php?webtag=$webtag&user_search=$user_search&main_page=$main_page", $start_search, $user_search_array['user_count'], 10, "search_page"), "</td>\n";
+        echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_forum_access.php?webtag=$webtag&user_search=$user_search&main_page=$main_page", $search_page, $user_search_array['user_count'], 10, "search_page"), "</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">&nbsp;</td>\n";

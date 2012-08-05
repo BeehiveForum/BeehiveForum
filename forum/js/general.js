@@ -124,7 +124,7 @@ $(beehive).bind('init', function() {
         return false;
     });
 
-    $('#thread_mode').bind('change', function() {
+    $('select#mode').bind('change', function() {
         $(this).closest('form').submit();
     });
 

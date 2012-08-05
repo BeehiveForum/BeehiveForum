@@ -21,128 +21,53 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "fixhtml.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "user_rel.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'user_rel.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
 
 // User's UID
-$uid = session_get_value('UID');
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-if (user_is_guest()) {
-
-    html_guest_error();
-    exit;
-}
+$uid = session::get_value('UID');
 
 // Are we returning somewhere?
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
-}elseif (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
+} else if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
     $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
-}elseif (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
+} else if (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
     $ret = trim(stripslashes_array($_POST['ret']));
-}else {
+} else {
     $ret = "edit_relations.php?webtag=$webtag";
 }
 
 // validate the return to page
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
-    $available_pages = array('edit_relations.php', 'messages.php', 'user_profile.php');
+    $available_pages = array(
+        'edit_relations.php', 
+        'messages.php', 
+        'user_profile.php'
+    );
+    
     $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
 
     if (preg_match("/^$available_pages_preg/u", basename($ret)) < 1) {
@@ -160,41 +85,26 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
     $peer_uid = $_GET['uid'];
 
-    if (!$user_peer = user_get($peer_uid)) {
-
-        html_draw_top(sprintf("title=%s", gettext("Invalid username!")));
-        html_error_msg(gettext("Invalid username!"));
-        html_draw_bottom();
-        exit;
+    if (!($user_peer = user_get($peer_uid))) {
+        html_draw_error(gettext("Invalid username!"));
     }
 
-}elseif (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
+} else if (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
 
     $peer_uid = $_POST['uid'];
 
-    if (!$user_peer = user_get($peer_uid)) {
-
-        html_draw_top(sprintf("title=%s", gettext("Invalid username!")));
-        html_error_msg(gettext("Invalid username!"));
-        html_draw_bottom();
-        exit;
+    if (!($user_peer = user_get($peer_uid))) {
+        html_draw_error(gettext("Invalid username!"));
     }
 
-}else {
+} else {
 
-    html_draw_top(sprintf("title=%s", gettext("No user specified.")));
-    html_error_msg(gettext("No user specified."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("No user specified!"));
 }
 
 // Cannot modify relationship settings for the current account
-if ($peer_uid == session_get_value('UID')) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You cannot change user relationship for your own user account"));
-    html_draw_bottom();
-    exit;
+if (($peer_uid == session::get_value('UID'))) {
+    html_draw_error(gettext("You cannot change user relationship for your own user account"));
 }
 
 // Fetch the perms of the peer
@@ -216,12 +126,12 @@ if (isset($_POST['save'])) {
 
         $peer_nickname = strip_tags(trim(stripslashes_array($_POST['nickname'])));
 
-    }else {
+    } else {
 
         if (!$peer_nickname = user_get_nickname($peer_uid)) $peer_nickname = "";
     }
 
-    if (($peer_perms & USER_PERM_FOLDER_MODERATE) && !(session_check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) {
+    if (($peer_perms & USER_PERM_FOLDER_MODERATE) && !(session::check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) {
         $peer_relationship = ($peer_relationship & USER_IGNORED) ? USER_NORMAL : $peer_relationship;
     }
 
@@ -230,7 +140,7 @@ if (isset($_POST['save'])) {
         header_redirect("$ret&relupdated=true");
         exit;
 
-    }else {
+    } else {
 
         $error_msg_array[] = gettext("Relationship updated failed!");
         $valid = false;
@@ -259,7 +169,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '600', 'left');
 
-}else if (($peer_perms & USER_PERM_FOLDER_MODERATE) && !(session_check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) {
+} else if (($peer_perms & USER_PERM_FOLDER_MODERATE) && !(session::check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) {
 
     html_display_warning_msg(gettext("You cannot ignore this user, as they are a moderator."), '600', 'left');
 }
@@ -284,7 +194,7 @@ if (isset($_POST['preview_signature'])) {
 
         if ($t_sig_html == "Y") {
             $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig_content</div>";
-        }else {
+        } else {
             $preview_message['CONTENT'].= "<div class=\"sig\">". make_html($t_sig_content). "</div>";
         }
 
@@ -387,7 +297,7 @@ echo "                        <td align=\"left\" width=\"150\">", form_radio('pe
 echo "                        <td align=\"left\" width=\"400\">: ", gettext("User's posts appear as normal."), "</td>\n";
 echo "                      </tr>\n";
 
-if ((($peer_perms & USER_PERM_FOLDER_MODERATE) && (session_check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) || !($peer_perms & USER_PERM_FOLDER_MODERATE)) {
+if ((($peer_perms & USER_PERM_FOLDER_MODERATE) && (session::check_perm(USER_PERM_CAN_IGNORE_ADMIN, 0))) || !($peer_perms & USER_PERM_FOLDER_MODERATE)) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">", form_radio('peer_user_status', USER_IGNORED, gettext("Ignored"), $peer_relationship & USER_IGNORED ? true : false), "</td>\n";

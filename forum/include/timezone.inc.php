@@ -21,20 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-/**
-* timezone.inc.php - International Timezones with DST support
-*
-* Uses code available at :
-*
-*  http://www.anicon.ca/timezone-script.php
-*  By Tom Watts <wattst@uoguelph.ca> or <tomwatts@secondsite.biz>
-*
-*/
-
-/**
-*
-*/
-
 // We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
@@ -43,19 +29,19 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
 
 function get_available_timezones()
 {
-    return array(1  => "(GMT-12:00) International Date Line West",
-                 2  => "(GMT-11:00) Midway Island Samoa",
-                 3  => "(GMT-10:00) Hawaii",
-                 4  => "(GMT-09:00) Alaska",
-                 5  => "(GMT-08:00) Pacific Time (US & Canada); Tijuana",
-                 6  => "(GMT-07:00) Arizona",
-                 7  => "(GMT-07:00) Chihuahua, La Paz, Mazatlan",
-                 8  => "(GMT-07:00) Mountain Time (US & Canada)",
-                 9  => "(GMT-06:00) Central America",
+    return array(1 => "(GMT-12:00) International Date Line West",
+                 2 => "(GMT-11:00) Midway Island Samoa",
+                 3 => "(GMT-10:00) Hawaii",
+                 4 => "(GMT-09:00) Alaska",
+                 5 => "(GMT-08:00) Pacific Time (US & Canada); Tijuana",
+                 6 => "(GMT-07:00) Arizona",
+                 7 => "(GMT-07:00) Chihuahua, La Paz, Mazatlan",
+                 8 => "(GMT-07:00) Mountain Time (US & Canada)",
+                 9 => "(GMT-06:00) Central America",
                  10 => "(GMT-06:00) Central Time (US & Canada)",
                  11 => "(GMT-06:00) Guadalajara, Mexico City, Monterrey",
                  12 => "(GMT-06:00) Saskatchewan",

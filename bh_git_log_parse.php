@@ -31,27 +31,19 @@ define("BH_INCLUDE_PATH", "./forum/include/");
 define("BEEHIVEMODE_LIGHT", true);
 
 // Beehive Config
-include_once(BH_INCLUDE_PATH. "config.inc.php");
+require_once BH_INCLUDE_PATH. 'config.inc.php';
 
 // Development configuration
 if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    include_once(BH_INCLUDE_PATH. "config-dev.inc.php");
+    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
 }
 
 // Constants
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
 
 // Database functions.
-include_once(BH_INCLUDE_PATH. "db.inc.php");
+require_once BH_INCLUDE_PATH. 'db.inc.php';
 
-/**
-* get_git_log_data
-*
-* Fetches the GIT Log data. The main workhorse of this script.
-*
-* @return mixed - False on failure, GIT LOG as string on success.
-* @param mixed $date - Date to limit the GIT LOG command by.
-*/
 function get_git_log_data($date)
 {
     $temp_file = tempnam(sys_get_temp_dir(), 'beehive_change_log');
@@ -70,16 +62,6 @@ function get_git_log_data($date)
     return $temp_file;
 }
 
-/**
-* git_mysql_prepare_table
-*
-* Prepares a MySQL table for logging data from GIT LOG command.
-* If the table doesn't exist it creates a new one, if it already
-* exists it is emptied.
-*
-* @return bool
-* @param string $log_file - Path and filename of git log output.
-*/
 function git_mysql_prepare_table($truncate_table = true)
 {
     if (!$db_git_mysql_prepare_table = db_connect()) return false;
@@ -102,15 +84,6 @@ function git_mysql_prepare_table($truncate_table = true)
     return true;
 }
 
-/**
-* git_mysql_parse
-*
-* Parses the output of git log command that has been outputted to a file
-* into a MySQL database table comprising DATE, AUTHOR, COMMENTS columns.
-*
-* @return bool
-* @param string $log_file - Path and filename of git log output.
-*/
 function git_mysql_parse($git_log_temp_file)
 {
     if (!$db_git_log_parse = db_connect()) return false;
@@ -138,15 +111,6 @@ function git_mysql_parse($git_log_temp_file)
     return true;
 }
 
-/**
-* git_mysql_output_log
-*
-* Output the GIT log data saved in the MySQL database
-* to the specified filename.
-*
-* @param mixed $log_filename
-* @return mixed
-*/
 function git_mysql_output_log($log_filename = null)
 {
     if (!$db_git_mysql_output_log = db_connect()) return false;
@@ -156,54 +120,55 @@ function git_mysql_output_log($log_filename = null)
 
     if (!$result = db_query($sql, $db_git_mysql_output_log)) return false;
 
-    if (db_num_rows($result) > 0) {
-
-        $git_log_entry_author = '';
-        $git_log_entry_date = '';
-
-        ob_start();
-
-        printf("# Beehive Forum Change Log (Generated: %s)\r\n\r\n", gmdate('D, d M Y H:i:s'));
-        
-        while (($git_log_entry_array = db_fetch_array($result, DB_RESULT_ASSOC))) {
-            
-            if (preg_match_all('/^((Fixed|Changed|Added):)\s*(.+)/im', $git_log_entry_array['COMMENTS'], $git_log_entry_matches_array, PREG_SET_ORDER) > 0) {
-                
-                if ($git_log_entry_date != $git_log_entry_array['DATE']) {
-
-                    $git_log_entry_date = $git_log_entry_array['DATE'];
-                    printf("## Date: %s\n\n", gmdate('D, d M Y', $git_log_entry_date));
-                }                
-
-                foreach ($git_log_entry_matches_array as $git_log_entry_matches) {
-                
-                    $git_log_comment = trim(preg_replace("/(\r|\r\n|\n)/", '', $git_log_entry_matches[3]));
-                    
-                    $git_log_comment = str_replace('_', '\_', htmlentities($git_log_comment));
-
-                    $git_log_comment_array = explode("\r\n", wordwrap($git_log_comment, (70 - (strlen($git_log_entry_matches[2]) + 4)), "\r\n"));
-
-                    foreach ($git_log_comment_array as $line => $git_log_comment_line) {
-                        
-                        echo ($line == 0) ? sprintf('- %s: ', $git_log_entry_matches[2]) : str_repeat(' ', strlen($git_log_entry_matches[2]) + 4);
-                        echo $git_log_comment_line, "\n";
-                    }
-                }
-
-                echo "\r\n";
-            }
-        }
-
-        if (isset($log_filename)) {
-            file_put_contents($log_filename, ob_get_clean());
-        }
-
-    }else {
+    if (db_num_rows($result) == 0) {
 
         echo "Table BEEHIVE_GIT_LOG is empty. No Changelog generated.\r\n";
+        exit;
     }
 
-    return true;
+    $git_log_entry_author = '';
+    $git_log_entry_date = '';
+
+    ob_start();
+
+    printf("# Beehive Forum Change Log (Generated: %s)\r\n\r\n", gmdate('D, d M Y H:i:s'));
+    
+    while (($git_log_entry_array = db_fetch_array($result, DB_RESULT_ASSOC))) {
+        
+        if (preg_match_all('/^((Fixed|Changed|Added):)\s*(.+)/im', $git_log_entry_array['COMMENTS'], $git_log_entry_matches_array, PREG_SET_ORDER) > 0) {
+            
+            if ($git_log_entry_date != $git_log_entry_array['DATE']) {
+
+                $git_log_entry_date = $git_log_entry_array['DATE'];
+                printf("## Date: %s\n\n", gmdate('D, d M Y', $git_log_entry_date));
+            }                
+
+            foreach ($git_log_entry_matches_array as $git_log_entry_matches) {
+            
+                $git_log_comment = trim(preg_replace("/(\r|\r\n|\n)/", '', $git_log_entry_matches[3]));
+                
+                $git_log_comment = str_replace('_', '\_', htmlentities($git_log_comment));
+
+                $git_log_comment_array = explode("\r\n", wordwrap($git_log_comment, (70 - (strlen($git_log_entry_matches[2]) + 4)), "\r\n"));
+
+                foreach ($git_log_comment_array as $line => $git_log_comment_line) {
+                    
+                    echo ($line == 0) ? sprintf('- %s: ', $git_log_entry_matches[2]) : str_repeat(' ', strlen($git_log_entry_matches[2]) + 4);
+                    echo $git_log_comment_line, "\n";
+                }
+            }
+
+            echo "\r\n";
+        }
+    }
+
+    if (isset($log_filename)) {
+
+        file_put_contents($log_filename, ob_get_clean());
+        exit;
+    }
+    
+    echo ob_get_clean();
 }
 
 // Prevent time out
@@ -236,7 +201,7 @@ if (isset($modified_date)) {
                 exit;
             }
 
-        }else {
+        } else {
 
             echo "Error while fetching GIT log\r\n";
             exit;
@@ -253,13 +218,13 @@ if (isset($modified_date)) {
             git_mysql_output_log();
         }
 
-    }else {
+    } else {
 
         echo "Error while preparing MySQL Database table";
         exit;
     }
 
-}else if (isset($_SERVER['argv'][1]) && strlen(trim($_SERVER['argv'][1])) > 0) {
+} else if (isset($_SERVER['argv'][1]) && strlen(trim($_SERVER['argv'][1])) > 0) {
 
     $output_log_filename = trim($_SERVER['argv'][1]);
 
@@ -268,25 +233,25 @@ if (isset($modified_date)) {
         echo "Generating Change Log. Saving to $output_log_filename\r\n";
         git_mysql_output_log($output_log_filename);
 
-    }else {
+    } else {
 
         echo "Error while preparing MySQL Database table";
         exit;
     }
 
-}else if (isset($_GET['output'])) {
+} else if (isset($_GET['output'])) {
 
     if (git_mysql_prepare_table(false)) {
 
         git_mysql_output_log();
 
-    }else {
+    } else {
 
         echo "Error while preparing MySQL Database table";
         exit;
     }
 
-}else {
+} else {
 
     echo "Generate changelog.md Markdown from GIT comments\r\n\r\n";
     echo "Usage: php-bin bh_git_log_parse.php [YYYY-MM-DD] [FILE]\r\n";

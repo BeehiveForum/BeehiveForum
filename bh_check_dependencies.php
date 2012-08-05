@@ -24,7 +24,7 @@ USA
 // Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./forum/include/");
 
-include_once(BH_INCLUDE_PATH. "format.inc.php");
+require_once BH_INCLUDE_PATH. 'format.inc.php';
 
 // Prevent time out
 set_time_limit(0);
@@ -81,19 +81,19 @@ foreach ($source_files_dir_array as $include_file_dir) {
                             $function_matches = preg_grep("/$ignore_functions/u", $function_matches[1], PREG_GREP_INVERT);
                             $include_files_functions_array[$file] = $function_matches;
 
-                        }else {
+                        } else {
 
                             $include_files_functions_array[$file] = $function_matches[1];
                         }
 
-                    }else {
+                    } else {
 
                         if (sizeof($ignore_functions_array) > 0) {
 
                             $include_files_functions_array[$file] = array_merge($include_files_functions_array[$file], $function_matches[1]);
                             $include_files_functions_array = preg_grep("/$ignore_functions/u", $include_files_functions_array[$file], PREG_GREP_INVERT);
 
-                        }else {
+                        } else {
 
                             $include_files_functions_array[$file] = array_merge($include_files_functions_array[$file], $function_matches[1]);
                         }
@@ -115,19 +115,19 @@ foreach ($source_files_dir_array as $include_file_dir) {
                                 $include_files_constants_array[$file] = $constant_matches;
                             }
 
-                        }else {
+                        } else {
 
                             $include_files_constants_array[$file] = $constant_matches[1];
                         }
 
-                    }else {
+                    } else {
 
                         if (sizeof($ignore_constants_array) > 0) {
 
                             $include_files_constants_array[$file] = array_merge($include_files_constants_array[$file], $constant_matches[1]);
                             $include_files_constants_array = preg_grep("/$ignore_constants/u", $include_files_constants_array[$file], PREG_GREP_INVERT);
 
-                        }else {
+                        } else {
 
                             $include_files_constants_array[$file] = array_merge($include_files_constants_array[$file], $constant_matches[1]);
                         }

@@ -21,85 +21,31 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'cache.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
 
-// Check to see if the user is banned.
-if (session_user_banned()) exit;
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) exit;
-
 // Guests can't do different font sizes.
-if (user_is_guest()) exit;
+if (!session::logged_in()) exit;
 
 // User's UID
-$uid = session_get_value('UID');
-
-// User's MD5 Session Hash
-$sess_hash = session_get_value('HASH');
+$uid = session::get_value('UID');
 
 // User's font size.
-if (($font_size = session_get_value('FONT_SIZE')) === false) {
+if (($font_size = session::get_value('FONT_SIZE')) === false) {
     $font_size = 10;
 }
 
@@ -110,14 +56,17 @@ $font_size = floor(abs($font_size));
 header("Content-Type: text/css");
 
 // Check the cache
-cache_check_etag(md5(sprintf("%s-%s-%s", $sess_hash, $font_size, $uid)));
+cache_check_etag(md5(sprintf("%s-%s-%s", session_id(), $font_size, $uid)));
 
 // Check the user's font size.
 if ($font_size < 5) $font_size = 5;
 if ($font_size > 15) $font_size = 15;
 
 // Array of different font sizes
-$css_selectors = array('body' => 0.8, '.navpage' => 0.65);
+$css_selectors = array(
+    'body' => 0.8, 
+    '.navpage' => 0.65
+);
 
 // Output the CSS
 foreach ($css_selectors as $css_selector => $css_font_ratio) {

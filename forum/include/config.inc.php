@@ -118,24 +118,6 @@ $cookie_domain = "";
 
 // ---------------------------------------------------------------------
 
-// GZIP Output Compression ---------------------------------------------
-
-$gzip_compress_output = false;
-
-$gzip_compress_level  = 1;
-
-// This compresses the output of the PHP scripts using GZIP encoding.
-// Compressing the output of the scripts can save you considerable
-// amounts of bandwidth, but can also increase the CPU load on the
-// server.
-//
-// Note: If you are using mod_gzip or any other gzipping module
-//       to handle the compression of files on your web server,
-//       do not enable the built in gzip compression in Beehive.
-//       To do so can make your forum inaccessible.
-
-// ---------------------------------------------------------------------
-
 // Frame top target ----------------------------------------------------
 
 $frame_top_target = "_top";

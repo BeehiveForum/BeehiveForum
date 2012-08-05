@@ -31,10 +31,10 @@ define("BH_INCLUDE_PATH", "./forum/include/");
 define("BEEHIVEMODE_LIGHT", true);
 
 // Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
+require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
 
 // Database functions.
-include_once(BH_INCLUDE_PATH. "format.inc.php");
+require_once BH_INCLUDE_PATH. 'format.inc.php';
 
 // Array of files to exclude from the matches
 $exclude_files_array = array('start_main.css', 'style_ie6.css', 'gallery.css');
@@ -59,7 +59,7 @@ function get_file_list(&$file_list_array, $path, $extension)
 
                     get_file_list($file_list_array, "$path/$file_name", $extension);
 
-                }else if ((preg_match("/$extension_preg$/iu", $file_name) > 0) && !in_array($file_name, $GLOBALS['exclude_files_array'])) {
+                } else if ((preg_match("/$extension_preg$/iu", $file_name) > 0) && !in_array($file_name, $GLOBALS['exclude_files_array'])) {
 
                     $file_list_array[] = "$path/$file_name";
                 }
@@ -136,7 +136,7 @@ function parse_array_to_css($css_rules_array)
 
 function array_diff_key_recursive($array1, $array2)
 {
-    foreach($array1 as $key => $value) {
+    foreach ($array1 as $key => $value) {
 
         if (is_array($value) && array_key_exists($key, $array2)) {
 
@@ -146,7 +146,7 @@ function array_diff_key_recursive($array1, $array2)
 
             $result[$key] = $array1[$key];
 
-        }else {
+        } else {
 
             $result = array_diff_key($array1, $array2);
         }
@@ -175,12 +175,12 @@ get_file_list($file_list, 'forum/styles', 'style.css');
 get_file_list($file_list, 'forum/styles', 'mobile.css');
 
 // Iterate over each of the files.
-foreach($file_list as $css_filepath) {
+foreach ($file_list as $css_filepath) {
     $css_rules_array[$css_filepath] = parse_css_to_array(file_get_contents($css_filepath));
 }
 
 // Debug output.
-foreach($css_rules_array as $css_filepath => $css_rules_set) {
+foreach ($css_rules_array as $css_filepath => $css_rules_set) {
     
     // Construct default CSS filepath.
     $default_css_filepath = sprintf('forum/styles/default/%s', basename($css_filepath));
@@ -201,9 +201,9 @@ foreach($css_rules_array as $css_filepath => $css_rules_set) {
     $css_rules_set = sort_array_by_array($css_rules_set, array_keys($default_css_rules));
 
     // Copy the missing rules to the selectors
-    foreach(array_diff_key_recursive($default_css_rules, $css_rules_set) as $selector => $missing_rules_set) {
+    foreach (array_diff_key_recursive($default_css_rules, $css_rules_set) as $selector => $missing_rules_set) {
 
-        foreach($missing_rules_set as $rule_name => $value) {
+        foreach ($missing_rules_set as $rule_name => $value) {
 
             $css_rules_set[$selector][$rule_name] = $value;
         }
@@ -211,9 +211,9 @@ foreach($css_rules_array as $css_filepath => $css_rules_set) {
 
     // Remove the extra rules from selectors, taking care not
     // to remove those with the word color in them.
-    foreach(array_diff_key_recursive($css_rules_set, $default_css_rules) as $selector => $additional_rules_set) {
+    foreach (array_diff_key_recursive($css_rules_set, $default_css_rules) as $selector => $additional_rules_set) {
 
-        foreach($additional_rules_set as $rule_name => $value) {
+        foreach ($additional_rules_set as $rule_name => $value) {
 
             if (preg_match('/color|background-image/', $rule_name) < 1) {
                 unset($css_rules_set[$selector][$rule_name]);

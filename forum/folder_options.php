@@ -28,10 +28,10 @@ date_default_timezone_set('UTC');
 define("BH_INCLUDE_PATH", "include/");
 
 // Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
+require_once BH_INCLUDE_PATH. 'server.inc.php';
 
 // Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
+require_once BH_INCLUDE_PATH. 'cache.inc.php';
 
 // Disable PHP's register_globals
 unregister_globals();
@@ -46,88 +46,48 @@ cache_disable_aol();
 cache_disable_proxy();
 
 // Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
+require_once BH_INCLUDE_PATH. 'gzipenc.inc.php';
 
 // Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
+require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
 
 // Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
+require_once BH_INCLUDE_PATH. 'install.inc.php';
 
 // Check that Beehive is installed correctly
 check_install();
 
 // Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
 
 // Fetch Forum Settings
 $forum_settings = forum_get_settings();
 
 // Fetch Global Forum Settings
 //$forum_global_settings = forum_get_global_settings();
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "beehive.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "messages.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "poll.inc.php");
-include_once(BH_INCLUDE_PATH. "post.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "thread.inc.php");
-include_once(BH_INCLUDE_PATH. "threads.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'beehive.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'poll.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'thread.inc.php';
+require_once BH_INCLUDE_PATH. 'threads.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
-}
-
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session_user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check we have a webtag
-if (!forum_check_webtag_available($webtag)) {
-    $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Initialise Locale
-lang_init();
-
-// Check that we have access to this forum
-if (!forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
-}
-
-// Guests can't use this
-if (user_is_guest()) {
-
+if (!session::logged_in()) {
     html_guest_error();
-    exit;
 }
 
 // Check that required variables are set
@@ -135,37 +95,26 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
     $fid = $_GET['fid'];
 
-}elseif (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+} else if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
 
     $fid = $_POST['fid'];
 
-}else {
+} else {
 
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("The requested folder could not be found or access was denied."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("The requested folder could not be found or access was denied."));
 }
 
 // Get the folder ID for the current message
 if (!$folder_data = folder_get($fid)) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("The requested folder could not be found or access was denied."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("The requested folder could not be found or access was denied."));
 }
 
 // UID of the current user.
-$uid = session_get_value('UID');
+$uid = session::get_value('UID');
 
 // Get the existing thread data.
 if (!folder_is_accessible($fid)) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("The requested folder could not be found or access was denied."));
-    html_draw_bottom();
-    exit;
+    html_draw_error(gettext("The requested folder could not be found or access was denied."));
 }
 
 // Array to hold error messages
@@ -202,7 +151,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '500', 'center');
 
-}else if (isset($_GET['updated'])) {
+} else if (isset($_GET['updated'])) {
 
     html_display_success_msg(gettext("Updates saved successfully"), '500', 'center');
 }

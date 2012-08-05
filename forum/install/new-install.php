@@ -29,11 +29,11 @@ if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) == 'new-
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'install.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 @set_time_limit(0);
 
@@ -301,7 +301,7 @@ $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  RELEVANCE FLOAT UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (UID, FORUM, TID, PID)";
-$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -310,18 +310,19 @@ if (!$result = db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE SESSIONS (";
-$sql.= "  HASH VARCHAR(32) NOT NULL DEFAULT '', ";
-$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  IPADDRESS VARCHAR(255) NOT NULL DEFAULT '', ";
-$sql.= "  TIME DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
-$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  REFERER VARCHAR(255) DEFAULT NULL, ";
-$sql.= "  USER_AGENT VARCHAR(255) DEFAULT NULL, ";
-$sql.= "  SID MEDIUMINT(8) DEFAULT NULL, ";
-$sql.= "  PRIMARY KEY (HASH), ";
-$sql.= "  KEY REFERER (REFERER), ";
-$sql.= "  KEY UID (UID)";
-$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+$sql.= "  ID VARCHAR(32) NOT NULL,";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  DATA LONGBLOB NOT NULL,";
+$sql.= "  TIME DATETIME NOT NULL,";
+$sql.= "  REFERER VARCHAR(255) DEFAULT NULL,";
+$sql.= "  USER_AGENT VARCHAR(255) DEFAULT NULL,";
+$sql.= "  SID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+$sql.= "  PRIMARY KEY (ID),";
+$sql.= "  KEY REFERER (REFERER),";
+$sql.= "  KEY TIME (TIME,FID),";
+$sql.= "  KEY UID (UID,SID,TIME,FID)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 if (!$result = db_query($sql, $db_install)) {
 

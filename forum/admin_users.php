@@ -21,132 +21,75 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-include_once(BH_INCLUDE_PATH. "server.inc.php");
-
-// Caching functions
-include_once(BH_INCLUDE_PATH. "cache.inc.php");
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-include_once(BH_INCLUDE_PATH. "gzipenc.inc.php");
-
-// Enable the error handler
-include_once(BH_INCLUDE_PATH. "errorhandler.inc.php");
-
-// Installation checking functions
-include_once(BH_INCLUDE_PATH. "install.inc.php");
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
-
-include_once(BH_INCLUDE_PATH. "admin.inc.php");
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "email.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "header.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "logon.inc.php");
-include_once(BH_INCLUDE_PATH. "perm.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
-include_once(BH_INCLUDE_PATH. "word_filter.inc.php");
-
-// Get Webtag
-$webtag = get_webtag();
+// Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'email.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'logon.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
-if (!$user_sess = session_check()) {
-    $request_uri = rawurlencode(get_request_uri());
-    header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
+if (!session::logged_in()) {
+    html_guest_error();
 }
 
-// Check to see if the user is banned.
-if (session_user_banned()) {
-
-    html_user_banned();
-    exit;
+// Check we have Admin / Moderator access
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+    html_draw_error(gettext("You do not have permission to use this section."));
 }
-
-// Initialise Locale
-lang_init();
 
 // Array to hold error messages
 $error_msg_array = array();
 
-// Check we have permission to access this page.
-if (!(session_check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-
-    html_draw_top(sprintf("title=%s", gettext("Error")));
-    html_error_msg(gettext("You do not have permission to use this section."));
-    html_draw_bottom();
-    exit;
-}
-
 // Friendly display names for column sorting
-$sort_by_array = array('LOGON'      => gettext("Logon"),
-                       'LAST_VISIT' => gettext("Last Logon"),
-                       'REGISTERED' => gettext("Registered"),
-                       'ACTIVE'     => gettext("Active"));
+$sort_by_array = array(
+    'LOGON' => gettext("Logon"),
+    'LAST_VISIT' => gettext("Last Logon"),
+    'REGISTERED' => gettext("Registered"),
+    'ACTIVE' => gettext("Active")
+);
 
 // Column sorting stuff
 if (isset($_GET['sort_by'])) {
 
     if ($_GET['sort_by'] == "LOGON") {
         $sort_by = "LOGON";
-    } elseif ($_GET['sort_by'] == "LAST_LOGON") {
+    } else if ($_GET['sort_by'] == "LAST_LOGON") {
         $sort_by = "LAST_VISIT";
-    } elseif ($_GET['sort_by'] == "REGISTERED") {
+    } else if ($_GET['sort_by'] == "REGISTERED") {
         $sort_by = "REGISTERED";
-    } elseif ($_GET['sort_by'] == "ACTIVE") {
+    } else if ($_GET['sort_by'] == "ACTIVE") {
         $sort_by = "ACTIVE";
     } else {
         $sort_by = "LAST_VISIT";
     }
 
-}else if (isset($_POST['sort_by'])) {
+} else if (isset($_POST['sort_by'])) {
 
     if ($_POST['sort_by'] == "LOGON") {
         $sort_by = "LOGON";
-    } elseif ($_POST['sort_by'] == "LAST_LOGON") {
+    } else if ($_POST['sort_by'] == "LAST_LOGON") {
         $sort_by = "LAST_VISIT";
-    } elseif ($_POST['sort_by'] == "REGISTERED") {
+    } else if ($_POST['sort_by'] == "REGISTERED") {
         $sort_by = "REGISTERED";
-    } elseif ($_POST['sort_by'] == "ACTIVE") {
+    } else if ($_POST['sort_by'] == "ACTIVE") {
         $sort_by = "ACTIVE";
     } else {
         $sort_by = "LAST_VISIT";
     }
 
-}else {
+} else {
 
     $sort_by = "LAST_VISIT";
 }
@@ -159,7 +102,7 @@ if (isset($_GET['sort_dir'])) {
         $sort_dir = "ASC";
     }
 
-}else if (isset($_POST['sort_dir'])) {
+} else if (isset($_POST['sort_dir'])) {
 
     if ($_POST['sort_dir'] == "DESC") {
         $sort_dir = "DESC";
@@ -167,25 +110,22 @@ if (isset($_GET['sort_dir'])) {
         $sort_dir = "ASC";
     }
 
-}else {
+} else {
 
     $sort_dir = "DESC";
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
-}else {
+} else {
     $page = 1;
 }
 
-$start = floor($page - 1) * 10;
-if ($start < 0) $start = 0;
-
 if (isset($_GET['user_search']) && strlen(trim(stripslashes_array($_GET['user_search']))) > 0) {
     $user_search = trim(stripslashes_array($_GET['user_search']));
-}elseif (isset($_POST['user_search']) && strlen(trim(stripslashes_array($_POST['user_search']))) > 0) {
+} else if (isset($_POST['user_search']) && strlen(trim(stripslashes_array($_POST['user_search']))) > 0) {
     $user_search = trim(stripslashes_array($_POST['user_search']));
-}else {
+} else {
     $user_search = "";
 }
 
@@ -195,9 +135,9 @@ if (isset($_GET['reset']) || isset($_POST['reset'])) {
 
 if (isset($_GET['filter']) && is_numeric($_GET['filter'])) {
     $filter = $_GET['filter'];
-}elseif (isset($_POST['filter']) && is_numeric($_POST['filter'])) {
+} else if (isset($_POST['filter']) && is_numeric($_POST['filter'])) {
     $filter = $_POST['filter'];
-}else {
+} else {
     $filter = ADMIN_USER_FILTER_NONE;
 }
 
@@ -205,7 +145,7 @@ html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Users"), "", 'c
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Users"), "</h1>\n";
 
-if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
+if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
     if (isset($_POST['select_action'])) {
 
@@ -225,7 +165,7 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
                         if (($valid && $user_logon = user_get_logon($user_uid))) {
 
-                            if (!admin_session_end($user_uid)) {
+                            if (!admin_session::end($user_uid)) {
 
                                 $error_msg_array[] = sprintf(gettext("Failed to end session for user %s"), $user_logon);
                                 $valid = false;
@@ -245,7 +185,7 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
                 }
             }
 
-        }else if ($_POST['action'] == ADMIN_USER_OPTION_APPROVE) {
+        } else if ($_POST['action'] == ADMIN_USER_OPTION_APPROVE) {
 
             if (forum_get_setting('require_user_approval', 'Y')) {
 
@@ -265,7 +205,7 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
                                 email_send_user_approved_notification($user_uid);
 
-                            }else {
+                            } else {
 
                                 $error_msg_array[] = sprintf(gettext("Failed to approve user %s"), $user_logon);
                                 $valid = false;
@@ -289,35 +229,35 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 }
 
 if (isset($user_search) && strlen($user_search) > 0) {
-    $admin_user_array = admin_user_search($user_search, $sort_by, $sort_dir, $filter, $start);
-}else {
-    $admin_user_array = admin_user_get_all($sort_by, $sort_dir, $filter, $start);
+    $admin_user_array = admin_user_search($user_search, $sort_by, $sort_dir, $filter, $page);
+} else {
+    $admin_user_array = admin_user_get_all($sort_by, $sort_dir, $filter, $page);
 }
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '86%', 'center');
 
-}else if (isset($_GET['kicked'])) {
+} else if (isset($_GET['kicked'])) {
 
     html_display_success_msg(gettext("Successfully ended sessions for selected users"), '86%', 'center');
 
-}elseif (isset($_GET['approved'])) {
+} else if (isset($_GET['approved'])) {
 
     html_display_success_msg(gettext("Successfully approved selected users"), '86%', 'center');
 
-}elseif (sizeof($admin_user_array['user_array']) < 1) {
+} else if (sizeof($admin_user_array['user_array']) < 1) {
 
     if (isset($user_search) && strlen($user_search) > 0) {
 
         html_display_error_msg(gettext("Your search did not return any matches. Try simplifying your search parameters and try again."), '86%', 'center');
 
-    }else {
+    } else {
 
         html_display_error_msg(gettext("No user accounts matching filter"), '86%', 'center');
     }
 
-}else {
+} else {
 
     html_display_warning_msg(sprintf(gettext("This list shows a selection of users who have logged on to your forum, sorted by %s. To alter a user's permissions click their name."), htmlentities_array($sort_by_array[$sort_by])), '86%', 'center');
 }
@@ -341,41 +281,41 @@ echo "                   <td class=\"subhead\" width=\"20\">&nbsp;</td>\n";
 
 if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead_sort_asc\" align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("User"), "</a></td>\n";
-}elseif ($sort_by == 'LOGON' && $sort_dir == 'DESC') {
+} else if ($sort_by == 'LOGON' && $sort_dir == 'DESC') {
     echo "                   <td class=\"subhead_sort_desc\" align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("User"), "</a></td>\n";
-}elseif ($sort_dir == 'ASC') {
+} else if ($sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("User"), "</a></td>\n";
-}else {
+} else {
     echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("User"), "</a></td>\n";
 }
 
 if ($sort_by == 'LAST_VISIT' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Last Logon"), "</a></td>\n";
-}elseif ($sort_by == 'LAST_VISIT' && $sort_dir == 'DESC') {
+} else if ($sort_by == 'LAST_VISIT' && $sort_dir == 'DESC') {
     echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Last Logon"), "</a></td>\n";
-}elseif ($sort_dir == 'ASC') {
+} else if ($sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Last Logon"), "</a></td>\n";
-}else {
+} else {
     echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Last Logon"), "</a></td>\n";
 }
 
 if ($sort_by == 'REGISTERED' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Registered"), "</a></td>\n";
-}elseif ($sort_by == 'REGISTERED' && $sort_dir == 'DESC') {
+} else if ($sort_by == 'REGISTERED' && $sort_dir == 'DESC') {
     echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Registered"), "</a></td>\n";
-}elseif ($sort_dir == 'ASC') {
+} else if ($sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Registered"), "</a></td>\n";
-}else {
+} else {
     echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Registered"), "</a></td>\n";
 }
 
 if ($sort_by == 'ACTIVE' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Active"), "</a></td>\n";
-}elseif ($sort_by == 'ACTIVE' && $sort_dir == 'DESC') {
+} else if ($sort_by == 'ACTIVE' && $sort_dir == 'DESC') {
     echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Active"), "</a></td>\n";
-}elseif ($sort_dir == 'ASC') {
+} else if ($sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Active"), "</a></td>\n";
-}else {
+} else {
     echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Active"), "</a></td>\n";
 }
 
@@ -391,19 +331,19 @@ if (sizeof($admin_user_array['user_array']) > 0) {
 
         if (isset($user['LAST_VISIT']) && $user['LAST_VISIT'] > 0) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['LAST_VISIT']), "</td>\n";
-        }else {
+        } else {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", gettext("Unknown"), "</td>\n";
         }
 
         if (isset($user['REGISTERED']) && $user['REGISTERED'] > 0) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", format_time($user['REGISTERED']), "</td>\n";
-        }else {
+        } else {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", gettext("Unknown"), "</td>\n";
         }
 
-        if (isset($user['HASH']) && is_md5($user['HASH'])) {
+        if (isset($user['ID'])) {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;<b>", gettext("Yes"), "</b></td>\n";
-        }else {
+        } else {
             echo "                   <td class=\"posthead\" align=\"left\">&nbsp;", gettext("No"), "</td>\n";
         }
 
@@ -425,13 +365,13 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
-echo "      <td class=\"postbody\" align=\"center\" width=\"50%\">", page_links("admin_users.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir&user_search=$user_search&filter=$filter", $start, $admin_user_array['user_count'], 10), "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\" width=\"50%\">", html_page_links("admin_users.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir&user_search=$user_search&filter=$filter", $page, $admin_user_array['user_count'], 10), "</td>\n";
 
-if (forum_get_setting('require_user_approval', 'Y') && (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0))) {
+if (forum_get_setting('require_user_approval', 'Y') && (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0))) {
 
     echo "      <td class=\"postbody\" align=\"right\" width=\"25%\" style=\"white-space: nowrap\">", gettext("User filter"), ":&nbsp;", form_dropdown_array("filter", array(ADMIN_USER_FILTER_NONE => gettext("All"), ADMIN_USER_FILTER_ONLINE => gettext("Online users"), ADMIN_USER_FILTER_OFFLINE => gettext("Offline users"), ADMIN_USER_FILTER_BANNED => gettext("Banned users"), ADMIN_USER_FILTER_APPROVAL => gettext("Users awaiting approval")), $filter), "&nbsp;", form_submit("change_filter", gettext("Go")), "</td>\n";
 
-}else {
+} else {
 
     echo "      <td class=\"postbody\" align=\"right\" width=\"25%\" style=\"white-space: nowrap\">", gettext("User filter"), ":&nbsp;", form_dropdown_array("filter", array(ADMIN_USER_FILTER_NONE => gettext("All"), ADMIN_USER_FILTER_ONLINE => gettext("Online users"), ADMIN_USER_FILTER_OFFLINE => gettext("Offline users"), ADMIN_USER_FILTER_BANNED => gettext("Banned users")), $filter), "&nbsp;", form_submit("change_filter", gettext("Go")), "</td>\n";
 }
@@ -442,7 +382,7 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 
-if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && sizeof($admin_user_array['user_array']) > 0) {
+if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && sizeof($admin_user_array['user_array']) > 0) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
     echo "    <tr>\n";
@@ -464,7 +404,7 @@ if (session_check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && sizeof($admin_user_array[
         echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\">", gettext("With selected"), ":&nbsp;</td>\n";
         echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" width=\"100%\">", form_dropdown_array("action", array(-1 => '&nbsp;', ADMIN_USER_OPTION_END_SESSION => gettext("End Session (Kick)"), ADMIN_USER_OPTION_APPROVE => gettext("Approve")), false, false, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", gettext("Go")), "</td>\n";
 
-    }else {
+    } else {
 
         echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\">", gettext("With selected"), ":&nbsp;</td>\n";
         echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" width=\"100%\">", form_dropdown_array("action", array(-1 => '&nbsp;', ADMIN_USER_OPTION_END_SESSION => gettext("End Session (Kick)")), false, false, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", gettext("Go")), "</td>\n";

@@ -29,21 +29,21 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-include_once(BH_INCLUDE_PATH. "constants.inc.php");
-include_once(BH_INCLUDE_PATH. "db.inc.php");
-include_once(BH_INCLUDE_PATH. "folder.inc.php");
-include_once(BH_INCLUDE_PATH. "form.inc.php");
-include_once(BH_INCLUDE_PATH. "format.inc.php");
-include_once(BH_INCLUDE_PATH. "forum.inc.php");
-include_once(BH_INCLUDE_PATH. "html.inc.php");
-include_once(BH_INCLUDE_PATH. "lang.inc.php");
-include_once(BH_INCLUDE_PATH. "session.inc.php");
-include_once(BH_INCLUDE_PATH. "sphinx.inc.php");
-include_once(BH_INCLUDE_PATH. "user.inc.php");
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'sphinx.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 function search_execute($search_arguments, &$error)
 {
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
     // Database connection.
     if (!$db_search_execute = db_connect()) return false;
@@ -122,11 +122,11 @@ function search_execute($search_arguments, &$error)
 
 function search_mysql_execute($search_arguments, &$error)
 {
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $forum_fid = $table_data['FID'];
+    if (!($forum_fid = get_forum_fid())) return false;
 
     // Database connection.
     if (!$db_search_execute_mysql = db_connect()) return false;
@@ -153,7 +153,7 @@ function search_mysql_execute($search_arguments, &$error)
             $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, MIN(POST.CREATED) AS DATE_CREATED, ";
             $select_sql.= "THREAD.LENGTH, 1.0 AS RELEVANCE ";
 
-        }else {
+        } else {
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
             $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) SELECT SQL_NO_CACHE ";
@@ -166,10 +166,10 @@ function search_mysql_execute($search_arguments, &$error)
         search_save_arguments($search_arguments);
 
         // FROM query uses POST table if we're not using keyword searches.
-        $from_sql = "FROM `{$table_data['PREFIX']}POST` POST ";
+        $from_sql = "FROM `{$table_prefix}POST` POST ";
 
         // Join to the THREAD table for the TID
-        $join_sql = "INNER JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
+        $join_sql = "INNER JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
 
         // Don't need a HAVING clause if we're not using MATCH(..) AGAINST(..)
         $having_sql = "";
@@ -196,10 +196,10 @@ function search_mysql_execute($search_arguments, &$error)
 
         $search_string = db_escape_string(stripslashes_array($search_arguments['search_string']));
 
-        $from_sql = "FROM `{$table_data['PREFIX']}POST_CONTENT` POST_CONTENT ";
+        $from_sql = "FROM `{$table_prefix}POST_CONTENT` POST_CONTENT ";
 
-        $join_sql = "INNER JOIN `{$table_data['PREFIX']}THREAD` THREAD ON (THREAD.TID = POST_CONTENT.TID) ";
-        $join_sql.= "INNER JOIN `{$table_data['PREFIX']}POST` POST ON (POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID) ";
+        $join_sql = "INNER JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = POST_CONTENT.TID) ";
+        $join_sql.= "INNER JOIN `{$table_prefix}POST` POST ON (POST.TID = POST_CONTENT.TID AND POST.PID = POST_CONTENT.PID) ";
 
         $having_sql = "HAVING RELEVANCE > 0.2";
 
@@ -215,7 +215,7 @@ function search_mysql_execute($search_arguments, &$error)
             $select_sql.= "MATCH(POST_CONTENT.CONTENT, THREAD.TITLE) AGAINST('$search_string' IN BOOLEAN MODE) ";
             $select_sql.= "AS RELEVANCE";
 
-        }else {
+        } else {
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
             $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) ";
@@ -228,7 +228,7 @@ function search_mysql_execute($search_arguments, &$error)
 
         $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string' IN BOOLEAN MODE) ";
 
-    }else {
+    } else {
 
         if (!isset($search_arguments['user_uid_array']) || sizeof($search_arguments['user_uid_array']) < 1) {
 
@@ -240,7 +240,7 @@ function search_mysql_execute($search_arguments, &$error)
     // If the user wants results grouped by thread (TID) then do so.
     if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS) {
         $group_sql = "GROUP BY THREAD.TID ";
-    }else {
+    } else {
         $group_sql = "";
     }
 
@@ -328,7 +328,7 @@ function search_extract_keywords($search_string, $strip_valid = false)
 
         $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?[\pL\pN\pP\pZ]{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array, PREG_GREP_INVERT);
 
-    }else {
+    } else {
         
         $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?[\pL\pN\pP\pZ]{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array);
     }
@@ -340,9 +340,9 @@ function search_extract_keywords($search_string, $strip_valid = false)
     $filtered_count = sizeof($keywords_array);
 
     // Return the data as an array.
-    return array('keywords_array'   => $keywords_array,
+    return array('keywords_array' => $keywords_array,
                  'unfiltered_count' => $unfiltered_count,
-                 'filtered_count'   => $filtered_count);
+                 'filtered_count' => $filtered_count);
 }
 
 function search_strip_special_chars($keywords_array, $remove_non_matches = true)
@@ -364,7 +364,7 @@ function search_strip_special_chars($keywords_array, $remove_non_matches = true)
         $keywords_array = preg_grep($boolean_non_match, $keywords_array, PREG_GREP_INVERT);
         $keywords_array = preg_replace('/["|\+|\x00]+/u', '', $keywords_array);
 
-    }else {
+    } else {
 
         $keywords_array = preg_replace('/["|\+|\-|\x00]+/u', '', $keywords_array);
     }
@@ -405,9 +405,9 @@ function search_save_arguments($search_arguments)
 {
     if (!$db_search_save_arguments = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
     if (isset($search_arguments['search_string'])) {
         $keywords = db_escape_string($search_arguments['search_string']);
@@ -423,11 +423,11 @@ function search_save_arguments($search_arguments)
 
     if (isset($search_arguments['sort_dir'])) {
         $sort_dir = db_escape_string($search_arguments['sort_dir']);
-    }else {
+    } else {
         $sort_dir = '';
     }
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
     $sql.= "SET LAST_SEARCH_KEYWORDS = '$keywords', LAST_SEARCH_SORT_BY = '$sort_by', ";
     $sql.= "LAST_SEARCH_SORT_DIR = '$sort_dir' WHERE UID = '$uid'";
 
@@ -440,62 +440,56 @@ function search_get_keywords($remove_non_matches = true)
 {
     if (!$db_search_get_keywords = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
-    $sql = "SELECT LAST_SEARCH_KEYWORDS FROM `{$table_data['PREFIX']}USER_TRACK` ";
+    $sql = "SELECT LAST_SEARCH_KEYWORDS FROM `{$table_prefix}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
     
     if (!$result = db_query($sql, $db_search_get_keywords)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        list($search_keywords) = db_fetch_array($result, DB_RESULT_NUM);
+    list($search_keywords) = db_fetch_array($result, DB_RESULT_NUM);
 
-        $keywords_array = search_extract_keywords($search_keywords);
+    $keywords_array = search_extract_keywords($search_keywords);
 
-        return search_strip_special_chars($keywords_array['keywords_array'], $remove_non_matches);
-    }
-
-    return false;
+    return search_strip_special_chars($keywords_array['keywords_array'], $remove_non_matches);
 }
 
 function search_get_sort(&$sort_by, &$sort_dir)
 {
     if (!$db_search_get_sort = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
     $sql = "SELECT LAST_SEARCH_SORT_BY, LAST_SEARCH_SORT_DIR ";
-    $sql.= "FROM `{$table_data['PREFIX']}USER_TRACK` ";
+    $sql.= "FROM `{$table_prefix}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_search_get_sort)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        list($sort_by, $sort_dir) = db_fetch_array($result, DB_RESULT_NUM);
+    list($sort_by, $sort_dir) = db_fetch_array($result, DB_RESULT_NUM);
 
-        return true;
-    }
-
-    return false;
+    return true;
 }
 
-function search_fetch_results($offset, $sort_by, $sort_dir)
+function search_fetch_results($page, $sort_by, $sort_dir)
 {
-    if (!is_numeric($offset)) return false;
+    if (!is_numeric($page) || ($page < 1)) $page = 1;
 
-    $offset = abs($offset);
+    $offset = calculate_page_offset($page, 20);
 
     if (!$db_search_fetch_results = db_connect()) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
     $search_keywords = search_get_keywords();
 
@@ -511,9 +505,9 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
     $sql.= "USER.LOGON AS FROM_LOGON, USER.NICKNAME AS FROM_NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME FROM SEARCH_RESULTS ";
     $sql.= "INNER JOIN USER ON (USER.UID = SEARCH_RESULTS.FROM_UID) ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_PEER` USER_PEER ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = SEARCH_RESULTS.FROM_UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "LEFT JOIN `{$table_data['PREFIX']}USER_TRACK` USER_TRACK ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_TRACK` USER_TRACK ";
     $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) ";
     $sql.= "WHERE SEARCH_RESULTS.UID = '$uid' ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
@@ -551,50 +545,45 @@ function search_fetch_results($offset, $sort_by, $sort_dir)
 
     if (!$result = db_query($sql, $db_search_fetch_results)) return false;
 
-    // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!$result_count = db_query($sql, $db_search_fetch_results)) return false;
 
     list($result_count) = db_fetch_array($result_count, DB_RESULT_NUM);
 
-    if (db_num_rows($result) > 0) {
+    if ((db_num_rows($result) == 0) && ($result_count > 0) && ($page > 1)) {
+        return search_fetch_results($page - 1, $sort_by, $sort_dir);
+    }        
 
-        $search_results_array = array();
+    $search_results_array = array();
 
-        while (($search_result = db_fetch_array($result))) {
+    while (($search_result = db_fetch_array($result))) {
 
-            $search_result['KEYWORDS'] = $search_keywords;
+        $search_result['KEYWORDS'] = $search_keywords;
 
-            if (isset($search_result['FROM_LOGON']) && isset($search_result['PEER_NICKNAME'])) {
-                if (!is_null($search_result['PEER_NICKNAME']) && strlen($search_result['PEER_NICKNAME']) > 0) {
-                    $search_result['FROM_NICKNAME'] = $search_result['PEER_NICKNAME'];
-                }
+        if (isset($search_result['FROM_LOGON']) && isset($search_result['PEER_NICKNAME'])) {
+            if (!is_null($search_result['PEER_NICKNAME']) && strlen($search_result['PEER_NICKNAME']) > 0) {
+                $search_result['FROM_NICKNAME'] = $search_result['PEER_NICKNAME'];
             }
-
-            if (!isset($search_result['FROM_LOGON'])) $search_result['FROM_LOGON'] = gettext("Unknown user");
-            if (!isset($search_result['FROM_NICKNAME'])) $search_result['FROM_NICKNAME'] = gettext("Unknown user");
-
-            $search_results_array[] = $search_result;
         }
 
-        return array('result_count' => $result_count,
-                     'result_array' => $search_results_array);
+        if (!isset($search_result['FROM_LOGON'])) $search_result['FROM_LOGON'] = gettext("Unknown user");
+        if (!isset($search_result['FROM_NICKNAME'])) $search_result['FROM_NICKNAME'] = gettext("Unknown user");
 
-    }else if ($result_count > 0) {
-
-        $offset = floor(($result_count - 1) / 20) * 20;
-        return search_fetch_results($offset, $sort_by, $sort_dir);
+        $search_results_array[] = $search_result;
     }
 
-    return false;
+    return array(
+        'result_count' => $result_count,
+        'result_array' => $search_results_array
+    );
 }
 
 function search_get_first_result_msg()
 {
     if (!$db_search_fetch_results = db_connect()) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
     search_get_sort($sort_by, $sort_dir);
 
@@ -636,13 +625,11 @@ function search_get_first_result_msg()
 
     if (!$result = db_query($sql, $db_search_fetch_results)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        list($tid, $pid) = db_fetch_array($result, DB_RESULT_NUM);
-        return "$tid.$pid";
-    }
+    list($tid, $pid) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return false;
+    return "$tid.$pid";
 }
 
 function search_date_range($from, $to, $return = SEARCH_DATE_RANGE_SQL)
@@ -809,54 +796,53 @@ function folder_search_dropdown($selected_folder)
 
     if (!is_numeric($selected_folder)) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $available_folders = array();
 
     $access_allowed = USER_PERM_POST_READ;
 
-    $sql = "SELECT FID, TITLE FROM `{$table_data['PREFIX']}FOLDER` ";
+    $sql = "SELECT FID, TITLE FROM `{$table_prefix}FOLDER` ";
     $sql.= "ORDER BY FID ";
 
     if (!$result = db_query($sql, $db_folder_search_dropdown)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if (db_num_rows($result) == 0) return false;
 
-        while (($folder_data = db_fetch_array($result))) {
+    while (($folder_data = db_fetch_array($result))) {
 
-            if (user_is_guest()) {
+        if (!session::logged_in()) {
 
-                if (session_check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'])) {
+            if (session::check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'])) {
 
-                    $available_folders[$folder_data['FID']] = htmlentities_array($folder_data['TITLE']);
-                }
-
-            }else {
-
-                if (session_check_perm($access_allowed, $folder_data['FID'])) {
-
-                    $available_folders[$folder_data['FID']] = htmlentities_array($folder_data['TITLE']);
-                }
+                $available_folders[$folder_data['FID']] = htmlentities_array($folder_data['TITLE']);
             }
-        }
 
-        if (sizeof($available_folders) > 0) {
+        } else {
 
-            $available_folders = array(gettext("ALL")) + $available_folders;
-            return form_dropdown_array("fid", $available_folders, $selected_folder, false, "search_dropdown");
+            if (session::check_perm($access_allowed, $folder_data['FID'])) {
+
+                $available_folders[$folder_data['FID']] = htmlentities_array($folder_data['TITLE']);
+            }
         }
     }
 
-    return false;
+    if (sizeof($available_folders) == 0) return false;
+
+    $available_folders = array(
+        gettext("ALL")
+    ) + $available_folders;
+
+    return form_dropdown_array("fid", $available_folders, $selected_folder, false, "search_dropdown");
 }
 
 function check_search_frequency()
 {
     if (!$db_check_search_frequency = db_connect()) return false;
 
-    if (($uid = session_get_value('UID')) === false) return false;
+    if (($uid = session::get_value('UID')) === false) return false;
 
-    if (!$table_data = get_table_prefix()) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $search_min_frequency = intval(forum_get_setting('search_min_frequency', false, 30));
 
@@ -865,7 +851,7 @@ function check_search_frequency()
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "SELECT UNIX_TIMESTAMP(LAST_SEARCH) + $search_min_frequency, ";
-    $sql.= "UNIX_TIMESTAMP('$current_datetime') FROM `{$table_data['PREFIX']}USER_TRACK` ";
+    $sql.= "UNIX_TIMESTAMP('$current_datetime') FROM `{$table_prefix}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
     if (!$result = db_query($sql, $db_check_search_frequency)) return false;
@@ -876,7 +862,7 @@ function check_search_frequency()
 
         if (!is_numeric($last_search_stamp) || $last_search_stamp < $current_timestamp) {
 
-            $sql = "UPDATE LOW_PRIORITY `{$table_data['PREFIX']}USER_TRACK` ";
+            $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
             $sql.= "SET LAST_SEARCH = CAST('$current_datetime' AS DATETIME) ";
             $sql.= "WHERE UID = '$uid'";
 
@@ -885,9 +871,9 @@ function check_search_frequency()
             return true;
         }
 
-    }else{
+    } else{
 
-        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK` (UID, LAST_SEARCH) ";
+        $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, LAST_SEARCH) ";
         $sql.= "VALUES ('$uid', CAST('$current_datetime' AS DATETIME))";
 
         if (!$result = db_query($sql, $db_check_search_frequency)) return false;

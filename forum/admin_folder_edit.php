@@ -84,39 +84,39 @@ if (isset($_POST['save'])) {
 
     $valid = true;
 
-    if (isset($_POST['name']) && strlen(trim(stripslashes_array($_POST['name']))) > 0) {
-        $folder_data['TITLE'] = trim(stripslashes_array($_POST['name']));
+    if (isset($_POST['name']) && strlen(trim($_POST['name'])) > 0) {
+        $folder_data['TITLE'] = trim($_POST['name']);
     } else {
         $error_msg_array[] = gettext("You must enter a folder name");
         $valid = false;
     }
 
-    if (isset($_POST['old_name']) && strlen(trim(stripslashes_array($_POST['old_name']))) > 0) {
-        $folder_data['OLD_TITLE'] = trim(stripslashes_array($_POST['old_name']));
+    if (isset($_POST['old_name']) && strlen(trim($_POST['old_name'])) > 0) {
+        $folder_data['OLD_TITLE'] = trim($_POST['old_name']);
     } else {
         $folder_data['OLD_TITLE'] = "";
     }
 
-    if (isset($_POST['description']) && strlen(trim(stripslashes_array($_POST['description']))) > 0) {
-        $folder_data['DESCRIPTION'] = trim(stripslashes_array($_POST['description']));
+    if (isset($_POST['description']) && strlen(trim($_POST['description'])) > 0) {
+        $folder_data['DESCRIPTION'] = trim($_POST['description']);
     } else {
         $folder_data['DESCRIPTION'] = "";
     }
 
-    if (isset($_POST['old_description']) && strlen(trim(stripslashes_array($_POST['old_description']))) > 0) {
-        $folder_data['OLD_DESCRIPTION'] = trim(stripslashes_array($_POST['old_description']));
+    if (isset($_POST['old_description']) && strlen(trim($_POST['old_description'])) > 0) {
+        $folder_data['OLD_DESCRIPTION'] = trim($_POST['old_description']);
     } else {
         $folder_data['OLD_DESCRIPTION'] = "";
     }
 
-    if (isset($_POST['prefix']) && strlen(trim(stripslashes_array($_POST['prefix']))) > 0) {
-        $folder_data['PREFIX'] = trim(stripslashes_array($_POST['prefix']));
+    if (isset($_POST['prefix']) && strlen(trim($_POST['prefix'])) > 0) {
+        $folder_data['PREFIX'] = trim($_POST['prefix']);
     } else {
         $folder_data['PREFIX'] = "";
     }
 
-    if (isset($_POST['old_prefix']) && strlen(trim(stripslashes_array($_POST['old_prefix']))) > 0) {
-        $folder_data['OLD_PREFIX'] = trim(stripslashes_array($_POST['old_prefix']));
+    if (isset($_POST['old_prefix']) && strlen(trim($_POST['old_prefix'])) > 0) {
+        $folder_data['OLD_PREFIX'] = trim($_POST['old_prefix']);
     } else {
         $folder_data['OLD_PREFIX'] = "";
     }

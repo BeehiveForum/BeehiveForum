@@ -113,9 +113,9 @@ if (session::logged_in()) {
 
     if (isset($_POST['addcomment'])) {
 
-        if (isset($_POST['comment']) && strlen(trim(stripslashes_array($_POST['comment']))) > 0) {
+        if (isset($_POST['comment']) && strlen(trim($_POST['comment'])) > 0) {
 
-            $comment = trim(stripslashes_array($_POST['comment']));
+            $comment = trim($_POST['comment']);
 
             links_add_comment($lid, $uid, $comment);
             $success_msg = gettext("Your comment was added.");
@@ -162,9 +162,9 @@ if (session::logged_in()) {
                 $valid = false;
             }
 
-            if (isset($_POST['title']) && strlen(trim(stripslashes_array($_POST['title']))) > 0) {
+            if (isset($_POST['title']) && strlen(trim($_POST['title'])) > 0) {
 
-                $title = trim(stripslashes_array($_POST['title']));
+                $title = trim($_POST['title']);
 
             } else {
 
@@ -172,8 +172,8 @@ if (session::logged_in()) {
                 $valid = false;
             }
 
-            if (isset($_POST['description']) && strlen(trim(stripslashes_array($_POST['description']))) > 0) {
-                $description = trim(stripslashes_array($_POST['description']));
+            if (isset($_POST['description']) && strlen(trim($_POST['description'])) > 0) {
+                $description = trim($_POST['description']);
             } else {
                 $description = "";
             }

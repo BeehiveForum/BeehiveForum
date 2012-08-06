@@ -143,7 +143,7 @@ function cache_check_thread_list()
 
     if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
 
-        $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+        $remote_last_modified = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
 
         if (strtotime($remote_last_modified) >= $local_cache_date) {
 
@@ -210,7 +210,7 @@ function cache_check_start_page()
 
     if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
 
-        $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+        $remote_last_modified = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
 
         if (strtotime($remote_last_modified) >= $local_cache_date) {
 
@@ -292,7 +292,7 @@ function cache_check_messages()
 
     if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
 
-        $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+        $remote_last_modified = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
 
         if (strtotime($remote_last_modified) >= $local_cache_date) {
 
@@ -337,7 +337,7 @@ function cache_check_last_modified($last_modified)
 
     if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
 
-        $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+        $remote_last_modified = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
 
         if (strtotime($remote_last_modified) >= $last_modified) {
 
@@ -366,13 +366,13 @@ function cache_check_etag($local_etag)
     $local_last_modified = gmdate("D, d M Y H:i:s", time()). "GMT";
 
     if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && strlen(trim($_SERVER['HTTP_IF_NONE_MATCH'])) > 0) {
-        $remote_etag = mb_substr(stripslashes_array($_SERVER['HTTP_IF_NONE_MATCH']), 1, -1);
+        $remote_etag = mb_substr($_SERVER['HTTP_IF_NONE_MATCH'], 1, -1);
     } else {
         $remote_etag = false;
     }
 
     if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strlen(trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])) > 0) {
-        $remote_last_modified = stripslashes_array($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+        $remote_last_modified = $_SERVER['HTTP_IF_MODIFIED_SINCE'];
     } else {
         $remote_last_modified = false;
     }

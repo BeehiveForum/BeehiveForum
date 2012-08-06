@@ -1353,7 +1353,11 @@ function threads_process_list($sql)
 
     threads_have_attachments($threads_array);
 
-    return array($threads_array, $folder_order, $thread_count);
+    return array(
+        $threads_array, 
+        $folder_order, 
+        $thread_count
+    );
 }
 
 function threads_get_folder_msgs()

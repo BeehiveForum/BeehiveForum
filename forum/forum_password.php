@@ -53,7 +53,7 @@ $forum_password = "";
 // Check we have the password in the POST data
 if (isset($_POST['forum_password'])) {
 
-    $forum_password = stripslashes_array($_POST['forum_password']);
+    $forum_password = $_POST['forum_password'];
 
     if (strlen(trim($forum_password)) > 0) {
 
@@ -74,11 +74,11 @@ if (isset($_POST['forum_password'])) {
 }
 
 // Check for a returning page.
-if (isset($_POST['final_uri']) && strlen(trim(stripslashes_array($_POST['final_uri']))) > 0) {
+if (isset($_POST['final_uri']) && strlen(trim($_POST['final_uri'])) > 0) {
     
     $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
-    if (preg_match("/^$available_files_preg/u", trim(stripslashes_array($_POST['final_uri']))) > 0) {
+    if (preg_match("/^$available_files_preg/u", trim($_POST['final_uri'])) > 0) {
         $final_uri = href_cleanup_query_keys($_POST['final_uri']);
     }
 }
@@ -92,8 +92,7 @@ if (isset($final_uri)) {
 // Validate the return to page
 if (isset($redirect_uri) && strlen(trim($redirect_uri)) > 0) {
 
-    $available_files = get_available_files();
-    $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
     if (preg_match("/^$available_files_preg/u", basename($redirect_uri)) < 1) {
         $redirect_uri = "index.php?webtag=$webtag";

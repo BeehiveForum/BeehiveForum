@@ -103,15 +103,15 @@ if (isset($_POST['delete'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_top_link_title']) && strlen(trim(stripslashes_array($_POST['t_top_link_title']))) > 0) {
-        $t_top_link_title = trim(stripslashes_array($_POST['t_top_link_title']));
+    if (isset($_POST['t_top_link_title']) && strlen(trim($_POST['t_top_link_title'])) > 0) {
+        $t_top_link_title = trim($_POST['t_top_link_title']);
     } else {
         $error_msg_array[] = gettext("No top level link title specified");
         $valid = false;
     }
 
-    if (isset($_POST['t_old_top_link_title']) && strlen(trim(stripslashes_array($_POST['t_old_top_link_title']))) > 0) {
-        $t_old_top_link_title = trim(stripslashes_array($_POST['t_old_top_link_title']));
+    if (isset($_POST['t_old_top_link_title']) && strlen(trim($_POST['t_old_top_link_title'])) > 0) {
+        $t_old_top_link_title = trim($_POST['t_old_top_link_title']);
     } else {
         $t_old_top_link_title = "";
     }
@@ -138,16 +138,16 @@ if (isset($_POST['delete'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_title']) && strlen(trim(stripslashes_array($_POST['t_title']))) > 0) {
-        $t_title = trim(stripslashes_array($_POST['t_title']));
+    if (isset($_POST['t_title']) && strlen(trim($_POST['t_title'])) > 0) {
+        $t_title = trim($_POST['t_title']);
     } else {
         $valid = false;
         $error_msg_array[] = gettext("You must enter a link title");
     }
 
-    if (isset($_POST['t_uri']) && strlen(trim(stripslashes_array($_POST['t_uri']))) > 0) {
+    if (isset($_POST['t_uri']) && strlen(trim($_POST['t_uri'])) > 0) {
 
-        $t_uri = trim(stripslashes_array($_POST['t_uri']));
+        $t_uri = trim($_POST['t_uri']);
 
         if (preg_match('/^[a-z0-9]+:\/\//iu', $t_uri) < 1) {
             $error_msg_array[] = gettext("All link URIs must start with a schema (i.e. http://, ftp://, irc://)");
@@ -181,16 +181,16 @@ if (isset($_POST['delete'])) {
 
         $lid = $_POST['lid'];
 
-        if (isset($_POST['t_title']) && strlen(trim(stripslashes_array($_POST['t_title']))) > 0) {
-            $t_title = trim(stripslashes_array($_POST['t_title']));
+        if (isset($_POST['t_title']) && strlen(trim($_POST['t_title'])) > 0) {
+            $t_title = trim($_POST['t_title']);
         } else {
             $valid = false;
             $error_msg_array[] = gettext("You must enter a link title");
         }
 
-        if (isset($_POST['t_uri']) && strlen(trim(stripslashes_array($_POST['t_uri']))) > 0) {
+        if (isset($_POST['t_uri']) && strlen(trim($_POST['t_uri'])) > 0) {
 
-            $t_uri = trim(stripslashes_array($_POST['t_uri']));
+            $t_uri = trim($_POST['t_uri']);
 
             if (preg_match('/^[a-z0-9]+:\/\//iu', $t_uri) < 1) {
                 $error_msg_array[] = gettext("All link URIs must start with a schema (i.e. http://, ftp://, irc://)");
@@ -202,14 +202,14 @@ if (isset($_POST['delete'])) {
             $t_uri = "";
         }
 
-        if (isset($_POST['t_old_title']) && strlen(trim(stripslashes_array($_POST['t_old_title']))) > 0) {
-            $t_old_title = trim(stripslashes_array($_POST['t_old_title']));
+        if (isset($_POST['t_old_title']) && strlen(trim($_POST['t_old_title'])) > 0) {
+            $t_old_title = trim($_POST['t_old_title']);
         } else {
             $t_old_title = "";
         }
 
-        if (isset($_POST['t_old_uri']) && strlen(trim(stripslashes_array($_POST['t_old_uri']))) > 0) {
-            $t_old_uri = trim(stripslashes_array($_POST['t_old_uri']));
+        if (isset($_POST['t_old_uri']) && strlen(trim($_POST['t_old_uri'])) > 0) {
+            $t_old_uri = trim($_POST['t_old_uri']);
         } else {
             $t_old_uri = "";
         }
@@ -294,11 +294,11 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Forum Link Title"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_title", (isset($_POST['t_title']) ? htmlentities_array(stripslashes_array($_POST['t_title'])) : ""), 40, 64), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_title", (isset($_POST['t_title']) ? htmlentities_array($_POST['t_title']) : ""), 40, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Forum Link Location"), ":</td>\n";
-    echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text("t_uri", (isset($_POST['t_uri']) ? htmlentities_array(stripslashes_array($_POST['t_uri'])) : ""), 40, 255), "</td>\n";
+    echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text("t_uri", (isset($_POST['t_uri']) ? htmlentities_array($_POST['t_uri']) : ""), 40, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -374,11 +374,11 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Forum Link Title"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_title", (isset($_POST['t_title']) ? htmlentities_array(stripslashes_array($_POST['t_title'])) : (isset($forum_link['TITLE']) ? htmlentities_array($forum_link['TITLE']) : "")), 40, 64), form_input_hidden('t_old_title', htmlentities_array($forum_link['TITLE'])), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_title", (isset($_POST['t_title']) ? htmlentities_array($_POST['t_title']) : (isset($forum_link['TITLE']) ? htmlentities_array($forum_link['TITLE']) : "")), 40, 64), form_input_hidden('t_old_title', htmlentities_array($forum_link['TITLE'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Forum Link Location"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_uri", (isset($_POST['t_uri']) ? htmlentities_array(stripslashes_array($_POST['t_uri'])) : (isset($forum_link['URI']) ? htmlentities_array($forum_link['URI']) : "")), 40, 255), form_input_hidden('t_old_uri', htmlentities_array($forum_link['URI'])), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_uri", (isset($_POST['t_uri']) ? htmlentities_array($_POST['t_uri']) : (isset($forum_link['URI']) ? htmlentities_array($forum_link['URI']) : "")), 40, 255), form_input_hidden('t_old_uri', htmlentities_array($forum_link['URI'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -514,7 +514,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Top link caption"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_top_link_title", (isset($_POST['t_top_link_title']) ? htmlentities_array(stripslashes_array($_POST['t_top_link_title'])) : htmlentities_array(forum_get_setting('forum_links_top_link', false, gettext("Forum Links")))), 40, 64), form_input_hidden('t_old_top_link_title', htmlentities_array(forum_get_setting('forum_links_top_link', false, gettext("Forum Links")))), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_top_link_title", (isset($_POST['t_top_link_title']) ? htmlentities_array($_POST['t_top_link_title']) : htmlentities_array(forum_get_setting('forum_links_top_link', false, gettext("Forum Links")))), 40, 64), form_input_hidden('t_old_top_link_title', htmlentities_array(forum_get_setting('forum_links_top_link', false, gettext("Forum Links")))), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

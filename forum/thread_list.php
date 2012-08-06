@@ -135,11 +135,11 @@ if (!session::logged_in()) {
 
             if ($_REQUEST['mark_read_type'] == THREAD_MARK_READ_VISIBLE) {
 
-                if (isset($_REQUEST['mark_read_threads']) && strlen(trim(stripslashes_array($_REQUEST['mark_read_threads']))) > 0) {
+                if (isset($_REQUEST['mark_read_threads']) && strlen(trim($_REQUEST['mark_read_threads'])) > 0) {
 
                     $thread_data = array();
 
-                    $mark_read_threads = trim(stripslashes_array($_REQUEST['mark_read_threads']));
+                    $mark_read_threads = trim($_REQUEST['mark_read_threads']);
 
                     $mark_read_threads_array = array_filter(explode(',', $mark_read_threads), 'is_numeric');
 

@@ -53,10 +53,10 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) || (forum_get_setting('acce
 
 $forum_fid = forum_get_setting('fid');
 
-if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
-    $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
-} else if (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
-    $ret = trim(stripslashes_array($_POST['ret']));
+if (isset($_GET['ret']) && strlen(trim($_GET['ret'])) > 0) {
+    $ret = rawurldecode(trim($_GET['ret']));
+} else if (isset($_POST['ret']) && strlen(trim($_POST['ret'])) > 0) {
+    $ret = trim($_POST['ret']);
 } else {
     $ret = "admin_forums.php?webtag=$webtag";
 }
@@ -64,8 +64,7 @@ if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
 // validate the return to page
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
-    $available_files = get_available_files();
-    $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
     if (preg_match("/^$available_files_preg/u", basename($ret)) < 1) {
         $ret = "admin_forums.php?webtag=$webtag";
@@ -105,10 +104,10 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $search_page = 1;
 }
 
-if (isset($_POST['user_search']) && strlen(trim(stripslashes_array($_POST['user_search']))) > 0) {
-    $user_search = trim(stripslashes_array($_POST['user_search']));
-} else if (isset($_GET['user_search']) && strlen(trim(stripslashes_array($_GET['user_search']))) > 0) {
-    $user_search = trim(stripslashes_array($_GET['user_search']));
+if (isset($_POST['user_search']) && strlen(trim($_POST['user_search'])) > 0) {
+    $user_search = trim($_POST['user_search']);
+} else if (isset($_GET['user_search']) && strlen(trim($_GET['user_search'])) > 0) {
+    $user_search = trim($_GET['user_search']);
 } else {
     $user_search = '';
 }

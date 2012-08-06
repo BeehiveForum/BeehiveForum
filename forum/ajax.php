@@ -44,6 +44,8 @@ if (!isset($_GET['ajax']) || !isset($_GET['action'])) {
     exit;
 }
 
+$content = '';
+
 cache_disable();
 
 switch ($_GET['action']) {
@@ -58,17 +60,18 @@ switch ($_GET['action']) {
             exit;
         }
 
-        $term = trim(stripslashes_array($_GET['term']));
+        $term = trim($_GET['term']);
 
-        if (($search_results_array = user_search($term)) === false) {
+        if (!($search_results_array = user_search($term))) {
 
-            header_status(500, 'Internal Server Error');
-            exit;
+            $content = '';
+            break;
         }
         
         header('Content-Type: application/json');
         
         $content = json_encode($search_results_array);
+
         break;
 
     case 'sig_toggle':

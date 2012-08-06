@@ -66,10 +66,10 @@ function logon_perform()
     } else if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
         // Extract the submitted username
-        $user_logon = stripslashes_array($_POST['user_logon']);
+        $user_logon = $_POST['user_logon'];
 
         // Extract the submitted password
-        $user_password = stripslashes_array($_POST['user_password']);
+        $user_password = $_POST['user_password'];
 
         // Try and login the user.
         if (($uid = user_logon($user_logon, $user_password))) {
@@ -133,7 +133,7 @@ function logon_draw_form($logon_options)
 
     // Add any post data into the form.
     if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
-        echo form_input_hidden_array(stripslashes_array($_POST));
+        echo form_input_hidden_array($_POST);
     }
 
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
@@ -212,11 +212,11 @@ function logon_draw_form($logon_options)
             echo "</form>\n";
         }
 
-        if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
+        if (isset($_GET['final_uri']) && strlen(trim($_GET['final_uri'])) > 0) {
             
             $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
-            if (preg_match("/^$available_files_preg/u", trim(stripslashes_array($_GET['final_uri']))) > 0) {
+            if (preg_match("/^$available_files_preg/u", trim($_GET['final_uri'])) > 0) {
                 $final_uri = href_cleanup_query_keys($_GET['final_uri']);
             }            
         }

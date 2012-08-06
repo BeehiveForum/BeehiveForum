@@ -113,13 +113,13 @@ if (isset($_POST['delete'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_url']) && strlen(trim(stripslashes_array($_POST['t_url']))) > 0) {
+    if (isset($_POST['t_url']) && strlen(trim($_POST['t_url'])) > 0) {
 
-        $t_url = trim(stripslashes_array($_POST['t_url']));
+        $t_url = trim($_POST['t_url']);
 
-    } else if (isset($_POST['t_url_new']) && strlen(trim(stripslashes_array($_POST['t_url_new']))) > 0) {
+    } else if (isset($_POST['t_url_new']) && strlen(trim($_POST['t_url_new'])) > 0) {
 
-        $t_url = trim(stripslashes_array($_POST['t_url_new']));
+        $t_url = trim($_POST['t_url_new']);
 
     } else {
 
@@ -152,16 +152,16 @@ if (isset($_POST['delete'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_name_new']) && strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
-        $t_name_new = trim(stripslashes_array($_POST['t_name_new']));
+    if (isset($_POST['t_name_new']) && strlen(trim($_POST['t_name_new'])) > 0) {
+        $t_name_new = trim($_POST['t_name_new']);
     } else {
         $valid = false;
         $error_msg_array[] = gettext("Must specify RSS Feed Name");
     }
 
-    if (isset($_POST['t_user_new']) && strlen(trim(stripslashes_array($_POST['t_user_new']))) > 0) {
+    if (isset($_POST['t_user_new']) && strlen(trim($_POST['t_user_new'])) > 0) {
 
-        $t_user_new = trim(stripslashes_array($_POST['t_user_new']));
+        $t_user_new = trim($_POST['t_user_new']);
 
         if (($t_user_array = user_get_by_logon($t_user_new))) {
 
@@ -189,9 +189,9 @@ if (isset($_POST['delete'])) {
         $error_msg_array[] = gettext("Must specify RSS Feed Folder");
     }
 
-    if (isset($_POST['t_url_new']) && strlen(trim(stripslashes_array($_POST['t_url_new']))) > 0) {
+    if (isset($_POST['t_url_new']) && strlen(trim($_POST['t_url_new'])) > 0) {
 
-        $t_url_new = trim(stripslashes_array($_POST['t_url_new']));
+        $t_url_new = trim($_POST['t_url_new']);
 
         $check_url = parse_url($t_url_new);
 
@@ -219,8 +219,8 @@ if (isset($_POST['delete'])) {
         $error_msg_array[] = gettext("Must specify RSS Feed URL");
     }
 
-    if (isset($_POST['t_prefix_new']) && strlen(trim(stripslashes_array($_POST['t_prefix_new']))) > 0) {
-        $t_prefix_new = trim(stripslashes_array($_POST['t_prefix_new']));
+    if (isset($_POST['t_prefix_new']) && strlen(trim($_POST['t_prefix_new'])) > 0) {
+        $t_prefix_new = trim($_POST['t_prefix_new']);
     } else {
         $t_prefix_new = "";
     }
@@ -267,9 +267,9 @@ if (isset($_POST['delete'])) {
 
         $feed_id = $_POST['feed_id'];
 
-        if (isset($_POST['t_name']) && strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
+        if (isset($_POST['t_name']) && strlen(trim($_POST['t_name'])) > 0) {
 
-            $t_new_name = trim(stripslashes_array($_POST['t_name']));
+            $t_new_name = trim($_POST['t_name']);
 
         } else {
 
@@ -277,15 +277,15 @@ if (isset($_POST['delete'])) {
             $error_msg_array[] = gettext("Must specify RSS Feed Name");
         }
 
-        if (isset($_POST['t_old_name']) && strlen(trim(stripslashes_array($_POST['t_old_name']))) > 0) {
-            $t_old_name = trim(stripslashes_array($_POST['t_old_name']));
+        if (isset($_POST['t_old_name']) && strlen(trim($_POST['t_old_name'])) > 0) {
+            $t_old_name = trim($_POST['t_old_name']);
         } else {
             $t_old_name = "";
         }
 
-        if (isset($_POST['t_user']) && strlen(trim(stripslashes_array($_POST['t_user']))) > 0) {
+        if (isset($_POST['t_user']) && strlen(trim($_POST['t_user'])) > 0) {
 
-            $t_new_user = trim(stripslashes_array($_POST['t_user']));
+            $t_new_user = trim($_POST['t_user']);
 
         } else {
 
@@ -293,8 +293,8 @@ if (isset($_POST['delete'])) {
             $error_msg_array[] = gettext("Must specify RSS Feed User Account");
         }
 
-        if (isset($_POST['t_old_user']) && strlen(trim(stripslashes_array($_POST['t_old_user']))) > 0) {
-            $t_old_user = trim(stripslashes_array($_POST['t_old_user']));
+        if (isset($_POST['t_old_user']) && strlen(trim($_POST['t_old_user'])) > 0) {
+            $t_old_user = trim($_POST['t_old_user']);
         } else {
             $t_old_user = "";
         }
@@ -315,26 +315,26 @@ if (isset($_POST['delete'])) {
             $t_old_fid = "";
         }
 
-        if (isset($_POST['t_url']) && strlen(trim(stripslashes_array($_POST['t_url']))) > 0) {
+        if (isset($_POST['t_url']) && strlen(trim($_POST['t_url'])) > 0) {
             $t_new_url = $_POST['t_url'];
         } else {
             $valid = false;
             $error_msg_array[] = gettext("Must specify RSS Feed URL");
         }
 
-        if (isset($_POST['t_old_url']) && strlen(trim(stripslashes_array($_POST['t_old_url']))) > 0) {
+        if (isset($_POST['t_old_url']) && strlen(trim($_POST['t_old_url'])) > 0) {
             $t_old_url = $_POST['t_old_url'];
         } else {
             $t_old_url = "";
         }
 
-        if (isset($_POST['t_prefix']) && strlen(trim(stripslashes_array($_POST['t_prefix']))) > 0) {
+        if (isset($_POST['t_prefix']) && strlen(trim($_POST['t_prefix'])) > 0) {
             $t_new_prefix = $_POST['t_prefix'];
         } else {
             $t_new_prefix = "";
         }
 
-        if (isset($_POST['t_old_prefix']) && strlen(trim(stripslashes_array($_POST['t_old_prefix']))) > 0) {
+        if (isset($_POST['t_old_prefix']) && strlen(trim($_POST['t_old_prefix'])) > 0) {
             $t_old_prefix = $_POST['t_old_prefix'];
         } else {
             $t_old_prefix = "";
@@ -454,11 +454,11 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Feed Name"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array(stripslashes_array($_POST['t_name_new'])) : ""), 40, 32), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array($_POST['t_name_new']) : ""), 40, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Feed Location"), ":</td>\n";
-    echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text("t_url_new", (isset($_POST['t_url_new']) ? htmlentities_array(stripslashes_array($_POST['t_url_new'])) : ""), 30, 255), "&nbsp;", form_submit("checkfeedsubmit", 'Test'), "</td>\n";
+    echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text("t_url_new", (isset($_POST['t_url_new']) ? htmlentities_array($_POST['t_url_new']) : ""), 30, 255), "&nbsp;", form_submit("checkfeedsubmit", 'Test'), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -484,23 +484,23 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Feed User Account"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text_search("t_user_new", (isset($_POST['t_user_new']) ? htmlentities_array(stripslashes_array($_POST['t_user_new'])) : ""), 30, 15), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text_search("t_user_new", (isset($_POST['t_user_new']) ? htmlentities_array($_POST['t_user_new']) : ""), 30, 15), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Thread Title Prefix"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_prefix_new", (isset($_POST['t_prefix_new']) ? htmlentities_array(stripslashes_array($_POST['t_prefix_new'])) : ""), 20, 16), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_prefix_new", (isset($_POST['t_prefix_new']) ? htmlentities_array($_POST['t_prefix_new']) : ""), 20, 16), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Feed Folder Name"), ":</td>\n";
-    echo "                        <td align=\"left\">", folder_draw_dropdown_all((isset($_POST['t_fid_new']) ? htmlentities_array(stripslashes_array($_POST['t_fid_new'])) : 0), "t_fid_new", "", "", "post_folder_dropdown"), "</td>\n";
+    echo "                        <td align=\"left\">", folder_draw_dropdown_all((isset($_POST['t_fid_new']) ? htmlentities_array($_POST['t_fid_new']) : 0), "t_fid_new", "", "", "post_folder_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Update Frequency"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("t_frequency_new", $update_frequencies_array, (isset($_POST['t_frequency_new']) ? htmlentities_array(stripslashes_array($_POST['t_frequency_new'])) : 1440)), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_frequency_new", $update_frequencies_array, (isset($_POST['t_frequency_new']) ? htmlentities_array($_POST['t_frequency_new']) : 1440)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Max Item Count"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_max_item_count_new", (isset($_POST['t_max_item_count_new']) ? htmlentities_array(stripslashes_array($_POST['t_max_item_count_new'])) : 10), 6, 4), "&nbsp;<span class=\"smalltext\">", gettext("Min: 1, Max: 10"), "</span></td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_max_item_count_new", (isset($_POST['t_max_item_count_new']) ? htmlentities_array($_POST['t_max_item_count_new']) : 10), 6, 4), "&nbsp;<span class=\"smalltext\">", gettext("Min: 1, Max: 10"), "</span></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -581,11 +581,11 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Feed Name"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_name", (isset($_POST['t_name']) ? htmlentities_array(stripslashes_array($_POST['t_name'])) : (isset($rss_feed['NAME']) ? htmlentities_array($rss_feed['NAME']) : "")), 40, 32), form_input_hidden("t_name_old", (isset($rss_feed['NAME']) ? htmlentities_array($rss_feed['NAME']) : "")), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name", (isset($_POST['t_name']) ? htmlentities_array($_POST['t_name']) : (isset($rss_feed['NAME']) ? htmlentities_array($rss_feed['NAME']) : "")), 40, 32), form_input_hidden("t_name_old", (isset($rss_feed['NAME']) ? htmlentities_array($rss_feed['NAME']) : "")), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Feed Location"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_url", (isset($_POST['t_url']) ? htmlentities_array(stripslashes_array($_POST['t_url'])) : (isset($rss_feed['URL']) ? htmlentities_array($rss_feed['URL']) : "")), 30, 255), form_input_hidden("t_url_old", (isset($rss_feed['URL']) ? htmlentities_array($rss_feed['URL']) : "")), "&nbsp;", form_submit('checkfeedsubmit', "Test"), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_url", (isset($_POST['t_url']) ? htmlentities_array($_POST['t_url']) : (isset($rss_feed['URL']) ? htmlentities_array($rss_feed['URL']) : "")), 30, 255), form_input_hidden("t_url_old", (isset($rss_feed['URL']) ? htmlentities_array($rss_feed['URL']) : "")), "&nbsp;", form_submit('checkfeedsubmit', "Test"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -611,23 +611,23 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Feed User Account"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text_search("t_user", (isset($_POST['t_user']) ? htmlentities_array(stripslashes_array($_POST['t_user'])) : (isset($rss_feed['LOGON']) ? htmlentities_array($rss_feed['LOGON']) : "")), 26, 15), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text_search("t_user", (isset($_POST['t_user']) ? htmlentities_array($_POST['t_user']) : (isset($rss_feed['LOGON']) ? htmlentities_array($rss_feed['LOGON']) : "")), 26, 15), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Thread Title Prefix"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_prefix", (isset($_POST['t_prefix']) ? htmlentities_array(stripslashes_array($_POST['t_prefix'])) : (isset($rss_feed['PREFIX']) ? htmlentities_array($rss_feed['PREFIX']) : "")), 29, 16), form_input_hidden("t_prefix_old", (isset($rss_feed['PREFIX']) ? htmlentities_array($rss_feed['PREFIX']) : "")), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_prefix", (isset($_POST['t_prefix']) ? htmlentities_array($_POST['t_prefix']) : (isset($rss_feed['PREFIX']) ? htmlentities_array($rss_feed['PREFIX']) : "")), 29, 16), form_input_hidden("t_prefix_old", (isset($rss_feed['PREFIX']) ? htmlentities_array($rss_feed['PREFIX']) : "")), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Feed Folder Name"), ":</td>\n";
-    echo "                        <td align=\"left\">", folder_draw_dropdown_all((isset($_POST['t_fid']) ? htmlentities_array(stripslashes_array($_POST['t_fid'])) : (isset($rss_feed['FID']) ? $rss_feed['FID'] : 0)), "t_fid", "", "", "post_folder_dropdown"), form_input_hidden("t_fid_old", (isset($rss_feed['FID']) ? htmlentities_array($rss_feed['FID']) : "")), "</td>\n";
+    echo "                        <td align=\"left\">", folder_draw_dropdown_all((isset($_POST['t_fid']) ? htmlentities_array($_POST['t_fid']) : (isset($rss_feed['FID']) ? $rss_feed['FID'] : 0)), "t_fid", "", "", "post_folder_dropdown"), form_input_hidden("t_fid_old", (isset($rss_feed['FID']) ? htmlentities_array($rss_feed['FID']) : "")), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Update Frequency"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("t_frequency", $update_frequencies_array, (isset($_POST['t_frequency']) ? htmlentities_array(stripslashes_array($_POST['t_frequency'])) : (isset($rss_feed['FREQUENCY']) ? $rss_feed['FREQUENCY'] : 1440)), "", "post_folder_dropdown"), form_input_hidden("t_frequency_old", (isset($rss_feed['FREQUENCY']) ? htmlentities_array($rss_feed['FREQUENCY']) : "")), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("t_frequency", $update_frequencies_array, (isset($_POST['t_frequency']) ? htmlentities_array($_POST['t_frequency']) : (isset($rss_feed['FREQUENCY']) ? $rss_feed['FREQUENCY'] : 1440)), "", "post_folder_dropdown"), form_input_hidden("t_frequency_old", (isset($rss_feed['FREQUENCY']) ? htmlentities_array($rss_feed['FREQUENCY']) : "")), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Max Item Count"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_max_item_count", (isset($_POST['t_max_item_count']) ? htmlentities_array(stripslashes_array($_POST['t_max_item_count'])) : (isset($rss_feed['MAX_ITEM_COUNT']) ? $rss_feed['MAX_ITEM_COUNT'] : 10)), 6, 4), form_input_hidden("t_max_item_count_old", (isset($rss_feed['MAX_ITEM_COUNT']) ? htmlentities_array($rss_feed['MAX_ITEM_COUNT']) : 10)), "&nbsp;<span class=\"smalltext\">", gettext("Min: 1, Max: 10"), "</span></td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_max_item_count", (isset($_POST['t_max_item_count']) ? htmlentities_array($_POST['t_max_item_count']) : (isset($rss_feed['MAX_ITEM_COUNT']) ? $rss_feed['MAX_ITEM_COUNT'] : 10)), 6, 4), form_input_hidden("t_max_item_count_old", (isset($rss_feed['MAX_ITEM_COUNT']) ? htmlentities_array($rss_feed['MAX_ITEM_COUNT']) : 10)), "&nbsp;<span class=\"smalltext\">", gettext("Min: 1, Max: 10"), "</span></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

@@ -226,8 +226,8 @@ if (isset($_POST['options_html']) && ($_POST['options_html'] == 'Y')) {
     $options_html = 'N';
 }
 
-if (isset($_POST['thread_title']) && strlen(trim(stripslashes_array($_POST['thread_title']))) > 0) {
-    $thread_title = trim(stripslashes_array($_POST['thread_title']));
+if (isset($_POST['thread_title']) && strlen(trim($_POST['thread_title'])) > 0) {
+    $thread_title = trim($_POST['thread_title']);
 }
 
 if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
@@ -358,12 +358,12 @@ if (isset($_POST['close_poll']) && is_numeric($_POST['close_poll'])) {
     $close_poll = $_POST['close_poll'];
 }
 
-if (isset($_POST['message_text']) && strlen(trim(stripslashes_array($_POST['message_text']))) > 0) {
-    $message_text = trim(stripslashes_array($_POST['message_text']));
+if (isset($_POST['message_text']) && strlen(trim($_POST['message_text'])) > 0) {
+    $message_text = trim($_POST['message_text']);
 }
 
 if (isset($_POST['sig_text'])) {
-    $sig_text = trim(stripslashes_array($_POST['sig_text']));
+    $sig_text = trim($_POST['sig_text']);
 }
 
 $allow_html = true;
@@ -590,7 +590,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
         $valid = false;
     }
 
-    if (isset($message_text) && strlen(trim(stripslashes_array($message_text))) > 0) {
+    if (isset($message_text) && strlen(trim($message_text)) > 0) {
 
         if (attachments_embed_check($message_text) && ($message_html == 'Y')) {
 

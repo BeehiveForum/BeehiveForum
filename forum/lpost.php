@@ -84,9 +84,9 @@ if (isset($_POST['t_newthread'])) {
 
     $new_thread = true;
 
-    if (isset($_POST['t_threadtitle']) && strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
+    if (isset($_POST['t_threadtitle']) && strlen(trim($_POST['t_threadtitle'])) > 0) {
 
-        $t_threadtitle = trim(stripslashes_array($_POST['t_threadtitle']));
+        $t_threadtitle = trim($_POST['t_threadtitle']);
 
     } else {
 
@@ -112,9 +112,9 @@ if (isset($_POST['t_newthread'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = stripslashes_array($_POST['t_content']);
+        $t_content = $_POST['t_content'];
 
     } else {
 
@@ -128,7 +128,7 @@ if (isset($_POST['t_newthread'])) {
 
         if (isset($_POST['t_content']) && strlen($_POST['t_content']) > 0) {
 
-            $t_content = stripslashes_array($_POST['t_content']);
+            $t_content = $_POST['t_content'];
 
         } else {
 
@@ -179,8 +179,8 @@ if (isset($_POST['t_sig_html'])) {
 
     $fetched_sig = false;
 
-    if (isset($_POST['t_sig']) && strlen(trim(stripslashes_array($_POST['t_sig']))) > 0) {
-        $t_sig = stripslashes_array($_POST['t_sig']);
+    if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
+        $t_sig = $_POST['t_sig'];
     } else {
         $t_sig = "";
     }

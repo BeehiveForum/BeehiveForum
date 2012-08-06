@@ -21,7 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -29,16 +28,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-// If the config file exists include it.
-if (@file_exists(BH_INCLUDE_PATH. 'config.inc.php')) {
-    require_once BH_INCLUDE_PATH. 'config.inc.php';
-}
-
-if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
-}
-
-// Other include files we need.
 require_once BH_INCLUDE_PATH. 'cache.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'db.inc.php';
@@ -47,7 +36,6 @@ require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'header.inc.php';
 require_once BH_INCLUDE_PATH. 'install.inc.php';
 
-// Beehive Error Handler to Exception Wrapper.
 function bh_error_handler($code, $message, $file = '', $line = 0)
 {
     if (error_reporting()) {
@@ -55,7 +43,6 @@ function bh_error_handler($code, $message, $file = '', $line = 0)
     }
 }
 
-// Check for unclean shutdown.
 function bh_shutdown_handler()
 {
     if (($error = error_get_last()) && (error_reporting() !== 0)) {
@@ -70,7 +57,6 @@ function bh_shutdown_handler()
     }
 }
 
-// Exception Handler
 function bh_exception_handler(Exception $exception)
 {
     bh_exception_processor(
@@ -82,13 +68,11 @@ function bh_exception_handler(Exception $exception)
     );    
 }
 
-// Remove some unneccesary data from the stack trace.
 function exception_stack_trace_tidy($trace_data)
 {
     return !(isset($trace_data['function']) && in_array($trace_data['function'], array('bh_exception_handler', 'bh_error_handler', 'bh_shutdown_handler')));
 }
 
-// Error / Exception Processor
 function bh_exception_processor($message, $code, $file, $line, $stack_trace)
 {
     if (isset($GLOBALS['error_report_verbose']) && $GLOBALS['error_report_verbose'] == true) {
@@ -97,14 +81,14 @@ function bh_exception_processor($message, $code, $file, $line, $stack_trace)
         $error_report_verbose = false;
     }
 
-    if (isset($GLOBALS['error_report_email_addr_to']) && strlen(trim(stripslashes_array($GLOBALS['error_report_email_addr_to']))) > 0) {
-        $error_report_email_addr_to = trim(stripslashes_array($GLOBALS['error_report_email_addr_to']));
+    if (isset($GLOBALS['error_report_email_addr_to']) && strlen(trim($GLOBALS['error_report_email_addr_to'])) > 0) {
+        $error_report_email_addr_to = trim($GLOBALS['error_report_email_addr_to']);
     } else {
         $error_report_email_addr_to = '';
     }
 
-    if (isset($GLOBALS['error_report_email_addr_from']) && strlen(trim(stripslashes_array($GLOBALS['error_report_email_addr_from']))) > 0) {
-        $error_report_email_addr_from = trim(stripslashes_array($GLOBALS['error_report_email_addr_from']));
+    if (isset($GLOBALS['error_report_email_addr_from']) && strlen(trim($GLOBALS['error_report_email_addr_from'])) > 0) {
+        $error_report_email_addr_from = trim($GLOBALS['error_report_email_addr_from']);
     } else {
         $error_report_email_addr_from = 'no-reply@beehiveforum.co.uk';
     }
@@ -335,7 +319,7 @@ function bh_exception_processor($message, $code, $file, $line, $stack_trace)
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"f_error\" method=\"post\" action=\"\" target=\"_self\">\n";
-        echo "  ", form_input_hidden_array(stripslashes_array($_POST)), "\n";
+        echo "  ", form_input_hidden_array($_POST), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";

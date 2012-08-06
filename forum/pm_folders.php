@@ -127,9 +127,9 @@ if (isset($_GET['manage_folder'])) {
 
 if (isset($_POST['save'])) {
 
-    if (isset($_POST['folder_name']) && strlen(trim(stripslashes_array($_POST['folder_name']))) > 0) {
+    if (isset($_POST['folder_name']) && strlen(trim($_POST['folder_name'])) > 0) {
 
-        $folder_name = trim(stripslashes_array($_POST['folder_name']));
+        $folder_name = trim($_POST['folder_name']);
 
         if (pm_update_folder_name($manage_folder, $folder_name)) {
 

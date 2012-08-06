@@ -150,23 +150,23 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
     $search_no_matches = false;
 
-    if (isset($_GET['search_string']) && strlen(trim(stripslashes_array($_GET['search_string']))) > 0) {
-        $search_arguments['search_string'] = trim(stripslashes_array($_GET['search_string']));
-    } else if (isset($_POST['search_string']) && strlen(trim(stripslashes_array($_POST['search_string']))) > 0) {
-        $search_arguments['search_string'] = trim(stripslashes_array($_POST['search_string']));
+    if (isset($_GET['search_string']) && strlen(trim($_GET['search_string'])) > 0) {
+        $search_arguments['search_string'] = trim($_GET['search_string']);
+    } else if (isset($_POST['search_string']) && strlen(trim($_POST['search_string'])) > 0) {
+        $search_arguments['search_string'] = trim($_POST['search_string']);
     }
 
     if (isset($_POST['method']) && is_numeric($_POST['method'])) {
         $search_arguments['method'] = $_POST['method'];
     }
 
-    if (isset($_POST['username']) && strlen(trim(stripslashes_array($_POST['username']))) > 0) {
+    if (isset($_POST['username']) && strlen(trim($_POST['username'])) > 0) {
 
-        $search_arguments['username'] = trim(stripslashes_array($_POST['username']));
+        $search_arguments['username'] = trim($_POST['username']);
 
-    } else if (isset($_GET['logon']) && strlen(trim(stripslashes_array($_GET['logon']))) > 0) {
+    } else if (isset($_GET['logon']) && strlen(trim($_GET['logon'])) > 0) {
 
-        $search_arguments['username'] = trim(stripslashes_array($_GET['logon']));
+        $search_arguments['username'] = trim($_GET['logon']);
         $search_arguments['user_include'] = SEARCH_FILTER_USER_POSTS;
 
         $search_arguments['date_from'] = SEARCH_FROM_BEGINNING_OF_TIME;

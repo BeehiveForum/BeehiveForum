@@ -55,9 +55,9 @@ if (isset($_POST['save'])) {
 
     $valid = true;
 
-    if (isset($_POST['opw']) && strlen(trim(stripslashes_array($_POST['opw']))) > 0) {
+    if (isset($_POST['opw']) && strlen(trim($_POST['opw'])) > 0) {
 
-        $t_old_pass = trim(stripslashes_array($_POST['opw']));
+        $t_old_pass = trim($_POST['opw']);
 
     } else {
 
@@ -65,9 +65,9 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['npw']) && strlen(trim(stripslashes_array($_POST['npw']))) > 0) {
+    if (isset($_POST['npw']) && strlen(trim($_POST['npw'])) > 0) {
 
-        $t_new_pass = trim(stripslashes_array($_POST['npw']));
+        $t_new_pass = trim($_POST['npw']);
 
     } else {
 
@@ -75,9 +75,9 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['cpw']) && strlen(trim(stripslashes_array($_POST['cpw']))) > 0) {
+    if (isset($_POST['cpw']) && strlen(trim($_POST['cpw'])) > 0) {
 
-        $t_confirm_pass = trim(stripslashes_array($_POST['cpw']));
+        $t_confirm_pass = trim($_POST['cpw']);
 
     } else {
 

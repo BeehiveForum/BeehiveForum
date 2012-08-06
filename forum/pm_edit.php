@@ -171,9 +171,9 @@ $post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
 
 if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
-    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
+    if (isset($_POST['t_subject']) && strlen(trim($_POST['t_subject'])) > 0) {
 
-        $t_subject = trim(stripslashes_array($_POST['t_subject']));
+        $t_subject = trim($_POST['t_subject']);
 
     } else {
 
@@ -181,9 +181,9 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = trim(stripslashes_array($_POST['t_content']));
+        $t_content = trim($_POST['t_content']);
 
         $post->setContent($t_content);
         $t_content = $post->getContent();
@@ -242,13 +242,13 @@ if ($valid && isset($_POST['preview'])) {
 
 } else if (isset($_POST['emots_toggle'])) {
 
-    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
-        $t_subject = trim(stripslashes_array($_POST['t_subject']));
+    if (isset($_POST['t_subject']) && strlen(trim($_POST['t_subject'])) > 0) {
+        $t_subject = trim($_POST['t_subject']);
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = trim(stripslashes_array($_POST['t_content']));
+        $t_content = trim($_POST['t_content']);
 
         $post->setContent($t_content);
 

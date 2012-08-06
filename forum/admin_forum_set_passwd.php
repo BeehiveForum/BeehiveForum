@@ -51,10 +51,10 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) || (forum_get_setting('acce
 
 $forum_fid = forum_get_setting('fid');
 
-if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
-    $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
-} else if (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
-    $ret = trim(stripslashes_array($_POST['ret']));
+if (isset($_GET['ret']) && strlen(trim($_GET['ret'])) > 0) {
+    $ret = rawurldecode(trim($_GET['ret']));
+} else if (isset($_POST['ret']) && strlen(trim($_POST['ret'])) > 0) {
+    $ret = trim($_POST['ret']);
 } else {
     $ret = "admin_forums.php?webtag=$webtag";
 }
@@ -65,8 +65,7 @@ $error_msg_array = array();
 // validate the return to page
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
-    $available_files = get_available_files();
-    $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
     if (preg_match("/^$available_files_preg/u", basename($ret)) < 1) {
         $ret = "admin_forums.php?webtag=$webtag";
@@ -96,8 +95,8 @@ if (isset($_POST['save'])) {
 
     if (($forum_passhash = forum_get_password($forum_settings['fid']))) {
 
-        if (isset($_POST['current_passwd']) && strlen(trim(stripslashes_array($_POST['current_passwd']))) > 0) {
-            $t_current_passhash = md5(trim(stripslashes_array($_POST['current_passwd'])));
+        if (isset($_POST['current_passwd']) && strlen(trim($_POST['current_passwd'])) > 0) {
+            $t_current_passhash = md5(trim($_POST['current_passwd']));
         } else {
             $error_msg_array[] = gettext("Current Password is required");
             $valid = false;
@@ -113,15 +112,15 @@ if (isset($_POST['save'])) {
         }
     }
 
-    if (isset($_POST['new_passwd']) && strlen(trim(stripslashes_array($_POST['new_passwd']))) > 0) {
-        $t_new_passwd = trim(stripslashes_array($_POST['new_passwd']));
+    if (isset($_POST['new_passwd']) && strlen(trim($_POST['new_passwd'])) > 0) {
+        $t_new_passwd = trim($_POST['new_passwd']);
     } else {
         $error_msg_array[] = gettext("New Password is required");
         $valid = false;
     }
 
-    if (isset($_POST['confirm_passwd']) && strlen(trim(stripslashes_array($_POST['confirm_passwd']))) > 0) {
-        $t_confirm_passwd = trim(stripslashes_array($_POST['confirm_passwd']));
+    if (isset($_POST['confirm_passwd']) && strlen(trim($_POST['confirm_passwd'])) > 0) {
+        $t_confirm_passwd = trim($_POST['confirm_passwd']);
     } else {
         $error_msg_array[] = gettext("Confirm Password is required");
         $valid = false;

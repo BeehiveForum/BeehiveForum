@@ -50,6 +50,14 @@ register_shutdown_function('bh_shutdown_handler');
 // Set the default timezone
 date_default_timezone_set('UTC');
 
+// Include the configuration file.
+require_once BH_INCLUDE_PATH. 'config.inc.php';
+
+// Optionally include the developer config file.
+if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
+    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
+}
+
 // Server checking functions
 require_once BH_INCLUDE_PATH. 'server.inc.php';
 
@@ -67,6 +75,9 @@ ob_start('word_filter_ob_callback');
 
 // Disable PHP's register_globals
 unregister_globals();
+
+// Disable PHP's magic quotes
+disable_magic_quotes();
 
 // Correctly set server protocol
 set_server_protocol();

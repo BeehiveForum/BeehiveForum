@@ -109,9 +109,9 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
         $fid = 1;
     }
 
-    if (isset($_POST['uri']) && preg_match('/\b([a-z]+:\/\/([-\p{L}]{2,}\.)*[-\p{L}]{2,}(:\d+)?(([^\s;,.?"\'[\]() {}<>]|\S[^\s;,.?"\'[\]() {}<>])*)?)/iu', trim(stripslashes_array($_POST['uri'])))) {
+    if (isset($_POST['uri']) && preg_match('/\b([a-z]+:\/\/([-\p{L}]{2,}\.)*[-\p{L}]{2,}(:\d+)?(([^\s;,.?"\'[\]() {}<>]|\S[^\s;,.?"\'[\]() {}<>])*)?)/iu', trim($_POST['uri']))) {
 
-        $uri = trim(stripslashes_array($_POST['uri']));
+        $uri = trim($_POST['uri']);
 
         if (mb_strlen($uri) > 255) {
 
@@ -125,9 +125,9 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
         $valid = false;
     }
 
-    if (isset($_POST['name']) && strlen(trim(stripslashes_array($_POST['name']))) > 0) {
+    if (isset($_POST['name']) && strlen(trim($_POST['name'])) > 0) {
 
-        $name = trim(stripslashes_array($_POST['name']));
+        $name = trim($_POST['name']);
 
         if (mb_strlen($name) > 64) {
 
@@ -141,8 +141,8 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
         $valid = false;
     }
 
-    if (isset($_POST['description']) && strlen(trim(stripslashes_array($_POST['description']))) > 0) {
-        $description = trim(stripslashes_array($_POST['description']));
+    if (isset($_POST['description']) && strlen(trim($_POST['description'])) > 0) {
+        $description = trim($_POST['description']);
     } else {
         $description = "";
     }
@@ -171,9 +171,9 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
         $fid = 1;
     }
 
-    if (isset($_POST['name']) && strlen(trim(stripslashes_array($_POST['name']))) > 0) {
+    if (isset($_POST['name']) && strlen(trim($_POST['name'])) > 0) {
 
-        $name = trim(stripslashes_array($_POST['name']));
+        $name = trim($_POST['name']);
 
         if (mb_strlen($name) > 32) {
 

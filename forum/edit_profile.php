@@ -120,7 +120,7 @@ if (isset($_POST['save'])) {
 
             foreach ($t_entry_array as $piid => $profile_entry) {
 
-                $profile_entry = trim(stripslashes_array($profile_entry));
+                $profile_entry = trim($profile_entry);
 
                 if ($admin_edit) {
 

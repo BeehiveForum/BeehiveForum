@@ -21,7 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -29,15 +28,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
-    require_once BH_INCLUDE_PATH. 'config.inc.php';
-}
-
-if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
-}
-
-// Include files we need.
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
 

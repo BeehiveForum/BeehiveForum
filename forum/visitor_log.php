@@ -55,7 +55,7 @@ $profile_items_selected_array = array();
 // Check for any custom columns
 if (isset($_POST['profile_selection'])) {
 
-    if (strlen(trim(stripslashes_array($_POST['profile_selection']))) > 0) {
+    if (strlen(trim($_POST['profile_selection'])) > 0) {
 
         $profile_selection = explode(",", $_POST['profile_selection']);
 
@@ -74,7 +74,7 @@ if (isset($_POST['profile_selection'])) {
 
 } else if (isset($_GET['profile_selection'])) {
 
-    if (strlen(trim(stripslashes_array($_GET['profile_selection']))) > 0) {
+    if (strlen(trim($_GET['profile_selection'])) > 0) {
 
         $profile_selection = explode(",", $_GET['profile_selection']);
 
@@ -225,10 +225,10 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = 1;
 }
 
-if (isset($_POST['user_search']) && strlen(trim(stripslashes_array($_POST['user_search']))) > 0) {
-    $user_search = trim(stripslashes_array($_POST['user_search']));
-} else if (isset($_GET['user_search']) && strlen(trim(stripslashes_array($_GET['user_search']))) > 0) {
-    $user_search = trim(stripslashes_array($_GET['user_search']));
+if (isset($_POST['user_search']) && strlen(trim($_POST['user_search'])) > 0) {
+    $user_search = trim($_POST['user_search']);
+} else if (isset($_GET['user_search']) && strlen(trim($_GET['user_search'])) > 0) {
+    $user_search = trim($_GET['user_search']);
 } else {
     $user_search = "";
 }

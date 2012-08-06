@@ -270,7 +270,7 @@ class captcha {
     {
         if (!$this->text_captcha_dir) return false;
         
-        mkdir_recursive("{$this->text_captcha_dir}/fonts", 0775);
+        @mkdir("{$this->text_captcha_dir}/fonts", 0775, true);
 
         if (@is_dir("{$this->text_captcha_dir}/fonts")) {
             return true;

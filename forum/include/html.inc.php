@@ -29,14 +29,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
-    require_once BH_INCLUDE_PATH. 'config.inc.php';
-}
-
-if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
-}
-
 require_once BH_INCLUDE_PATH. 'adsense.inc.php';
 require_once BH_INCLUDE_PATH. 'browser.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
@@ -74,12 +66,11 @@ function html_guest_error($final_uri = null)
         
     $final_uri = sprintf("logon.php?webtag=%s&final_uri=%s", $webtag, rawurlencode($final_uri));
 
-    $popup_files_preg = get_available_js_popup_files_preg();
+    $available_popup_files_preg = implode("|^", array_map('preg_quote_callback', get_available_popup_files()));
 
-    $available_support_pages = get_available_support_files();
-    $available_support_pages_preg = implode("|^", array_map('preg_quote_callback', $available_support_pages));
+    $available_support_pages_preg = implode("|^", array_map('preg_quote_callback', get_available_support_files()));
 
-    if (preg_match("/^$popup_files_preg/", $final_uri) > 0) {
+    if (preg_match("/^$available_popup_files_preg/", $final_uri) > 0) {
 
         html_draw_error(gettext("Sorry, you need to be logged in to use this feature."), false, 'post', array('close_popup' => gettext("Close")));
 

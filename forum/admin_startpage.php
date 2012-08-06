@@ -57,8 +57,8 @@ $page_prefs = session::get_post_page_prefs();
 $error_msg_array = array();
 
 // Check to see if we're submitting new page or retrieving the old one.
-if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
-    $t_content = trim(stripslashes_array($_POST['t_content']));
+if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
+    $t_content = trim($_POST['t_content']);
 } else {
     $t_content = forum_get_setting('start_page', false, '');
 }
@@ -108,7 +108,7 @@ if (isset($_POST['save'])) {
             // Upload failed. Don't bother going into detail.
             $error_msg_array[] = gettext("CSS style sheet could not be uploaded. Please try again.");
 
-        } else if (isset($_FILES['cssfile']['type']) && trim(stripslashes_array($_FILES['cssfile']['type'])) == 'text/css') {
+        } else if (isset($_FILES['cssfile']['type']) && trim($_FILES['cssfile']['type']) == 'text/css') {
 
             // Get path info for uploaded file.
             $path_parts = pathinfo($_FILES['cssfile']['name']);

@@ -91,7 +91,7 @@ function sitemap_get_dir()
     if (strstr($_SERVER['SCRIPT_NAME'], 'get_attachment.php')) return false;
 
     // Check to make sure the $sitemap_path exists and is writable.
-    mkdir_recursive($sitemap_path, 0755);
+    @mkdir($sitemap_path, 0755, true);
 
     // Check that it actually is a directory.
     if (!@is_dir($sitemap_path)) return false;

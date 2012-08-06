@@ -122,7 +122,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
         if (in_array($_GET['fid'], $available_folders_array) && ($folder_title = folder_get_title($fid))) {
 
-            $fid = trim(stripslashes_array($_GET['fid']));
+            $fid = trim($_GET['fid']);
             $feed_title.= sprintf(' - %s', htmlentities_array($folder_title));
 
         } else {

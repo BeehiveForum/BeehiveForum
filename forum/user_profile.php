@@ -48,9 +48,9 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
         html_draw_error(gettext("Unknown user"));
     }
 
-} else if (isset($_GET['logon']) && strlen(trim(stripslashes_array($_GET['logon']))) > 0) {
+} else if (isset($_GET['logon']) && strlen(trim($_GET['logon'])) > 0) {
 
-    $logon = trim(stripslashes_array($_GET['logon']));
+    $logon = trim($_GET['logon']);
 
     if (($user_array = user_get_by_logon($logon))) {
         $uid = $user_array['UID'];

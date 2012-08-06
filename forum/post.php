@@ -79,8 +79,8 @@ if (isset($_POST['t_newthread']) && (isset($_POST['post']) || isset($_POST['prev
 
     $new_thread = true;
 
-    if (isset($_POST['t_threadtitle']) && strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
-        $t_threadtitle = trim(stripslashes_array($_POST['t_threadtitle']));
+    if (isset($_POST['t_threadtitle']) && strlen(trim($_POST['t_threadtitle'])) > 0) {
+        $t_threadtitle = trim($_POST['t_threadtitle']);
     } else{
         $error_msg_array[] = gettext("You must enter a title for the thread!");
         $valid = false;
@@ -270,9 +270,9 @@ if (!isset($sig_html)) $sig_html = POST_HTML_DISABLED;
 
 if (isset($_POST['post']) || isset($_POST['preview'])) {
 
-    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = trim(stripslashes_array($_POST['t_content']));
+        $t_content = trim($_POST['t_content']);
 
         if (($post_html > POST_HTML_DISABLED) && attachments_embed_check($t_content)) {
 
@@ -288,7 +288,7 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_sig'])) {
 
-        $t_sig = trim(stripslashes_array($_POST['t_sig']));
+        $t_sig = trim($_POST['t_sig']);
 
         if ($sig_html && attachments_embed_check($t_sig)) {
 
@@ -300,8 +300,8 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 
 if (isset($_POST['more'])) {
 
-    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
-        $t_content = trim(stripslashes_array($_POST['t_content']));
+    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
+        $t_content = trim($_POST['t_content']);
     }
 }
 
@@ -309,9 +309,9 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
 
     if (isset($_POST['t_newthread'])) {
 
-        if (isset($_POST['t_threadtitle']) && strlen(trim(stripslashes_array($_POST['t_threadtitle']))) > 0) {
+        if (isset($_POST['t_threadtitle']) && strlen(trim($_POST['t_threadtitle'])) > 0) {
 
-            $t_threadtitle = trim(stripslashes_array($_POST['t_threadtitle']));
+            $t_threadtitle = trim($_POST['t_threadtitle']);
         }
 
         if (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
@@ -328,14 +328,14 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
         }
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = trim(stripslashes_array($_POST['t_content']));
+        $t_content = trim($_POST['t_content']);
     }
 
     if (isset($_POST['t_sig'])) {
 
-        $t_sig = trim(stripslashes_array($_POST['t_sig']));
+        $t_sig = trim($_POST['t_sig']);
     }
 
     if (isset($_POST['emots_toggle'])) {
@@ -507,8 +507,8 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     }
 }
 
-if (isset($_POST['to_radio']) && strlen(trim(stripslashes_array($_POST['to_radio']))) > 0) {
-    $to_radio = trim(stripslashes_array($_POST['to_radio']));
+if (isset($_POST['to_radio']) && strlen(trim($_POST['to_radio'])) > 0) {
+    $to_radio = trim($_POST['to_radio']);
 } else {
     $to_radio = '';
 }
@@ -525,8 +525,8 @@ if (isset($_POST['t_to_uid_recent']) && is_numeric($_POST['t_to_uid_recent'])) {
     $t_to_uid_recent = '';
 }
 
-if (isset($_POST['t_to_uid_others']) && strlen(trim(stripslashes_array($_POST['t_to_uid_others']))) > 0) {
-    $t_to_uid_others = trim(stripslashes_array($_POST['t_to_uid_others']));
+if (isset($_POST['t_to_uid_others']) && strlen(trim($_POST['t_to_uid_others'])) > 0) {
+    $t_to_uid_others = trim($_POST['t_to_uid_others']);
 } else {
     $t_to_uid_others = '';
 }

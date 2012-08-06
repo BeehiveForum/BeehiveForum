@@ -792,7 +792,14 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     thread_undelete($new_tid);
 
     // Return the admin log data.
-    return array($tida, $threada['TITLE'], $tidb, $threadb['TITLE'], $new_tid, $threada['TITLE']);
+    return array(
+        $tida, 
+        $threada['TITLE'], 
+        $tidb, 
+        $threadb['TITLE'], 
+        $new_tid, 
+        $threada['TITLE']
+    );
 }
 
 function thread_merge_error($error_code, &$error_str)
@@ -1050,7 +1057,12 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     thread_set_closed($new_tid, ($thread_data['CLOSED'] > 0));
 
-    return array($tid, $spid, $new_tid, $thread_new['TITLE']);
+    return array(
+        $tid, 
+        $spid, 
+        $new_tid, 
+        $thread_new['TITLE']
+    );
 }
 
 function thread_split_error($error_code, &$error_str)

@@ -192,9 +192,9 @@ function search_mysql_execute($search_arguments, &$error)
     }
 
     /// Keyword based search.
-    if (isset($search_arguments['search_string']) && strlen(trim(stripslashes_array($search_arguments['search_string']))) > 0) {
+    if (isset($search_arguments['search_string']) && strlen(trim($search_arguments['search_string'])) > 0) {
 
-        $search_string = db_escape_string(stripslashes_array($search_arguments['search_string']));
+        $search_string = db_escape_string($search_arguments['search_string']);
 
         $from_sql = "FROM `{$table_prefix}POST_CONTENT` POST_CONTENT ";
 

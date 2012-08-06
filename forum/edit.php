@@ -241,9 +241,9 @@ if ($allow_html == false) {
     $t_sig = $sig->getContent();
 }
 
-if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-    $t_content = trim(stripslashes_array($_POST['t_content']));
+    $t_content = trim($_POST['t_content']);
 
     if ($post_html && attachments_embed_check($t_content)) {
 
@@ -261,9 +261,9 @@ if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_conte
     }
 }
 
-if (isset($_POST['t_sig']) && strlen(trim(stripslashes_array($_POST['t_sig']))) > 0) {
+if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
 
-    $t_sig = trim(stripslashes_array($_POST['t_sig']));
+    $t_sig = trim($_POST['t_sig']);
 
     if (attachments_embed_check($t_sig)) {
 

@@ -636,20 +636,6 @@ function strip_paragraphs($string)
     return preg_replace(array('/<p[^>]*>/iUu', '/<\/p[^>]*>\n/iUu', '/<\/p[^>]*>/iUu', '/<br\s*?\/?>/iu'), array('', chr(10)), $string);
 }
 
-function stripslashes_array($var)
-{
-   if (is_array($var)) {
-
-       return array_map('stripslashes_array', $var);
-
-   } else if (get_magic_quotes_gpc() == 1) {
-
-       return stripslashes($var);
-   }
-
-   return $var;
-}
-
 function range_keys($low, $high)
 {
     $array_range = array_flip(range($low, $high));

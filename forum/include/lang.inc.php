@@ -29,14 +29,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
-    require_once BH_INCLUDE_PATH. 'config.inc.php';
-}
-
-if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
-}
-
 require_once BH_INCLUDE_PATH. 'forum.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 
@@ -147,14 +139,16 @@ function lang_get_available($inc_browser_negotiation = true)
     
     foreach (glob($include_path. '*/messages.po') as $lang) {
         
-        $available_langs[] = preg_replace(
+        $lang = preg_replace(
             sprintf('/%s([^\/]+)\/messages.po/', preg_quote($include_path, '/')), 
             '\\1', 
             $lang
         );
+        
+        $available_langs[$lang] = $lang;
     }
     
-    asort($available_langs);
+    ksort($available_langs);
 
     return $available_langs;
 }

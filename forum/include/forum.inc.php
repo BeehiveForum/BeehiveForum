@@ -103,10 +103,10 @@ function get_forum_data()
 
 function get_webtag()
 {
-    if (isset($_GET['webtag']) && preg_match("/^[A-Z]{1}[A-Z0-9_]+$/D", trim(stripslashes_array($_GET['webtag'])))) {
-        return trim(stripslashes_array($_GET['webtag']));
-    } else if (isset($_POST['webtag']) && preg_match("/^[A-Z]{1}[A-Z0-9_]+$/D", trim(stripslashes_array($_POST['webtag'])))) {
-        return trim(stripslashes_array($_POST['webtag']));
+    if (isset($_GET['webtag']) && preg_match("/^[A-Z]{1}[A-Z0-9_]+$/D", trim($_GET['webtag']))) {
+        return trim($_GET['webtag']);
+    } else if (isset($_POST['webtag']) && preg_match("/^[A-Z]{1}[A-Z0-9_]+$/D", trim($_POST['webtag']))) {
+        return trim($_POST['webtag']);
     }
 
     return false;
@@ -168,44 +168,42 @@ function forum_check_webtag_available(&$webtag = false)
 
 function forum_check_access_level()
 {
-    static $forum_data = false;
-
     if (!($db_forum_check_access_level = db_connect())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    if (!($table_prefix = get_table_prefix())) return true;
+    if (!($forum_fid = get_forum_fid())) return false;
+    
+    $uid = session::get_value('UID');
 
-    if (!($forum_fid = get_forum_fid())) return true;
+    $forum_access_ignore_files_preg = implode("|^", array_map('preg_quote_callback', get_forum_access_ignore_files()));
+    
+    if (preg_match("/^$forum_access_ignore_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) return true;
 
-    if (!is_array($forum_data) || !isset($forum_data['ACCESS_LEVEL']) || !isset($forum_data['ALLOWED'])) {
+    $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED FROM FORUMS ";
+    $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
+    $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.FID = '$forum_fid' ";
+    $sql.= "AND FORUMS.ACCESS_LEVEL < 3";
 
-        $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED FROM FORUMS ";
-        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-        $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.FID = '$forum_fid' ";
-        $sql.= "AND FORUMS.ACCESS_LEVEL < 3";
+    if (!$result = db_query($sql, $db_forum_check_access_level)) return false;
 
-        if (!$result = db_query($sql, $db_forum_check_access_level)) return false;
+    if (db_num_rows($result) == 0) return false;
+    
+    if (!($forum_data = db_fetch_array($result))) return false;
+    
+    if (!isset($forum_data['ACCESS_LEVEL'])) return true;
 
-        if (db_num_rows($result) > 0) {
-            $forum_data = db_fetch_array($result);
-        }
-    }
+    if ($forum_data['ACCESS_LEVEL'] < FORUM_UNRESTRICTED) {
 
-    if (isset($forum_data['ACCESS_LEVEL'])) {
+        return forum_closed_message();
 
-        if ($forum_data['ACCESS_LEVEL'] < FORUM_UNRESTRICTED) {
+    } else if (($forum_data['ACCESS_LEVEL'] == FORUM_RESTRICTED) && ($forum_data['ALLOWED'] != FORUM_USER_ALLOWED)) {
 
-            return forum_closed_message();
+        return forum_restricted_message();
 
-        } else if ($forum_data['ACCESS_LEVEL'] == FORUM_RESTRICTED && $forum_data['ALLOWED'] != FORUM_USER_ALLOWED) {
+    } else if ($forum_data['ACCESS_LEVEL'] == FORUM_PASSWD_PROTECTED) {
 
-            return forum_restricted_message();
-
-        } else if ($forum_data['ACCESS_LEVEL'] == FORUM_PASSWD_PROTECTED) {
-
-            return forum_check_password($forum_data['FID']);
-        }
+        return forum_check_password($forum_data['FID']);
     }
 
     return true;
@@ -2239,9 +2237,9 @@ function forum_get_content_delivery_path($file_path)
 
 function forum_self_clean_check_ajax()
 {
-    if (isset($_SERVER['PHP_SELF']) && strlen(trim(stripslashes_array($_SERVER['PHP_SELF']))) > 0) {
+    if (isset($_SERVER['PHP_SELF']) && strlen(trim($_SERVER['PHP_SELF'])) > 0) {
 
-        $script_filename = basename(trim(stripslashes_array($_SERVER['PHP_SELF'])));
+        $script_filename = basename(trim($_SERVER['PHP_SELF']));
         if (in_array($script_filename, array('ajax.php', 'json.php'))) return false;
     }
 

@@ -57,12 +57,11 @@ html_draw_top('frame_set_html', 'pm_popup_disabled');
 
 $frameset = new html_frameset_cols('admin', "$left_frame_width,*");
 
-if (isset($_GET['page']) && strlen(trim(stripslashes_array($_GET['page']))) > 0) {
+if (isset($_GET['page']) && strlen(trim($_GET['page'])) > 0) {
 
-    $requested_page = trim(stripslashes_array($_GET['page']));
+    $requested_page = trim($_GET['page']);
 
-    $available_pages = get_available_admin_files();
-    $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
+    $available_pages_preg = implode("|^", array_map('preg_quote_callback', get_available_admin_files()));
 
     if (preg_match("/^$available_pages_preg/u", basename($requested_page)) > 0) {
 

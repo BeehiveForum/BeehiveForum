@@ -100,8 +100,8 @@ if (isset($_POST['delete_sections'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_name_new']) && strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
-        $t_name_new = trim(stripslashes_array($_POST['t_name_new']));
+    if (isset($_POST['t_name_new']) && strlen(trim($_POST['t_name_new'])) > 0) {
+        $t_name_new = trim($_POST['t_name_new']);
     } else {
         $error_msg_array[] = gettext("Must specify a profile section name");
         $valid = false;
@@ -127,8 +127,8 @@ if (isset($_POST['delete_sections'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_name_new']) && strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
-        $t_new_name = trim(stripslashes_array($_POST['t_name_new']));
+    if (isset($_POST['t_name_new']) && strlen(trim($_POST['t_name_new'])) > 0) {
+        $t_new_name = trim($_POST['t_name_new']);
     } else {
         $error_msg_array[] = gettext("Must specify a profile section name");
         $valid = false;
@@ -206,7 +206,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Section Name"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array(stripslashes_array($_POST['t_name_new'])) : ""), 32, 64), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array($_POST['t_name_new']) : ""), 32, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -281,7 +281,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Section Name"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array(stripslashes_array($_POST['t_name_new'])) : htmlentities_array($profile_section['NAME'])), 32, 64), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array($_POST['t_name_new']) : htmlentities_array($profile_section['NAME'])), 32, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

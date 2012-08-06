@@ -51,10 +51,10 @@ $uid = session::get_value('UID');
 // Are we returning somewhere?
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
-} else if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
-    $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
-} else if (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
-    $ret = trim(stripslashes_array($_POST['ret']));
+} else if (isset($_GET['ret']) && strlen(trim($_GET['ret'])) > 0) {
+    $ret = rawurldecode(trim($_GET['ret']));
+} else if (isset($_POST['ret']) && strlen(trim($_POST['ret'])) > 0) {
+    $ret = trim($_POST['ret']);
 } else {
     $ret = "edit_relations.php?webtag=$webtag";
 }
@@ -122,9 +122,9 @@ if (isset($_POST['save'])) {
 
     $peer_relationship = (double) $peer_user_status | $peer_sig_display | $peer_block_pm;
 
-    if (isset($_POST['nickname']) && strlen(trim(stripslashes_array($_POST['nickname']))) > 0) {
+    if (isset($_POST['nickname']) && strlen(trim($_POST['nickname'])) > 0) {
 
-        $peer_nickname = strip_tags(trim(stripslashes_array($_POST['nickname'])));
+        $peer_nickname = strip_tags(trim($_POST['nickname']));
 
     } else {
 

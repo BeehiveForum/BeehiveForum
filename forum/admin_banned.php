@@ -135,10 +135,10 @@ $ban_types_list_array = array(
 // Are we returning somewhere?
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
-} else if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
-    $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
-} else if (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
-    $ret = trim(stripslashes_array($_POST['ret']));
+} else if (isset($_GET['ret']) && strlen(trim($_GET['ret'])) > 0) {
+    $ret = rawurldecode(trim($_GET['ret']));
+} else if (isset($_POST['ret']) && strlen(trim($_POST['ret'])) > 0) {
+    $ret = trim($_POST['ret']);
 } else {
     $ret = "admin_banned.php?webtag=$webtag";
 }
@@ -199,42 +199,42 @@ if (isset($_POST['delete'])) {
 }
 
 // Is there an URL query to process?
-if (isset($_GET['ban_ipaddress']) && strlen(trim(stripslashes_array($_GET['ban_ipaddress']))) > 0) {
+if (isset($_GET['ban_ipaddress']) && strlen(trim($_GET['ban_ipaddress'])) > 0) {
 
     $add_new_ban_type = BAN_TYPE_IP;
-    $add_new_ban_data = trim(stripslashes_array($_GET['ban_ipaddress']));
+    $add_new_ban_data = trim($_GET['ban_ipaddress']);
 
-} else if (isset($_GET['unban_ipaddress']) && strlen(trim(stripslashes_array($_GET['unban_ipaddress']))) > 0) {
+} else if (isset($_GET['unban_ipaddress']) && strlen(trim($_GET['unban_ipaddress'])) > 0) {
 
-    $unban_ipaddress = trim(stripslashes_array($_GET['unban_ipaddress']));
+    $unban_ipaddress = trim($_GET['unban_ipaddress']);
 
     if (!$remove_ban_id = check_ban_data(BAN_TYPE_IP, $unban_ipaddress)) {
         unset($remove_ban_id);
     }
 }
 
-if (isset($_GET['ban_email']) && strlen(trim(stripslashes_array($_GET['ban_email']))) > 0) {
+if (isset($_GET['ban_email']) && strlen(trim($_GET['ban_email'])) > 0) {
 
     $add_new_ban_type = BAN_TYPE_EMAIL;
-    $add_new_ban_data = trim(stripslashes_array($_GET['ban_email']));
+    $add_new_ban_data = trim($_GET['ban_email']);
 
-} else if (isset($_GET['unban_email']) && strlen(trim(stripslashes_array($_GET['unban_email']))) > 0) {
+} else if (isset($_GET['unban_email']) && strlen(trim($_GET['unban_email'])) > 0) {
 
-    $unban_email = trim(stripslashes_array($_GET['unban_email']));
+    $unban_email = trim($_GET['unban_email']);
 
     if (!$remove_ban_id = check_ban_data(BAN_TYPE_EMAIL, $unban_email)) {
         unset($remove_ban_id);
     }
 }
 
-if (isset($_GET['ban_referer']) && strlen(trim(stripslashes_array($_GET['ban_referer']))) > 0) {
+if (isset($_GET['ban_referer']) && strlen(trim($_GET['ban_referer'])) > 0) {
 
     $add_new_ban_type = BAN_TYPE_REF;
-    $add_new_ban_data = trim(stripslashes_array($_GET['ban_referer']));
+    $add_new_ban_data = trim($_GET['ban_referer']);
 
-} else if (isset($_GET['unban_referer']) && strlen(trim(stripslashes_array($_GET['unban_referer']))) > 0) {
+} else if (isset($_GET['unban_referer']) && strlen(trim($_GET['unban_referer'])) > 0) {
 
-    $unban_referer = trim(stripslashes_array($_GET['unban_referer']));
+    $unban_referer = trim($_GET['unban_referer']);
 
     if (($remove_ban_id = check_ban_data(BAN_TYPE_REF, $unban_referer))) {
         unset($remove_ban_id);
@@ -259,9 +259,9 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
         $valid = false;
     }
 
-    if (isset($_POST['newbandata']) && strlen(trim(stripslashes_array($_POST['newbandata']))) > 0) {
+    if (isset($_POST['newbandata']) && strlen(trim($_POST['newbandata'])) > 0) {
 
-        $new_ban_data = trim(stripslashes_array($_POST['newbandata']));
+        $new_ban_data = trim($_POST['newbandata']);
 
         if (preg_match("/^%+$/Du", $new_ban_data) > 0) {
 
@@ -275,17 +275,17 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
         $valid = false;
     }
 
-    if (isset($_POST['newbancomment']) && strlen(trim(stripslashes_array($_POST['newbancomment']))) > 0) {
-        $new_ban_comment = trim(stripslashes_array($_POST['newbancomment']));
+    if (isset($_POST['newbancomment']) && strlen(trim($_POST['newbancomment'])) > 0) {
+        $new_ban_comment = trim($_POST['newbancomment']);
     } else {
         $new_ban_comment = "";
     }
 
     if (isset($_POST['newbanexpiresyear']) && isset($_POST['newbanexpiresmonth']) && isset($_POST['newbanexpiresday'])) {
 
-        $newbanexpiresday   = trim(stripslashes_array($_POST['newbanexpiresday']));
-        $newbanexpiresmonth = trim(stripslashes_array($_POST['newbanexpiresmonth']));
-        $newbanexpiresyear  = trim(stripslashes_array($_POST['newbanexpiresyear']));
+        $newbanexpiresday   = trim($_POST['newbanexpiresday']);
+        $newbanexpiresmonth = trim($_POST['newbanexpiresmonth']);
+        $newbanexpiresyear  = trim($_POST['newbanexpiresyear']);
 
         if ((is_numeric($newbanexpiresmonth) && $newbanexpiresmonth > 0) || (is_numeric($newbanexpiresday) && $newbanexpiresday > 0) || (is_numeric($newbanexpiresyear) && $newbanexpiresyear > 0)) {
 
@@ -356,9 +356,9 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
             $valid = false;
         }
 
-        if (isset($_POST['bandata']) && strlen(trim(stripslashes_array($_POST['bandata']))) > 0) {
+        if (isset($_POST['bandata']) && strlen(trim($_POST['bandata'])) > 0) {
 
-            $ban_data = trim(stripslashes_array($_POST['bandata']));
+            $ban_data = trim($_POST['bandata']);
 
             if (preg_match("/^%+$/Du", $ban_data) > 0) {
 
@@ -374,9 +374,9 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
         if (isset($_POST['banexpiresyear']) && isset($_POST['banexpiresmonth']) && isset($_POST['banexpiresday'])) {
 
-            $banexpiresday   = trim(stripslashes_array($_POST['banexpiresday']));
-            $banexpiresmonth = trim(stripslashes_array($_POST['banexpiresmonth']));
-            $banexpiresyear  = trim(stripslashes_array($_POST['banexpiresyear']));
+            $banexpiresday   = trim($_POST['banexpiresday']);
+            $banexpiresmonth = trim($_POST['banexpiresmonth']);
+            $banexpiresyear  = trim($_POST['banexpiresyear']);
 
             if ((is_numeric($banexpiresmonth) && $banexpiresmonth > 0) || (is_numeric($banexpiresday) && $banexpiresday > 0) || (is_numeric($banexpiresyear) && $banexpiresyear > 0)) {
 
@@ -400,26 +400,26 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
             $ban_expires = 0;
         }
 
-        if (isset($_POST['bancomment']) && strlen(trim(stripslashes_array($_POST['bancomment']))) > 0) {
-            $ban_comment = trim(stripslashes_array($_POST['bancomment']));
+        if (isset($_POST['bancomment']) && strlen(trim($_POST['bancomment'])) > 0) {
+            $ban_comment = trim($_POST['bancomment']);
         } else {
             $ban_comment = "";
         }
 
-        if (isset($_POST['old_bantype']) && strlen(trim(stripslashes_array($_POST['old_bantype']))) > 0) {
-            $old_ban_type = trim(stripslashes_array($_POST['old_bantype']));
+        if (isset($_POST['old_bantype']) && strlen(trim($_POST['old_bantype'])) > 0) {
+            $old_ban_type = trim($_POST['old_bantype']);
         } else {
             $old_ban_type = "";
         }
 
-        if (isset($_POST['old_bandata']) && strlen(trim(stripslashes_array($_POST['old_bandata']))) > 0) {
-            $old_ban_data = trim(stripslashes_array($_POST['old_bandata']));
+        if (isset($_POST['old_bandata']) && strlen(trim($_POST['old_bandata'])) > 0) {
+            $old_ban_data = trim($_POST['old_bandata']);
         } else {
             $old_ban_data = "";
         }
 
-        if (isset($_POST['old_banexpires']) && strlen(trim(stripslashes_array($_POST['old_banexpires']))) > 0) {
-            $old_ban_expires = trim(stripslashes_array($_POST['old_banexpires']));
+        if (isset($_POST['old_banexpires']) && strlen(trim($_POST['old_banexpires'])) > 0) {
+            $old_ban_expires = trim($_POST['old_banexpires']);
         } else {
             $old_ban_expires = 0;
         }
@@ -477,19 +477,19 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
         $add_new_ban_type = $_POST['newbantype'];
     }
 
-    if (isset($_POST['newbandata']) && strlen(trim(stripslashes_array($_POST['newbandata']))) > 0) {
+    if (isset($_POST['newbandata']) && strlen(trim($_POST['newbandata'])) > 0) {
         $add_new_ban_data = $_POST['newbandata'];
     }
 
-    if (isset($_POST['newbancomment']) && strlen(trim(stripslashes_array($_POST['newbancomment']))) > 0) {
-        $add_new_ban_comment = trim(stripslashes_array($_POST['newbancomment']));
+    if (isset($_POST['newbancomment']) && strlen(trim($_POST['newbancomment'])) > 0) {
+        $add_new_ban_comment = trim($_POST['newbancomment']);
     }
 
     if (isset($_POST['newbanexpiresyear']) && isset($_POST['newbanexpiresmonth']) && isset($_POST['newbanexpiresday'])) {
 
-        $add_new_ban_expires_year  = trim(stripslashes_array($_POST['newbanexpiresyear']));
-        $add_new_ban_expires_month = trim(stripslashes_array($_POST['newbanexpiresmonth']));
-        $add_new_ban_expires_day   = trim(stripslashes_array($_POST['newbanexpiresday']));
+        $add_new_ban_expires_year  = trim($_POST['newbanexpiresyear']);
+        $add_new_ban_expires_month = trim($_POST['newbanexpiresmonth']);
+        $add_new_ban_expires_day   = trim($_POST['newbanexpiresday']);
 
         if ((is_numeric($add_new_ban_expires_month) && $add_new_ban_expires_month > 0) || (is_numeric($add_new_ban_expires_day) && $add_new_ban_expires_day > 0) || (is_numeric($add_new_ban_expires_year) && $add_new_ban_expires_year > 0)) {
 
@@ -571,15 +571,15 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">", gettext("Ban Type"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array('newbantype', $ban_types_dropdown_array, (isset($add_new_ban_type) && in_array($add_new_ban_type, array_keys($ban_types_dropdown_array)) ? htmlentities_array(stripslashes_array($add_new_ban_type)) : BAN_TYPE_NONE)), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array('newbantype', $ban_types_dropdown_array, (isset($add_new_ban_type) && in_array($add_new_ban_type, array_keys($ban_types_dropdown_array)) ? htmlentities_array($add_new_ban_type) : BAN_TYPE_NONE)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">", gettext("Ban Data"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text('newbandata', (isset($add_new_ban_data) ? htmlentities_array(stripslashes_array($add_new_ban_data)) : ''), 40, 255), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text('newbandata', (isset($add_new_ban_data) ? htmlentities_array($add_new_ban_data) : ''), 40, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"100\" class=\"posthead\" valign=\"top\">", gettext("Comment"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_textarea('newbancomment', (isset($add_new_ban_comment) ? htmlentities_array(stripslashes_array($add_new_ban_comment)) : ''), 5, 37), "</td>\n";
+    echo "                        <td align=\"left\">", form_textarea('newbancomment', (isset($add_new_ban_comment) ? htmlentities_array($add_new_ban_comment) : ''), 5, 37), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">", gettext("Ban Expires"), ":</td>\n";
@@ -645,19 +645,19 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
             $ban_data_array['BANTYPE'] = $_POST['bantype'];
         }
 
-        if (isset($_POST['bandata']) && strlen(trim(stripslashes_array($_POST['bandata']))) > 0) {
-            $ban_data_array['BANDATA'] = trim(stripslashes_array($_POST['bandata']));
+        if (isset($_POST['bandata']) && strlen(trim($_POST['bandata'])) > 0) {
+            $ban_data_array['BANDATA'] = trim($_POST['bandata']);
         }
 
-        if (isset($_POST['bancomment']) && strlen(trim(stripslashes_array($_POST['bancomment']))) > 0) {
-            $ban_data_array['COMMENT'] = trim(stripslashes_array($_POST['bancomment']));
+        if (isset($_POST['bancomment']) && strlen(trim($_POST['bancomment'])) > 0) {
+            $ban_data_array['COMMENT'] = trim($_POST['bancomment']);
         }
 
         if (isset($_POST['banexpiresyear']) && isset($_POST['banexpiresmonth']) && isset($_POST['banexpiresday'])) {
 
-            $ban_data_array['EXPIRESYEAR']  = trim(stripslashes_array($_POST['banexpiresyear']));
-            $ban_data_array['EXPIRESMONTH'] = trim(stripslashes_array($_POST['banexpiresmonth']));
-            $ban_data_array['EXPIRESDAY']   = trim(stripslashes_array($_POST['banexpiresday']));
+            $ban_data_array['EXPIRESYEAR']  = trim($_POST['banexpiresyear']);
+            $ban_data_array['EXPIRESMONTH'] = trim($_POST['banexpiresmonth']);
+            $ban_data_array['EXPIRESDAY']   = trim($_POST['banexpiresday']);
 
             if ((is_numeric($ban_data_array['EXPIRESMONTH']) && $ban_data_array['EXPIRESMONTH'] > 0) || (is_numeric($ban_data_array['EXPIRESDAY']) && $ban_data_array['EXPIRESDAY'] > 0) | (is_numeric($ban_data_array['EXPIRESYEAR']) && $ban_data_array['EXPIRESYEAR'] > 0)) {
 

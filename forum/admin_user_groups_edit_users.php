@@ -56,10 +56,10 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 }
 
 // Are we returning somewhere?
-if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
-    $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
-} else if (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
-    $ret = trim(stripslashes_array($_POST['ret']));
+if (isset($_GET['ret']) && strlen(trim($_GET['ret'])) > 0) {
+    $ret = rawurldecode(trim($_GET['ret']));
+} else if (isset($_POST['ret']) && strlen(trim($_POST['ret'])) > 0) {
+    $ret = trim($_POST['ret']);
 } else {
     $ret = "admin_user_groups.php?webtag=$webtag";
 }
@@ -120,10 +120,10 @@ if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
     $start_search = 0;
 }
 
-if (isset($_GET['usersearch']) && strlen(trim(stripslashes_array($_GET['usersearch']))) > 0) {
-    $usersearch = trim(stripslashes_array($_GET['usersearch']));
-} else if (isset($_POST['usersearch']) && strlen(trim(stripslashes_array($_POST['usersearch']))) > 0) {
-    $usersearch = trim(stripslashes_array($_POST['usersearch']));
+if (isset($_GET['usersearch']) && strlen(trim($_GET['usersearch'])) > 0) {
+    $usersearch = trim($_GET['usersearch']);
+} else if (isset($_POST['usersearch']) && strlen(trim($_POST['usersearch'])) > 0) {
+    $usersearch = trim($_POST['usersearch']);
 } else {
     $usersearch = "";
 }

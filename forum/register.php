@@ -49,11 +49,11 @@ require_once BH_INCLUDE_PATH. 'timezone.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 // Where are we going after we've logged on?
-if (isset($_GET['final_uri']) && strlen(trim(stripslashes_array($_GET['final_uri']))) > 0) {
+if (isset($_GET['final_uri']) && strlen(trim($_GET['final_uri'])) > 0) {
 
     $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
-    if (preg_match("/^$available_files_preg/u", trim(stripslashes_array($_GET['final_uri']))) > 0) {
+    if (preg_match("/^$available_files_preg/u", trim($_GET['final_uri'])) > 0) {
         $final_uri = href_cleanup_query_keys($_GET['final_uri']);
     }
 }
@@ -81,8 +81,8 @@ $error_msg_array = array();
 // Top frame target
 $frame_top_target = html_get_top_frame_name();
 
-if (isset($_GET['private_key']) && strlen(trim(stripslashes_array($_GET['private_key']))) > 0) {
-    $text_captcha_private_key = trim(stripslashes_array($_GET['private_key']));
+if (isset($_GET['private_key']) && strlen(trim($_GET['private_key'])) > 0) {
+    $text_captcha_private_key = trim($_GET['private_key']);
 } else {
     $text_captcha_private_key = "";
 }
@@ -129,9 +129,9 @@ if (isset($_POST['register'])) {
         $valid = false;
     }
 
-    if (isset($_POST['logon']) && strlen(trim(stripslashes_array($_POST['logon']))) > 0) {
+    if (isset($_POST['logon']) && strlen(trim($_POST['logon'])) > 0) {
 
-        $logon = mb_strtoupper(trim(stripslashes_array($_POST['logon'])));
+        $logon = mb_strtoupper(trim($_POST['logon']));
 
         if (mb_strlen($logon) < 3) {
 
@@ -157,9 +157,9 @@ if (isset($_POST['register'])) {
         $valid = false;
     }
 
-    if (isset($_POST['pw']) && strlen(trim(stripslashes_array($_POST['pw']))) > 0) {
+    if (isset($_POST['pw']) && strlen(trim($_POST['pw'])) > 0) {
 
-        $password = trim(stripslashes_array($_POST['pw']));
+        $password = trim($_POST['pw']);
 
         if (mb_strlen($password) < 6) {
 
@@ -179,9 +179,9 @@ if (isset($_POST['register'])) {
         $valid.= false;
     }
 
-    if (isset($_POST['cpw']) && strlen(trim(stripslashes_array($_POST['cpw']))) > 0) {
+    if (isset($_POST['cpw']) && strlen(trim($_POST['cpw'])) > 0) {
 
-        $check_password = trim(stripslashes_array($_POST['cpw']));
+        $check_password = trim($_POST['cpw']);
 
         if (htmlentities_array($check_password) != $check_password) {
 
@@ -195,9 +195,9 @@ if (isset($_POST['register'])) {
         $valid = false;
     }
 
-    if (isset($_POST['nickname']) && strlen(trim(stripslashes_array($_POST['nickname']))) > 0) {
+    if (isset($_POST['nickname']) && strlen(trim($_POST['nickname'])) > 0) {
 
-        $nickname = strip_tags(trim(stripslashes_array($_POST['nickname'])));
+        $nickname = strip_tags(trim($_POST['nickname']));
 
         if (nickname_is_banned($nickname)) {
 
@@ -211,9 +211,9 @@ if (isset($_POST['register'])) {
         $valid = false;
     }
 
-    if (isset($_POST['email']) && strlen(trim(stripslashes_array($_POST['email']))) > 0) {
+    if (isset($_POST['email']) && strlen(trim($_POST['email'])) > 0) {
 
-        $email = trim(stripslashes_array($_POST['email']));
+        $email = trim($_POST['email']);
 
         if (!email_address_valid($email)) {
 
@@ -243,9 +243,9 @@ if (isset($_POST['register'])) {
 
     if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && @checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
 
-        $new_user_prefs['DOB_DAY']   = trim(stripslashes_array($_POST['dob_day']));
-        $new_user_prefs['DOB_MONTH'] = trim(stripslashes_array($_POST['dob_month']));
-        $new_user_prefs['DOB_YEAR']  = trim(stripslashes_array($_POST['dob_year']));
+        $new_user_prefs['DOB_DAY']   = trim($_POST['dob_day']);
+        $new_user_prefs['DOB_MONTH'] = trim($_POST['dob_month']);
+        $new_user_prefs['DOB_YEAR']  = trim($_POST['dob_year']);
 
         $new_user_prefs['DOB'] = "{$new_user_prefs['DOB_YEAR']}-{$new_user_prefs['DOB_MONTH']}-{$new_user_prefs['DOB_DAY']}";
         $new_user_prefs['DOB_BLANK_FIELDS'] = ($new_user_prefs['DOB_YEAR'] == 0 || $new_user_prefs['DOB_MONTH'] == 0 || $new_user_prefs['DOB_DAY'] == 0) ? true : false;
@@ -256,20 +256,20 @@ if (isset($_POST['register'])) {
         $valid = false;
     }
 
-    if (isset($_POST['firstname']) && strlen(trim(stripslashes_array($_POST['firstname']))) > 0) {
-        $new_user_prefs['FIRSTNAME'] = trim(stripslashes_array($_POST['firstname']));
+    if (isset($_POST['firstname']) && strlen(trim($_POST['firstname'])) > 0) {
+        $new_user_prefs['FIRSTNAME'] = trim($_POST['firstname']);
     } else {
         $new_user_prefs['FIRSTNAME'] = "";
     }
 
-    if (isset($_POST['lastname']) && strlen(trim(stripslashes_array($_POST['lastname']))) > 0) {
-        $new_user_prefs['LASTNAME'] = trim(stripslashes_array($_POST['lastname']));
+    if (isset($_POST['lastname']) && strlen(trim($_POST['lastname'])) > 0) {
+        $new_user_prefs['LASTNAME'] = trim($_POST['lastname']);
     } else {
         $new_user_prefs['LASTNAME'] = "";
     }
 
-    if (isset($_POST['sig_content']) && strlen(trim(stripslashes_array($_POST['sig_content']))) > 0) {
-        $sig_content = trim(stripslashes_array($_POST['sig_content']));
+    if (isset($_POST['sig_content']) && strlen(trim($_POST['sig_content'])) > 0) {
+        $sig_content = trim($_POST['sig_content']);
     } else {
         $sig_content = "";
     }
@@ -278,7 +278,7 @@ if (isset($_POST['register'])) {
         $sig_content = fix_html($sig_content);
         $sig_html = "Y";
     } else {
-        $sig_content = stripslashes_array($sig_content);
+        $sig_content = $sig_content;
         $sig_html = "N";
     }
 
@@ -324,8 +324,8 @@ if (isset($_POST['register'])) {
         $new_user_prefs['LANGUAGE'] = forum_get_setting('default_language', false, 'en');
     }
 
-    if (isset($_POST['style']) && style_exists(trim(stripslashes_array($_POST['style'])))) {
-        $new_user_prefs['STYLE'] = trim(stripslashes_array($_POST['style']));
+    if (isset($_POST['style']) && style_exists(trim($_POST['style']))) {
+        $new_user_prefs['STYLE'] = trim($_POST['style']);
     } else {
         $new_user_prefs['STYLE'] = forum_get_setting('default_style', false, 'default');
     }
@@ -338,13 +338,13 @@ if (isset($_POST['register'])) {
 
     if (forum_get_setting('text_captcha_enabled', 'Y')) {
 
-        if (isset($_POST['public_key']) && strlen(trim(stripslashes_array($_POST['public_key']))) > 0) {
+        if (isset($_POST['public_key']) && strlen(trim($_POST['public_key'])) > 0) {
 
-            $public_key = trim(stripslashes_array($_POST['public_key']));
+            $public_key = trim($_POST['public_key']);
 
-            if (isset($_POST['private_key']) && strlen(trim(stripslashes_array($_POST['private_key']))) > 0) {
+            if (isset($_POST['private_key']) && strlen(trim($_POST['private_key'])) > 0) {
 
-                $private_key = trim(stripslashes_array($_POST['private_key']));
+                $private_key = trim($_POST['private_key']);
 
             } else {
 

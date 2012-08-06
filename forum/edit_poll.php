@@ -207,8 +207,8 @@ if (isset($_POST['options_html'])) {
 
 if (isset($_POST['thread_title'])) {
 
-    if (strlen(trim(stripslashes_array($_POST['thread_title']))) > 0) {
-        $thread_title = trim(stripslashes_array($_POST['thread_title']));
+    if (strlen(trim($_POST['thread_title'])) > 0) {
+        $thread_title = trim($_POST['thread_title']);
     } else {
         $thread_title = '';
     }

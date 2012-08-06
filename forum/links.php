@@ -130,12 +130,12 @@ html_draw_top("title={$page_title}", 'class=window_title');
 
 echo "<h1>", links_get_folder_path_links($fid, $folders), "</h1>\n";
 
-if (isset($_GET['link_added']) && strlen(trim(stripslashes_array($_GET['link_added']))) > 0) {
+if (isset($_GET['link_added']) && strlen(trim($_GET['link_added'])) > 0) {
 
     $link_added = $_GET['link_added'];
     html_display_success_msg(sprintf(gettext("Successfully added link '%s'"), htmlentities_array($link_added)), '85%', 'center');
 
-} else if (isset($_GET['folder_added']) && strlen(trim(stripslashes_array($_GET['folder_added']))) > 0) {
+} else if (isset($_GET['folder_added']) && strlen(trim($_GET['folder_added'])) > 0) {
 
     $folder_added = $_GET['folder_added'];
     html_display_success_msg(sprintf(gettext("Successfully added link '%s'"), htmlentities_array($folder_added)), '85%', 'center');

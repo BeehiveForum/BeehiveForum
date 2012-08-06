@@ -72,9 +72,9 @@ if (isset($_POST['send'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
+    if (isset($_POST['t_subject']) && strlen(trim($_POST['t_subject'])) > 0) {
 
-        $subject = trim(stripslashes_array($_POST['t_subject']));
+        $subject = trim($_POST['t_subject']);
 
     } else {
 
@@ -82,9 +82,9 @@ if (isset($_POST['send'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_message']) && strlen(trim(stripslashes_array($_POST['t_message']))) > 0) {
+    if (isset($_POST['t_message']) && strlen(trim($_POST['t_message'])) > 0) {
 
-        $message = trim(stripslashes_array($_POST['t_message']));
+        $message = trim($_POST['t_message']);
 
     } else {
 

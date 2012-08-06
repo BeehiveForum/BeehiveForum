@@ -165,9 +165,9 @@ if (isset($_POST['additemsubmit'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_name_new']) && strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
+    if (isset($_POST['t_name_new']) && strlen(trim($_POST['t_name_new'])) > 0) {
 
-        $t_new_name = trim(stripslashes_array($_POST['t_name_new']));
+        $t_new_name = trim($_POST['t_name_new']);
 
     } else {
 
@@ -185,9 +185,9 @@ if (isset($_POST['additemsubmit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_options_new']) && strlen(trim(stripslashes_array($_POST['t_options_new']))) > 0) {
+    if (isset($_POST['t_options_new']) && strlen(trim($_POST['t_options_new'])) > 0) {
 
-        $t_options_new = trim(stripslashes_array($_POST['t_options_new']));
+        $t_options_new = trim($_POST['t_options_new']);
 
         if ($valid && ($t_type_new == PROFILE_ITEM_RADIO || $t_type_new == PROFILE_ITEM_DROPDOWN)) {
 
@@ -261,9 +261,9 @@ if (isset($_POST['additemsubmit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_name_new']) && strlen(trim(stripslashes_array($_POST['t_name_new']))) > 0) {
+    if (isset($_POST['t_name_new']) && strlen(trim($_POST['t_name_new'])) > 0) {
 
-        $t_name_new = trim(stripslashes_array($_POST['t_name_new']));
+        $t_name_new = trim($_POST['t_name_new']);
 
     } else {
 
@@ -281,9 +281,9 @@ if (isset($_POST['additemsubmit'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_options_new']) && strlen(trim(stripslashes_array($_POST['t_options_new']))) > 0) {
+    if (isset($_POST['t_options_new']) && strlen(trim($_POST['t_options_new'])) > 0) {
 
-        $t_options_new = trim(stripslashes_array($_POST['t_options_new']));
+        $t_options_new = trim($_POST['t_options_new']);
 
         if ($valid && ($t_type_new == PROFILE_ITEM_RADIO || $t_type_new == PROFILE_ITEM_DROPDOWN)) {
 
@@ -422,11 +422,11 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">", gettext("Item Name"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array(stripslashes_array($_POST['t_name_new'])) : ""), 48, 64), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array($_POST['t_name_new']) : ""), 48, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" valign=\"top\">", gettext("Options"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_textarea("t_options_new", (isset($_POST['t_options_new']) ? htmlentities_array(stripslashes_array($_POST['t_options_new'])) : ""), 4, 45), "</td>\n";
+    echo "                        <td align=\"left\">", form_textarea("t_options_new", (isset($_POST['t_options_new']) ? htmlentities_array($_POST['t_options_new']) : ""), 4, 45), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
@@ -518,11 +518,11 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">", gettext("Item Name"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array(stripslashes_array($_POST['t_name_new'])) : htmlentities_array($profile_item['NAME'])), 48, 64), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array($_POST['t_name_new']) : htmlentities_array($profile_item['NAME'])), 48, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" valign=\"top\">", gettext("Options"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_textarea("t_options_new", (isset($_POST['t_options_new']) ? htmlentities_array(stripslashes_array($_POST['t_options_new'])) : htmlentities_array($profile_item['OPTIONS'])), 4, 45), "</td>\n";
+    echo "                        <td align=\"left\">", form_textarea("t_options_new", (isset($_POST['t_options_new']) ? htmlentities_array($_POST['t_options_new']) : htmlentities_array($profile_item['OPTIONS'])), 4, 45), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";

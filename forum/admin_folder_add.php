@@ -66,21 +66,21 @@ if (isset($_POST['add'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_name']) && strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
-        $t_name = trim(stripslashes_array($_POST['t_name']));
+    if (isset($_POST['t_name']) && strlen(trim($_POST['t_name'])) > 0) {
+        $t_name = trim($_POST['t_name']);
     } else {
         $error_msg_array[] = gettext("You must enter a folder name");
         $valid = false;
     }
 
-    if (isset($_POST['t_description']) && strlen(trim(stripslashes_array($_POST['t_description']))) > 0) {
-        $t_description = trim(stripslashes_array($_POST['t_description']));
+    if (isset($_POST['t_description']) && strlen(trim($_POST['t_description'])) > 0) {
+        $t_description = trim($_POST['t_description']);
     } else {
         $t_description = "";
     }
 
-    if (isset($_POST['t_prefix']) && strlen(trim(stripslashes_array($_POST['t_prefix']))) > 0) {
-        $t_prefix = trim(stripslashes_array($_POST['t_prefix']));
+    if (isset($_POST['t_prefix']) && strlen(trim($_POST['t_prefix'])) > 0) {
+        $t_prefix = trim($_POST['t_prefix']);
     } else {
         $t_prefix = "";
     }

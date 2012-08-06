@@ -428,8 +428,10 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
         $user_array[] = $user_data;
     }
 
-    return array('user_count' => $user_count,
-                 'user_array' => $user_array);
+    return array(
+        'user_count' => $user_count,
+        'user_array' => $user_array
+    );
 }
 
 function visitor_log_prof_item_column($column)

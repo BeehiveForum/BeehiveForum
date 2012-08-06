@@ -74,8 +74,8 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
-} else if (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
-    $ret = trim(stripslashes_array($_POST['ret']));
+} else if (isset($_POST['ret']) && strlen(trim($_POST['ret'])) > 0) {
+    $ret = trim($_POST['ret']);
 } else {
     $ret = "admin_users.php?webtag=$webtag";
 }
@@ -83,8 +83,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 // validate the return to page
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
-    $available_files = get_available_files();
-    $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
     if (preg_match("/^$available_files_preg/u", basename($ret)) < 1) {
         $ret = "admin_users.php?webtag=$webtag";
@@ -126,9 +125,9 @@ $page_title = gettext("Admin"). " - ". gettext("Manage User"). " - ". format_use
 // Do updates
 if (isset($_POST['action_submit'])) {
 
-    if (isset($_POST['action']) && strlen(trim(stripslashes_array($_POST['action']))) > 0) {
+    if (isset($_POST['action']) && strlen(trim($_POST['action'])) > 0) {
 
-        $post_action = trim(stripslashes_array($_POST['action']));
+        $post_action = trim($_POST['action']);
 
         if ($post_action == 'edit_details') {
 
@@ -266,9 +265,9 @@ if (isset($_POST['action_submit'])) {
         html_draw_error(gettext("You do not have permission to use this section."), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
     }
 
-    if (isset($_POST['t_new_password']) && strlen(trim(stripslashes_array($_POST['t_new_password']))) > 0) {
+    if (isset($_POST['t_new_password']) && strlen(trim($_POST['t_new_password'])) > 0) {
 
-        $t_new_password = trim(stripslashes_array($_POST['t_new_password']));
+        $t_new_password = trim($_POST['t_new_password']);
 
         if (($user_logon = user_get_logon($uid) && $fuid = session::get_value('UID'))) {
 
@@ -474,10 +473,10 @@ if (isset($_POST['action_submit'])) {
     }
 }
 
-if (isset($_GET['action']) && strlen(trim(stripslashes_array($_GET['action']))) > 0) {
-    $action = trim(stripslashes_array($_GET['action']));
-} else if (isset($_POST['action']) && strlen(trim(stripslashes_array($_POST['action']))) > 0) {
-    $action = trim(stripslashes_array($_POST['action']));
+if (isset($_GET['action']) && strlen(trim($_GET['action'])) > 0) {
+    $action = trim($_GET['action']);
+} else if (isset($_POST['action']) && strlen(trim($_POST['action'])) > 0) {
+    $action = trim($_POST['action']);
 }
 
 if (isset($action) && strlen(trim($action)) > 0) {

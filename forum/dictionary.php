@@ -42,13 +42,13 @@ if (!session::logged_in()) {
 }
 
 // Form Object ID
-if (isset($_POST['obj_id']) && strlen(trim(stripslashes_array($_POST['obj_id']))) > 0) {
+if (isset($_POST['obj_id']) && strlen(trim($_POST['obj_id'])) > 0) {
 
-    $obj_id = trim(stripslashes_array($_POST['obj_id']));
+    $obj_id = trim($_POST['obj_id']);
 
-} else if (isset($_GET['obj_id']) && strlen(trim(stripslashes_array($_GET['obj_id']))) > 0) {
+} else if (isset($_GET['obj_id']) && strlen(trim($_GET['obj_id'])) > 0) {
 
-    $obj_id = trim(stripslashes_array($_GET['obj_id']));
+    $obj_id = trim($_GET['obj_id']);
 
 } else {
 
@@ -56,9 +56,9 @@ if (isset($_POST['obj_id']) && strlen(trim(stripslashes_array($_POST['obj_id']))
 }
 
 // Form content
-if (isset($_POST['content']) && strlen(trim(stripslashes_array($_POST['content']))) > 0) {
+if (isset($_POST['content']) && strlen(trim($_POST['content'])) > 0) {
 
-    $t_content = trim(stripslashes_array($_POST['content']));
+    $t_content = trim($_POST['content']);
 
 } else {
 
@@ -78,7 +78,7 @@ if (isset($_POST['content']) && strlen(trim(stripslashes_array($_POST['content']
 
 // Ignored words
 if (isset($_POST['ignored_words']) && is_array($_POST['ignored_words'])) {
-    $t_ignored_words = stripslashes_array($_POST['ignored_words']);
+    $t_ignored_words = $_POST['ignored_words'];
 } else {
     $t_ignored_words = array();
 }
@@ -125,9 +125,9 @@ if (isset($_POST['ignoreall'])) {
 } else if (isset($_POST['add'])) {
 
     // User wants to add the current word to his dictionary
-    if (isset($_POST['word']) && strlen(trim(stripslashes_array($_POST['word']))) > 0) {
+    if (isset($_POST['word']) && strlen(trim($_POST['word'])) > 0) {
 
-        $t_custom_word = trim(stripslashes_array($_POST['word']));
+        $t_custom_word = trim($_POST['word']);
         $dictionary->add_custom_word($t_custom_word);
     }
 
@@ -136,9 +136,9 @@ if (isset($_POST['ignoreall'])) {
 } else if (isset($_POST['change'])) {
 
     // User has selected to change the current word
-    if (isset($_POST['change_to']) && strlen(trim(stripslashes_array($_POST['change_to']))) > 0) {
+    if (isset($_POST['change_to']) && strlen(trim($_POST['change_to'])) > 0) {
 
-         $t_change_to = trim(stripslashes_array($_POST['change_to']));
+         $t_change_to = trim($_POST['change_to']);
          $dictionary->correct_current_word($t_change_to);
     }
 
@@ -147,9 +147,9 @@ if (isset($_POST['ignoreall'])) {
 } else if (isset($_POST['changeall'])) {
 
     // User has selected to change the current word
-    if (isset($_POST['change_to']) && strlen(trim(stripslashes_array($_POST['change_to']))) > 0) {
+    if (isset($_POST['change_to']) && strlen(trim($_POST['change_to'])) > 0) {
 
-         $t_change_to = trim(stripslashes_array($_POST['change_to']));
+         $t_change_to = trim($_POST['change_to']);
          $dictionary->correct_all_word_matches($t_change_to);
     }
 

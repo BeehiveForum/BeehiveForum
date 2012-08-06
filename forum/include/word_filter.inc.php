@@ -164,8 +164,10 @@ function word_filter_prepare($word_filter_array)
         }
     }
 
-    return array('pattern_array' => $pattern_array,
-                 'replace_array' => $replace_array);
+    return array(
+        'pattern_array' => $pattern_array,
+        'replace_array' => $replace_array
+    );
 }
 
 function word_filter_add_ob_tags($content, $strip_html = false)

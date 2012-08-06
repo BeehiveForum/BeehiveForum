@@ -68,9 +68,9 @@ if (isset($_POST['update'])) {
         $fid = 1;
     }
 
-    if (isset($_POST['name']) && strlen(trim(stripslashes_array($_POST['name']))) > 0) {
+    if (isset($_POST['name']) && strlen(trim($_POST['name'])) > 0) {
 
-        $name = trim(stripslashes_array($_POST['name']));
+        $name = trim($_POST['name']);
 
         if (mb_strlen($name) > 32) {
 

@@ -164,9 +164,9 @@ if (isset($_POST['save'])) {
     // Admin Options
     if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['BY_UID'] == $uid) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', false, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', false, 0) * MINUTE_IN_SECONDS)))))) {
 
-        if (isset($_POST['rename']) && strlen(trim(stripslashes_array($_POST['rename']))) > 0) {
+        if (isset($_POST['rename']) && strlen(trim($_POST['rename'])) > 0) {
 
-            $t_rename = trim(stripslashes_array($_POST['rename']));
+            $t_rename = trim($_POST['rename']);
 
             if ($t_rename !== trim($thread_data['TITLE'])) {
 
@@ -262,9 +262,9 @@ if (isset($_POST['save'])) {
 
             if (isset($_POST['sticky_year']) && isset($_POST['sticky_month']) && isset($_POST['sticky_day'])) {
 
-                $sticky_day   = trim(stripslashes_array($_POST['sticky_day']));
-                $sticky_month = trim(stripslashes_array($_POST['sticky_month']));
-                $sticky_year  = trim(stripslashes_array($_POST['sticky_year']));
+                $sticky_day   = trim($_POST['sticky_day']);
+                $sticky_month = trim($_POST['sticky_month']);
+                $sticky_year  = trim($_POST['sticky_year']);
 
                 if (is_numeric($sticky_month) && $sticky_month > 0 && is_numeric($sticky_day) && $sticky_day > 0 && is_numeric($sticky_year) && $sticky_year > 0) {
 

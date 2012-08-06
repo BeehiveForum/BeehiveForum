@@ -52,7 +52,7 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['h']) && strlen(trim(stripslashes_array($_POST['h']))) > 0) {
+    if (isset($_POST['h']) && strlen(trim($_POST['h'])) > 0) {
 
         $key = $_POST['h'];
 
@@ -62,7 +62,7 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['pw']) && strlen(trim(stripslashes_array($_POST['pw']))) > 0) {
+    if (isset($_POST['pw']) && strlen(trim($_POST['pw'])) > 0) {
 
         $pw = $_POST['pw'];
 
@@ -72,7 +72,7 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['cpw']) && strlen(trim(stripslashes_array($_POST['cpw']))) > 0) {
+    if (isset($_POST['cpw']) && strlen(trim($_POST['cpw'])) > 0) {
 
         $cpw = $_POST['cpw'];
 
@@ -90,7 +90,7 @@ if (isset($_POST['save'])) {
             $valid = false;
         }
 
-        if (mb_strlen(trim(stripslashes_array($_POST['pw']))) < 6) {
+        if (mb_strlen(trim($_POST['pw'])) < 6) {
 
             $error_msg_array[] = gettext("Password must be a minimum of 6 characters long");
             $valid = false;

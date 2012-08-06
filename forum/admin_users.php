@@ -121,10 +121,10 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = 1;
 }
 
-if (isset($_GET['user_search']) && strlen(trim(stripslashes_array($_GET['user_search']))) > 0) {
-    $user_search = trim(stripslashes_array($_GET['user_search']));
-} else if (isset($_POST['user_search']) && strlen(trim(stripslashes_array($_POST['user_search']))) > 0) {
-    $user_search = trim(stripslashes_array($_POST['user_search']));
+if (isset($_GET['user_search']) && strlen(trim($_GET['user_search'])) > 0) {
+    $user_search = trim($_GET['user_search']);
+} else if (isset($_POST['user_search']) && strlen(trim($_POST['user_search'])) > 0) {
+    $user_search = trim($_POST['user_search']);
 } else {
     $user_search = "";
 }

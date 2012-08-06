@@ -102,7 +102,7 @@ if (isset($_POST['upload'])) {
 
             if (isset($_FILES['userfile']['name'][$i]) && strlen(trim($_FILES['userfile']['name'][$i])) > 0) {
 
-                $filename = trim(stripslashes_array($_FILES['userfile']['name'][$i]));
+                $filename = trim($_FILES['userfile']['name'][$i]);
 
                 if (isset($_FILES['userfile']['error'][$i]) && $_FILES['userfile']['error'][$i] != UPLOAD_ERR_OK) {
 

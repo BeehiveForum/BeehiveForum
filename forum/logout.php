@@ -37,11 +37,11 @@ require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 // Default final URI if one isn't specified.
 $final_uri = '&final_uri=logon.php%3Fwebtag%3D$webtag%26logout_success%3Dtrue';
 
-if (isset($_REQUEST['final_uri']) && strlen(trim(stripslashes_array($_REQUEST['final_uri']))) > 0) {
+if (isset($_REQUEST['final_uri']) && strlen(trim($_REQUEST['final_uri'])) > 0) {
 
     $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
-    if (preg_match("/^$available_files_preg/u", trim(stripslashes_array($_REQUEST['final_uri']))) > 0) {
+    if (preg_match("/^$available_files_preg/u", trim($_REQUEST['final_uri'])) > 0) {
         $final_uri = sprintf('&final_uri=%s', rawurlencode(href_cleanup_query_keys($_REQUEST['final_uri'])));
     }
 }

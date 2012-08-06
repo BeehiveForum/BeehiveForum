@@ -188,9 +188,9 @@ if (isset($_POST['delete'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_webtag']) && strlen(trim(stripslashes_array($_POST['t_webtag']))) > 0) {
+    if (isset($_POST['t_webtag']) && strlen(trim($_POST['t_webtag'])) > 0) {
 
-        $t_webtag = mb_strtoupper(trim(stripslashes_array($_POST['t_webtag'])));
+        $t_webtag = mb_strtoupper(trim($_POST['t_webtag']));
 
         if (!preg_match("/^[A-Z0-9_]+$/Du", $t_webtag)) {
 
@@ -210,16 +210,16 @@ if (isset($_POST['delete'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_name']) && strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
-        $t_name = trim(stripslashes_array($_POST['t_name']));
+    if (isset($_POST['t_name']) && strlen(trim($_POST['t_name'])) > 0) {
+        $t_name = trim($_POST['t_name']);
     } else {
         $error_msg_array[] = gettext("You must supply a forum name");
         $valid = false;
     }
 
-    if (isset($_POST['t_owner']) && strlen(trim(stripslashes_array($_POST['t_owner']))) > 0) {
+    if (isset($_POST['t_owner']) && strlen(trim($_POST['t_owner'])) > 0) {
 
-        $t_owner = trim(stripslashes_array($_POST['t_owner']));
+        $t_owner = trim($_POST['t_owner']);
 
         if (($t_user_array = user_get_by_logon($t_owner))) {
 
@@ -295,16 +295,16 @@ if (isset($_POST['delete'])) {
 
     if (($valid && $forum_data = forum_get($fid))) {
 
-        if (isset($_POST['t_name']) && strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
-            $t_name = trim(stripslashes_array($_POST['t_name']));
+        if (isset($_POST['t_name']) && strlen(trim($_POST['t_name'])) > 0) {
+            $t_name = trim($_POST['t_name']);
         } else {
             $error_msg_array[] = gettext("You must supply a forum name");
             $valid = false;
         }
 
-        if (isset($_POST['t_owner']) && strlen(trim(stripslashes_array($_POST['t_owner']))) > 0) {
+        if (isset($_POST['t_owner']) && strlen(trim($_POST['t_owner'])) > 0) {
 
-            $t_owner = trim(stripslashes_array($_POST['t_owner']));
+            $t_owner = trim($_POST['t_owner']);
 
             if (($t_user_array = user_get_by_logon($t_owner))) {
 
@@ -428,15 +428,15 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Forum Webtag"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_webtag", (isset($_POST['t_webtag']) ? htmlentities_array(stripslashes_array($_POST['t_webtag'])) : ""), 30, 32), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_webtag", (isset($_POST['t_webtag']) ? htmlentities_array($_POST['t_webtag']) : ""), 30, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Forum Name"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_name", (isset($_POST['t_name']) ? htmlentities_array(stripslashes_array($_POST['t_name'])) : ""), 30, 255), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name", (isset($_POST['t_name']) ? htmlentities_array($_POST['t_name']) : ""), 30, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Forum Leader"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text_search("t_owner", (isset($_POST['t_owner']) ? htmlentities_array(stripslashes_array($_POST['t_owner'])) : ""), 27, 15, false, ""), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text_search("t_owner", (isset($_POST['t_owner']) ? htmlentities_array($_POST['t_owner']) : ""), 27, 15, false, ""), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Access level"), ":</td>\n";
@@ -449,7 +449,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Use Database"), ":</td>\n";
-        echo "                        <td align=\"left\">", form_dropdown_array("t_database", $available_databases, (isset($_POST['t_database']) ? stripslashes_array($_POST['t_database']) : "")), "</td>\n";
+        echo "                        <td align=\"left\">", form_dropdown_array("t_database", $available_databases, (isset($_POST['t_database']) ? $_POST['t_database'] : "")), "</td>\n";
         echo "                      </tr>\n";
     }
 
@@ -544,11 +544,11 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Forum Name"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_name", (isset($_POST['t_name']) ? htmlentities_array(stripslashes_array($_POST['t_name'])) : (isset($forum_data['FORUM_SETTINGS']['forum_name']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_name']) : "")), 35, 255), form_input_hidden("t_name_old", (isset($forum_data['FORUM_SETTINGS']['forum_name']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_name']) : "")), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name", (isset($_POST['t_name']) ? htmlentities_array($_POST['t_name']) : (isset($forum_data['FORUM_SETTINGS']['forum_name']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_name']) : "")), 35, 255), form_input_hidden("t_name_old", (isset($forum_data['FORUM_SETTINGS']['forum_name']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_name']) : "")), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Forum Leader"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text_search("t_owner", (isset($_POST['t_owner']) ? htmlentities_array(stripslashes_array($_POST['t_owner'])) : (isset($forum_data['FORUM_SETTINGS']['forum_leader']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_leader']) : "")), 27, 15, false, ""), form_input_hidden("t_owner_old", (isset($forum_data['FORUM_SETTINGS']['forum_leader']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_leader']) : "")), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text_search("t_owner", (isset($_POST['t_owner']) ? htmlentities_array($_POST['t_owner']) : (isset($forum_data['FORUM_SETTINGS']['forum_leader']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_leader']) : "")), 27, 15, false, ""), form_input_hidden("t_owner_old", (isset($forum_data['FORUM_SETTINGS']['forum_leader']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_leader']) : "")), "</td>\n";
     echo "                      </tr>\n";
 
     if ($forum_data['ACCESS_LEVEL'] == FORUM_RESTRICTED) {

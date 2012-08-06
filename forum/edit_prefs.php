@@ -123,9 +123,9 @@ if (isset($_POST['save'])) {
 
         if (forum_get_setting('allow_username_changes', 'Y') || (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit)) {
 
-            if (isset($_POST['logon']) && strlen(trim(stripslashes_array($_POST['logon']))) > 0) {
+            if (isset($_POST['logon']) && strlen(trim($_POST['logon'])) > 0) {
 
-                $user_info_new['LOGON'] = trim(stripslashes_array($_POST['logon']));
+                $user_info_new['LOGON'] = trim($_POST['logon']);
 
                 if (mb_strlen($user_info_new['LOGON']) < 2) {
 
@@ -158,9 +158,9 @@ if (isset($_POST['save'])) {
             }
         }
 
-        if (isset($_POST['nickname']) && strlen(trim(stripslashes_array($_POST['nickname']))) > 0) {
+        if (isset($_POST['nickname']) && strlen(trim($_POST['nickname'])) > 0) {
 
-            $user_info_new['NICKNAME'] = strip_tags(trim(stripslashes_array($_POST['nickname'])));
+            $user_info_new['NICKNAME'] = strip_tags(trim($_POST['nickname']));
 
             if (nickname_is_banned($user_info_new['NICKNAME'])) {
 
@@ -174,9 +174,9 @@ if (isset($_POST['save'])) {
             $valid = false;
         }
 
-        if (isset($_POST['email']) && strlen(trim(stripslashes_array($_POST['email']))) > 0) {
+        if (isset($_POST['email']) && strlen(trim($_POST['email'])) > 0) {
 
-            $user_info_new['EMAIL'] = trim(stripslashes_array($_POST['email']));
+            $user_info_new['EMAIL'] = trim($_POST['email']);
 
             if (!email_address_valid($user_info_new['EMAIL'])) {
 
@@ -206,9 +206,9 @@ if (isset($_POST['save'])) {
 
         if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && @checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
 
-            $dob['DAY']   = trim(stripslashes_array($_POST['dob_day']));
-            $dob['MONTH'] = trim(stripslashes_array($_POST['dob_month']));
-            $dob['YEAR']  = trim(stripslashes_array($_POST['dob_year']));
+            $dob['DAY']   = trim($_POST['dob_day']);
+            $dob['MONTH'] = trim($_POST['dob_month']);
+            $dob['YEAR']  = trim($_POST['dob_year']);
 
             $user_prefs['DOB'] = sprintf("%04d-%02d-%02d", $dob['YEAR'], $dob['MONTH'], $dob['DAY']);
 
@@ -221,7 +221,7 @@ if (isset($_POST['save'])) {
         // Optional fields
         if (isset($_POST['firstname'])) {
 
-            $user_prefs['FIRSTNAME'] = trim(stripslashes_array($_POST['firstname']));
+            $user_prefs['FIRSTNAME'] = trim($_POST['firstname']);
 
             if (!user_check_pref('FIRSTNAME', $user_prefs['FIRSTNAME'])) {
 
@@ -232,7 +232,7 @@ if (isset($_POST['save'])) {
 
         if (isset($_POST['lastname'])) {
 
-            $user_prefs['LASTNAME'] = trim(stripslashes_array($_POST['lastname']));
+            $user_prefs['LASTNAME'] = trim($_POST['lastname']);
 
             if (!user_check_pref('LASTNAME', $user_prefs['LASTNAME'])) {
 
@@ -244,7 +244,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['homepage_url'])) {
 
-        $user_prefs['HOMEPAGE_URL'] = trim(stripslashes_array($_POST['homepage_url']));
+        $user_prefs['HOMEPAGE_URL'] = trim($_POST['homepage_url']);
         $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global'])) ? $_POST['homepage_url_global'] == "Y" : true;
 
         if (strlen(trim($user_prefs['HOMEPAGE_URL'])) > 0) {
@@ -263,7 +263,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['pic_url'])) {
 
-        $user_prefs['PIC_URL'] = trim(stripslashes_array($_POST['pic_url']));
+        $user_prefs['PIC_URL'] = trim($_POST['pic_url']);
         $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global'])) ? $_POST['pic_url_global'] == "Y" : true;
 
         if (strlen(trim($user_prefs['PIC_URL'])) > 0) {
@@ -335,7 +335,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['avatar_url'])) {
 
-        $user_prefs['AVATAR_URL'] = trim(stripslashes_array($_POST['avatar_url']));
+        $user_prefs['AVATAR_URL'] = trim($_POST['avatar_url']);
         $user_prefs_global['AVATAR_URL'] = (isset($_POST['avatar_url_global'])) ? $_POST['avatar_url_global'] == "Y" : true;
 
         if (strlen(trim($user_prefs['AVATAR_URL'])) > 0) {

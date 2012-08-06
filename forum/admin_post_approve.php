@@ -67,9 +67,9 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 }
 
 // Are we returning somewhere?
-if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
+if (isset($_GET['ret']) && strlen(trim($_GET['ret'])) > 0) {
     $ret = href_cleanup_query_keys($_GET['ret']);
-} else if (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
+} else if (isset($_POST['ret']) && strlen(trim($_POST['ret'])) > 0) {
     $ret = href_cleanup_query_keys($_POST['ret']);
 } else {
     $ret = "admin_post_approve.php?webtag=$webtag";

@@ -94,7 +94,7 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['dob_display'])) {
-        $user_prefs['DOB_DISPLAY'] = trim(stripslashes_array($_POST['dob_display']));
+        $user_prefs['DOB_DISPLAY'] = trim($_POST['dob_display']);
     } else {
         $user_prefs['DOB_DISPLAY'] = 0;
     }

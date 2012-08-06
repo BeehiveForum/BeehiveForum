@@ -29,14 +29,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
-    require_once BH_INCLUDE_PATH. 'config.inc.php';
-}
-
-if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
-}
-
 require_once BH_INCLUDE_PATH. 'browser.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'db.inc.php';

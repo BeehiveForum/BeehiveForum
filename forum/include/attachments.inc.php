@@ -63,7 +63,7 @@ function attachments_check_dir()
         if (!@is_writable(attachments_get_upload_tmp_dir())) return false;
 
         // Check to make sure the $attachment_dir exists and is writable.
-        mkdir_recursive($attachment_dir, 0755);
+        @mkdir($attachment_dir, 0755, true);
 
         // Check that the directory is writable.
         if (@is_writable($attachment_dir)) return $attachment_dir;

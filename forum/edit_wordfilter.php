@@ -135,15 +135,15 @@ if (isset($_POST['delete'])) {
 
     } else {
 
-        if (isset($_POST['add_new_filter_name']) && strlen(trim(stripslashes_array($_POST['add_new_filter_name']))) > 0) {
-           $add_new_filter_name = trim(stripslashes_array($_POST['add_new_filter_name']));
+        if (isset($_POST['add_new_filter_name']) && strlen(trim($_POST['add_new_filter_name'])) > 0) {
+           $add_new_filter_name = trim($_POST['add_new_filter_name']);
         } else {
            $valid = false;
            $error_msg_array[] = gettext("You must specify a filter name");
         }
 
-        if (isset($_POST['add_new_match_text']) && strlen(trim(stripslashes_array($_POST['add_new_match_text']))) > 0) {
-           $add_new_match_text = trim(stripslashes_array($_POST['add_new_match_text']));
+        if (isset($_POST['add_new_match_text']) && strlen(trim($_POST['add_new_match_text'])) > 0) {
+           $add_new_match_text = trim($_POST['add_new_match_text']);
         } else {
            $valid = false;
            $error_msg_array[] = gettext("You must specify matched text");
@@ -162,8 +162,8 @@ if (isset($_POST['delete'])) {
             $add_new_filter_enabled = WORD_FILTER_DISABLED;
         }
 
-        if (isset($_POST['add_new_replace_text']) && strlen(trim(stripslashes_array($_POST['add_new_replace_text']))) > 0) {
-           $add_new_replace_text = trim(stripslashes_array($_POST['add_new_replace_text']));
+        if (isset($_POST['add_new_replace_text']) && strlen(trim($_POST['add_new_replace_text'])) > 0) {
+           $add_new_replace_text = trim($_POST['add_new_replace_text']);
         } else {
            $add_new_replace_text = "";
         }
@@ -192,15 +192,15 @@ if (isset($_POST['delete'])) {
         $error_msg_array[] = gettext("You must specify a filter ID");
     }
 
-    if (isset($_POST['filter_name']) && strlen(trim(stripslashes_array($_POST['filter_name']))) > 0) {
-        $filter_name = trim(stripslashes_array($_POST['filter_name']));
+    if (isset($_POST['filter_name']) && strlen(trim($_POST['filter_name'])) > 0) {
+        $filter_name = trim($_POST['filter_name']);
     } else {
         $valid = false;
         $error_msg_array[] = gettext("You must specify a filter name");
     }
 
-    if (isset($_POST['match_text']) && strlen(trim(stripslashes_array($_POST['match_text']))) > 0) {
-        $match_text = trim(stripslashes_array($_POST['match_text']));
+    if (isset($_POST['match_text']) && strlen(trim($_POST['match_text'])) > 0) {
+        $match_text = trim($_POST['match_text']);
     } else {
         $valid = false;
         $error_msg_array[] = gettext("You must specify matched text");
@@ -219,8 +219,8 @@ if (isset($_POST['delete'])) {
         $filter_enabled = WORD_FILTER_DISABLED;
     }
 
-    if (isset($_POST['replace_text']) && strlen(trim(stripslashes_array($_POST['replace_text']))) > 0) {
-        $replace_text = trim(stripslashes_array($_POST['replace_text']));
+    if (isset($_POST['replace_text']) && strlen(trim($_POST['replace_text'])) > 0) {
+        $replace_text = trim($_POST['replace_text']);
     } else {
         $replace_text = "";
     }
@@ -284,15 +284,15 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\">", gettext("Filter Name"), ":</td>\n";
-    echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_filter_name", (isset($_POST['add_new_filter_name']) ? htmlentities_array(stripslashes_array($_POST['add_new_filter_name'])) : ""), 40, 255), "</td>\n";
+    echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_filter_name", (isset($_POST['add_new_filter_name']) ? htmlentities_array($_POST['add_new_filter_name']) : ""), 40, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\">", gettext("Matched Text"), ":</td>\n";
-    echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_match_text", (isset($_POST['add_new_match_text']) ? htmlentities_array(stripslashes_array($_POST['add_new_match_text'])) : ""), 40), "</td>\n";
+    echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_match_text", (isset($_POST['add_new_match_text']) ? htmlentities_array($_POST['add_new_match_text']) : ""), 40), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\">", gettext("Replacement Text"), ":</td>\n";
-    echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_replace_text", (isset($_POST['add_new_replace_text']) ? htmlentities_array(stripslashes_array($_POST['add_new_replace_text'])) : ""), 40), "</td>\n";
+    echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_replace_text", (isset($_POST['add_new_replace_text']) ? htmlentities_array($_POST['add_new_replace_text']) : ""), 40), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" valign=\"top\" width=\"200\">", gettext("Filter Type"), ":</td>\n";

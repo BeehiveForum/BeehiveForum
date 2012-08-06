@@ -262,8 +262,8 @@ if (isset($_POST['pm_delete_messages'])) {
 
 if (isset($_POST['search'])) {
 
-    if (isset($_POST['search_string']) && strlen(trim(stripslashes_array($_POST['search_string']))) > 0) {
-        $search_string = trim(stripslashes_array($_POST['search_string']));
+    if (isset($_POST['search_string']) && strlen(trim($_POST['search_string'])) > 0) {
+        $search_string = trim($_POST['search_string']);
     } else {
         $search_string = '';
     }

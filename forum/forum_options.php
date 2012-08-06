@@ -75,7 +75,7 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['language'])) {
-        $user_prefs['LANGUAGE'] = trim(stripslashes_array($_POST['language']));
+        $user_prefs['LANGUAGE'] = trim($_POST['language']);
     } else {
         $user_prefs['LANGUAGE'] = "";
     }
@@ -272,7 +272,7 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['posts_per_page'])) {
-        $user_prefs['POSTS_PER_PAGE'] = trim(stripslashes_array($_POST['posts_per_page']));
+        $user_prefs['POSTS_PER_PAGE'] = trim($_POST['posts_per_page']);
     } else {
         $user_prefs['POSTS_PER_PAGE'] = 20;
     }
@@ -284,7 +284,7 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['font_size'])) {
-        $user_prefs['FONT_SIZE'] = trim(stripslashes_array($_POST['font_size']));
+        $user_prefs['FONT_SIZE'] = trim($_POST['font_size']);
     } else {
         $user_prefs['FONT_SIZE'] = 10;
     }
@@ -295,8 +295,8 @@ if (isset($_POST['save'])) {
         $user_prefs_global['FONT_SIZE'] = false;
     }
 
-    if (isset($_POST['style']) && style_exists(trim(stripslashes_array($_POST['style'])))) {
-        $user_prefs['STYLE'] = trim(stripslashes_array($_POST['style']));
+    if (isset($_POST['style']) && style_exists(trim($_POST['style']))) {
+        $user_prefs['STYLE'] = trim($_POST['style']);
     } else {
         $user_prefs['STYLE'] = forum_get_setting('default_style', false, 'default');
     }
@@ -308,7 +308,7 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['emoticons'])) {
-        $user_prefs['EMOTICONS'] = trim(stripslashes_array($_POST['emoticons']));
+        $user_prefs['EMOTICONS'] = trim($_POST['emoticons']);
     } else {
         $user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons', false, 'default');
     }
@@ -320,7 +320,7 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['start_page'])) {
-        $user_prefs['START_PAGE'] = trim(stripslashes_array($_POST['start_page']));
+        $user_prefs['START_PAGE'] = trim($_POST['start_page']);
     } else {
         $user_prefs['START_PAGE'] = 0;
     }

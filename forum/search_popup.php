@@ -72,13 +72,13 @@ if (isset($_GET['type']) && in_array($_GET['type'], array(SEARCH_LOGON, SEARCH_T
 if ($type == SEARCH_THREAD) $multi = 'N';
 
 // Form Object ID
-if (isset($_POST['obj_id']) && strlen(trim(stripslashes_array($_POST['obj_id']))) > 0) {
+if (isset($_POST['obj_id']) && strlen(trim($_POST['obj_id'])) > 0) {
 
-    $obj_id = trim(stripslashes_array($_POST['obj_id']));
+    $obj_id = trim($_POST['obj_id']);
 
-} else if (isset($_GET['obj_id']) && strlen(trim(stripslashes_array($_GET['obj_id']))) > 0) {
+} else if (isset($_GET['obj_id']) && strlen(trim($_GET['obj_id'])) > 0) {
 
-    $obj_id = trim(stripslashes_array($_GET['obj_id']));
+    $obj_id = trim($_GET['obj_id']);
 
 } else {
 
@@ -88,8 +88,8 @@ if (isset($_POST['obj_id']) && strlen(trim(stripslashes_array($_POST['obj_id']))
 // Current selection
 if (isset($_POST['selected']) && is_array($_POST['selected'])) {
     $selected_array = array_unique($_POST['selected']);
-} else if (isset($_GET['selected']) && strlen(trim(stripslashes_array($_GET['selected']))) > 0) {
-    $selected_array = array_unique(preg_split("/[;|,]/u", trim(stripslashes_array($_GET['selected']))));
+} else if (isset($_GET['selected']) && strlen(trim($_GET['selected'])) > 0) {
+    $selected_array = array_unique(preg_split("/[;|,]/u", trim($_GET['selected'])));
 } else {
     $selected_array = array();
 }
@@ -104,11 +104,11 @@ if (($type == SEARCH_LOGON) && $multi === 'Y') {
 // Check for search query
 if (isset($_GET['search_query']) && strlen(trim($_GET['search_query']))) {
 
-    $search_query = trim(stripslashes_array($_GET['search_query']));
+    $search_query = trim($_GET['search_query']);
 
 } else if (isset($_POST['search_query']) && strlen(trim($_POST['search_query']))) {
 
-    $search_query = trim(stripslashes_array($_POST['search_query']));
+    $search_query = trim($_POST['search_query']);
 
 } else if (($type == SEARCH_LOGON) && (sizeof($selected_array) > 0)) {
 

@@ -113,22 +113,22 @@ if (isset($_POST['changepermissions'])) {
 
     $valid = true;
 
-    if (isset($_POST['forum_name']) && strlen(trim(stripslashes_array($_POST['forum_name']))) > 0) {
-        $new_forum_settings['forum_name'] = trim(stripslashes_array($_POST['forum_name']));
+    if (isset($_POST['forum_name']) && strlen(trim($_POST['forum_name'])) > 0) {
+        $new_forum_settings['forum_name'] = trim($_POST['forum_name']);
     } else {
         $error_msg_array[] = gettext("You must supply a forum name");
         $valid = false;
     }
 
-    if (isset($_POST['forum_email']) && strlen(trim(stripslashes_array($_POST['forum_email']))) > 0) {
-        $new_forum_settings['forum_email'] = trim(stripslashes_array($_POST['forum_email']));
+    if (isset($_POST['forum_email']) && strlen(trim($_POST['forum_email'])) > 0) {
+        $new_forum_settings['forum_email'] = trim($_POST['forum_email']);
     } else {
         $error_msg_array[] = gettext("You must supply a forum email address");
         $valid = false;
     }
 
-    if (isset($_POST['forum_desc']) && strlen(trim(stripslashes_array($_POST['forum_desc']))) > 0) {
-        $new_forum_settings['forum_desc'] = trim(stripslashes_array($_POST['forum_desc']));
+    if (isset($_POST['forum_desc']) && strlen(trim($_POST['forum_desc'])) > 0) {
+        $new_forum_settings['forum_desc'] = trim($_POST['forum_desc']);
     } else {
         $new_forum_settings['forum_desc'] = "";
     }
@@ -139,15 +139,15 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['forum_content_rating'] = FORUM_RATING_GENERAL;
     }
 
-    if (isset($_POST['forum_keywords']) && strlen(trim(stripslashes_array($_POST['forum_keywords']))) > 0) {
-        $new_forum_settings['forum_keywords'] = trim(stripslashes_array($_POST['forum_keywords']));
+    if (isset($_POST['forum_keywords']) && strlen(trim($_POST['forum_keywords'])) > 0) {
+        $new_forum_settings['forum_keywords'] = trim($_POST['forum_keywords']);
     } else {
         $new_forum_settings['forum_keywords'] = "";
     }
 
-    if (isset($_POST['default_style']) && style_exists(trim(stripslashes_array($_POST['default_style'])))) {
+    if (isset($_POST['default_style']) && style_exists(trim($_POST['default_style']))) {
 
-        $new_forum_settings['default_style'] = trim(stripslashes_array($_POST['default_style']));
+        $new_forum_settings['default_style'] = trim($_POST['default_style']);
 
     } else {
 
@@ -155,9 +155,9 @@ if (isset($_POST['changepermissions'])) {
         $valid = false;
     }
 
-    if (isset($_POST['default_emoticons']) && strlen(trim(stripslashes_array($_POST['default_emoticons']))) > 0) {
+    if (isset($_POST['default_emoticons']) && strlen(trim($_POST['default_emoticons'])) > 0) {
 
-        $new_forum_settings['default_emoticons'] = trim(stripslashes_array($_POST['default_emoticons']));
+        $new_forum_settings['default_emoticons'] = trim($_POST['default_emoticons']);
 
         if (!emoticons_set_exists($new_forum_settings['default_emoticons'])) {
             $error_msg_array[] = gettext("Unknown emoticons name");
@@ -188,8 +188,8 @@ if (isset($_POST['changepermissions'])) {
             $new_forum_settings['enable_google_analytics'] = "N";
         }
 
-        if (isset($_POST['google_analytics_code']) && strlen(trim(stripslashes_array($_POST['google_analytics_code']))) > 0) {
-            $new_forum_settings['google_analytics_code'] = trim(stripslashes_array($_POST['google_analytics_code']));
+        if (isset($_POST['google_analytics_code']) && strlen(trim($_POST['google_analytics_code'])) > 0) {
+            $new_forum_settings['google_analytics_code'] = trim($_POST['google_analytics_code']);
         } else {
             $new_forum_settings['google_analytics_code'] = "";
         }
@@ -231,20 +231,20 @@ if (isset($_POST['changepermissions'])) {
         forum_update_access($forum_settings['fid'], $_POST['access_level']);
     }
 
-    if (isset($_POST['closed_message']) && strlen(trim(stripslashes_array($_POST['closed_message']))) > 0) {
-        $new_forum_settings['closed_message'] = trim(stripslashes_array($_POST['closed_message']));
+    if (isset($_POST['closed_message']) && strlen(trim($_POST['closed_message'])) > 0) {
+        $new_forum_settings['closed_message'] = trim($_POST['closed_message']);
     } else {
         $new_forum_settings['closed_message'] = "";
     }
 
-    if (isset($_POST['restricted_message']) && strlen(trim(stripslashes_array($_POST['restricted_message']))) > 0) {
-        $new_forum_settings['restricted_message'] = trim(stripslashes_array($_POST['restricted_message']));
+    if (isset($_POST['restricted_message']) && strlen(trim($_POST['restricted_message'])) > 0) {
+        $new_forum_settings['restricted_message'] = trim($_POST['restricted_message']);
     } else {
         $new_forum_settings['restricted_message'] = "";
     }
 
-    if (isset($_POST['password_protected_message']) && strlen(trim(stripslashes_array($_POST['password_protected_message']))) > 0) {
-        $new_forum_settings['password_protected_message'] = trim(stripslashes_array($_POST['password_protected_message']));
+    if (isset($_POST['password_protected_message']) && strlen(trim($_POST['password_protected_message'])) > 0) {
+        $new_forum_settings['password_protected_message'] = trim($_POST['password_protected_message']);
     } else {
         $new_forum_settings['password_protected_message'] = "";
     }
@@ -297,8 +297,8 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['enable_wiki_quick_links'] = "N";
     }
 
-    if (isset($_POST['wiki_integration_uri']) && strlen(trim(stripslashes_array($_POST['wiki_integration_uri']))) > 0) {
-        $new_forum_settings['wiki_integration_uri'] = trim(stripslashes_array($_POST['wiki_integration_uri']));
+    if (isset($_POST['wiki_integration_uri']) && strlen(trim($_POST['wiki_integration_uri'])) > 0) {
+        $new_forum_settings['wiki_integration_uri'] = trim($_POST['wiki_integration_uri']);
     } else {
         $new_forum_settings['wiki_integration_uri'] = "";
     }

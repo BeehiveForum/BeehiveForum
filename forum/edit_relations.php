@@ -62,15 +62,15 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = 1;
 }
 
-if (isset($_POST['search_keyword']) && strlen(trim(stripslashes_array($_POST['search_keyword']))) > 0) {
+if (isset($_POST['search_keyword']) && strlen(trim($_POST['search_keyword'])) > 0) {
     
     $page = 1;
 
-    $search_keyword = trim(stripslashes_array($_POST['search_keyword']));
+    $search_keyword = trim($_POST['search_keyword']);
 
-} else if (isset($_GET['search_keyword']) && strlen(trim(stripslashes_array($_GET['search_keyword']))) > 0) {
+} else if (isset($_GET['search_keyword']) && strlen(trim($_GET['search_keyword'])) > 0) {
 
-    $search_keyword = trim(stripslashes_array($_GET['search_keyword']));
+    $search_keyword = trim($_GET['search_keyword']);
 
 } else {
     

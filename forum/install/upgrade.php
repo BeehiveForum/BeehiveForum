@@ -826,17 +826,6 @@ if (!install_table_exists($db_database, "USER_TOKEN")) {
     }
 }
 
-if (!install_column_exists($db_database, "SESSIONS", "USER_AGENT")) {
-    
-    $sql = "ALTER TABLE SESSIONS ADD COLUMN USER_AGENT VARCHAR(255) DEFAULT NULL";
-    
-    if (!$result = db_query($sql, $db_install)) {
-
-        $valid = false;
-        return;
-    }
-}
-
 if (!install_column_exists($db_database, "VISITOR_LOG", "USER_AGENT")) {
     
     $sql = "ALTER TABLE VISITOR_LOG ADD COLUMN USER_AGENT VARCHAR(255) DEFAULT NULL";
@@ -982,7 +971,7 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "ALTER TABLE `SESSIONS` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
+$sql = "ALTER TABLE `USER` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
 
 if (!$result = db_query($sql, $db_install)) {
 
@@ -990,7 +979,28 @@ if (!$result = db_query($sql, $db_install)) {
     return;
 }
 
-$sql = "ALTER TABLE `USER` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
+$sql = "DROP TABLE IF EXISTS SESSIONS";
+
+if (!$result = db_query($sql, $db_install)) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE SESSIONS (";
+$sql.= "  ID VARCHAR(32) NOT NULL,";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  DATA LONGBLOB NOT NULL,";
+$sql.= "  TIME DATETIME NOT NULL,";
+$sql.= "  REFERER VARCHAR(255) DEFAULT NULL,";
+$sql.= "  USER_AGENT VARCHAR(255) DEFAULT NULL,";
+$sql.= "  SID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+$sql.= "  PRIMARY KEY (ID),";
+$sql.= "  KEY REFERER (REFERER),";
+$sql.= "  KEY TIME (TIME,FID),";
+$sql.= "  KEY UID (UID,SID,TIME,FID)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 if (!$result = db_query($sql, $db_install)) {
 

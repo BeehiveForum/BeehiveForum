@@ -21,7 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// We shouldn't be accessing this file directly.
 if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     header("Request-URI: ../index.php");
     header("Content-Location: ../index.php");
@@ -29,233 +28,249 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
-if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
-    require_once BH_INCLUDE_PATH. 'config.inc.php';
-}
-
-if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
-}
-
 function server_os_mswin()
 {
-    if (defined('PHP_OS')) {
+    if (!defined('PHP_OS')) return false;
 
-        if (stristr(PHP_OS, 'WIN') && !stristr(PHP_OS, 'DARWIN')) {
+    if (stristr(PHP_OS, 'WIN') === false) return false;
+    
+    if (stristr(PHP_OS, 'DARWIN')) return false;
 
-            return true;
-        }
-    }
-
-    return false;
-}
-
-function server_get_cpu_load()
-{
-    $cpu_load  = 0;
-    $cpu_count = 0;
-
-    if (server_os_mswin()) {
-
-        if (class_exists('COM')) {
-
-            $wmi = new COM('WinMgmts:\\\\.');
-            $cpu_array = $wmi->InstancesOf('Win32_Processor');
-
-            while (($cpu = $cpu_array->Next())) {
-
-                $cpu_load += $cpu->LoadPercentage;
-                $cpu_count++;
-            }
-
-            $cpu_load = round($cpu_load / $cpu_count, 2);
-
-            return "$cpu_load%";
-        }
-
-    } else {
-
-        if (@file_exists('/proc/loadavg')) {
-
-            $loadavg_data = implode('', file('/proc/loadavg'));
-            list($cpu_load) = explode(' ', $loadavg_data);
-
-            return $cpu_load;
-        }
-    }
-
-    return false;
+    return true;
 }
 
 function get_available_files()
 {
-    return array('admin.php', 'admin_banned.php',
-                 'admin_default_forum_settings.php', 'admin_folders.php',
-                 'admin_folder_add.php', 'admin_folder_edit.php',
-                 'admin_forums.php', 'admin_forum_access.php',
-                 'admin_forum_links.php', 'admin_forum_settings.php',
-                 'admin_forum_set_passwd.php', 'admin_forum_stats.php',
-                 'admin_main.php', 'admin_menu.php', 'admin_post_approve.php',
-                 'admin_post_stats.php', 'admin_prof_items.php',
-                 'admin_prof_sect.php', 'admin_rss_feeds.php',
-                 'admin_startpage.php', 'admin_user.php', 'admin_users.php',
-                 'admin_user_groups.php', 'admin_user_groups_add.php',
-                 'admin_user_groups_edit.php', 'admin_user_groups_edit_users.php',
-                 'admin_viewlog.php', 'admin_visitor_log.php',
-                 'admin_wordfilter.php', 'attachments.php',
-                 'change_pw.php', 'confirm_email.php',
-                 'create_poll.php', 'delete.php',
-                 'dictionary.php', 'discussion.php',
-                 'display.php', 'display_emoticons.php',
-                 'edit.php', 'edit_attachments.php',
-                 'edit_email.php', 'edit_password.php',
-                 'edit_poll.php', 'edit_prefs.php',
-                 'edit_profile.php', 'edit_relations.php',
-                 'edit_signature.php', 'edit_subscriptions.php',
-                 'edit_wordfilter.php', 'email.php',
-                 'folder_options.php', 'folder_subscriptions.php',
-                 'font_size.php', 'forgot_pw.php',
-                 'forums.php', 'forum_options.php',
-                 'forum_password.php', 'get_attachment.php',
-                 'index.php', 'ldelete.php',
-                 'ldisplay.php', 'ledit.php',
-                 'lforums.php', 'links.php',
-                 'links_add.php', 'links_detail.php',
-                 'links_folder_edit.php', 'llogon.php',
-                 'llogout.php', 'lmessages.php',
-                 'logon.php', 'logout.php',
-                 'lpost.php', 'lthread_list.php',
-                 'messages.php', 'mods_list.php',
-                 'nav.php', 'pm.php',
-                 'pm_edit.php', 'pm_folders.php',
-                 'pm_messages.php', 'pm_options.php',
-                 'pm_write.php', 'poll_results.php',
-                 'post.php', 'register.php',
-                 'search.php', 'search_index.php',
-                 'search_popup.php', 'start.php',
-                 'start_left.php', 'start_main.php',
-                 'threads_rss.php', 'thread_list.php',
-                 'thread_options.php', 'user.php',
-                 'user_font.php', 'user_main.php',
-                 'user_menu.php', 'user_profile.php',
-                 'user_rel.php', 'user_stats.php',
-                 'visitor_log.php', 'chat/index.php');
+    return array(
+        'admin.php',
+        'admin_banned.php',
+        'admin_default_forum_settings.php',
+        'admin_folder_add.php',
+        'admin_folder_edit.php',
+        'admin_folders.php',
+        'admin_forum_access.php',
+        'admin_forum_links.php',
+        'admin_forum_set_passwd.php',
+        'admin_forum_settings.php',
+        'admin_forum_stats.php',
+        'admin_forums.php',
+        'admin_link_approve.php',
+        'admin_menu.php',
+        'admin_post_approve.php',
+        'admin_post_stats.php',
+        'admin_prof_items.php',
+        'admin_prof_sect.php',
+        'admin_rss_feeds.php',
+        'admin_startpage.php',
+        'admin_user.php',
+        'admin_user_groups.php',
+        'admin_user_groups_add.php',
+        'admin_user_groups_edit.php',
+        'admin_user_groups_edit_users.php',
+        'admin_users.php',
+        'admin_viewlog.php',
+        'admin_visitor_log.php',
+        'admin_wordfilter.php',
+        'ajax.php',
+        'attachments.php',
+        'boot.php',
+        'change_pw.php',
+        'close_poll.php',
+        'confirm_email.php',
+        'create_poll.php',
+        'delete.php',
+        'dictionary.php',
+        'discussion.php',
+        'display.php',
+        'display_emoticons.php',
+        'edit.php',
+        'edit_attachments.php',
+        'edit_email.php',
+        'edit_password.php',
+        'edit_poll.php',
+        'edit_prefs.php',
+        'edit_profile.php',
+        'edit_relations.php',
+        'edit_signature.php',
+        'edit_subscriptions.php',
+        'edit_wordfilter.php',
+        'email.php',
+        'folder_options.php',
+        'folder_subscriptions.php',
+        'font_size.php',
+        'forgot_pw.php',
+        'forum_options.php',
+        'forum_password.php',
+        'forums.php',
+        'get_attachment.php',
+        'index.php',
+        'json.php',
+        'lboot.php',
+        'ldelete.php',
+        'ldisplay.php',
+        'ledit.php',
+        'lforums.php',
+        'links.php',
+        'links_add.php',
+        'links_detail.php',
+        'links_folder_edit.php',
+        'llogon.php',
+        'llogout.php',
+        'lmessages.php',
+        'logon.php',
+        'logout.php',
+        'lpm.php',
+        'lpm_edit.php',
+        'lpm_write.php',
+        'lpost.php',
+        'lthread_list.php',
+        'messages.php',
+        'mods_list.php',
+        'nav.php',
+        'pm.php',
+        'pm_edit.php',
+        'pm_export.php',
+        'pm_folders.php',
+        'pm_messages.php',
+        'pm_options.php',
+        'pm_write.php',
+        'poll_results.php',
+        'post.php',
+        'register.php',
+        'search.php',
+        'search_popup.php',
+        'start.php',
+        'start_left.php',
+        'start_main.php',
+        'thread_list.php',
+        'thread_options.php',
+        'threads_rss.php',
+        'user.php',
+        'user_font.php',
+        'user_menu.php',
+        'user_profile.php',
+        'user_rel.php',
+        'user_stats.php',
+        'visitor_log.php',
+        'chat/index.php',
+    );
 }
 
 function get_available_admin_files()
 {
-    return array('admin_banned.php', 'admin_default_forum_settings.php',
-                 'admin_folders.php', 'admin_folder_add.php',
-                 'admin_folder_edit.php', 'admin_forums.php',
-                 'admin_forum_access.php', 'admin_forum_links.php',
-                 'admin_forum_settings.php', 'admin_forum_set_passwd.php',
-                 'admin_forum_stats.php', 'admin_main.php', 'admin_menu.php',
-                 'admin_post_approve.php', 'admin_post_stats.php',
-                 'admin_prof_items.php', 'admin_prof_sect.php',
-                 'admin_rss_feeds.php', 'admin_startpage.php',
-                 'admin_user.php', 'admin_users.php', 'admin_user_groups.php',
-                 'admin_user_groups_add.php', 'admin_user_groups_edit.php',
-                 'admin_user_groups_edit_users.php', 'admin_viewlog.php',
-                 'admin_visitor_log.php', 'admin_wordfilter.php');
-}
-
-function get_available_user_control_files()
-{
-    return array('edit_prefs.php', 'edit_profile.php', 'edit_password.php',
-                 'edit_email.php', 'edit_attachments.php', 'edit_signature.php',
-                 'edit_relations.php', 'edit_wordfilter.php', 'edit_subscriptions.php',
-                 'folder_subscriptions.php', 'forum_options.php', 'pm_options.php');
-}
-
-function get_available_js_popup_files_preg()
-{
-    $popup_files_preg_array = array(
-        '^attachments\.php',
-        '^dictionary\.php',
-        '^display_emoticons\.php',
-        '^edit_attachments\.php',
-        '^email\.php',
-        '^folder_options\.php',
-        '^mods_list\.php',
-        '^poll_results\.php',
-        '^search_popup\.php',
-        '^search\.php.+show_stop_words=true',
-        '^user_profile\.php'
+    return array(
+        'admin_rss_feeds.php',
+        'admin_wordfilter.php',
+        'admin_folders.php',
+        'admin_user_groups.php',
+        'admin_user.php',
+        'admin_post_stats.php',
+        'admin_forum_settings.php',
+        'admin_forum_set_passwd.php',
+        'admin_link_approve.php',
+        'admin_default_forum_settings.php',
+        'admin_forum_links.php',
+        'admin_forum_access.php',
+        'admin_forums.php',
+        'admin_forum_stats.php',
+        'admin_viewlog.php',
+        'admin_folder_edit.php',
+        'admin_user_groups_edit_users.php',
+        'admin_startpage.php',
+        'admin_folder_add.php',
+        'admin_visitor_log.php',
+        'admin_prof_items.php',
+        'admin_post_approve.php',
+        'admin_banned.php',
+        'admin_prof_sect.php',
+        'admin_user_groups_add.php',
+        'admin_users.php',
+        'admin_user_groups_edit.php',
     );
+}
 
-    return implode("|", $popup_files_preg_array);
+function get_available_user_files()
+{
+    return array(
+        'edit_prefs.php', 
+        'edit_profile.php', 
+        'edit_password.php',
+        'edit_email.php', 
+        'edit_attachments.php', 
+        'edit_signature.php',
+        'edit_subscriptions.php',
+        'edit_relations.php', 
+        'edit_wordfilter.php', 
+        'edit_subscriptions.php',
+        'folder_subscriptions.php', 
+        'forum_options.php', 
+        'pm_options.php'
+    );
+}
+
+function get_available_popup_files()
+{
+    return array(
+        'attachments.php',
+        'dictionary.php',
+        'display_emoticons.php',
+        'edit_attachments.php',
+        'email.php',
+        'folder_options.php',
+        'mods_list.php',
+        'poll_results.php',
+        'search_popup.php',
+        'user_profile.php',
+    );
 }
 
 function get_available_support_files()
 {
-    return array('font_size.php', 'user_font.php', 'user_stats.php');
+    return array(
+        'ajax.php', 
+        'font_size.php', 
+        'json.php', 
+        'user_font.php', 
+        'user_stats.php'
+    );
+}
+
+function get_forum_access_ignore_files()
+{
+    return array_merge(
+        get_available_admin_files(),
+        get_available_user_files(),
+        array(
+            'admin.php',
+            'admin_menu.php',
+            'index.php',
+            'forums.php',
+            'nav.php',
+            'user.php',
+            'user_menu.php',
+        )
+    );
 }
 
 function get_proxy_cache_headers()
 {
-    return array('HTTP_VIA', 'HTTP_X_FORWARDED_FOR', 'HTTP_FORWARDED_FOR',
-                 'HTTP_X_FORWARDED', 'HTTP_FORWARDED', 'HTTP_CLIENT_IP',
-                 'HTTP_FORWARDED_FOR_IP', 'VIA', 'X_FORWARDED_FOR',
-                 'FORWARDED_FOR', 'X_FORWARDED', 'FORWARDED',
-                 'CLIENT_IP', 'FORWARDED_FOR_IP', 'HTTP_PROXY_CONNECTION');
-}
-
-function mkdir_recursive($path_name, $mode)
-{
-    if (!@is_dir(dirname($path_name))) mkdir_recursive(dirname($path_name), $mode);
-    if (!@is_dir($path_name)) @mkdir($path_name, $mode);
-    return @is_dir($path_name);
-}
-
-function rmdir_recursive($path)
-{
-    $path = rtrim($path, '/');
-
-    if (!(@$dir = opendir($path))) return false;
-
-    while (($file = readdir($dir)) !== false) {
-
-        if (@is_file("$path/$file") && !@is_link("$path/$file")) {
-
-            unlink("$path/$file");
-
-        } else if (@is_dir("$path/$file") && $file != '.' && $file != '..') {
-
-            if (!rmdir_recursive("$path/$file")) return false;
-        }
-    }
-
-    closedir($dir);
-
-    if (!@rmdir($path)) return false;
-
-    return true;
-}
-
-function copy_recursive($source, $dest)
-{
-    $source = rtrim($source, '/');
-
-    $dest = rtrim($dest, '/');
-
-    if (!($dir = @opendir($source))) return false;
-
-    @mkdir_recursive($dest);
-
-    while (($file = readdir($dir)) !== false) {
-
-        if ($file == '.' || $file == '..') continue;
-
-        if (is_dir("$source/$file")) {
-            copy_recursive("$source/$file", "$dest/$file");
-        } else {
-            copy("$source/$file", "$dest/$file");
-        }
-    }
-
-    closedir($dir);
-
-    return true;
+    return array(
+        'HTTP_VIA', 
+        'HTTP_X_FORWARDED_FOR', 
+        'HTTP_FORWARDED_FOR',
+        'HTTP_X_FORWARDED', 
+        'HTTP_FORWARDED', 
+        'HTTP_CLIENT_IP',
+        'HTTP_FORWARDED_FOR_IP', 
+        'VIA', 
+        'X_FORWARDED_FOR',
+        'FORWARDED_FOR', 
+        'X_FORWARDED', 
+        'FORWARDED',
+        'CLIENT_IP', 
+        'FORWARDED_FOR_IP', 
+        'HTTP_PROXY_CONNECTION',
+    );
 }
 
 function unregister_globals()
@@ -286,9 +301,40 @@ function unregister_globals()
     }
 }
 
+function disable_magic_quotes()
+{
+    if (!get_magic_quotes_gpc()) return;
+
+    $process = array(
+        &$_GET, 
+        &$_POST, 
+        &$_COOKIE, 
+        &$_REQUEST
+    );
+
+    while (list($index, $array) = each($process)) {
+        
+        foreach ($array as $key => $value) {
+
+            unset($process[$index][$key]);
+
+            if (is_array($value)) {
+
+                $process[$index][stripslashes($key)] = $value;
+
+                $process[] = &$process[$index][stripslashes($key)];
+
+            } else {
+
+                $process[$index][stripslashes($key)] = stripslashes($value);
+            }
+        }
+    }
+}
+
 function set_server_protocol()
 {
-    if (!isset($_SERVER['SERVER_PROTOCOL']) || ($_SERVER['SERVER_PROTOCOL'] != 'HTTP/1.0' && $_SERVER['SERVER_PROTOCOL'] != 'HTTP/1.1')) {
+    if (!isset($_SERVER['SERVER_PROTOCOL']) || !in_array($_SERVER['SERVER_PROTOCOL'], array('HTTP/1.0', 'HTTP/1.1'))) {
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.0';
     }
 }

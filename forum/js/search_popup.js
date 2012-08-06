@@ -21,17 +21,11 @@ USA
 
 $(beehive).bind('init', function() {
 
-    $('div.bhinputsearch').each(function() {
+    $('input.search_input').each(function() {
 
-        var $container = $(this);
-        
-        var container_width = $container.width();
+        var $search_input = $(this);
 
-        var $search_input = $container.find('input:text');
-
-        if ($search_input.length != 1) {
-            return false;
-        }
+        var $container = $('<div class="bhinputsearch">');
         
         var $search_button = $('<img src="' + beehive.images['search_button.png'] + '" class="search_button" />');
         
@@ -40,22 +34,30 @@ $(beehive).bind('init', function() {
             var popup_query = { 
                 'webtag' : beehive.webtag,
                 'obj_id' : $search_input.attr('id'),
-                'type' : $container.hasClass('search_logon') ? 1 : 2,
-                'multi' : $container.hasClass('allow_multi') ? 'Y' : 'N',
+                'type' : $search_input.hasClass('search_logon') ? 1 : 2,
+                'multi' : $search_input.hasClass('allow_multi') ? 'Y' : 'N',
                 'selected' : $search_input.val() 
             };
 
             window.open('search_popup.php?' + $.param(popup_query), null, beehive.window_options.join(','));
         });
 
-        $search_button.appendTo($container);
-        
         $search_button.load(function() {
-            $search_input.css('width', container_width - $(this).width());
+            
+            $search_input.css({
+                'border' : 'none',
+                'width' : $search_input.width() - ($(this).width()),
+            });
         });
         
-        if ($container.hasClass('search_logon')) {
+        $search_input.before($container);
         
+        $search_input.appendTo($container);
+        
+        $search_button.appendTo($container);
+        
+        if ($search_input.hasClass('search_logon')) {
+            
             $search_input.autocomplete({
                 
                 'minLength': 2,
@@ -75,7 +77,7 @@ $(beehive).bind('init', function() {
                             
                             response($.map(data.results_array, function(item) {
                                 return {
-                                    'label': item.NICKNAME,
+                                    'label': item.NICKNAME + ' (' + item.LOGON + ')',
                                     'value': item.LOGON
                                 };
                             }));
@@ -83,7 +85,7 @@ $(beehive).bind('init', function() {
                     });
                 },
                 'open': function(){
-                    $('.ui-autocomplete').width($search_input.width());
+                    $('.ui-autocomplete').width($search_input.width() + 30);
                 },
             });
         }

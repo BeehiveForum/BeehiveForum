@@ -55,7 +55,7 @@ function get_forum_list($page = 1)
     $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_DESC ON (FORUM_SETTINGS_DESC.FID = FORUMS.FID AND FORUM_SETTINGS_DESC.SNAME = 'forum_desc') ";
     $sql.= "WHERE FORUMS.ACCESS_LEVEL > -1 AND FORUMS.ACCESS_LEVEL < 3 ORDER BY FORUMS.FID LIMIT $offset, 10";
 
-    if (!$result_forums = db_query($sql, $db_get_forum_list)) return false;
+    if (!$result = db_query($sql, $db_get_forum_list)) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
@@ -67,7 +67,7 @@ function get_forum_list($page = 1)
         return get_forum_list($page - 1);
     }        
 
-    while (($forum_data = db_fetch_array($result_forums))) {
+    while (($forum_data = db_fetch_array($result))) {
 
         if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) < 1) {
             $forum_data['FORUM_NAME'] = "A Beehive Forum";
@@ -161,7 +161,7 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
         $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
     }
 
-    if (!$result_forums = db_query($sql, $db_get_my_forums)) return false;
+    if (!$result = db_query($sql, $db_get_my_forums)) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
@@ -173,7 +173,7 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
         return get_my_forums($view_type, $page - 1, $sort_by, $sort_dir);
     }        
 
-    while (($forum_data = db_fetch_array($result_forums, DB_RESULT_ASSOC))) {
+    while (($forum_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
 
         $forum_fid = $forum_data['FID'];
 

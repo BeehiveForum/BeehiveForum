@@ -100,8 +100,8 @@ $error_msg_array = array();
 
 if (isset($_POST['save']) || isset($_POST['preview'])) {
 
-    if (isset($_POST['sig_content']) && strlen(trim(stripslashes_array($_POST['sig_content']))) > 0) {
-        $t_sig_content = trim(stripslashes_array($_POST['sig_content']));
+    if (isset($_POST['sig_content']) && strlen(trim($_POST['sig_content'])) > 0) {
+        $t_sig_content = trim($_POST['sig_content']);
     } else {
         $t_sig_content = "";
     }

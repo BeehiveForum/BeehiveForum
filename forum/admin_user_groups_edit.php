@@ -56,10 +56,10 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 }
 
 // Are we returning somewhere?
-if (isset($_GET['ret']) && strlen(trim(stripslashes_array($_GET['ret']))) > 0) {
-    $ret = rawurldecode(trim(stripslashes_array($_GET['ret'])));
-} else if (isset($_POST['ret']) && strlen(trim(stripslashes_array($_POST['ret']))) > 0) {
-    $ret = trim(stripslashes_array($_POST['ret']));
+if (isset($_GET['ret']) && strlen(trim($_GET['ret'])) > 0) {
+    $ret = rawurldecode(trim($_GET['ret']));
+} else if (isset($_POST['ret']) && strlen(trim($_POST['ret'])) > 0) {
+    $ret = trim($_POST['ret']);
 } else {
     $ret = "admin_user_groups.php?webtag=$webtag";
 }
@@ -114,9 +114,9 @@ if (isset($_POST['save'])) {
 
     $valid = true;
 
-    if (isset($_POST['t_name']) && strlen(trim(stripslashes_array($_POST['t_name']))) > 0) {
+    if (isset($_POST['t_name']) && strlen(trim($_POST['t_name'])) > 0) {
 
-        $t_name = trim(stripslashes_array($_POST['t_name']));
+        $t_name = trim($_POST['t_name']);
 
     } else {
 
@@ -124,8 +124,8 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_description']) && strlen(trim(stripslashes_array($_POST['t_description']))) > 0) {
-        $t_description = trim(stripslashes_array($_POST['t_description']));
+    if (isset($_POST['t_description']) && strlen(trim($_POST['t_description'])) > 0) {
+        $t_description = trim($_POST['t_description']);
     } else {
         $t_description = "";
     }

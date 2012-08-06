@@ -1086,25 +1086,29 @@ function stats_get_most_downloaded_attachment()
                 $filesize = filesize("$attachment_dir/{$attachment_data['HASH']}");
                 $filesize+= filesize("$attachment_dir/{$attachment_data['HASH']}.thumb");
 
-                return array("msg" => sprintf("%s.%s", $attachment_data['TID'], $attachment_data['PID']),
-                             "filename" => rawurldecode($attachment_data['FILENAME']),
-                             "filedate" => filemtime("$attachment_dir/{$attachment_data['HASH']}"),
-                             "filesize" => $filesize,
-                             "aid" => $attachment_data['AID'],
-                             "hash" => $attachment_data['HASH'],
-                             "mimetype" => $attachment_data['MIMETYPE'],
-                             "downloads" => $attachment_data['DOWNLOADS']);
+                return array(
+                    "msg" => sprintf("%s.%s", $attachment_data['TID'], $attachment_data['PID']),
+                    "filename" => rawurldecode($attachment_data['FILENAME']),
+                    "filedate" => filemtime("$attachment_dir/{$attachment_data['HASH']}"),
+                    "filesize" => $filesize,
+                    "aid" => $attachment_data['AID'],
+                    "hash" => $attachment_data['HASH'],
+                    "mimetype" => $attachment_data['MIMETYPE'],
+                    "downloads" => $attachment_data['DOWNLOADS']
+                );
 
             } else {
 
-                return array("msg" => sprintf("%s.%s", $attachment_data['TID'], $attachment_data['PID']),
-                             "filename" => rawurldecode($attachment_data['FILENAME']),
-                             "filedate" => filemtime("$attachment_dir/{$attachment_data['HASH']}"),
-                             "filesize" => filesize("$attachment_dir/{$attachment_data['HASH']}"),
-                             "aid" => $attachment_data['AID'],
-                             "hash" => $attachment_data['HASH'],
-                             "mimetype" => $attachment_data['MIMETYPE'],
-                             "downloads" => $attachment_data['DOWNLOADS']);
+                return array(
+                    "msg" => sprintf("%s.%s", $attachment_data['TID'], $attachment_data['PID']),
+                    "filename" => rawurldecode($attachment_data['FILENAME']),
+                    "filedate" => filemtime("$attachment_dir/{$attachment_data['HASH']}"),
+                    "filesize" => filesize("$attachment_dir/{$attachment_data['HASH']}"),
+                    "aid" => $attachment_data['AID'],
+                    "hash" => $attachment_data['HASH'],
+                    "mimetype" => $attachment_data['MIMETYPE'],
+                    "downloads" => $attachment_data['DOWNLOADS']
+                );
             }
         }
     }
@@ -1308,10 +1312,12 @@ function stats_get_visitor_counts()
 
     list($visitors_this_year) = db_fetch_array($result, DB_RESULT_NUM);
 
-    return array('DAY' => $visitors_today,
-                 'WEEK' => $visitors_this_week,
-                 'MONTH' => $visitors_this_month,
-                 'YEAR' => $visitors_this_year);
+    return array(
+        'DAY' => $visitors_today,
+        'WEEK' => $visitors_this_week,
+        'MONTH' => $visitors_this_month,
+        'YEAR' => $visitors_this_year
+    );
 }
 
 function stats_get_average_age()

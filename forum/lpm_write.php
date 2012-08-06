@@ -210,9 +210,9 @@ $t_content = $post->getContent();
 if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     // User clicked the send or preview button - check the data that was submitted
-    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
+    if (isset($_POST['t_subject']) && strlen(trim($_POST['t_subject'])) > 0) {
 
-        $t_subject = trim(stripslashes_array($_POST['t_subject']));
+        $t_subject = trim($_POST['t_subject']);
 
     } else {
 
@@ -220,9 +220,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = trim(stripslashes_array($_POST['t_content']));
+        $t_content = trim($_POST['t_content']);
 
         $post->setContent($t_content);
 
@@ -249,9 +249,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         }
     }
 
-    if (isset($_POST['t_to_uid_others']) && strlen(trim(stripslashes_array($_POST['t_to_uid_others']))) > 0) {
+    if (isset($_POST['t_to_uid_others']) && strlen(trim($_POST['t_to_uid_others'])) > 0) {
 
-        $t_recipient_array = preg_split("/[;|,]/u", trim(stripslashes_array($_POST['t_to_uid_others'])));
+        $t_recipient_array = preg_split("/[;|,]/u", trim($_POST['t_to_uid_others']));
 
         $t_new_recipient_array['TO_UID'] = array();
         $t_new_recipient_array['LOGON']  = array();
@@ -318,18 +318,18 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 } else if (isset($_POST['save'])) {
 
     // User click the save button - Check the data that was submitted.
-    if (isset($_POST['t_subject']) && strlen(trim(stripslashes_array($_POST['t_subject']))) > 0) {
+    if (isset($_POST['t_subject']) && strlen(trim($_POST['t_subject'])) > 0) {
 
-        $t_subject = trim(stripslashes_array($_POST['t_subject']));
+        $t_subject = trim($_POST['t_subject']);
 
     } else {
 
         $t_subject = "";
     }
 
-    if (isset($_POST['t_content']) && strlen(trim(stripslashes_array($_POST['t_content']))) > 0) {
+    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = trim(stripslashes_array($_POST['t_content']));
+        $t_content = trim($_POST['t_content']);
 
         $post->setContent($t_content);
 
@@ -346,9 +346,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $aid = md5(uniqid(mt_rand()));
     }
 
-    if (isset($_POST['t_to_uid_others']) && strlen(trim(stripslashes_array($_POST['t_to_uid_others']))) > 0) {
+    if (isset($_POST['t_to_uid_others']) && strlen(trim($_POST['t_to_uid_others'])) > 0) {
 
-        $t_recipient_array = preg_split("/[;|,]/u", trim(stripslashes_array($_POST['t_to_uid_others'])));
+        $t_recipient_array = preg_split("/[;|,]/u", trim($_POST['t_to_uid_others']));
 
         if (sizeof($t_recipient_array) > 10) {
 

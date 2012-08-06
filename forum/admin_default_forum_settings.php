@@ -115,21 +115,21 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
     if (isset($_POST['cancel_unread_cutoff'])) unset($_POST['messages_unread_cutoff']);
 
-    if (isset($_POST['forum_name']) && strlen(trim(stripslashes_array($_POST['forum_name']))) > 0) {
-        $new_forum_settings['forum_name'] = trim(stripslashes_array($_POST['forum_name']));
+    if (isset($_POST['forum_name']) && strlen(trim($_POST['forum_name'])) > 0) {
+        $new_forum_settings['forum_name'] = trim($_POST['forum_name']);
     } else {
         $error_msg_array[] = gettext("You must supply a forum name");
         $valid = false;
     }
 
-    if (isset($_POST['forum_desc']) && strlen(trim(stripslashes_array($_POST['forum_desc']))) > 0) {
-        $new_forum_settings['forum_desc'] = trim(stripslashes_array($_POST['forum_desc']));
+    if (isset($_POST['forum_desc']) && strlen(trim($_POST['forum_desc'])) > 0) {
+        $new_forum_settings['forum_desc'] = trim($_POST['forum_desc']);
     } else {
         $new_forum_settings['forum_desc'] = "";
     }
 
-    if (isset($_POST['forum_keywords']) && strlen(trim(stripslashes_array($_POST['forum_keywords']))) > 0) {
-        $new_forum_settings['forum_keywords'] = trim(stripslashes_array($_POST['forum_keywords']));
+    if (isset($_POST['forum_keywords']) && strlen(trim($_POST['forum_keywords'])) > 0) {
+        $new_forum_settings['forum_keywords'] = trim($_POST['forum_keywords']);
     } else {
         $new_forum_settings['forum_keywords'] = "";
     }
@@ -140,8 +140,8 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['mail_function'] = forum_get_setting('mail_function', false, YEAR_IN_SECONDS);
     }
 
-    if (isset($_POST['smtp_server']) && strlen(trim(stripslashes_array($_POST['smtp_server']))) > 0) {
-        $new_forum_settings['smtp_server'] = trim(stripslashes_array($_POST['smtp_server']));
+    if (isset($_POST['smtp_server']) && strlen(trim($_POST['smtp_server'])) > 0) {
+        $new_forum_settings['smtp_server'] = trim($_POST['smtp_server']);
     } else {
         $new_forum_settings['smtp_server'] = '';
     }
@@ -152,38 +152,38 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['smtp_port'] = '';
     }
 
-    if (isset($_POST['smtp_username']) && strlen(trim(stripslashes_array($_POST['smtp_username']))) > 0) {
-        $new_forum_settings['smtp_username'] = trim(stripslashes_array($_POST['smtp_username']));
+    if (isset($_POST['smtp_username']) && strlen(trim($_POST['smtp_username'])) > 0) {
+        $new_forum_settings['smtp_username'] = trim($_POST['smtp_username']);
     } else {
         $new_forum_settings['smtp_username'] = '';
     }
 
-    if (isset($_POST['smtp_password']) && strlen(trim(stripslashes_array($_POST['smtp_password']))) > 0) {
-        $new_forum_settings['smtp_password'] = trim(stripslashes_array($_POST['smtp_password']));
+    if (isset($_POST['smtp_password']) && strlen(trim($_POST['smtp_password'])) > 0) {
+        $new_forum_settings['smtp_password'] = trim($_POST['smtp_password']);
     } else {
         $new_forum_settings['smtp_password'] = '';
     }
 
-    if (isset($_POST['sendmail_path']) && strlen(trim(stripslashes_array($_POST['sendmail_path']))) > 0) {
-        $new_forum_settings['sendmail_path'] = trim(stripslashes_array($_POST['sendmail_path']));
+    if (isset($_POST['sendmail_path']) && strlen(trim($_POST['sendmail_path'])) > 0) {
+        $new_forum_settings['sendmail_path'] = trim($_POST['sendmail_path']);
     } else {
         $new_forum_settings['sendmail_path'] = '';
     }
 
-    if (isset($_POST['forum_email']) && strlen(trim(stripslashes_array($_POST['forum_email']))) > 0) {
-        $new_forum_settings['forum_email'] = trim(stripslashes_array($_POST['forum_email']));
+    if (isset($_POST['forum_email']) && strlen(trim($_POST['forum_email'])) > 0) {
+        $new_forum_settings['forum_email'] = trim($_POST['forum_email']);
     } else {
         $new_forum_settings['forum_email'] = "admin@beehiveforum.co.uk";
     }
 
-    if (isset($_POST['forum_noreply_email']) && strlen(trim(stripslashes_array($_POST['forum_noreply_email']))) > 0) {
-        $new_forum_settings['forum_noreply_email'] = trim(stripslashes_array($_POST['forum_noreply_email']));
+    if (isset($_POST['forum_noreply_email']) && strlen(trim($_POST['forum_noreply_email'])) > 0) {
+        $new_forum_settings['forum_noreply_email'] = trim($_POST['forum_noreply_email']);
     } else {
         $new_forum_settings['forum_noreply_email'] = "noreply@beehiveforum.co.uk";
     }
 
-    if (isset($_POST['content_delivery_domains']) && strlen(trim(stripslashes_array($_POST['content_delivery_domains']))) > 0) {
-        $new_forum_settings['content_delivery_domains'] = trim(stripslashes_array($_POST['content_delivery_domains']));
+    if (isset($_POST['content_delivery_domains']) && strlen(trim($_POST['content_delivery_domains'])) > 0) {
+        $new_forum_settings['content_delivery_domains'] = trim($_POST['content_delivery_domains']);
     } else {
         $new_forum_settings['content_delivery_domains'] = "";
     }
@@ -206,8 +206,8 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['sphinx_search_enabled'] = "N";
     }
 
-    if (isset($_POST['sphinx_search_host']) && strlen(trim(stripslashes_array($_POST['sphinx_search_host']))) > 0) {
-        $new_forum_settings['sphinx_search_host'] = trim(stripslashes_array($_POST['sphinx_search_host']));
+    if (isset($_POST['sphinx_search_host']) && strlen(trim($_POST['sphinx_search_host'])) > 0) {
+        $new_forum_settings['sphinx_search_host'] = trim($_POST['sphinx_search_host']);
     } else {
         $new_forum_settings['sphinx_search_host'] = "";
     }
@@ -265,8 +265,8 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['forum_rules_enabled'] = "N";
     }
 
-    if (isset($_POST['forum_rules_message']) && strlen(trim(stripslashes_array($_POST['forum_rules_message']))) > 0) {
-        $new_forum_settings['forum_rules_message'] = trim(stripslashes_array($_POST['forum_rules_message']));
+    if (isset($_POST['forum_rules_message']) && strlen(trim($_POST['forum_rules_message'])) > 0) {
+        $new_forum_settings['forum_rules_message'] = trim($_POST['forum_rules_message']);
     } else {
         $new_forum_settings['forum_rules_message'] = "";
     }
@@ -283,26 +283,26 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['allow_forum_google_analytics'] = "N";
     }
 
-    if (isset($_POST['google_analytics_code']) && strlen(trim(stripslashes_array($_POST['google_analytics_code']))) > 0) {
-        $new_forum_settings['google_analytics_code'] = trim(stripslashes_array($_POST['google_analytics_code']));
+    if (isset($_POST['google_analytics_code']) && strlen(trim($_POST['google_analytics_code'])) > 0) {
+        $new_forum_settings['google_analytics_code'] = trim($_POST['google_analytics_code']);
     } else {
         $new_forum_settings['google_analytics_code'] = "";
     }
 
-    if (isset($_POST['adsense_publisher_id']) && strlen(trim(stripslashes_array($_POST['adsense_publisher_id']))) > 0) {
-        $new_forum_settings['adsense_publisher_id'] = trim(stripslashes_array($_POST['adsense_publisher_id']));
+    if (isset($_POST['adsense_publisher_id']) && strlen(trim($_POST['adsense_publisher_id'])) > 0) {
+        $new_forum_settings['adsense_publisher_id'] = trim($_POST['adsense_publisher_id']);
     } else {
         $new_forum_settings['adsense_publisher_id'] = '';
     }
 
-    if (isset($_POST['adsense_medium_ad_id']) && strlen(trim(stripslashes_array($_POST['adsense_medium_ad_id']))) > 0) {
-        $new_forum_settings['adsense_medium_ad_id'] = trim(stripslashes_array($_POST['adsense_medium_ad_id']));
+    if (isset($_POST['adsense_medium_ad_id']) && strlen(trim($_POST['adsense_medium_ad_id'])) > 0) {
+        $new_forum_settings['adsense_medium_ad_id'] = trim($_POST['adsense_medium_ad_id']);
     } else {
         $new_forum_settings['adsense_medium_ad_id'] = '';
     }
 
-    if (isset($_POST['adsense_small_ad_id']) && strlen(trim(stripslashes_array($_POST['adsense_small_ad_id']))) > 0) {
-        $new_forum_settings['adsense_small_ad_id'] = trim(stripslashes_array($_POST['adsense_small_ad_id']));
+    if (isset($_POST['adsense_small_ad_id']) && strlen(trim($_POST['adsense_small_ad_id'])) > 0) {
+        $new_forum_settings['adsense_small_ad_id'] = trim($_POST['adsense_small_ad_id']);
     } else {
         $new_forum_settings['adsense_small_ad_id'] = '';
     }
@@ -331,9 +331,9 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['text_captcha_enabled'] = "N";
     }
     
-    if (isset($_POST['text_captcha_dir']) && strlen(trim(stripslashes_array($_POST['text_captcha_dir']))) > 0) {
+    if (isset($_POST['text_captcha_dir']) && strlen(trim($_POST['text_captcha_dir'])) > 0) {
 
-        $new_forum_settings['text_captcha_dir'] = trim(stripslashes_array($_POST['text_captcha_dir']));
+        $new_forum_settings['text_captcha_dir'] = trim($_POST['text_captcha_dir']);
 
     } else if (mb_strtoupper($new_forum_settings['text_captcha_enabled']) == "Y") {
 
@@ -478,9 +478,9 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['attachment_thumbnails'] = "N";
     }
 
-    if (isset($_POST['attachment_dir']) && strlen(trim(stripslashes_array($_POST['attachment_dir']))) > 0) {
+    if (isset($_POST['attachment_dir']) && strlen(trim($_POST['attachment_dir'])) > 0) {
 
-        $new_forum_settings['attachment_dir'] = trim(stripslashes_array($_POST['attachment_dir']));
+        $new_forum_settings['attachment_dir'] = trim($_POST['attachment_dir']);
 
     } else if (mb_strtoupper($new_forum_settings['attachments_enabled']) == "Y") {
 
@@ -488,20 +488,20 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $valid = false;
     }
 
-    if (isset($_POST['attachment_mime_types']) && strlen(trim(stripslashes_array($_POST['attachment_mime_types']))) > 0) {
-        $new_forum_settings['attachment_mime_types'] = trim(stripslashes_array($_POST['attachment_mime_types']));
+    if (isset($_POST['attachment_mime_types']) && strlen(trim($_POST['attachment_mime_types'])) > 0) {
+        $new_forum_settings['attachment_mime_types'] = trim($_POST['attachment_mime_types']);
     } else {
         $new_forum_settings['attachment_mime_types'] = "";
     }
     
     if (isset($_POST['attachment_thumbnail_method']) && in_array($_POST['attachment_thumbnail_method'], array_keys($attachment_thumbnail_methods))) {
-        $new_forum_settings['attachment_thumbnail_method'] = trim(stripslashes_array($_POST['attachment_thumbnail_method'])); 
+        $new_forum_settings['attachment_thumbnail_method'] = trim($_POST['attachment_thumbnail_method']); 
     } else {
         $new_forum_settings['attachment_thumbnail_method'] = ATTACHMENT_THUMBNAIL_PHPGD;
     }
 
-    if (isset($_POST['attachment_imagemagick_path']) && strlen(trim(stripslashes_array($_POST['attachment_imagemagick_path']))) > 0) {
-        $new_forum_settings['attachment_imagemagick_path'] = trim(stripslashes_array($_POST['attachment_imagemagick_path']));
+    if (isset($_POST['attachment_imagemagick_path']) && strlen(trim($_POST['attachment_imagemagick_path'])) > 0) {
+        $new_forum_settings['attachment_imagemagick_path'] = trim($_POST['attachment_imagemagick_path']);
     } else {
         $new_forum_settings['attachment_imagemagick_path'] = "";
     }
@@ -547,7 +547,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
                 echo "<div align=\"center\">\n";
                 echo "<form accept-charset=\"utf-8\" name=\"prefsform\" action=\"admin_default_forum_settings.php\" method=\"post\" target=\"_self\">\n";
                 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-                echo "  ", form_input_hidden_array(stripslashes_array($_POST)), "\n";
+                echo "  ", form_input_hidden_array($_POST), "\n";
                 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
                 echo "    <tr>\n";
                 echo "      <td align=\"left\">\n";

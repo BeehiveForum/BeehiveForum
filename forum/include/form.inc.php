@@ -84,19 +84,19 @@ function form_input_hidden($name, $value = false, $custom_html = false)
 
 function form_input_text_search($name, $value = false, $width = false, $maxchars = false, $type = SEARCH_LOGON, $allow_multi = false, $custom_html = false, $class = '')
 {
-    $allow_multi = ($allow_multi) ? "allow_multi" : "";
+    $type = ($type == SEARCH_LOGON) ? 'search_logon' : 'search_thread';
 
-    $class = trim(sprintf('%s search_input', $class));
+    $classes = array(
+        $class, 
+        $type,
+        'search_input'
+    );
+    
+    if ($allow_multi) $classes[] = 'allow_multi';
 
     if (!in_array($type, array(SEARCH_LOGON, SEARCH_THREAD))) $type = SEARCH_LOGON;
 
-    $type = ($type == SEARCH_LOGON) ? "search_logon" : "search_thread";
-
-    $html = "<div class=\"bhinputsearch $allow_multi $type\">";
-    $html.= form_input_text($name, $value, $width, $maxchars, $custom_html, $class);
-    $html.= "</div>\n";
-
-    return $html;
+    return form_input_text($name, $value, $width, $maxchars, $custom_html, implode(' ', $classes));
 }
 
 function form_input_hidden_array($array)

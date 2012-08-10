@@ -696,7 +696,7 @@ function forum_check_global_setting_name($setting_name)
         'searchbots_show_active', 
         'searchbots_show_recent', 
         'send_new_user_email', 
-        'session::cutoff', 
+        'session_cutoff', 
         'sitemap_enabled', 
         'sitemap_freq', 
         'showpopuponnewpm', 

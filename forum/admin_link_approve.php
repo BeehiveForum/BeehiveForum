@@ -144,7 +144,7 @@ if (isset($lid) && is_numeric($lid)) {
 
                 } else {
 
-                    html_draw_top("title=", gettext("Approve Link"), "", 'class=window_title');
+                    html_draw_top(sprintf('title=%s', gettext("Approve Link")), 'class=window_title');
                     html_display_msg(gettext("Approve Link"), sprintf(gettext("Successfully approved link"), $lid), "admin_link_approve.php", 'get', array('back' => gettext("Back")), array('ret' => $ret), '_self', 'center');
                     html_draw_bottom();
                     exit;
@@ -170,7 +170,7 @@ if (isset($lid) && is_numeric($lid)) {
 
                 } else {
 
-                    html_draw_top("title=", gettext("Approve Link"), "", 'class=window_title');
+                    html_draw_top(sprintf('title=%s', gettext("Approve Link")), 'class=window_title');
                     html_display_msg(gettext("Approve Link"), sprintf(gettext("Successfully deleted link"), $lid), "admin_link_approve.php", 'get', array('back' => gettext("Back")), array('ret' => $ret), '_self', 'center');
                     html_draw_bottom();
                     exit;
@@ -182,7 +182,7 @@ if (isset($lid) && is_numeric($lid)) {
             }
         }        
         
-        html_draw_top("title=", gettext("Admin"), " - ", gettext("Approve Link"), "", 'class=window_title', "post.js", "resize_width=86%");
+        html_draw_top(sprintf('title=%s', gettext("Admin - Approve Link")), 'class=window_title', "post.js", "resize_width=86%");
         
         echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Approve Link"), "</h1>\n";
         
@@ -255,7 +255,7 @@ if (isset($lid) && is_numeric($lid)) {
 
 } else {
 
-    html_draw_top("title=", gettext("Admin"), " - ", gettext("Link Approval Queue"), "", 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Admin - Link Approval Queue")), 'class=window_title');
 
     $link_approval_array = admin_get_link_approval_queue($page);
 

@@ -858,7 +858,7 @@ function check_search_frequency()
 
     if (db_num_rows($result) > 0) {
 
-        list($last_search_stamp, $current_timestamp) = db_fetch_array($result);
+        list($last_search_stamp, $current_timestamp) = db_fetch_array($result, DB_RESULT_NUM);
 
         if (!is_numeric($last_search_stamp) || $last_search_stamp < $current_timestamp) {
 

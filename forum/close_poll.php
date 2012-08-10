@@ -188,9 +188,9 @@ if (isset($_POST['endpoll'])) {
     }
 }
 
-html_draw_top(sprintf("title=%s", gettext("Delete Message")), "post.js", "resize_width=720", "basetarget=_blank", 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Close Poll")), "post.js", "resize_width=720", "basetarget=_blank", 'class=window_title');
 
-echo "<h1>", gettext("Delete Message"), " {$tid}.{$pid}</h1>\n";
+echo "<h1>", gettext("Close Poll"), " {$tid}.{$pid}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '720', 'left');

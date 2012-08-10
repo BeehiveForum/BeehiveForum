@@ -1082,13 +1082,6 @@ $(beehive).bind('init', function() {
         $(this).attr('selectedIndex', 0);
     });
 
-    $('div.tools input').bind('click', function() {
-
-        if (htmltools.auto_spell_check()) {
-            htmltools.clear_focus();
-        }
-    });
-
     $('div.tools img').bind('mouseover', function() {
 
         $(this).addClass('tools_over');

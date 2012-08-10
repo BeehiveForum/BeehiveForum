@@ -218,7 +218,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['sphinx_search_port'] = '';
     }
 
-    if (isset($_POST['session::cutoff']) && is_numeric($_POST['session::cutoff'])) {
+    if (isset($_POST['session_cutoff']) && is_numeric($_POST['session_cutoff'])) {
         $new_forum_settings['session_cutoff'] = $_POST['session_cutoff'];
     } else {
         $new_forum_settings['session_cutoff'] = 86400;
@@ -226,7 +226,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
     if (isset($_POST['active_sess_cutoff']) && is_numeric($_POST['active_sess_cutoff'])) {
 
-        if ($_POST['active_sess_cutoff'] < $_POST['session::cutoff']) {
+        if ($_POST['active_sess_cutoff'] < $new_forum_settings['session_cutoff']) {
 
             $new_forum_settings['active_sess_cutoff'] = $_POST['active_sess_cutoff'];
 
@@ -540,7 +540,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
             if (($unread_cutoff_stamp > 0) && ($previous_unread_cutoff_stamp !== false) && ($unread_cutoff_stamp != $previous_unread_cutoff_stamp)) {
 
-                html_draw_top("title=", gettext("Admin"), " - ", gettext("Global Forum Settings"), "", 'class=window_title');
+                html_draw_top(sprintf('title=%s', gettext("Admin - Global Forum Settings")), 'class=window_title');
 
                 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Global Forum Settings"), "</h1>\n";
                 echo "<br />\n";
@@ -627,7 +627,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 }
 
 // Start Output Here
-html_draw_top("title=", gettext("Admin"), " - ", gettext("Global Forum Settings"), "", 'class=window_title', "onunload=clearFocus()", "admin.js", "emoticons.js", "htmltools.js");
+html_draw_top(sprintf('title=%s', gettext("Admin - Global Forum Settings")), 'class=window_title', "admin.js", "emoticons.js", "htmltools.js");
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Global Forum Settings"), "</h1>\n";
 
@@ -962,7 +962,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">", gettext("Session cut off (seconds)"), ":</td>\n";
-echo "                        <td align=\"left\">", form_input_text("session::cutoff", (isset($forum_global_settings['session::cutoff'])) ? htmlentities_array($forum_global_settings['session::cutoff']) : "86400", 20, 6), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("session_cutoff", (isset($forum_global_settings['session_cutoff'])) ? htmlentities_array($forum_global_settings['session_cutoff']) : "86400", 20, 6), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">", gettext("Active session cut off (seconds)"), ":</td>\n";

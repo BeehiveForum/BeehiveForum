@@ -416,7 +416,7 @@ if (!isset($user_prefs['POST_PAGE']) || $user_prefs['POST_PAGE'] == 0) {
 $show_set_all = (forums_get_available_count() > 1) ? true : false;
 
 // Start output here
-html_draw_top("title=", gettext("My Controls"), " - ", gettext("Forum Options"), "", "emoticons.js", 'forum_options.js', 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("My Controls - Forum Options")), "emoticons.js", 'forum_options.js', 'class=window_title');
 
 echo "<h1>", gettext("Forum Options"), "</h1>\n";
 

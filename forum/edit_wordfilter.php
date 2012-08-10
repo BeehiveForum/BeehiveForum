@@ -252,7 +252,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
-    html_draw_top("title=", gettext("My Controls"), " - ", gettext("Edit Word Filter"), "", 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("My Controls - Edit Word Filter")), 'class=window_title');
 
     echo "<h1>", gettext("Edit Word Filter"), "</h1>\n";
 
@@ -349,7 +349,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
         exit;
     }
 
-    html_draw_top("title=", gettext("My Controls"), " - ", gettext("Edit Word Filter"), "", 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("My Controls - Edit Word Filter")), 'class=window_title');
 
     echo "<h1>", gettext("Edit Word Filter"), "</h1>\n";
 
@@ -423,7 +423,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
 } else {
 
-    html_draw_top("title=", gettext("My Controls"), " - ", gettext("Edit Word Filter"), "", 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("My Controls - Edit Word Filter")), 'class=window_title');
 
     $word_filter_array = user_get_word_filter_list($page);
 

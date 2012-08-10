@@ -21,7 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Array of directories to exclude from the matches
 $exclude_dirs_array = array(
     'forum/chat', 
     'forum/geshi', 
@@ -31,7 +30,6 @@ $exclude_dirs_array = array(
     'forum/include/swift'
 );
 
-// Get array of files in specified directory and sub-directories.
 function get_file_list(&$file_list_array, $path, $extension)
 {
     $extension_preg = preg_quote($extension, '/');
@@ -57,29 +55,27 @@ function get_file_list(&$file_list_array, $path, $extension)
     }
 }
 
-// Prevent time out
 set_time_limit(0);
 
-// Output the content as text.
 header('Content-Type: text/plain');
 
-// Get the file list
 get_file_list($file_list, 'forum', '.php');
 
-// Set the pipes for proc_open.
 $descriptor_spec = array(
     0 => array("pipe", "r"),
     1 => array("pipe", "w"),
     2 => array("pipe", "w")
 );
 
-// Working directory
 $cwd = getcwd();
 
-// Check through each file individually.
 foreach ($file_list as $php_file) {
     
-    $command = sprintf('%1$s\ZendCodeAnalyzer.exe "%1$s\%2$s"', $cwd, $php_file);
+    $command = sprintf(
+        '%1$s\ZendCodeAnalyzer.exe "%1$s\%2$s"', 
+        $cwd, 
+        $php_file
+    );
     
     $process = proc_open($command, $descriptor_spec, $pipes);
 
@@ -92,7 +88,13 @@ foreach ($file_list as $php_file) {
         foreach ($results_array as $result) {
         
             if (preg_match('/([^\(]+)\(line ([^)]+)\): (.+)/', trim($result), $matches) > 0) {
-                printf("%s(%s): %s\n", trim(str_replace($cwd, '', $matches[1]), DIRECTORY_SEPARATOR), $matches[2], $matches[3]);
+                
+                printf(
+                    "%s(%s): %s\n", 
+                    trim(str_replace($cwd, '', $matches[1]), DIRECTORY_SEPARATOR), 
+                    $matches[2], 
+                    $matches[3]
+                );
             }
         }
 

@@ -81,7 +81,7 @@ if (isset($_POST['prune_log'])) {
     }
 }
 
-html_draw_top("title=", gettext("Admin"), " - ", gettext("Visitor Log"), "", 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Admin - Visitor Log")), 'class=window_title');
 
 $admin_visitor_log_array = admin_get_visitor_log($page);
 
@@ -89,20 +89,20 @@ echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'),
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '90%', 'center');
+    html_display_error_array($error_msg_array, '86%', 'center');
 
 } else if (isset($_GET['pruned'])) {
 
-    html_display_success_msg(gettext("Successfully Pruned Visitor Log"), '90%', 'center');
+    html_display_success_msg(gettext("Successfully Pruned Visitor Log"), '86%', 'center');
 
 } else if (sizeof($admin_visitor_log_array['user_array']) < 1) {
 
-    html_display_warning_msg(gettext("No Visitors Logged"), '90%', 'center');
+    html_display_warning_msg(gettext("No Visitors Logged"), '86%', 'center');
 }
 
 echo "<br />\n";
 echo "<div align=\"center\">\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -204,7 +204,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <form accept-charset=\"utf-8\" action=\"admin_visitor_log.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

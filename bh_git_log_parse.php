@@ -21,27 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
 date_default_timezone_set('UTC');
 
-// Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./forum/include/");
 
-// Mimic Lite Mode
 define("BEEHIVEMODE_LIGHT", true);
 
-// Beehive Config
 require_once BH_INCLUDE_PATH. 'config.inc.php';
 
-// Development configuration
 if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
     require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
 }
 
-// Constants
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 
-// Database functions.
 require_once BH_INCLUDE_PATH. 'db.inc.php';
 
 function get_git_log_data($date)
@@ -131,7 +124,10 @@ function git_mysql_output_log($log_filename = null)
 
     ob_start();
 
-    printf("# Beehive Forum Change Log (Generated: %s)\r\n\r\n", gmdate('D, d M Y H:i:s'));
+    printf(
+        "# Beehive Forum Change Log (Generated: %s)\r\n\r\n", 
+        gmdate('D, d M Y H:i:s')
+    );
     
     while (($git_log_entry_array = db_fetch_array($result, DB_RESULT_ASSOC))) {
         
@@ -140,7 +136,11 @@ function git_mysql_output_log($log_filename = null)
             if ($git_log_entry_date != $git_log_entry_array['DATE']) {
 
                 $git_log_entry_date = $git_log_entry_array['DATE'];
-                printf("## Date: %s\n\n", gmdate('D, d M Y', $git_log_entry_date));
+                
+                printf(
+                    "## Date: %s\n\n", 
+                    gmdate('D, d M Y', $git_log_entry_date)
+                );
             }                
 
             foreach ($git_log_entry_matches_array as $git_log_entry_matches) {
@@ -153,7 +153,18 @@ function git_mysql_output_log($log_filename = null)
 
                 foreach ($git_log_comment_array as $line => $git_log_comment_line) {
                     
-                    echo ($line == 0) ? sprintf('- %s: ', $git_log_entry_matches[2]) : str_repeat(' ', strlen($git_log_entry_matches[2]) + 4);
+                    if ($line == 0) {
+                        
+                        sprintf(
+                            '- %s: ', 
+                            $git_log_entry_matches[2]
+                        );
+                    
+                    } else {
+                        
+                        echo str_repeat(' ', strlen($git_log_entry_matches[2]) + 4);
+                    }
+                    
                     echo $git_log_comment_line, "\n";
                 }
             }
@@ -171,14 +182,10 @@ function git_mysql_output_log($log_filename = null)
     echo ob_get_clean();
 }
 
-// Prevent time out
 set_time_limit(0);
 
-// Output the content as text.
 header('Content-Type: text/plain');
 
-// Check to see if we have a date on the command line and
-// that it is in the valid format YYYY-MM-DD.
 if (isset($_SERVER['argv'][1]) && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u', $_SERVER['argv'][1]) > 0) {
     $modified_date = $_SERVER['argv'][1];
 } else if (isset($_GET['date']) && preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u', $_GET['date']) > 0) {

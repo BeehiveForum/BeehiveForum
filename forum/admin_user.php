@@ -1189,31 +1189,31 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             echo "                      </tr>\n";
         }
 
-        if (isset($user['session::REFERER']) && strlen(trim($user['session::REFERER'])) > 0) {
+        if (isset($user['SESSION_REFERER']) && strlen(trim($user['SESSION_REFERER'])) > 0) {
 
             $user['SESSION_REFERER_FULL'] = $user['SESSION_REFERER'];
 
-            if (!$user['session::REFERER'] = split_url($user['session::REFERER'])) {
+            if (!$user['SESSION_REFERER'] = split_url($user['SESSION_REFERER'])) {
 
-                if (mb_strlen($user['session::REFERER_FULL']) > 25) {
+                if (mb_strlen($user['SESSION_REFERER_FULL']) > 25) {
 
-                    $user['SESSION_REFERER'] = mb_substr($user['session::REFERER_FULL'], 0, 25);
+                    $user['SESSION_REFERER'] = mb_substr($user['SESSION_REFERER_FULL'], 0, 25);
                     $user['SESSION_REFERER'].= "&hellip;";
                 }
             }
 
-            if (referer_is_banned($user['session::REFERER'])) {
+            if (referer_is_banned($user['SESSION_REFERER'])) {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"150\">", gettext("Session Referer"), "</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['session::REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['session::REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a> (", gettext("Banned"), ")</td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['SESSION_REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['SESSION_REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a> (", gettext("Banned"), ")</td>\n";
                 echo "                      </tr>\n";
 
             } else {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"150\">", gettext("Session Referer"), "</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['session::REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['session::REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a></td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['SESSION_REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['SESSION_REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a></td>\n";
                 echo "                      </tr>\n";
             }
 

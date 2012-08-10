@@ -213,7 +213,7 @@ if (isset($_POST['upload'])) {
 
         if (attachments_get($uid, $aid, $attachments_array, $image_attachments_array, $hash_array)) {
 
-            html_draw_top("title=", gettext("Delete attachments"), "", 'pm_popup_disabled', 'class=window_title');
+            html_draw_top(sprintf('title=%s', gettext("Delete attachments")), 'pm_popup_disabled', 'class=window_title');
 
             echo "<h1>", gettext("Delete attachments"), "</h1>\n";
             echo "<br />\n";
@@ -292,7 +292,7 @@ if (isset($_POST['upload'])) {
     }
 }
 
-html_draw_top("title=", gettext("Attachments"), "", 'attachments.js', 'onload=add_upload_field_link()', 'pm_popup_disabled', 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Attachments")), 'attachments.js', 'pm_popup_disabled', 'class=window_title');
 
 echo "<h1>", gettext("Attachments"), "</h1>\n";
 

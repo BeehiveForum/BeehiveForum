@@ -553,7 +553,7 @@ if (isset($_POST['preview'])) {
 
 $page_title = sprintf(gettext("Edit message %s"), $edit_msg);
 
-html_draw_top("title=$page_title", "onUnload=clearFocus()", "resize_width=720", "basetarget=_blank", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js", 'class=window_title');
+html_draw_top("title=$page_title", "resize_width=720", "basetarget=_blank", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js", 'class=window_title');
 
 echo "<h1>$page_title</h1>\n";
 

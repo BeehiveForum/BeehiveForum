@@ -260,7 +260,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
-    html_draw_top("title=", gettext("Admin"), " - ", gettext("Word Filter"), " - ", gettext("Add word filter"), "", 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Admin -  Word Filter - Add word filter")), 'class=window_title');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Word Filter"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add word filter"), "</h1>\n";
 
@@ -352,7 +352,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
         html_draw_error(gettext("Invalid Filter ID"), 'admin_wordfilter.php', 'get', array('back' => gettext("Back")));
     }
 
-    html_draw_top("title=", gettext("Admin"), " - ", gettext("Word Filter"), " - ", gettext("Edit Word Filter"), "", 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Admin - Word Filter - Edit Word Filter")), 'class=window_title');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Word Filter"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Word Filter"), "</h1>\n";
 
@@ -428,7 +428,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
 } else {
 
-    html_draw_top("title=", gettext("Admin"), " - ", gettext("Word Filter"), "", 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Admin - Word Filter")), 'class=window_title');
 
     $word_filter_array = admin_get_word_filter_list($page);
 
@@ -436,22 +436,22 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '600', 'center');
+        html_display_error_array($error_msg_array, '70%', 'center');
 
     } else if (isset($_GET['updated'])) {
 
-        html_display_success_msg(gettext("Word Filter updated"), '600', 'center');
+        html_display_success_msg(gettext("Word Filter updated"), '70%', 'center');
 
     } else if (sizeof($word_filter_array['word_filter_array']) < 1) {
 
-        html_display_warning_msg(gettext("No existing word filter entries found. To add a filter click the 'Add New' button below."), '600', 'center');
+        html_display_warning_msg(gettext("No existing word filter entries found. To add a filter click the 'Add New' button below."), '70%', 'center');
     }
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_wordfilter.php\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -501,7 +501,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";

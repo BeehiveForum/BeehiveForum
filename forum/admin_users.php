@@ -141,7 +141,7 @@ if (isset($_GET['filter']) && is_numeric($_GET['filter'])) {
     $filter = ADMIN_USER_FILTER_NONE;
 }
 
-html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Users"), "", 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Admin - Manage Users")), 'class=window_title');
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Users"), "</h1>\n";
 
@@ -165,7 +165,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
                         if (($valid && $user_logon = user_get_logon($user_uid))) {
 
-                            if (!admin_session::end($user_uid)) {
+                            if (!admin_session_end($user_uid)) {
 
                                 $error_msg_array[] = sprintf(gettext("Failed to end session for user %s"), $user_logon);
                                 $valid = false;

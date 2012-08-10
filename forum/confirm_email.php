@@ -54,7 +54,7 @@ if (isset($_GET['resend']) && isset($uid)) {
 
     if (email_send_user_confirmation($uid)) {
 
-        html_draw_top("title=", gettext("Email confirmation"), "", 'class=window_title');
+        html_draw_top(sprintf('title=%s', gettext("Email confirmation")), 'class=window_title');
         html_display_msg(gettext("Email confirmation"), gettext("Confirmation email has been resent."));
         html_draw_bottom();
         exit;
@@ -72,7 +72,7 @@ if (($user = user_get_by_passhash($uid, $key))) {
 
     if (perm_user_cancel_email_confirmation($uid)) {
 
-        html_draw_top("title=", gettext("Email confirmation"), "", 'class=window_title');
+        html_draw_top(sprintf('title=%s', gettext("Email confirmation")), 'class=window_title');
         html_display_msg(gettext("Email confirmation"), gettext("Thank you for confirming your email address. You may now login and start posting immediately."), 'index.php', 'post', array('submit' => gettext("Continue")), false, $frame_top_target, 'center');
         html_draw_bottom();
 

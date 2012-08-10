@@ -114,7 +114,7 @@ if (isset($_POST['send'])) {
 
         if (email_send_message_to_user($to_uid, $uid, $subject, $message, $use_email_addr)) {
 
-            html_draw_top("title=", gettext("Email result"), "", 'pm_popup_disabled', 'class=window_title');
+            html_draw_top(sprintf('title=%s', gettext("Email result")), 'pm_popup_disabled', 'class=window_title');
             html_display_msg(gettext("Message sent"), gettext("Message sent successfully."), 'email.php', 'post', array('close' => gettext("Close")), array('to_uid' => $to_uid), false, 'center');
             html_draw_bottom();
             exit;
@@ -127,7 +127,7 @@ if (isset($_POST['send'])) {
     }
 }
 
-html_draw_top("title=". sprintf(gettext("Send Email to %s"), htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), 'pm_popup_disabled', 'class=window_title');
+html_draw_top(sprintf('title=%s', sprintf(gettext("Send Email to %s"), htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME'])))), 'pm_popup_disabled', 'class=window_title');
 
 echo "<h1>", sprintf(gettext("Send Email to %s"), htmlentities_array(format_user_name($to_user['LOGON'], $to_user['NICKNAME']))), "</h1>\n";
 echo "<br />";

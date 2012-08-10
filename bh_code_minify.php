@@ -21,13 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Array of files to exclude from the matches
 $exclude_files_array = array();
 
-// Array of directories to exclude from the matches
 $exclude_dirs_array = array();
 
-// Get array of files in specified directory and sub-directories.
 function get_file_list(&$file_list_array, $path, $extension)
 {
     $extension_preg = preg_quote($extension, '/');
@@ -53,48 +50,59 @@ function get_file_list(&$file_list_array, $path, $extension)
     }
 }
 
-// Prevent time out
 set_time_limit(0);
 
-// Output the content as text.
 header('Content-Type: text/plain');
 
-// Array to store filenames
 $file_list_array = array();
 
-// Get the JS files
 get_file_list($file_list_array, 'forum/js', '.js');
 
-// Minify all the files we've found.
 foreach ($file_list_array as $js_filepath) {
 
     $path_parts = pathinfo($js_filepath);
 
     if (isset($path_parts['dirname']) && isset($path_parts['filename']) && isset($path_parts['extension'])) {
     
-        $minified_js_filepath = sprintf('%s/%s.min.%s', $path_parts['dirname'], $path_parts['filename'], $path_parts['extension']); 
-        exec(sprintf('java -jar compiler.jar --js %s --js_output_file %s', escapeshellarg($js_filepath), escapeshellarg($minified_js_filepath)));
+        $minified_js_filepath = sprintf(
+            '%s/%s.min.%s', 
+            $path_parts['dirname'], 
+            $path_parts['filename'], 
+            $path_parts['extension']
+        ); 
+        
+        exec(sprintf(
+            'java -jar compiler.jar --js %s --js_output_file %s', 
+            escapeshellarg($js_filepath), 
+            escapeshellarg($minified_js_filepath)
+        ));
     }
 }
 
-// Reinitialise $file_list_array
 $file_list_array = array();
 
-// Get the CSS files
 get_file_list($file_list_array, 'forum/styles', '.css');
 
-// Get the Emoticon CSS files
 get_file_list($file_list_array, 'forum/emoticons', '.css');
 
-// Minify all the files we've found.
 foreach ($file_list_array as $css_filepath) {
 
     $path_parts = pathinfo($css_filepath);
 
     if (isset($path_parts['dirname']) && isset($path_parts['filename']) && isset($path_parts['extension'])) {
     
-        $minified_css_filepath = sprintf('%s/%s.min.%s', $path_parts['dirname'], $path_parts['filename'], $path_parts['extension']); 
-        exec(sprintf('java -jar yuicompressor.jar %s > %s', escapeshellarg($css_filepath), escapeshellarg($minified_css_filepath)));
+        $minified_css_filepath = sprintf(
+            '%s/%s.min.%s', 
+            $path_parts['dirname'], 
+            $path_parts['filename'], 
+            $path_parts['extension']
+        ); 
+        
+        exec(sprintf(
+            'java -jar yuicompressor.jar %s > %s', 
+            escapeshellarg($css_filepath), 
+            escapeshellarg($minified_css_filepath)
+        ));
     }
 }
 

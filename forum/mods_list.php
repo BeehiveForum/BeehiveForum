@@ -58,7 +58,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
 $folder_title = folder_get_title($fid);
 
-html_draw_top("title={$folder_title} - ", gettext("Moderator list:"), "", 'pm_popup_disabled', 'class=window_title');
+html_draw_top(sprintf('title=%s', sprintf(gettext("Moderator list - %s"), $folder_title)), 'pm_popup_disabled', 'class=window_title');
 
 echo "<div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
@@ -69,7 +69,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">", gettext("Moderators for folder"), " '{$folder_title}'</td>\n";
+echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">", gettext("Moderator list"), " - ", $folder_title, "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";

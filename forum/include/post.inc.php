@@ -459,7 +459,7 @@ function post_check_ddkey($ddkey)
 
     if (db_num_rows($result)) {
 
-        list($ddkey_datetime_check) = db_fetch_array($result);
+        list($ddkey_datetime_check) = db_fetch_array($result, DB_RESULT_NUM);
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
         $sql.= "SET DDKEY = CAST('$ddkey_datetime' AS DATETIME) WHERE UID = '$uid'";
@@ -501,7 +501,7 @@ function post_check_frequency()
 
     if (db_num_rows($result) > 0) {
 
-        list($last_post_stamp, $current_timestamp) = db_fetch_array($result);
+        list($last_post_stamp, $current_timestamp) = db_fetch_array($result, DB_RESULT_NUM);
 
         if (!is_numeric($last_post_stamp) || $last_post_stamp < $current_timestamp) {
 

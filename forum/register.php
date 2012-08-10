@@ -472,7 +472,7 @@ if (isset($_POST['register'])) {
     }
 }
 
-html_draw_top("title=", gettext("User Registration"), "", 'emoticons.js', 'register.js', "basetarget=$frame_top_target", 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("User Registration")), 'emoticons.js', 'register.js', "basetarget=$frame_top_target", 'class=window_title');
 
 echo "<h1>", gettext("User Registration"), "</h1>\n";
 

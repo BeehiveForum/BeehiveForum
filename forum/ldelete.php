@@ -182,7 +182,7 @@ if (isset($_POST['delete'])) {
     }
 }
 
-light_html_draw_top("title=", gettext("Delete Message"), " {$tid}.{$pid}", "robots=noindex,nofollow");
+light_html_draw_top(sprintf('title=%s %s.%s', gettext("Delete Message"), $tid, $pid), "robots=noindex,nofollow");
 
 echo "<h3>", gettext("Delete Message"), " {$tid}.{$pid}</h3>\n";
 

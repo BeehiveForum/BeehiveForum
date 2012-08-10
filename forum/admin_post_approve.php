@@ -161,7 +161,7 @@ if (isset($msg) && validate_msg($msg)) {
 
                 } else {
 
-                    html_draw_top("title=", gettext("Approve Post"), "", 'class=window_title');
+                    html_draw_top(sprintf('title=%s', gettext("Approve Post")), 'class=window_title');
                     html_display_msg(gettext("Approve Post"), sprintf(gettext("Successfully approved post %s"), $msg), "admin_post_approve.php", 'get', array('back' => gettext("Back")), array('ret' => $ret), '_self', 'center');
                     html_draw_bottom();
                     exit;
@@ -189,7 +189,7 @@ if (isset($msg) && validate_msg($msg)) {
 
                 } else {
 
-                    html_draw_top("title=", gettext("Delete posts"), "", 'class=window_title');
+                    html_draw_top(sprintf('title=%s', gettext("Delete posts")), 'class=window_title');
                     html_display_msg(gettext("Delete posts"), sprintf(gettext("Successfully deleted post %s"), $msg), "admin_post_approve.php", 'get', array('back' => gettext("Back")), array('ret' => $ret), '_self', 'center');
                     html_draw_bottom();
                     exit;
@@ -201,7 +201,7 @@ if (isset($msg) && validate_msg($msg)) {
             }
         }
 
-        html_draw_top("title=", gettext("Admin"), " - ", gettext("Approve Post"), "", 'class=window_title', "post.js", "resize_width=720");
+        html_draw_top(sprintf('title=%s', gettext("Admin - Approve Post")), 'class=window_title', "post.js", "resize_width=720");
 
         echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Approve Post"), "</h1>\n";
 

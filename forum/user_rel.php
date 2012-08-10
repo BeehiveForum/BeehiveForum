@@ -157,7 +157,7 @@ if (isset($_POST['reset_nickname_x']) || isset($_POST['reset_nickname_y'])) {
 
 $peer_user_display = format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']);
 
-html_draw_top("title=", gettext("User Relationship"), " - $peer_user_display", 'class=window_title');
+html_draw_top(sprintf('title=%s', sprintf(gettext("User Relationship - %s"), $peer_user_display)), 'class=window_title');
 
 $peer_relationship = user_get_relationship($uid, $peer_uid);
 

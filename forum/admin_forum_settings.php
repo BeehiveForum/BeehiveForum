@@ -385,7 +385,7 @@ if (isset($_POST['changepermissions'])) {
 }
 
 // Start Output Here
-html_draw_top("title=", gettext("Admin"), " - ", gettext("Forum Settings"), "", 'class=window_title', "onunload=clearFocus()", "emoticons.js", "htmltools.js");
+html_draw_top(sprintf('title=%s', gettext("Admin - Forum Settings")), 'class=window_title', "emoticons.js", "htmltools.js");
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Forum Settings"), "</h1>\n";
 

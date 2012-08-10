@@ -21,30 +21,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./forum/include/");
 
 require_once BH_INCLUDE_PATH. 'format.inc.php';
 
-// Prevent time out
 set_time_limit(0);
 
-// Output the content as text.
 header('Content-Type: text/plain');
 
-// Array to hold source files
 $source_files_array = array();
 
-// Path to source files.
 $source_files_dir_array = array('forum\include');
 
-// Ignore these files
 $ignore_files_array = array('dictionary.inc.php', 'text_captcha.inc.php', 'swift.inc.php', 'zip_lib.inc.php');
 
-// Prevent time out
 set_time_limit(0);
 
-// Output the content as text.
 header('Content-Type: text/plain');
 
 echo "Getting list of functions...\n";

@@ -808,7 +808,7 @@ function links_get_creator_uid($lid)
 
     if (db_num_rows($result) == 0) return false;
 
-    list($creator_uid) = db_fetch_array($result);
+    list($creator_uid) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $creator_uid;
 }
@@ -827,7 +827,7 @@ function links_get_comment_uid($cid)
 
     if (db_num_rows($result) == 0) return false;
 
-    list($comment_uid) = db_fetch_array($result);
+    list($comment_uid) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $comment_uid;
 }

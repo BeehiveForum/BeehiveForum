@@ -21,28 +21,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
 date_default_timezone_set('UTC');
 
-// Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./forum/include/");
 
-// Mimic Lite Mode
 define("BEEHIVEMODE_LIGHT", true);
 
-// Enable the error handler
 require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
 
-// Database functions.
 require_once BH_INCLUDE_PATH. 'format.inc.php';
 
-// Array of files to exclude from the matches
 $exclude_files_array = array('start_main.css', 'style_ie6.css', 'gallery.css');
 
-// Array of directories to exclude from the matches
 $exclude_dirs_array = array('forum/styles/default');
 
-// Get array of files in specified directory and sub-directories.
 function get_file_list(&$file_list_array, $path, $extension)
 {
     $extension_preg = preg_quote($extension, '/');
@@ -68,8 +60,6 @@ function get_file_list(&$file_list_array, $path, $extension)
     }
 }
 
-// Parse the CSS file into a multi-dimensional array of
-// selectors and attributes and values
 function parse_css_to_array($css_file_contents)
 {
     $css_rules_array = array();
@@ -125,10 +115,14 @@ function parse_array_to_css($css_rules_array)
     foreach ($css_rules_array as $selector => $rules_set) {
 
         ksort($rules_set);
-        
+
         $selector = implode(",\n", array_map('trim', explode(',', $selector)));
 
-        $css_file_contents.= sprintf("%s {\n\t%s;\n}\n\n", $selector, implode_assoc($rules_set, ': ', ";\n    "));
+        $css_file_contents.= sprintf(
+            "%s {\n\t%s;\n}\n\n", 
+            $selector, 
+            implode_assoc($rules_set, ': ', ";\n    ")
+        );
     }
 
     return trim($css_file_contents);
@@ -159,48 +153,37 @@ function array_diff_key_recursive($array1, $array2)
     return $result;
 }
 
-// Prevent time out
 set_time_limit(0);
 
-// Output the content as text.
 header('Content-Type: text/plain');
 
-// Array to hold our CSS schemes.
 $css_rules_array = array();
 
-// Get the CSS files in the main forum/styles directory
 get_file_list($file_list, 'forum/styles', 'style.css');
 
-// Get the mobile CSS files
 get_file_list($file_list, 'forum/styles', 'mobile.css');
 
-// Iterate over each of the files.
 foreach ($file_list as $css_filepath) {
     $css_rules_array[$css_filepath] = parse_css_to_array(file_get_contents($css_filepath));
 }
 
-// Debug output.
 foreach ($css_rules_array as $css_filepath => $css_rules_set) {
-    
-    // Construct default CSS filepath.
-    $default_css_filepath = sprintf('forum/styles/default/%s', basename($css_filepath));
-    
-    // Load the default style
+
+    $default_css_filepath = sprintf(
+        'forum/styles/default/%s', 
+        basename($css_filepath)
+    );
+
     $default_css_rules = parse_css_to_array(file_get_contents($default_css_filepath));
 
-    // Clean the default style and save it.
     file_put_contents($default_css_filepath, parse_array_to_css($default_css_rules));    
 
-    // Remove depreceated selectors
     $css_rules_set = array_diff_key($css_rules_set, array_diff_key($css_rules_set, $default_css_rules));
 
-    // Add the missing selectors
     $css_rules_set = array_merge($css_rules_set, array_diff_key($default_css_rules, $css_rules_set));
 
-    // Sort the selectors according to the default style
     $css_rules_set = sort_array_by_array($css_rules_set, array_keys($default_css_rules));
 
-    // Copy the missing rules to the selectors
     foreach (array_diff_key_recursive($default_css_rules, $css_rules_set) as $selector => $missing_rules_set) {
 
         foreach ($missing_rules_set as $rule_name => $value) {
@@ -209,8 +192,6 @@ foreach ($css_rules_array as $css_filepath => $css_rules_set) {
         }
     }
 
-    // Remove the extra rules from selectors, taking care not
-    // to remove those with the word color in them.
     foreach (array_diff_key_recursive($css_rules_set, $default_css_rules) as $selector => $additional_rules_set) {
 
         foreach ($additional_rules_set as $rule_name => $value) {
@@ -221,7 +202,6 @@ foreach ($css_rules_array as $css_filepath => $css_rules_set) {
         }
     }
 
-    // Output the fixed style.
     file_put_contents($css_filepath, parse_array_to_css($css_rules_set));
 }
 

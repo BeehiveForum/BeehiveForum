@@ -135,7 +135,7 @@ if (isset($_POST['move_up_disabled']) || isset($_POST['move_down_disabled'])) {
     exit;
 }
 
-html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Folders"), "", 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Admin - Manage Folders")), 'class=window_title');
 
 $folder_array = folder_get_all_by_page($page);
 
@@ -143,27 +143,27 @@ echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'),
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '600', 'center');
+    html_display_error_array($error_msg_array, '70%', 'center');
 
 } else if (isset($_GET['added'])) {
 
-    html_display_success_msg(gettext("Successfully added new folder"), '600', 'center');
+    html_display_success_msg(gettext("Successfully added new folder"), '70%', 'center');
 
 } else if (isset($_GET['edited'])) {
 
-    html_display_success_msg(gettext("Successfully edited folder"), '600', 'center');
+    html_display_success_msg(gettext("Successfully edited folder"), '70%', 'center');
 
 } else if (isset($_GET['deleted'])) {
 
-    html_display_success_msg(gettext("Successfully removed selected folders"), '600', 'center');
+    html_display_success_msg(gettext("Successfully removed selected folders"), '70%', 'center');
 
 } else if (sizeof($folder_array['folder_array']) < 1) {
 
-    html_display_warning_msg(gettext("No existing folders found. To add a folder click the 'Add New' button below."), '600', 'center');
+    html_display_warning_msg(gettext("No existing folders found. To add a folder click the 'Add New' button below."), '70%', 'center');
 
 } else {
 
-    html_display_warning_msg(gettext("Folder order only applies when user has enabled 'Sort Thread List by folders' in Forum Options."), '600', 'center');
+    html_display_warning_msg(gettext("Folder order only applies when user has enabled 'Sort Thread List by folders' in Forum Options."), '70%', 'center');
 }
 
 echo "<br />\n";
@@ -171,7 +171,7 @@ echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_folders\" action=\"admin_folders.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -192,19 +192,19 @@ if (sizeof($folder_array['folder_array']) > 0) {
 
         echo "                <tr>\n";
         echo "                  <td valign=\"top\" align=\"center\" width=\"1%\">", form_checkbox("t_delete[{$folder['FID']}]", "Y", false), "</td>\n";
-        echo "                  <td align=\"left\" width=\"150\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"", gettext("Click To Edit Folder"), "\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
+        echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"", gettext("Click To Edit Folder"), "\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
         echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$folder['FID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
 
         if (isset($folder['THREAD_COUNT']) && $folder['THREAD_COUNT'] > 0) {
-            echo "                  <td align=\"center\">{$folder['THREAD_COUNT']}</td>\n";
+            echo "                  <td align=\"center\" width=\"15%\">{$folder['THREAD_COUNT']}</td>\n";
         } else {
-            echo "                  <td align=\"center\">0</td>\n";
+            echo "                  <td align=\"center\" width=\"15%\">0</td>\n";
         }
 
         if (isset($folder['FOLDER_PERMS']) && $folder['FOLDER_PERMS'] > 0) {
-            echo "                  <td align=\"left\">", perm_display_list($folder['FOLDER_PERMS']), "</td>\n";
+            echo "                  <td align=\"left\" width=\"25%\" style=\"white-space: nowrap\">", perm_display_list($folder['FOLDER_PERMS']), "</td>\n";
         } else {
-            echo "                  <td align=\"left\">", gettext("none"), "</td>\n";
+            echo "                  <td align=\"left\" width=\"25%\" style=\"white-space: nowrap\">", gettext("none"), "</td>\n";
         }
 
         echo "                </tr>\n";
@@ -235,7 +235,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
 echo "<br />\n";
-echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">\n";
 echo "      <table class=\"box\" width=\"100%\">\n";

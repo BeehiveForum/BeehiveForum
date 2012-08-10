@@ -424,7 +424,7 @@ if (isset($_POST['save'])) {
 
                             perm_user_apply_email_confirmation($uid);
 
-                            html_draw_top("title=", gettext("My Controls"), " - ", gettext("User Details"), " - ", gettext("Email address has been changed"), "", 'class=window_title');
+                            html_draw_top(sprintf('title=%s', gettext("My Controls - User Details - Email address has been changed")), 'class=window_title');
                             html_display_msg(gettext("Email address has been changed"), gettext("Your email address has been changed and a new confirmation email has been sent. Please check and read the email for further instructions."), 'index.php', 'get', array('continue' => gettext("Continue")), false, '_top');
                             html_draw_bottom();
                             exit;
@@ -511,13 +511,13 @@ if ($admin_edit === true) {
 
     $user = user_get($uid);
 
-    html_draw_top("title=", gettext("Admin"), " - ", gettext("User Details"), " - ". format_user_name($user['LOGON'], $user['NICKNAME']), 'attachments.js', 'class=window_title');
+    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - User Details - %s"), format_user_name($user['LOGON'], $user['NICKNAME']))), 'attachments.js', 'class=window_title');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("User Details"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
 
 } else {
 
-    html_draw_top("title=", gettext("My Controls"), " - ", gettext("User Details"), "", 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("My Controls - User Details")), 'class=window_title');
 
     echo "<h1>", gettext("User Details"), "</h1>\n";
 }

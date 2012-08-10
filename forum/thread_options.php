@@ -421,7 +421,7 @@ if (isset($_POST['save'])) {
 
                     admin_add_log_entry(DELETE_THREAD, array($tid, $thread_data['TITLE']));
 
-                    html_draw_top("title=", gettext("Delete Thread"), "", 'class=window_title');
+                    html_draw_top(sprintf('title=%s', gettext("Delete Thread")), 'class=window_title');
                     html_display_msg(gettext("Delete Thread"), gettext("Thread was successfully deleted"), 'discussion.php', 'get', array('continue' => gettext("Continue")), false, html_get_frame_name('main'), 'center');
                     html_draw_bottom();
                     exit;
@@ -444,7 +444,7 @@ if (isset($_POST['save'])) {
 
                     admin_add_log_entry(UNDELETE_THREAD, array($tid, $thread_data['TITLE']));
 
-                    html_draw_top("title=", gettext("Undelete Thread"), "", 'class=window_title');
+                    html_draw_top(sprintf('title=%s', gettext("Undelete Thread")), 'class=window_title');
                     html_display_msg(gettext("Undelete Thread"), gettext("Thread was successfully undeleted"), 'thread_options.php', 'get', array('back' => gettext("Back")), array('msg' => $msg), '_self', 'center');
                     html_draw_bottom();
                     exit;
@@ -467,7 +467,7 @@ if (isset($_POST['save'])) {
 
 if ($thread_data['DELETED'] == 'N') {
 
-    html_draw_top("title=", gettext("Thread Options"), " - {$thread_data['TITLE']}", "basetarget=_blank", 'search_popup.js', 'class=window_title');
+    html_draw_top(sprintf('title=%s', sprintf(gettext("Thread Options - %s"), $thread_data['TITLE'])), "basetarget=_blank", 'search_popup.js', 'class=window_title');
 
     echo "<h1>", gettext("Thread Options"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">", word_filter_add_ob_tags($thread_data['TITLE'], true), "</a></h1>\n";
 
@@ -933,7 +933,7 @@ if ($thread_data['DELETED'] == 'N') {
 
 } else if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
-    html_draw_top("title=", gettext("Thread Options"), " - {$thread_data['TITLE']}", "basetarget=_blank", 'class=window_title');
+    html_draw_top(sprintf('title=%s', sprintf(gettext("Thread Options - %s"), $thread_data['TITLE'])), "basetarget=_blank", 'class=window_title');
 
     echo "<h1>", gettext("Thread Options"), ": <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags($thread_data['TITLE'], true), "</a></h1>\n";
 

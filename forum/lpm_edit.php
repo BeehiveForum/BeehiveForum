@@ -72,7 +72,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
 } else {
 
-    light_html_draw_top("title=", gettext("Error"), "", 'pm_popup_disabled');
+    light_html_draw_top(sprintf('title=%s', gettext("Error")), 'pm_popup_disabled');
     light_html_display_error_msg(gettext("No message specified for editing"));
     light_html_draw_bottom();
     exit;

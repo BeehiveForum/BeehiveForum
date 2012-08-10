@@ -107,7 +107,7 @@ if (isset($_POST['save'])) {
 
         if (user_reset_password($uid, $pw, $key)) {
 
-            html_draw_top("title=", gettext("Password changed"), "", 'class=window_title');
+            html_draw_top(sprintf('title=%s', gettext("Password changed")), 'class=window_title');
             html_display_msg(gettext("Password changed"), gettext("Your password has been changed."), 'index.php', 'get', array('continue' => gettext("Continue")), false, '_top');
             html_draw_bottom();
             exit;
@@ -134,7 +134,7 @@ if (!$user = user_get_by_passhash($uid, $key)) {
     html_draw_error(gettext("Required information not found"));
 }
 
-html_draw_top("title=", gettext("Change Password"), "", 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Change Password")), 'class=window_title');
 
 echo "<h1>", gettext("Change Password"), "</h1>";
 

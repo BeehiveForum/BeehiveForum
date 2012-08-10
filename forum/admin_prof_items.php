@@ -386,7 +386,7 @@ if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
 if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
-    html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Profile Sections"), " - ". profile_section_get_name($psid). " - ", gettext("Add new item"), "", 'class=window_title');
+    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage Profile Sections - %s - Add New Item"), profile_section_get_name($psid))), 'class=window_title');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add new item"), "</h1>\n";
 
@@ -476,7 +476,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
         html_draw_error(gettext("Invalid profile item ID or item not found"), 'admin_prof_sect.php', 'get', array('back' => gettext("Back")));
     }
 
-    html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Profile Sections"), " - ". profile_section_get_name($psid). " - ", gettext("Edit item"), " - {$profile_item['NAME']}", 'class=window_title');
+    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage Profile Sections - %s - Edit Item - %s"), profile_section_get_name($psid), $profile_item['NAME'])), 'class=window_title');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit item"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($profile_item['NAME'], true), "</h1>\n";
 
@@ -555,7 +555,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
 } else {
 
-    html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Profile Sections"), " - ". profile_section_get_name($psid). " - ", gettext("View items"), "", 'class=window_title');
+    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage Profile Sections - %s - View Items"), profile_section_get_name($psid))), 'class=window_title');
 
     $profile_items = profile_items_get_by_page($psid, $page);
 
@@ -563,23 +563,23 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '500', 'center');
+        html_display_error_array($error_msg_array, '75%', 'center');
 
     } else if (isset($_GET['added'])) {
 
-        html_display_success_msg(gettext("Successfully added new profile item"), '500', 'center');
+        html_display_success_msg(gettext("Successfully added new profile item"), '75%', 'center');
 
     } else if (isset($_GET['edited'])) {
 
-        html_display_success_msg(gettext("Successfully edited profile item"), '500', 'center');
+        html_display_success_msg(gettext("Successfully edited profile item"), '75%', 'center');
 
     } else if (isset($_GET['deleted'])) {
 
-        html_display_success_msg(gettext("Successfully removed selected profile items"), '500', 'center');
+        html_display_success_msg(gettext("Successfully removed selected profile items"), '75%', 'center');
 
     } else if (sizeof($profile_items['profile_items_array']) < 1) {
 
-        html_display_warning_msg(gettext("There are no existing profile items in this section. To add an item click the 'Add New' button below."), '500', 'center');
+        html_display_warning_msg(gettext("There are no existing profile items in this section. To add an item click the 'Add New' button below."), '75%', 'center');
     }
 
     echo "<br />\n";
@@ -591,7 +591,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     if (isset($viewitems)) echo "  ", form_input_hidden("viewitems", "yes"), "\n";
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -599,51 +599,25 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" width=\"25\">&nbsp;</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\">", gettext("Item Name"), "</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">&nbsp;</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" width=\"40\">&nbsp;</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\">", gettext("Type"), "</td>\n";
     echo "                </tr>\n";
 
     if (sizeof($profile_items['profile_items_array']) > 0) {
 
-        $profile_index = 0;
-
         foreach ($profile_items['profile_items_array'] as $profile_item) {
 
-            $profile_index++;
-
             echo "                <tr>\n";
-            echo "                  <td valign=\"top\" align=\"center\" width=\"1%\">", form_checkbox("delete_item[{$profile_item['PIID']}]", "Y", false), "</td>\n";
-
-            if ($profile_items['profile_items_count'] == 1) {
-
-                echo "                  <td valign=\"top\" align=\"left\" colspan=\"2\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">", word_filter_add_ob_tags($profile_item['NAME'], true), "</a></td>\n";
-                echo "                  <td align=\"right\">&nbsp;</td>\n";
-
-            } else if ($profile_index == $profile_items['profile_items_count']) {
-
-                echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">", word_filter_add_ob_tags($profile_item['NAME'], true), "</a></td>\n";
-                echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down_disabled", "Move Down", "title=\"Move Down\"", "move_down_ctrl_disabled"), "</td>\n";
-
-            } else if ($profile_index > 1) {
-
-                echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">", word_filter_add_ob_tags($profile_item['NAME'], true), "</a></td>\n";
-                echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
-
-            } else {
-
-                echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">", word_filter_add_ob_tags($profile_item['NAME'], true), "</a></td>\n";
-                echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up_disabled", "Move Up", "title=\"Move Up\"", "move_up_ctrl_disabled"), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
-            }
+            echo "                  <td valign=\"top\" align=\"center\" width=\"25\">", form_checkbox("delete_item[{$profile_item['PIID']}]", "Y", false), "</td>\n";
+            echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">", word_filter_add_ob_tags($profile_item['NAME'], true), "</a></td>\n";
+            echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
 
             if (isset($item_types_array[$profile_item['TYPE']])) {
-
-                echo "                  <td valign=\"top\" align=\"left\">{$item_types_array[$profile_item['TYPE']]}</td>\n";
-
+                echo "                  <td valign=\"top\" align=\"left\" width=\"100\">{$item_types_array[$profile_item['TYPE']]}</td>\n";
             } else {
-
-                echo "                  <td valign=\"top\" align=\"left\">", gettext("Text Field"), "</td>\n";
+                echo "                  <td valign=\"top\" align=\"left\" width=\"100\">", gettext("Text Field"), "</td>\n";
             }
 
             echo "                </tr>\n";

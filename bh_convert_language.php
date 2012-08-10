@@ -21,15 +21,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./forum/include/");
 
 require_once BH_INCLUDE_PATH. 'format.inc.php';
 
-// Prevent time out
 set_time_limit(0);
 
-// Output the content as text.
 header('Content-Type: text/plain');
 
 $exclude_files_array = array();
@@ -100,14 +97,32 @@ if (get_file_list($file_list_array, 'forum', '.php')) {
         foreach ($matches_array as $match) {
             
             $file_contents = preg_replace(
-                sprintf('/{\$lang\[\'%s\'\]}/', preg_quote($match, '/')),
-                sprintf('", gettext("%s"), "', $lang[$match]),
+                
+                sprintf(
+                    '/{\$lang\[\'%s\'\]}/', 
+                    preg_quote($match, '/')
+                ),
+                
+                sprintf(
+                    '", gettext("%s"), "', 
+                    $lang[$match]
+                ),
+                
                 $file_contents
             );
 
             $file_contents = preg_replace(
-                sprintf('/\$lang\[\'%s\'\]/', preg_quote($match, '/')),
-                sprintf('gettext("%s")', $lang[$match]),
+                
+                sprintf(
+                    '/\$lang\[\'%s\'\]/', 
+                    preg_quote($match, '/')
+                ),
+                
+                sprintf(
+                    'gettext("%s")', 
+                    $lang[$match]
+                ),
+                
                 $file_contents
             );
         }

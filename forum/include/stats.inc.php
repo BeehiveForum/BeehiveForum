@@ -1118,71 +1118,59 @@ function stats_get_most_downloaded_attachment()
 
 function stats_get_most_popular_forum_style()
 {
-    $default_style = forum_get_setting('default_style', false, 'default');
+    if (!$db_stats_get_most_popular_forum_style = db_connect()) return false;
 
-    if (!$db_stats_get_most_popular_forum_style = db_connect()) return $default_style;
-
-    if (!($table_prefix = get_table_prefix())) return $default_style;
+    if (!($table_prefix = get_table_prefix())) return false;
     
     $sql = "SELECT USER_PREFS.STYLE, USERS.USER_COUNT FROM `{$table_prefix}USER_PREFS` USER_PREFS ";
     $sql.= "INNER JOIN (SELECT STYLE, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY STYLE LIMIT 1) AS USERS ";
     $sql.= "ON (USERS.STYLE = USER_PREFS.STYLE)";
 
-    if (!$result = db_query($sql, $db_stats_get_most_popular_forum_style)) return $default_style;
+    if (!$result = db_query($sql, $db_stats_get_most_popular_forum_style)) return false;
 
-    if (db_num_rows($result) == 0) return $default_style;
+    if (db_num_rows($result) == 0) return false;
 
-    if (!($style_data = db_fetch_array($result))) return $default_style;
-
-    if (strlen(trim($style_data['STYLE'])) == 0) return $default_style;
+    if (!($style_data = db_fetch_array($result))) return false;
         
-    return $style_data['STYLE'];
+    return $style_data;
 }
 
 function stats_get_most_popular_emoticon_pack()
 {
-    $default_emoticons = forum_get_setting('default_emoticons', false, 'default');
+    if (!$db_stats_get_most_popular_emoticon_pack = db_connect()) return false;
 
-    if (!$db_stats_get_most_popular_emoticon_pack = db_connect()) return $default_emoticons;
-
-    if (!($table_prefix = get_table_prefix())) return $default_emoticons;
+    if (!($table_prefix = get_table_prefix())) return false;
     
     $sql = "SELECT USER_PREFS.EMOTICONS, USERS.USER_COUNT FROM `{$table_prefix}USER_PREFS` USER_PREFS ";
     $sql.= "INNER JOIN (SELECT EMOTICONS, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY EMOTICONS LIMIT 1) AS USERS ";
     $sql.= "ON (USERS.EMOTICONS = USER_PREFS.EMOTICONS)";
 
-    if (!$result = db_query($sql, $db_stats_get_most_popular_emoticon_pack)) return $default_emoticons;
+    if (!$result = db_query($sql, $db_stats_get_most_popular_emoticon_pack)) return false;
 
-    if (db_num_rows($result) == 0) return $default_emoticons;
+    if (db_num_rows($result) == 0) return false;
 
-    if (!($emoticon_data = db_fetch_array($result))) return $default_emoticons;
-
-    if (strlen(trim($emoticon_data['EMOTICONS'])) == 0) return $default_emoticons;
+    if (!($emoticon_data = db_fetch_array($result))) return false;
             
-    return $emoticon_data['EMOTICONS'];
+    return $emoticon_data;
 }
 
 function stats_get_most_popular_language()
 {
-    $default_language = forum_get_setting('default_language', false, 'en');
-    
-    if (!$db_stats_get_most_popular_language = db_connect()) return $default_language;
+    if (!$db_stats_get_most_popular_language = db_connect()) return false;
 
-    if (!($table_prefix = get_table_prefix())) return $default_language;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT USER_PREFS.LANGUAGE, USERS.USER_COUNT FROM `{$table_prefix}USER_PREFS` USER_PREFS ";
     $sql.= "INNER JOIN (SELECT LANGUAGE, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY EMOTICONS LIMIT 1) AS USERS ";
     $sql.= "ON (USERS.LANGUAGE = USER_PREFS.LANGUAGE)";
 
-    if (!$result = db_query($sql, $db_stats_get_most_popular_language)) return $default_language;
+    if (!$result = db_query($sql, $db_stats_get_most_popular_language)) return false;
 
-    if (db_num_rows($result) == 0) return $default_language;
+    if (db_num_rows($result) == 0) return false;
 
-    if (!($language_data = db_fetch_array($result))) return $default_language;
-
-    if (strlen(trim($language_data['LANGUAGE'])) == 0) return $default_language;
+    if (!($language_data = db_fetch_array($result))) return false;
     
-    return $language_data['LANGUAGE'];
+    return $language_data;
 }
 
 function stats_get_most_popular_timezone()

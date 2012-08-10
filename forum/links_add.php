@@ -216,7 +216,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
 if ($mode == LINKS_ADD_LINK) {
 
-    html_draw_top("title=", gettext("Links"), " - ", gettext("Add a link"), "", 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Links - Add a link")), 'class=window_title');
 
     echo "<h1>", gettext("Links"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add a link"), "</h1>\n";
     echo "<p>", gettext("Adding link in"), ": <b>" . links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";
@@ -279,7 +279,7 @@ if ($mode == LINKS_ADD_LINK) {
 
 } else if ($mode == LINKS_ADD_FOLDER) {
 
-    html_draw_top("title=", gettext("Links"), " - ", gettext("Add a new folder"), "", 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Links - Add a New Folder")), 'class=window_title');
 
     echo "<h1>", gettext("Links"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add a new folder"), "</h1>\n";
     echo "<p>", gettext("Adding new folder under"), ": <b>". links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";

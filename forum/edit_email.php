@@ -123,7 +123,7 @@ $user_prefs = user_get_prefs($uid);
 // Check to see if we should show the set for all forums checkboxes
 $show_set_all = (forums_get_available_count() > 1) ? true : false;
 
-html_draw_top("title=", gettext("My Controls"), " - ", gettext("Email & Privacy"), "", 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("My Controls - Email & Privacy")), 'class=window_title');
 
 echo "<h1>", htmlentities_array(gettext("Email & Privacy")), "</h1>\n";
 

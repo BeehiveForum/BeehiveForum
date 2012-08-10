@@ -210,7 +210,7 @@ if (isset($_POST['prune_log'])) {
     }
 }
 
-html_draw_top("title=", gettext("Admin"), " - ", gettext("Admin Access Log"), "", 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Admin - Admin Access Log")), 'class=window_title');
 
 $admin_log_array = admin_get_log_entries($page, $group_by, $sort_by, $sort_dir);
 
@@ -218,23 +218,23 @@ echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'),
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '75%', 'center');
+    html_display_error_array($error_msg_array, '86%', 'center');
 
 } else if (isset($_GET['pruned'])) {
 
-    html_display_success_msg(gettext("Successfully Pruned Admin Log"), '75%', 'center');
+    html_display_success_msg(gettext("Successfully Pruned Admin Log"), '86%', 'center');
 
 } else if (sizeof($admin_log_array['admin_log_array']) < 1) {
 
-    html_display_warning_msg(gettext("Admin Log is empty"), '75%', 'center');
+    html_display_warning_msg(gettext("Admin Log is empty"), '86%', 'center');
 
 } else {
 
-    html_display_warning_msg(gettext("This list shows the last actions sanctioned by users with Admin privileges."), '75%', 'center');
+    html_display_warning_msg(gettext("This list shows the last actions sanctioned by users with Admin privileges."), '86%', 'center');
 }
 
 echo "<div align=\"center\">\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -844,7 +844,7 @@ echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("sort_by", htmlentities_array($sort_by)), "\n";
 echo "  ", form_input_hidden("sort_dir", htmlentities_array($sort_dir)), "\n";
 echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -878,7 +878,7 @@ echo "  </form>\n";
 echo "  <br />\n";
 echo "  <form accept-charset=\"utf-8\" action=\"admin_viewlog.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

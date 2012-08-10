@@ -137,7 +137,7 @@ if (isset($_POST['save'])) {
 }
 
 // Start Output Here
-html_draw_top("title=", gettext("My Controls"), " - ", gettext("Change Password"), "", 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("My Controls - Change Password")), 'class=window_title');
 
 echo "<h1>", gettext("Change Password"), "</h1>\n";
 

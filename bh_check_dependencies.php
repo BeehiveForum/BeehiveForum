@@ -21,35 +21,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Constant to define where the include files are
 define("BH_INCLUDE_PATH", "./forum/include/");
 
 require_once BH_INCLUDE_PATH. 'format.inc.php';
 
-// Prevent time out
 set_time_limit(0);
 
-// Output the content as text.
 header('Content-Type: text/plain');
 
-// Array to hold source files
 $source_files_array = array();
 
-// Array of functions and constants
 $include_files_functions_array = array('lang.inc.php' => array('$lang'));
+
 $include_files_constants_array = array();
 
-// List of exceptions that we should ignore
 $ignore_functions_array = array();
+
 $ignore_constants_array = array('BH_INCLUDE_PATH', 'BEEHIVE_DEVELOPER_MODE', 'E_STRICT', 'BEEHIVE_LIGHT_INCLUDE', 'BEEHIVEMODE_LIGHT');
 
-// Path to source files.
 $source_files_dir_array = array('forum', 'forum/include');
 
-// Prevent time out
 set_time_limit(0);
 
-// Output the content as text.
 header('Content-Type: text/plain');
 
 echo "Getting list of functions...\n";
@@ -146,26 +139,26 @@ foreach ($source_files_array as $source_file) {
 
     $source_file_contents = file_get_contents($source_file);
 
-    echo "$source_file:\n", str_repeat("-", strlen($source_file) + 1), "\n";
-
     foreach ($include_files_functions_array as $include_file => $function_names_array) {
 
         if ($include_file !== basename($source_file)) {
 
-            $include_file_line = "include_once(BH_INCLUDE_PATH. \"$include_file\")";
+            $include_file_line = "require_once BH_INCLUDE_PATH. '$include_file'";
+
             $include_file_line_preg = preg_quote($include_file_line, "/");
 
             if (preg_match("/$include_file_line_preg/u", $source_file_contents) < 1) {
 
                 $function_names_preg = implode('\s?\(|[\s|\.|,]+', array_map('preg_quote_callback', $function_names_array));
-                $function_names_preg = sprintf('/[\s|\.|,]%s\s?\(/u', $function_names_preg);
+                
+                $function_names_preg = sprintf(
+                    '/[\s|\.|,]%s\s?\(/u', 
+                    $function_names_preg
+                );
 
                 if (preg_match($function_names_preg, $source_file_contents) > 0) {
 
-                    if (!in_array($include_file, $include_files_required_array)) {
-
-                        $include_files_required_array[] = $include_file_line;
-                    }
+                    $include_files_required_array[$include_file] = $include_file_line;
                 }
             }
         }
@@ -175,7 +168,8 @@ foreach ($source_files_array as $source_file) {
 
         if ($include_file !== basename($source_file)) {
 
-            $include_file_line = "include_once(BH_INCLUDE_PATH. \"$include_file\")";
+            $include_file_line = "require_once BH_INCLUDE_PATH. '$include_file'";
+
             $include_file_line_preg = preg_quote($include_file_line, "/");
 
             if (preg_match("/$include_file_line_preg/u", $source_file_contents) < 1) {
@@ -184,17 +178,19 @@ foreach ($source_files_array as $source_file) {
 
                 if (preg_match("/{$constant_names_preg}/u", $source_file_contents) > 0) {
 
-                    if (!in_array($include_file, $include_files_required_array)) {
-
-                        $include_files_required_array[] = $include_file_line;
-                    }
+                    $include_files_required_array[$include_file] = $include_file_line;
                 }
             }
         }
     }
-
-    echo implode(";\n", $include_files_required_array);
-    echo (sizeof($include_files_required_array) > 0) ? ";\n\n" : "\n";
+    
+    if (sizeof($include_files_required_array) > 0) {
+        
+        ksort($include_files_required_array);
+    
+        echo "$source_file:\n", str_repeat("-", strlen($source_file) + 1), "\n";
+        echo implode(";\n", $include_files_required_array), ";\n\n";
+    }
 }
 
 ?>

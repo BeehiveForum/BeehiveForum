@@ -128,6 +128,7 @@ cache_check_last_modified(filemtime($file_path));
 
 // Send remaining headers for length and filename.
 header("Content-Length: $file_size");
+header("Content-Type: {$attachment_details['mimetype']}");
 header("Content-disposition: inline; filename=\"$file_name\"");
 
 // Loop over the file, reading chunks of it

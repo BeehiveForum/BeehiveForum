@@ -420,7 +420,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
-    html_draw_top("title=", gettext("Admin"), " - ", gettext("RSS Feeds"), " - ", gettext("Add New Feed"), "", 'class=window_title', 'search_popup.js');
+    html_draw_top(sprintf('title=%s', gettext("Admin - RSS Feeds - Add New Feed")), 'class=window_title', 'search_popup.js');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("RSS Feeds"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add New Feed"), "</h1>\n";
 
@@ -546,7 +546,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
         html_draw_error(gettext("Invalid feed id or feed not found"), 'admin_rss_feeds.php', 'get', array('back' => gettext("Back")));
     }
 
-    html_draw_top("title=", gettext("Admin"), " - ", gettext("RSS Feeds"), " - ", gettext("Edit Feed"), " - {$rss_feed['NAME']}", 'search_popup.js', 'class=window_title');
+    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - RSS Feeds - Edit Feed - %s"), $rss_feed['NAME'])), 'search_popup.js', 'class=window_title');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("RSS Feeds"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Feed"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($rss_feed['NAME'], true), "</h1>\n";
 
@@ -656,7 +656,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
 } else {
 
-    html_draw_top("title=", gettext("Admin"), " - ", gettext("RSS Feeds"), "", 'search.js', 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Admin - RSS Feeds")), 'search.js', 'class=window_title');
 
     $rss_feeds = rss_feed_get_feeds($page);
 
@@ -664,23 +664,23 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '550', 'center');
+        html_display_error_array($error_msg_array, '70%', 'center');
 
     } else if (isset($_GET['added'])) {
 
-        html_display_success_msg(gettext("Successfully added new feed"), '550', 'center');
+        html_display_success_msg(gettext("Successfully added new feed"), '70%', 'center');
 
     } else if (isset($_GET['edited'])) {
 
-        html_display_success_msg(gettext("Successfully edited feed"), '550', 'center');
+        html_display_success_msg(gettext("Successfully edited feed"), '70%', 'center');
 
     } else if (isset($_GET['deleted'])) {
 
-        html_display_success_msg(gettext("Successfully removed selected feeds"), '550', 'center');
+        html_display_success_msg(gettext("Successfully removed selected feeds"), '70%', 'center');
 
     } else if (sizeof($rss_feeds['rss_feed_array']) < 1) {
 
-        html_display_warning_msg(gettext("No existing RSS Feeds found. To add a feed click the 'Add New' button below"), '550', 'center');
+        html_display_warning_msg(gettext("No existing RSS Feeds found. To add a feed click the 'Add New' button below"), '70%', 'center');
     }
 
     echo "<br />\n";
@@ -688,7 +688,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "<form accept-charset=\"utf-8\" name=\"rss\" action=\"admin_rss_feeds.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -697,8 +697,9 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"center\" width=\"20\">&nbsp;</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" width=\"300\">", gettext("Name"), "</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" width=\"225\">", gettext("Update Frequency"), "&nbsp;</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">", gettext("Name"), "</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\">", gettext("Feed Location"), "</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" width=\"20%\">", gettext("Update Frequency"), "&nbsp;</td>\n";
     echo "                </tr>\n";
 
     if (sizeof($rss_feeds['rss_feed_array']) > 0) {
@@ -707,8 +708,9 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
             echo "                <tr>\n";
             echo "                  <td valign=\"top\" align=\"center\" width=\"1%\">", form_checkbox("t_delete[{$rss_feed['RSSID']}]", "Y", false), "</td>\n";
-            echo "                  <td valign=\"top\" align=\"left\" width=\"300\"><a href=\"admin_rss_feeds.php?webtag=$webtag&amp;page=$page&amp;feed_id={$rss_feed['RSSID']}\">", word_filter_add_ob_tags($rss_feed['NAME'], true), "</a></td>\n";
-            echo "                  <td valign=\"top\" align=\"left\" width=\"225\">", (in_array($rss_feed['FREQUENCY'], array_keys($update_frequencies_array))) ? $update_frequencies_array[$rss_feed['FREQUENCY']] : gettext("Unknown"), "</td>\n";
+            echo "                  <td valign=\"top\" align=\"left\" width=\"35%\"><a href=\"admin_rss_feeds.php?webtag=$webtag&amp;page=$page&amp;feed_id={$rss_feed['RSSID']}\">", word_filter_add_ob_tags($rss_feed['NAME'], true), "</a></td>\n";
+            echo "                  <td valign=\"top\" align=\"left\" width=\"45%\">{$rss_feed['URL']}</td>\n";
+            echo "                  <td valign=\"top\" align=\"left\" width=\"20%\">", (in_array($rss_feed['FREQUENCY'], array_keys($update_frequencies_array))) ? $update_frequencies_array[$rss_feed['FREQUENCY']] : gettext("Unknown"), "</td>\n";
             echo "                </tr>\n";
         }
     }
@@ -741,7 +743,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "</form>\n";
     echo "</div>\n";
 
-    html_display_warning_msg(gettext("Here you can setup some RSS feeds for automatic propagation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. The RSS feed must be accessible via HTTP or it will not work."), '550', 'center');
+    html_display_warning_msg(gettext("Here you can setup some RSS feeds for automatic propagation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. The RSS feed must be accessible via HTTP or it will not work."), '70%', 'center');
 
     html_draw_bottom();
 }

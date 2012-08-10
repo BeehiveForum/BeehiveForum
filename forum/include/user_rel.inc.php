@@ -81,7 +81,7 @@ function user_get_relationship($uid, $peer_uid)
 
     if (db_num_rows($result) == 0 ) return 0;
 
-    list($peer_relationship) = db_fetch_array($result);
+    list($peer_relationship) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $peer_relationship;
 }

@@ -766,7 +766,7 @@ function pm_get_user($mid)
 
     if (db_num_rows($result) == 0) return false;
 
-    list($logon) = db_fetch_array($result);
+    list($logon) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $logon;
 }
@@ -828,7 +828,7 @@ function pm_get_subject($mid, $to_uid)
 
     if (db_num_rows($result) == 0) return false;
 
-    list($pm_subject) = db_fetch_array($result);
+    list($pm_subject) = db_fetch_array($result, DB_RESULT_NUM);
 
     return $pm_subject;
 }

@@ -522,16 +522,10 @@ function html_include_css($script_filepath, $media = 'screen', $id = false)
 //      This will set the title of the page to "Navigation" with the
 //      body class set to "nav", and base target set to "_top".
 //
-//      For the onload event, you do the same as the title and
-//      body_class named arguments, but you can include multiple
-//      arguments which will all then be loaded for you. For example:
-//
-//      html_draw_top("onload=pm_notification()", "onload=hicky()");
-//
 //      You can also mix and match all of these arguments in any order
 //      for example:
 //
-//      html_draw_top("onload=pm_notification();", "title=pm_example");
+//      html_draw_top("openprofile.js", "class=nav");
 //
 //      or
 //

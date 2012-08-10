@@ -93,7 +93,7 @@ if (isset($_POST['delete'])) {
             }
         }
 
-        html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Forums"), "", 'class=window_title', 'admin.js');
+        html_draw_top(sprintf('title=%s', gettext("Admin - Manage Forums")), 'class=window_title', 'admin.js');
 
         echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Forums"), "</h1>\n";
         echo "<br />\n";
@@ -399,7 +399,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
-    html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Forums"), " - ", gettext("Add Forum"), "", 'class=window_title', 'admin.js', 'search_popup.js');
+    html_draw_top(sprintf('title=%s', gettext("Admin - Manage Forums - Add Forum")), 'class=window_title', 'admin.js', 'search_popup.js');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Forums"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> ", gettext("Add Forum"), "</h1>\n";
 
@@ -509,7 +509,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
         html_draw_error(gettext("Invalid forum FID or forum not found"), 'admin_forums.php', 'get', array('back' => gettext("Back")));
     }
 
-    html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Forums"), " - ", gettext("Edit Forum"), " - {$forum_data['WEBTAG']}", 'class=window_title', 'admin.js', 'search_popup.js');
+    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage Forums - Edit Forum - %s"), $forum_data['WEBTAG'])), 'class=window_title', 'admin.js', 'search_popup.js');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Forums"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Forum"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$forum_data['WEBTAG']}</h1>\n";
 
@@ -611,7 +611,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
 } else {
 
-    html_draw_top("title=", gettext("Admin"), " - ", gettext("Manage Forums"), "", 'class=window_title', 'admin.js');
+    html_draw_top(sprintf('title=%s', gettext("Admin - Manage Forums")), 'class=window_title', 'admin.js');
 
     $forums_array = admin_get_forum_list($page);
 
@@ -619,23 +619,23 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '700', 'center');
+        html_display_error_array($error_msg_array, '70%', 'center');
 
     } else if (isset($_GET['added'])) {
 
-        html_display_success_msg(gettext("Successfully created new forum"), '700', 'center', 'forum_created');
+        html_display_success_msg(gettext("Successfully created new forum"), '70%', 'center', 'forum_created');
 
     } else if (isset($_GET['edited'])) {
 
-        html_display_success_msg(gettext("Successfully updated forum"), '700', 'center', 'forum_updated');
+        html_display_success_msg(gettext("Successfully updated forum"), '70%', 'center', 'forum_updated');
 
     } else if (isset($_GET['deleted'])) {
 
-        html_display_success_msg(gettext("Successfully deleted selected forums"), '700', 'center', 'forum_removed');
+        html_display_success_msg(gettext("Successfully deleted selected forums"), '70%', 'center', 'forum_removed');
 
     } else if (sizeof($forums_array['forums_array']) < 1) {
 
-        html_display_warning_msg(gettext("No existing forums found. To create a new forum click the 'Add New' button below."), '700', 'center');
+        html_display_warning_msg(gettext("No existing forums found. To create a new forum click the 'Add New' button below."), '70%', 'center');
     }
 
     echo "<br />\n";
@@ -643,7 +643,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "<form accept-charset=\"utf-8\" name=\"forums\" action=\"admin_forums.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";

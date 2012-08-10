@@ -64,7 +64,7 @@ if (isset($_POST['content']) && strlen(trim($_POST['content'])) > 0) {
 
     // Apache has a limit on the length an URL query, so we need to
     // send the content to be checked via POST or Javascript.
-    html_draw_top("title=", gettext("Dictionary"), "", 'dictionary.js', 'pm_popup_disabled', 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Dictionary")), 'dictionary.js', 'pm_popup_disabled', 'class=window_title');
 
     echo "<form accept-charset=\"utf-8\" id=\"dictionary_init\" action=\"dictionary.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
@@ -166,7 +166,7 @@ if (isset($_POST['ignoreall'])) {
     $dictionary->find_next_word();
 }
 
-html_draw_top("title=", gettext("Dictionary"), "", 'dictionary.js', 'onload=showCurrentWord()', 'pm_popup_disabled', 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Dictionary")), 'dictionary.js', 'pm_popup_disabled', 'class=window_title');
 
 echo "<h1>", gettext("Dictionary"), "</h1>\n";
 

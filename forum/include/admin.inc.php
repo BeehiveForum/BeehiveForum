@@ -1694,4 +1694,101 @@ function admin_reset_user_password($uid, $password)
     return true;
 }
 
+function admin_check_credentials()
+{
+    $webtag = get_webtag();
+    
+    if (($admin_timeout = session::get_value('admin_timeout')) && ($admin_timeout > time())) {
+        
+        session::set_value('admin_timeout', time() + HOUR_IN_SECONDS);
+        return true;
+    }
+    
+    if (isset($_POST['admin_logon']) && isset($_POST['admin_password'])) {
+        
+        $admin_logon = $_POST['admin_logon'];
+
+        $admin_password = $_POST['admin_password'];
+        
+        if (($admin_uid = user_logon($admin_logon, $admin_password)) && ($admin_uid == session::get_value('UID'))) {
+            
+            session::set_value('admin_timeout', time() + HOUR_IN_SECONDS);
+            return true;
+        
+        } else {
+                
+            html_display_error_msg(gettext("The username or password you supplied are not valid."), '500', 'center');
+        }
+    }
+    
+    html_draw_top();
+    
+    if (isset($error_message) && strlen(trim($error_message)) > 0) {
+        html_display_error_msg($error_message, '500', 'center');
+    }
+    
+    if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
+        html_display_warning_msg(gettext('To save any changes you must re-authenticate yourself'), '500', 'center');
+    } else {
+        html_display_warning_msg(gettext('To access the Admin area you must re-authenticate yourself'), '500', 'center');
+    }
+
+    echo "<div align=\"center\">\n";
+    echo "  <form accept-charset=\"utf-8\" name=\"logonform\" method=\"post\" action=\"", get_request_uri(), "\" target=\"_self\" autocomplete=\"off\">\n";
+
+    if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
+        echo form_input_hidden_array($_POST);
+    }
+
+    echo "    ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+    echo "    <br />\n";
+    echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"325\">\n";
+    echo "      <tr>\n";
+    echo "        <td align=\"left\">\n";
+    echo "          <table class=\"box\" width=\"100%\">\n";
+    echo "            <tr>\n";
+    echo "              <td align=\"left\" class=\"posthead\">\n";
+    echo "                <table class=\"posthead\" width=\"100%\">\n";
+    echo "                  <tr>\n";
+    echo "                    <td align=\"left\" class=\"subhead\">", gettext("Please enter your password"), "</td>\n";
+    echo "                  </tr>\n";
+    echo "                </table>\n";
+    echo "                <table class=\"posthead\" width=\"100%\">\n";
+    echo "                  <tr>\n";
+    echo "                    <td align=\"center\">\n";
+    echo "                      <table class=\"posthead\" width=\"95%\">\n";
+    echo "                        <tr>\n";
+    echo "                          <td align=\"right\" width=\"90\">", gettext("Username"), ":</td>\n";
+    echo "                          <td align=\"left\">", form_input_text('admin_logon', '', 24, 32, '', 'bhinputlogon'), "</td>\n";
+    echo "                        </tr>\n";    
+    echo "                        <tr>\n";
+    echo "                          <td align=\"right\" width=\"90\">", gettext("Password"), ":</td>\n";
+    echo "                          <td align=\"left\">", form_input_password('admin_password', '', 24, 32, '', 'bhinputlogon'), "</td>\n";
+    echo "                        </tr>\n";
+    echo "                        <tr>\n";
+    echo "                          <td align=\"left\">&nbsp;</td>\n";
+    echo "                        </tr>\n";
+    echo "                      </table>\n";
+    echo "                    </td>\n";
+    echo "                  </tr>\n";
+    echo "                </table>\n";
+    echo "              </td>\n";
+    echo "            </tr>\n";
+    echo "          </table>\n";
+    echo "        </td>\n";
+    echo "      </tr>\n";
+    echo "      <tr>\n";
+    echo "        <td align=\"left\">&nbsp;</td>\n";
+    echo "      </tr>\n";
+    echo "      <tr>\n";
+    echo "        <td align=\"center\" colspan=\"2\">", form_submit('logon', gettext("Logon")), "</td>\n";
+    echo "      </tr>\n";
+    echo "    </table>\n";
+    echo "  </form>\n";
+    echo "</div>\n";
+    
+    html_draw_bottom();
+    exit;
+}
+
 ?>

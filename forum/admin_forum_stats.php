@@ -54,6 +54,9 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     html_draw_error(gettext("You do not have permission to use this section."));
 }
 
+// Perform additional admin login.
+admin_check_credentials();
+
 // User count is used by a few stats. Get it once here.
 $user_count = user_count();
 

@@ -53,6 +53,9 @@ if (!(session::check_perm(USER_PERM_FORUM_TOOLS, 0, 0))) {
     html_draw_error(gettext("You do not have permission to use this section."));
 }
 
+// Perform additional admin login.
+admin_check_credentials();
+
 // Get the user's post page preferences.
 $page_prefs = session::get_post_page_prefs();
 

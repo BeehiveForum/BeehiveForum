@@ -43,6 +43,9 @@ if ((!session::check_perm(USER_PERM_ADMIN_TOOLS, 0) && !session::check_perm(USER
     html_draw_error(gettext("You do not have permission to use this section."));
 }
 
+// Perform additional admin login.
+admin_check_credentials();
+
 html_draw_top();
 
 if (forum_check_webtag_available($webtag)) {

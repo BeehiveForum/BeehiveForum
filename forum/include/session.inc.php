@@ -419,6 +419,12 @@ abstract class session
         if (mb_strtoupper($key) == 'UID') return 0;
 
         return false;
+    }
+    
+    public static function set_value($key, $value)
+    {
+        $_SESSION[$key] = $value;
+        return true;
     }    
     
     public static function get_perm_array($uid, $forum_fid)

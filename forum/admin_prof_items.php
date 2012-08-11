@@ -49,6 +49,9 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     html_draw_error(gettext("You do not have permission to use this section."));
 }
 
+// Perform additional admin login.
+admin_check_credentials();
+
 if (isset($_GET['sect_page']) && is_numeric($_GET['sect_page'])) {
     $sect_page = ($_GET['sect_page'] > 0) ? $_GET['sect_page'] : 1;
 } else if (isset($_POST['sect_page']) && is_numeric($_POST['sect_page'])) {

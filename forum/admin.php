@@ -47,6 +47,9 @@ if ((!session::check_perm(USER_PERM_ADMIN_TOOLS, 0) && !session::check_perm(USER
     html_draw_error(gettext("You do not have permission to use this section."));
 }
 
+// Perform additional admin login.
+admin_check_credentials();
+
 // Get the user's saved left frame width.
 if (($left_frame_width = session::get_value('LEFT_FRAME_WIDTH')) === false) {
     $left_frame_width = 280;

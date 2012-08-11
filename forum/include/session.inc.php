@@ -516,6 +516,8 @@ abstract class session
     
     public static function create($uid)
     {
+        if (!($forum_fid = get_forum_fid())) $forum_fid = 0;
+        
         session::refresh($uid);
         
         session::update_visitor_log($uid, $forum_fid);

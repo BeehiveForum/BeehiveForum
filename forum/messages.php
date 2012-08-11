@@ -402,7 +402,7 @@ if ($msg_count > 0) {
     }
 }
 
-if ($msg_count > 0 && !session::logged_in() && !isset($_GET['markasread'])) {
+if ($msg_count > 0 && session::logged_in() && !isset($_GET['markasread'])) {
     messages_update_read($tid, $last_pid, $thread_data['LAST_READ'], $thread_data['LENGTH'], $thread_data['MODIFIED']);
 }
 

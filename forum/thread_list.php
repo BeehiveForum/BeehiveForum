@@ -94,9 +94,6 @@ if (($posts_per_page = session::get_value('POSTS_PER_PAGE'))) {
 // Check that required variables are set
 if (!session::logged_in()) {
 
-    // default to UID 0 if no other UID specified
-    $uid = 0;
-
     // non-logged in users can only display "All" threads
     // or those in the past x days, since the other options
     // would be impossible
@@ -105,8 +102,6 @@ if (!session::logged_in()) {
     }
 
 } else {
-
-    $uid = session::get_value('UID');
 
     $threads_any_unread = threads_any_unread();
 
@@ -211,6 +206,9 @@ if (!session::logged_in()) {
 
 // Output XHTML header
 html_draw_top('thread_list.js');
+
+// Fetch the UID for the thread type functions below.
+$uid = session::get_value('UID');
 
 // Fetch the right threads for whichever mode is selected
 switch ($mode) {

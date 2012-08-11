@@ -457,7 +457,7 @@ function light_draw_messages($tid, $pid)
 
     light_messages_nav_strip($tid, $pid, $thread_data['LENGTH'], 10);
 
-    if (($msg_count > 0 && !session::logged_in())) {
+    if (($msg_count > 0 && session::logged_in())) {
         messages_update_read($tid, $last_pid, $thread_data['LAST_READ'], $thread_data['LENGTH'], $thread_data['MODIFIED']);
     }
 }
@@ -859,7 +859,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
         echo "<div class=\"thread_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page + 1), "\">", gettext("Next 50 threads"), "</a></div>\n";
     }
 
-    if (!session::logged_in()) {
+    if (session::logged_in()) {
 
         echo "<div id=\"thread_mark_read\">\n";
         echo "<h3>", gettext("Mark as Read"), "</h3>\n";

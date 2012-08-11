@@ -375,7 +375,7 @@ if (session::logged_in()) {
 
                 echo "                <tr>\n";
 
-                if ((isset($forum['INTEREST']) && $forum['INTEREST'] == FORUM_FAVOURITE) || !session::logged_in()) {
+                if (isset($forum['INTEREST']) && $forum['INTEREST'] == FORUM_FAVOURITE) {
 
                     echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", "", sprintf('title="%s"', gettext("Remove From Favourites"))), "</td>\n";
 

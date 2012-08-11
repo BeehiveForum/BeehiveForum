@@ -88,6 +88,10 @@ abstract class session
         session_start();
         
         session::refresh(session::get_value('UID'));
+    
+        if (session::logged_in()) {
+            html_set_cookie(session_name(), session_id());
+        }        
     }
     
     public static function open()
@@ -135,12 +139,6 @@ abstract class session
         $user_agent = db_escape_string(session::get_user_agent());
         
         if (!($search_id = session::is_search_engine())) $search_id = 'NULL';
-        
-        $sql = "INSERT INTO SESSIONS_HISTORY (ID, UID, FID, DATA, TIME, REFERER, USER_AGENT, SID) ";
-        $sql.= "SELECT ID, UID, FID, DATA, TIME, REFERER, USER_AGENT, SID FROM SESSIONS ";
-        $sql.= "WHERE ID = '$id'";
-        
-        if (!(db_query($sql, session::$db))) return false;
         
         $sql = "REPLACE INTO SESSIONS (ID, UID, FID, DATA, TIME, REFERER, USER_AGENT, SID) ";
         $sql.= "VALUES ('$id', '$uid', '$forum_fid', '$data', CAST('$time' AS DATETIME), ";

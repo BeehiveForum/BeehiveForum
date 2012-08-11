@@ -33,11 +33,6 @@ require_once BH_INCLUDE_PATH. 'lang.inc.php';
 require_once BH_INCLUDE_PATH. 'logon.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 
-// Check we're logged in correctly
-if (!session::logged_in()) {
-    html_guest_error();
-}
-
 // Guests can't do different font sizes.
 if (!session::logged_in()) exit;
 

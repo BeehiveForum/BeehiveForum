@@ -70,9 +70,6 @@ if (isset($_REQUEST['thread_mode']) && is_numeric($_REQUEST['thread_mode'])) {
 // Check that required variables are set
 if (!session::logged_in()) {
 
-    // default to UID 0 if no other UID specified
-    $uid = 0;
-
     // non-logged in users can only display "All" threads
     // or those in the past x days, since the other options
     // would be impossible
@@ -81,8 +78,6 @@ if (!session::logged_in()) {
     }
 
 } else {
-
-    $uid = session::get_value('UID');
 
     $threads_any_unread = threads_any_unread();
 

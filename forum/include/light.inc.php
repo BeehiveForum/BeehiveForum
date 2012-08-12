@@ -1914,7 +1914,7 @@ function light_messages_nav_strip($tid, $pid, $length, $ppp)
 
 function light_html_guest_error()
 {
-    light_html_draw_error(gettext("Login"), gettext("Sorry, you need to be logged in to use this feature."), 'llogout.php', 'get', array('login' => gettext("Login now")));
+    light_html_draw_error(gettext("Sorry, you need to be logged in to use this feature."), 'llogout.php', 'get', array('login' => gettext("Login now")));
 }
 
 function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")
@@ -2201,6 +2201,7 @@ function light_html_draw_error($error_msg, $href = false, $method = 'get', $butt
     light_html_draw_top();
     light_html_display_msg(gettext('Error'), $error_msg, $href, $method, $button_array, $var_array, $target);
     light_html_draw_bottom();
+    exit;
 }
 
 function light_html_user_require_approval()

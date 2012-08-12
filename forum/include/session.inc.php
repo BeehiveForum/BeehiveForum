@@ -559,7 +559,7 @@ abstract class session
         
         $_SESSION['IPADDRESS'] = get_ip_address();
 
-        if (($user_prefs = user_get_prefs($uid))) {
+        if (session::logged_in() && ($user_prefs = user_get_prefs($uid))) {
             $_SESSION = array_merge($_SESSION, $user_prefs);
         }    
         

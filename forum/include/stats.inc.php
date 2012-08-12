@@ -155,7 +155,7 @@ function stats_get_html()
 
         $active_user_list = implode(", ", $active_user_list_array);
 
-        $active_user_time = format_time_display(forum_get_setting('active_sess_cutoff', false, 900), false);
+        $active_user_time = format_time_display(ini_get('session.gc_maxlifetime'));
 
         $html.= sprintf(gettext("%s active in the past %s."), $active_user_list, $active_user_time);
 
@@ -435,9 +435,9 @@ function stats_get_active_session_count()
 
     if (!($forum_fid = get_forum_fid())) return 0;
 
-    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
+    $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
 
-    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
 
     $sql = "SELECT COUNT(UID) AS USER_COUNT FROM SESSIONS ";
     $sql.= "WHERE TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
@@ -458,9 +458,9 @@ function stats_get_active_registered_user_count()
 
     if (!($forum_fid = get_forum_fid())) return 0;
 
-    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
+    $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
 
-    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
 
     $sql = "SELECT COUNT(UID) AS REGISTERED_USER_COUNT FROM SESSIONS ";
     $sql.= "WHERE TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
@@ -481,9 +481,9 @@ function stats_get_active_guest_count()
 
     if (!($forum_fid = get_forum_fid())) return 0;
 
-    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
+    $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
 
-    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
 
     $sql = "SELECT COUNT(UID) AS GUEST_COUNT FROM SESSIONS ";
     $sql.= "WHERE TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
@@ -514,22 +514,12 @@ function stats_get_active_user_list()
 
     if (!($forum_fid = get_forum_fid())) return $stats;
 
-    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
+    $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
 
-    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
 
     if (($uid = session::get_value('UID')) === false) return $stats;
 
-    // Current active number of guests
-    $sql = "SELECT COUNT(UID) FROM SESSIONS WHERE UID = 0 AND SID = 0 ";
-    $sql.= "AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
-    $sql.= "AND SESSIONS.FID = '$forum_fid'";
-
-    if (!$result = db_query($sql, $db_stats_get_active_user_list)) return $stats;
-
-    list($stats['GUESTS']) = db_fetch_array($result, DB_RESULT_NUM);
-
-    // Curent active users
     $sql = "SELECT DISTINCT SESSIONS.UID, USER.LOGON, USER.NICKNAME, USER_PEER2.PEER_NICKNAME, ";
     $sql.= "USER_PREFS_GLOBAL.ANON_LOGON, USER_PEER.RELATIONSHIP AS PEER_RELATIONSHIP, ";
     $sql.= "USER_PEER2.RELATIONSHIP AS USER_RELATIONSHIP, SEARCH_ENGINE_BOTS.SID, ";
@@ -545,7 +535,7 @@ function stats_get_active_user_list()
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = SESSIONS.SID) ";
     $sql.= "WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
-    $sql.= "AND SESSIONS.FID = '$forum_fid' AND SESSIONS.UID > 0";
+    $sql.= "AND SESSIONS.FID = '$forum_fid'";
 
     if (!$result = db_query($sql, $db_stats_get_active_user_list)) return $stats;
 
@@ -589,32 +579,14 @@ function stats_get_active_user_list()
 
         if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
         if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
-
+        
         if (($user_data['USER_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) > 0) {
 
             unset($user_data);
 
-        } else if (($anon_logon == USER_ANON_DISABLED) || ($user_data['UID'] == $uid) || (($user_data['PEER_RELATIONSHIP'] & USER_FRIEND) > 0 && $anon_logon == USER_ANON_FRIENDS_ONLY)) {
-
-            if (isset($user_data['SID']) && !is_null($user_data['SID'])) {
-
-                if (forum_get_setting('searchbots_show_active', 'Y')) {
-
-                    $stats['BOTS']++;
-
-                    $user_sort[] = $user_data['BOT_NAME'];
-
-                    $stats['USERS'][] = array(
-                        'BOT_NAME' => $user_data['BOT_NAME'],
-                        'BOT_URL' => $user_data['BOT_URL']
-                    );
-
-                } else {
-
-                   $stats['GUESTS']++;
-                }
-
-            } else {
+        } else if ($user_data['UID'] > 0) {
+        
+            if (($anon_logon == USER_ANON_DISABLED) || ($user_data['UID'] == $uid) || (($user_data['PEER_RELATIONSHIP'] & USER_FRIEND) > 0 && ($anon_logon == USER_ANON_FRIENDS_ONLY))) {
 
                 $stats['USER_COUNT']++;
 
@@ -629,11 +601,29 @@ function stats_get_active_user_list()
                     'AVATAR_URL' => $user_data['AVATAR_URL'],
                     'AVATAR_AID' => $user_data['AVATAR_AID']
                 );
+
+            } else {
+
+                $stats['ANON_USERS']++;
             }
-
+            
         } else {
+            
+            if (!isset($user_data['SID']) || is_null($user_data['SID']) || forum_get_setting('searchbots_show_active', 'N')) {
 
-            $stats['ANON_USERS']++;
+                $stats['GUESTS']++;
+            
+            } else {
+
+                $stats['BOTS']++;
+
+                $user_sort[] = $user_data['BOT_NAME'];
+
+                $stats['USERS'][] = array(
+                    'BOT_NAME' => $user_data['BOT_NAME'],
+                    'BOT_URL' => $user_data['BOT_URL']
+                );
+            }
         }
     }
 
@@ -1075,7 +1065,7 @@ function stats_get_most_downloaded_attachment()
     $sql.= "WHERE PAI.FID = '$forum_fid' ";
     $sql.= "ORDER BY PAF.DOWNLOADS DESC ";
 
-    if (!$result = db_unbuffered_query($sql, $db_stats_get_most_downloaded_attachment)) return false;
+    if (!($result = db_query($sql, $db_stats_get_most_downloaded_attachment))) return false;
 
     while (($attachment_data = db_fetch_array($result))) {
 

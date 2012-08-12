@@ -61,9 +61,9 @@ function messages_get($tid, $pid = 1, $limit = 1)
     
     if (!($forum_fid = get_forum_fid())) return false;
 
-    $current_timestamp = time();
+    $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
 
-    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
 
     $sql = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, UNIX_TIMESTAMP(POST.VIEWED) AS VIEWED, ";
@@ -75,8 +75,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK, ";
     $sql.= "USER_PREFS_GLOBAL.ANON_LOGON, COALESCE(USER_PREFS_FORUM.AVATAR_URL, USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, ";
     $sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_AID, USER_PREFS_GLOBAL.AVATAR_AID) AS AVATAR_AID, ";
-    $sql.= "(SELECT $current_timestamp - UNIX_TIMESTAMP(COALESCE(SESSIONS.TIME, 0)) < $active_sess_cutoff FROM SESSIONS ";
-    $sql.= "WHERE SESSIONS.FID = $forum_fid AND SESSIONS.UID = POST.FROM_UID ORDER BY TIME DESC LIMIT 1) AS USER_ACTIVE ";
+    $sql.= "(SELECT MAX(SESSIONS.TIME) FROM SESSIONS WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql.= "AND SESSIONS.FID = $forum_fid AND SESSIONS.UID = POST.FROM_UID) AS USER_ACTIVE ";
     $sql.= "FROM `{$table_prefix}POST` POST LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER_TO ";
     $sql.= "ON (USER_PEER_TO.UID = '$uid' AND USER_PEER_TO.PEER_UID = POST.TO_UID) ";
@@ -89,115 +89,57 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql.= "ORDER BY POST.PID ";
     $sql.= "LIMIT 0, $limit";
 
-    $result = db_unbuffered_query($sql, $db_messages_get);
+    if (!($result = db_query($sql, $db_messages_get))) return false;
+    
+    if (db_num_rows($result) == 0) return false;
 
-    // Loop through the results and construct an array to return
-    if ($limit > 1) {
+    $messages = array();
 
-        $messages = false;
+    while (($message = db_fetch_array($result))) {
 
-        while (($message = db_fetch_array($result))) {
+        $message['CONTENT'] = "";
 
-            $message['CONTENT'] = "";
+        if (!isset($message['VIEWED'])) $message['VIEWED'] = 0;
 
-            if (!isset($message['VIEWED'])) $message['VIEWED'] = 0;
+        if (!isset($message['APPROVED'])) $message['APPROVED'] = 0;
+        if (!isset($message['APPROVED_BY'])) $message['APPROVED_BY'] = 0;
 
-            if (!isset($message['APPROVED'])) $message['APPROVED'] = 0;
-            if (!isset($message['APPROVED_BY'])) $message['APPROVED_BY'] = 0;
+        if (!isset($message['EDITED'])) $message['EDITED'] = 0;
+        if (!isset($message['EDITED_BY'])) $message['EDITED_BY'] = 0;
 
-            if (!isset($message['EDITED'])) $message['EDITED'] = 0;
-            if (!isset($message['EDITED_BY'])) $message['EDITED_BY'] = 0;
+        if (!isset($message['IPADDRESS'])) $message['IPADDRESS'] = "";
 
-            if (!isset($message['IPADDRESS'])) $message['IPADDRESS'] = "";
+        if (!isset($message['FROM_RELATIONSHIP'])) $message['FROM_RELATIONSHIP'] = 0;
+        if (!isset($message['TO_RELATIONSHIP'])) $message['TO_RELATIONSHIP'] = 0;
 
-            if (!isset($message['FROM_RELATIONSHIP'])) $message['FROM_RELATIONSHIP'] = 0;
-            if (!isset($message['TO_RELATIONSHIP'])) $message['TO_RELATIONSHIP'] = 0;
-
-            if (isset($message['TLOGON']) && isset($message['PTNICK'])) {
-                if (!is_null($message['PTNICK']) && strlen($message['PTNICK']) > 0) {
-                    $message['TNICK'] = $message['PTNICK'];
-                }
+        if (isset($message['TLOGON']) && isset($message['PTNICK'])) {
+            if (!is_null($message['PTNICK']) && strlen($message['PTNICK']) > 0) {
+                $message['TNICK'] = $message['PTNICK'];
             }
-
-            if (isset($message['FLOGON']) && isset($message['PFNICK'])) {
-                if (!is_null($message['PFNICK']) && strlen($message['PFNICK']) > 0) {
-                    $message['FNICK'] = $message['PFNICK'];
-                }
-            }
-
-            if (!isset($message['FNICK'])) $message['FNICK'] = gettext("Unknown user");
-            if (!isset($message['FLOGON'])) $message['FLOGON'] = gettext("Unknown user");
-            if (!isset($message['FROM_UID'])) $message['FROM_UID'] = -1;
-
-            if (!isset($message['TNICK'])) $message['TNICK'] = gettext("ALL");
-            if (!isset($message['TLOGON'])) $message['TLOGON'] = gettext("ALL");
-
-            if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
-            if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
-
-            if (!is_array($messages)) $messages = array();
-
-            $messages[] = $message;
         }
 
-        return $messages;
-
-    } else {
-
-        if (($message = db_fetch_array($result))) {
-
-            if (!isset($message['VIEWED'])) $message['VIEWED'] = 0;
-
-            if (!isset($message['APPROVED'])) $message['APPROVED'] = 0;
-            if (!isset($message['APPROVED_BY'])) $message['APPROVED_BY'] = 0;
-
-            if (!isset($message['EDITED'])) $message['EDITED'] = 0;
-            if (!isset($message['EDITED_BY'])) $message['EDITED_BY'] = 0;
-
-            if (!isset($message['IPADDRESS'])) $message['IPADDRESS'] = "";
-
-            if (!isset($message['FROM_RELATIONSHIP'])) $message['FROM_RELATIONSHIP'] = 0;
-            if (!isset($message['TO_RELATIONSHIP'])) $message['TO_RELATIONSHIP'] = 0;
-
-            if (isset($message['TLOGON']) && isset($message['PTNICK'])) {
-                if (!is_null($message['PTNICK']) && strlen($message['PTNICK']) > 0) {
-                    $message['TNICK'] = $message['PTNICK'];
-                }
+        if (isset($message['FLOGON']) && isset($message['PFNICK'])) {
+            if (!is_null($message['PFNICK']) && strlen($message['PFNICK']) > 0) {
+                $message['FNICK'] = $message['PFNICK'];
             }
-
-            if (isset($message['FLOGON']) && isset($message['PFNICK'])) {
-                if (!is_null($message['PFNICK']) && strlen($message['PFNICK']) > 0) {
-                    $message['FNICK'] = $message['PFNICK'];
-                }
-            }
-
-            if (!isset($message['FNICK'])) $message['FNICK'] = gettext("Unknown user");
-            if (!isset($message['FLOGON'])) $message['FLOGON'] = gettext("Unknown user");
-            if (!isset($message['FROM_UID'])) $message['FROM_UID'] = -1;
-
-            if (!isset($message['TNICK'])) $message['TNICK'] = gettext("ALL");
-            if (!isset($message['TLOGON'])) $message['TLOGON'] = gettext("ALL");
-
-            if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
-            if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
-
-            if (isset($message['AVATAR_URL_FORUM']) && strlen($message['AVATAR_URL_FORUM']) > 0) {
-                $message['AVATAR_URL'] = $message['AVATAR_URL_FORUM'];
-            } else if (isset($message['AVATAR_URL_GLOBAL']) && strlen($message['AVATAR_URL_GLOBAL']) > 0) {
-                $message['AVATAR_URL'] = $message['AVATAR_URL_GLOBAL'];
-            }
-
-            if (isset($message['AVATAR_AID_FORUM']) && is_md5($message['AVATAR_AID_FORUM'])) {
-                $message['AVATAR_AID'] = $message['AVATAR_AID_FORUM'];
-            } else if (isset($message['AVATAR_AID_GLOBAL']) && is_md5($message['AVATAR_AID_GLOBAL'])) {
-                $message['AVATAR_AID'] = $message['AVATAR_AID_GLOBAL'];
-            }
-
-            return $message;
         }
+
+        if (!isset($message['FNICK'])) $message['FNICK'] = gettext("Unknown user");
+        if (!isset($message['FLOGON'])) $message['FLOGON'] = gettext("Unknown user");
+        if (!isset($message['FROM_UID'])) $message['FROM_UID'] = -1;
+
+        if (!isset($message['TNICK'])) $message['TNICK'] = gettext("ALL");
+        if (!isset($message['TLOGON'])) $message['TLOGON'] = gettext("ALL");
+
+        if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
+        if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
+
+        if (!is_array($messages)) $messages = array();
+
+        $messages[] = $message;
     }
-
-    return false;
+    
+    return ($limit > 1) ? $messages : array_shift($messages);
 }
 
 function message_get_content($tid, $pid)
@@ -1039,8 +981,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "            <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
             echo "              <tr>\n";
-
-            if ((isset($message['ANON_LOGON']) && $message['ANON_LOGON'] > USER_ANON_DISABLED) || !isset($message['USER_ACTIVE']) || $message['USER_ACTIVE'] == 0) {
+            
+            if ((isset($message['ANON_LOGON']) && $message['ANON_LOGON'] > USER_ANON_DISABLED) || !isset($message['USER_ACTIVE']) || is_null($message['USER_ACTIVE'])) {
 
                 echo "                <td width=\"25%\" align=\"left\">";
                 echo "                  <img src=\"", html_style_image('status_offline.png'), "\" alt=\"\" title=\"", gettext("Inactive / Offline"), "\" />";
@@ -1049,7 +991,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             } else {
 
                 echo "                <td width=\"25%\" align=\"left\">";
-                echo "                  <img src=\"", html_style_image('status_offline.png'), "\" alt=\"\" title=\"", gettext("Inactive / Offline"), "\" />";
+                echo "                  <img src=\"", html_style_image('status_online.png'), "\" alt=\"\" title=\"", gettext("Online"), "\" />";
                 echo "                </td>\n";
             }
 

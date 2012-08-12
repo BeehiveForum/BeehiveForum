@@ -731,8 +731,6 @@ function install_set_default_forum_settings()
         'require_email_confirmation' => 'N',
         'require_unique_email' => 'N',
         'allow_new_registrations' => 'Y',
-        'active_sess_cutoff' => '900',
-        'session_cutoff' => '86400',
         'search_min_frequency' => '30',
         'guest_account_enabled' => 'Y',
         'guest_auto_logon' => 'Y',

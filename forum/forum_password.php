@@ -99,9 +99,9 @@ if (isset($redirect_uri) && strlen(trim($redirect_uri)) > 0) {
     }
 }
 
-// Log the user into the forum by setting a session cookie
+// Log the user into the forum by setting a session value
 // containing the forum's password as an MD5 hash.
-html_set_cookie("sess_hash_{$webtag}", $forum_passhash);
+session::set_value("{$webtag}_PASSWORD", $forum_passhash);
 
 // Redirect the user back to where they came from.
 header_redirect($redirect_uri);

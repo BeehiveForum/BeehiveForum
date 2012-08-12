@@ -107,7 +107,7 @@ if (!session::logged_in()) {
 
     if (isset($mode) && is_numeric($mode)) {
 
-        html_set_cookie("thread_mode_{$webtag}", $mode);
+        session::set_value('THREAD_MODE', $mode);
 
         if ($mode == SEARCH_RESULTS) {
 
@@ -117,7 +117,7 @@ if (!session::logged_in()) {
 
     } else {
 
-        $mode = html_get_cookie("thread_mode_{$webtag}", 'is_numeric', UNREAD_DISCUSSIONS);
+        if (!($mode = session::get_value('THREAD_MODE'))) $mode = UNREAD_DISCUSSIONS;
 
         if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
             $mode = ALL_DISCUSSIONS;

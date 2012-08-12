@@ -88,9 +88,9 @@ function user_get_profile($uid)
 
     $user_prefs = user_get_prefs($uid);
     
-    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
+    $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
 
-    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT, ";

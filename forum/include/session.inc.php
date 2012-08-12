@@ -426,6 +426,11 @@ abstract class session
         return true;
     }    
     
+    public static function unset_value($key)
+    {
+        unset($_SESSION[$key]);
+    }
+    
     public static function get_perm_array($uid, $forum_fid)
     {
         $user_perm_array = array();

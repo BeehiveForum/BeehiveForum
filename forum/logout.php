@@ -56,7 +56,6 @@ if (isset($_REQUEST['register'])) {
 }
 
 html_set_cookie("user_logon", "", time() - YEAR_IN_SECONDS);
-html_set_cookie("user_passhash", "", time() - YEAR_IN_SECONDS);
 
 header_redirect("index.php?webtag=$webtag$final_uri");
 

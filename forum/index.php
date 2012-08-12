@@ -228,14 +228,14 @@ if (forum_check_webtag_available($webtag)) {
             $start_from = 0;
         }
 
-        if (isset($_REQUEST['thread_mode']) && is_numeric($_REQUEST['thread_mode'])) {
-            $thread_mode = $_REQUEST['thread_mode'];
+        if (isset($_REQUEST['mode']) && is_numeric($_REQUEST['mode'])) {
+            $mode = $_REQUEST['mode'];
         }
 
         if (!session::logged_in()) {
 
-            if (!isset($thread_mode) || ($thread_mode != ALL_DISCUSSIONS && $thread_mode != TODAYS_DISCUSSIONS && $thread_mode != TWO_DAYS_BACK && $thread_mode != SEVEN_DAYS_BACK)) {
-                $thread_mode = ALL_DISCUSSIONS;
+            if (!isset($mode) || ($mode != ALL_DISCUSSIONS && $mode != TODAYS_DISCUSSIONS && $mode != TWO_DAYS_BACK && $mode != SEVEN_DAYS_BACK)) {
+                $mode = ALL_DISCUSSIONS;
             }
 
         } else {
@@ -244,21 +244,21 @@ if (forum_check_webtag_available($webtag)) {
 
             $threads_any_unread = threads_any_unread();
 
-            if (isset($thread_mode) && is_numeric($thread_mode)) {
+            if (isset($mode) && is_numeric($mode)) {
 
-                html_set_cookie("thread_mode_{$webtag}", $thread_mode);
+                session::set_value('THREAD_MODE', $mode);
 
             } else {
 
-                $thread_mode = html_get_cookie("thread_mode_{$webtag}", 'is_numeric', UNREAD_DISCUSSIONS);
+                if (!($mode = session::get_value('THREAD_MODE'))) $mode = UNREAD_DISCUSSIONS;
 
-                if ($thread_mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
-                    $thread_mode = ALL_DISCUSSIONS;
+                if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
+                    $mode = ALL_DISCUSSIONS;
                 }
             }
         }
 
-        light_draw_thread_list($thread_mode, $folder, $start_from);
+        light_draw_thread_list($mode, $folder, $start_from);
     }
 
 } else {

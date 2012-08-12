@@ -300,15 +300,15 @@ function forum_check_password($forum_fid)
     if (!($forum_passhash = forum_get_password($forum_fid))) return true;
 
     // Check the stored cookie against the known hash of the forum password.
-    if (html_get_cookie("sess_hash_{$webtag}", 'is_md5') == $forum_passhash) return true;
+    if (session::get_value("{$webtag}_PASSWORD") == $forum_passhash) return true;
 
     html_draw_top(sprintf("title=%s", gettext("Password Protected Forum")));
 
     echo "<h1>", gettext("Password Protected Forum"), "</h1>\n";
 
-    if (html_get_cookie("sess_hash_{$webtag}", 'strlen')) {
+    if (session::get_value("{$webtag}_PASSWORD")) {
 
-        html_set_cookie("sess_hash_{$webtag}", "", time() - YEAR_IN_SECONDS);
+        session::unset_value("{$webtag}_PASSWORD");
         html_display_error_msg(gettext("The username or password you supplied is not valid."), '550', 'center');
     }
 
@@ -623,7 +623,6 @@ function forum_check_setting_name($setting_name)
         'searchbots_show_active', 
         'searchbots_show_recent',
         'send_new_user_email', 
-        'session_cutoff', 
         'show_links', 
         'require_link_approval',
         'show_share_links', 
@@ -645,7 +644,6 @@ function forum_check_global_setting_name($setting_name)
         'adsense_display_users', 
         'adsense_display_pages', 
         'adsense_message_number',
-        'active_sess_cutoff', 
         'allow_new_registrations', 
         'allow_search_spidering', 
         'allow_username_changes', 
@@ -696,7 +694,6 @@ function forum_check_global_setting_name($setting_name)
         'searchbots_show_active', 
         'searchbots_show_recent', 
         'send_new_user_email', 
-        'session_cutoff', 
         'sitemap_enabled', 
         'sitemap_freq', 
         'showpopuponnewpm', 

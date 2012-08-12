@@ -63,8 +63,8 @@ if (isset($_REQUEST['start_from']) && is_numeric($_REQUEST['start_from'])) {
 }
 
 // View mode
-if (isset($_REQUEST['thread_mode']) && is_numeric($_REQUEST['thread_mode'])) {
-    $thread_mode = $_REQUEST['thread_mode'];
+if (isset($_REQUEST['mode']) && is_numeric($_REQUEST['mode'])) {
+    $mode = $_REQUEST['mode'];
 }
 
 // Check that required variables are set
@@ -73,24 +73,24 @@ if (!session::logged_in()) {
     // non-logged in users can only display "All" threads
     // or those in the past x days, since the other options
     // would be impossible
-    if (!isset($thread_mode) || ($thread_mode != ALL_DISCUSSIONS && $thread_mode != TODAYS_DISCUSSIONS && $thread_mode != TWO_DAYS_BACK && $thread_mode != SEVEN_DAYS_BACK)) {
-        $thread_mode = ALL_DISCUSSIONS;
+    if (!isset($mode) || ($mode != ALL_DISCUSSIONS && $mode != TODAYS_DISCUSSIONS && $mode != TWO_DAYS_BACK && $mode != SEVEN_DAYS_BACK)) {
+        $mode = ALL_DISCUSSIONS;
     }
 
 } else {
 
     $threads_any_unread = threads_any_unread();
 
-    if (isset($thread_mode) && is_numeric($thread_mode)) {
+    if (isset($mode) && is_numeric($mode)) {
 
-        html_set_cookie("thread_mode_{$webtag}", $thread_mode);
+        session::set_value('THREAD_MODE', $mode);
 
     } else {
 
-        $thread_mode = html_get_cookie("thread_mode_{$webtag}", 'is_numeric', UNREAD_DISCUSSIONS);
+        if (!($mode = session::get_value('THREAD_MODE'))) $mode = UNREAD_DISCUSSIONS;
 
-        if ($thread_mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
-            $thread_mode = ALL_DISCUSSIONS;
+        if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
+            $mode = ALL_DISCUSSIONS;
         }
     }
 
@@ -112,7 +112,7 @@ if (!session::logged_in()) {
 
                     if (threads_mark_read($thread_data)) {
 
-                        header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$thread_mode&folder=$folder&mark_read_success=true");
+                        header_redirect("lthread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
                         exit;
 
                     } else {
@@ -126,7 +126,7 @@ if (!session::logged_in()) {
 
                 if (threads_mark_all_read()) {
 
-                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$thread_mode&folder=$folder&mark_read_success=true");
+                    header_redirect("lthread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
                     exit;
 
                 } else {
@@ -139,7 +139,7 @@ if (!session::logged_in()) {
 
                 if (threads_mark_50_read()) {
 
-                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$thread_mode&folder=$folder&mark_read_success=true");
+                    header_redirect("lthread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
                     exit;
 
                 } else {
@@ -152,7 +152,7 @@ if (!session::logged_in()) {
 
                 if (threads_mark_folder_read($folder)) {
 
-                    header_redirect("lthread_list.php?webtag=$webtag&thread_mode=$thread_mode&folder=$folder&mark_read_success=true");
+                    header_redirect("lthread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
                     exit;
 
                 } else {
@@ -176,7 +176,7 @@ if (!session::logged_in()) {
 
 light_html_draw_top();
 
-light_draw_thread_list($thread_mode, $folder, $start_from);
+light_draw_thread_list($mode, $folder, $start_from);
 
 light_html_draw_bottom();
 

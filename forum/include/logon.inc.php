@@ -50,13 +50,6 @@ function logon_perform()
         // Check the Guest account is enabled.
         if (!user_guest_enabled()) return false;
 
-        // Check the website is valid
-        if (forum_check_webtag_available($webtag)) {
-
-            // Clear thread_mode cookie
-            html_set_cookie("thread_mode_{$webtag}", '', time() - YEAR_IN_SECONDS);
-        }
-
         // Initialise Guest user session.
         session::create(0);
 

@@ -105,11 +105,6 @@ function db_query($sql, $connection_id)
     return $result;
 }
 
-function db_unbuffered_query($sql, $connection_id)
-{
-    return db_query($sql, $connection_id);
-}
-
 function db_num_rows($result)
 {
     if (($num_rows = mysqli_num_rows($result))) {

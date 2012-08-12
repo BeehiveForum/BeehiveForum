@@ -221,29 +221,6 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['sphinx_search_port'] = '';
     }
 
-    if (isset($_POST['session_cutoff']) && is_numeric($_POST['session_cutoff'])) {
-        $new_forum_settings['session_cutoff'] = $_POST['session_cutoff'];
-    } else {
-        $new_forum_settings['session_cutoff'] = 86400;
-    }
-
-    if (isset($_POST['active_sess_cutoff']) && is_numeric($_POST['active_sess_cutoff'])) {
-
-        if ($_POST['active_sess_cutoff'] < $new_forum_settings['session_cutoff']) {
-
-            $new_forum_settings['active_sess_cutoff'] = $_POST['active_sess_cutoff'];
-
-        } else {
-
-            $error_msg_array[] = gettext("Active session timeout cannot be greater than session timeout");
-            $valid = false;
-        }
-
-    } else {
-
-        $new_forum_settings['active_sess_cutoff'] = 900;
-    }
-
     if (isset($_POST['allow_new_registrations']) && $_POST['allow_new_registrations'] == "Y") {
         $new_forum_settings['allow_new_registrations'] = "Y";
     } else {
@@ -935,50 +912,6 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", gettext("Sphinx Search Port"), ":</td>\n";
 echo "                        <td align=\"left\">", form_input_text("sphinx_search_port", (isset($forum_global_settings['sphinx_search_port'])) ? htmlentities_array($forum_global_settings['sphinx_search_port']) : '', 5), "&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">", gettext("Sessions"), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-echo "                    <table class=\"posthead\" width=\"95%\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"270\">", gettext("Session cut off (seconds)"), ":</td>\n";
-echo "                        <td align=\"left\">", form_input_text("session_cutoff", (isset($forum_global_settings['session_cutoff'])) ? htmlentities_array($forum_global_settings['session_cutoff']) : "86400", 20, 6), "&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"270\">", gettext("Active session cut off (seconds)"), ":</td>\n";
-echo "                        <td align=\"left\">", form_input_text("active_sess_cutoff", (isset($forum_global_settings['active_sess_cutoff'])) ? htmlentities_array($forum_global_settings['active_sess_cutoff']) : "900", 20, 6), "&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">\n";
-echo "                          <p class=\"smalltext\">", gettext("<b>Session cut off</b> is the maximum time before a user's session is deemed dead and they are logged out. By default this is 24 hours (86400 seconds)."), "</p>\n";
-echo "                          <p class=\"smalltext\">", gettext("<b>Active session cut off</b> is the maximum time before a user's session is deemed inactive at which point they enter an idle state. In this state the user remains logged in, but they are removed from the active users list in the stats display. Once they become active again they will be re-added to the list. By default this setting is set to 15 minutes (900 seconds)."), "</p>\n";
-echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

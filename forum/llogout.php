@@ -40,8 +40,6 @@ session::end();
 
 html_set_cookie("user_logon", "", time() - YEAR_IN_SECONDS);
 
-html_set_cookie("user_passhash", "", time() - YEAR_IN_SECONDS);
-
 if (!session::logged_in()) {
     header_redirect("llogon.php?webtag=$webtag");
 } else {

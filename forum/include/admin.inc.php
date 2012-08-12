@@ -336,9 +336,9 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
         $sort_by = 'USER_FORUM.LAST_VISIT';
     }
 
-    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
+    $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
 
-    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
 
     $user_get_all_array = array();
 
@@ -448,9 +448,9 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
         $sort_by = 'USER_FORUM.LAST_VISIT';
     }
 
-    $active_sess_cutoff = intval(forum_get_setting('active_sess_cutoff', false, 900));
+    $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
 
-    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $active_sess_cutoff);
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
 
     $user_get_all_array = array();
 
@@ -1698,9 +1698,9 @@ function admin_check_credentials()
 {
     $webtag = get_webtag();
     
-    if (($admin_timeout = session::get_value('admin_timeout')) && ($admin_timeout > time())) {
+    if (($admin_timeout = session::get_value('ADMIN_TIMEOUT')) && ($admin_timeout > time())) {
         
-        session::set_value('admin_timeout', time() + HOUR_IN_SECONDS);
+        session::set_value('ADMIN_TIMEOUT', time() + HOUR_IN_SECONDS);
         return true;
     }
     
@@ -1712,7 +1712,7 @@ function admin_check_credentials()
         
         if (($admin_uid = user_logon($admin_logon, $admin_password)) && ($admin_uid == session::get_value('UID'))) {
             
-            session::set_value('admin_timeout', time() + HOUR_IN_SECONDS);
+            session::set_value('ADMIN_TIMEOUT', time() + HOUR_IN_SECONDS);
             return true;
         
         } else {

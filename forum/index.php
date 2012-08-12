@@ -40,9 +40,6 @@ require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'threads.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
 
-// Embedded light mode in this script.
-define('BEEHIVE_LIGHT_INCLUDE', true);
-
 // Don't cache this page
 cache_disable();
 
@@ -187,6 +184,10 @@ if (!browser_mobile() && !session::is_search_engine()) {
 
     echo "<noframes>\n";
     echo "<body>\n";
+
+} else {
+    
+    light_html_draw_top();
 }
 
 if (forum_check_webtag_available($webtag)) {

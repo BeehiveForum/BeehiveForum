@@ -105,7 +105,10 @@ $forum_global_settings = forum_get_global_settings();
 // Initialise the session
 session::init();
 
-// Check to see if the user is banned.
+// Perform ban check
+ban_check($_SESSION);
+
+// Check to see if user account has been banned.
 if (session::user_banned()) {
     html_user_banned();
     exit;

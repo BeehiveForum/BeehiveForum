@@ -71,27 +71,26 @@ abstract class session
         
         session_name('sess_hash');
         
-        if (!($hash = html_get_cookie(session_name()))) {
-        
-            if (!($hash = session::restore())) {
+        if (!html_get_cookie(session_name()) && ($hash = session::restore())) {
             
-                $ip_address = get_ip_address();
-                
-                $user_agent = session::get_user_agent();
-                
-                $hash = md5($ip_address. $user_agent);
-            }
+            session_id($hash);
+
+        } else {
+
+            $ip_address = get_ip_address();
+            
+            $user_agent = session::get_user_agent();
+            
+            session_id(md5($ip_address. $user_agent));
         }
         
-        session_id($hash);
-
         session_start();
         
         session::refresh(session::get_value('UID'));
-    
+        
         if (session::logged_in()) {
             html_set_cookie(session_name(), session_id());
-        }        
+        }             
     }
     
     public static function open()
@@ -134,15 +133,17 @@ abstract class session
         
         $uid = db_escape_string(session::get_value('UID'));
         
+        $ip_address = db_escape_string(get_ip_address());
+        
         $http_referer = db_escape_string(session::get_http_referer());
         
         $user_agent = db_escape_string(session::get_user_agent());
         
         if (!($search_id = session::is_search_engine())) $search_id = 'NULL';
         
-        $sql = "REPLACE INTO SESSIONS (ID, UID, FID, DATA, TIME, REFERER, USER_AGENT, SID) ";
+        $sql = "REPLACE INTO SESSIONS (ID, UID, FID, DATA, TIME, IPADDRESS, REFERER, USER_AGENT, SID) ";
         $sql.= "VALUES ('$id', '$uid', '$forum_fid', '$data', CAST('$time' AS DATETIME), ";
-        $sql.= "'$http_referer', '$user_agent', $search_id)";
+        $sql.= "'$ip_address', $http_referer', '$user_agent', $search_id)";
         
         if (!(db_query($sql, session::$db))) return false;
         
@@ -542,32 +543,36 @@ abstract class session
                 'LOGON' => 'GUEST',
                 'NICKNAME' => 'Guest',
                 'EMAIL' => '',
-                'IPADDRESS' => $ip_address,
-                'REFERER' => $http_referer,
             );
         }
         
-        unset($user['PASSWD']);
+        unset($user['IPADDRESS'], $user['PASSWD'], $user['REFERER']);
                 
         $_SESSION = array_merge($_SESSION, $user);
+
+        $_SESSION['FID'] = $forum_fid;
         
+        $_SESSION['IPADDRESS'] = get_ip_address();
+
         if (($user_prefs = user_get_prefs($uid))) {
             $_SESSION = array_merge($_SESSION, $user_prefs);
         }    
         
-        if (isset($user_prefs['STYLE'])) {
-            html_set_cookie("forum_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
-        }
-        
         if (($user_perms = session::get_perm_array($uid, $forum_fid))) {
             $_SESSION['PERMS'] = $user_perms;
+        }
+
+        if (!isset($_SESSION['REFERER'])) {
+            $_SESSION['REFERER'] = session::get_http_referer();
         }
 
         if (!isset($_SESSION['RAND_HASH'])) {
             $_SESSION['RAND_HASH'] = md5(uniqid(mt_rand()));
         }
 
-        $_SESSION['FID'] = $forum_fid;
+        if (isset($user_prefs['STYLE'])) {
+            html_set_cookie("forum_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
+        }
     }
     
     public static function end()

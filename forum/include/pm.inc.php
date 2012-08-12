@@ -1106,7 +1106,7 @@ function pm_display_html_export($pm_message_array, $folder)
 
     ob_end_clean();
 
-    return word_filter_rem_ob_tags($pm_message_html);
+    return word_filter_remove_ob_tags($pm_message_html);
 }
 
 function pm_message_get_folder($mid, $type = 0)

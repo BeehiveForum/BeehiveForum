@@ -62,26 +62,16 @@ function word_filter_get($uid, &$word_filter_array)
     return true;
 }
 
-function word_filter_get_by_sess_uid()
+function word_filter_get_from_session()
 {
-    if (($uid = session::get_value('UID')) === false) return false;
-
     $word_filter_array = array();
 
     if (session::get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_setting('force_word_filter', 'Y', false)) {
-
-        if (!word_filter_get(0, $word_filter_array)) {
-
-            return false;
-        }
+        word_filter_get(0, $word_filter_array);
     }
 
-    if (session::get_value('USE_WORD_FILTER') == "Y") {
-
-        if (!word_filter_get($uid, $word_filter_array)) {
-
-            return false;
-        }
+    if (($uid = session::get_value('UID')) > 0 && session::get_value('USE_WORD_FILTER') == 'Y') {
+        word_filter_get($uid, $word_filter_array);
     }
 
     return word_filter_prepare($word_filter_array);
@@ -91,34 +81,24 @@ function word_filter_get_by_uid($uid)
 {
     if (!is_numeric($uid)) return false;
 
-    static $word_filter_array = false;
-    static $last_user_uid = false;
+    if (!($user_prefs = user_get_prefs($uid))) return false;
 
-    if ((!is_array($word_filter_array)) || $last_user_uid !== $uid) {
+    static $word_filter_array = array();
 
-        $last_user_uid = $uid;
+    if (!isset($word_filter_array[$uid])) {
 
-        if (($user_prefs = user_get_prefs($uid))) {
+        $word_filter_array[$uid] = array();
+        
+        if ((isset($user_prefs['USE_ADMIN_FILTER']) && $user_prefs['USE_ADMIN_FILTER'] == 'Y') || forum_get_setting('force_word_filter', 'Y', false)) {
+            word_filter_get(0, $word_filter_array[$uid]);
+        }
 
-            if ((isset($user_prefs['USE_ADMIN_FILTER']) && $user_prefs['USE_ADMIN_FILTER'] == 'Y') || forum_get_setting('force_word_filter', 'Y', false)) {
-
-                if (!word_filter_get(0, $word_filter_array)) {
-
-                    return false;
-                }
-            }
-
-            if (isset($user_prefs['USE_WORD_FILTER']) && $user_prefs['USE_WORD_FILTER'] == 'Y') {
-
-                if (!word_filter_get($uid, $word_filter_array)) {
-
-                    return false;
-                }
-            }
+        if (isset($user_prefs['USE_WORD_FILTER']) && $user_prefs['USE_WORD_FILTER'] == 'Y') {
+            word_filter_get($uid, $word_filter_array[$uid]);
         }
     }
 
-    return word_filter_prepare($word_filter_array);
+    return word_filter_prepare($word_filter_array[$uid]);
 }
 
 function word_filter_prepare($word_filter_array)
@@ -183,7 +163,7 @@ function word_filter_add_ob_tags($content, $strip_html = false)
     return sprintf('<%1$s_%3$s>%2$s</%1$s_%3$s>', $strip_html, $content, $rand_hash);
 }
 
-function word_filter_rem_ob_tags($content)
+function word_filter_remove_ob_tags($content)
 {
     if (($rand_hash = session::get_value('RAND_HASH')) === false) {
         return $content;
@@ -197,13 +177,13 @@ function word_filter_rem_ob_tags($content)
 function word_filter_ob_callback($content)
 {
     if (($rand_hash = session::get_value('RAND_HASH')) === false) {
-        return $content;
+        return word_filter_remove_ob_tags($content);
     }
 
     $rand_hash = preg_replace("/[^a-z]/iu", "", $rand_hash);
 
-    if (!($user_wordfilter = word_filter_get_by_sess_uid())) {
-        return $content;
+    if (!($user_wordfilter = word_filter_get_from_session())) {
+        return word_filter_remove_ob_tags($content);
     }
     
     $pattern_array = $user_wordfilter['pattern_array'];
@@ -230,8 +210,10 @@ function word_filter_ob_callback($content)
             $content_array[$key] = $new_content;
         }
     }
+    
+    $content = implode('', $content_array);
 
-    return implode('', $content_array);
+    return word_filter_remove_ob_tags($content);
 }
 
 function word_filter_apply($content, $uid, $strip_html = false)

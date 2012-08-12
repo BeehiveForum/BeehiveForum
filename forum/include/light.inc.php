@@ -56,7 +56,11 @@ require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 function light_html_draw_top()
 {
-    if (defined('BEEHIVE_LIGHT_INCLUDE')) return;
+    static $called = false;
+    
+    if ($called) return;
+    
+    $called = true;
     
     $arg_array = func_get_args();
 
@@ -225,7 +229,7 @@ function light_html_draw_top()
     echo "<body id=\"mobile\">\n";
     echo "<a name=\"top\"></a>\n";
     echo "<div id=\"header\">\n";
-    echo "  <img src=\"", html_style_image('mobile_logo.png'), "\" />\n";
+    echo "  <img src=\"", html_style_image('mobile_logo.png'), "\" alt=\"", gettext("Beehive Forum Logo"), "\" />\n";
     echo "  <div id=\"nav\">\n";
     echo "    <ul>\n";
     echo "      <li class=\"menu_toggle\">", gettext("Menu"), "</li>\n";
@@ -257,7 +261,11 @@ function light_html_draw_top()
 
 function light_html_draw_bottom()
 {
-    if (defined('BEEHIVE_LIGHT_INCLUDE')) return;
+    static $called = false;
+    
+    if ($called) return;
+    
+    $called = true;
     
     $webtag = get_webtag();
 
@@ -1004,9 +1012,8 @@ function light_draw_pm_inbox()
         echo light_form_submit("pm_delete_confirm", gettext("Delete"));
         echo light_form_submit("cancel", gettext("Cancel"));
         echo "</div>\n";
-
-        light_html_draw_bottom();
-        exit;
+        
+        return;
     }
 
     if (isset($mid) && is_numeric($mid)) {

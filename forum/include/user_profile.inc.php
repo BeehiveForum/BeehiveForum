@@ -291,7 +291,7 @@ function user_get_profile_entries($uid)
 
     $user_profile_array = array();
 
-    $session_uid = session_get_value('UID');
+    $session_uid = session::get_value('UID');
 
     $peer_relationship = user_get_relationship($uid, $session_uid);
 

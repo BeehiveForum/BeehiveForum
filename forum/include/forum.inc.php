@@ -290,25 +290,29 @@ function forum_get_password($forum_fid)
 
 function forum_check_password($forum_fid)
 {
-    $webtag = get_webtag();
-
-    if (!forum_check_webtag_available($webtag)) return false;
-
     if (!is_numeric($forum_fid)) return false;
 
-    // Get the forum's password hash.
+    $webtag = get_webtag();
+    
     if (!($forum_passhash = forum_get_password($forum_fid))) return true;
 
-    // Check the stored cookie against the known hash of the forum password.
-    if (session::get_value("{$webtag}_PASSWORD") == $forum_passhash) return true;
+    $forum_passhash_check = session::get_value("{$webtag}_PASSWORD");
+    
+    if (isset($_POST['forum_password']) && strlen($_POST['forum_password']) > 0) {
+        $forum_passhash_check = md5($_POST['forum_password']);
+    }
+    
+    if ($forum_passhash == $forum_passhash_check) {
+        
+        session::set_value("{$webtag}_PASSWORD", $forum_passhash_check);
+        return true;
+    }
 
     html_draw_top(sprintf("title=%s", gettext("Password Protected Forum")));
 
     echo "<h1>", gettext("Password Protected Forum"), "</h1>\n";
 
     if (session::get_value("{$webtag}_PASSWORD")) {
-
-        session::unset_value("{$webtag}_PASSWORD");
         html_display_error_msg(gettext("The username or password you supplied is not valid."), '550', 'center');
     }
 
@@ -323,9 +327,13 @@ function forum_check_password($forum_fid)
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "  <form accept-charset=\"utf-8\" method=\"post\" action=\"forum_password.php\" target=\"", html_get_top_frame_name(), "\">\n";
+    echo "  <form accept-charset=\"utf-8\" method=\"post\" action=\"", get_request_uri(), "\" target=\"_self\" autocomplete=\"off\">\n";
+    
+    if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
+        echo form_input_hidden_array($_POST);
+    }    
+    
     echo "    ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-    echo "    ", form_input_hidden('final_uri', htmlentities_array(get_request_uri())), "\n";
     echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
     echo "      <tr>\n";
     echo "        <td align=\"left\">\n";

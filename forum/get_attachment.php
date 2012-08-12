@@ -108,20 +108,11 @@ if (!isset($file_path) || !@file_exists($file_path)) {
     exit;    
 }
 
-// Check we open the file.
-if (!($file_handle = @fopen($file_path, 'rb'))) {
-    
-    header_status('404', 'File Not Found');
-    exit;
-}    
+// Turn off all output buffers
+while (@ob_end_clean());
 
 // Filesize for Content-Length header.
 $file_size = filesize($file_path);
-
-// Chunk size to use when reading the file. This is to 
-// work around servers that have problems loading large 
-// attachments into memory.
-$chunk_size = 1 * (1024 * 1024);
 
 // Last Modified Header for cache control
 cache_check_last_modified(filemtime($file_path));
@@ -131,17 +122,7 @@ header("Content-Length: $file_size");
 header("Content-Type: {$attachment_details['mimetype']}");
 header("Content-disposition: inline; filename=\"$file_name\"");
 
-// Loop over the file, reading chunks of it
-// and send them to the client.
-while (!feof($file_handle)) {
-
-    echo fread($file_handle, $chunk_size);
-
-    ob_flush();
-
-    flush();
-}
-
-fclose($file_handle);
+// Output the file directly to the browser.
+readfile($file_path);
 
 ?>

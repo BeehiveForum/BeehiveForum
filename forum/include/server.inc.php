@@ -246,6 +246,8 @@ function get_forum_access_ignore_files()
             'index.php',
             'forums.php',
             'forum_password.php',
+            'logon.php',
+            'logout.php',
             'nav.php',
             'user.php',
             'user_menu.php',

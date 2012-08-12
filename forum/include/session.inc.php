@@ -90,7 +90,7 @@ abstract class session
         
         if (session::logged_in()) {
             html_set_cookie(session_name(), session_id());
-        }             
+        }
     }
     
     public static function open()
@@ -143,7 +143,7 @@ abstract class session
         
         $sql = "REPLACE INTO SESSIONS (ID, UID, FID, DATA, TIME, IPADDRESS, REFERER, USER_AGENT, SID) ";
         $sql.= "VALUES ('$id', '$uid', '$forum_fid', '$data', CAST('$time' AS DATETIME), ";
-        $sql.= "'$ip_address', $http_referer', '$user_agent', $search_id)";
+        $sql.= "'$ip_address', '$http_referer', '$user_agent', $search_id)";
         
         if (!(db_query($sql, session::$db))) return false;
         
@@ -199,7 +199,7 @@ abstract class session
         $http_user_agent = db_escape_string($http_user_agent);
 
         $sql = "SELECT SID FROM SEARCH_ENGINE_BOTS ";
-        $sql.= "WHERE  '$http_user_agent' LIKE AGENT_MATCH ";
+        $sql.= "WHERE '$http_user_agent' LIKE AGENT_MATCH ";
 
         if (!$result = db_query($sql, session::$db)) return false;
 

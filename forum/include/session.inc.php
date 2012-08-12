@@ -582,7 +582,7 @@ abstract class session
     
     public static function end()
     {
-        session_destroy();
+        session::refresh(0);
         
         html_set_cookie(session_name(), '', time() - YEAR_IN_SECONDS);
     }

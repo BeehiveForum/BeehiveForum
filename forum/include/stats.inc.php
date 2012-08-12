@@ -505,6 +505,8 @@ function stats_get_active_user_list()
         'USER_COUNT' => 0, 
         'USERS' => array()
     );
+    
+    $search_engine_bots = array();
 
     $user_sort = array();
 
@@ -519,6 +521,14 @@ function stats_get_active_user_list()
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
 
     if (($uid = session::get_value('UID')) === false) return $stats;
+
+    $sql = "SELECT COUNT(UID) FROM SESSIONS WHERE UID = 0 AND SID IS NULL ";
+    $sql.= "AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql.= "AND SESSIONS.FID = '$forum_fid'";
+
+    if (!$result = db_query($sql, $db_stats_get_active_user_list)) return $stats;
+
+    list($stats['GUESTS']) = db_fetch_array($result, DB_RESULT_NUM);
 
     $sql = "SELECT DISTINCT SESSIONS.UID, USER.LOGON, USER.NICKNAME, USER_PEER2.PEER_NICKNAME, ";
     $sql.= "USER_PREFS_GLOBAL.ANON_LOGON, USER_PEER.RELATIONSHIP AS PEER_RELATIONSHIP, ";
@@ -535,7 +545,7 @@ function stats_get_active_user_list()
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = SESSIONS.SID) ";
     $sql.= "WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
-    $sql.= "AND SESSIONS.FID = '$forum_fid'";
+    $sql.= "AND SESSIONS.FID = '$forum_fid' AND (SESSIONS.UID > 0 OR SESSIONS.SID IS NOT NULL)";
 
     if (!$result = db_query($sql, $db_stats_get_active_user_list)) return $stats;
 
@@ -584,7 +594,25 @@ function stats_get_active_user_list()
 
             unset($user_data);
 
-        } else if ($user_data['UID'] > 0) {
+        } else if (isset($user_data['SID']) && !is_null($user_data['SID'])) {
+
+            if (forum_get_setting('searchbots_show_active', 'Y')) {
+
+                $stats['BOTS']++;
+
+                $user_sort[] = $user_data['BOT_NAME'];
+
+                $stats['USERS'][] = array(
+                    'BOT_NAME' => $user_data['BOT_NAME'],
+                    'BOT_URL' => $user_data['BOT_URL']
+                );
+
+            } else {
+
+               $stats['GUESTS']++;
+            }
+        
+        } else {
         
             if (($anon_logon == USER_ANON_DISABLED) || ($user_data['UID'] == $uid) || (($user_data['PEER_RELATIONSHIP'] & USER_FRIEND) > 0 && ($anon_logon == USER_ANON_FRIENDS_ONLY))) {
 
@@ -605,24 +633,6 @@ function stats_get_active_user_list()
             } else {
 
                 $stats['ANON_USERS']++;
-            }
-            
-        } else {
-            
-            if (!isset($user_data['SID']) || is_null($user_data['SID']) || forum_get_setting('searchbots_show_active', 'N')) {
-
-                $stats['GUESTS']++;
-            
-            } else {
-
-                $stats['BOTS']++;
-
-                $user_sort[] = $user_data['BOT_NAME'];
-
-                $stats['USERS'][] = array(
-                    'BOT_NAME' => $user_data['BOT_NAME'],
-                    'BOT_URL' => $user_data['BOT_URL']
-                );
             }
         }
     }

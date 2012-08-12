@@ -1518,9 +1518,9 @@ function html_get_forum_file_path($file_path, $allow_cdn = true)
         // HTTP schema
         $http_scheme = (isset($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
 
-        // Disable CDN for everything but images, CSS and icons.
+        // Disable CDN for everything but CSS, icons, images and Javascript
         if (($url_file_path = @parse_url($file_path, PHP_URL_PATH))) {
-            $allow_cdn = (preg_match('/\.png$|\.css$|\.ico$/Diu', $url_file_path) > 0) ? $allow_cdn : false;
+            $allow_cdn = (preg_match('/\.png$|\.css$|\.ico$|\.js$/Diu', $url_file_path) > 0) ? $allow_cdn : false;
         }
 
         // If CDN is allowed, get the CDN path including the domain.

@@ -47,6 +47,9 @@ set_exception_handler('bh_exception_handler');
 // Enable the error handler
 set_error_handler('bh_error_handler');
 
+// Fix problems with PHP and APC session storage
+register_shutdown_function('session_write_close');
+
 // Register shutdown function to check for uncaught errors
 register_shutdown_function('bh_shutdown_handler');
 

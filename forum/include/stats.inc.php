@@ -155,7 +155,7 @@ function stats_get_html()
 
         $active_user_list = implode(", ", $active_user_list_array);
 
-        $active_user_time = format_time_display(ini_get('session.gc_maxlifetime'));
+        $active_user_time = format_time_display(ini_get('session.gc_maxlifetime'), false);
 
         $html.= sprintf(gettext("%s active in the past %s."), $active_user_list, $active_user_time);
 

@@ -59,9 +59,9 @@ $(beehive).bind('init', function() {
     $('div#search_success').each(function() {
 
         if (top.document.body.rows) {
-            top.frames[beehive.frames.main].frames[beehive.frames.left].location.replace('search.php?webtag=' + beehive.webtag + '&offset=0');
+            top.frames[beehive.frames.main].frames[beehive.frames.left].location.replace('search.php?webtag=' + beehive.webtag + '&page=1');
         } else if (top.document.body.cols) {
-            top.frames[beehive.frames.left].location.replace('search.php?webtag=$webtag&offset=0');
+            top.frames[beehive.frames.left].location.replace('search.php?webtag=$webtag&page=1');
         }
 
         $(this).find('.success_msg_text').html($.sprintf(beehive.lang.searchsuccessfullycompleted, ''));

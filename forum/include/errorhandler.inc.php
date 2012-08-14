@@ -45,27 +45,9 @@ function bh_error_handler($code, $message, $file = '', $line = 0)
 
 function bh_shutdown_handler()
 {
-    if (($error = error_get_last()) && (error_reporting() !== 0)) {
-        
-        bh_exception_processor(
-            $error['message'], 
-            0, 
-            $error['file'], 
-            $error['line'], 
-            debug_backtrace()
-        );
+    if (($error = error_get_last()) && (error_reporting())) {
+        bh_exception_processor(new Exception($error['message'], 0, $error['file'], $error['line']));
     }
-}
-
-function bh_exception_handler(Exception $exception)
-{
-    bh_exception_processor(
-        $exception->getMessage(), 
-        $exception->getCode(), 
-        $exception->getFile(), 
-        $exception->getLine(), 
-        $exception->getTrace()
-    );    
 }
 
 function exception_stack_trace_tidy($trace_data)
@@ -73,253 +55,120 @@ function exception_stack_trace_tidy($trace_data)
     return !(isset($trace_data['function']) && in_array($trace_data['function'], array('bh_exception_handler', 'bh_error_handler', 'bh_shutdown_handler')));
 }
 
-function bh_exception_processor($message, $code, $file, $line, $stack_trace)
+function bh_exception_handler(Exception $exception)
 {
+    if (!error_reporting()) return;
+
     if (isset($GLOBALS['error_report_verbose']) && $GLOBALS['error_report_verbose'] == true) {
         $error_report_verbose = true;
     } else {
         $error_report_verbose = false;
     }
 
-    if (isset($GLOBALS['error_report_email_addr_to']) && strlen(trim($GLOBALS['error_report_email_addr_to'])) > 0) {
-        $error_report_email_addr_to = trim($GLOBALS['error_report_email_addr_to']);
-    } else {
-        $error_report_email_addr_to = '';
+    cache_disable();
+
+    while (@ob_end_clean());
+
+    ob_start();
+
+    ob_implicit_flush(0);
+    
+    bh_exception_send_email($exception);
+
+    $error_msg_array = bh_exception_process($exception);
+    
+    $error_log_message = sprintf('BEEHIVE_ERROR: %s', strip_tags(implode(". ", $error_msg_array)));
+
+    @error_log($error_log_message);
+
+    header_status(500, 'Internal Server Error');
+
+    if (($exception->getCode() == MYSQL_ERROR_NO_SUCH_TABLE) || ($exception->getCode() == MYSQL_ERROR_WRONG_COLUMN_NAME)) {
+
+        if (function_exists('install_incomplete') && !defined('BEEHIVE_DEVELOPER_MODE')) {
+
+            install_incomplete();
+        }
     }
 
-    if (isset($GLOBALS['error_report_email_addr_from']) && strlen(trim($GLOBALS['error_report_email_addr_from'])) > 0) {
-        $error_report_email_addr_from = trim($GLOBALS['error_report_email_addr_from']);
-    } else {
-        $error_report_email_addr_from = 'no-reply@beehiveforum.co.uk';
+    if ((preg_match('/include|include_once/u', $exception->getMessage()) > 0)) {
+
+        if (function_exists('install_missing_files') && !defined('BEEHIVE_DEVELOPER_MODE')) {
+
+            install_missing_files();
+        }
     }
 
-    // Now we can carry on with any other errors.
-    if (error_reporting()) {
+    if (defined('BEEHIVEMODE_LIGHT') && !defined('BEEHIVE_DEVELOPER_MODE')) {
 
-        // Disable the HTTP cache.
-        cache_disable();
+        echo '<p>An error has occured. Please wait a few moments before trying again.</p>';
+        echo '<p>Details of the error have been saved to the default error log.</p>';
 
-        // Clean the output buffer
-        while (@ob_end_clean());
+        if (isset($error_report_verbose) && $error_report_verbose == true) {
 
-        // Determine the correct output handler to use.
-        $output_handler = function_exists('bh_gzhandler') ? 'bh_gzhandler' : null;
-        
-        // Restart output handler
-        ob_start($output_handler);
+            echo '<p>When reporting a bug in Project Beehive or when requesting support please include the details below.</p>';
 
-        // Turn off output buffer flushing
-        ob_implicit_flush(0);
+            echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
+            echo "  <tr>\n";
+            echo "    <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"styles/default/images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
+            echo "    <td valign=\"top\" class=\"warning_msg_text\">Please note that there may be sensitive information such as passwords displayed here.</td>\n";
+            echo "  </tr>\n";
+            echo "</table>\n";
 
-        // Array to hold the error message strings.
-        $error_msg_array = array();
-
-        // Array to store our version strings.
-        $version_strings = array();
-
-        // Generate the error message itself.
-        $error_msg_array[] = sprintf('<p><b>E_USER_ERROR</b> %s</p>', $message);
-
-        // Add the file and line number to the error message array
-        if (strlen(trim(basename($file))) > 0) {
-
-            $error_msg_array[] = '<p><b>Error Message:</b></p>';
-            $error_msg_array[] = sprintf('<p>Error in line %s of file %s</p>', $line, basename($file));
+            echo implode("\n", $error_msg_array);
         }
 
-        // Separator
-        $error_msg_array[] = '<hr />';
-        
-        // Tidy up the stack trace
-        $stack_trace = array_filter($stack_trace, 'exception_stack_trace_tidy');
+        exit;
+    }
 
-        // Stacktrace data.
-        if (count($stack_trace) > 0) {
+    echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"utf-8\" lang=\"en\" dir=\"ltr\">\n";
+    echo "<head>\n";
+    echo "<title>Beehive Forum - Error Handler</title>\n";
+    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
+    echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
+    echo "<link rel=\"stylesheet\" href=\"styles/default/style.css?", md5(uniqid(rand())), "\" type=\"text/css\" />\n";
+    echo "</head>\n";
+    echo "<body>\n";
+    echo "<h1>Error</h1>\n";
+    echo "<br />\n";
+    echo "<div align=\"center\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"f_error\" method=\"post\" action=\"\" target=\"_self\">\n";
+    echo "  ", form_input_hidden_array($_POST), "\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">Error</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"postbody\">An error has occured. Please wait a few moments and then click the Retry button below. Details of the error have been saved to the default error log.</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
 
-            // Stacktrace header
-            $error_msg_array[] = '<p><b>Stack trace:</b></p>';
+    if ((isset($error_report_verbose) && ($error_report_verbose == true)) || defined('BEEHIVE_DEVELOPER_MODE')) {
 
-            foreach ($stack_trace as $key => $trace_data) {
-                
-                $error_msg_array[] = sprintf(
-                    '#%s %s(%s): %s%s%s(%s)<br />',
-                    $key,
-                    isset($trace_data['file']) ? $trace_data['file'] : 'unknown',
-                    isset($trace_data['line']) ? $trace_data['line'] : 'unknown',
-                    isset($trace_data['class']) ? $trace_data['class'] : '',
-                    isset($trace_data['type']) ? $trace_data['type'] : '',
-                    isset($trace_data['function']) ? $trace_data['function'] : 'unknown',
-                    isset($trace_data['args']) ? implode(', ', array_map('gettype', $trace_data['args'])) : 'void'
-                );
-            }
-        }
-
-        // Get the Beehive Forum Version
-        if (defined('BEEHIVE_VERSION')) {
-           $version_strings[] = sprintf('Beehive Forum %s', BEEHIVE_VERSION);
-        }
-
-        // Get PHP Version
-        if (($php_version = phpversion())) {
-            $version_strings[] = sprintf('on PHP/%s', $php_version);
-        }
-
-        // Get PHP OS (WINNT, Linux, etc)
-        if (defined('PHP_OS')) {
-            $version_strings[] = PHP_OS;
-        }
-
-        // Get PHP interface (CGI, APACHE, IIS, etc)
-        if (($php_sapi = php_sapi_name())) {
-            $version_strings[] = mb_strtoupper($php_sapi);
-        }
-
-        // Get MySQL version if available.
-        $mysql_version = '';
-
-        // Don't try and do this if we are having trouble connecting to the MySQL server.
-        if (!in_array($code, array(MYSQL_CONNECT_ERROR, MYSQL_ACCESS_DENIED, MYSQL_PERMISSION_DENIED))) {
-
-            if (($mysql_version = db_fetch_mysql_version())) {
-                $version_strings[] = sprintf('MySQL/%s', $mysql_version);
-            } else {
-                $version_strings[] = sprintf('MySQL Version Unknown');
-            }
-        }
-
-        // Format the version info into a string.
-        if (isset($version_strings) && sizeof($version_strings) > 0) {
-
-            $error_msg_array[] = '<p><b>Version Strings:</b></p>';
-            $error_msg_array[] = sprintf('<p>%s</p>', implode(', ', $version_strings));
-        }
-
-        // HTTP Request that caused the error
-        $error_msg_array[] = '<p><b>HTTP Request:</b></p>';
-
-        // The requested file name.
-        $error_msg_array[] =  $_SERVER['PHP_SELF'];
-
-        // Output the URL Query variables.
-        if (isset($_GET) && sizeof($_GET) > 0) {
-
-            $error_msg_array[] = '<p><b>$_GET:</b></p>';
-
-            $get_vars = htmlentities_array(print_r($_GET, true));
-
-            $error_msg_array[] = sprintf('<pre>%s</pre>', $get_vars);
-        }
-
-        // Output any Post Data
-        if (isset($_POST) && sizeof($_POST) > 0) {
-
-            $error_msg_array[] = '<p><b>$_POST:</b></p>';
-
-            $post_vars = htmlentities_array(print_r($_POST, true));
-
-            $error_msg_array[] = sprintf('<pre>%s</pre>', $post_vars);
-        }
-
-        // Output environment variables.
-        if (isset($_ENV) && sizeof($_ENV) > 0) {
-
-            $error_msg_array[] = '<p><b>$_ENV:</b></p>';
-
-            $environment_vars = htmlentities_array(print_r($_ENV, true));
-
-            $error_msg_array[] = sprintf('<pre>%s</pre>', $environment_vars);
-        }
-        // Output Server variables.
-        if (isset($_SERVER) && sizeof($_SERVER) > 0) {
-
-            $error_msg_array[] = '<p><b>$_SERVER:</b></p>';
-
-            $server_vars = htmlentities_array(print_r($_SERVER, true));
-
-            $error_msg_array[] = sprintf('<pre>%s</pre>', $server_vars);
-        }
-
-        // Check to see if we need to send the error report by email
-        if (strlen($error_report_email_addr_to) > 0 && !defined('BEEHIVE_DEVELOPER_MODE')) {
-
-            $error_log_email_message = strip_tags(implode("\n\n", $error_msg_array));
-
-            $headers = "Return-path: $error_report_email_addr_from\n";
-            $headers.= "From: \"Beehive Forum Error Report\" <$error_report_email_addr_from>\n";
-            $headers.= "Reply-To: \"Beehive Forum Error Report\" <$error_report_email_addr_from>\n";
-            $headers.= "Content-type: text/plain; charset=UTF-8\n";
-            $headers.= "X-Mailer: PHP/". phpversion(). "\n";
-            $headers.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
-
-            @mail($error_report_email_addr_to, "Beehive Forum Error Report", $error_log_email_message, $headers);
-        }
-
-        // Format the error array for adding to the system error log.
-        $error_log_message = sprintf('BEEHIVE_ERROR: %s', strip_tags(implode(". ", $error_msg_array)));
-
-        // Add the error to the log.
-        @error_log($error_log_message);
-
-        // Status error header
-        header_status(500, 'Internal Server Error');
-
-        // Check for an installation error.
-        if (($code == MYSQL_ERROR_NO_SUCH_TABLE) || ($code == MYSQL_ERROR_WRONG_COLUMN_NAME)) {
-
-            if (function_exists('install_incomplete') && !defined('BEEHIVE_DEVELOPER_MODE')) {
-
-                install_incomplete();
-            }
-        }
-
-        // Check for file include errors
-        if ((preg_match('/include|include_once/u', $message) > 0)) {
-
-            if (function_exists('install_missing_files') && !defined('BEEHIVE_DEVELOPER_MODE')) {
-
-                install_missing_files();
-            }
-        }
-
-        // Light mode / AJAX / JSON error reporting.
-        if (defined('BEEHIVEMODE_LIGHT') && !defined('BEEHIVE_DEVELOPER_MODE')) {
-
-            echo '<p>An error has occured. Please wait a few moments before trying again.</p>';
-            echo '<p>Details of the error have been saved to the default error log.</p>';
-
-            if (isset($error_report_verbose) && $error_report_verbose == true) {
-
-                echo '<p>When reporting a bug in Project Beehive or when requesting support please include the details below.</p>';
-
-                echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
-                echo "  <tr>\n";
-                echo "    <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"styles/default/images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
-                echo "    <td valign=\"top\" class=\"warning_msg_text\">Please note that there may be sensitive information such as passwords displayed here.</td>\n";
-                echo "  </tr>\n";
-                echo "</table>\n";
-
-                echo implode("\n", $error_msg_array);
-            }
-
-            exit;
-        }
-
-        // Full mode error message display with Retry button.
-        echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-        echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-        echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"utf-8\" lang=\"en\" dir=\"ltr\">\n";
-        echo "<head>\n";
-        echo "<title>Beehive Forum - Error Handler</title>\n";
-        echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-        echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
-        echo "<link rel=\"stylesheet\" href=\"styles/default/style.css?", md5(uniqid(rand())), "\" type=\"text/css\" />\n";
-        echo "</head>\n";
-        echo "<body>\n";
-        echo "<h1>Error</h1>\n";
-        echo "<br />\n";
-        echo "<div align=\"center\">\n";
-        echo "<form accept-charset=\"utf-8\" name=\"f_error\" method=\"post\" action=\"\" target=\"_self\">\n";
-        echo "  ", form_input_hidden_array($_POST), "\n";
+        echo "  <br />\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -328,13 +177,39 @@ function bh_exception_processor($message, $code, $file, $line, $stack_trace)
         echo "            <td align=\"left\" class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">Error</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">Error Details</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" class=\"postbody\">An error has occured. Please wait a few moments and then click the Retry button below. Details of the error have been saved to the default error log.</td>\n";
+        echo "                        <td align=\"left\">\n";
+        echo "                          <div align=\"center\">\n";
+        echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
+        echo "                              <tr>\n";
+        echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"styles/default/images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
+        echo "                                <td valign=\"top\" class=\"warning_msg_text\">When reporting a bug in Project Beehive or when requesting support please include the details below.</td>\n";
+        echo "                              </tr>\n";
+        echo "                            </table>\n";
+        echo "                          </div>\n";
+        echo "                        </td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">\n";
+        echo "                          <div align=\"center\">\n";
+        echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
+        echo "                              <tr>\n";
+        echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"styles/default/images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
+        echo "                                <td valign=\"top\" class=\"warning_msg_text\">Please note that there may be sensitive information such as passwords displayed here.</td>\n";
+        echo "                              </tr>\n";
+        echo "                            </table>\n";
+        echo "                          </div>\n";
+        echo "                        </td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td>\n";
+        echo "                          <div class=\"error_handler_details\">", implode("\n", $error_msg_array), "</div>\n";
+        echo "                        </td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -349,80 +224,164 @@ function bh_exception_processor($message, $code, $file, $line, $stack_trace)
         echo "      </td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
-
-        if ((isset($error_report_verbose) && ($error_report_verbose == true)) || defined('BEEHIVE_DEVELOPER_MODE')) {
-
-            echo "  <br />\n";
-            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-            echo "    <tr>\n";
-            echo "      <td align=\"left\">\n";
-            echo "        <table class=\"box\" width=\"100%\">\n";
-            echo "          <tr>\n";
-            echo "            <td align=\"left\" class=\"posthead\">\n";
-            echo "              <table class=\"posthead\" width=\"100%\">\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">Error Details</td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"center\">\n";
-            echo "                    <table class=\"posthead\" width=\"95%\">\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\">\n";
-            echo "                          <div align=\"center\">\n";
-            echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
-            echo "                              <tr>\n";
-            echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"styles/default/images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
-            echo "                                <td valign=\"top\" class=\"warning_msg_text\">When reporting a bug in Project Beehive or when requesting support please include the details below.</td>\n";
-            echo "                              </tr>\n";
-            echo "                            </table>\n";
-            echo "                          </div>\n";
-            echo "                        </td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\">\n";
-            echo "                          <div align=\"center\">\n";
-            echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
-            echo "                              <tr>\n";
-            echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"styles/default/images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
-            echo "                                <td valign=\"top\" class=\"warning_msg_text\">Please note that there may be sensitive information such as passwords displayed here.</td>\n";
-            echo "                              </tr>\n";
-            echo "                            </table>\n";
-            echo "                          </div>\n";
-            echo "                        </td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td>\n";
-            echo "                          <div class=\"error_handler_details\">", implode("\n", $error_msg_array), "</div>\n";
-            echo "                        </td>\n";
-            echo "                      </tr>\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\">&nbsp;</td>\n";
-            echo "                      </tr>\n";
-            echo "                    </table>\n";
-            echo "                  </td>\n";
-            echo "                </tr>\n";
-            echo "              </table>\n";
-            echo "            </td>\n";
-            echo "          </tr>\n";
-            echo "        </table>\n";
-            echo "      </td>\n";
-            echo "    </tr>\n";
-            echo "  </table>\n";
-        }
-
-        echo "  <br />\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"center\"><input class=\"button\" type=\"submit\" name=\"", md5(uniqid(mt_rand())), "\" value=\"Retry\" /></td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-        echo "</form>\n";
-        echo "</div>\n";
-        echo "</body>\n";
-        echo "</html>\n";
-
-        exit;
     }
+
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\"><input class=\"button\" type=\"submit\" name=\"", md5(uniqid(mt_rand())), "\" value=\"Retry\" /></td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</form>\n";
+    echo "</div>\n";
+    echo "</body>\n";
+    echo "</html>\n";
+    
+    exit;
+}
+
+function bh_exception_process(Exception $exception)
+{
+    $error_msg_array = array();
+
+    $version_strings = array();
+
+    $error_msg_array[] = sprintf('<p><b>E_USER_ERROR</b> %s</p>', $exception->getMessage());
+
+    if (strlen(trim(basename($exception->getFile()))) > 0) {
+
+        $error_msg_array[] = '<p><b>Error Message:</b></p>';
+        $error_msg_array[] = sprintf('<p>Error in line %s of file %s</p>', $exception->getLine(), basename($exception->getFile()));
+    }
+
+    $error_msg_array[] = '<hr />';
+    
+    $stack_trace = array_filter($exception->getTrace(), 'exception_stack_trace_tidy');
+
+    if (count($stack_trace) > 0) {
+
+        $error_msg_array[] = '<p><b>Stack trace:</b></p>';
+
+        foreach ($stack_trace as $key => $trace_data) {
+            
+            $error_msg_array[] = sprintf(
+                '#%s %s(%s): %s%s%s(%s)<br />',
+                $key,
+                isset($trace_data['file']) ? $trace_data['file'] : 'unknown',
+                isset($trace_data['line']) ? $trace_data['line'] : 'unknown',
+                isset($trace_data['class']) ? $trace_data['class'] : '',
+                isset($trace_data['type']) ? $trace_data['type'] : '',
+                isset($trace_data['function']) ? $trace_data['function'] : 'unknown',
+                isset($trace_data['args']) ? implode(', ', array_map('gettype', $trace_data['args'])) : 'void'
+            );
+        }
+    }
+
+    if (defined('BEEHIVE_VERSION')) {
+       $version_strings[] = sprintf('Beehive Forum %s', BEEHIVE_VERSION);
+    }
+
+    if (($php_version = phpversion())) {
+        $version_strings[] = sprintf('on PHP/%s', $php_version);
+    }
+
+    if (defined('PHP_OS')) {
+        $version_strings[] = PHP_OS;
+    }
+
+    if (($php_sapi = php_sapi_name())) {
+        $version_strings[] = mb_strtoupper($php_sapi);
+    }
+
+    $mysql_version = '';
+
+    if (!in_array($exception->getCode(), array(MYSQL_CONNECT_ERROR, MYSQL_ACCESS_DENIED, MYSQL_PERMISSION_DENIED))) {
+
+        if (($mysql_version = db_fetch_mysql_version())) {
+            $version_strings[] = sprintf('MySQL/%s', $mysql_version);
+        } else {
+            $version_strings[] = sprintf('MySQL Version Unknown');
+        }
+    }
+
+    if (isset($version_strings) && sizeof($version_strings) > 0) {
+
+        $error_msg_array[] = '<p><b>Version Strings:</b></p>';
+        $error_msg_array[] = sprintf('<p>%s</p>', implode(', ', $version_strings));
+    }
+
+    $error_msg_array[] = '<p><b>HTTP Request:</b></p>';
+
+    $error_msg_array[] =  $_SERVER['PHP_SELF'];
+
+    if (isset($_GET) && sizeof($_GET) > 0) {
+
+        $error_msg_array[] = '<p><b>$_GET:</b></p>';
+
+        $get_vars = htmlentities_array(print_r($_GET, true));
+
+        $error_msg_array[] = sprintf('<pre>%s</pre>', $get_vars);
+    }
+
+    if (isset($_POST) && sizeof($_POST) > 0) {
+
+        $error_msg_array[] = '<p><b>$_POST:</b></p>';
+
+        $post_vars = htmlentities_array(print_r($_POST, true));
+
+        $error_msg_array[] = sprintf('<pre>%s</pre>', $post_vars);
+    }
+
+    if (isset($_ENV) && sizeof($_ENV) > 0) {
+
+        $error_msg_array[] = '<p><b>$_ENV:</b></p>';
+
+        $environment_vars = htmlentities_array(print_r($_ENV, true));
+
+        $error_msg_array[] = sprintf('<pre>%s</pre>', $environment_vars);
+    }
+
+    if (isset($_SERVER) && sizeof($_SERVER) > 0) {
+
+        $error_msg_array[] = '<p><b>$_SERVER:</b></p>';
+
+        $server_vars = htmlentities_array(print_r($_SERVER, true));
+
+        $error_msg_array[] = sprintf('<pre>%s</pre>', $server_vars);
+    }
+    
+    return $error_msg_array;
+}
+
+function bh_exception_send_email(Exception $exception)
+{
+    if (isset($GLOBALS['error_report_email_addr_to']) && strlen(trim($GLOBALS['error_report_email_addr_to'])) > 0) {
+        $error_report_email_addr_to = trim($GLOBALS['error_report_email_addr_to']);
+    } else {
+        $error_report_email_addr_to = '';
+    }
+    
+    if (isset($GLOBALS['error_report_email_addr_from']) && strlen(trim($GLOBALS['error_report_email_addr_from'])) > 0) {
+        $error_report_email_addr_from = trim($GLOBALS['error_report_email_addr_from']);
+    } else {
+        $error_report_email_addr_from = 'no-reply@beehiveforum.co.uk';
+    }
+    
+    if (strlen($error_report_email_addr_to) > 0 && !defined('BEEHIVE_DEVELOPER_MODE')) {
+
+        $error_msg_array = bh_exception_format($exception);    
+
+        $error_log_email_message = strip_tags(implode("\n\n", $error_msg_array));
+
+        $headers = "Return-path: $error_report_email_addr_from\n";
+        $headers.= "From: \"Beehive Forum Error Report\" <$error_report_email_addr_from>\n";
+        $headers.= "Reply-To: \"Beehive Forum Error Report\" <$error_report_email_addr_from>\n";
+        $headers.= "Content-type: text/plain; charset=UTF-8\n";
+        $headers.= "X-Mailer: PHP/". phpversion(). "\n";
+        $headers.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
+
+        @mail($error_report_email_addr_to, "Beehive Forum Error Report", $error_log_email_message, $headers);
+    }    
 }
 
 ?>

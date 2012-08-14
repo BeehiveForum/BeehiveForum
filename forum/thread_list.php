@@ -111,7 +111,7 @@ if (!session::logged_in()) {
 
         if ($mode == SEARCH_RESULTS) {
 
-            header_redirect("search.php?webtag=$webtag&offset=0");
+            header_redirect("search.php?webtag=$webtag&page=1");
             exit;
         }
 

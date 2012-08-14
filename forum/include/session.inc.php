@@ -111,16 +111,25 @@ abstract class session
         
         $user_agent = db_escape_string(session::get_user_agent());
         
-        $sql = "SELECT DATA FROM SESSIONS WHERE ID = '$id' ";
+        $sql = "SELECT DATA, MD5 FROM SESSIONS WHERE ID = '$id' ";
         $sql.= "AND USER_AGENT = '$user_agent'";
         
         if (!($result = db_query($sql, session::$db))) return '';
         
         if (db_num_rows($result) == 0) return '';
         
-        if (!($row = db_fetch_array($result))) return '';
+        list($data, $md5) = db_fetch_array($result, DB_RESULT_NUM);
         
-        return $row['DATA'];
+        if (md5($data) != $md5) {
+            
+            bh_exception_send_email(new Exception(sprintf(
+                "Session data %s does not match MD5 %s",
+                $data,
+                $md5
+            )));
+        }
+        
+        return $data;
     }
     
     public static function write($id, $data)
@@ -128,6 +137,8 @@ abstract class session
         $id = db_escape_string($id);
         
         if (!($forum_fid = get_forum_fid())) $forum_fid = 0;
+        
+        $md5 = db_escape_string(md5($data));
         
         $data = db_escape_string($data);
         
@@ -143,8 +154,8 @@ abstract class session
         
         if (!($search_id = session::is_search_engine())) $search_id = 'NULL';
         
-        $sql = "REPLACE INTO SESSIONS (ID, UID, FID, DATA, TIME, IPADDRESS, REFERER, USER_AGENT, SID) ";
-        $sql.= "VALUES ('$id', '$uid', '$forum_fid', '$data', CAST('$time' AS DATETIME), ";
+        $sql = "REPLACE INTO SESSIONS (ID, UID, FID, DATA, MD5, TIME, IPADDRESS, REFERER, USER_AGENT, SID) ";
+        $sql.= "VALUES ('$id', '$uid', '$forum_fid', '$data', '$md5', CAST('$time' AS DATETIME), ";
         $sql.= "'$ip_address', '$http_referer', '$user_agent', $search_id)";
         
         if (!(db_query($sql, session::$db))) return false;

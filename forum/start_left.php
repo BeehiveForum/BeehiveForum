@@ -168,21 +168,6 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
                 if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) {
                     echo "<img src=\"", html_style_image('friend.png'), "\" alt=\"", gettext("Friend"), "\" title=\"", gettext("Friend"), "\" /> ";
                 }
-            }
-            
-            if (session::logged_in()) {
-
-                if (isset($thread['INTEREST']) && ($thread['INTEREST'] == THREAD_INTERESTED)) {
-                    echo "<img src=\"", html_style_image('high_interest.png'), "\" alt=\"", gettext("High Interest"), "\" title=\"", gettext("High Interest"), "\" /> ";
-                }
-                
-                if (isset($thread['INTEREST']) && ($thread['INTEREST'] == THREAD_SUBSCRIBED)) {
-                    echo "<img src=\"", html_style_image('subscribe.png'), "\" alt=\"", gettext("Subscribed"), "\" title=\"", gettext("Subscribed"), "\" /> ";
-                }
-                
-                if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) {
-                    echo "<img src=\"", html_style_image('friend.png'), "\" alt=\"", gettext("Friend"), "\" title=\"", gettext("Friend"), "\" /> ";
-                }
             }                            
             
             if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') {

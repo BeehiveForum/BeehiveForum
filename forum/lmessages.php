@@ -44,11 +44,6 @@ require_once BH_INCLUDE_PATH. 'thread.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
 require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
-// Check we're logged in correctly
-if (!session::logged_in()) {
-    light_html_guest_error();
-}
-
 // Message pane caching
 cache_check_messages();
 

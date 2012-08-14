@@ -71,20 +71,22 @@ abstract class session
         
         session_name('sess_hash');
         
-        if (!html_get_cookie(session_name()) && ($hash = session::restore())) {
+        if (($hash = html_get_cookie(session_name()))) {
             
             session_id($hash);
-
-        } else {
-
+            
+            session_start();
+        
+        } else if (!session::restore()) {
+            
             $ip_address = get_ip_address();
             
             $user_agent = session::get_user_agent();
             
             session_id(md5($ip_address. $user_agent));
+            
+            session_start();
         }
-        
-        session_start();
         
         session::refresh(session::get_value('UID'));
         
@@ -500,22 +502,35 @@ abstract class session
         
         $current_datetime = date(MYSQL_DATETIME, time());
         
-        $sql = "SELECT SESSIONS.ID FROM SESSIONS INNER JOIN USER ON (USER.UID = SESSIONS.UID) ";
-        $sql.= "INNER JOIN USER_TOKEN ON (USER_TOKEN.UID = USER.UID) WHERE USER.LOGON = '$user_logon' ";
-        $sql.= "AND USER_TOKEN.TOKEN = '$user_token' AND USER_TOKEN.EXPIRES > '$current_datetime' ";    
-        $sql.= "AND SESSIONS.USER_AGENT = '$user_agent' AND USER.UID = '$uid' ";
-        $sql.= "ORDER BY SESSIONS.TIME DESC LIMIT 1";
+        $sql = "SELECT SESSIONS.ID FROM USER_TOKEN INNER JOIN USER ON (USER.UID = USER_TOKEN.UID) ";
+        $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER_TOKEN.UID AND SESSIONS.USER_AGENT = '$user_agent') ";
+        $sql.= "WHERE USER.LOGON = '$user_logon' AND USER_TOKEN.TOKEN = '$user_token' ";
+        $sql.= "AND USER_TOKEN.EXPIRES > '$current_datetime' AND USER.UID = '$uid' ";
+        $sql.= "GROUP BY USER.UID";
         
         if (!($result = db_query($sql, session::$db))) return false;
         
         if (db_num_rows($result) == 0) return false;
         
         list($id) = db_fetch_array($result, DB_RESULT_NUM);
+        
+        if (isset($id) && !is_null($id)) {
+        
+            session_id($id);
+            
+            session_start();
+        
+        } else {
+            
+            session_start();
+            
+            session::create($uid);
+        }
             
         html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
         html_set_cookie('user_token', $user_token, time() + YEAR_IN_SECONDS);
         
-        return $id;
+        return true;
     }
     
     public static function create($uid)

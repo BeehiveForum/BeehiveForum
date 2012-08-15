@@ -1177,18 +1177,18 @@ function poll_check_tabular_votes($tid, $votes_array)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "SELECT POLL.POLLTYPE, MAX(POLL_VOTES.QUESTION_ID) AS QUESTION_COUNT ";
-    $sql.= "FROM `{$table_prefix}POLL` POLL ";
-    $sql.= "LEFT JOIN `{$table_prefix}POLL_VOTES` POLL_VOTES ";
-    $sql.= "ON (POLL_VOTES.TID = POLL.TID) WHERE POLL.TID = '$tid' GROUP BY POLL.TID";
+    $sql = "SELECT POLL.POLLTYPE, COUNT(POLL_QUESTIONS.QUESTION_ID) AS QUESTION_COUNT ";
+    $sql.= "FROM `{$table_prefix}POLL` POLL LEFT JOIN `{$table_prefix}POLL_QUESTIONS` ";
+    $sql.= "POLL_QUESTIONS ON (POLL_QUESTIONS.TID = POLL.TID) WHERE POLL.TID = '$tid' ";
+    $sql.= "GROUP BY POLL.TID";
 
     if (!$result = db_query($sql, $db_poll_check_tabular_votes)) return false;
 
     if (db_num_rows($result) == 0) return false;
 
-    $poll_data = db_fetch_array($result);
+    if (!($poll_data = db_fetch_array($result))) return false;
 
-    if ($poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) return false;
+    if ($poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) return true;
 
     return (sizeof($votes_array) == $poll_data['QUESTION_COUNT']);
 }

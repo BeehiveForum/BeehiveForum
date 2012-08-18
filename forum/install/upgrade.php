@@ -988,7 +988,7 @@ if (!$result = db_query($sql, $db_install)) {
 }
 
 $sql = "CREATE TABLE SESSIONS (";
-$sql.= "  ID VARCHAR(32) NOT NULL,";
+$sql.= "  ID VARCHAR(40) NOT NULL,";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL,";
 $sql.= "  DATA LONGBLOB NOT NULL,";
@@ -1001,7 +1001,7 @@ $sql.= "  PRIMARY KEY (ID),";
 $sql.= "  KEY REFERER (REFERER),";
 $sql.= "  KEY TIME (TIME,FID),";
 $sql.= "  KEY UID (UID,SID,TIME,FID)";
-$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+$sql.= ") ENGINE=INNODB DEFAULT CHARSET=UTF8";
 
 if (!$result = db_query($sql, $db_install)) {
 

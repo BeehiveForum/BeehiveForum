@@ -36,7 +36,6 @@ require_once BH_INCLUDE_PATH. 'logon.inc.php';
 require_once BH_INCLUDE_PATH. 'pm.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 
-// Number of forums available
 cache_disable();
 
 html_draw_top("class=navpage", "forumlinks.js");
@@ -89,6 +88,7 @@ echo "<div class=\"navright\">\n";
 echo forum_links_draw_dropdown('openForumLink');
 
 echo "</div>\n";
+echo "<div style=\"clear: both\"></div>\n";
 
 html_draw_bottom();
 

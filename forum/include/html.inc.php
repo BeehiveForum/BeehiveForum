@@ -334,22 +334,13 @@ function html_get_user_style_path()
     return $user_style;
 }
 
-function html_get_style_sheet()
+function html_get_style_sheet($filename = 'style.css')
 {
     if (!($user_style = html_get_user_style_path())) {
-        return html_get_forum_file_path('styles/default/style.css');
+        return html_get_forum_file_path(sprintf('styles/default/%s', basename($filename)));
     }
 
-    return html_get_forum_file_path(sprintf('styles/%s/style.css', basename($user_style)));
-}
-
-function html_get_mobile_style_sheet()
-{
-    if (!($user_style = html_get_user_style_path())) {
-        return html_get_forum_file_path('styles/default/mobile.css');
-    }
-
-    return html_get_forum_file_path(sprintf('styles/%s/mobile.css', basename($user_style)));
+    return html_get_forum_file_path(sprintf('styles/%s/%s', basename($user_style), basename($filename)));
 }
 
 function html_get_script_style_sheet()
@@ -477,13 +468,11 @@ function html_include_javascript($script_filepath)
     printf("<script type=\"text/javascript\" src=\"%s\"></script>\n", $script_filepath);
 }
 
-function html_include_css($script_filepath, $media = 'screen', $id = false)
+function html_include_css($script_filepath, $media = 'screen')
 {
     $path_parts = path_info_query($script_filepath);
 
     if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return;
-
-    $id = ($id !== false) ? $id : sprintf('style_%s', preg_replace('/[^a-zA-Z]+/', '', $script_filepath));
 
     if (forum_get_setting('use_minified_scripts', false, false)) {
         $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
@@ -493,7 +482,7 @@ function html_include_css($script_filepath, $media = 'screen', $id = false)
 
     $script_filepath.= isset($path_parts['query']) ? "?{$path_parts['query']}" : '';
 
-    printf("<link rel=\"stylesheet\" id=\"%s\" href=\"%s\" type=\"text/css\" media=\"%s\" />\n", $id, $script_filepath, $media);
+    printf("<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\" media=\"%s\" />\n", $script_filepath, $media);
 }
 
 // Draws the top of the HTML page including DOCTYPE, head and body tags
@@ -776,7 +765,7 @@ function html_draw_top()
         printf("<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-72x72.png', $user_style_path)));
         printf("<link rel=\"apple-touch-icon\" sizes=\"114x114\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-114x114.png', $user_style_path)));
 
-        printf("<link rel=\"shortcut icon\" type=\"image/ico\"href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
+        printf("<link rel=\"shortcut icon\" type=\"image/ico\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
     }
 
     $opensearch_path = html_get_forum_file_path(sprintf('search.php?webtag=%s&amp;opensearch', $webtag));
@@ -805,11 +794,12 @@ function html_draw_top()
         }
     }
 
-    $style_path_ie6 = html_get_forum_file_path('styles/default/style_ie6.css');
+    if (($style_path_ie6 = html_get_style_sheet('style_ie6.css'))) {
 
-    echo "<!--[if IE 6]>\n";
-    echo "<link rel=\"stylesheet\" href=\"$style_path_ie6\" type=\"text/css\" />\n";
-    echo "<![endif]-->\n";
+        echo "<!--[if IE 6]>\n";
+        html_include_css($style_path_ie6);
+        echo "<![endif]-->\n";
+    }
 
     if (isset($inline_css)) {
 

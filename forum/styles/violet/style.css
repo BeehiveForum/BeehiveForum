@@ -594,7 +594,9 @@ div.poll_option_list ol li {
 }
 
 .forumlinks {
-	font-family: verdana, arial, helvetica, sans-serif;
+	background-color: #5483B1;
+    color: #FFFFFF;
+    font-family: verdana, arial, helvetica, sans-serif;
 }
 
 .google_adsense_register_note {

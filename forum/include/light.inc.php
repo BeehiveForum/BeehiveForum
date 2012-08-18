@@ -164,7 +164,7 @@ function light_html_draw_top()
         echo "<meta name=\"robots\" content=\"$robots\" />\n";
     }
 
-    if (($stylesheet = html_get_mobile_style_sheet())) {
+    if (($stylesheet = html_get_style_sheet('mobile.css'))) {
         echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen\" />\n";
     }
 

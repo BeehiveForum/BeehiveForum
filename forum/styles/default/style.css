@@ -227,7 +227,7 @@ h2 {
 }
 
 .bhinputlogon {
-	width: 175px;
+	width: 165px;
 }
 
 .bhseparatorlogon {
@@ -309,7 +309,7 @@ h2 {
 }
 
 .bhlogondropdown {
-	width: 179px;
+	width: 169px;
 }
 
 .bhlogonother {
@@ -594,7 +594,9 @@ div.poll_option_list ol li {
 }
 
 .forumlinks {
-	font-family: verdana, arial, helvetica, sans-serif;
+	background-color: #5483B1;
+    color: #FFFFFF;
+    font-family: verdana, arial, helvetica, sans-serif;
 }
 
 .google_adsense_register_note {
@@ -898,7 +900,7 @@ div.poll_option_list ol li {
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
-    width: 186px;
+    width: 185px;
 }
 
 .postbody {
@@ -1328,7 +1330,7 @@ div.spoiler_reveal * {
 }
 
 .thread_title {
-	width: 186px;
+	width: 185px;
 }
 
 .thread_track_notice {

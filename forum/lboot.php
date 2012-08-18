@@ -33,7 +33,9 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 define("BEEHIVEMODE_LIGHT", true);
 
 // Constant to define where the include files are
-define('BH_INCLUDE_PATH', 'include/');
+if (!defined('BH_INCLUDE_PATH')) {
+    define('BH_INCLUDE_PATH', 'include/');
+}
 
 // Enable the error handler
 require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';

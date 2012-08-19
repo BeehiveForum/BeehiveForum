@@ -114,19 +114,24 @@ abstract class session
         $sql = "SELECT DATA, MD5 FROM SESSIONS WHERE ID = '$id' ";
         $sql.= "AND USER_AGENT = '$user_agent'";
         
-        if (!($result = db_query($sql, session::$db))) return '';
+        if (!($result = db_query($sql, session::$db))) {
+            
+            session::log_error($id, 'Failed to read from SESSIONS table');
+            return '';
+        }
         
-        if (db_num_rows($result) == 0) return '';
+        if (db_num_rows($result) == 0) {
+            
+            session::log_error($id, 'No records found');
+            return '';
+        }
         
         list($data, $md5) = db_fetch_array($result, DB_RESULT_NUM);
         
         if (md5($data) != $md5) {
             
-            bh_exception_send_email(new Exception(sprintf(
-                "Session data %s does not match MD5 %s",
-                $data,
-                $md5
-            )));
+            session::log_error($id, 'MD5 hash does not match session data');
+            return '';
         }
         
         return $data;
@@ -158,7 +163,11 @@ abstract class session
         $sql.= "VALUES ('$id', '$uid', '$forum_fid', '$data', '$md5', CAST('$time' AS DATETIME), ";
         $sql.= "'$ip_address', '$http_referer', '$user_agent', $search_id)";
         
-        if (!(db_query($sql, session::$db))) return false;
+        if (!(db_query($sql, session::$db))) {
+            
+            session::log_error($id, 'Failed to write session');
+            return false;
+        }
         
         return true;
     }
@@ -167,7 +176,9 @@ abstract class session
     {
         $id = db_escape_string($id);
         
-        $sql = "DELETE FROM SESSIONS WHERE ID = '$id'";
+        $sql = "DELETE SESSIONS.* FROM SESSIONS LEFT JOIN SESSION_ERROR_LOG ";
+        $sql.= "ON (SESSION_ERROR_LOG.ID = SESSIONS.ID) WHERE SESSIONS.ID = '$id' ";
+        $sql.= "AND SESSION_ERROR_LOG.LOG_ID IS NULL";        
         
         if (!(db_query($sql, session::$db))) return false;
         
@@ -178,16 +189,34 @@ abstract class session
     {
         $expires_datetime = date(MYSQL_DATETIME, time() - $lifetime);
         
-        $sql = "DELETE FROM SESSIONS WHERE EXPIRES < CAST('$expires_datetime' AS DATETIME)";
+        $sql = "DELETE SESSIONS.* FROM SESSIONS LEFT JOIN SESSION_ERROR_LOG ";
+        $sql.= "ON (SESSION_ERROR_LOG.ID = SESSIONS.ID) WHERE SESSION_ERROR_LOG.LOG_ID IS NULL ";
+        $sql.= "AND SESSIONS.EXPIRES < CAST('$expires_datetime' AS DATETIME) ";
         
         if (!(db_query($sql, session::$db))) return false;
         
         return true;        
     }
     
+    public static function log_error($id, $message)
+    {
+        $id = db_escape_string($id);
+        
+        $message = db_escape_string($message);
+        
+        $time = date(MYSQL_DATETIME, time());
+        
+        $request_uri = db_escape_string(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '');
+        
+        $sql = "INSERT INTO SESSION_ERROR_LOG (ID, ERROR, TIME, REQUEST_URI) ";
+        $sql.= "VALUES ('$id', '$message', '$time', '$request_uri')";
+        
+        db_query($sql, session::$db);        
+    }
+    
     public static function get_http_referer()
     {
-        if (!isset($_SERVER['HTTP_REFERER']) || strlen(trim($_SERVER['HTTP_REFERER'])) == 0) return false;
+        if (!isset($_SERVER['HTTP_REFERER']) || strlen(trim($_SERVER['HTTP_REFERER'])) == 0) return '';
 
         $http_referer = trim($_SERVER['HTTP_REFERER']);
 
@@ -200,34 +229,45 @@ abstract class session
     
     public static function get_user_agent()
     {
-        if (!isset($_SERVER['HTTP_USER_AGENT']) || strlen(trim($_SERVER['HTTP_USER_AGENT'])) == 0) return false;
+        if (!isset($_SERVER['HTTP_USER_AGENT']) || strlen(trim($_SERVER['HTTP_USER_AGENT'])) == 0) return '';
         
         return $_SERVER['HTTP_USER_AGENT'];
     }
     
     public static function is_search_engine()
     {
-        if (!($http_user_agent = session::get_user_agent())) return false;
+        if (!array_key_exists('SID', $_SESSION)) {
         
-        $http_user_agent = db_escape_string($http_user_agent);
+            $http_user_agent = db_escape_string(session::get_user_agent());
 
-        $sql = "SELECT SID FROM SEARCH_ENGINE_BOTS ";
-        $sql.= "WHERE '$http_user_agent' LIKE AGENT_MATCH ";
+            $sql = "SELECT SID FROM SEARCH_ENGINE_BOTS ";
+            $sql.= "WHERE '$http_user_agent' LIKE AGENT_MATCH ";
 
-        if (!$result = db_query($sql, session::$db)) return false;
+            if (!($result = db_query($sql, session::$db))) {
+                
+                $_SESSION['SID'] = false;
+                return $_SESSION['SID'];
+            }
 
-        if (db_num_rows($result) == 0) return false;
+            if (db_num_rows($result) == 0) {
+                
+                $_SESSION['SID'] = false;
+                return $_SESSION['SID'];
+            }
 
-        list($sid) = db_fetch_array($result, DB_RESULT_NUM);
+            list($sid) = db_fetch_array($result, DB_RESULT_NUM);
             
-        return $sid;
+            $_SESSION['SID'] = $sid;
+        }
+        
+        return $_SESSION['SID'];
     }
     
     public static function get_post_page_prefs()
     {
-        if (!isset($_SESSION['POST_PAGE'])) {
+        if (!array_key_exists('POST_PAGE', $_SESSION)) {
             
-            return (double)POST_TOOLBAR_DISPLAY 
+            $_SESSION['POST_PAGE'] = (double)POST_TOOLBAR_DISPLAY 
                 | POST_EMOTICONS_DISPLAY 
                 | POST_TEXT_DEFAULT 
                 | POST_AUTO_LINKS

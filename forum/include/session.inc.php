@@ -171,7 +171,7 @@ abstract class session
     {
         $expires_datetime = date(MYSQL_DATETIME, time() - $lifetime);
         
-        $sql = "DELETE FROM SESSIONS WHERE EXPIRES < CAST('$expires_datetime' AS DATETIME) ";
+        $sql = "DELETE FROM SESSIONS WHERE TIME < CAST('$expires_datetime' AS DATETIME)";
         
         if (!(db_query($sql, session::$db))) return false;
         

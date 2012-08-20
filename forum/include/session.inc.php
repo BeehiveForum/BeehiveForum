@@ -114,25 +114,13 @@ abstract class session
         $sql = "SELECT DATA, MD5 FROM SESSIONS WHERE ID = '$id' ";
         $sql.= "AND USER_AGENT = '$user_agent'";
         
-        if (!($result = db_query($sql, session::$db))) {
-            
-            session::log_error($id, 'Failed to read from SESSIONS table');
-            return '';
-        }
+        if (!($result = db_query($sql, session::$db))) return '';
         
-        if (db_num_rows($result) == 0) {
-            
-            session::log_error($id, 'No records found');
-            return '';
-        }
+        if (db_num_rows($result) == 0) return '';
         
         list($data, $md5) = db_fetch_array($result, DB_RESULT_NUM);
         
-        if (md5($data) != $md5) {
-            
-            session::log_error($id, 'MD5 hash does not match session data');
-            return '';
-        }
+        if (md5($data) != $md5) return '';
         
         return $data;
     }
@@ -163,11 +151,7 @@ abstract class session
         $sql.= "VALUES ('$id', '$uid', '$forum_fid', '$data', '$md5', CAST('$time' AS DATETIME), ";
         $sql.= "'$ip_address', '$http_referer', '$user_agent', $search_id)";
         
-        if (!(db_query($sql, session::$db))) {
-            
-            session::log_error($id, 'Failed to write session');
-            return false;
-        }
+        if (!(db_query($sql, session::$db))) return false;
         
         return true;
     }
@@ -176,9 +160,7 @@ abstract class session
     {
         $id = db_escape_string($id);
         
-        $sql = "DELETE SESSIONS.* FROM SESSIONS LEFT JOIN SESSION_ERROR_LOG ";
-        $sql.= "ON (SESSION_ERROR_LOG.ID = SESSIONS.ID) WHERE SESSIONS.ID = '$id' ";
-        $sql.= "AND SESSION_ERROR_LOG.LOG_ID IS NULL";        
+        $sql = "DELETE FROM SESSIONS WHERE ID = '$id'";
         
         if (!(db_query($sql, session::$db))) return false;
         
@@ -189,29 +171,11 @@ abstract class session
     {
         $expires_datetime = date(MYSQL_DATETIME, time() - $lifetime);
         
-        $sql = "DELETE SESSIONS.* FROM SESSIONS LEFT JOIN SESSION_ERROR_LOG ";
-        $sql.= "ON (SESSION_ERROR_LOG.ID = SESSIONS.ID) WHERE SESSION_ERROR_LOG.LOG_ID IS NULL ";
-        $sql.= "AND SESSIONS.EXPIRES < CAST('$expires_datetime' AS DATETIME) ";
+        $sql = "DELETE FROM SESSIONS WHERE EXPIRES < CAST('$expires_datetime' AS DATETIME) ";
         
         if (!(db_query($sql, session::$db))) return false;
         
         return true;        
-    }
-    
-    public static function log_error($id, $message)
-    {
-        $id = db_escape_string($id);
-        
-        $message = db_escape_string($message);
-        
-        $time = date(MYSQL_DATETIME, time());
-        
-        $request_uri = db_escape_string(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '');
-        
-        $sql = "INSERT INTO SESSION_ERROR_LOG (ID, ERROR, TIME, REQUEST_URI) ";
-        $sql.= "VALUES ('$id', '$message', '$time', '$request_uri')";
-        
-        db_query($sql, session::$db);        
     }
     
     public static function get_http_referer()

@@ -77,7 +77,11 @@ abstract class session
         
         session::refresh(session::get_value('UID'));
         
-        html_set_cookie('sess_uid', session::get_value('UID'));
+        if (session::logged_in()) {
+            html_set_cookie('sess_uid', session::get_value('UID'));
+        } else {
+            html_set_cookie('sess_uid', '', time() - YEAR_IN_SECONDS);
+        }
     }
     
     public static function open()
@@ -587,7 +591,7 @@ abstract class session
     {
         session_destroy();
         
-        html_set_cookie('sess_uid', 0);
+        html_set_cookie('sess_uid', '', time() - YEAR_IN_SECONDS);
     }
     
     public static function logged_in()

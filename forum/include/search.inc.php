@@ -888,8 +888,6 @@ function search_output_opensearch_xml()
 {
     $webtag = get_webtag();
 
-    forum_check_webtag_available($webtag);
-
     $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
     $forum_opensearch_uri = html_get_forum_uri("search.php?webtag=$webtag&amp;search_string={searchTerms}");

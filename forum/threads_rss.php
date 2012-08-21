@@ -39,9 +39,6 @@ require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'threads.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
 
-// Check the webtag is valid
-forum_check_webtag_available($webtag);
-
 // Arrays for our cookie data
 $username_array = array();
 $password_array = array();

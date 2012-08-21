@@ -40,9 +40,6 @@ require_once BH_INCLUDE_PATH. 'user.inc.php';
 // Don't cache this page
 cache_disable();
 
-// Validate the webtag
-forum_check_webtag_available($webtag);
-
 // Error messages string
 $error_msg_array = array();
 

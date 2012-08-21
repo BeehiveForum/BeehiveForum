@@ -496,7 +496,7 @@ if (session::logged_in()) {
 
         if (isset($_GET['webtag_error'])) {
 
-            html_display_error_msg(gettext("Invalid forum FID or forum not found"), '70%', 'center');
+            html_display_error_msg(gettext("Invalid forum or forum is not available"), '70%', 'center');
 
         } else if (isset($_GET['added'])) {
 

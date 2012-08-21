@@ -67,32 +67,17 @@ abstract class session
             array('session', 'gc')
         );
         
-        ini_set('session.use_cookies', '0');
-        
         session_name('sess_hash');
         
-        if (($hash = html_get_cookie(session_name()))) {
-            
+        if (($hash = session::restore())) {
             session_id($hash);
-            
-            session_start();
-        
-        } else if (!session::restore()) {
-            
-            $ip_address = get_ip_address();
-            
-            $user_agent = session::get_user_agent();
-            
-            session_id(md5($ip_address. $user_agent));
-            
-            session_start();
         }
+        
+        session_start();
         
         session::refresh(session::get_value('UID'));
         
-        if (session::logged_in()) {
-            html_set_cookie(session_name(), session_id());
-        }
+        html_set_cookie('sess_uid', session::get_value('UID'));
     }
     
     public static function open()
@@ -169,7 +154,7 @@ abstract class session
     
     public static function gc($lifetime)
     {
-        $expires_datetime = date(MYSQL_DATETIME, time() - $lifetime);
+        $expires_datetime = date(MYSQL_DATETIME, time() - ($lifetime + DAY_IN_SECONDS));
         
         $sql = "DELETE FROM SESSIONS WHERE TIME < CAST('$expires_datetime' AS DATETIME)";
         
@@ -531,21 +516,13 @@ abstract class session
         
         if (isset($id) && !is_null($id)) {
         
-            session_id($id);
-            
-            session_start();
+            html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
+            html_set_cookie('user_token', $user_token, time() + YEAR_IN_SECONDS);
+
+            return $id;
+        }   
         
-        } else {
-            
-            session_start();
-            
-            session::create($uid);
-        }
-            
-        html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
-        html_set_cookie('user_token', $user_token, time() + YEAR_IN_SECONDS);
-        
-        return true;
+        return false;
     }
     
     public static function create($uid)
@@ -557,10 +534,6 @@ abstract class session
         session::update_visitor_log($uid, $forum_fid);
 
         forum_update_last_visit($uid);
-    
-        if (session::logged_in()) {
-            html_set_cookie(session_name(), session_id());
-        }    
     }
     
     public static function refresh($uid)
@@ -612,9 +585,9 @@ abstract class session
     
     public static function end()
     {
-        session::refresh(0);
+        session_destroy();
         
-        html_set_cookie(session_name(), '', time() - YEAR_IN_SECONDS);
+        html_set_cookie('sess_uid', 0);
     }
     
     public static function logged_in()

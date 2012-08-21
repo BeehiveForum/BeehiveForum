@@ -181,8 +181,6 @@ function adsense_output_html()
 
     $webtag = get_webtag();
 
-    forum_check_webtag_available($webtag);
-
     if ($adsense_displayed === false) {
 
         if (adsense_publisher_id()) {

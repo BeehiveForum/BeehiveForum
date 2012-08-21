@@ -572,8 +572,6 @@ function html_draw_top()
 
     $webtag = get_webtag();
 
-    forum_check_webtag_available($webtag);
-
     $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
 
     $func_matches = array();

@@ -292,7 +292,7 @@ if (isset($_POST['delete'])) {
     if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
         $fid = $_POST['fid'];
     } else {
-        $error_msg_array[] = gettext("Invalid forum FID or forum not found");
+        $error_msg_array[] = gettext("Invalid forum or forum is not available");
         $valid = false;
     }
 
@@ -360,7 +360,7 @@ if (isset($_POST['delete'])) {
 
     } else {
 
-        $error_msg_array[] = gettext("Invalid forum FID or forum not found");
+        $error_msg_array[] = gettext("Invalid forum or forum is not available");
         $valid = false;
     }
 
@@ -505,11 +505,11 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     } else {
 
-        html_draw_error(gettext("Invalid forum FID or forum not found"), 'admin_forums.php', 'get', array('back' => gettext("Back")));
+        html_draw_error(gettext("Invalid forum or forum is not available"), 'admin_forums.php', 'get', array('back' => gettext("Back")));
     }
 
     if (!$forum_data = forum_get($fid)) {
-        html_draw_error(gettext("Invalid forum FID or forum not found"), 'admin_forums.php', 'get', array('back' => gettext("Back")));
+        html_draw_error(gettext("Invalid forum or forum is not available"), 'admin_forums.php', 'get', array('back' => gettext("Back")));
     }
 
     html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage Forums - Edit Forum - %s"), $forum_data['WEBTAG'])), 'class=window_title', 'admin.js', 'search_popup.js');

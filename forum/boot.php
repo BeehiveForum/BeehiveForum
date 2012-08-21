@@ -34,6 +34,9 @@ if (!defined('BH_INCLUDE_PATH')) {
     define('BH_INCLUDE_PATH', 'include/');
 }
 
+// Set the default timezone
+date_default_timezone_set('UTC');
+
 // Enable the error handler
 require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
 
@@ -51,9 +54,6 @@ register_shutdown_function('session_write_close');
 
 // Register shutdown function to check for uncaught errors
 register_shutdown_function('bh_shutdown_handler');
-
-// Set the default timezone
-date_default_timezone_set('UTC');
 
 // Include the configuration file.
 require_once BH_INCLUDE_PATH. 'config.inc.php';

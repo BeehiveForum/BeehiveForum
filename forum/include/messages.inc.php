@@ -546,8 +546,6 @@ function messages_social_links($tid)
 {
     $webtag = get_webtag();
     
-    forum_check_webtag_available($webtag);
-    
     if ((forum_get_setting('show_share_links', 'Y')) && (session::get_value('SHOW_SHARE_LINKS') == 'Y')) {
 
         echo "      <div style=\"display: inline-block; vertical-align: middle; margin-top: 1px\">\n";

@@ -43,8 +43,6 @@ require_once BH_INCLUDE_PATH. 'user.inc.php';
 // Don't cache this page
 cache_disable();
 
-forum_check_webtag_available($webtag);
-
 if (isset($_GET['view']) && ($_GET['view'] == 'full')) {
 
     html_set_cookie('view', 'full');

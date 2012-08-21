@@ -37,6 +37,9 @@ if (!defined('BH_INCLUDE_PATH')) {
     define('BH_INCLUDE_PATH', 'include/');
 }
 
+// Set the default timezone
+date_default_timezone_set('UTC');
+
 // Enable the error handler
 require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
 
@@ -54,9 +57,6 @@ register_shutdown_function('session_write_close');
 
 // Register shutdown function to check for uncaught errors
 register_shutdown_function('bh_shutdown_handler');
-
-// Set the default timezone
-date_default_timezone_set('UTC');
 
 // Include the configuration file.
 require_once BH_INCLUDE_PATH. 'config.inc.php';
@@ -83,6 +83,7 @@ ob_start('word_filter_ob_callback');
 
 // Disable PHP's register_globals
 unregister_globals();
+
 // Disable PHP's magic quotes
 disable_magic_quotes();
 
@@ -115,13 +116,13 @@ ban_check($_SESSION);
 
 // Check to see if user account has been banned.
 if (session::user_banned()) {
-    html_user_banned();
+    light_html_user_banned();
     exit;
 }
 
 // Check to see if the user has been approved.
 if (!session::user_approved()) {
-    html_user_require_approval();
+    light_html_user_require_approval();
     exit;
 }
 
@@ -131,7 +132,7 @@ $webtag = get_webtag();
 // Check we have a webtag and have access to the specified forum
 if (!forum_check_webtag_available($webtag) || !forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
+    header_redirect("lforums.php?webtag_error");
 }
 
 ?>

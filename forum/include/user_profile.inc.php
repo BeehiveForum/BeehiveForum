@@ -43,7 +43,7 @@ require_once BH_INCLUDE_PATH. 'user_rel.inc.php';
 
 function user_profile_update($uid, $piid, $entry, $privacy)
 {
-    if (!$db_user_profile_update = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($piid)) return false;
@@ -53,20 +53,20 @@ function user_profile_update($uid, $piid, $entry, $privacy)
 
     if (strlen(trim($entry)) > 0) {
 
-        $entry = db_escape_string($entry);
+        $entry = $db->escape($entry);
 
         $sql = "INSERT INTO `{$table_prefix}USER_PROFILE` (UID, PIID, ENTRY, PRIVACY) ";
         $sql.= "VALUES ('$uid', '$piid', '$entry', '$privacy') ON DUPLICATE KEY UPDATE ";
         $sql.= "ENTRY = VALUES(ENTRY), PRIVACY = VALUES(PRIVACY)";
 
-        if (!db_query($sql, $db_user_profile_update)) return false;
+        if (!$db->query($sql)) return false;
 
     } else {
 
         $sql = "DELETE FROM `{$table_prefix}USER_PROFILE` ";
         $sql.= "WHERE UID = '$uid' AND PIID = '$piid'";
 
-        if (!db_query($sql, $db_user_profile_update)) return false;
+        if (!$db->query($sql)) return false;
     }
 
     return true;
@@ -74,7 +74,7 @@ function user_profile_update($uid, $piid, $entry, $privacy)
 
 function user_get_profile($uid)
 {
-    if (!$db_user_get_profile = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -112,11 +112,11 @@ function user_get_profile($uid)
     $sql.= "WHERE USER.UID = '$uid' ";
     $sql.= "GROUP BY USER.UID";
 
-    if (!$result = db_query($sql, $db_user_get_profile)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    $user_profile = db_fetch_array($result);
+    $user_profile = $result->fetch_assoc();
 
     if (isset($user_prefs['ANON_LOGON']) && ($user_prefs['ANON_LOGON'] > USER_ANON_DISABLED)) {
         $anon_logon = $user_prefs['ANON_LOGON'];
@@ -247,25 +247,25 @@ function user_format_local_time(&$user_prefs_array)
     if (isset($user_prefs_array['TIMEZONE']) && is_numeric($user_prefs_array['TIMEZONE'])) {
         $timezone_id = $user_prefs_array['TIMEZONE'];
     } else {
-        $timezone_id = forum_get_setting('forum_timezone', false, 27);
+        $timezone_id = forum_get_setting('forum_timezone', null, 27);
     }
 
     if (isset($user_prefs_array['GMT_OFFSET']) && is_numeric($user_prefs_array['GMT_OFFSET'])) {
         $gmt_offset = $user_prefs_array['GMT_OFFSET'];
     } else {
-        $gmt_offset = forum_get_setting('forum_gmt_offset', false, 0);
+        $gmt_offset = forum_get_setting('forum_gmt_offset', null, 0);
     }
 
     if (isset($user_prefs_array['DST_OFFSET']) && is_numeric($user_prefs_array['DST_OFFSET'])) {
         $dst_offset = $user_prefs_array['DST_OFFSET'];
     } else {
-        $dst_offset = forum_get_setting('forum_dst_offset', false, 0);
+        $dst_offset = forum_get_setting('forum_dst_offset', null, 0);
     }
 
     if (isset($user_prefs_array['DL_SAVING']) && user_check_pref('DL_SAVING', $user_prefs_array['DL_SAVING'])) {
         $dl_saving = $user_prefs_array['DL_SAVING'];
     } else {
-        $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
+        $dl_saving = forum_get_setting('forum_dl_saving', null, 'N');
     }
 
     if ($dl_saving == "Y" && timestamp_is_dst($timezone_id, $gmt_offset)) {
@@ -283,7 +283,7 @@ function user_format_local_time(&$user_prefs_array)
 
 function user_get_profile_entries($uid)
 {
-    if (!$db_user_get_profile_entries = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -309,11 +309,11 @@ function user_get_profile_entries($uid)
     $sql.= "WHERE USER_PROFILE.ENTRY IS NOT NULL ORDER BY PROFILE_SECTION.POSITION, ";
     $sql.= "PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
 
-    if (!$result = db_query($sql, $db_user_get_profile_entries)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    while (($user_profile_data = db_fetch_array($result))) {
+    while (($user_profile_data = $result->fetch_assoc())) {
 
         if (strlen(trim($user_profile_data['ENTRY'])) > 0) {
 
@@ -337,7 +337,7 @@ function user_get_profile_entries($uid)
 
 function user_get_profile_image($uid)
 {
-    if (!$db_user_get_profile_image = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -348,11 +348,11 @@ function user_get_profile_image($uid)
     $sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ";
     $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) WHERE USER.UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_user_get_profile_image)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    $user_profile_data = db_fetch_array($result);
+    $user_profile_data = $result->fetch_assoc();
 
     if (!isset($user_profile_data['PIC_URL']) || strlen($user_profile_data['PIC_URL']) == 0) return false;
     
@@ -365,16 +365,16 @@ function user_get_post_count($uid)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (!$db_user_get_post_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT POST_COUNT FROM `{$table_prefix}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid' AND POST_COUNT IS NOT NULL";
 
-    if (!$result = db_query($sql, $db_user_get_post_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if ($result->num_rows > 0) {
 
-        list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
+        list($post_count) = $result->fetch_row();
         return $post_count;
     }
 
@@ -382,7 +382,7 @@ function user_get_post_count($uid)
     $sql.= "SELECT '$uid', COUNT(POST.PID) AS POST_COUNT FROM `{$table_prefix}POST` POST ";
     $sql.= "WHERE FROM_UID = '$uid' ON DUPLICATE KEY UPDATE POST_COUNT = VALUES(POST_COUNT)";
 
-    if (!$result = db_query($sql, $db_user_get_post_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     return user_get_post_count($uid);
 }

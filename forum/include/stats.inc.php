@@ -47,7 +47,7 @@ require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 function stats_update($session_count, $recent_post_count)
 {
-    if (!$db_update_stats = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($session_count)) return false;
     if (!is_numeric($recent_post_count)) return false;
@@ -57,23 +57,23 @@ function stats_update($session_count, $recent_post_count)
     $sql = "SELECT ID FROM `{$table_prefix}STATS` ";
     $sql.= "ORDER BY ID DESC LIMIT 0, 1";
 
-    if (!$result = db_query($sql, $db_update_stats)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
-    if (db_num_rows($result) > 0) {
+    if ($result->num_rows > 0) {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}STATS` SET ";
         $sql.= "MOST_USERS_DATE = CAST('$current_datetime' AS DATETIME), ";
         $sql.= "MOST_USERS_COUNT = '$session_count' WHERE MOST_USERS_COUNT < $session_count";
 
-        if (!$result = db_query($sql, $db_update_stats)) return false;
+        if (!$result = $db->query($sql)) return false;
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}STATS` SET ";
         $sql.= "MOST_POSTS_DATE = CAST('$current_datetime' AS DATETIME), ";
         $sql.= "MOST_POSTS_COUNT = '$recent_post_count' WHERE MOST_POSTS_COUNT < $recent_post_count";
 
-        if (!$result = db_query($sql, $db_update_stats)) return false;
+        if (!$result = $db->query($sql)) return false;
 
     } else {
 
@@ -82,7 +82,7 @@ function stats_update($session_count, $recent_post_count)
         $sql.= "VALUES (CAST('$current_datetime' AS DATETIME), '$session_count', ";
         $sql.= "CAST('$current_datetime' AS DATETIME), '$recent_post_count')";
 
-        if (!$result = db_query($sql, $db_update_stats)) return false;
+        if (!$result = $db->query($sql)) return false;
     }
 
     return true;
@@ -426,7 +426,7 @@ function stats_get_html()
 
 function stats_get_active_session_count()
 {
-    if (!$db_stats_get_active_session_count = db_connect()) return 0;
+    if (!$db = db::get()) return 0;
 
     if (!($table_prefix = get_table_prefix())) return 0;
 
@@ -440,16 +440,16 @@ function stats_get_active_session_count()
     $sql.= "WHERE TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND FID = '$forum_fid'";
 
-    if (!$result = db_query($sql, $db_stats_get_active_session_count)) return 0;
+    if (!$result = $db->query($sql)) return 0;
 
-    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($user_count) = $result->fetch_row();
 
     return $user_count;
 }
 
 function stats_get_active_registered_user_count()
 {
-    if (!$db_stats_get_registered_user_count = db_connect()) return 0;
+    if (!$db = db::get()) return 0;
 
     if (!($table_prefix = get_table_prefix())) return 0;
 
@@ -463,16 +463,16 @@ function stats_get_active_registered_user_count()
     $sql.= "WHERE TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND FID = '$forum_fid' AND UID > 0";
 
-    if (!$result = db_query($sql, $db_stats_get_registered_user_count)) return 0;
+    if (!$result = $db->query($sql)) return 0;
 
-    list($registered_user_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($registered_user_count) = $result->fetch_row();
 
     return $registered_user_count;
 }
 
 function stats_get_active_guest_count()
 {
-    if (!$db_stats_get_active_guest_count = db_connect()) return 0;
+    if (!$db = db::get()) return 0;
 
     if (!($table_prefix = get_table_prefix())) return 0;
 
@@ -486,9 +486,9 @@ function stats_get_active_guest_count()
     $sql.= "WHERE TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND FID = '$forum_fid' AND UID = 0";
 
-    if (!$result = db_query($sql, $db_stats_get_active_guest_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($guest_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($guest_count) = $result->fetch_row();
 
     return $guest_count;
 }
@@ -507,7 +507,7 @@ function stats_get_active_user_list()
 
     $user_sort = array();
 
-    if (!$db_stats_get_active_user_list = db_connect()) return $stats;
+    if (!$db = db::get()) return $stats;
 
     if (!($table_prefix = get_table_prefix())) return $stats;
 
@@ -523,9 +523,9 @@ function stats_get_active_user_list()
     $sql.= "AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND SESSIONS.FID = '$forum_fid'";
 
-    if (!$result = db_query($sql, $db_stats_get_active_user_list)) return $stats;
+    if (!$result = $db->query($sql)) return $stats;
 
-    list($stats['GUESTS']) = db_fetch_array($result, DB_RESULT_NUM);
+    list($stats['GUESTS']) = $result->fetch_row();
 
     $sql = "SELECT DISTINCT SESSIONS.UID, USER.LOGON, USER.NICKNAME, USER_PEER2.PEER_NICKNAME, ";
     $sql.= "USER_PREFS_GLOBAL.ANON_LOGON, USER_PEER.RELATIONSHIP AS PEER_RELATIONSHIP, ";
@@ -544,9 +544,9 @@ function stats_get_active_user_list()
     $sql.= "WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND SESSIONS.FID = '$forum_fid' AND (SESSIONS.UID > 0 OR SESSIONS.SID IS NOT NULL)";
 
-    if (!$result = db_query($sql, $db_stats_get_active_user_list)) return $stats;
+    if (!$result = $db->query($sql)) return $stats;
 
-    while (($user_data = db_fetch_array($result))) {
+    while (($user_data = $result->fetch_assoc())) {
 
         if (isset($user_data['ANON_LOGON']) && $user_data['ANON_LOGON'] > USER_ANON_DISABLED) {
             $anon_logon = $user_data['ANON_LOGON'];
@@ -643,38 +643,38 @@ function stats_get_active_user_list()
 
 function stats_get_thread_count()
 {
-    if (!$db_stats_get_thread_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return 0;
 
     $sql = "SELECT COUNT(THREAD.TID) AS THREAD_COUNT ";
     $sql.= "FROM `{$table_prefix}THREAD` THREAD";
 
-    if (!$result = db_query($sql, $db_stats_get_thread_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($thread_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($thread_count) = $result->fetch_row();
 
     return $thread_count;
 }
 
 function stats_get_post_count()
 {
-    if (!$db_stats_get_post_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return 0;
 
     $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM `{$table_prefix}POST` POST";
 
-    if (!$result = db_query($sql, $db_stats_get_post_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($post_count) = $result->fetch_row();
 
     return $post_count;
 }
 
 function stats_get_recent_post_count()
 {
-    if (!$db_stats_get_recent_post_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return 0;
 
@@ -683,16 +683,16 @@ function stats_get_recent_post_count()
     $sql = "SELECT COUNT(POST.PID) AS POSTS FROM `{$table_prefix}POST` POST ";
     $sql.= "WHERE CREATED >= CAST('$recent_post_datetime' AS DATETIME)";
 
-    if (!$result = db_query($sql, $db_stats_get_recent_post_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($post_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($post_count) = $result->fetch_row();
 
     return $post_count;
 }
 
 function stats_get_longest_thread()
 {
-    if (!$db_stats_get_longest_thread = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -703,9 +703,9 @@ function stats_get_longest_thread()
     $sql = "SELECT MAX(LENGTH) FROM `{$table_prefix}THREAD` ";
     $sql.= "WHERE FID IN ($folders)";
 
-    if (!$result = db_query($sql, $db_stats_get_longest_thread)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($highest_thread_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($highest_thread_count) = $result->fetch_row();
 
     $sql = "SELECT THREAD.TID, THREAD.LENGTH, ";
     $sql.= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE ";
@@ -713,61 +713,61 @@ function stats_get_longest_thread()
     $sql.= "ON (FOLDER.FID = THREAD.FID) WHERE THREAD.LENGTH = '$highest_thread_count' ";
     $sql.= "AND THREAD.DELETED = 'N' LIMIT 0, 1";
 
-    if (!$result = db_query($sql, $db_stats_get_longest_thread)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    return db_fetch_array($result);
+    return $result->fetch_assoc();
 }
 
 function stats_get_user_count()
 {
-   if (!$db_stats_get_user_count = db_connect()) return false;
+   if (!$db = db::get()) return false;
 
    $sql = "SELECT COUNT(UID) AS COUNT FROM USER";
 
-   if (!$result = db_query($sql, $db_stats_get_user_count)) return false;
+   if (!$result = $db->query($sql)) return false;
 
-   list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+   list($user_count) = $result->fetch_row();
 
    return $user_count;
 }
 
 function stats_get_most_users()
 {
-    if (!$db_stats_get_most_users = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT MOST_USERS_COUNT, UNIX_TIMESTAMP(MOST_USERS_DATE) AS MOST_USERS_DATE ";
     $sql.= "FROM `{$table_prefix}STATS`";
 
-    if (!$result = db_query($sql, $db_stats_get_most_users)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    return db_fetch_array($result);
+    return $result->fetch_assoc();
 }
 
 function stats_get_most_posts()
 {
-    if (!$db_stats_get_most_posts = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT MOST_POSTS_COUNT, UNIX_TIMESTAMP(MOST_POSTS_DATE) AS MOST_POSTS_DATE ";
     $sql.= "FROM `{$table_prefix}STATS`";
 
-    if (!$result = db_query($sql, $db_stats_get_most_posts)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    return db_fetch_array($result);
+    return $result->fetch_assoc();
 }
 
 function stats_get_newest_user()
 {
-    if (!$db_stats_get_newest_user = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -775,20 +775,20 @@ function stats_get_newest_user()
 
     $sql = "SELECT MAX(UID) FROM USER";
 
-    if (!$result = db_query($sql, $db_stats_get_newest_user)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($newest_user_uid) = db_fetch_array($result, DB_RESULT_NUM);
+    list($newest_user_uid) = $result->fetch_row();
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
     $sql.= "FROM USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE USER.UID = '$newest_user_uid'";
 
-    if (!$result = db_query($sql, $db_stats_get_newest_user)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    $user_data = db_fetch_array($result);
+    $user_data = $result->fetch_assoc();
 
     if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
         if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
@@ -804,7 +804,7 @@ function stats_get_newest_user()
 
 function stats_get_post_tallys($start_timestamp, $end_timestamp)
 {
-    if (!$db_stats_get_post_tallys = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($start_timestamp)) return false;
     if (!is_numeric($end_timestamp)) return false;
@@ -826,9 +826,9 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
     $sql.= "WHERE POST.CREATED > CAST('$post_start_datetime' AS DATETIME) ";
     $sql.= "AND POST.CREATED < CAST('$post_end_datetime' AS DATETIME)";
 
-    if (!$result = db_query($sql, $db_stats_get_post_tallys)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($post_tallys['post_count']) = db_fetch_array($result, DB_RESULT_NUM);
+    list($post_tallys['post_count']) = $result->fetch_row();
 
     $sql = "SELECT POST.FROM_UID AS UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, COUNT(POST.PID) AS POST_COUNT ";
@@ -841,11 +841,11 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
     $sql.= "GROUP BY POST.FROM_UID ORDER BY POST_COUNT DESC ";
     $sql.= "LIMIT 0, 20";
 
-    if (!$result = db_query($sql, $db_stats_get_post_tallys)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if ($result->num_rows > 0) {
 
-        while (($user_stats = db_fetch_array($result))) {
+        while (($user_stats = $result->fetch_assoc())) {
 
             if (isset($user_stats['LOGON']) && isset($user_stats['PEER_NICKNAME'])) {
                 if (!is_null($user_stats['PEER_NICKNAME']) && strlen($user_stats['PEER_NICKNAME']) > 0) {
@@ -865,7 +865,7 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
 
 function stats_get_top_poster()
 {
-    if (!$db_stats_get_top_poster = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -875,31 +875,31 @@ function stats_get_top_poster()
     $sql.= "GROUP BY POST.FROM_UID ORDER BY POST_COUNT DESC ";
     $sql.= "LIMIT 0, 1";
 
-    if (!$result = db_query($sql, $db_stats_get_top_poster)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    return db_fetch_array($result);
+    return $result->fetch_assoc();
 }
 
 function stats_get_folder_count()
 {
-    if (!$db_stats_get_folder_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COUNT(FID) AS FOLDER_COUNT FROM `{$table_prefix}FOLDER`";
 
-    if (!$result = db_query($sql, $db_stats_get_folder_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($folder_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($folder_count) = $result->fetch_row();
 
     return $folder_count;
 }
 
 function stats_get_folder_with_most_threads()
 {
-    if (!$db_stats_get_folder_with_most_threads = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -909,16 +909,16 @@ function stats_get_folder_with_most_threads()
     $sql.= "GROUP BY THREAD.FID ORDER BY THREAD_COUNT DESC ";
     $sql.= "LIMIT 0, 1";
 
-    if (!$result = db_query($sql, $db_stats_get_folder_with_most_threads)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    return db_fetch_array($result);
+    return $result->fetch_assoc();
 }
 
 function stats_get_folder_with_most_posts()
 {
-    if (!$db_stats_get_folder_with_most_posts = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -929,16 +929,16 @@ function stats_get_folder_with_most_posts()
     $sql.= "GROUP BY FOLDER.FID ORDER BY POST_COUNT DESC ";
     $sql.= "LIMIT 0, 1";
 
-    if (!$result = db_query($sql, $db_stats_get_folder_with_most_posts)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    return db_fetch_array($result);
+    return $result->fetch_assoc();
 }
 
 function stats_get_most_read_thread()
 {
-    if (!$db_stats_get_most_read_threads = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -949,31 +949,31 @@ function stats_get_most_read_thread()
     $sql.= "ON (FOLDER.FID = THREAD.FID) ORDER BY THREAD_STATS.VIEWCOUNT DESC ";
     $sql.= "LIMIT 0, 1";
 
-    if (!$result = db_query($sql, $db_stats_get_most_read_threads)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    return db_fetch_array($result);
+    return $result->fetch_assoc();
 }
 
 function stats_get_thread_subscription_count()
 {
-    if (!$db_stats_get_thread_subscription_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COUNT(TID) AS SUBSCRIPTION_COUNT FROM `{$table_prefix}USER_THREAD` WHERE INTEREST = 2";
 
-    if (!$result = db_query($sql, $db_stats_get_thread_subscription_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($subscription_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($subscription_count) = $result->fetch_row();
 
     return $subscription_count;
 }
 
 function stats_get_most_subscribed_thread()
 {
-    if (!$db_stats_get_most_subscribed_threads = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -985,61 +985,61 @@ function stats_get_most_subscribed_thread()
     $sql.= "WHERE USER_THREAD.INTEREST = 2 GROUP BY USER_THREAD.TID ";
     $sql.= "ORDER BY SUBSCRIBERS DESC LIMIT 0, 1";
 
-    if (!$result = db_query($sql, $db_stats_get_most_subscribed_threads)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
     
-    return db_fetch_array($result);
+    return $result->fetch_assoc();
 }
 
 function stats_get_poll_count()
 {
-    if (!$db_stats_get_poll_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COUNT(TID) AS POLL_COUNT FROM `{$table_prefix}POLL`";
 
-    if (!$result = db_query($sql, $db_stats_get_poll_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($poll_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($poll_count) = $result->fetch_row();
 
     return $poll_count;
 }
 
 function stats_get_poll_option_count()
 {
-    if (!$db_stats_get_poll_option_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COUNT(*) AS POLL_OPTION_COUNT FROM `{$table_prefix}POLL_VOTES`";
 
-    if (!$result = db_query($sql, $db_stats_get_poll_option_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($poll_option_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($poll_option_count) = $result->fetch_row();
 
     return $poll_option_count;
 }
 
 function stats_get_poll_vote_count()
 {
-    if (!$db_stats_get_poll_vote_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COUNT(*) AS POLL_VOTE_COUNT FROM `{$table_prefix}USER_POLL_VOTES`";
 
-    if (!$result = db_query($sql, $db_stats_get_poll_vote_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($poll_vote_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($poll_vote_count) = $result->fetch_row();
 
     return $poll_vote_count;
 }
 
 function stats_get_attachment_count()
 {
-    if (!$db_stats_get_attachment_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1049,16 +1049,16 @@ function stats_get_attachment_count()
     $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
     $sql.= "WHERE PAI.FID = '$forum_fid' AND PAF.FILENAME IS NOT NULL";
 
-    if (!$result = db_query($sql, $db_stats_get_attachment_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($attachment_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($attachment_count) = $result->fetch_row();
 
     return $attachment_count;
 }
 
 function stats_get_most_downloaded_attachment()
 {
-    if (!$db_stats_get_most_downloaded_attachment = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1072,9 +1072,9 @@ function stats_get_most_downloaded_attachment()
     $sql.= "WHERE PAI.FID = '$forum_fid' ";
     $sql.= "ORDER BY PAF.DOWNLOADS DESC ";
 
-    if (!($result = db_query($sql, $db_stats_get_most_downloaded_attachment))) return false;
+    if (!($result = $db->query($sql))) return false;
 
-    while (($attachment_data = db_fetch_array($result))) {
+    while (($attachment_data = $result->fetch_assoc())) {
 
         if (@file_exists("$attachment_dir/{$attachment_data['HASH']}")) {
 
@@ -1115,7 +1115,7 @@ function stats_get_most_downloaded_attachment()
 
 function stats_get_most_popular_forum_style()
 {
-    if (!$db_stats_get_most_popular_forum_style = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
     
@@ -1123,18 +1123,18 @@ function stats_get_most_popular_forum_style()
     $sql.= "INNER JOIN (SELECT STYLE, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY STYLE LIMIT 1) AS USERS ";
     $sql.= "ON (USERS.STYLE = USER_PREFS.STYLE)";
 
-    if (!$result = db_query($sql, $db_stats_get_most_popular_forum_style)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    if (!($style_data = db_fetch_array($result))) return false;
+    if (!($style_data = $result->fetch_assoc())) return false;
         
     return $style_data;
 }
 
 function stats_get_most_popular_emoticon_pack()
 {
-    if (!$db_stats_get_most_popular_emoticon_pack = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
     
@@ -1142,18 +1142,18 @@ function stats_get_most_popular_emoticon_pack()
     $sql.= "INNER JOIN (SELECT EMOTICONS, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY EMOTICONS LIMIT 1) AS USERS ";
     $sql.= "ON (USERS.EMOTICONS = USER_PREFS.EMOTICONS)";
 
-    if (!$result = db_query($sql, $db_stats_get_most_popular_emoticon_pack)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    if (!($emoticon_data = db_fetch_array($result))) return false;
+    if (!($emoticon_data = $result->fetch_assoc())) return false;
             
     return $emoticon_data;
 }
 
 function stats_get_most_popular_language()
 {
-    if (!$db_stats_get_most_popular_language = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1161,34 +1161,34 @@ function stats_get_most_popular_language()
     $sql.= "INNER JOIN (SELECT LANGUAGE, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY EMOTICONS LIMIT 1) AS USERS ";
     $sql.= "ON (USERS.LANGUAGE = USER_PREFS.LANGUAGE)";
 
-    if (!$result = db_query($sql, $db_stats_get_most_popular_language)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    if (!($language_data = db_fetch_array($result))) return false;
+    if (!($language_data = $result->fetch_assoc())) return false;
     
     return $language_data;
 }
 
 function stats_get_most_popular_timezone()
 {
-    if (!$db_stats_get_most_popular_timezone = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT TIMEZONE, COUNT(*) AS USER_COUNT FROM USER_PREFS ";
     $sql.= "GROUP BY TIMEZONE ORDER BY USER_COUNT DESC LIMIT 0,1";
 
-    if (!$result = db_query($sql, $db_stats_get_most_popular_timezone)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    $timezone_data = db_fetch_array($result);
+    $timezone_data = $result->fetch_assoc();
 
     return $timezone_data;
 }
 
 function stats_get_most_active_user()
 {
-    if (!$db_stats_get_most_active_user = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1200,18 +1200,18 @@ function stats_get_most_active_user()
     $sql.= "ORDER BY TOTAL_TIME DESC ";
     $sql.= "LIMIT 0, 1";
 
-    if (!$result = db_query($sql, $db_stats_get_most_active_user)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    $user_data = db_fetch_array($result);
+    $user_data = $result->fetch_assoc();
 
     return $user_data;
 }
 
 function stats_get_inactive_user_count()
 {
-    if (!$db_stats_get_inactive_user_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1219,31 +1219,31 @@ function stats_get_inactive_user_count()
     $sql.= "LEFT JOIN `{$table_prefix}POST` POST ON (POST.FROM_UID = USER.UID) ";
     $sql.= "WHERE POST.TID IS NULL ";
 
-    if (!$result = db_query($sql, $db_stats_get_inactive_user_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($user_count) = $result->fetch_row();
 
     return $user_count;
 }
 
 function stats_get_active_user_count()
 {
-    if (!$db_stats_get_active_user_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COUNT(DISTINCT FROM_UID) AS USER_COUNT FROM `{$table_prefix}POST` ";
 
-    if (!$result = db_query($sql, $db_stats_get_active_user_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($user_count) = $result->fetch_row();
 
     return $user_count;
 }
 
 function stats_get_visitor_counts()
 {
-    if (!$db_stats_get_visitor_counts = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1269,33 +1269,33 @@ function stats_get_visitor_counts()
     $sql.= "WHERE LAST_LOGON >= CAST('$day_start_datetime' AS DATETIME) ";
     $sql.= "AND FORUM = '$forum_fid'";
 
-    if (!$result = db_query($sql, $db_stats_get_visitor_counts)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($visitors_today) = db_fetch_array($result, DB_RESULT_NUM);
+    list($visitors_today) = $result->fetch_row();
 
     $sql = "SELECT COUNT(UID) AS VISITOR_COUNT FROM VISITOR_LOG ";
     $sql.= "WHERE LAST_LOGON >= CAST('$week_start_datetime' AS DATETIME) ";
     $sql.= "AND FORUM = '$forum_fid'";
 
-    if (!$result = db_query($sql, $db_stats_get_visitor_counts)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($visitors_this_week) = db_fetch_array($result, DB_RESULT_NUM);
+    list($visitors_this_week) = $result->fetch_row();
 
     $sql = "SELECT COUNT(UID) AS VISITOR_COUNT FROM VISITOR_LOG ";
     $sql.= "WHERE LAST_LOGON >= CAST('$month_start_datetime' AS DATETIME) ";
     $sql.= "AND FORUM = '$forum_fid'";
 
-    if (!$result = db_query($sql, $db_stats_get_visitor_counts)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($visitors_this_month) = db_fetch_array($result, DB_RESULT_NUM);
+    list($visitors_this_month) = $result->fetch_row();
 
     $sql = "SELECT COUNT(UID) AS VISITOR_COUNT FROM VISITOR_LOG ";
     $sql.= "WHERE LAST_LOGON >= CAST('$year_start_datetime' AS DATETIME) ";
     $sql.= "AND FORUM = '$forum_fid'";
 
-    if (!$result = db_query($sql, $db_stats_get_visitor_counts)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($visitors_this_year) = db_fetch_array($result, DB_RESULT_NUM);
+    list($visitors_this_year) = $result->fetch_row();
 
     return array(
         'DAY' => $visitors_today,
@@ -1307,7 +1307,7 @@ function stats_get_visitor_counts()
 
 function stats_get_average_age()
 {
-    if (!$db_stats_get_average_age = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     // Year, Month and Day
     list($year, $month, $day) = explode('-', date(MYSQL_DATE, time()));
@@ -1316,31 +1316,31 @@ function stats_get_average_age()
     $sql.= "(CAST('00-$month-$day' AS DATE) < DATE_FORMAT(DOB, '00-%m-%d'))) AS AVERAGE_AGE ";
     $sql.= "FROM USER_PREFS WHERE DOB > 0";
 
-    if (!$result = db_query($sql, $db_stats_get_average_age)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($average_age) = db_fetch_array($result, DB_RESULT_NUM);
+    list($average_age) = $result->fetch_row();
 
     return is_numeric($average_age) ? $average_age : false;
 }
 
 function stats_get_most_popular_birthday()
 {
-    if (!$db_stats_get_most_popular_birthday = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT DATE_FORMAT(DOB, '0000-%m-%d') AS DOB, ";
     $sql.= "COUNT(*) AS DOB_COUNT FROM USER_PREFS WHERE DOB > 0 ";
     $sql.= "GROUP BY DOB ORDER BY DOB_COUNT DESC LIMIT 0, 1";
 
-    if (!$result = db_query($sql, $db_stats_get_most_popular_birthday)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    $dob_data = db_fetch_array($result);
+    $dob_data = $result->fetch_assoc();
 
     return $dob_data;
 }
 
 function stats_get_users_without_profile_count()
 {
-    if (!$db_stats_get_users_without_profile_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1349,31 +1349,31 @@ function stats_get_users_without_profile_count()
     $sql.= "ON (USER_PROFILE.UID = USER.UID) ";
     $sql.= "WHERE USER_PROFILE.ENTRY IS NULL";
 
-    if (!$result = db_query($sql, $db_stats_get_users_without_profile_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($user_count) = $result->fetch_row();
 
     return $user_count;
 }
 
 function stats_get_users_with_profile_count()
 {
-    if (!$db_stats_get_users_with_profile_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COUNT(DISTINCT UID) AS USER_COUNT FROM `{$table_prefix}USER_PROFILE`";
 
-    if (!$result = db_query($sql, $db_stats_get_users_with_profile_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($user_count) = $result->fetch_row();
 
     return $user_count;
 }
 
 function stats_get_users_without_signature_count()
 {
-    if (!$db_stats_get_users_without_profile_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1381,46 +1381,46 @@ function stats_get_users_without_signature_count()
     $sql.= "LEFT JOIN `{$table_prefix}USER_SIG` USER_SIG ON (USER_SIG.UID = USER.UID) ";
     $sql.= "WHERE USER_SIG.CONTENT IS NULL";
 
-    if (!$result = db_query($sql, $db_stats_get_users_without_profile_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($user_count) = $result->fetch_row();
 
     return $user_count;
 }
 
 function stats_get_users_with_signature_count()
 {
-    if (!$db_stats_get_users_with_profile_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COUNT(DISTINCT UID) AS USER_COUNT FROM `{$table_prefix}USER_SIG`";
 
-    if (!$result = db_query($sql, $db_stats_get_users_with_profile_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($user_count) = $result->fetch_row();
 
     return $user_count;
 }
 
 function stats_get_relationships_count()
 {
-    if (!$db_stats_get_relationships_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COUNT(*) AS RELATIONSHIP_COUNT FROM `{$table_prefix}USER_PEER`";
 
-    if (!$result = db_query($sql, $db_stats_get_relationships_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($relationship_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($relationship_count) = $result->fetch_row();
 
     return $relationship_count;
 }
 
 function stats_get_users_without_word_filter_count()
 {
-    if (!$db_stats_get_users_without_word_filter_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1428,16 +1428,16 @@ function stats_get_users_without_word_filter_count()
     $sql.= "LEFT JOIN `{$table_prefix}WORD_FILTER` WORD_FILTER ON (WORD_FILTER.UID = USER.UID) ";
     $sql.= "WHERE WORD_FILTER.MATCH_TEXT IS NULL";
 
-    if (!$result = db_query($sql, $db_stats_get_users_without_word_filter_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($user_count) = $result->fetch_row();
 
     return $user_count;
 }
 
 function stats_get_users_with_word_filter_count()
 {
-    if (!$db_stats_get_users_with_word_filter_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1445,23 +1445,23 @@ function stats_get_users_with_word_filter_count()
     $sql.= "FROM `{$table_prefix}WORD_FILTER` ";
     $sql.= "WHERE UID > 0";
 
-    if (!$result = db_query($sql, $db_stats_get_users_with_word_filter_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($user_count) = $result->fetch_row();
 
     return $user_count;
 }
 
 function stats_get_mysql_week(&$week_start, &$week_end)
 {
-    if (!$stats_get_mysql_week = db_connect()) return false;
+    if (!$stats_get_mysql_week = db::get()) return false;
 
     $sql = "SELECT UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL(DAYOFWEEK(CURDATE()) - 1) DAY)) AS WEEK_START, ";
     $sql.= "UNIX_TIMESTAMP(DATE_ADD(CURDATE(), INTERVAL(7 - DAYOFWEEK(CURDATE())) DAY)) AS WEEK_END";
 
-    if (!$result = db_query($sql, $stats_get_mysql_week)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($week_start, $week_end) = db_fetch_array($result, DB_RESULT_NUM);
+    list($week_start, $week_end) = $result->fetch_row();
 
     return true;
 }

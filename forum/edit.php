@@ -361,7 +361,7 @@ if (isset($_POST['preview'])) {
         exit;
     }
 
-    $post_edit_time = forum_get_setting('post_edit_time', false, 0);
+    $post_edit_time = forum_get_setting('post_edit_time', null, 0);
 
     if (isset($_POST['t_to_uid'])) {
 
@@ -490,7 +490,7 @@ if (isset($_POST['preview'])) {
         exit;
     }
 
-    $post_edit_time = forum_get_setting('post_edit_time', false, 0);
+    $post_edit_time = forum_get_setting('post_edit_time', null, 0);
 
     if (count($edit_message) > 0) {
 
@@ -621,7 +621,7 @@ echo "                        ", form_checkbox("t_check_spelling", "enabled", ge
 echo "                        ", form_checkbox("t_post_emots", "disabled", gettext("Disable emoticons"), !$emots_enabled), "<br /><br />\n";
 
 if (($user_emoticon_pack = session::get_value('EMOTICONS')) === false) {
-    $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
+    $user_emoticon_pack = forum_get_setting('default_emoticons', null, 'default');
 }
 
 if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {

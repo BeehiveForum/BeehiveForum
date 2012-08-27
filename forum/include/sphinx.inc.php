@@ -73,7 +73,7 @@ function sphinx_search_execute($search_arguments, &$error)
     }
     
     // Regular Database connection.
-    if (!$db_search_results = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     // If the user has specified a folder within their viewable scope limit them
     // to that folder, otherwise limit them to their available folders.
@@ -110,7 +110,7 @@ function sphinx_search_execute($search_arguments, &$error)
 
         // Sphinx doesn't like -- in MATCH. Don't know if it's because it
         // thinks it is a MySQL-style comment or a bug. We have no choice but to strip it out.
-        $search_string = db_escape_string(str_replace('--', '', $search_arguments['search_string']));
+        $search_string = $db->escape(str_replace('--', '', $search_arguments['search_string']));
 
         search_save_arguments($search_arguments);
 
@@ -174,10 +174,10 @@ function sphinx_search_execute($search_arguments, &$error)
     }
 
     // Execute the query
-    if (!($result = db_query($sql, $sphinx_connection))) return false;
+    if (!($result = $db->query($sql))) return false;
 
     // Check if we have any results
-    if (db_num_rows($result) == 0) {
+    if ($result->num_rows == 0) {
 
         // No results from search.
         $error = SEARCH_NO_MATCHES;
@@ -188,7 +188,7 @@ function sphinx_search_execute($search_arguments, &$error)
     // Iterate over the results returned by Swift and save them
     // into the SEARCH_RESULTS table in the MySQL database along
     // with the Sphinx weight as our relevance.
-    while (($search_result = db_fetch_array($result, DB_RESULT_ASSOC))) {
+    while (($search_result = $result->fetch_assoc())) {
 
         $sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, ";
         $sql.= "RELEVANCE) SELECT '$uid' AS UID, '$forum_fid' AS FORUM, FOLDER.FID, THREAD.TID, POST.PID, THREAD.BY_UID, ";
@@ -199,7 +199,7 @@ function sphinx_search_execute($search_arguments, &$error)
         $sql.= "AND POST.PID = '{$search_result['pid']}' AND THREAD.LENGTH > 0 ";
         $sql.= "AND THREAD.DELETED = 'N'";
 
-        if (!db_query($sql, $db_search_results)) return false;
+        if (!$db->query($sql)) return false;
     }
 
     return true;

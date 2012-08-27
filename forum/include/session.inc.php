@@ -56,7 +56,7 @@ abstract class session
     
     public static function init()
     {
-        session::$db = db_connect();
+        session::$db = db::get(true);
         
         session_set_save_handler(
             array('session', 'open'),
@@ -69,7 +69,7 @@ abstract class session
         
         session_name('sess_hash');
         
-        if (($hash = session::restore())) {
+        if (!html_get_cookie('sess_hash') && ($hash = session::restore())) {
             session_id($hash);
         }
         
@@ -96,18 +96,18 @@ abstract class session
     
     public static function read($id)
     {
-        $id = db_escape_string($id);
+        $id = session::$db->escape($id);
         
-        $user_agent = db_escape_string(session::get_user_agent());
+        $user_agent = session::$db->escape(session::get_user_agent());
         
         $sql = "SELECT DATA, MD5 FROM SESSIONS WHERE ID = '$id' ";
         $sql.= "AND USER_AGENT = '$user_agent'";
         
-        if (!($result = db_query($sql, session::$db))) return '';
+        if (!($result = session::$db->query($sql))) return '';
         
-        if (db_num_rows($result) == 0) return '';
+        if ($result->num_rows == 0) return '';
         
-        list($data, $md5) = db_fetch_array($result, DB_RESULT_NUM);
+        list($data, $md5) = $result->fetch_row();
         
         if (md5($data) != $md5) return '';
         
@@ -116,23 +116,23 @@ abstract class session
     
     public static function write($id, $data)
     {
-        $id = db_escape_string($id);
+        $id = session::$db->escape($id);
         
         if (!($forum_fid = get_forum_fid())) $forum_fid = 0;
         
-        $md5 = db_escape_string(md5($data));
+        $md5 = session::$db->escape(md5($data));
         
-        $data = db_escape_string($data);
+        $data = session::$db->escape($data);
         
         $time = date(MYSQL_DATETIME, time());
         
-        $uid = db_escape_string(session::get_value('UID'));
+        $uid = session::$db->escape(session::get_value('UID'));
         
-        $ip_address = db_escape_string(get_ip_address());
+        $ip_address = session::$db->escape(get_ip_address());
         
-        $http_referer = db_escape_string(session::get_http_referer());
+        $http_referer = session::$db->escape(session::get_http_referer());
         
-        $user_agent = db_escape_string(session::get_user_agent());
+        $user_agent = session::$db->escape(session::get_user_agent());
         
         if (!($search_id = session::is_search_engine())) $search_id = 'NULL';
         
@@ -140,18 +140,18 @@ abstract class session
         $sql.= "VALUES ('$id', '$uid', '$forum_fid', '$data', '$md5', CAST('$time' AS DATETIME), ";
         $sql.= "'$ip_address', '$http_referer', '$user_agent', $search_id)";
         
-        if (!(db_query($sql, session::$db))) return false;
+        if (!(session::$db->query($sql))) return false;
         
         return true;
     }
     
     public static function destroy($id)
     {
-        $id = db_escape_string($id);
+        $id = session::$db->escape($id);
         
         $sql = "DELETE FROM SESSIONS WHERE ID = '$id'";
         
-        if (!(db_query($sql, session::$db))) return false;
+        if (!(session::$db->query($sql))) return false;
         
         return true;        
     }
@@ -162,7 +162,7 @@ abstract class session
         
         $sql = "DELETE FROM SESSIONS WHERE TIME < CAST('$expires_datetime' AS DATETIME)";
         
-        if (!(db_query($sql, session::$db))) return false;
+        if (!(session::$db->query($sql))) return false;
         
         return true;        
     }
@@ -191,24 +191,24 @@ abstract class session
     {
         if (!array_key_exists('SID', $_SESSION)) {
         
-            $http_user_agent = db_escape_string(session::get_user_agent());
+            $http_user_agent = session::$db->escape(session::get_user_agent());
 
             $sql = "SELECT SID FROM SEARCH_ENGINE_BOTS ";
             $sql.= "WHERE '$http_user_agent' LIKE AGENT_MATCH ";
 
-            if (!($result = db_query($sql, session::$db))) {
+            if (!($result = session::$db->query($sql))) {
                 
                 $_SESSION['SID'] = false;
                 return $_SESSION['SID'];
             }
 
-            if (db_num_rows($result) == 0) {
+            if ($result->num_rows == 0) {
                 
                 $_SESSION['SID'] = false;
                 return $_SESSION['SID'];
             }
 
-            list($sid) = db_fetch_array($result, DB_RESULT_NUM);
+            list($sid) = $result->fetch_row();
             
             $_SESSION['SID'] = $sid;
         }
@@ -361,7 +361,7 @@ abstract class session
         
         if (!($forum_fid = get_forum_fid())) return false;
 
-        $uid = db_escape_string($uid);
+        $uid = session::$db->escape($uid);
         
         $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, USER_TIME_BEST) ";
         $sql.= "SELECT USER_FORUM.UID, FROM_UNIXTIME(UNIX_TIMESTAMP(SESSIONS.TIME) - UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT)) ";
@@ -371,7 +371,7 @@ abstract class session
         $sql.= "AND (UNIX_TIMESTAMP(SESSIONS.TIME) - UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT)) > UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST)) ";
         $sql.= "OR USER_TRACK.USER_TIME_BEST IS NULL) ON DUPLICATE KEY UPDATE USER_TIME_BEST = VALUES(USER_TIME_BEST)";
 
-        if (!db_query($sql, session::$db)) return false;
+        if (!session::$db->query($sql)) return false;
 
         $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, USER_TIME_TOTAL, USER_TIME_UPDATED) ";
         $sql.= "SELECT UID, FROM_UNIXTIME(USER_TIME_TOTAL + (TIME_END - TIME_START)) AS USER_TIME_TOTAL, ";
@@ -387,7 +387,7 @@ abstract class session
         $sql.= "ON DUPLICATE KEY UPDATE USER_TIME_TOTAL = VALUES(USER_TIME_TOTAL), ";
         $sql.= "USER_TIME_UPDATED = VALUES(USER_TIME_UPDATED)";
 
-        if (!db_query($sql, session::$db)) return false;
+        if (!session::$db->query($sql)) return false;
 
         return true;
     }
@@ -396,11 +396,11 @@ abstract class session
     {
         $ip_address = get_ip_address();
 
-        $http_referer = db_escape_string(session::get_http_referer());
+        $http_referer = session::$db->escape(session::get_http_referer());
         
-        $user_agent = db_escape_string(session::get_user_agent());
+        $user_agent = session::$db->escape(session::get_user_agent());
 
-        $ip_address = db_escape_string($ip_address);
+        $ip_address = session::$db->escape($ip_address);
 
         $current_datetime = date(MYSQL_DATETIME, time());
         
@@ -412,7 +412,7 @@ abstract class session
         $sql.= "VALUES ('$forum_fid', $uid, CAST('$current_datetime' AS DATETIME), '$ip_address', ";
         $sql.= "'$http_referer', '$user_agent', $search_id)";
 
-        if (!db_query($sql, session::$db)) return false;
+        if (!session::$db->query($sql)) return false;
 
         return true;
     }
@@ -450,11 +450,11 @@ abstract class session
         $sql = "SELECT FID, PERM, IF (PERM IS NULL, 0, 1) AS FOLDER_PERM_COUNT ";
         $sql.= "FROM `{$table_prefix}FOLDER`";
 
-        if (!($result = db_query($sql, session::$db))) return $user_perm_array;
+        if (!($result = session::$db->query($sql))) return $user_perm_array;
 
-        if (db_num_rows($result) == 0) return $user_perm_array;
+        if ($result->num_rows == 0) return $user_perm_array;
 
-        while (($permission_data = db_fetch_array($result))) {
+        while (($permission_data = $result->fetch_assoc())) {
 
             if ($permission_data['FOLDER_PERM_COUNT'] > 0) {
 
@@ -468,11 +468,11 @@ abstract class session
         $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FORUM IN (0, $forum_fid) ";
         $sql.= "GROUP BY GROUP_PERMS.FORUM, GROUP_PERMS.FID";
 
-        if (!($result = db_query($sql, session::$db))) return $user_perm_array;
+        if (!($result = session::$db->query($sql))) return $user_perm_array;
 
-        if (db_num_rows($result) == 0) return $user_perm_array;
+        if ($result->num_rows == 0) return $user_perm_array;
 
-        while (($permission_data = db_fetch_array($result))) {
+        while (($permission_data = $result->fetch_assoc())) {
 
             if ($permission_data['USER_PERM_COUNT'] > 0) {
 
@@ -498,11 +498,11 @@ abstract class session
         
         if (!($uid = user_logon_token($user_logon, $user_token))) return false;
 
-        $user_logon = db_escape_string($user_logon);
+        $user_logon = session::$db->escape($user_logon);
 
-        $user_token = db_escape_string($user_token);
+        $user_token = session::$db->escape($user_token);
 
-        $user_agent = db_escape_string(session::get_user_agent());
+        $user_agent = session::$db->escape(session::get_user_agent());
         
         $current_datetime = date(MYSQL_DATETIME, time());
         
@@ -512,11 +512,11 @@ abstract class session
         $sql.= "AND USER_TOKEN.EXPIRES > '$current_datetime' AND USER.UID = '$uid' ";
         $sql.= "GROUP BY USER.UID";
         
-        if (!($result = db_query($sql, session::$db))) return false;
+        if (!($result = session::$db->query($sql))) return false;
         
-        if (db_num_rows($result) == 0) return false;
+        if ($result->num_rows == 0) return false;
         
-        list($id) = db_fetch_array($result, DB_RESULT_NUM);
+        list($id) = $result->fetch_row();
         
         if (isset($id) && !is_null($id)) {
         

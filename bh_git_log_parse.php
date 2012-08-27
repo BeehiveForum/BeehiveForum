@@ -57,7 +57,7 @@ function get_git_log_data($date)
 
 function git_mysql_prepare_table($truncate_table = true)
 {
-    if (!$db_git_mysql_prepare_table = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "CREATE TABLE IF NOT EXISTS BEEHIVE_GIT_LOG (";
     $sql.= "  LOG_ID MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,";
@@ -66,12 +66,12 @@ function git_mysql_prepare_table($truncate_table = true)
     $sql.= "  COMMENTS TEXT NOT NULL";
     $sql.= ") ENGINE=MYISAM";
 
-    if (!db_query($sql, $db_git_mysql_prepare_table)) return false;
+    if (!$db->query($sql)) return false;
 
     if ($truncate_table == true) {
 
         $sql = "TRUNCATE TABLE BEEHIVE_GIT_LOG";
-        if (!db_query($sql, $db_git_mysql_prepare_table)) return false;
+        if (!$db->query($sql)) return false;
     }
 
     return true;
@@ -79,7 +79,7 @@ function git_mysql_prepare_table($truncate_table = true)
 
 function git_mysql_parse($git_log_temp_file)
 {
-    if (!$db_git_log_parse = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $git_log_xml_data = simplexml_load_file($git_log_temp_file, NULL, LIBXML_NOCDATA);
     
@@ -92,12 +92,12 @@ function git_mysql_parse($git_log_temp_file)
             $sql = sprintf(
                 "INSERT INTO BEEHIVE_GIT_LOG (DATE, AUTHOR, COMMENTS)
                  VALUES (DATE(FROM_UNIXTIME('%s')), '%s', '%s')", 
-                db_escape_string(strtotime((string)$git_log_xml->date)),
-                db_escape_string(trim((string)$git_log_xml->author)),
-                db_escape_string($git_log_message)
+                $db->escape(strtotime((string)$git_log_xml->date)),
+                $db->escape(trim((string)$git_log_xml->author)),
+                $db->escape($git_log_message)
             );
 
-            if (!$result = db_query($sql, $db_git_log_parse)) return false;
+            if (!$result = $db->query($sql)) return false;
         }
     }
 
@@ -106,14 +106,14 @@ function git_mysql_parse($git_log_temp_file)
 
 function git_mysql_output_log($log_filename = null)
 {
-    if (!$db_git_mysql_output_log = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT UNIX_TIMESTAMP(DATE) AS DATE, AUTHOR, COMMENTS ";
     $sql.= "FROM BEEHIVE_GIT_LOG GROUP BY DATE ORDER BY DATE DESC";
 
-    if (!$result = db_query($sql, $db_git_mysql_output_log)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) {
+    if ($result->num_rows == 0) {
 
         echo "Table BEEHIVE_GIT_LOG is empty. No Changelog generated.\r\n";
         exit;
@@ -129,7 +129,7 @@ function git_mysql_output_log($log_filename = null)
         gmdate('D, d M Y H:i:s')
     );
     
-    while (($git_log_entry_array = db_fetch_array($result, DB_RESULT_ASSOC))) {
+    while (($git_log_entry_array = $result->fetch_assoc())) {
         
         if (preg_match_all('/^((Fixed|Changed|Added):)\s*(.+)/im', $git_log_entry_array['COMMENTS'], $git_log_entry_matches_array, PREG_SET_ORDER) > 0) {
             

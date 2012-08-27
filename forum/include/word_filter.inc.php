@@ -36,7 +36,7 @@ require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 function word_filter_get($uid, &$word_filter_array)
 {
-    if (!$db_word_filter_get = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -51,11 +51,11 @@ function word_filter_get($uid, &$word_filter_array)
 
     if ($uid <> 0) $sql.= "LIMIT 0, 20";
 
-    if (!$result = db_query($sql, $db_word_filter_get)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    while (($word_filter_data = db_fetch_array($result))) {
+    while (($word_filter_data = $result->fetch_assoc())) {
         $word_filter_array[] = $word_filter_data;
     }
 
@@ -66,7 +66,7 @@ function word_filter_get_from_session()
 {
     $word_filter_array = array();
 
-    if (session::get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_setting('force_word_filter', 'Y', false)) {
+    if (session::get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_setting('force_word_filter', 'Y')) {
         word_filter_get(0, $word_filter_array);
     }
 
@@ -89,7 +89,7 @@ function word_filter_get_by_uid($uid)
 
         $word_filter_array[$uid] = array();
         
-        if ((isset($user_prefs['USE_ADMIN_FILTER']) && $user_prefs['USE_ADMIN_FILTER'] == 'Y') || forum_get_setting('force_word_filter', 'Y', false)) {
+        if ((isset($user_prefs['USE_ADMIN_FILTER']) && $user_prefs['USE_ADMIN_FILTER'] == 'Y') || forum_get_setting('force_word_filter', 'Y')) {
             word_filter_get(0, $word_filter_array[$uid]);
         }
 

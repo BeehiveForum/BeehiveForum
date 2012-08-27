@@ -46,7 +46,7 @@ require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 function poll_create($tid, $poll_question_array, $poll_closes, $poll_change_vote, $poll_type, $poll_show_results, $poll_vote_type, $poll_option_type, $poll_allow_guests)
 {
-    if (!$db_poll_create = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_array($poll_question_array)) return false;
 
@@ -95,7 +95,7 @@ function poll_create($tid, $poll_question_array, $poll_closes, $poll_change_vote
         $sql.= "'$poll_show_results', '$poll_vote_type', '$poll_option_type', '$poll_allow_guests')";
     }
 
-    if (!db_query($sql, $db_poll_create)) return false;
+    if (!$db->query($sql)) return false;
 
     foreach ($poll_question_array as $poll_question) {
 
@@ -103,23 +103,23 @@ function poll_create($tid, $poll_question_array, $poll_closes, $poll_change_vote
 
         $allow_multi = (isset($poll_question['ALLOW_MULTI']) && ($poll_question['ALLOW_MULTI'] == 'Y')) ? 'Y' : 'N';
 
-        $poll_question = db_escape_string($poll_question['QUESTION']);
+        $poll_question = $db->escape($poll_question['QUESTION']);
 
         $sql = "INSERT INTO `{$table_prefix}POLL_QUESTIONS` (TID, QUESTION, ALLOW_MULTI) ";
         $sql.= "VALUES ('$tid', '$poll_question', '$allow_multi')";
 
-        if (!db_query($sql, $db_poll_create)) return false;
+        if (!$db->query($sql)) return false;
 
-        if (!$poll_question_id = db_insert_id($db_poll_create)) return false;
+        if (!$poll_question_id = $db->insert_id) return false;
 
         foreach ($poll_options_array as $poll_option) {
 
-            $poll_option = db_escape_string(trim($poll_option['OPTION_NAME']));
+            $poll_option = $db->escape(trim($poll_option['OPTION_NAME']));
 
             $sql = "INSERT INTO `{$table_prefix}POLL_VOTES` (TID, QUESTION_ID, OPTION_NAME) ";
             $sql.= "VALUES ('$tid', '$poll_question_id', '$poll_option')";
 
-            if (!db_query($sql, $db_poll_create)) return false;
+            if (!$db->query($sql)) return false;
         }
     }
 
@@ -128,7 +128,7 @@ function poll_create($tid, $poll_question_array, $poll_closes, $poll_change_vote
 
 function poll_edit($tid, $poll_question_array, $poll_closes, $poll_change_vote, $poll_type, $poll_show_results, $poll_vote_type, $poll_option_type, $poll_allow_guests, $poll_delete_votes)
 {
-    if (!$db_poll_edit = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_array($poll_question_array)) return false;
 
@@ -171,7 +171,7 @@ function poll_edit($tid, $poll_question_array, $poll_closes, $poll_change_vote, 
         $sql.= "OPTIONTYPE = '$poll_option_type', ALLOWGUESTS = '$poll_allow_guests', ";
         $sql.= "CLOSES = CAST('$poll_closes_datetime' AS DATETIME) WHERE TID = '$tid'";
 
-        if (!db_query($sql, $db_poll_edit)) return false;
+        if (!$db->query($sql)) return false;
 
     } else {
 
@@ -181,22 +181,22 @@ function poll_edit($tid, $poll_question_array, $poll_closes, $poll_change_vote, 
         $sql.= "OPTIONTYPE = '$poll_option_type', ALLOWGUESTS = '$poll_allow_guests' ";
         $sql.= "WHERE TID = '$tid'";
 
-        if (!db_query($sql, $db_poll_edit)) return false;
+        if (!$db->query($sql)) return false;
     }
 
     if ($poll_delete_votes) {
 
         $sql = "DELETE QUICK FROM `{$table_prefix}USER_POLL_VOTES` WHERE TID = '$tid'";
 
-        if (!db_query($sql, $db_poll_edit)) return false;
+        if (!$db->query($sql)) return false;
 
         $sql = "DELETE QUICK FROM `{$table_prefix}POLL_QUESTIONS` WHERE TID = '$tid'";
 
-        if (!db_query($sql, $db_poll_edit)) return false;
+        if (!$db->query($sql)) return false;
 
         $sql = "DELETE QUICK FROM `{$table_prefix}POLL_VOTES` WHERE TID = '$tid'";
 
-        if (!db_query($sql, $db_poll_edit)) return false;
+        if (!$db->query($sql)) return false;
 
         foreach ($poll_question_array as $poll_question) {
 
@@ -204,23 +204,23 @@ function poll_edit($tid, $poll_question_array, $poll_closes, $poll_change_vote, 
 
             $allow_multi = (isset($poll_question['ALLOW_MULTI']) && ($poll_question['ALLOW_MULTI'] == 'Y')) ? 'Y' : 'N';
 
-            $poll_question = db_escape_string($poll_question['QUESTION']);
+            $poll_question = $db->escape($poll_question['QUESTION']);
 
             $sql = "INSERT INTO `{$table_prefix}POLL_QUESTIONS` (TID, QUESTION, ALLOW_MULTI) ";
             $sql.= "VALUES ('$tid', '$poll_question', '$allow_multi')";
 
-            if (!db_query($sql, $db_poll_edit)) return false;
+            if (!$db->query($sql)) return false;
 
-            if (!$poll_question_id = db_insert_id($db_poll_edit)) return false;
+            if (!$poll_question_id = $db->insert_id) return false;
 
             foreach ($poll_options_array as $poll_option) {
 
-                $poll_option = db_escape_string(trim($poll_option['OPTION_NAME']));
+                $poll_option = $db->escape(trim($poll_option['OPTION_NAME']));
 
                 $sql = "INSERT INTO `{$table_prefix}POLL_VOTES` (TID, QUESTION_ID, OPTION_NAME) ";
                 $sql.= "VALUES ('$tid', '$poll_question_id', '$poll_option')";
 
-                if (!db_query($sql, $db_poll_edit)) return false;
+                if (!$db->query($sql)) return false;
             }
         }
     }
@@ -239,7 +239,7 @@ function poll_edit_check_questions($tid, $poll_questions_array)
 
 function poll_get_random_users($limit)
 {
-    if (!$db_poll_get_random_votes = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($limit)) return false;
 
@@ -259,11 +259,11 @@ function poll_get_random_users($limit)
     $sql.= "OR VISITOR_LOG.LAST_LOGON > DATE_SUB(NOW(), INTERVAL 14 DAY) ";
     $sql.= "ORDER BY RAND() LIMIT $limit) AS RANDOM_USERS";
 
-    if (!$result = db_query($sql, $db_poll_get_random_votes)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $poll_get_random_votes = array();
 
-    while (($poll_random_vote_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
+    while (($poll_random_vote_data = $result->fetch_assoc())) {
 
         if (isset($poll_random_vote_data['PEER_NICKNAME'])) {
             if (!is_null($poll_random_vote_data['PEER_NICKNAME']) && strlen(trim($poll_random_vote_data['PEER_NICKNAME'])) > 0) {
@@ -281,7 +281,7 @@ function poll_get_random_users($limit)
 
 function poll_get($tid)
 {
-    if (!$db_poll_get = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -305,11 +305,11 @@ function poll_get($tid)
     $sql.= "ON (USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = POST.FROM_UID) ";
     $sql.= "WHERE POST.TID = '$tid' AND POST.PID = 1";
 
-    if (!$result = db_query($sql, $db_poll_get)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    $poll_data = db_fetch_array($result);
+    $poll_data = $result->fetch_assoc();
 
     if (!isset($poll_data['CLOSES'])) {
         $poll_data['CLOSES'] = 0;
@@ -359,7 +359,7 @@ function poll_get($tid)
 
 function poll_get_votes($tid, $include_votes = true)
 {
-    if (!$db_poll_get_votes = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -381,12 +381,12 @@ function poll_get_votes($tid, $include_votes = true)
     $sql.= "AS USER_POLL_VOTES ON (USER_POLL_VOTES.TID = POLL.TID AND USER_POLL_VOTES.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID ";
     $sql.= "AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) WHERE POLL.TID = '$tid'";
 
-    if (!$result = db_query($sql, $db_poll_get_votes)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $poll_votes_array = array();
     $poll_votes_sort = array();
 
-    while (($poll_votes_data = db_fetch_array($result))) {
+    while (($poll_votes_data = $result->fetch_assoc())) {
 
         if (!isset($poll_votes_array[$poll_votes_data['QUESTION_ID']])) {
 
@@ -451,7 +451,7 @@ function poll_get_votes($tid, $include_votes = true)
 
 function poll_get_total_votes($tid, &$total_votes, &$user_votes, &$guest_votes)
 {
-    if (!$db_poll_get_total_votes = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($tid)) return 0;
     if (!($table_prefix = get_table_prefix())) return 0;
@@ -460,25 +460,25 @@ function poll_get_total_votes($tid, &$total_votes, &$user_votes, &$guest_votes)
     $sql.= "FROM `{$table_prefix}USER_POLL_VOTES` ";
     $sql.= "WHERE TID = '$tid' AND UID > 0";
 
-    if (!$result = db_query($sql, $db_poll_get_total_votes)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($user_votes) = db_fetch_array($result, DB_RESULT_NUM);
+    list($user_votes) = $result->fetch_row();
 
     $sql = "SELECT COUNT(UID) AS GUEST_VOTES ";
     $sql.= "FROM `{$table_prefix}USER_POLL_VOTES` ";
     $sql.= "WHERE TID = '$tid' AND UID = 0";
 
-    if (!$result = db_query($sql, $db_poll_get_total_votes)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($guest_votes) = db_fetch_array($result, DB_RESULT_NUM);
+    list($guest_votes) = $result->fetch_row();
 
     $sql = "SELECT COUNT(DISTINCT UID, VOTED) AS TOTAL_VOTES ";
     $sql.= "FROM `{$table_prefix}USER_POLL_VOTES` ";
     $sql.= "WHERE TID = '$tid'";
 
-    if (!$result = db_query($sql, $db_poll_get_total_votes)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($total_votes) = db_fetch_array($result, DB_RESULT_NUM);
+    list($total_votes) = $result->fetch_row();
 
     return true;
 }
@@ -487,7 +487,7 @@ function poll_get_user_votes($tid)
 {
     if (!is_numeric($tid)) return false;
 
-    if (!$db_poll_get_user_votes = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
@@ -504,13 +504,13 @@ function poll_get_user_votes($tid)
     $sql.= "AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) WHERE POLL.TID = '$tid' AND USER_POLL_VOTES.UID = '$uid'  ";
     $sql.= "ORDER BY USER_POLL_VOTES.VOTED";
 
-    if (!$result = db_query($sql, $db_poll_get_user_votes)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
     $user_poll_votes_array = array();
 
-    while (($poll_data = db_fetch_array($result))) {
+    while (($poll_data = $result->fetch_assoc())) {
 
         if (!isset($user_poll_votes_array['VOTED'])) {
             $user_poll_votes_array['VOTED'] = $poll_data['VOTED'];
@@ -556,7 +556,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $poll_display.= "          ". form_input_hidden('tid', htmlentities_array($tid)). "\n";
     $poll_display.= "          <table width=\"560\">\n";
 
-    if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && (session::get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
+    if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && (session::get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y')))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
 
         foreach ($poll_results as $question_id => $poll_question) {
 
@@ -750,7 +750,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     $poll_display.= "            </tr>\n";
                 }
 
-            } else if (session::get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false))) {
+            } else if (session::get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y'))) {
 
                 $poll_display.= "            <tr>\n";
                 $poll_display.= "              <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', gettext("Vote")). "</td>\n";
@@ -1169,7 +1169,7 @@ function poll_dropdown_options_callback($option)
 
 function poll_check_tabular_votes($tid, $votes_array)
 {
-    if (!$db_poll_check_tabular_votes = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -1182,11 +1182,11 @@ function poll_check_tabular_votes($tid, $votes_array)
     $sql.= "POLL_QUESTIONS ON (POLL_QUESTIONS.TID = POLL.TID) WHERE POLL.TID = '$tid' ";
     $sql.= "GROUP BY POLL.TID";
 
-    if (!$result = db_query($sql, $db_poll_check_tabular_votes)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    if (!($poll_data = db_fetch_array($result))) return false;
+    if (!($poll_data = $result->fetch_assoc())) return false;
 
     if ($poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) return true;
 
@@ -1257,7 +1257,7 @@ function poll_get_option_html($question_number, $option_number)
 
 function poll_close($tid)
 {
-    if (!$db_poll_close = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -1265,11 +1265,11 @@ function poll_close($tid)
 
     $sql = "SELECT FROM_UID FROM `{$table_prefix}POST` WHERE TID = '$tid' AND PID = 1";
 
-    if (!$result = db_query($sql, $db_poll_close)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (($t_fid = thread_get_folder($tid, 1)) && (db_num_rows($result) > 0)) {
+    if (($t_fid = thread_get_folder($tid, 1)) && ($result->num_rows > 0)) {
 
-        $poll_data = db_fetch_array($result);
+        $poll_data = $result->fetch_assoc();
 
         if (session::get_value('UID') == $poll_data['FROM_UID'] || session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
@@ -1279,7 +1279,7 @@ function poll_close($tid)
             $sql.= "CLOSES = CAST('$closes_datetime' AS DATETIME) ";
             $sql.= "WHERE TID = '$tid'";
 
-            if (!db_query($sql, $db_poll_close)) return false;
+            if (!$db->query($sql)) return false;
         }
     }
 
@@ -1288,7 +1288,7 @@ function poll_close($tid)
 
 function poll_is_closed($tid)
 {
-    if (!$db_poll_is_closed = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -1296,11 +1296,11 @@ function poll_is_closed($tid)
 
     $sql = "SELECT CLOSES FROM `{$table_prefix}POLL` WHERE TID = '$tid'";
 
-    if (!$result = db_query($sql, $db_poll_is_closed)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    list($poll_closes) = db_fetch_array($result, DB_RESULT_NUM);
+    list($poll_closes) = $result->fetch_row();
     
     return ($poll_closes > 0) && ($poll_closes <= time());
 }
@@ -1312,7 +1312,7 @@ function poll_vote($tid, $vote_array)
     if (!is_numeric($tid)) return false;
     if (!is_array($vote_array)) return false;
 
-    if (!$db_poll_vote = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1322,7 +1322,7 @@ function poll_vote($tid, $vote_array)
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
-    if ((!poll_get_user_votes($tid)) || ($poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) || (!session::logged_in() && ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) {
+    if ((!poll_get_user_votes($tid)) || ($poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) || (!session::logged_in() && ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y')))) {
 
         foreach ($vote_array as $question_id => $option_data) {
 
@@ -1339,7 +1339,7 @@ function poll_vote($tid, $vote_array)
                     $sql = "INSERT INTO `{$table_prefix}USER_POLL_VOTES` (TID, UID, QUESTION_ID, OPTION_ID, VOTED) ";
                     $sql.= "VALUES ('$tid', '$uid', '$question_id', '$option_id', CAST('$current_datetime' AS DATETIME))";
 
-                    if (!db_query($sql, $db_poll_vote)) return false;
+                    if (!$db->query($sql)) return false;
                 }
 
             } else if (is_numeric($option_data)) {
@@ -1349,7 +1349,7 @@ function poll_vote($tid, $vote_array)
                 $sql = "INSERT INTO `{$table_prefix}USER_POLL_VOTES` (TID, UID, QUESTION_ID, OPTION_ID, VOTED) ";
                 $sql.= "VALUES ('$tid', '$uid', '$question_id', '$option_data', CAST('$current_datetime' AS DATETIME))";
 
-                if (!db_query($sql, $db_poll_vote)) return false;
+                if (!$db->query($sql)) return false;
             }
         }
     }
@@ -1359,7 +1359,7 @@ function poll_vote($tid, $vote_array)
 
 function poll_delete_vote($tid)
 {
-    if (!$db_poll_delete_vote = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -1370,14 +1370,14 @@ function poll_delete_vote($tid)
     $sql = "DELETE QUICK FROM `{$table_prefix}USER_POLL_VOTES` ";
     $sql.= "WHERE TID = '$tid' AND UID = '$uid'";
 
-    if (!db_query($sql, $db_poll_delete_vote)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function thread_is_poll($tid)
 {
-    if (!$db_thread_is_poll = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -1385,9 +1385,9 @@ function thread_is_poll($tid)
 
     $sql = "SELECT TID FROM `{$table_prefix}POLL` WHERE TID = '$tid'";
 
-    if (!$result = db_query($sql, $db_thread_is_poll)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    return (db_num_rows($result) > 0);
+    return ($result->num_rows > 0);
 }
 
 ?>

@@ -82,42 +82,6 @@ $error_report_email_addr_from = 'no-reply@beehiveforum.co.uk';
 //
 // ---------------------------------------------------------------------
 
-// Cookie Domain -------------------------------------------------------
-
-$cookie_domain = "";
-
-// Specifies the domain name and path that the cookies set by
-// Beehive should use.
-//
-// WARNING: DO NOT CHANGE THIS OPTION IF YOU DO NOT UNDERSTAND WHAT
-//          IT DOES. SETTING THIS OPTION TO AN INVALID OR INCORRECT
-//          VALUE CAN MAKE YOUR FORUM UNUSABLE. IF YOU ARE IN DOUBT
-//          LEAVE THIS SETTING AS IS.
-//
-// This option is useful for situations where there is more than one
-// URI for your forum, for example where your forum is accessible
-// from all of the following addresses:
-//
-// http://www.beehiveforum.co.uk/forum/
-// http://forum.beehiveforum.co.uk/
-// http://beehiveforum.co.uk/forum/
-//
-// Usually cookies set at one address will be unavailable at the
-// others which forces your users to login multiple times and keep
-// multiple cookies if they visit the different sub-domains.
-//
-// To prevent this and force Beehive to use only one set of cookies
-// and have them accessible from all addresses you would set the
-// $cookie_domain value as follows:
-//
-// $cookie_domain = "beehiveforum.co.uk/";
-//
-// As you may have noticed the string used is common to all of
-// addresses listed above and so any cookies set at any of the domains
-// will be useable at the others.
-
-// ---------------------------------------------------------------------
-
 // Frame top target ----------------------------------------------------
 
 $frame_top_target = "_top";

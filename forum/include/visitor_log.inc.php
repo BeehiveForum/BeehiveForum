@@ -40,7 +40,7 @@ require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 function visitor_log_get_recent()
 {
-    if (!$db_visitor_log_get_recent = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -91,13 +91,13 @@ function visitor_log_get_recent()
         $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT 10";
     }
 
-    if (!$result = db_query($sql, $db_visitor_log_get_recent)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
     $users_get_recent_array = array();
 
-    while (($visitor_array = db_fetch_array($result))) {
+    while (($visitor_array = $result->fetch_assoc())) {
 
         if ($visitor_array['UID'] == 0) {
 
@@ -126,7 +126,7 @@ function visitor_log_get_recent()
 
 function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdown_array)
 {
-    if (!$db_visitor_log_get_profile_items = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -155,11 +155,11 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
     $sql.= "WHERE PROFILE_SECTION.PSID IS NOT NULL ";
     $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_ITEM.POSITION";
 
-    if (!$result = db_query($sql, $db_visitor_log_get_profile_items)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    while (($profile_item = db_fetch_array($result))) {
+    while (($profile_item = $result->fetch_assoc())) {
 
         $profile_header_array[$profile_item['PIID']] = htmlentities_array($profile_item['ITEM_NAME']);
         $profile_dropdown_array[$profile_item['SECTION_NAME']]['subitems'][$profile_item['PIID']] = htmlentities_array($profile_item['ITEM_NAME']);
@@ -170,7 +170,7 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
 
 function visitor_log_browse_items($user_search, $profile_items_array, $page, $sort_by, $sort_dir, $hide_empty, $hide_guests)
 {
-    if (!$db_visitor_log_browse_items = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($page) || ($page < 1)) return false;
 
@@ -202,7 +202,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
     if (($uid = session::get_value('UID')) === false) return false;
     
     // Escape the UID just in case.
-    $uid = db_escape_string($uid);
+    $uid = $db->escape($uid);
 
     // Constant for the relationship
     $user_friend = USER_FRIEND;
@@ -290,7 +290,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
     // Filter by user name / search engine bot name
     if (($user_search !== false) && strlen(trim($user_search)) > 0) {
 
-        $user_search = db_escape_string(str_replace('%', '', $user_search));
+        $user_search = $db->escape(str_replace('%', '', $user_search));
 
         $user_search_sql = "(USER.LOGON LIKE '$user_search%' OR ";
         $user_search_sql.= "USER.NICKNAME LIKE '$user_search%')";
@@ -348,21 +348,21 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
     $sql = implode(",", $query_array_merge). "$from_sql $join_sql ";
     $sql.= "$where_sql $having_sql $order_sql $limit_sql";
     
-    if (!$result = db_query($sql, $db_visitor_log_browse_items)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_visitor_log_browse_items)) return false;
+    if (!$result_count = $db->query($sql)) return false;
 
-    list($user_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    list($user_count) = $result_count->fetch_row();
 
     // Check if we have any results.
-    if ((db_num_rows($result) == 0) && ($user_count > 0) && ($page > 1)) {
+    if (($result->num_rows == 0) && ($user_count > 0) && ($page > 1)) {
         return visitor_log_browse_items($user_search, $profile_items_array, $page - 1, $sort_by, $sort_dir, $hide_empty, $hide_guests);
     }
         
-    while (($user_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
+    while (($user_data = $result->fetch_assoc())) {
 
         if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
             if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
@@ -445,7 +445,7 @@ function visitor_log_prof_item_column($column)
 
 function visitor_log_clean_up()
 {
-    if (!$db_visitor_log_clean_up = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -457,7 +457,7 @@ function visitor_log_clean_up()
     $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";
     $sql.= "AND LAST_LOGON < CAST('$visitor_cutoff_datetime' AS DATETIME)";
 
-    if (!db_query($sql, $db_visitor_log_clean_up)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }

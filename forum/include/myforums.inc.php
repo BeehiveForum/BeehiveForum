@@ -40,7 +40,7 @@ require_once BH_INCLUDE_PATH. 'threads.inc.php';
 
 function get_forum_list($page = 1)
 {
-    if (!$db_get_forum_list = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($page)) return false;
 
@@ -55,19 +55,19 @@ function get_forum_list($page = 1)
     $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_DESC ON (FORUM_SETTINGS_DESC.FID = FORUMS.FID AND FORUM_SETTINGS_DESC.SNAME = 'forum_desc') ";
     $sql.= "WHERE FORUMS.ACCESS_LEVEL > -1 AND FORUMS.ACCESS_LEVEL < 3 ORDER BY FORUMS.FID LIMIT $offset, 10";
 
-    if (!$result = db_query($sql, $db_get_forum_list)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_get_forum_list)) return false;
+    if (!$result_count = $db->query($sql)) return false;
 
-    list($forums_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    list($forums_count) = $result_count->fetch_row();
 
-    if ((db_num_rows($result) == 0) && ($forums_count > 0) && ($page > 1)) {
+    if (($result->num_rows == 0) && ($forums_count > 0) && ($page > 1)) {
         return get_forum_list($page - 1);
     }        
 
-    while (($forum_data = db_fetch_array($result))) {
+    while (($forum_data = $result->fetch_assoc())) {
 
         if (!isset($forum_data['FORUM_NAME']) || strlen(trim($forum_data['FORUM_NAME'])) < 1) {
             $forum_data['FORUM_NAME'] = "A Beehive Forum";
@@ -79,9 +79,9 @@ function get_forum_list($page = 1)
 
         $sql = "SELECT COUNT(PID) AS POST_COUNT FROM `{$forum_data['PREFIX']}POST` POST ";
 
-        if (!$result_post_count = db_query($sql, $db_get_forum_list)) return false;
+        if (!$result_post_count = $db->query($sql)) return false;
 
-        $forum_post_data = db_fetch_array($result_post_count);
+        $forum_post_data = $result_post_count->fetch_assoc();
 
         if (!isset($forum_post_data['POST_COUNT']) || is_null($forum_post_data['POST_COUNT'])) {
             $forum_data['MESSAGES'] = 0;
@@ -100,7 +100,7 @@ function get_forum_list($page = 1)
 
 function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir = 'DESC')
 {
-    if (!$db_get_my_forums = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($view_type)) return false;
 
@@ -161,19 +161,19 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
         $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
     }
 
-    if (!$result = db_query($sql, $db_get_my_forums)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_get_my_forums)) return false;
+    if (!$result_count = $db->query($sql)) return false;
 
-    list($forums_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    list($forums_count) = $result_count->fetch_row();
 
-    if ((db_num_rows($result) == 0) && ($forums_count > 0) && ($page > 1)) {
+    if (($result->num_rows == 0) && ($forums_count > 0) && ($page > 1)) {
         return get_my_forums($view_type, $page - 1, $sort_by, $sort_dir);
     }        
 
-    while (($forum_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
+    while (($forum_data = $result->fetch_assoc())) {
 
         $forum_fid = $forum_data['FID'];
 
@@ -202,9 +202,9 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
             $sql.= "AND (USER_THREAD.INTEREST > -1 OR USER_THREAD.INTEREST IS NULL) ";
             $sql.= "AND (THREAD.MODIFIED > CAST('$unread_cutoff_datetime' AS DATETIME)) ";
 
-            if (!$result_unread_count = db_query($sql, $db_get_my_forums)) return false;
+            if (!$result_unread_count = $db->query($sql)) return false;
 
-            list($unread_messages) = db_fetch_array($result_unread_count, DB_RESULT_NUM);
+            list($unread_messages) = $result_unread_count->fetch_row();
 
             $forum_data['UNREAD_MESSAGES'] = $unread_messages;
 
@@ -219,9 +219,9 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
         $sql.= "WHERE THREAD.FID IN ($folders) AND (USER_FOLDER.INTEREST > -1 OR USER_FOLDER.INTEREST IS NULL) ";
         $sql.= "AND (USER_THREAD.INTEREST > -1 OR USER_THREAD.INTEREST IS NULL) ";
 
-        if (!$result_messages_count = db_query($sql, $db_get_my_forums)) return false;
+        if (!$result_messages_count = $db->query($sql)) return false;
 
-        list($num_messages) = db_fetch_array($result_messages_count, DB_RESULT_NUM);
+        list($num_messages) = $result_messages_count->fetch_row();
 
         $forum_data['NUM_MESSAGES'] = $num_messages;
 
@@ -231,9 +231,9 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
         $sql.= "ON (POST.TID = THREAD.TID) WHERE THREAD.FID IN ($folders) ";
         $sql.= "AND POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
 
-        if (!$result_unread_to_me = db_query($sql, $db_get_my_forums)) return false;
+        if (!$result_unread_to_me = $db->query($sql)) return false;
 
-        list($unread_to_me) = db_fetch_array($result_unread_to_me, DB_RESULT_NUM);
+        list($unread_to_me) = $result_unread_to_me->fetch_row();
 
         $forum_data['UNREAD_TO_ME'] = $unread_to_me;
 
@@ -254,7 +254,7 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
 
 function user_set_forum_interest($fid, $interest)
 {
-    if (!$db_user_set_forum_interest = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
@@ -268,23 +268,23 @@ function user_set_forum_interest($fid, $interest)
     $sql.= "VALUES ('$uid', '$fid', '$interest') ";
     $sql.= "ON DUPLICATE KEY UPDATE INTEREST = VALUES(INTEREST)";
 
-    if (!db_query($sql, $db_user_set_forum_interest)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function forums_any_favourites()
 {
-    if (!$db_forums_any_favourites = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
     $sql = "SELECT COUNT(FID) AS FAV_COUNT FROM USER_FORUM ";
     $sql.= "WHERE INTEREST = 1 AND UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_forums_any_favourites)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($fav_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($fav_count) = $result->fetch_row();
 
     return $fav_count > 0;
 }

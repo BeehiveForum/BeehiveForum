@@ -78,7 +78,7 @@ $sql.= "  PRIMARY KEY (WORD, UID), ";
 $sql.= "  KEY SOUND (SOUND)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -97,7 +97,7 @@ $sql.= "  KEY WEBTAG (WEBTAG), ";
 $sql.= "  KEY DEFAULT_FORUM (DEFAULT_FORUM)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -110,7 +110,7 @@ $sql.= "  SVALUE TEXT NOT NULL, ";
 $sql.= "  PRIMARY KEY (FID, SNAME) ";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -123,7 +123,7 @@ $sql.= "  GROUP_DESC VARCHAR(255) DEFAULT NULL,";
 $sql.= "  PRIMARY KEY  (GID)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -137,7 +137,7 @@ $sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY  (GID,FORUM,FID)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -150,7 +150,7 @@ $sql.= "  PRIMARY KEY  (GID,UID),";
 $sql.= "  KEY UID (UID)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -174,7 +174,7 @@ $sql.= "  KEY TO_UID (TO_UID), ";
 $sql.= "  FULLTEXT KEY SUBJECT (SUBJECT)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -187,7 +187,7 @@ $sql.= "  PRIMARY KEY (MID), ";
 $sql.= "  KEY AID (AID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -200,7 +200,7 @@ $sql.= "  PRIMARY KEY (MID), ";
 $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -213,7 +213,7 @@ $sql.= "  TITLE VARCHAR(32) NOT NULL,";
 $sql.= "  PRIMARY KEY (UID, FID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -231,7 +231,7 @@ $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  PRIMARY KEY (UID, MID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -250,7 +250,7 @@ $sql.= "  KEY UID (UID), ";
 $sql.= "  KEY HASH (HASH)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -266,7 +266,7 @@ $sql.= "  KEY AID (AID), ";
 $sql.= "  KEY TID (TID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -282,7 +282,7 @@ $sql.= "  KEY NAME (NAME), ";
 $sql.= "  KEY AGENT_MATCH (AGENT_MATCH)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -303,7 +303,7 @@ $sql.= "  RELEVANCE FLOAT UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (UID, FORUM, TID, PID)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -325,7 +325,7 @@ $sql.= "  KEY TIME (TIME,FID),";
 $sql.= "  KEY UID (UID,SID,TIME,FID)";
 $sql.= ") ENGINE=INNODB DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -340,7 +340,7 @@ $sql.= "  PRIMARY KEY (REQUEST_MD5), ";
 $sql.= "  KEY EXPIRES (EXPIRES) ";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -353,7 +353,7 @@ $sql.= "  DST_OFFSET DOUBLE DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (TZID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -375,7 +375,7 @@ $sql.= "  KEY LOGON (LOGON), ";
 $sql.= "  KEY NICKNAME (NICKNAME)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -388,7 +388,7 @@ $sql.= "  EXPIRES datetime NOT NULL,";
 $sql.= "  PRIMARY KEY (UID, TOKEN)";
 $sql.= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -403,7 +403,7 @@ $sql.= "  LAST_VISIT DATETIME DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (UID, FID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -419,7 +419,7 @@ $sql.= "  MODIFIED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  PRIMARY KEY (HID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -482,7 +482,7 @@ $sql.= "  KEY DOB (DOB),";
 $sql.= "  KEY DOB_DISPLAY (DOB_DISPLAY)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=utf8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -504,7 +504,7 @@ $sql.= "  KEY FORUM (FORUM),";
 $sql.= "  KEY LAST_LOGON (LAST_LOGON)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;

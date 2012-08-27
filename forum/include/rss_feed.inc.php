@@ -179,7 +179,7 @@ function rss_feed_parse_item($ivalues)
 
 function rss_feed_fetch()
 {
-    if (!$db_fetch_rss_feed = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -193,58 +193,58 @@ function rss_feed_fetch()
     $sql.= "HAVING CAST('$current_datetime' AS DATETIME) > NEXT_RUN ";
     $sql.= "LIMIT 0, 1";
 
-    if (!$result = db_query($sql, $db_fetch_rss_feed)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    $rss_feed = db_fetch_array($result, DB_RESULT_ASSOC);
+    $rss_feed = $result->fetch_assoc();
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}RSS_FEEDS` ";
     $sql.= "SET LAST_RUN = CAST('$current_datetime' AS DATETIME) ";
     $sql.= "WHERE RSSID = {$rss_feed['RSSID']}";
 
-    if (!$result = db_query($sql, $db_fetch_rss_feed)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_affected_rows($db_fetch_rss_feed) == 0) return false;
+    if ($db->affected_rows == 0) return false;
 
     return $rss_feed;
 }
 
 function rss_feed_thread_exist($rss_id, $link)
 {
-    if (!$db_rss_feed_thread_exist = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     if (!is_numeric($rss_id)) return false;
 
-    $link = db_escape_string($link);
+    $link = $db->escape($link);
 
     $sql = "SELECT COUNT(RSSID) AS RSS_THREAD_COUNT ";
     $sql.= "FROM `{$table_prefix}RSS_HISTORY` ";
     $sql.= "WHERE RSSID = '$rss_id' AND LINK = '$link'";
 
-    if (!$result = db_query($sql, $db_rss_feed_thread_exist)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($rss_thread_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($rss_thread_count) = $result->fetch_row();
 
     return ($rss_thread_count > 0);
 }
 
 function rss_feed_create_history($rss_id, $link)
 {
-    if (!$db_rss_feed_create_history = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     if (!is_numeric($rss_id)) return false;
 
-    $link = db_escape_string($link);
+    $link = $db->escape($link);
 
     $sql = "INSERT IGNORE INTO `{$table_prefix}RSS_HISTORY` (RSSID, LINK) ";
     $sql.= "VALUES ($rss_id, '$link')";
 
-    if (!db_query($sql, $db_rss_feed_create_history)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
@@ -317,7 +317,7 @@ function rss_feed_check_feeds()
 
 function rss_feed_get_feeds($page = 1)
 {
-    if (!$db_rss_feed_get_feeds = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
@@ -339,19 +339,19 @@ function rss_feed_get_feeds($page = 1)
     $sql.= "AND USER_PEER.UID = '$uid') ";
     $sql.= "LIMIT $offset, 10";
 
-    if (!$result = db_query($sql, $db_rss_feed_get_feeds)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_rss_feed_get_feeds)) return false;
+    if (!$result_count = $db->query($sql)) return false;
 
-    list($rss_feed_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    list($rss_feed_count) = $result_count->fetch_row();
 
-    if ((db_num_rows($result) == 0) && ($rss_feed_count > 0) && ($page > 1)) {
+    if (($result->num_rows == 0) && ($rss_feed_count > 0) && ($page > 1)) {
         return rss_feed_get_feeds($page - 1);
     }
 
-    while (($rss_feed_data = db_fetch_array($result))) {
+    while (($rss_feed_data = $result->fetch_assoc())) {
 
         if (isset($rss_feed_data['LOGON']) && isset($rss_feed_data['PEER_NICKNAME'])) {
             if (!is_null($rss_feed_data['PEER_NICKNAME']) && strlen($rss_feed_data['PEER_NICKNAME']) > 0) {
@@ -373,16 +373,16 @@ function rss_feed_get_feeds($page = 1)
 
 function rss_feed_add($name, $uid, $fid, $url, $prefix, $frequency, $max_item_count)
 {
-    if (!$db_rss_feed_add = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($uid)) return false;
     if (!is_numeric($fid)) return false;
     if (!is_numeric($frequency)) return false;
     if (!is_numeric($max_item_count)) return false;
 
-    $name = db_escape_string($name);
-    $url = db_escape_string($url);
-    $prefix = db_escape_string($prefix);
+    $name = $db->escape($name);
+    $url = $db->escape($url);
+    $prefix = $db->escape($prefix);
 
     $last_run_datetime = date(MYSQL_DATETIME, mktime(0, 0, 0, 6, 27, 2002));
 
@@ -391,14 +391,14 @@ function rss_feed_add($name, $uid, $fid, $url, $prefix, $frequency, $max_item_co
     $sql = "INSERT INTO `{$table_prefix}RSS_FEEDS` (NAME, UID, FID, URL, PREFIX, FREQUENCY, LAST_RUN, MAX_ITEM_COUNT) ";
     $sql.= "VALUES ('$name', $uid, $fid, '$url', '$prefix', $frequency, CAST('$last_run_datetime' AS DATETIME), $max_item_count)";
 
-    if (!db_query($sql, $db_rss_feed_add)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency, $max_item_count)
 {
-    if (!$db_rss_feed_update = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($rssid)) return false;
     if (!is_numeric($uid)) return false;
@@ -406,9 +406,9 @@ function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency, $
     if (!is_numeric($frequency)) return false;
     if (!is_numeric($max_item_count)) return false;
 
-    $name = db_escape_string($name);
-    $url = db_escape_string($url);
-    $prefix = db_escape_string($prefix);
+    $name = $db->escape($name);
+    $url = $db->escape($url);
+    $prefix = $db->escape($prefix);
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -417,14 +417,14 @@ function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency, $
     $sql.= "FREQUENCY = '$frequency', MAX_ITEM_COUNT = '$max_item_count' ";
     $sql.= "WHERE RSSID = '$rssid'";
 
-    if (!db_query($sql, $db_rss_feed_update)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function rss_feed_get($feed_id)
 {
-    if (!$db_rss_feed_get_feeds = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($feed_id)) return false;
 
@@ -442,11 +442,11 @@ function rss_feed_get($feed_id)
     $sql.= "AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE RSS_FEEDS.RSSID = '$feed_id'";
 
-    if (!$result = db_query($sql, $db_rss_feed_get_feeds)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    $rss_feed_array = db_fetch_array($result);
+    $rss_feed_array = $result->fetch_assoc();
 
     if (isset($rss_feed_array['LOGON']) && isset($rss_feed_array['PEER_NICKNAME'])) {
         if (!is_null($rss_feed_array['PEER_NICKNAME']) && strlen($rss_feed_array['PEER_NICKNAME']) > 0) {
@@ -462,7 +462,7 @@ function rss_feed_get($feed_id)
 
 function rss_feed_remove($rssid)
 {
-    if (!$db_rss_feed_remove = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($rssid)) return false;
 
@@ -470,9 +470,9 @@ function rss_feed_remove($rssid)
 
     $sql = "DELETE QUICK FROM `{$table_prefix}RSS_FEEDS` WHERE RSSID = '$rssid'";
 
-    if (!db_query($sql, $db_rss_feed_remove)) return false;
+    if (!$db->query($sql)) return false;
 
-    return (db_affected_rows($db_rss_feed_remove) > 0);
+    return ($db->affected_rows > 0);
 }
 
 ?>

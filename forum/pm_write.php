@@ -847,7 +847,7 @@ echo "                        </td>\n";
 echo "                      </tr>\n";
 
 if (($user_emoticon_pack = session::get_value('EMOTICONS')) === false) {
-    $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
+    $user_emoticon_pack = forum_get_setting('default_emoticons', null, 'default');
 }
 
 if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {

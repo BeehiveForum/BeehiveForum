@@ -47,11 +47,6 @@ define('HUNDRED_EIGHTY_DAYS_IN_SECONDS', 15552000);
 // Other constants for unread cut off.
 define('UNREAD_MESSAGES_DISABLED', -1);
 
-// Constants for database stuff
-define('DB_RESULT_ASSOC', 1);
-define('DB_RESULT_NUM',   2);
-define('DB_RESULT_BOTH',  3);
-
 // Thread list constants
 define('ALL_DISCUSSIONS', 0);
 define('UNREAD_DISCUSSIONS', 1);

@@ -470,7 +470,7 @@ if ($valid && isset($_POST['post'])) {
 
     } else {
 
-        $error_msg_array[] = sprintf(gettext("You can only post once every %s seconds. Please try again later."), forum_get_setting('minimum_post_frequency', false, 0));
+        $error_msg_array[] = sprintf(gettext("You can only post once every %s seconds. Please try again later."), forum_get_setting('minimum_post_frequency', null, 0));
     }
 }
 

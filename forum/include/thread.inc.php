@@ -44,7 +44,7 @@ require_once BH_INCLUDE_PATH. 'threads.inc.php';
 
 function thread_get_title($tid)
 {
-    if (!$db_thread_get_title = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -52,18 +52,18 @@ function thread_get_title($tid)
 
     $sql = "SELECT TITLE FROM `{$table_prefix}THREAD` WHERE TID = '$tid'";
 
-    if (!$result = db_query($sql, $db_thread_get_title)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    list($thread_title) = db_fetch_array($result, DB_RESULT_NUM);
+    list($thread_title) = $result->fetch_row();
 
     return $thread_title;
 }
 
 function thread_get($tid, $inc_deleted = false, $inc_empty = false)
 {
-    if (!$db_thread_get = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $fidlist = folder_get_available();
 
@@ -100,11 +100,11 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false)
 
     if ($inc_empty === false)  $sql.= "AND THREAD.LENGTH > 0 ";
 
-    if (!$result = db_query($sql, $db_thread_get)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    $thread_data = db_fetch_array($result);
+    $thread_data = $result->fetch_assoc();
 
     if (!isset($thread_data['INTEREST'])) $thread_data['INTEREST'] = 0;
 
@@ -155,7 +155,7 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false)
 
 function thread_get_by_uid($tid)
 {
-    if (!$db_thread_get_author = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return "";
 
@@ -164,16 +164,16 @@ function thread_get_by_uid($tid)
     $sql = "SELECT BY_UID FROM `{$table_prefix}THREAD` ";
     $sql.= "WHERE TID = '$tid'";
 
-    if (!$result = db_query($sql, $db_thread_get_author)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($by_uid) = db_fetch_array($result, DB_RESULT_NUM);
+    list($by_uid) = $result->fetch_row();
 
     return $by_uid;
 }
 
 function thread_get_folder($tid)
 {
-    if (!$db_thread_get_folder = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -182,18 +182,18 @@ function thread_get_folder($tid)
     $sql = "SELECT FID FROM `{$table_prefix}THREAD` THREAD ";
     $sql.= "WHERE TID = '$tid'";
 
-    if (!$result = db_query($sql, $db_thread_get_folder)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    list($folder) = db_fetch_array($result, DB_RESULT_NUM);
+    list($folder) = $result->fetch_row();
 
     return $folder;
 }
 
 function thread_get_length($tid)
 {
-    if (!$db_thread_get_length = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -201,18 +201,18 @@ function thread_get_length($tid)
 
     $sql = "SELECT LENGTH FROM `{$table_prefix}THREAD` WHERE TID = '$tid'";
 
-    if (!$result = db_query($sql, $db_thread_get_length)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    $thread_data = db_fetch_array($result);
+    $thread_data = $result->fetch_assoc();
 
     return isset($thread_data['LENGTH']) ? $thread_data['LENGTH'] : 0;
 }
 
 function thread_get_tracking_data($tid)
 {
-    if (!$db_thread_get_tracking_data = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -224,13 +224,13 @@ function thread_get_tracking_data($tid)
     $sql.= "NEW_TID, TRACK_TYPE FROM `{$table_prefix}THREAD_TRACK` ";
     $sql.= "WHERE NEW_TID = '$tid') AS TRACK_TO";
 
-    if (!$result = db_query($sql, $db_thread_get_tracking_data)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
     $tracking_data_array = array();
 
-    while (($tracking_data = db_fetch_array($result))) {
+    while (($tracking_data = $result->fetch_assoc())) {
         $tracking_data_array[] = $tracking_data;
     }
 
@@ -239,7 +239,7 @@ function thread_get_tracking_data($tid)
 
 function thread_set_length($tid, $length)
 {
-    if (!$db_thread_get_length = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -251,14 +251,14 @@ function thread_set_length($tid, $length)
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET LENGTH = '$length', ";
     $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
 
-    if (!db_query($sql, $db_thread_get_length)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function thread_set_moved($old_tid, $new_tid)
 {
-    if (!$db_thread_set_moved = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -270,14 +270,14 @@ function thread_set_moved($old_tid, $new_tid)
     $sql = "INSERT INTO `{$table_prefix}THREAD_TRACK` (TID, NEW_TID, CREATED, TRACK_TYPE) ";
     $sql.= "VALUES ('$old_tid', '$new_tid', CAST('$current_datetime' AS DATETIME), 0)";
 
-    if (!db_query($sql, $db_thread_set_moved)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function thread_set_split($old_tid, $new_tid)
 {
-    if (!$db_thread_set_split = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -289,7 +289,7 @@ function thread_set_split($old_tid, $new_tid)
     $sql = "INSERT INTO `{$table_prefix}THREAD_TRACK` (TID, NEW_TID, CREATED, TRACK_TYPE) ";
     $sql.= "VALUES ('$old_tid', '$new_tid', CAST('$current_datetime' AS DATETIME), 1)";
 
-    if (!db_query($sql, $db_thread_set_split)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
@@ -298,7 +298,7 @@ function thread_get_interest($tid)
 {
     if (($uid = session::get_value('UID')) === false) return false;
 
-    if (!$db_thread_get_interest = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -307,18 +307,18 @@ function thread_get_interest($tid)
     $sql = "SELECT INTEREST FROM `{$table_prefix}USER_THREAD` ";
     $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
-    if (!$result = db_query($sql, $db_thread_get_interest)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    list($thread_interest) = db_fetch_array($result, DB_RESULT_NUM);
+    list($thread_interest) = $result->fetch_row();
 
     return $thread_interest;
 }
 
 function thread_set_interest($tid, $interest)
 {
-    if (!$db_thread_set_interest = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
@@ -340,7 +340,7 @@ function thread_set_interest($tid, $interest)
     $sql.= "VALUES ('$uid', '$tid', '$interest') ON DUPLICATE KEY ";
     $sql.= "UPDATE INTEREST = VALUES(INTEREST)";
 
-    if (!db_query($sql, $db_thread_set_interest)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
@@ -349,7 +349,7 @@ function thread_set_interest($tid, $interest)
 // change the interest of a thread unless it is 'normal'
 function thread_set_high_interest($tid)
 {
-    if (!$db_thread_set_high_interest = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
@@ -363,14 +363,14 @@ function thread_set_high_interest($tid)
     $sql.= "VALUES ('$uid', '$tid', '$thread_interested') ON DUPLICATE KEY ";
     $sql.= "UPDATE INTEREST = VALUES(INTEREST)";
 
-    if (!$result = db_query($sql, $db_thread_set_high_interest)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     return $result;
 }
 
 function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
 {
-    if (!$db_thread_set_sticky = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -395,14 +395,14 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
         $sql.= "STICKY_UNTIL = NULL WHERE TID = '$tid'";
     }
 
-    if (!db_query($sql, $db_thread_set_sticky)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function thread_set_closed($tid, $closed = true)
 {
-    if (!$db_thread_set_closed = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -424,14 +424,14 @@ function thread_set_closed($tid, $closed = true)
         $sql.= "WHERE TID = '$tid'";
     }
 
-    if (!db_query($sql, $db_thread_set_closed)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function thread_admin_lock($tid, $locked = true)
 {
-    if (!$db_thread_admin_lock = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -453,14 +453,14 @@ function thread_admin_lock($tid, $locked = true)
         $sql.= "WHERE TID = '$tid'";
     }
 
-    if (!db_query($sql, $db_thread_admin_lock)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function thread_change_folder($tid, $new_fid)
 {
-    if (!$db_thread_set_closed = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -473,20 +473,20 @@ function thread_change_folder($tid, $new_fid)
     $sql.= "SET FID = '$new_fid', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
     $sql.= "WHERE TID = '$tid'";
 
-    if (!db_query($sql, $db_thread_set_closed)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function thread_change_title($tid, $new_title)
 {
-    if (!$db_thread_change_title = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     if (!is_numeric($tid)) return false;
 
-    $new_title = db_escape_string($new_title);
+    $new_title = $db->escape($new_title);
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
@@ -494,14 +494,14 @@ function thread_change_title($tid, $new_title)
     $sql.= "SET TITLE = '$new_title', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
     $sql.= "WHERE TID = '$tid'";
 
-    if (!db_query($sql, $db_thread_change_title)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function thread_delete_by_user($tid, $uid)
 {
-    if (!$db_thread_delete_by_user = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -513,14 +513,14 @@ function thread_delete_by_user($tid, $uid)
     $sql.= "WHERE POST.FROM_UID = '$uid' AND POST.TID = '$tid'";
     $sql.= "ON DUPLICATE KEY UPDATE CONTENT = VALUES(CONTENT)";
 
-    if (!db_query($sql, $db_thread_delete_by_user)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function thread_delete($tid, $delete_type)
 {
-    if (!$db_thread_delete = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -533,19 +533,19 @@ function thread_delete($tid, $delete_type)
 
         $sql = "DELETE QUICK FROM `{$table_prefix}POST_CONTENT` WHERE TID = '$tid'";
 
-        if (!db_query($sql, $db_thread_delete)) return false;
+        if (!$db->query($sql)) return false;
 
         $sql = "DELETE QUICK FROM `{$table_prefix}POST` WHERE TID = '$tid'";
 
-        if (!db_query($sql, $db_thread_delete)) return false;
+        if (!$db->query($sql)) return false;
 
         $sql = "DELETE QUICK FROM `{$table_prefix}THREAD` WHERE TID = '$tid'";
 
-        if (!db_query($sql, $db_thread_delete)) return false;
+        if (!$db->query($sql)) return false;
 
         $sql = "DELETE QUICK FROM `{$table_prefix}USER_THREAD` WHERE TID = '$tid'";
 
-        if (!db_query($sql, $db_thread_delete)) return false;
+        if (!$db->query($sql)) return false;
 
     } else {
 
@@ -553,7 +553,7 @@ function thread_delete($tid, $delete_type)
         $sql.= "SET DELETED = 'Y', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
         $sql.= "WHERE TID = '$tid'";
 
-        if (!db_query($sql, $db_thread_delete)) return false;
+        if (!$db->query($sql)) return false;
     }
 
     return true;
@@ -561,7 +561,7 @@ function thread_delete($tid, $delete_type)
 
 function thread_undelete($tid)
 {
-    if (!$db_thread_undelete = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -574,14 +574,14 @@ function thread_undelete($tid)
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET DELETED = 'N', ";
     $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
 
-    if (!db_query($sql, $db_thread_undelete)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function thread_merge($tida, $tidb, $merge_type, &$error_str)
 {
-    if (!$db_thread_merge = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($tida)) return false;
     if (!is_numeric($tidb)) return false;
@@ -676,7 +676,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     }
 
     // Execute the query to copy the posts.
-    if (!db_query($sql, $db_thread_merge)) {
+    if (!$db->query($sql)) {
 
         // Unlock the threads if they weren't originally locked.
         thread_set_closed($tida, ($threada['CLOSED'] > 0));
@@ -693,7 +693,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     $sql.= "ON (POST_CONTENT.TID = POST.MOVED_TID AND POST_CONTENT.PID = MOVED_PID) ";
     $sql.= "WHERE POST.TID = '$new_tid'";
 
-    if (!db_query($sql, $db_thread_merge)) {
+    if (!$db->query($sql)) {
 
         // Unlock the threads if they weren't originally locked.
         thread_set_closed($tida, ($threada['CLOSED'] > 0));
@@ -708,7 +708,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     $sql.= "SELECT $new_tid, POST.PID FROM `{$table_prefix}POST` POST ";
     $sql.= "WHERE POST.TID = '$new_tid'";
     
-    if (!db_query($sql, $db_thread_merge)) {
+    if (!$db->query($sql)) {
 
         // Unlock the threads if they weren't originally locked.
         thread_set_closed($tida, ($threada['CLOSED'] > 0));
@@ -728,7 +728,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     $sql.= "WHERE TARGET_POST.TID = '$new_tid' ";
     $sql.= "ON DUPLICATE KEY UPDATE REPLY_TO_PID = VALUES(REPLY_TO_PID) ";
 
-    if (!db_query($sql, $db_thread_merge)) {
+    if (!$db->query($sql)) {
 
         // Unlock the threads if they weren't originally locked.
         thread_set_closed($tida, ($threada['CLOSED'] > 0));
@@ -751,7 +751,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     $sql.= "AND SOURCE_POST_ATTACHMENT_IDS.PID = SOURCE_POST.PID) ";
     $sql.= "WHERE TARGET_POST.TID = '$new_tid'";
 
-    if (!db_query($sql, $db_thread_merge)) {
+    if (!$db->query($sql)) {
 
         // Unlock the threads if they weren't originally locked.
         thread_set_closed($tida, ($threada['CLOSED'] > 0));
@@ -766,7 +766,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     $sql = "UPDATE `{$table_prefix}POST` SET MOVED_TID = NULL, ";
     $sql.= "MOVED_PID = NULL WHERE TID = '$new_tid'";
 
-    if (!db_query($sql, $db_thread_merge)) {
+    if (!$db->query($sql)) {
 
         // Unlock the threads if they weren't originally locked.
         thread_set_closed($tida, ($threada['CLOSED'] > 0));
@@ -852,7 +852,7 @@ function thread_merge_error($error_code, &$error_str)
 
 function thread_split($tid, $spid, $split_type, &$error_str)
 {
-    if (!$db_thread_split = db_connect()) return false;
+    if (!$db = db::get()) return false;
     
     if (!is_numeric($tid)) return false;
     if (!is_numeric($spid)) return false;
@@ -927,7 +927,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     $sql.= "PID FROM `{$table_prefix}POST` WHERE TID = $tid ";
     $sql.= "AND PID IN ($pid_list) ORDER BY CREATED";
 
-    if (!db_query($sql, $db_thread_split)) {
+    if (!$db->query($sql)) {
 
         // Unlock the original thread if it wasn't originally locked.
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
@@ -943,7 +943,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     $sql.= "ON (POST_CONTENT.TID = POST.MOVED_TID AND POST_CONTENT.PID = MOVED_PID) ";
     $sql.= "WHERE POST.TID = '$new_tid'";
 
-    if (!db_query($sql, $db_thread_split)) {
+    if (!$db->query($sql)) {
 
         // Unlock the original thread if it wasn't originally locked.
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
@@ -957,7 +957,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     $sql.= "SELECT $new_tid, POST.PID FROM `{$table_prefix}POST` POST ";
     $sql.= "WHERE POST.TID = '$new_tid'";
     
-    if (!db_query($sql, $db_thread_split)) {
+    if (!$db->query($sql)) {
 
         // Unlock the original thread if it wasn't originally locked.
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
@@ -976,7 +976,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     $sql.= "WHERE TARGET_POST.TID = '$new_tid' AND TARGET_POST.PID > 1 ";
     $sql.= "ON DUPLICATE KEY UPDATE REPLY_TO_PID = VALUES(REPLY_TO_PID) ";
 
-    if (!db_query($sql, $db_thread_split)) {
+    if (!$db->query($sql)) {
 
         // Unlock the original thread if it wasn't originally locked.
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
@@ -989,7 +989,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     $sql = "UPDATE `{$table_prefix}POST` POST SET REPLY_TO_PID = NULL ";
     $sql.= "WHERE POST.TID = '$new_tid' AND POST.PID = 1";
 
-    if (!db_query($sql, $db_thread_split)) {
+    if (!$db->query($sql)) {
 
         // Unlock the original thread if it wasn't originally locked.
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
@@ -1004,7 +1004,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     $sql.= "WHERE POST.TID = $new_tid ON DUPLICATE KEY UPDATE MOVED_TID = VALUES(MOVED_TID), ";
     $sql.= "MOVED_PID = VALUES(MOVED_PID)";
 
-    if (!db_query($sql, $db_thread_split)) {
+    if (!$db->query($sql)) {
 
         // Unlock the original thread if it wasn't originally locked.
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
@@ -1026,7 +1026,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     $sql.= "AND SOURCE_POST_ATTACHMENT_IDS.PID = SOURCE_POST.PID) ";
     $sql.= "WHERE TARGET_POST.TID = '$new_tid'";
 
-    if (!db_query($sql, $db_thread_split)) {
+    if (!$db->query($sql)) {
 
         // Unlock the original thread if it wasn't originally locked.
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
@@ -1040,7 +1040,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     $sql = "UPDATE `{$table_prefix}POST` SET MOVED_TID = NULL, ";
     $sql.= "MOVED_PID = NULL WHERE TID = '$new_tid'";
 
-    if (!db_query($sql, $db_thread_split)) {
+    if (!$db->query($sql)) {
 
         // Unlock the original thread if it wasn't originally locked.
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
@@ -1116,7 +1116,7 @@ function thread_split_get_replies($tid, $pid)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (!$db_thread_split_recursive = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT POST.PID, POST.REPLY_TO_PID ";
     $sql.= "FROM `{$table_prefix}POST` POST ";
@@ -1128,11 +1128,11 @@ function thread_split_get_replies($tid, $pid)
         $pid
     );
 
-    if (!$result = db_query($sql, $db_thread_split_recursive)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    while (($post_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
+    while (($post_data = $result->fetch_assoc())) {
 
         if (in_array($post_data['REPLY_TO_PID'], $pid_array)) {
             $pid_array[] = $post_data['PID'];
@@ -1150,7 +1150,7 @@ function thread_split_get_following($tid, $pid)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (!$db_thread_split_recursive = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT POST.PID, POST.REPLY_TO_PID ";
     $sql.= "FROM `{$table_prefix}POST` POST ";
@@ -1160,11 +1160,11 @@ function thread_split_get_following($tid, $pid)
 
     $pid_array = array();
 
-    if (!$result = db_query($sql, $db_thread_split_recursive)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    while (($post_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
+    while (($post_data = $result->fetch_assoc())) {
         $pid_array[] = $post_data['PID'];
     }
 
@@ -1177,19 +1177,19 @@ function thread_get_unmoved_posts($tid)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (!$db_thread_get_unmoved_posts = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT PID FROM `{$table_prefix}POST` ";
     $sql.= "WHERE TID = '$tid' AND MOVED_TID IS NULL ";
     $sql.= "AND MOVED_PID IS NULL AND PID > 1";
 
-    if (!$result = db_query($sql, $db_thread_get_unmoved_posts)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
     $thread_unmoved_posts_array = array();
 
-    while (($thread_data = db_fetch_array($result))) {
+    while (($thread_data = $result->fetch_assoc())) {
         $thread_unmoved_posts_array[$thread_data['PID']] = $thread_data['PID'];
     }
 
@@ -1202,21 +1202,21 @@ function thread_can_be_undeleted($tid)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (!$db_thread_can_be_undeleted = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT MAX(PID) AS LENGTH FROM ";
     $sql.= "`{$table_prefix}POST` WHERE TID = '$tid'";
 
-    if (!$result = db_query($sql, $db_thread_can_be_undeleted)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($length) = db_fetch_array($result, DB_RESULT_NUM);
+    list($length) = $result->fetch_row();
 
     return ($length > 0);
 }
 
 function thread_search($thread_search, $selected_array = array())
 {
-    if (!$db_thread_search = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1224,7 +1224,7 @@ function thread_search($thread_search, $selected_array = array())
 
     $fidlist = folder_get_available();
 
-    $thread_search = db_escape_string(str_replace("%", "", $thread_search));
+    $thread_search = $db->escape(str_replace("%", "", $thread_search));
 
     $selected_array = array_filter($selected_array, 'is_numeric');
 
@@ -1241,17 +1241,17 @@ function thread_search($thread_search, $selected_array = array())
 
     $sql.= "LIMIT 10";
 
-    if (!$result = db_query($sql, $db_thread_search)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_thread_search)) return false;
+    if (!$result_count = $db->query($sql)) return false;
 
-    list($results_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    list($results_count) = $result_count->fetch_row();
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    while (($thread_data = db_fetch_array($result))) {
+    while (($thread_data = $result->fetch_assoc())) {
         $results_array[$thread_data['TID']] = $thread_data;
     }
 
@@ -1281,15 +1281,15 @@ function thread_has_attachments(&$thread_data)
 
     if (!($forum_fid = get_forum_fid())) return false;
 
-    if (!$db_thread_has_attachments = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT PAI.TID, PAF.AID FROM POST_ATTACHMENT_IDS PAI ";
     $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
     $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.TID = '{$thread_data['TID']}'";
 
-    if (!$result = db_query($sql, $db_thread_has_attachments)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    while (($attachment_data = db_fetch_array($result))) {
+    while (($attachment_data = $result->fetch_assoc())) {
         $thread_data['AID'] = $attachment_data['AID'];
     }
 

@@ -46,7 +46,7 @@ function search_execute($search_arguments, &$error)
     if (($uid = session::get_value('UID')) === false) return false;
 
     // Database connection.
-    if (!$db_search_execute = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     // Ensure the date_from argument is set
     if (!isset($search_arguments['date_from']) || !is_numeric($search_arguments['date_from'])) {
@@ -109,7 +109,7 @@ function search_execute($search_arguments, &$error)
     // clean up their previous search if applicable.
     $sql = "DELETE QUICK FROM SEARCH_RESULTS WHERE UID = '$uid'";
 
-    if (!db_query($sql, $db_search_execute)) return false;
+    if (!$db->query($sql)) return false;
 
     // Execute search via Swiftsearch
     if (forum_get_setting('sphinx_search_enabled', 'Y')) {
@@ -129,7 +129,7 @@ function search_mysql_execute($search_arguments, &$error)
     if (!($forum_fid = get_forum_fid())) return false;
 
     // Database connection.
-    if (!$db_search_execute_mysql = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     // If the user has specified a folder within their viewable scope limit them
     // to that folder, otherwise limit them to their available folders.
@@ -194,7 +194,7 @@ function search_mysql_execute($search_arguments, &$error)
     /// Keyword based search.
     if (isset($search_arguments['search_string']) && strlen(trim($search_arguments['search_string'])) > 0) {
 
-        $search_string = db_escape_string($search_arguments['search_string']);
+        $search_string = $db->escape($search_arguments['search_string']);
 
         $from_sql = "FROM `{$table_prefix}POST_CONTENT` POST_CONTENT ";
 
@@ -291,10 +291,10 @@ function search_mysql_execute($search_arguments, &$error)
     }
 
     // Execute the query
-    if (!db_query($sql, $db_search_execute_mysql)) return false;
+    if (!$db->query($sql)) return false;
 
     // Check the number of results
-    if (db_affected_rows($db_search_execute_mysql) > 0) return true;
+    if ($db->affected_rows > 0) return true;
 
     // No results from search.
     $error = SEARCH_NO_MATCHES;
@@ -375,16 +375,16 @@ function search_strip_special_chars($keywords_array, $remove_non_matches = true)
 
 function search_get_word_lengths(&$min_length, &$max_length)
 {
-    if (!$db_search_get_word_lengths = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SHOW VARIABLES LIKE 'ft_%'";
 
-    if (!$result = db_query($sql, $db_search_get_word_lengths)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $min_length = 4;
     $max_length = 84;
 
-    while (($mysql_variable_data = db_fetch_array($result))) {
+    while (($mysql_variable_data = $result->fetch_assoc())) {
 
         if (isset($mysql_variable_data['Variable_name']) && isset($mysql_variable_data['Value'])) {
 
@@ -403,26 +403,26 @@ function search_get_word_lengths(&$min_length, &$max_length)
 
 function search_save_arguments($search_arguments)
 {
-    if (!$db_search_save_arguments = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
     if (isset($search_arguments['search_string'])) {
-        $keywords = db_escape_string($search_arguments['search_string']);
+        $keywords = $db->escape($search_arguments['search_string']);
     } else {
         $keywords = '';
     }
 
     if (isset($search_arguments['sort_by'])) {
-        $sort_by = db_escape_string($search_arguments['sort_by']);
+        $sort_by = $db->escape($search_arguments['sort_by']);
     } else {
         $sort_by = '';
     }
 
     if (isset($search_arguments['sort_dir'])) {
-        $sort_dir = db_escape_string($search_arguments['sort_dir']);
+        $sort_dir = $db->escape($search_arguments['sort_dir']);
     } else {
         $sort_dir = '';
     }
@@ -431,14 +431,14 @@ function search_save_arguments($search_arguments)
     $sql.= "SET LAST_SEARCH_KEYWORDS = '$keywords', LAST_SEARCH_SORT_BY = '$sort_by', ";
     $sql.= "LAST_SEARCH_SORT_DIR = '$sort_dir' WHERE UID = '$uid'";
 
-    if (!db_query($sql, $db_search_save_arguments)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function search_get_keywords($remove_non_matches = true)
 {
-    if (!$db_search_get_keywords = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -447,11 +447,11 @@ function search_get_keywords($remove_non_matches = true)
     $sql = "SELECT LAST_SEARCH_KEYWORDS FROM `{$table_prefix}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
     
-    if (!$result = db_query($sql, $db_search_get_keywords)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    list($search_keywords) = db_fetch_array($result, DB_RESULT_NUM);
+    list($search_keywords) = $result->fetch_row();
 
     $keywords_array = search_extract_keywords($search_keywords);
 
@@ -460,7 +460,7 @@ function search_get_keywords($remove_non_matches = true)
 
 function search_get_sort(&$sort_by, &$sort_dir)
 {
-    if (!$db_search_get_sort = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -470,11 +470,11 @@ function search_get_sort(&$sort_by, &$sort_dir)
     $sql.= "FROM `{$table_prefix}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_search_get_sort)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    list($sort_by, $sort_dir) = db_fetch_array($result, DB_RESULT_NUM);
+    list($sort_by, $sort_dir) = $result->fetch_row();
 
     return true;
 }
@@ -485,7 +485,7 @@ function search_fetch_results($page, $sort_by, $sort_dir)
 
     $offset = calculate_page_offset($page, 20);
 
-    if (!$db_search_fetch_results = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -543,21 +543,21 @@ function search_fetch_results($page, $sort_by, $sort_dir)
             break;
     }
 
-    if (!$result = db_query($sql, $db_search_fetch_results)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_search_fetch_results)) return false;
+    if (!$result_count = $db->query($sql)) return false;
 
-    list($result_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    list($result_count) = $result_count->fetch_row();
 
-    if ((db_num_rows($result) == 0) && ($result_count > 0) && ($page > 1)) {
+    if (($result->num_rows == 0) && ($result_count > 0) && ($page > 1)) {
         return search_fetch_results($page - 1, $sort_by, $sort_dir);
     }        
 
     $search_results_array = array();
 
-    while (($search_result = db_fetch_array($result))) {
+    while (($search_result = $result->fetch_assoc())) {
 
         $search_result['KEYWORDS'] = $search_keywords;
 
@@ -581,7 +581,7 @@ function search_fetch_results($page, $sort_by, $sort_dir)
 
 function search_get_first_result_msg()
 {
-    if (!$db_search_fetch_results = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
@@ -623,11 +623,11 @@ function search_get_first_result_msg()
             break;
     }
 
-    if (!$result = db_query($sql, $db_search_fetch_results)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    list($tid, $pid) = db_fetch_array($result, DB_RESULT_NUM);
+    list($tid, $pid) = $result->fetch_row();
 
     return "$tid.$pid";
 }
@@ -792,7 +792,7 @@ function search_date_range($from, $to, $return = SEARCH_DATE_RANGE_SQL)
 
 function folder_search_dropdown($selected_folder)
 {
-    if (!$db_folder_search_dropdown = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($selected_folder)) return false;
 
@@ -805,11 +805,11 @@ function folder_search_dropdown($selected_folder)
     $sql = "SELECT FID, TITLE FROM `{$table_prefix}FOLDER` ";
     $sql.= "ORDER BY FID ";
 
-    if (!$result = db_query($sql, $db_folder_search_dropdown)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    while (($folder_data = db_fetch_array($result))) {
+    while (($folder_data = $result->fetch_assoc())) {
 
         if (!session::logged_in()) {
 
@@ -838,13 +838,13 @@ function folder_search_dropdown($selected_folder)
 
 function check_search_frequency()
 {
-    if (!$db_check_search_frequency = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    $search_min_frequency = intval(forum_get_setting('search_min_frequency', false, 30));
+    $search_min_frequency = intval(forum_get_setting('search_min_frequency', null, 30));
 
     if ($search_min_frequency == 0) return true;
 
@@ -854,11 +854,11 @@ function check_search_frequency()
     $sql.= "UNIX_TIMESTAMP('$current_datetime') FROM `{$table_prefix}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_check_search_frequency)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if ($result->num_rows > 0) {
 
-        list($last_search_stamp, $current_timestamp) = db_fetch_array($result, DB_RESULT_NUM);
+        list($last_search_stamp, $current_timestamp) = $result->fetch_row();
 
         if (!is_numeric($last_search_stamp) || $last_search_stamp < $current_timestamp) {
 
@@ -866,7 +866,7 @@ function check_search_frequency()
             $sql.= "SET LAST_SEARCH = CAST('$current_datetime' AS DATETIME) ";
             $sql.= "WHERE UID = '$uid'";
 
-            if (!$result = db_query($sql, $db_check_search_frequency)) return false;
+            if (!$result = $db->query($sql)) return false;
 
             return true;
         }
@@ -876,7 +876,7 @@ function check_search_frequency()
         $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, LAST_SEARCH) ";
         $sql.= "VALUES ('$uid', CAST('$current_datetime' AS DATETIME))";
 
-        if (!$result = db_query($sql, $db_check_search_frequency)) return false;
+        if (!$result = $db->query($sql)) return false;
 
         return true;
     }
@@ -888,7 +888,7 @@ function search_output_opensearch_xml()
 {
     $webtag = get_webtag();
 
-    $title = forum_get_setting('forum_name', false, 'A Beehive Forum');
+    $title = forum_get_setting('forum_name', null, 'A Beehive Forum');
 
     $forum_opensearch_uri = html_get_forum_uri("search.php?webtag=$webtag&amp;search_string={searchTerms}");
 

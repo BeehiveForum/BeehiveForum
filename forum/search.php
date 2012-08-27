@@ -253,7 +253,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
             case SEARCH_FREQUENCY_TOO_GREAT:
 
-                $search_frequency = forum_get_setting('search_min_frequency', false, 0);
+                $search_frequency = forum_get_setting('search_min_frequency', null, 0);
                 $error_msg_array[] = sprintf(gettext("You can only search once every %s seconds. Please try again later."), $search_frequency);
                 break;
 
@@ -432,7 +432,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
         case SEARCH_FREQUENCY_TOO_GREAT:
 
-            $search_frequency = forum_get_setting('search_min_frequency', false, 0);
+            $search_frequency = forum_get_setting('search_min_frequency', null, 0);
             html_display_error_msg(sprintf(gettext("You can only search once every %s seconds. Please try again later."), $search_frequency));
             break;
     }

@@ -30,176 +30,94 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
+require_once BH_INCLUDE_PATH. 'server.inc.php';
 
-function db_get_connection_vars(&$db_server, &$db_port, &$db_username, &$db_password, &$db_database)
+class db extends mysqli
 {
-    $db_server   = (isset($GLOBALS['db_server']))   ? $GLOBALS['db_server']   : '';
-    $db_port     = (isset($GLOBALS['db_port']))     ? $GLOBALS['db_port']     : '3306';
-    $db_username = (isset($GLOBALS['db_username'])) ? $GLOBALS['db_username'] : '';
-    $db_password = (isset($GLOBALS['db_password'])) ? $GLOBALS['db_password'] : '';
-    $db_database = (isset($GLOBALS['db_database'])) ? $GLOBALS['db_database'] : '';
-}
+    protected static $connection;
 
-function db_connect()
-{
-    static $connection_id = false;
+    protected function __construct($host = null, $username = null, $password = null, $database = null, $port = null, $socket = null) 
+    { 
+        parent::__construct($host, $username, $password, $database, $port, $socket);
+    }
+    
+    public static function get($new_connection = false)
+    {
+        if (!db::$connection || $new_connection) {
+            
+            $config = server_get_config();
+            
+            $db = new self($config['db_server'], $config['db_username'], $config['db_password'], $config['db_database'], $config['db_port']);
+            
+            if (mysqli_connect_error()) {
+                throw new Exception(sprintf('Could not connect to database server. Error received: %s', mysqli_connect_error()), MYSQL_CONNECT_ERROR);
+            }
+            
+            if (!$db->set_charset('utf8')) {
+                throw new Exception('Could not change MySQL character-set. Check your MySQL user credentials');
+            }
 
-    db_get_connection_vars($db_server, $db_port, $db_username, $db_password, $db_database);
-
-    if (!$connection_id) {
-
-        if (!($connection_id = @mysqli_connect($db_server, $db_username, $db_password, $db_database, $db_port))) {
-            throw new Exception('Could not connect to database server. Check your MySQL user credentials', MYSQL_CONNECT_ERROR);
+            if (!$db->set_time_zone()) {
+                throw new Exception('Could not change MySQL time-zone. Check your MySQL user credentials');
+            }
+            
+            if (isset($config['mysql_big_selects']) && ($config['mysql_big_selects'] === true)) {
+                
+                if (!$db->enable_compat_mode()) {
+                    throw new Exception('Could not change MYSQL compatbility options. Check your MySQL user permissions.');
+                }
+            }            
+            
+            if ($new_connection) return $db;
+            
+            db::$connection = $db;
         }
 
-        if (!db_set_utf8_charset($connection_id)) {
-            throw new Exception('Could not enable UTF-8 mode. Check your MySQL user permissions.', db_errno());
-        }
-
-        if (!db_set_time_zone_utc($connection_id)) {
-            throw new Exception('Could not set MySQL timezone to UTC. Check your MySQL user permissions.', db_errno());
-        }
-
-        if (!db_enable_compat_mode($connection_id)) {
-            throw new Exception('Could not change MYSQL compatbility options. Check your MySQL user permissions.', db_errno());
-        }
+        return db::$connection;
     }
 
-    return $connection_id;
-}
-
-function db_set_utf8_charset($connection_id)
-{
-    $sql = "SET NAMES 'utf8'";
-    return db_query($sql, $connection_id);
-}
-
-function db_set_time_zone_utc($connection_id)
-{
-    $sql = "SET SESSION time_zone = '+0:00'";
-    return db_query($sql, $connection_id);
-}
-
-function db_enable_compat_mode($connection_id)
-{
-    $mysql_big_selects = isset($GLOBALS['mysql_big_selects']) ? $GLOBALS['mysql_big_selects'] : false;
-
-    if (isset($mysql_big_selects) && $mysql_big_selects === true) {
-
-        $sql = "SET SESSION SQL_BIG_SELECTS = 1";
-        if (!db_query($sql, $connection_id)) return false;
-
-        $sql = "SET SESSION SQL_MAX_JOIN_SIZE = DEFAULT";
-        if (!db_query($sql, $connection_id)) return false;
+    protected function set_time_zone()
+    {
+        return $this->query("SET SESSION time_zone = '+0:00'");
     }
 
-    return true;
-}
+    protected function enable_compat_mode()
+    {
+        if (!$this->query('SET SESSION SQL_BIG_SELECTS = 1')) return false;
+        if (!$this->query('SET SESSION SQL_MAX_JOIN_SIZE = DEFAULT')) return false;
 
-function db_query($sql, $connection_id)
-{
-    if (!($result = mysqli_query($connection_id, $sql))) {
-        throw new Exception(db_error($connection_id), db_errno($connection_id));
+        return true;
+    }
+    
+    public function escape($var)
+    {
+        return $this->real_escape_string($var);
     }
 
-    return $result;
-}
-
-function db_num_rows($result)
-{
-    if (($num_rows = mysqli_num_rows($result))) {
-        return $num_rows;
-    }
-
-    return 0;
-}
-
-function db_affected_rows($connection_id)
-{
-    if (($affected_rows = mysqli_affected_rows($connection_id))) {
-        return $affected_rows;
-    }
-
-    return false;
-}
-
-function db_fetch_array($result, $result_type = DB_RESULT_ASSOC)
-{
-    if (($result_array = mysqli_fetch_array($result, $result_type))) {
-        return $result_array;
-    }
-
-    return false;
-}
-
-function db_insert_id($connection_id)
-{
-    if (($insert_id = mysqli_insert_id($connection_id))) {
-        return $insert_id;
-    }
-
-    return false;
-}
-
-function db_error($connection_id = false)
-{
-    if ($connection_id !== false) {
-
-        if (($errstr = mysqli_error($connection_id))) {
-            return $errstr;
-        }
-
-    } else {
-
-        if (($errstr = mysqli_error())) {
-            return $errstr;
-        }
-    }
-
-    return "Unknown Error";
-}
-
-function db_errno($connection_id = false)
-{
-    if ($connection_id !== false) {
-
-        if (($errno = mysqli_errno($connection_id))) {
-            return $errno;
-        }
-
-    } else {
-
-        if (($errno = mysqli_errno())) {
-            return $errno;
-        }
-    }
-
-    return 0;
-}
-
-function db_fetch_mysql_version()
-{
-    static $mysql_version = false;
-
-    if (!$mysql_version) {
-
-        if (!($db_fetch_mysql_version = @db_connect())) return false;
-
+    public static function get_version()
+    {
+        $db = db::get();
+        
         $sql = "SELECT VERSION() AS version";
+        
+        if (!($result = $db->query($sql))) {
+            return false;
+        }
 
-        $result = db_query($sql, $db_fetch_mysql_version);
-
-        if (!$version_data = db_fetch_array($result)) {
+        if (!($version_data = $result->fetch_assoc())) {
 
             $sql = "SHOW VARIABLES LIKE 'version'";
-            $result = db_query($sql, $db_fetch_mysql_version);
 
-            $version_data = db_fetch_array($result);
+            if (!($result = $db->query($sql))) {
+                return false;
+            }
+
+            $version_data = $result->fetch_assoc();
         }
+        
+        $version_array = explode('.', $version_data['version']);
 
-        $version_array = explode(".", $version_data['version']);
-
-        if (!isset($version_array) || !isset($version_array[0])) {
+        if (!isset($version_array[0])) {
             $version_array[0] = 3;
         }
 
@@ -211,22 +129,13 @@ function db_fetch_mysql_version()
             $version_array[2] = 0;
         }
 
-        $mysql_version = sprintf('%d.%d.%d', $version_array[0], $version_array[1], intval($version_array[2]));
+        return sprintf(
+            '%d.%d.%d', 
+            $version_array[0], 
+            $version_array[1], 
+            intval($version_array[2])
+        );
     }
-
-    return $mysql_version;
-}
-
-function db_escape_string($str)
-{
-    $db_escape_string = db_connect();
-
-    return mysqli_real_escape_string($db_escape_string, $str);
-}
-
-function db_ping($connection_id)
-{
-    return mysqli_ping($connection_id);
 }
 
 ?>

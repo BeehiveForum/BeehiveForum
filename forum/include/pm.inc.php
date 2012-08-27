@@ -47,14 +47,14 @@ require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 function pm_enabled()
 {
-    if (!forum_get_setting('show_pms', 'Y')) {
+    if (!forum_get_setting('show_pms', 'Y', false, true)) {
         html_draw_error(gettext("Personal Messages have been disabled by the forum owner."));
     }
 }
 
 function pm_mark_as_read($mid)
 {
-    if (!$db_pm_mark_as_read = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
@@ -65,7 +65,7 @@ function pm_mark_as_read($mid)
     $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_read', NOTIFIED = 1 ";
     $sql.= "WHERE MID = '$mid' AND TO_UID = '$uid'";
 
-    if (!db_query($sql, $db_pm_mark_as_read)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
@@ -82,7 +82,7 @@ function pm_error_refuse()
 
 function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit = 10)
 {
-    if (!$db_pm_get_inbox = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sort_by_array  = array(
         'PM.SUBJECT', 
@@ -121,19 +121,19 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limi
     $sql.= "WHERE (PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
-    if (!$result = db_query($sql, $db_pm_get_inbox)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_pm_get_inbox)) return false;
+    if (!$result_count = $db->query($sql)) return false;
 
-    list($message_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    list($message_count) = $result_count->fetch_row();
 
-    if ((db_num_rows($result) == 0) && ($message_count > 0) && ($page > 1)) {
+    if (($result->num_rows == 0) && ($message_count > 0) && ($page > 1)) {
         return pm_get_inbox($sort_by, $sort_dir, $page - 1, $limit);
     }        
 
-    while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
+    while (($pm_data = $result->fetch_assoc())) {
 
         if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
             if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
@@ -166,7 +166,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limi
 
 function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit = 10)
 {
-    if (!$db_pm_get_outbox = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sort_by_array  = array(
         'PM.SUBJECT', 
@@ -205,19 +205,19 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
     $sql.= "WHERE (PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
-    if (!$result = db_query($sql, $db_pm_get_outbox)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_pm_get_outbox)) return false;
+    if (!$result_count = $db->query($sql)) return false;
 
-    list($message_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    list($message_count) = $result_count->fetch_row();
 
-    if ((db_num_rows($result) == 0) && ($message_count > 0) && ($page > 1)) {
+    if (($result->num_rows == 0) && ($message_count > 0) && ($page > 1)) {
         return pm_get_outbox($sort_by, $sort_dir, $page - 1, $limit);
     }
     
-    while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
+    while (($pm_data = $result->fetch_assoc())) {
 
         if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
             if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
@@ -250,7 +250,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
 
 function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit = 10)
 {
-    if (!$db_pm_get_sent = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sort_by_array  = array(
         'PM.SUBJECT', 
@@ -289,19 +289,19 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit
     $sql.= "WHERE (PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "AND SMID = 0 ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
-    if (!$result = db_query($sql, $db_pm_get_sent)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_pm_get_sent)) return false;
+    if (!$result_count = $db->query($sql)) return false;
 
-    list($message_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    list($message_count) = $result_count->fetch_row();
 
-    if ((db_num_rows($result) == 0) && ($message_count > 0) && ($page > 1)) {
+    if (($result->num_rows == 0) && ($message_count > 0) && ($page > 1)) {
         return pm_get_sent($sort_by, $sort_dir, $page - 1, $limit);
     }        
 
-    while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
+    while (($pm_data = $result->fetch_assoc())) {
 
         if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
             if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
@@ -334,7 +334,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit
 
 function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit = 10)
 {
-    if (!$db_pm_get_saved_items = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sort_by_array  = array(
         'PM.SUBJECT', 
@@ -375,19 +375,19 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1,
     $sql.= "((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
-    if (!$result = db_query($sql, $db_pm_get_saved_items)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_pm_get_saved_items)) return false;
+    if (!$result_count = $db->query($sql)) return false;
 
-    list($message_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    list($message_count) = $result_count->fetch_row();
 
-    if ((db_num_rows($result) == 0) && ($message_count > 0) && ($page > 1)) {
+    if (($result->num_rows == 0) && ($message_count > 0) && ($page > 1)) {
         return pm_get_saved_items($sort_by, $sort_dir, $page - 1, $limit);
     }        
 
-    while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
+    while (($pm_data = $result->fetch_assoc())) {
 
         if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
             if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
@@ -420,7 +420,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1,
 
 function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit = 10)
 {
-    if (!$db_pm_get_drafts = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sort_by_array  = array(
         'PM.SUBJECT', 
@@ -459,19 +459,19 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
     $sql.= "WHERE (PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
-    if (!$result = db_query($sql, $db_pm_get_drafts)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_pm_get_drafts)) return false;
+    if (!$result_count = $db->query($sql)) return false;
 
-    list($message_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    list($message_count) = $result_count->fetch_row();
 
-    if ((db_num_rows($result) == 0) && ($message_count > 0) && ($page > 1)) {
+    if (($result->num_rows == 0) && ($message_count > 0) && ($page > 1)) {
         return pm_get_drafts($sort_by, $sort_dir, $page - 1, $limit);
     }        
 
-    while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
+    while (($pm_data = $result->fetch_assoc())) {
 
         if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
             if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
@@ -504,13 +504,13 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
 
 function pm_search_execute($search_string, &$error)
 {
-    if (!$db_pm_search_execute = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
     $sql = "DELETE QUICK FROM PM_SEARCH_RESULTS WHERE UID = '$uid'";
 
-    if (!db_query($sql, $db_pm_search_execute)) return false;
+    if (!$db->query($sql)) return false;
 
     if (!check_search_frequency()) {
 
@@ -526,9 +526,9 @@ function pm_search_execute($search_string, &$error)
         return false;
     }
 
-    $search_string_checked = db_escape_string(implode(' ', $search_keywords_array['keywords_array']));
+    $search_string_checked = $db->escape(implode(' ', $search_keywords_array['keywords_array']));
 
-    $pm_max_user_messages = abs(forum_get_setting('pm_max_user_messages', false, 100));
+    $pm_max_user_messages = abs(forum_get_setting('pm_max_user_messages', null, 100));
     $limit = ($pm_max_user_messages > 1000) ? 1000 : $pm_max_user_messages;
 
     $pm_inbox_items  = PM_INBOX_ITEMS;
@@ -552,9 +552,9 @@ function pm_search_execute($search_string, &$error)
     $sql.= "OR (MATCH(PM.SUBJECT) AGAINST('$search_string_checked' IN BOOLEAN MODE))) ";
     $sql.= "ORDER BY CREATED LIMIT $limit";
 
-    if (!db_query($sql, $db_pm_search_execute)) return false;
+    if (!$db->query($sql)) return false;
 
-    if (db_affected_rows($db_pm_search_execute) > 0) return true;
+    if ($db->affected_rows > 0) return true;
 
     $error = SEARCH_NO_MATCHES;
 
@@ -563,7 +563,7 @@ function pm_search_execute($search_string, &$error)
 
 function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit = 10)
 {
-    if (!$db_pm_fetch_search_results = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sort_by_array  = array(
         'PM.SUBJECT', 
@@ -605,19 +605,19 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $pag
     $sql.= "WHERE PM_SEARCH_RESULTS.UID = '$uid' AND PM.MID IS NOT NULL ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
-    if (!$result = db_query($sql, $db_pm_fetch_search_results)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_pm_fetch_search_results)) return false;
+    if (!$result_count = $db->query($sql)) return false;
 
-    list($message_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    list($message_count) = $result_count->fetch_row();
 
-    if ((db_num_rows($result) == 0) && ($message_count > 0) && ($page > 1)) {
+    if (($result->num_rows == 0) && ($message_count > 0) && ($page > 1)) {
         return pm_fetch_search_results($sort_by, $sort_dir, $page - 1, $limit);
     }
 
-    while (($pm_data = db_fetch_array($result, DB_RESULT_ASSOC))) {
+    while (($pm_data = $result->fetch_assoc())) {
 
         if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
             if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
@@ -650,7 +650,7 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $pag
 
 function pm_get_folder_message_counts()
 {
-    if (!$db_pm_get_folder_message_counts = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
@@ -678,9 +678,9 @@ function pm_get_folder_message_counts()
     $sql.= "OR ((TYPE & $pm_draft_items > 0) AND FROM_UID = '$uid') ";
     $sql.= "GROUP BY TYPE";
 
-    if (!$result = db_query($sql, $db_pm_get_folder_message_counts)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    while (($pm_data_array = db_fetch_array($result))) {
+    while (($pm_data_array = $result->fetch_assoc())) {
 
         if ($pm_data_array['TYPE'] & PM_INBOX_ITEMS) {
 
@@ -709,9 +709,9 @@ function pm_get_folder_message_counts()
     $sql.= "ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
     $sql.= "WHERE UID = '$uid' AND PM.MID IS NOT NULL";
 
-    if (!$result = db_query($sql, $db_pm_get_folder_message_counts)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($search_results_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($search_results_count) = $result->fetch_row();
 
     $message_count_array[PM_SEARCH_RESULTS] = $search_results_count;
 
@@ -720,13 +720,13 @@ function pm_get_folder_message_counts()
 
 function pm_get_free_space($uid = false)
 {
-    if (!$db_pm_get_free_space = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if ($uid === false) {
         if (($uid = session::get_value('UID')) === false) return false;
     }
 
-    $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
+    $pm_max_user_messages = forum_get_setting('pm_max_user_messages', null, 100);
 
     $pm_inbox_items  = PM_INBOX_ITEMS;
     $pm_sent_items   = PM_SENT_ITEMS;
@@ -743,9 +743,9 @@ function pm_get_free_space($uid = false)
     $sql.= "OR ((TYPE & $pm_saved_in > 0) AND TO_UID = '$uid') ";
     $sql.= "OR ((TYPE & $pm_draft_items > 0) AND FROM_UID = '$uid')";
 
-    if (!$result = db_query($sql, $db_pm_get_free_space)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($pm_user_message_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($pm_user_message_count) = $result->fetch_row();
 
     if ($pm_user_message_count > $pm_max_user_messages) return 0;
 
@@ -754,7 +754,7 @@ function pm_get_free_space($uid = false)
 
 function pm_get_user($mid)
 {
-    if (!$db_pm_get_user = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($mid)) return false;
 
@@ -762,18 +762,18 @@ function pm_get_user($mid)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = PM.FROM_UID) ";
     $sql.= "WHERE PM.MID = '$mid' AND USER.UID IS NOT NULL";
 
-    if (!$result = db_query($sql, $db_pm_get_user)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    list($logon) = db_fetch_array($result, DB_RESULT_NUM);
+    list($logon) = $result->fetch_row();
 
     return $logon;
 }
 
 function pm_user_get_friends()
 {
-    if (!$db_pm_user_get_friends = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -787,15 +787,15 @@ function pm_user_get_friends()
     $sql.= "WHERE USER_PEER.UID = '$uid' AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
     $sql.= "LIMIT 0, 20";
 
-    if (!$result = db_query($sql, $db_pm_user_get_friends)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $user_get_peers_array = array();
 
     $user_get_peers_array[0] = "&lt;select recipient&gt;";
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    while (($user_data = db_fetch_array($result))) {
+    while (($user_data = $result->fetch_assoc())) {
 
         if (isset($user_data['LOGON'])) {
 
@@ -817,25 +817,25 @@ function pm_user_get_friends()
 
 function pm_get_subject($mid, $to_uid)
 {
-    if (!$db_pm_get_subject = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($mid)) return false;
     if (!is_numeric($to_uid)) return false;
 
     $sql = "SELECT SUBJECT FROM PM WHERE MID = '$mid' AND TO_UID = '$to_uid'";
 
-    if (!$result = db_query($sql, $db_pm_get_subject)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    list($pm_subject) = db_fetch_array($result, DB_RESULT_NUM);
+    list($pm_subject) = $result->fetch_row();
 
     return $pm_subject;
 }
 
 function pm_message_get($mid)
 {
-    if (!$db_pm_message_get = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
@@ -862,11 +862,11 @@ function pm_message_get($mid)
     $sql.= "OR ((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid')) ";
     $sql.= "AND PM.MID = '$mid' LIMIT 0, 1";
 
-    if (!$result = db_query($sql, $db_pm_message_get)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    if (!($pm_message_array = db_fetch_array($result))) return false;
+    if (!($pm_message_array = $result->fetch_assoc())) return false;
 
     if (!($folder = pm_message_get_folder($mid, $pm_message_array['TYPE']))) return false;
 
@@ -883,17 +883,17 @@ function pm_message_get($mid)
 
 function pm_get_content($mid)
 {
-    if (!$db_pm_get_content = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($mid)) return false;
 
     $sql = "SELECT CONTENT FROM PM_CONTENT WHERE MID = '$mid'";
 
-    if (!$result = db_query($sql, $db_pm_get_content)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    list($pm_content) = db_fetch_array($result, DB_RESULT_NUM);
+    list($pm_content) = $result->fetch_row();
 
     return $pm_content;
 }
@@ -1111,7 +1111,7 @@ function pm_display_html_export($pm_message_array, $folder)
 
 function pm_message_get_folder($mid, $type = 0)
 {
-    if (!$db_pm_message_get_folder = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($mid)) return false;
 
@@ -1148,9 +1148,9 @@ function pm_message_get_folder($mid, $type = 0)
     $sql.= "OR ((TYPE & $pm_saved_in > 0) AND TO_UID = '$uid') ";
     $sql.= "OR ((TYPE & $pm_draft_items > 0) AND FROM_UID = '$uid')) ";
 
-    if (!$result = db_query($sql, $db_pm_message_get_folder)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($pm_message_type) = db_fetch_array($result, DB_RESULT_NUM);
+    list($pm_message_type) = $result->fetch_row();
 
     if (in_array($pm_message_type, array_keys($pm_message_type_array))) {
         return $pm_message_type_array[$pm_message_type];
@@ -1164,25 +1164,25 @@ function pm_save_attachment_id($mid, $aid)
     if (!is_numeric($mid)) return false;
     if (!is_md5($aid)) return false;
 
-    if (!$db_pm_save_attachment_id = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT AID FROM PM_ATTACHMENT_IDS WHERE MID = '$mid'";
 
-    if (!$result = db_query($sql, $db_pm_save_attachment_id)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) < 1) {
+    if ($result->num_rows < 1) {
 
         $sql = "INSERT INTO PM_ATTACHMENT_IDS (MID, AID) ";
         $sql.= "VALUES ('$mid', '$aid')";
 
-        if (!$result = db_query($sql, $db_pm_save_attachment_id)) return false;
+        if (!$result = $db->query($sql)) return false;
 
     } else {
 
         $sql = "UPDATE LOW_PRIORITY PM_ATTACHMENT_IDS SET AID = '$aid' ";
         $sql.= "WHERE MID = '$mid'";
 
-        if (!$result = db_query($sql, $db_pm_save_attachment_id)) return false;
+        if (!$result = $db->query($sql)) return false;
     }
 
     return true;
@@ -1190,7 +1190,7 @@ function pm_save_attachment_id($mid, $aid)
 
 function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
 {
-    if (!$db_pm_send_message = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($to_uid)) return false;
     if (!is_numeric($from_uid)) return false;
@@ -1198,8 +1198,8 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
     if (!is_md5($aid)) return false;
 
     // Escape the subject and content for insertion into database.
-    $subject_escaped = db_escape_string($subject);
-    $content_escaped = db_escape_string($content);
+    $subject_escaped = $db->escape($subject);
+    $content_escaped = $db->escape($content);
 
     // PM_OUTBOX constant.
     $pm_outbox = PM_OUTBOX;
@@ -1211,15 +1211,15 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
     $sql.= "CREATED, NOTIFIED) VALUES ('$pm_outbox', '$to_uid', '$from_uid', ";
     $sql.= "'$subject_escaped', '', CAST('$current_datetime' AS DATETIME), 0)";
 
-    if (db_query($sql, $db_pm_send_message)) {
+    if ($db->query($sql)) {
 
-        $new_mid = db_insert_id($db_pm_send_message);
+        $new_mid = $db->insert_id;
 
         // Insert the PM Content into the database
         $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
         $sql.= "VALUES ('$new_mid', '$content_escaped')";
 
-        if (!db_query($sql, $db_pm_send_message)) return false;
+        if (!$db->query($sql)) return false;
 
         // Check to see if we should be adding a 'Sent Item'
         $user_prefs = user_get_prefs($from_uid);
@@ -1240,7 +1240,7 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
 
 function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content, $aid)
 {
-    if (!$db_pm_add_sent_item = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($sent_item_mid)) return false;
     if (!is_numeric($to_uid)) return false;
@@ -1249,8 +1249,8 @@ function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content
     if (!is_md5($aid)) return false;
 
     // Escape the subject and content for insertion into database.
-    $subject_escaped = db_escape_string($subject);
-    $content_escaped = db_escape_string($content);
+    $subject_escaped = $db->escape($subject);
+    $content_escaped = $db->escape($content);
 
     // PM_SENT constant.
     $pm_sent = PM_SENT;
@@ -1264,15 +1264,15 @@ function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content
     $sql.= "'$subject_escaped', '', CAST('$current_datetime' AS DATETIME), ";
     $sql.= "1, '$sent_item_mid')";
 
-    if (db_query($sql, $db_pm_add_sent_item)) {
+    if ($db->query($sql)) {
 
-        $new_mid = db_insert_id($db_pm_add_sent_item);
+        $new_mid = $db->insert_id;
 
         // Insert the PM Content into the database
         $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
         $sql.= "VALUES ('$new_mid', '$content_escaped')";
 
-        if (!db_query($sql, $db_pm_add_sent_item)) return false;
+        if (!$db->query($sql)) return false;
 
         // Save the attachment ID.
         pm_save_attachment_id($new_mid, $aid);
@@ -1285,15 +1285,15 @@ function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content
 
 function pm_save_message($subject, $content, $to_uid, $recipient_list)
 {
-    if (!$db_pm_save_message = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
     if (!is_numeric($to_uid)) return false;
 
-    $subject = db_escape_string($subject);
-    $recipient_list = db_escape_string($recipient_list);
-    $content = db_escape_string($content);
+    $subject = $db->escape($subject);
+    $recipient_list = $db->escape($recipient_list);
+    $content = $db->escape($content);
 
     $pm_saved_draft = PM_SAVED_DRAFT;
 
@@ -1306,15 +1306,15 @@ function pm_save_message($subject, $content, $to_uid, $recipient_list)
         $sql.= "CREATED, NOTIFIED) VALUES ('$pm_saved_draft', '$to_uid', '$uid', '$subject', ";
         $sql.= "'$recipient_list', CAST('$current_datetime' AS DATETIME), 0)";
 
-        if (db_query($sql, $db_pm_save_message)) {
+        if ($db->query($sql)) {
 
-            $new_mid = db_insert_id($db_pm_save_message);
+            $new_mid = $db->insert_id;
 
             // Insert the PM Content into the database
             $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
             $sql.= "VALUES ('$new_mid', '$content')";
 
-            if (!db_query($sql, $db_pm_save_message)) return false;
+            if (!$db->query($sql)) return false;
 
             return  $new_mid;
         }
@@ -1325,79 +1325,79 @@ function pm_save_message($subject, $content, $to_uid, $recipient_list)
 
 function pm_update_saved_message($mid, $subject, $content, $to_uid, $recipient_list)
 {
-    if (!$db_pm_edit_messages = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($mid)) return false;
     if (!is_numeric($to_uid)) return false;
 
-    $subject = db_escape_string($subject);
-    $content = db_escape_string($content);
+    $subject = $db->escape($subject);
+    $content = $db->escape($content);
 
-    $recipient_list = db_escape_string($recipient_list);
+    $recipient_list = $db->escape($recipient_list);
 
     // Update the subject text
     $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject', TO_UID = '$to_uid', ";
     $sql.= "RECIPIENTS = '$recipient_list' WHERE MID = '$mid'";
 
-    if (!db_query($sql, $db_pm_edit_messages)) return false;
+    if (!$db->query($sql)) return false;
 
     // Update the content
     $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content' WHERE MID = '$mid'";
-    if (!db_query($sql, $db_pm_edit_messages)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function pm_edit_message($mid, $subject, $content)
 {
-    if (!$db_pm_edit_messages = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($mid)) return false;
 
-    $subject_escaped = db_escape_string($subject);
-    $content_escaped = db_escape_string($content);
+    $subject_escaped = $db->escape($subject);
+    $content_escaped = $db->escape($content);
 
     // Update the subject text
     $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject_escaped' WHERE MID = '$mid'";
-    if (!db_query($sql, $db_pm_edit_messages)) return false;
+    if (!$db->query($sql)) return false;
 
     // Update the content
     $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content_escaped' WHERE MID = '$mid'";
-    if (!db_query($sql, $db_pm_edit_messages)) return false;
+    if (!$db->query($sql)) return false;
 
     return pm_update_sent_item($mid, $subject, $content);
 }
 
 function pm_update_sent_item($mid, $subject, $content)
 {
-    if (!$db_pm_edit_messages = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($mid)) return false;
 
-    $subject = db_escape_string($subject);
-    $content = db_escape_string($content);
+    $subject = $db->escape($subject);
+    $content = $db->escape($content);
 
     // Query the database for the sent item's MID
     $sql = "SELECT MID FROM PM WHERE SMID = '$mid'";
-    if (!$result = db_query($sql, $db_pm_edit_messages)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     // Fetch the SMID.
-    list($sent_item_mid) = db_fetch_array($result, DB_RESULT_NUM);
+    list($sent_item_mid) = $result->fetch_row();
 
     // Update the sent items subject text
     $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject' WHERE MID = '$sent_item_mid'";
-    if (!db_query($sql, $db_pm_edit_messages)) return false;
+    if (!$db->query($sql)) return false;
 
     // Update the sent item content
     $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content' WHERE MID = '$sent_item_mid'";
-    if (!db_query($sql, $db_pm_edit_messages)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function pm_delete_message($mid)
 {
-    if (!$db_delete_pm = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($mid)) return false;
 
@@ -1420,25 +1420,25 @@ function pm_delete_message($mid)
     $sql.= "((PM.TYPE & $pm_saved_out > 0) AND PM.FROM_UID = '$uid') OR ";
     $sql.= "((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') OR ";
     $sql.= "((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid')) ";
-    $sql.= "AND PM.MID = '$mid' GROUP BY PM.MID LIMIT 0, 1";
+    $sql.= "AND PM.MID = '$mid' GROUP BY PM.MID LIMIT 1";
 
-    if (!$result = db_query($sql, $db_delete_pm)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    $db_delete_pm_row = db_fetch_array($result);
+    $result_row = $result->fetch_assoc();
 
-    if ($db_delete_pm_row['TYPE'] == PM_SENT && isset($db_delete_pm_row['AID'])) {
-        attachments_delete_by_aid($db_delete_pm_row['AID']);
+    if ($result_row['TYPE'] == PM_SENT && isset($result_row['AID'])) {
+        attachments_delete_by_aid($result_row['AID']);
     }
 
     $sql = "DELETE QUICK FROM PM WHERE MID = '$mid'";
 
-    if (!$result = db_query($sql, $db_delete_pm)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $sql = "DELETE QUICK FROM PM_CONTENT WHERE MID = '$mid'";
 
-    if (!$result = db_query($sql, $db_delete_pm)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     return true;
 }
@@ -1460,7 +1460,7 @@ function pm_delete_messages($messages_array)
 
 function pm_archive_message($mid)
 {
-    if (!$db_pm_archive_message = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($mid)) return false;
 
@@ -1477,14 +1477,14 @@ function pm_archive_message($mid)
     $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_inbox_items > 0) ";
     $sql.= "AND TO_UID = '$uid'";
 
-    if (!db_query($sql, $db_pm_archive_message)) return false;
+    if (!$db->query($sql)) return false;
 
     // Archive any PM that are in the User's Sent Items
     $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_saved_out' ";
     $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_sent_items > 0) ";
     $sql.= "AND SMID = 0 AND FROM_UID = '$uid'";
 
-    if (!db_query($sql, $db_pm_archive_message)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
@@ -1506,7 +1506,7 @@ function pm_archive_messages($messages_array)
 
 function pm_get_new_messages($limit)
 {
-    if (!$db_pm_get_new_messages = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($limit)) return false;
 
@@ -1521,13 +1521,13 @@ function pm_get_new_messages($limit)
     $sql.= "AND TO_UID = '$uid' ORDER BY CREATED ASC ";
     $sql.= "LIMIT $limit";
 
-    if (!$result = db_query($sql, $db_pm_get_new_messages)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
     $pm_new_message_array = array();
 
-    while (($pm_data = db_fetch_array($result))) {
+    while (($pm_data = $result->fetch_assoc())) {
         $pm_new_message_array[$pm_data['MID']] = $pm_data;
     }
 
@@ -1542,7 +1542,7 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
     $pm_unread_count = 0;
 
     // Connect to the database.
-    if (!$db_pm_get_message_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     // Check the user UID.
     if (($uid = session::get_value('UID')) === false) return false;
@@ -1566,12 +1566,12 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
         $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_unread' WHERE MID in ($mid_list) ";
         $sql.= "AND TO_UID = '$uid'";
 
-        if (!$result = db_query($sql, $db_pm_get_message_count)) return false;
+        if (!$result = $db->query($sql)) return false;
 
         $sql = "UPDATE LOW_PRIORITY PM SET SMID = 0 WHERE SMID IN ($mid_list) ";
         $sql.= "AND TYPE = '$pm_sent_item' AND TO_UID = '$uid'";
 
-        if (!$result = db_query($sql, $db_pm_get_message_count)) return false;
+        if (!$result = $db->query($sql)) return false;
 
         // Number of new messages we've received for popup.
         $pm_new_count = sizeof($messages_array);
@@ -1581,17 +1581,17 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
     $sql = "SELECT COUNT(MID) FROM PM WHERE (TYPE & $pm_unread > 0) ";
     $sql.= "AND TO_UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_pm_get_message_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($pm_unread_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($pm_unread_count) = $result->fetch_row();
 
     // Check for any undelivered messages waiting for the user.
     $sql = "SELECT COUNT(MID) AS OUTBOX_COUNT FROM PM ";
     $sql.= "WHERE TYPE = '$pm_outbox' AND TO_UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_pm_get_message_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($pm_outbox_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($pm_outbox_count) = $result->fetch_row();
 
     return true;
 }
@@ -1659,7 +1659,7 @@ function pm_check_messages()
 
 function pm_get_unread_count()
 {
-    if (!$db_pm_get_unread_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
@@ -1672,16 +1672,16 @@ function pm_get_unread_count()
     $sql = "SELECT COUNT(MID) FROM PM WHERE (TYPE & $pm_unread > 0) ";
     $sql.= "AND TO_UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_pm_get_unread_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($pm_unread_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($pm_unread_count) = $result->fetch_row();
 
     return $pm_unread_count;
 }
 
 function pm_user_prune_folders($uid = false)
 {
-    if (!$db_pm_prune_folders = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if ($uid === false) {
         if (($uid = session::get_value('UID')) === false) return false;
@@ -1701,7 +1701,7 @@ function pm_user_prune_folders($uid = false)
         $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid')) ";
         $sql.= "AND CREATED < CAST('$pm_prune_length_datetime' AS DATETIME)";
 
-        if (!db_query($sql, $db_pm_prune_folders)) return false;
+        if (!$db->query($sql)) return false;
     }
 
     return true;
@@ -1709,9 +1709,9 @@ function pm_user_prune_folders($uid = false)
 
 function pm_system_prune_folders()
 {
-    if (!$db_pm_prune_folders = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
-    if (($pm_prune_length = intval(forum_get_setting('pm_auto_prune', false, 0))) > 0) {
+    if (($pm_prune_length = intval(forum_get_setting('pm_auto_prune', null, 0))) > 0) {
 
         $pm_read = PM_READ;
         $pm_sent_items = PM_SENT_ITEMS;
@@ -1722,7 +1722,7 @@ function pm_system_prune_folders()
         $sql = "DELETE LOW_PRIORITY FROM PM WHERE ((TYPE & $pm_read > 0) OR (TYPE & $pm_sent_items > 0)) ";
         $sql.= "AND CREATED < CAST('$pm_prune_length_datetime' AS DATETIME)";
 
-        if (!db_query($sql, $db_pm_prune_folders)) return false;
+        if (!$db->query($sql)) return false;
     }
 
     return true;
@@ -1736,7 +1736,7 @@ function pm_auto_prune_enabled()
 
     if (isset($user_prefs['PM_AUTO_PRUNE']) && intval($user_prefs['PM_AUTO_PRUNE']) > 0) return true;
 
-    $pm_prune_length = intval(forum_get_setting('pm_auto_prune', false, 0));
+    $pm_prune_length = intval(forum_get_setting('pm_auto_prune', null, 0));
 
     return ($pm_prune_length > 0);
 }
@@ -1749,15 +1749,15 @@ function pms_have_attachments(&$message_array)
 
     $mid_list = implode(',', array_filter(array_keys($message_array), 'is_numeric'));
 
-    if (!$db_pms_have_attachments = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT PMI.MID, PAF.AID FROM POST_ATTACHMENT_FILES PAF ";
     $sql.= "LEFT JOIN PM_ATTACHMENT_IDS PMI ON (PMI.AID = PAF.AID) ";
     $sql.= "WHERE PMI.MID IN ($mid_list) ";
 
-    if (!$result = db_query($sql, $db_pms_have_attachments)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    while (($pm_attachment_data = db_fetch_array($result))) {
+    while (($pm_attachment_data = $result->fetch_assoc())) {
         $message_array[$pm_attachment_data['MID']]['AID'] = $pm_attachment_data['AID'];
     }
 
@@ -1768,15 +1768,15 @@ function pm_has_attachments($mid)
 {
     if (!is_numeric($mid)) return false;
 
-    if (!$db_pm_has_attachments = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT AID FROM PM_ATTACHMENT_IDS WHERE MID = '$mid'";
 
-    if (!$result = db_query($sql, $db_pm_has_attachments)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    list($aid) = db_fetch_array($result, DB_RESULT_NUM);
+    list($aid) = $result->fetch_row();
 
     return $aid;
 }
@@ -2251,17 +2251,17 @@ function pm_get_folder_names($include_search_results = true)
         }
     }
 
-    if (!$db_pm_get_folder_names = db_connect()) return $pm_folder_names_array;
+    if (!$db = db::get()) return $pm_folder_names_array;
 
     if (($uid = session::get_value('UID')) === false) return $pm_folder_names_array;
 
     $sql = "SELECT FID, TITLE FROM PM_FOLDERS WHERE UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_pm_get_folder_names)) return $pm_folder_names_array;
+    if (!$result = $db->query($sql)) return $pm_folder_names_array;
 
-    if (db_num_rows($result) == 0) return $pm_folder_names_array;
+    if ($result->num_rows == 0) return $pm_folder_names_array;
 
-    while (($folder_name_data = db_fetch_array($result))) {
+    while (($folder_name_data = $result->fetch_assoc())) {
 
         if (strlen(trim($folder_name_data['TITLE'])) == 0) continue;
         $pm_folder_names_array[$folder_name_data['FID']] = $folder_name_data['TITLE'];
@@ -2272,25 +2272,25 @@ function pm_get_folder_names($include_search_results = true)
 
 function pm_update_folder_name($folder, $folder_name)
 {
-    if (!$db_pm_update_folder_name = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($folder)) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
-    $folder_name = db_escape_string($folder_name);
+    $folder_name = $db->escape($folder_name);
 
     $sql = "INSERT INTO PM_FOLDERS (UID, FID, TITLE) VALUES('$uid', '$folder', '$folder_name') ";
     $sql.= "ON DUPLICATE KEY UPDATE TITLE = VALUES(TITLE)";
 
-    if (!db_query($sql, $db_pm_update_folder_name)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function pm_reset_folder_name($folder)
 {
-    if (!$db_pm_reset_folder_name = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($folder)) return false;
 
@@ -2298,9 +2298,9 @@ function pm_reset_folder_name($folder)
 
     $sql = "DELETE FROM PM_FOLDERS WHERE UID = '$uid' AND FID = '$folder'";
 
-    if (!db_query($sql, $db_pm_reset_folder_name)) return false;
+    if (!$db->query($sql)) return false;
 
-    return db_affected_rows($db_pm_reset_folder_name) > 0;
+    return $db->affected_rows > 0;
 }
 
 ?>

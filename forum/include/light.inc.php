@@ -74,7 +74,7 @@ function light_html_draw_top()
 
     $func_matches = array();
 
-    $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+    $forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
 
     foreach ($arg_array as $key => $func_args) {
 
@@ -1123,7 +1123,7 @@ function light_draw_pm_inbox()
 
         // Fetch the free PM space and calculate it as a percentage.
         $pm_free_space = pm_get_free_space();
-        $pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
+        $pm_max_user_messages = forum_get_setting('pm_max_user_messages', null, 100);
 
         $pm_used_percent = (100 / $pm_max_user_messages) * ($pm_max_user_messages - $pm_free_space);
 
@@ -1353,7 +1353,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
     $poll_display.= form_input_hidden('webtag', htmlentities_array($webtag));
     $poll_display.= form_input_hidden('tid', htmlentities_array($tid));
 
-    if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && (session::get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false)))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
+    if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && (session::get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y')))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
 
         foreach ($poll_results as $question_id => $poll_question) {
 
@@ -1443,7 +1443,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
                     $poll_display.= "<div class=\"poll_type_warning\">". gettext("<b>Warning</b>: This is a public ballot. Your name will be visible next to the option you vote for."). "</div>\n";
                 }
 
-            } else if (session::get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', false))) {
+            } else if (session::get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y'))) {
 
                 $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('pollsubmit', gettext("Vote")). "</div>";
 
@@ -1506,8 +1506,8 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 {
     $perm_is_moderator = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
 
-    $post_edit_time = forum_get_setting('post_edit_time', false, 0);
-    $post_edit_grace_period = forum_get_setting('post_edit_grace_period', false, 0);
+    $post_edit_time = forum_get_setting('post_edit_time', null, 0);
+    $post_edit_grace_period = forum_get_setting('post_edit_grace_period', null, 0);
 
     $webtag = get_webtag();
 
@@ -1581,9 +1581,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/iu', '[object: <a href="\1">\1</a>]', $message['CONTENT']);
     }
 
-    if ((mb_strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text) {
+    if ((mb_strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', null, 6226))) && $limit_text) {
 
-        $cut_msg = mb_substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', false, 6226)));
+        $cut_msg = mb_substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', null, 6226)));
         $cut_msg = preg_replace("/(<[^>]+)?$/Du", "", $cut_msg);
 
         $message['CONTENT'] = fix_html($cut_msg, false);
@@ -1901,7 +1901,7 @@ function light_html_guest_error()
 
 function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")
 {
-    if (!$db_folder_draw_dropdown = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return "";
 
@@ -1916,11 +1916,11 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
     $sql.= "OR FOLDER.ALLOWED_TYPES IS NULL ";
     $sql.= "ORDER BY FOLDER.FID ";
 
-    if (!$result = db_query($sql, $db_folder_draw_dropdown)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    while (($folder_order = db_fetch_array($result))) {
+    while (($folder_order = $result->fetch_assoc())) {
 
         if (!session::logged_in()) {
 

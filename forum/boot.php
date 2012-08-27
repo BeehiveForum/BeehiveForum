@@ -55,14 +55,6 @@ register_shutdown_function('session_write_close');
 // Register shutdown function to check for uncaught errors
 register_shutdown_function('bh_shutdown_handler');
 
-// Include the configuration file.
-require_once BH_INCLUDE_PATH. 'config.inc.php';
-
-// Optionally include the developer config file.
-if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
-}
-
 // Server checking functions
 require_once BH_INCLUDE_PATH. 'server.inc.php';
 
@@ -98,12 +90,6 @@ check_install();
 
 // Multiple forum support
 require_once BH_INCLUDE_PATH. 'forum.inc.php';
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-$forum_global_settings = forum_get_global_settings();
 
 // Initialise the session
 session::init();

@@ -87,7 +87,7 @@ if (isset($_GET['private_key']) && strlen(trim($_GET['private_key'])) > 0) {
     $text_captcha_private_key = "";
 }
 
-if (forum_get_setting('forum_rules_enabled', 'Y', true)) {
+if (forum_get_setting('forum_rules_enabled', 'Y')) {
 
     $user_agree_rules = 'N';
 
@@ -315,25 +315,25 @@ if (isset($_POST['register'])) {
     if (isset($_POST['timezone']) && in_array($_POST['timezone'], array_keys($available_timezones))) {
         $new_user_prefs['TIMEZONE'] = $_POST['timezone'];
     } else {
-        $new_user_prefs['TIMEZONE'] = forum_get_setting('forum_timezone', false, 27);
+        $new_user_prefs['TIMEZONE'] = forum_get_setting('forum_timezone', null, 27);
     }
 
     if (isset($_POST['language']) && in_array($_POST['language'], $available_langs)) {
         $new_user_prefs['LANGUAGE'] = $_POST['language'];
     } else {
-        $new_user_prefs['LANGUAGE'] = forum_get_setting('default_language', false, 'en');
+        $new_user_prefs['LANGUAGE'] = forum_get_setting('default_language', null, 'en');
     }
 
     if (isset($_POST['style']) && style_exists(trim($_POST['style']))) {
         $new_user_prefs['STYLE'] = trim($_POST['style']);
     } else {
-        $new_user_prefs['STYLE'] = forum_get_setting('default_style', false, 'default');
+        $new_user_prefs['STYLE'] = forum_get_setting('default_style', null, 'default');
     }
 
     if (isset($_POST['emoticons']) && in_array($_POST['emoticons'], $available_emoticons)) {
         $new_user_prefs['EMOTICONS'] = $_POST['emoticons'];
     } else {
-        $new_user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons', false, 'default');
+        $new_user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons', null, 'default');
     }
 
     if (forum_get_setting('text_captcha_enabled', 'Y')) {
@@ -648,7 +648,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">", gettext("Time zone"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("timezone", htmlentities_array($available_timezones), (isset($new_user_prefs['TIMEZONE']) && in_array($new_user_prefs['TIMEZONE'], array_keys($available_timezones))) ? $new_user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27), false, 'timezone_dropdown'), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("timezone", htmlentities_array($available_timezones), (isset($new_user_prefs['TIMEZONE']) && in_array($new_user_prefs['TIMEZONE'], array_keys($available_timezones))) ? $new_user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27), null, 'timezone_dropdown'), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -688,17 +688,17 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" class=\"posthead\">", gettext("Style"), ":</td>\n";
-        echo "                        <td align=\"left\">", form_dropdown_array("style", htmlentities_array($available_styles), (isset($new_user_prefs['STYLE']) && style_exists($new_user_prefs['STYLE'])) ? htmlentities_array($new_user_prefs['STYLE']) : htmlentities_array(forum_get_setting('default_style', false, 'default')), "", "register_dropdown"), "</td>\n";
+        echo "                        <td align=\"left\">", form_dropdown_array("style", htmlentities_array($available_styles), (isset($new_user_prefs['STYLE']) && style_exists($new_user_prefs['STYLE'])) ? htmlentities_array($new_user_prefs['STYLE']) : htmlentities_array(forum_get_setting('default_style', null, 'default')), "", "register_dropdown"), "</td>\n";
         echo "                      </tr>\n";
     }
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">", gettext("Forum emoticons"), " [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" class=\"popup 500x400\">", gettext("Preview"), "</a>]:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("emoticons", htmlentities_array($available_emoticons), (isset($new_user_prefs['EMOTICONS']) && in_array($new_user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? htmlentities_array($new_user_prefs['EMOTICONS']) : htmlentities_array(forum_get_setting('default_emoticons', false, 'default')), "", "register_dropdown"), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("emoticons", htmlentities_array($available_emoticons), (isset($new_user_prefs['EMOTICONS']) && in_array($new_user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? htmlentities_array($new_user_prefs['EMOTICONS']) : htmlentities_array(forum_get_setting('default_emoticons', null, 'default')), "", "register_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\" width=\"255\">", gettext("Preferred language"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("language", htmlentities_array($available_langs), (isset($new_user_prefs['LANGUAGE']) ? htmlentities_array($new_user_prefs['LANGUAGE']) : htmlentities_array(forum_get_setting('default_language', false, 'en'))), "", "register_dropdown"), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("language", htmlentities_array($available_langs), (isset($new_user_prefs['LANGUAGE']) ? htmlentities_array($new_user_prefs['LANGUAGE']) : htmlentities_array(forum_get_setting('default_language', null, 'en'))), "", "register_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -723,7 +723,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
         } else if (($text_captcha_image = $text_captcha->make_image())) {
 
-            $forum_owner_email = forum_get_setting('forum_email', false, 'admin@beehiveforum.co.uk');
+            $forum_owner_email = forum_get_setting('forum_email', null, 'admin@beehiveforum.co.uk');
             $forum_owner_link  = sprintf("<a href=\"mailto:%s\">%s</a>", $forum_owner_email, gettext("forum owner"));
 
             echo "  <br />\n";
@@ -779,7 +779,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
 } else {
 
-    $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+    $forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
 
     if (!$forum_rules = forum_get_setting('forum_rules_message')) {
         $forum_rules = sprintf(gettext("<p><b>Forum Rules</b></p><p>Registration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click <a href=\"index.php?webtag=%2\$s\">here</a> to return to the forums index.</p><p>Although the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project Beehive Forum and its affiliates will be held responsible for the content of any message.</p><p>By agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise in violation of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>"), $forum_name, $webtag);

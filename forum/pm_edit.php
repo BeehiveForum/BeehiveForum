@@ -379,7 +379,7 @@ echo "                        </td>\n";
 echo "                      </tr>\n";
 
 if (($user_emoticon_pack = session::get_value('EMOTICONS')) === false) {
-    $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
+    $user_emoticon_pack = forum_get_setting('default_emoticons', null, 'default');
 }
 
 if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
@@ -489,7 +489,7 @@ echo form_submit('apply', gettext("Apply"), "tabindex=\"2\"");
 echo "&nbsp;", form_submit('preview', gettext("Preview"), "tabindex=\"3\"");
 echo "&nbsp;<a href=\"pm.php?webtag=$webtag&mid=$mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
 
-if (forum_get_setting('attachments_enabled', 'Y')) {
+if (forum_get_setting('attachments_enabled', 'Y') && forum_get_setting('pm_allow_attachments', 'Y')) {
 
     echo "&nbsp;<a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
     echo form_input_hidden('aid', htmlentities_array($aid));

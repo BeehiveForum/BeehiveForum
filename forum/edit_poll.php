@@ -126,7 +126,7 @@ if (!$edit_message = messages_get($tid, 1, 1)) {
     exit;
 }
 
-$post_edit_time = forum_get_setting('post_edit_time', false, 0);
+$post_edit_time = forum_get_setting('post_edit_time', null, 0);
 
 $show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
 
@@ -391,12 +391,9 @@ if (isset($_POST['allow_guests'])) {
 
 } else {
 
-    if (!forum_get_setting('poll_allow_guests', false)) {
-
+    if (forum_get_setting('poll_allow_guests', 'N')) {
         $allow_guests = POLL_GUEST_DENIED;
-
     } else {
-
         $allow_guests = $poll_data['ALLOWGUESTS'];
     }
 }
@@ -915,7 +912,7 @@ echo "                      </tr>\n";
 echo "                    </table>\n";
 
 if (($user_emoticon_pack = session::get_value('EMOTICONS')) === false) {
-    $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
+    $user_emoticon_pack = forum_get_setting('default_emoticons', null, 'default');
 }
 
 if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
@@ -1118,7 +1115,7 @@ echo "                                          <tr>\n";
 echo "                                            <td align=\"left\">&nbsp;</td>\n";
 echo "                                          </tr>\n";
 
-if (forum_get_setting('poll_allow_guests', false)) {
+if (forum_get_setting('poll_allow_guests', 'Y')) {
 
     echo "                                          <tr>\n";
     echo "                                            <td align=\"left\"><h2>", gettext("Guest Voting"), "</h2></td>\n";

@@ -65,7 +65,7 @@ if (isset($_POST['save'])) {
     if (isset($_POST['timezone']) && in_array($_POST['timezone'], array_keys($available_timezones))) {
         $user_prefs['TIMEZONE'] = $_POST['timezone'];
     } else {
-        $user_prefs['TIMEZONE'] = forum_get_setting('forum_timezone', false, 27);
+        $user_prefs['TIMEZONE'] = forum_get_setting('forum_timezone', null, 27);
     }
 
     if (isset($_POST['dl_saving']) && $_POST['dl_saving'] == "Y") {
@@ -298,7 +298,7 @@ if (isset($_POST['save'])) {
     if (isset($_POST['style']) && style_exists(trim($_POST['style']))) {
         $user_prefs['STYLE'] = trim($_POST['style']);
     } else {
-        $user_prefs['STYLE'] = forum_get_setting('default_style', false, 'default');
+        $user_prefs['STYLE'] = forum_get_setting('default_style', null, 'default');
     }
 
     if (isset($_POST['style_global'])) {
@@ -310,7 +310,7 @@ if (isset($_POST['save'])) {
     if (isset($_POST['emoticons'])) {
         $user_prefs['EMOTICONS'] = trim($_POST['emoticons']);
     } else {
-        $user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons', false, 'default');
+        $user_prefs['EMOTICONS'] = forum_get_setting('default_emoticons', null, 'default');
     }
 
     if (isset($_POST['emoticons_global'])) {
@@ -447,7 +447,7 @@ echo "                  <td align=\"left\" rowspan=\"3\" width=\"1%\">&nbsp;</td
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", gettext("Time zone"), ":</td>\n";
-echo "                  <td align=\"left\">", form_dropdown_array("timezone", htmlentities_array($available_timezones), (isset($user_prefs['TIMEZONE']) && in_array($user_prefs['TIMEZONE'], array_keys($available_timezones))) ? $user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27), false, 'timezone_dropdown'), "</td>\n";
+echo "                  <td align=\"left\">", form_dropdown_array("timezone", htmlentities_array($available_timezones), (isset($user_prefs['TIMEZONE']) && in_array($user_prefs['TIMEZONE'], array_keys($available_timezones))) ? $user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27), null, 'timezone_dropdown'), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -623,7 +623,7 @@ if (($available_styles = styles_get_available())) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\">", gettext("Forum style"), ":</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array("style", htmlentities_array($available_styles), (isset($user_prefs['STYLE']) && style_exists($user_prefs['STYLE'])) ? htmlentities_array($user_prefs['STYLE']) : htmlentities_array(forum_get_setting('default_style', false, 'default'))), "</td>\n";
+    echo "                  <td align=\"left\">", form_dropdown_array("style", htmlentities_array($available_styles), (isset($user_prefs['STYLE']) && style_exists($user_prefs['STYLE'])) ? htmlentities_array($user_prefs['STYLE']) : htmlentities_array(forum_get_setting('default_style', null, 'default'))), "</td>\n";
     echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("style_global", "Y", '', (isset($user_prefs['STYLE_GLOBAL']) ? $user_prefs['STYLE_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("style_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
 }
@@ -632,7 +632,7 @@ if (sizeof($available_emoticons) > 1) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\">", gettext("Forum emoticons"), " [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" class=\"emoticon_preview_popup\">", gettext("Preview"), "</a>]:</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array("emoticons", htmlentities_array($available_emoticons), (isset($user_prefs['EMOTICONS']) && in_array($user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? htmlentities_array($user_prefs['EMOTICONS']) : htmlentities_array(forum_get_setting('default_emoticons', false, 'default'))), "</td>\n";
+    echo "                  <td align=\"left\">", form_dropdown_array("emoticons", htmlentities_array($available_emoticons), (isset($user_prefs['EMOTICONS']) && in_array($user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? htmlentities_array($user_prefs['EMOTICONS']) : htmlentities_array(forum_get_setting('default_emoticons', null, 'default'))), "</td>\n";
     echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("emoticons_global", "Y", '', (isset($user_prefs['EMOTICONS_GLOBAL']) ? $user_prefs['EMOTICONS_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("emoticons_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
 }

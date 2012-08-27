@@ -124,7 +124,7 @@ if (!$edit_message = messages_get($tid, 1, 1)) {
     exit;
 }
 
-$post_edit_time = forum_get_setting('post_edit_time', false, 0);
+$post_edit_time = forum_get_setting('post_edit_time', null, 0);
 
 $uid = session::get_value('UID');
 

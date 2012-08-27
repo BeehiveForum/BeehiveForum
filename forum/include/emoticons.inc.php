@@ -46,7 +46,7 @@ function emoticons_initialise()
         // Get the user's emoticon set from their sesion.
         // Fall back to using the forum default or Beehive default.
         if (($user_emots = session::get_value('EMOTICONS')) === false) {
-            $user_emots = forum_get_setting('default_emoticons', false, 'default');
+            $user_emots = forum_get_setting('default_emoticons', null, 'default');
         }
 
         // Initialize the array incase it's not been done in
@@ -200,7 +200,7 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $display_
 
     // Check the emoticon set exists.
     if (!emoticons_set_exists($emoticon_set)) {
-        $emoticon_set = basename(forum_get_setting('default_emoticons', false, 'default'));
+        $emoticon_set = basename(forum_get_setting('default_emoticons', null, 'default'));
     }
 
     // No previews for text / no emoticons

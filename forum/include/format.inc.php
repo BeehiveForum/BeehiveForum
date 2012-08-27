@@ -86,19 +86,19 @@ function format_version_number($version, $glue = '.')
 function format_time($time)
 {
     if (($timezone_id = session::get_value('TIMEZONE')) === false) {
-        $timezone_id = forum_get_setting('forum_timezone', false, 27);
+        $timezone_id = forum_get_setting('forum_timezone', null, 27);
     }
 
     if (($gmt_offset = session::get_value('GMT_OFFSET')) === false) {
-        $gmt_offset = forum_get_setting('forum_gmt_offset', false, 0);
+        $gmt_offset = forum_get_setting('forum_gmt_offset', null, 0);
     }
 
     if (($dst_offset = session::get_value('DST_OFFSET')) === false) {
-        $dst_offset = forum_get_setting('forum_dst_offset', false, 0);
+        $dst_offset = forum_get_setting('forum_dst_offset', null, 0);
     }
 
     if (($dl_saving = session::get_value('DL_SAVING')) === false) {
-        $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
+        $dl_saving = forum_get_setting('forum_dl_saving', null, 'N');
     }
 
     // Calculate $time in user's timezone.
@@ -160,19 +160,19 @@ function format_time($time)
 function format_date($time)
 {
     if (($timezone_id = session::get_value('TIMEZONE')) === false) {
-        $timezone_id = forum_get_setting('forum_timezone', false, 27);
+        $timezone_id = forum_get_setting('forum_timezone', null, 27);
     }
 
     if (($gmt_offset = session::get_value('GMT_OFFSET')) === false) {
-        $gmt_offset = forum_get_setting('forum_gmt_offset', false, 0);
+        $gmt_offset = forum_get_setting('forum_gmt_offset', null, 0);
     }
 
     if (($dst_offset = session::get_value('DST_OFFSET')) === false) {
-        $dst_offset = forum_get_setting('forum_dst_offset', false, 0);
+        $dst_offset = forum_get_setting('forum_dst_offset', null, 0);
     }
 
     if (($dl_saving = session::get_value('DL_SAVING')) === false) {
-        $dl_saving = forum_get_setting('forum_dl_saving', false, 'N');
+        $dl_saving = forum_get_setting('forum_dl_saving', null, 'N');
     }
 
     // Calculate $time in user's timezone.
@@ -864,7 +864,7 @@ function calculate_page_offset($page, $limit)
 
 function print_r_pre($expression, $return = false)
 {
-    $result = sprintf('<pre>%s</pre>', print_r($expression, true));
+    $result = sprintf('<pre style="text-align: left">%s</pre>', print_r($expression, true));
 
     if (!$return) {
         echo $result;

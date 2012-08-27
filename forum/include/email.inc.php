@@ -94,7 +94,7 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
 
     // Get the required variables (forum name, subject, recipient, etc.) and
     // pass them all through the recipient's word filter.
-    $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $forum_name     = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
     $subject        = word_filter_apply(sprintf(gettext("Message Notification from %s"), $forum_name), $tuid, true);
     $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
     $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid, true);
@@ -151,7 +151,7 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
     $message = Swift_MessageBeehive::newInstance();
 
     // Database connection.
-    if (!$db_email_send_thread_subscription = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     // Make sure $exclude_user_array is an array.
     if (!is_array($exclude_user_array)) $exclude_user_array = array();
@@ -177,11 +177,11 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
     $sql.= "AND USER_THREAD.UID NOT IN ($exclude_user_list) ";
     $sql.= "AND USER_THREAD.INTEREST = 2";
 
-    if (!$result = db_query($sql, $db_email_send_thread_subscription)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) < 1) return false;
+    if ($result->num_rows < 1) return false;
 
-    while (($to_user = db_fetch_array($result))) {
+    while (($to_user = $result->fetch_assoc())) {
 
         // Get the relationship between the to and from user
         $user_rel = user_get_relationship($to_user['UID'], $from_user['UID']);
@@ -197,7 +197,7 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
 
         // Get the required variables (forum name, subject, recipient, etc.) and
         // pass them all through the recipient's word filter.
-        $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $to_user['UID'], true);
+        $forum_name     = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_user['UID'], true);
         $subject        = word_filter_apply(sprintf(gettext("Subscription Notification from %s"), $forum_name), $to_user['UID'], true);
         $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_user['UID'], true);
         $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $to_user['UID'], true);
@@ -255,7 +255,7 @@ function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$ex
     $message = Swift_MessageBeehive::newInstance();
 
     // Database connection.
-    if (!$db_email_send_folder_subscription = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     // Make sure $exclude_user_array is an array.
     if (!is_array($exclude_user_array)) $exclude_user_array = array();
@@ -280,11 +280,11 @@ function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$ex
     $sql.= "AND USER_FORUM.LAST_VISIT > CAST('$last_visit_datetime' AS DATETIME) ";
     $sql.= "AND USER_FOLDER.INTEREST = 1 AND USER_FOLDER.UID NOT IN ($exclude_user_list)";
 
-    if (!$result = db_query($sql, $db_email_send_folder_subscription)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) < 1) return false;
+    if ($result->num_rows < 1) return false;
 
-    while (($to_user = db_fetch_array($result))) {
+    while (($to_user = $result->fetch_assoc())) {
 
         // Validate the email address before we continue.
         if (!email_address_valid($to_user['EMAIL'])) continue;
@@ -294,7 +294,7 @@ function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$ex
 
         // Get the required variables (forum name, subject, recipient, etc.) and
         // pass them all through the recipient's word filter.
-        $forum_name     = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $to_user['UID'], true);
+        $forum_name     = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_user['UID'], true);
         $subject        = word_filter_apply(sprintf(gettext("Subscription Notification from %s"), $forum_name), $to_user['UID'], true);
         $recipient      = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_user['UID'], true);
         $message_author = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $to_user['UID'], true);
@@ -370,7 +370,7 @@ function email_send_pm_notification($tuid, $mid, $fuid)
 
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
-    $forum_name      = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $forum_name      = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
     $subject         = word_filter_apply(sprintf(gettext("PM Notification from %s"), $forum_name), $tuid, true);
     $recipient       = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
     $message_author  = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid, true);
@@ -424,7 +424,7 @@ function email_send_pw_reminder($logon)
 
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $to_user['UID'], true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_user['UID'], true);
     $subject    = word_filter_apply(sprintf(gettext("Your password reset request from %s"), $forum_name), $to_user['UID'], true);
     $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_user['UID'], true);
 
@@ -475,7 +475,7 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
 
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
-    $forum_name        = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $forum_name        = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
     $subject           = word_filter_apply(sprintf(gettext("Password change notification from %s"), $forum_name), $tuid, true);
     $recipient         = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
     $passwd_changed_by = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid, true);
@@ -520,11 +520,11 @@ function email_send_user_confirmation($tuid)
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
     // Get the forum reply-to email address
-    $forum_email = forum_get_setting('forum_email', false, 'admin@beehiveforum.co.uk');
+    $forum_email = forum_get_setting('forum_email', null, 'admin@beehiveforum.co.uk');
 
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
     $subject    = word_filter_apply(sprintf(gettext("Email confirmation required for %s"), $forum_name), $tuid, true);
     $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
@@ -572,11 +572,11 @@ function email_send_changed_email_confirmation($tuid)
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
     // Get the forum reply-to email address
-    $forum_email = forum_get_setting('forum_email', false, 'admin@beehiveforum.co.uk');
+    $forum_email = forum_get_setting('forum_email', null, 'admin@beehiveforum.co.uk');
 
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
     $subject    = word_filter_apply(sprintf(gettext("Email confirmation required for %s"), $forum_name), $tuid, true);
     $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
@@ -624,7 +624,7 @@ function email_send_user_approval_notification($tuid)
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
     $subject    = word_filter_apply(sprintf(gettext("New User Approval Notification for %s"), $forum_name), $tuid, true);
     $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
@@ -673,7 +673,7 @@ function email_send_new_user_notification($tuid, $new_user_uid)
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
     $subject    = word_filter_apply(sprintf(gettext("New User Account Notification for %s"), $forum_name), $tuid, true);
     $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
@@ -721,10 +721,10 @@ function email_send_user_approved_notification($tuid)
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
     // Get the forum reply-to email address
-    $forum_email = forum_get_setting('forum_email', false, 'admin@beehiveforum.co.uk');
+    $forum_email = forum_get_setting('forum_email', null, 'admin@beehiveforum.co.uk');
 
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
     $subject    = word_filter_apply(sprintf(gettext("User approval notification for %s"), $forum_name), $tuid, true);
     $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
@@ -771,7 +771,7 @@ function email_send_post_approval_notification($tuid)
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
     $subject    = word_filter_apply(sprintf(gettext("Post Approval Notification for %s"), $forum_name), $tuid, true);
     $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
@@ -819,7 +819,7 @@ function email_send_link_approval_notification($tuid)
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
     // Get the forum name, subject, recipient. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
     $subject    = word_filter_apply(sprintf(gettext("Link Approval Notification for %s"), $forum_name), $tuid, true);
     $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
@@ -869,7 +869,7 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message_body, $use_
 
     // Get the forum name, subject, recipient, author, thread title and generate
     // the messages link. Pass all of them through the recipient's word filter.
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', false, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
     $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
     $sent_from  = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid, true);
 
@@ -897,9 +897,9 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message_body, $use_
 
 function email_is_unique($email_address, $user_uid = 0)
 {
-    if (!$db_email_is_unique = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
-    $email_address = db_escape_string($email_address);
+    $email_address = $db->escape($email_address);
 
     if (!is_numeric($user_uid) || $user_uid == 0) {
 
@@ -911,9 +911,9 @@ function email_is_unique($email_address, $user_uid = 0)
         $sql.= "AND EMAIL = '$email_address' ";
     }
 
-    if (!$result = db_query($sql, $db_email_is_unique)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($user_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($user_count) = $result->fetch_row();
 
     return ($user_count < 1);
 }

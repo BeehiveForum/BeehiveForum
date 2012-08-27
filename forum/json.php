@@ -40,7 +40,7 @@ if (($font_size = session::get_value('FONT_SIZE')) === false) {
 
 // User style
 if (($user_style = session::get_value('STYLE')) === false) {
-    $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', false, 'default'));
+    $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', null, 'default'));
 }
 
 // Get the forum path

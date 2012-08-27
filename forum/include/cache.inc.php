@@ -79,7 +79,7 @@ function cache_disable_proxy()
 
 function cache_check_thread_list()
 {
-    if (!$db_thread_list_check_cache_header = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -100,7 +100,7 @@ function cache_check_thread_list()
     // If we're looking at a specific folder add it's ID to the query.
     if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-        $folder = db_escape_string($_GET['folder']);
+        $folder = $db->escape($_GET['folder']);
 
         $sql = "SELECT * FROM (SELECT UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
         $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED ";
@@ -126,13 +126,13 @@ function cache_check_thread_list()
         $sql.= "FROM `{$table_prefix}FOLDER` FOLDER) AS FOLDER_DATA";
     }
 
-    if (!$result = db_query($sql, $db_thread_list_check_cache_header)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     // Can't send cache headers without any rows.
-    if (db_num_rows($result) == 0) return true;
+    if ($result->num_rows == 0) return true;
 
     // Get the modified dates from the query
-    list($created, $modified, $last_read, $folder_created, $folder_modified) = db_fetch_array($result, DB_RESULT_NUM);
+    list($created, $modified, $last_read, $folder_created, $folder_modified) = $result->fetch_row();
 
     // Work out which one is newer (higher).
     $local_cache_date = max($created, $modified, $last_read, $folder_created, $folder_modified);
@@ -165,7 +165,7 @@ function cache_check_thread_list()
 
 function cache_check_start_page()
 {
-    if (!$db_forum_startpage_check_cache_header = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -194,12 +194,12 @@ function cache_check_start_page()
     $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
     $sql.= "FROM `{$table_prefix}FOLDER` FOLDER) AS FOLDER_DATA";
 
-    if (!$result = db_query($sql, $db_forum_startpage_check_cache_header)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return true;
+    if ($result->num_rows == 0) return true;
 
     // Get the modified dates from the query
-    list($created, $modified, $last_read, $folder_created, $folder_modified) = db_fetch_array($result, DB_RESULT_NUM);
+    list($created, $modified, $last_read, $folder_created, $folder_modified) = $result->fetch_row();
 
     // Work out which one is newer (higher).
     $local_cache_date = max($created, $modified, $last_read, $folder_created, $folder_modified);
@@ -232,7 +232,7 @@ function cache_check_start_page()
 
 function cache_check_messages()
 {
-    if (!$db_messages_check_cache_header = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -276,12 +276,12 @@ function cache_check_messages()
         $sql.= "FROM `{$table_prefix}POST`";
     }
 
-    if (!$result = db_query($sql, $db_messages_check_cache_header)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return true;
+    if ($result->num_rows == 0) return true;
 
     // Get the two modified dates from the query
-    list($created, $viewed, $approved, $edited, $voted) = db_fetch_array($result, DB_RESULT_NUM);
+    list($created, $viewed, $approved, $edited, $voted) = $result->fetch_row();
 
     // Work out which one is newer (higher).
     $local_cache_date = max($created, $viewed, $approved, $edited, $voted);
@@ -316,9 +316,9 @@ function cache_check_enabled()
 {
     if (defined('BEEHIVE_DEVELOPER_MODE')) return false;
     
-    $http_cache_enabled = (isset($GLOBALS['http_cache_enabled'])) ? $GLOBALS['http_cache_enabled'] : false;
-
-    if (isset($http_cache_enabled) && $http_cache_enabled === false) {
+    $config = server_get_config();
+    
+    if (isset($config['http_cache_enabled']) && $config['http_cache_enabled'] === false) {
         return false;
     }
 

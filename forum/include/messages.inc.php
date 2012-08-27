@@ -55,7 +55,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 {
     if (($uid = session::get_value('UID')) === false) return false;
 
-    if (!$db_messages_get = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
     
@@ -89,13 +89,13 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql.= "ORDER BY POST.PID ";
     $sql.= "LIMIT 0, $limit";
 
-    if (!($result = db_query($sql, $db_messages_get))) return false;
+    if (!($result = $db->query($sql))) return false;
     
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
     $messages = array();
 
-    while (($message = db_fetch_array($result))) {
+    while (($message = $result->fetch_assoc())) {
 
         $message['CONTENT'] = "";
 
@@ -146,7 +146,7 @@ function message_get_content($tid, $pid)
 {
     static $message_content = array();
 
-    if (!$db_message_get_content = db_connect()) return '';
+    if (!$db = db::get()) return '';
 
     if (!is_numeric($tid)) return '';
     if (!is_numeric($pid)) return '';
@@ -158,11 +158,11 @@ function message_get_content($tid, $pid)
         $sql = "SELECT CONTENT FROM `{$table_prefix}POST_CONTENT` ";
         $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
-        if (!$result = db_query($sql, $db_message_get_content)) return '';
+        if (!$result = $db->query($sql)) return '';
 
-        if (db_num_rows($result) < 1) return '';
+        if ($result->num_rows < 1) return '';
 
-        list($message_content["$tid.$pid"]) = db_fetch_array($result, DB_RESULT_NUM);
+        list($message_content["$tid.$pid"]) = $result->fetch_row();
     }
 
     return $message_content["$tid.$pid"];
@@ -417,7 +417,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
         if ($enable_wiki_words) {
 
-            $wiki_location = forum_get_setting('wiki_integration_uri', false, "");
+            $wiki_location = forum_get_setting('wiki_integration_uri', null, "");
             if (strlen($wiki_location) > 0) $wiki_location = str_replace("[WikiWord]", "\\1", $wiki_location);
         }
 
@@ -573,8 +573,8 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 {
     $perm_is_moderator = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
 
-    $post_edit_time = forum_get_setting('post_edit_time', false, 0);
-    $post_edit_grace_period = forum_get_setting('post_edit_grace_period', false, 0);
+    $post_edit_time = forum_get_setting('post_edit_time', null, 0);
+    $post_edit_grace_period = forum_get_setting('post_edit_grace_period', null, 0);
 
     $webtag = get_webtag();
 
@@ -640,9 +640,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     // Check length of post to see if we should truncate it for display --------
-    if ((mb_strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', false, 6226))) && $limit_text) {
+    if ((mb_strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', null, 6226))) && $limit_text) {
 
-        $cut_msg = mb_substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', false, 6226)));
+        $cut_msg = mb_substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', null, 6226)));
         $cut_msg = preg_replace("/(<[^>]+)?$/Du", "", $cut_msg);
 
         $message['CONTENT'] = fix_html($cut_msg, false);
@@ -1478,7 +1478,7 @@ function messages_interest_form($tid, $pid, $interest)
 
 function message_get_user($tid, $pid)
 {
-    if (!$db_message_get_user = db_connect()) return '';
+    if (!$db = db::get()) return '';
 
     if (!is_numeric($tid)) return '';
     if (!is_numeric($pid)) return '';
@@ -1488,18 +1488,18 @@ function message_get_user($tid, $pid)
     $sql = "SELECT FROM_UID FROM `{$table_prefix}POST` ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
-    if (!$result = db_query($sql, $db_message_get_user)) return '';
+    if (!$result = $db->query($sql)) return '';
 
-    if (db_num_rows($result) == 0) return '';
+    if ($result->num_rows == 0) return '';
 
-    list($from_uid) = db_fetch_array($result, DB_RESULT_NUM);
+    list($from_uid) = $result->fetch_row();
 
     return $from_uid;
 }
 
 function message_get_user_array($tid, $pid)
 {
-    if (!$db_message_get_user = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
@@ -1515,11 +1515,11 @@ function message_get_user_array($tid, $pid)
     $sql.= "ON (USER_PEER.PEER_UID = POST.FROM_UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE POST.TID = '$tid' AND POST.PID = '$pid'";
 
-    if (!$result = db_query($sql, $db_message_get_user)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    $user_array = db_fetch_array($result);
+    $user_array = $result->fetch_assoc();
 
     if (isset($user_array['LOGON']) && isset($user_array['PEER_NICKNAME'])) {
         if (!is_null($user_array['PEER_NICKNAME']) && strlen($user_array['PEER_NICKNAME']) > 0) {
@@ -1535,7 +1535,7 @@ function message_get_user_array($tid, $pid)
 
 function messages_update_read($tid, $pid, $last_read, $length, $modified)
 {
-    if (!$db_message_update_read = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
@@ -1567,9 +1567,9 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
             $sql.= "WHERE POST.CREATED < CAST('$unread_cutoff_datetime' AS DATETIME) ";
             $sql.= "AND POST.TID = '$tid'";
 
-            if (!$result = db_query($sql, $db_message_update_read)) return false;
+            if (!$result = $db->query($sql)) return false;
 
-            list($unread_pid) = db_fetch_array($result, DB_RESULT_NUM);
+            list($unread_pid) = $result->fetch_row();
 
             // If the specified PID is lower than the cut-off set it to the cut-off.
             $pid = ($pid < $unread_pid) ? $unread_pid : $pid;
@@ -1579,7 +1579,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
             $sql.= "VALUES ('$uid', '$tid', '$pid', CAST('$current_datetime' AS DATETIME)) ON DUPLICATE KEY UPDATE ";
             $sql.= "LAST_READ = VALUES(LAST_READ), LAST_READ_AT = CAST('$current_datetime' AS DATETIME)";
 
-            if (!$result = db_query($sql, $db_message_update_read)) return false;
+            if (!$result = $db->query($sql)) return false;
         }
     }
 
@@ -1587,21 +1587,21 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST` SET VIEWED = CAST('$current_datetime' AS DATETIME) ";
     $sql.= "WHERE TID = '$tid' AND PID BETWEEN 1 AND '$pid' AND TO_UID = '$uid' AND VIEWED IS NULL";
 
-    if (!$result = db_query($sql, $db_message_update_read)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     // Update thread viewed counter
     $sql = "INSERT INTO `{$table_prefix}THREAD_STATS` ";
     $sql.= "(TID, VIEWCOUNT) VALUES ('$tid', 1) ON DUPLICATE KEY ";
     $sql.= "UPDATE VIEWCOUNT = VIEWCOUNT + 1";
 
-    if (!$result = db_query($sql, $db_message_update_read)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     return true;
 }
 
 function messages_set_read($tid, $pid, $modified)
 {
-    if (!$db_message_set_read = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
@@ -1625,15 +1625,15 @@ function messages_set_read($tid, $pid, $modified)
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";
             $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
-            if (!db_query($sql, $db_message_set_read)) return false;
+            if (!$db->query($sql)) return false;
 
-            if (db_affected_rows($db_message_set_read) < 1) {
+            if ($db->affected_rows < 1) {
 
                 $sql = "INSERT IGNORE INTO `{$table_prefix}USER_THREAD` ";
                 $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
                 $sql.= "VALUES ($uid, $tid, $pid, NULL)";
 
-                if (!db_query($sql, $db_message_set_read)) return false;
+                if (!$db->query($sql)) return false;
             }
         }
     }
@@ -1642,14 +1642,14 @@ function messages_set_read($tid, $pid, $modified)
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST` SET VIEWED = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID >= '$pid' AND TO_UID = '$uid'";
 
-    if (!db_query($sql, $db_message_set_read)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function messages_get_most_recent($uid, $fid = false)
 {
-    if (!$db_messages_get_most_recent = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (is_numeric($fid)) {
         $fidlist = $fid;
@@ -1688,11 +1688,11 @@ function messages_get_most_recent($uid, $fid = false)
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 1";
 
-    if (!$result = db_query($sql, $db_messages_get_most_recent)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    $message_data = db_fetch_array($result);
+    $message_data = $result->fetch_assoc();
 
     if (!session::logged_in()) {
 
@@ -1722,7 +1722,7 @@ function messages_get_most_recent($uid, $fid = false)
 
 function messages_get_most_recent_unread($uid, $fid = false)
 {
-    if (!$db_messages_get_most_recent = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (is_numeric($fid)) {
         $fidlist = $fid;
@@ -1761,11 +1761,11 @@ function messages_get_most_recent_unread($uid, $fid = false)
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 1";
 
-    if (!$result = db_query($sql, $db_messages_get_most_recent)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    $message_data = db_fetch_array($result);
+    $message_data = $result->fetch_assoc();
 
     if (!session::logged_in()) {
 

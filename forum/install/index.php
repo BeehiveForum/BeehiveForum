@@ -216,7 +216,7 @@ if (isset($_POST['install_method'])) {
         
         try {
 
-            $db_install = db_connect();
+            $db = db::get();
 
             install_check_mysql_version();
             

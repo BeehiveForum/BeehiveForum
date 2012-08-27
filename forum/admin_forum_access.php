@@ -47,7 +47,7 @@ if (!session::logged_in()) {
 }
 
 // Check we have Admin / Moderator access
-if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) || (forum_get_setting('access_level', false, 0) == FORUM_DISABLED)) {
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) || (forum_get_setting('access_level', FORUM_DISABLED))) {
     html_draw_error(gettext("You do not have permission to use this section."));
 }
 
@@ -87,7 +87,7 @@ if (isset($_POST['enable'])) {
     }
 }
 
-if (!forum_get_setting('access_level', 1, false)) {
+if (!forum_get_setting('access_level', FORUM_RESTRICTED)) {
     html_draw_error(gettext("Forum is not set to Restricted Mode. Do you want to enable it now?"), 'admin_forum_access.php', 'post', array('enable' => gettext("Enable"), 'back' => gettext("Back")), array('ret' => $ret), false, 'center');
 }
 

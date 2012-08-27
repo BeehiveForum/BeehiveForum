@@ -344,7 +344,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 } else if (isset($_GET['search_frequency_error'])) {
 
-    $search_frequency = forum_get_setting('search_min_frequency', false, 0);
+    $search_frequency = forum_get_setting('search_min_frequency', null, 0);
     html_display_warning_msg(sprintf(gettext("You can only search once every %s seconds. Please try again later."), $search_frequency), '96%', 'center');
 
 } else if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) < 1) {

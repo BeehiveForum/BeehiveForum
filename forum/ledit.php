@@ -406,7 +406,7 @@ if (isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (((forum_get_setting('allow_post_editing', 'N')) || ((session::get_value('UID') != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || (((time() - $edit_message['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+    if (((forum_get_setting('allow_post_editing', 'N')) || ((session::get_value('UID') != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || (((time() - $edit_message['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', null, 0)) != 0)) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
         light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
         light_html_display_error_msg(gettext("You are not permitted to edit this message."));
@@ -468,7 +468,7 @@ if (isset($_POST['preview'])) {
 
         if (($edit_message['CONTENT'] = message_get_content($tid, $pid))) {
 
-            if (((forum_get_setting('allow_post_editing', 'N')) || ((session::get_value('UID') != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || (((time() - $edit_message['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', false, 0)) != 0)) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+            if (((forum_get_setting('allow_post_editing', 'N')) || ((session::get_value('UID') != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || (((time() - $edit_message['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', null, 0)) != 0)) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
                 light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
                 light_html_display_error_msg(gettext("You are not permitted to edit this message."));

@@ -226,7 +226,7 @@ function install_missing_files()
 function install_check_mysql_version()
 {
     // Get the MySQL version.
-    $mysql_version = db_fetch_mysql_version();
+    $mysql_version = db::get_version();
 
     // If the version isn't available or is below what we need show an error
     if ($mysql_version === false || version_compare($mysql_version, BEEHIVE_MYSQL_MIN_VERSION, "<")) {
@@ -449,18 +449,18 @@ function install_check_php_version()
 
 function install_get_table_data()
 {
-    if (!$db_install_get_webtags = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT FID, CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX, ";
     $sql.= "DATABASE_NAME, WEBTAG FROM FORUMS";
 
-    if (!$result = db_query($sql, $db_install_get_webtags)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
     $forum_table_data_array = array();
 
-    while (($forum_webtags_data = db_fetch_array($result))) {
+    while (($forum_webtags_data = $result->fetch_assoc())) {
         $forum_table_data_array[$forum_webtags_data['FID']] = $forum_webtags_data;
     }
 
@@ -479,39 +479,39 @@ function install_prefix_webtag(&$table_name, $key, $webtag)
 
 function install_table_exists($database_name, $table_name)
 {
-    if (!$db_install_table_exists = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
-    $table_name = db_escape_string($table_name);
+    $table_name = $db->escape($table_name);
 
     $sql = "SHOW TABLES FROM `$database_name` LIKE '$table_name'";
 
-    if (!$result = db_query($sql, $db_install_table_exists)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    return (db_num_rows($result) > 0);
+    return ($result->num_rows > 0);
 }
 
 function install_column_exists($database_name, $table_name, $column_name)
 {
-    if (!$db_install_column_exists = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
-    $column_name = db_escape_string($column_name);
+    $column_name = $db->escape($column_name);
 
     $sql = "SHOW COLUMNS FROM `$database_name`.`$table_name` LIKE '$column_name'";
 
-    if (!$result = db_query($sql, $db_install_column_exists)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    return (db_num_rows($result) > 0);
+    return ($result->num_rows > 0);
 }
 
 function install_index_exists($database_name, $table_name, $index_name)
 {
-    if (!$db_install_index_exists = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SHOW INDEXES FROM `$database_name`.`$table_name`";
 
-    if (!$result = db_query($sql, $db_install_index_exists)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    while (($table_data = db_fetch_array($result))) {
+    while (($table_data = $result->fetch_assoc())) {
         if ($table_data['Key_name'] == $index_name) return true;
     }
 
@@ -520,15 +520,15 @@ function install_index_exists($database_name, $table_name, $index_name)
 
 function install_check_column_type($database_name, $table_name, $column_name, $column_type)
 {
-    if (!$db_install_column_exists = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
-    $column_name = db_escape_string($column_name);
+    $column_name = $db->escape($column_name);
 
     $sql = "SHOW COLUMNS FROM `$database_name`.`$table_name` LIKE '$column_name'";
 
-    if (!$result = db_query($sql, $db_install_column_exists)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (!$column_data = db_fetch_array($result)) return false;
+    if (!$column_data = $result->fetch_assoc()) return false;
     
     return ($column_data['Type'] == $column_type);
 }
@@ -619,19 +619,19 @@ function install_get_table_names(&$global_tables, &$forum_tables)
 function install_check_table_conflicts($database_name, $webtag, $check_forum_tables, $check_global_tables, $remove_conflicts)
 {
     // Database connection.
-    if (!($db_install_check_table_conflicts = db_connect())) return false;
+    if (!($db = db::get())) return false;
 
     // SQL to get a list of existing tables in the database.
     $sql = "SHOW TABLES FROM `$database_name`";
 
     // Execute query.
-    if (!$result = db_query($sql, $db_install_check_table_conflicts)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     // Check there are some existing tables in the database.
-    if (db_num_rows($result) < 1) return false;
+    if ($result->num_rows < 1) return false;
 
     // Get the existing tables as an array.
-    while (($table_data = db_fetch_array($result, DB_RESULT_NUM))) {
+    while (($table_data = $result->fetch_row())) {
         $existing_tables[] = $table_data[0];
     }
 
@@ -650,8 +650,8 @@ function install_check_table_conflicts($database_name, $webtag, $check_forum_tab
     // Check if we should remove conflicts automatically.
     if (($remove_conflicts === true) && (sizeof($conflicting_tables_array) > 0)) {
 
-        $sql = sprintf('DROP TABLE IF EXISTS `%s`', implode('`, `', array_map('db_escape_string', $conflicting_tables_array)));
-        db_query($sql, $db_install_check_table_conflicts);
+        $sql = sprintf('DROP TABLE IF EXISTS `%s`', implode('`, `', array_map(array($db, 'escape', $conflicting_tables_array))));
+        $db->query($sql);
     }
 
     // Return either the conflicting table names or false.
@@ -660,28 +660,28 @@ function install_check_table_conflicts($database_name, $webtag, $check_forum_tab
 
 function install_remove_table($database_name, $table_name)
 {
-    if (!$db_install_remove_table = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "DROP TABLE IF EXISTS `$database_name`.`$table_name`";
 
-    if (!db_query($sql, $db_install_remove_table)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function install_remove_indexes($database_name, $table_name)
 {
-    if (!$db_install_remove_indexes = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
-    $table_name = db_escape_string($table_name);
+    $table_name = $db->escape($table_name);
 
     $sql = "SHOW INDEX FROM `$database_name`.`$table_name`";
 
     $index_names_array = array();
 
-    if (!($result = db_query($sql, $db_install_remove_indexes))) return false;
+    if (!($result = $db->query($sql))) return false;
 
-    while (($index_data = db_fetch_array($result))) {
+    while (($index_data = $result->fetch_assoc())) {
         $index_names_array[] = $index_data['Key_name'];
     }
 
@@ -693,7 +693,7 @@ function install_remove_indexes($database_name, $table_name)
 
         $sql = "ALTER TABLE `$database_name`.`$table_name` DROP INDEX `$index_name`";
 
-        db_query($sql, $db_install_remove_indexes);
+        $db->query($sql);
     }
 
     return true;
@@ -708,7 +708,7 @@ function install_msie_buffer_fix()
 
 function install_set_default_forum_settings()
 {
-    if (!$db_install_set_default_forum_settings = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $global_settings = array(
         'forum_keywords' => 'A Beehive Forum, Beehive Forum, Project Beehive Forum',
@@ -744,13 +744,13 @@ function install_set_default_forum_settings()
 
     foreach ($global_settings as $sname => $svalue) {
 
-        $sname = db_escape_string($sname);
-        $svalue = db_escape_string($svalue);
+        $sname = $db->escape($sname);
+        $svalue = $db->escape($svalue);
 
         $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
         $sql.= "VALUES (0, '$sname', '$svalue')";
 
-        if (!@db_query($sql, $db_install_set_default_forum_settings)) return false;
+        if (!@$db->query($sql)) return false;
     }
 
     return true;
@@ -758,7 +758,7 @@ function install_set_default_forum_settings()
 
 function install_set_search_bots()
 {
-    if (!$db_install_set_search_bots = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $bots_array = array(
         'ia_archiver' => array(
@@ -812,14 +812,14 @@ function install_set_search_bots()
 
     foreach ($bots_array as $agent => $details) {
 
-        $agent = db_escape_string($agent);
-        $name  = db_escape_string($details['NAME']);
-        $url   = db_escape_string($details['URL']);
+        $agent = $db->escape($agent);
+        $name  = $db->escape($details['NAME']);
+        $url   = $db->escape($details['URL']);
 
         $sql = "INSERT INTO SEARCH_ENGINE_BOTS (NAME, URL, AGENT_MATCH) ";
         $sql.= "VALUES ('$name', '$url', '%$agent%')";
 
-        if (!@db_query($sql, $db_install_set_search_bots)) return false;
+        if (!@$db->query($sql)) return false;
     }
 
     return true;
@@ -827,7 +827,7 @@ function install_set_search_bots()
 
 function install_set_timezones()
 {
-    if (!$db_install_set_timezones = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $timezones_array = array(
         1 => array(-12, 0),
@@ -917,7 +917,7 @@ function install_set_timezones()
         $sql = "INSERT INTO TIMEZONES (TZID, GMT_OFFSET, DST_OFFSET) ";
         $sql.= "VALUES ('$tzid', '{$tz_data[0]}', '{$tz_data[1]}')";
 
-        if (!@db_query($sql, $db_install_set_timezones)) return false;
+        if (!@$db->query($sql)) return false;
     }
 
     return true;
@@ -929,14 +929,14 @@ function install_import_dictionary($dictionary_path)
 
     if (!is_readable("$dictionary_path/english.dic")) return false;
 
-    if (!$db_install_import_dictionary = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     try {
 
         $sql = "LOAD DATA INFILE '$dictionary_path/english.dic' ";
         $sql.= "INTO TABLE DICTIONARY LINES TERMINATED BY '\\n' (WORD)";
 
-        @db_query($sql, $db_install_import_dictionary);
+        @$db->query($sql);
 
     } catch (Exception $e) {
 
@@ -944,17 +944,17 @@ function install_import_dictionary($dictionary_path)
 
         foreach ($dictionary_words_array as $word) {
 
-            $word = db_escape_string(trim($word));
+            $word = $db->escape(trim($word));
 
             $sql = "INSERT INTO DICTIONARY (WORD) VALUES('$word')";
 
-            if (!@db_query($sql, $db_install_import_dictionary)) return false;
+            if (!@$db->query($sql)) return false;
         }
     }
 
     $sql = "UPDATE DICTIONARY SET SOUND = SOUNDEX(WORD)";
 
-    if (!@db_query($sql, $db_install_import_dictionary)) return false;
+    if (!@$db->query($sql)) return false;
 
     return true;
 }

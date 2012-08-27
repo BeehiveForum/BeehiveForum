@@ -323,11 +323,11 @@ function html_get_user_style_path()
     if ($user_style === false) {
 
         if (!($user_style = session::get_value('STYLE'))) {
-            $user_style = html_get_cookie('forum_style', false, forum_get_setting('default_style', false, 'default'));
+            $user_style = html_get_cookie('forum_style', false, forum_get_setting('default_style', null, 'default'));
         }
 
         if (!style_exists($user_style)) {
-            $user_style = forum_get_setting('default_style', false, 'default');
+            $user_style = forum_get_setting('default_style', null, 'default');
         }
     }
 
@@ -383,16 +383,12 @@ function html_get_emoticon_style_sheet($emoticon_set = false)
 
 function html_get_forum_keywords()
 {
-    if (!($forum_keywords = forum_get_setting('forum_keywords'))) return '';
-
-    return $forum_keywords;
+    return forum_get_setting('forum_keywords', null, '');
 }
 
 function html_get_forum_description()
 {
-    if (!($forum_desc = forum_get_setting('forum_desc'))) return '';
-
-    return $forum_desc;
+    return forum_get_setting('forum_desc', null, '');
 }
 
 function html_get_forum_content_rating()
@@ -417,9 +413,7 @@ function html_get_forum_content_rating()
 
 function html_get_forum_email()
 {
-    if (!($forum_email = forum_get_setting('forum_email'))) return '';
-
-    return $forum_email;
+    return forum_get_setting('forum_email', null, '');
 }
 
 function html_get_frame_name($basename)
@@ -444,11 +438,13 @@ function html_get_frame_name($basename)
 
 function html_get_top_frame_name()
 {
-    if (!isset($GLOBALS['frame_top_target']) || strlen(trim($GLOBALS['frame_top_target'])) == 0) {
+    $config = server_get_config();
+    
+    if (!isset($config['frame_top_target']) || strlen(trim($config['frame_top_target'])) == 0) {
         return '_top';
     }
 
-    return $GLOBALS['frame_top_target'];
+    return $config['frame_top_target'];
 }
 
 function html_include_javascript($script_filepath)
@@ -457,7 +453,7 @@ function html_include_javascript($script_filepath)
 
     if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return;
 
-    if (forum_get_setting('use_minified_scripts', false, false)) {
+    if (forum_get_setting('use_minified_scripts', 'Y')) {
         $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
     }
 
@@ -474,7 +470,7 @@ function html_include_css($script_filepath, $media = 'screen')
 
     if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return;
 
-    if (forum_get_setting('use_minified_scripts', false, false)) {
+    if (forum_get_setting('use_minified_scripts', 'Y')) {
         $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
     }
 
@@ -572,7 +568,7 @@ function html_draw_top()
 
     $webtag = get_webtag();
 
-    $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+    $forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
 
     $func_matches = array();
 
@@ -962,7 +958,7 @@ function html_draw_top()
         echo "</script>\n";
     }
 
-    if ((forum_get_setting('show_share_links', 'Y')) && (session::get_value('SHOW_SHARE_LINKS') == 'Y')) {
+    if (($frame_set_html === false) && (forum_get_setting('show_share_links', 'Y')) && (session::get_value('SHOW_SHARE_LINKS') == 'Y')) {
 
         echo "<script type=\"text/javascript\" src=\"https://apis.google.com/js/plusone.js\">\n";
         echo "{lang: 'en-GB'}\n";
@@ -983,6 +979,10 @@ function html_draw_top()
 
             adsense_output_html();
             echo "<br />\n";
+        }
+        
+        if ((forum_get_setting('show_share_links', 'Y')) && (session::get_value('SHOW_SHARE_LINKS') == 'Y')) {
+            echo '<div id="fb-root"></div>';
         }
     }
 }
@@ -1245,57 +1245,21 @@ function html_style_image($img, $allow_cdn = true)
 
 function html_set_cookie($name, $value, $expires = 0)
 {
-    // Set the secure state of the cookie
     $cookie_secure = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on');
-
-    // Some versions of Opera don''t play well with cookie restrictions.
-    // Because we don't have an exhaustive list of which don't work,
-    // we disable cookie domain and path for them.
-    // If we're also on Light mode we disable by default.
-    if (!defined('BEEHIVEMODE_LIGHT') && !browser_check(BROWSER_OPERA)) {
-
-        // Get the cookie domain from config.inc.php or html_get_forum_uri
-        if (isset($GLOBALS['cookie_domain']) && strlen(trim($GLOBALS['cookie_domain'])) > 0) {
-            $cookie_domain = trim($GLOBALS['cookie_domain']);
-        } else {
-            $cookie_domain = html_get_forum_uri();
-        }
-
-        // Try and parse the cookie_domain config.inc.php setting.
-        if (($cookie_domain_array = @parse_url($cookie_domain))) {
-
-            // Check we have a hostname and path.
-            if (isset($cookie_domain_array['host']) && isset($cookie_domain_array['path'])) {
-
-                // Set the cookie with hostname and path.
-                return setcookie($name, $value, $expires, $cookie_domain_array['path'], ".{$cookie_domain_array['host']}", $cookie_secure, true);
-            }
-        }
-    }
-
     return setcookie($name, $value, $expires, '', '', $cookie_secure, true);
 }
 
-function html_get_cookie($cookie_name, $callback = false, $default = false)
+function html_get_cookie($cookie_name, $callback = null, $default = null)
 {
-    if (isset($_COOKIE[$cookie_name])) {
+    if (!isset($_COOKIE[$cookie_name])) return $default;
 
-        if ($callback !== false) {
-
-            if (function_exists($callback) && is_callable($callback)) {
-
-                return ($callback($_COOKIE[$cookie_name])) ? $_COOKIE[$cookie_name] : $default;
-
-            } else if (is_string($callback)) {
-
-                return mb_strtoupper($_COOKIE[$cookie_name]) == mb_strtoupper($callback);
-            }
-        }
-
-        return $_COOKIE[$cookie_name];
+    if (function_exists($callback) && is_callable($callback)) {
+        return $callback($_COOKIE[$cookie_name]);
+    } else if (is_scalar($callback)) {
+        return mb_strtoupper($_COOKIE[$cookie_name]) == mb_strtoupper($callback);
     }
-
-    return $default;
+    
+    return $_COOKIE[$cookie_name];    
 }
 
 function html_remove_all_cookies()

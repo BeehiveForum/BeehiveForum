@@ -85,12 +85,12 @@ class captcha {
 
         $this->max_rotation = $max_rotation;
 
-        $this->key = forum_get_setting('text_captcha_key', false);
+        $this->key = forum_get_setting('text_captcha_key');
 
         $this->image_x = ($num_chars + 1) * (int)(($this->max_char_size + $this->min_char_size) / 1.5);
         $this->image_y = (int)(2.4 * $this->max_char_size);
         
-        if (($text_captcha_dir = forum_get_setting('text_captcha_dir', false))) {
+        if (($text_captcha_dir = forum_get_setting('text_captcha_dir'))) {
             $this->text_captcha_dir = rtrim($text_captcha_dir, '/');
         }
 

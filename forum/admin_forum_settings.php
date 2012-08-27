@@ -95,6 +95,12 @@ $available_langs = lang_get_available(false);
 // Get an array of available timezones.
 $available_timezones = get_available_timezones();
 
+// Get the forum settings
+$forum_settings = forum_get_settings();
+
+// Get the global forum settings
+$forum_global_settings = forum_get_global_settings();
+
 // Submit code starts here
 if (isset($_POST['changepermissions'])) {
 

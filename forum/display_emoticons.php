@@ -56,14 +56,14 @@ if (isset($_GET['pack']) && emoticons_set_exists($_GET['pack'])) {
 } else if (($emoticon_set = session::get_value('EMOTICONS')) === false) {
 
     // Get the user's emoticon pack.
-    $emoticon_set = basename(forum_get_setting('default_emoticons', false, 'default'));
+    $emoticon_set = basename(forum_get_setting('default_emoticons', null, 'default'));
 }
 
 // Check the emoticon set exists.
 if (!emoticons_set_exists($emoticon_set)) {
 
     // Use the forum default emoticon pack.
-    $emoticon_set = basename(forum_get_setting('default_emoticons', false, 'default'));
+    $emoticon_set = basename(forum_get_setting('default_emoticons', null, 'default'));
 }
 
 // Make sure the emoticon set has no path info.

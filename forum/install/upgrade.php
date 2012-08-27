@@ -51,7 +51,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         
         $sql = "ALTER TABLE `{$table_data['PREFIX']}ADMIN_LOG` CHANGE `ENTRY` `ENTRY` LONGBLOB NULL";
         
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -59,13 +59,13 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     
         $sql = "SELECT ID, ENTRY FROM `{$table_data['PREFIX']}ADMIN_LOG`";
         
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
         }
 
-        while ($admin_log_data = db_fetch_array($result)) {
+        while ($admin_log_data = $result->fetch_assoc()) {
             
             $admin_log_data['ENTRY'] = explode("\x00", $admin_log_data['ENTRY']);
             $admin_log_data['ENTRY'] = base64_encode(serialize($admin_log_data['ENTRY']));
@@ -74,7 +74,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
             $sql.= "SET ENTRY = '{$admin_log_data['ENTRY']}' ";
             $sql.= "WHERE ID = '{$admin_log_data['ID']}'";
             
-            if (!db_query($sql, $db_install)) {
+            if (!$db->query($sql)) {
 
                 $valid = false;
                 return;
@@ -84,7 +84,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     
     $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -100,7 +100,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql.= "  PRIMARY KEY  (SID,TID,PID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";        
         
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -111,7 +111,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         
         $sql = "ALTER TABLE `{$table_data['PREFIX']}FOLDER` ADD COLUMN `PERM` INT(32) UNSIGNED DEFAULT NULL";
         
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -123,7 +123,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.GID = 0) GROUP BY FOLDER.FID ";
         $sql.= "ON DUPLICATE KEY UPDATE PERM = VALUES(PERM)";
         
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -132,7 +132,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql = "DELETE FROM GROUP_PERMS WHERE GROUP_PERMS.FORUM = '$forum_fid' ";
         $sql.= "AND GROUP_PERMS.GID = 0 ";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -143,7 +143,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "DROP TABLE IF EXISTS `{$table_data['PREFIX']}POLL_VOTES_NEW`";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -151,7 +151,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "DROP TABLE IF EXISTS `{$table_data['PREFIX']}USER_POLL_VOTES_NEW`";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -166,7 +166,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql.= "    PRIMARY KEY (TID, QUESTION_ID)";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -181,7 +181,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql.= "    PRIMARY KEY (TID,QUESTION_ID,OPTION_ID)";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -201,7 +201,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql.= "    KEY UID (UID)";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -212,7 +212,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql.= "ON (THREAD.TID = POLL.TID) SET POLL.QUESTION = THREAD.TITLE ";
         $sql.= "WHERE LENGTH(TRIM(BOTH FROM POLL.QUESTION)) = 0";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -231,7 +231,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql.= "GROUP BY POLL_VOTES.TID ORDER BY POLL.TID) AS POLL_GROUP_COUNTS ON ";
         $sql.= "(POLL_GROUP_COUNTS.TID = POLL.TID) GROUP BY POLL.TID, POLL_VOTES.GROUP_ID";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -244,7 +244,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql.= "INNER JOIN `{$table_data['PREFIX']}POLL_VOTES` POLL_VOTES ON (POLL_VOTES.TID = POLL.TID ";
         $sql.= "AND POLL_VOTES.GROUP_ID = POLL_QUESTIONS.GROUP_ID)";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -259,7 +259,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql.= "INNER JOIN `{$table_data['PREFIX']}USER_POLL_VOTES` USER_POLL_VOTES ";
         $sql.= "ON (USER_POLL_VOTES.TID = POLL.TID AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES_NEW.OPTION_ID_OLD)";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -267,7 +267,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL` DROP COLUMN QUESTION";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -275,7 +275,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL_QUESTIONS` DROP COLUMN GROUP_ID";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -283,7 +283,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}POLL_VOTES_NEW` DROP COLUMN OPTION_ID_OLD";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -291,7 +291,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "DROP TABLE `{$table_data['PREFIX']}POLL_VOTES`";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -299,7 +299,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "RENAME TABLE `{$table_data['PREFIX']}POLL_VOTES_NEW` TO `{$table_data['PREFIX']}POLL_VOTES`";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -307,7 +307,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "DROP TABLE `{$table_data['PREFIX']}USER_POLL_VOTES`";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -315,7 +315,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "RENAME TABLE `{$table_data['PREFIX']}USER_POLL_VOTES_NEW` TO `{$table_data['PREFIX']}USER_POLL_VOTES`";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -326,7 +326,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD SHOW_SHARE_LINKS CHAR(1) NOT NULL DEFAULT 'Y'";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -337,7 +337,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` DROP COLUMN SEARCH_ID";
         
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -346,7 +346,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "UPDATE `{$table_data['PREFIX']}USER_TRACK` SET USER_TIME_TOTAL = NULL, USER_TIME_BEST = NULL, USER_TIME_UPDATED = NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -356,7 +356,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     
         $sql = "ALTER TABLE `{$table_data['PREFIX']}LINKS` ADD COLUMN `APPROVED` DATETIME NULL AFTER CREATED";
         
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -364,7 +364,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     
         $sql = "ALTER TABLE `{$table_data['PREFIX']}LINKS` ADD COLUMN `APPROVED_BY` MEDIUMINT(8) NULL AFTER `APPROVED`";
         
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -374,7 +374,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         
         $sql = "UPDATE `{$table_data['PREFIX']}LINKS` SET APPROVED = '$approved_datetime', APPROVED_BY = UID";
         
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -389,7 +389,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql.= "WHERE `{$table_data['PREFIX']}USER_PREFS`.DOB_DISPLAY < 3 ";
         $sql.= "AND USER_PREFS.DOB_DISPLAY > `{$table_data['PREFIX']}USER_PREFS`.DOB_DISPLAY";
         
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -397,7 +397,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN DOB_DISPLAY";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -411,7 +411,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql.= "SET USER_PREFS.ANON_LOGON = `{$table_data['PREFIX']}USER_PREFS`.ANON_LOGON ";
         $sql.= "WHERE `{$table_data['PREFIX']}USER_PREFS`.ANON_LOGON = 'Y'";
         
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -419,7 +419,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN ANON_LOGON";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -433,7 +433,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql.= "SET USER_PREFS.ALLOW_EMAIL = `{$table_data['PREFIX']}USER_PREFS`.ALLOW_EMAIL ";
         $sql.= "WHERE `{$table_data['PREFIX']}USER_PREFS`.ALLOW_EMAIL = 'N'";
         
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -441,7 +441,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN ALLOW_EMAIL";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -455,7 +455,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql.= "SET USER_PREFS.USE_EMAIL_ADDR = `{$table_data['PREFIX']}USER_PREFS`.USE_EMAIL_ADDR ";
         $sql.= "WHERE `{$table_data['PREFIX']}USER_PREFS`.USE_EMAIL_ADDR = 'N' ";
         
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -463,7 +463,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN USE_EMAIL_ADDR";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -477,7 +477,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql.= "SET USER_PREFS.ALLOW_PM = `{$table_data['PREFIX']}USER_PREFS`.ALLOW_PM ";
         $sql.= "WHERE `{$table_data['PREFIX']}USER_PREFS`.ALLOW_PM = 'N'";
         
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -485,7 +485,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN ALLOW_PM";
 
-        if (!$result = db_query($sql, $db_install)) {
+        if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
@@ -494,7 +494,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE UID UID MEDIUMINT(8) UNSIGNED NOT NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -502,7 +502,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE HOMEPAGE_URL HOMEPAGE_URL VARCHAR(255) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -510,7 +510,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE PIC_URL PIC_URL VARCHAR(255) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -518,7 +518,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE EMAIL_NOTIFY EMAIL_NOTIFY CHAR(1) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -526,7 +526,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE MARK_AS_OF_INT MARK_AS_OF_INT CHAR(1) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -534,7 +534,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE POSTS_PER_PAGE POSTS_PER_PAGE CHAR(3) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -542,7 +542,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE FONT_SIZE FONT_SIZE CHAR(2) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -550,7 +550,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE STYLE STYLE VARCHAR(255) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -558,7 +558,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE EMOTICONS EMOTICONS VARCHAR(255) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -566,7 +566,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE VIEW_SIGS VIEW_SIGS CHAR(1) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -574,7 +574,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE START_PAGE START_PAGE CHAR(3) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -582,7 +582,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE LANGUAGE LANGUAGE VARCHAR(32) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -590,7 +590,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE SHOW_STATS SHOW_STATS CHAR(1) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -598,7 +598,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE IMAGES_TO_LINKS IMAGES_TO_LINKS CHAR(1) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -606,7 +606,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE USE_WORD_FILTER USE_WORD_FILTER CHAR(1) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -614,7 +614,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE USE_ADMIN_FILTER USE_ADMIN_FILTER CHAR(1) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -622,7 +622,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE SHOW_THUMBS SHOW_THUMBS CHAR(2) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -630,7 +630,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE ENABLE_WIKI_WORDS ENABLE_WIKI_WORDS CHAR(1) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -638,7 +638,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE USE_MOVER_SPOILER USE_MOVER_SPOILER CHAR(1) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -646,7 +646,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE USE_LIGHT_MODE_SPOILER USE_LIGHT_MODE_SPOILER CHAR(1) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -654,7 +654,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE USE_OVERFLOW_RESIZE USE_OVERFLOW_RESIZE CHAR(1) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -662,7 +662,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE PIC_AID PIC_AID VARCHAR(32) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -670,7 +670,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE AVATAR_URL AVATAR_URL VARCHAR(255) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -678,7 +678,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE AVATAR_AID AVATAR_AID VARCHAR(32) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -686,7 +686,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE REPLY_QUICK REPLY_QUICK CHAR(1) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -694,7 +694,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE THREADS_BY_FOLDER THREADS_BY_FOLDER CHAR(1) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -702,7 +702,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE THREAD_LAST_PAGE THREAD_LAST_PAGE CHAR(1) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -710,7 +710,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE LEFT_FRAME_WIDTH LEFT_FRAME_WIDTH SMALLINT(4) UNSIGNED NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -718,7 +718,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE SHOW_AVATARS SHOW_AVATARS CHAR(1) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -726,7 +726,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE SHOW_SHARE_LINKS SHOW_SHARE_LINKS CHAR(1) NULL";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -764,7 +764,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     $sql.= "SHOW_AVATARS = IF (LENGTH(TRIM(BOTH FROM SHOW_AVATARS)) > 0, SHOW_AVATARS, NULL), ";
     $sql.= "SHOW_SHARE_LINKS = IF (LENGTH(TRIM(BOTH FROM SHOW_SHARE_LINKS)) > 0, SHOW_SHARE_LINKS, NULL)";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -773,7 +773,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
 $sql = "DROP TABLE IF EXISTS SFS_CACHE";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -788,17 +788,17 @@ $sql.= "  PRIMARY KEY (REQUEST_MD5), ";
 $sql.= "  KEY EXPIRES (EXPIRES) ";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
 }    
 
-if (!install_table_exists($db_database, "USER_TOKEN")) {
+if (!install_table_exists($database, "USER_TOKEN")) {
 
     $sql = "ALTER TABLE USER CHANGE PASSWD PASSWD VARCHAR(255)";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -806,7 +806,7 @@ if (!install_table_exists($db_database, "USER_TOKEN")) {
 
     $sql = "ALTER TABLE USER ADD SALT VARCHAR(255) DEFAULT NULL AFTER PASSWD";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -819,40 +819,40 @@ if (!install_table_exists($db_database, "USER_TOKEN")) {
     $sql.= "  PRIMARY KEY (UID, TOKEN)";
     $sql.= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
     }
 }
 
-if (!install_column_exists($db_database, "VISITOR_LOG", "USER_AGENT")) {
+if (!install_column_exists($database, "VISITOR_LOG", "USER_AGENT")) {
     
     $sql = "ALTER TABLE VISITOR_LOG ADD COLUMN USER_AGENT VARCHAR(255) DEFAULT NULL";
     
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
     }
 }
 
-if (!install_column_exists($db_database, "USER_PREFS", "SHOW_SHARE_LINKS")) {
+if (!install_column_exists($database, "USER_PREFS", "SHOW_SHARE_LINKS")) {
 
     $sql = "ALTER TABLE USER_PREFS ADD SHOW_SHARE_LINKS CHAR(1) NOT NULL DEFAULT 'Y'";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
     }
 }
 
-if (!install_column_exists($db_database, "USER_PREFS", 'LEFT_FRAME_WIDTH')) {
+if (!install_column_exists($database, "USER_PREFS", 'LEFT_FRAME_WIDTH')) {
 
     $sql = "ALTER TABLE USER_PREFS ADD COLUMN LEFT_FRAME_WIDTH SMALLINT(4) DEFAULT '280' NOT NULL AFTER THREAD_LAST_PAGE";
 
-    if (!$result = db_query($sql, $db_install)) {
+    if (!$result = $db->query($sql)) {
 
         $valid = false;
         return;
@@ -861,7 +861,7 @@ if (!install_column_exists($db_database, "USER_PREFS", 'LEFT_FRAME_WIDTH')) {
 
 $sql = "ALTER TABLE USER_PREFS CHANGE UID UID MEDIUMINT(8) UNSIGNED NOT NULL";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -869,7 +869,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS CHANGE FIRSTNAME FIRSTNAME VARCHAR(32) NOT NULL";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -877,7 +877,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS CHANGE LASTNAME LASTNAME VARCHAR(32) NOT NULL";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -885,7 +885,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS CHANGE DOB DOB DATE NOT NULL";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -893,7 +893,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS CHANGE HOMEPAGE_URL HOMEPAGE_URL VARCHAR(255) NOT NULL";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -901,7 +901,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS CHANGE PIC_URL PIC_URL VARCHAR(255) NOT NULL";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -909,7 +909,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS CHANGE EMAIL_NOTIFY EMAIL_NOTIFY CHAR(1) DEFAULT 'Y' NOT NULL";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -917,7 +917,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS CHANGE STYLE STYLE VARCHAR(255) DEFAULT 'default' NOT NULL";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -925,7 +925,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS CHANGE EMOTICONS EMOTICONS VARCHAR(255) DEFAULT 'default' NOT NULL";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -933,7 +933,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS CHANGE LANGUAGE LANGUAGE VARCHAR(32) DEFAULT 'en_GB' NOT NULL";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -941,7 +941,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS CHANGE PIC_AID PIC_AID VARCHAR(32) NOT NULL";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -949,7 +949,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS CHANGE AVATAR_URL AVATAR_URL VARCHAR(255) NOT NULL";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -957,7 +957,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE USER_PREFS CHANGE AVATAR_AID AVATAR_AID VARCHAR(32) NOT NULL";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -965,7 +965,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "DROP TABLE IF EXISTS SPHINX_SEARCH_ID";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -973,7 +973,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "ALTER TABLE `USER` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -981,7 +981,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "DROP TABLE IF EXISTS SESSIONS";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -1003,7 +1003,7 @@ $sql.= "  KEY TIME (TIME,FID),";
 $sql.= "  KEY UID (UID,SID,TIME,FID)";
 $sql.= ") ENGINE=INNODB DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -1011,7 +1011,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "DROP TABLE IF EXISTS VISITOR_LOG_NEW";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -1033,7 +1033,7 @@ $sql.= "  KEY FORUM (FORUM),";
 $sql.= "  KEY LAST_LOGON (LAST_LOGON)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -1044,7 +1044,7 @@ $sql.= "IF (UID > 0, UID, NULL) AS UID, IF (SID > 0, SID, NULL) AS SID, ";
 $sql.= "FORUM, LAST_LOGON, IPADDRESS, REFERER, USER_AGENT FROM VISITOR_LOG ";
 $sql.= "ORDER BY LAST_LOGON DESC";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -1052,7 +1052,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "DROP TABLE IF EXISTS VISITOR_LOG";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
@@ -1060,7 +1060,7 @@ if (!$result = db_query($sql, $db_install)) {
 
 $sql = "RENAME TABLE VISITOR_LOG_NEW TO VISITOR_LOG";
 
-if (!$result = db_query($sql, $db_install)) {
+if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;

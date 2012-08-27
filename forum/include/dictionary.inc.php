@@ -83,13 +83,13 @@ class dictionary {
 
     function is_installed()
     {
-        if (!$db_dictionary_check_setup = db_connect()) return false;
+        if (!$db = db::get()) return false;
 
         $sql = "SELECT COUNT(WORD) FROM DICTIONARY";
 
-        if (!$result = db_query($sql, $db_dictionary_check_setup)) return false;
+        if (!$result = $db->query($sql)) return false;
 
-        list($word_count) = db_fetch_array($result, DB_RESULT_NUM);
+        list($word_count) = $result->fetch_row();
 
         return ($word_count > 0);
     }
@@ -166,16 +166,16 @@ class dictionary {
 
     function add_custom_word($word)
     {
-        if (!$db_dictionary_add_custom_word = db_connect()) return false;
+        if (!$db = db::get()) return false;
 
-        $word = db_escape_string(trim($word));
+        $word = $db->escape(trim($word));
 
         if (($uid = session::get_value('UID')) === false) return false;
 
         $sql = "INSERT IGNORE INTO DICTIONARY (WORD, SOUND, UID) ";
         $sql.= "VALUES ('$word', SOUNDEX('$word'), '$uid')";
 
-        if (!db_query($sql, $db_dictionary_add_custom_word)) return false;
+        if (!$db->query($sql)) return false;
 
         return true;
     }
@@ -239,12 +239,12 @@ class dictionary {
 
     function word_get_suggestions()
     {
-        if (!$db_dictionary_word_get_suggestions = db_connect()) return;
+        if (!$db = db::get()) return;
 
         if (!isset($this->content_array[$this->current_word])) return;
 
         // Fetch the current word
-        $word = db_escape_string($this->get_current_word());
+        $word = $db->escape($this->get_current_word());
 
         // Check it is valid.
         if (!$this->word_is_valid($word)) return;
@@ -260,10 +260,10 @@ class dictionary {
         $sql.= "AND (UID = 0 OR UID = '$uid') ";
         $sql.= "LIMIT 0, 1";
 
-        if (!$result = db_query($sql, $db_dictionary_word_get_suggestions)) return;
+        if (!$result = $db->query($sql)) return;
 
         // If we found an exact match then they spelt it right?
-        if (db_num_rows($result) > 0) {
+        if ($result->num_rows > 0) {
 
             $this->word_suggestion_result = DICTIONARY_EXACT;
             return;
@@ -274,11 +274,11 @@ class dictionary {
         $sql.= "AND (UID = 0 OR UID = '$uid') ";
         $sql.= "ORDER BY WORD ASC LIMIT $offset, 10";
 
-        if (!$result = db_query($sql, $db_dictionary_word_get_suggestions)) return;
+        if (!$result = $db->query($sql)) return;
 
-        if (db_num_rows($result) > 0) {
+        if ($result->num_rows > 0) {
 
-            while (($spelling_data = db_fetch_array($result))) {
+            while (($spelling_data = $result->fetch_assoc())) {
 
                 $this->suggestions_array[$spelling_data['WORD']] = $spelling_data['WORD'];
             }

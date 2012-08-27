@@ -280,28 +280,29 @@ function get_proxy_cache_headers()
 
 function unregister_globals()
 {
-    if (ini_get('register_globals')) {
+    if (!ini_get('register_globals')) return;
 
-        $super_globals_array = array(
-            '_REQUEST', 
-            '_SESSION', 
-            '_SERVER', 
-            '_ENV', 
-            '_FILES'
-        );
+    $super_globals_array = array(
+        '_REQUEST', 
+        '_SESSION', 
+        '_SERVER', 
+        '_ENV', 
+        '_FILES'
+    );
 
-        foreach ($super_globals_array as $super_global) {
+    foreach ($super_globals_array as $super_global) {
 
-            if (isset($GLOBALS[$super_global]) && is_array($GLOBALS[$super_global])) {
+        if (!isset($GLOBALS[$super_global]) || !is_array($GLOBALS[$super_global])) {
+            continue;
+        }
 
-                foreach ($GLOBALS[$super_global] as $global_key => $global_var) {
+        foreach ($GLOBALS[$super_global] as $global_key => $global_var) {
 
-                    if ($global_var === $GLOBALS[$global_key]) {
-
-                        unset($GLOBALS[$global_key]);
-                    }
-                }
+            if ($global_var !== $GLOBALS[$global_key]) {
+                continue;
             }
+
+            unset($GLOBALS[$global_key]);
         }
     }
 }
@@ -342,6 +343,26 @@ function set_server_protocol()
     if (!isset($_SERVER['SERVER_PROTOCOL']) || !in_array($_SERVER['SERVER_PROTOCOL'], array('HTTP/1.0', 'HTTP/1.1'))) {
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.0';
     }
+}
+
+function server_get_config()
+{
+    static $config = false;
+    
+    if (!$config) {
+    
+        require_once BH_INCLUDE_PATH. 'config.inc.php';
+        
+        if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
+            require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
+        }
+        
+        $config = get_defined_vars();
+        
+        unset($config['config']);
+    }
+    
+    return $config;
 }
 
 ?>

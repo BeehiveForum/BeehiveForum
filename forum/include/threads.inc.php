@@ -48,7 +48,7 @@ function threads_get_folders()
 {
     if (($uid = session::get_value('UID')) === false) return false;
 
-    if (!$db_threads_get_folders = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $access_allowed = USER_PERM_POST_READ;
 
@@ -60,13 +60,13 @@ function threads_get_folders()
     $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "ORDER BY USER_FOLDER.INTEREST DESC, FOLDER.POSITION";
 
-    if (!$result = db_query($sql, $db_threads_get_folders)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
     $folder_info = array();
 
-    while (($folder_data = db_fetch_array($result))) {
+    while (($folder_data = $result->fetch_assoc())) {
 
         if (!session::logged_in()) {
 
@@ -1170,7 +1170,7 @@ function threads_get_unread_by_days($uid, $folder, $page = 1, $days = 0) // get 
 
 function threads_get_most_recent($limit = 10, $fid = false, $creation_order = false)
 {
-    if (!($db_threads_get_recent = db_connect())) return array(0, 0, 0);
+    if (!($db = db::get())) return array(0, 0, 0);
 
     // If there are any problems with the function arguments we bail out.
     if (!is_numeric($limit)) return false;
@@ -1240,13 +1240,13 @@ function threads_get_most_recent($limit = 10, $fid = false, $creation_order = fa
     $sql.= "ORDER BY $order_by ";
     $sql.= "LIMIT 0, $limit";
 
-    if (!$result = db_query($sql, $db_threads_get_recent)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
     $threads_get_array = array();
 
-    while (($thread = db_fetch_array($result))) {
+    while (($thread = $result->fetch_assoc())) {
 
         if (isset($thread['LOGON']) && isset($thread['PEER_NICKNAME'])) {
             if (!is_null($thread['PEER_NICKNAME']) && strlen($thread['PEER_NICKNAME']) > 0) {
@@ -1299,11 +1299,11 @@ function threads_get_unread_cutoff()
 // Arrange the results of a query into the right order for display
 function threads_process_list($sql)
 {
-    if (!($db_threads_process_list = db_connect())) return array(0, 0, 0);
+    if (!($db = db::get())) return array(0, 0, 0);
 
-    if (!($result = db_query($sql, $db_threads_process_list))) return array(0, 0, 0);
+    if (!($result = $db->query($sql))) return array(0, 0, 0);
 
-    if (($thread_count = db_num_rows($result)) == 0) return array(0, 0, 0);
+    if (($thread_count = $result->num_rows) == 0) return array(0, 0, 0);
 
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
 
@@ -1311,7 +1311,7 @@ function threads_process_list($sql)
 
     $folder_order = array();
 
-    while (($thread = db_fetch_array($result, DB_RESULT_ASSOC))) {
+    while (($thread = $result->fetch_assoc())) {
 
         if (isset($thread['LOGON']) && isset($thread['PEER_NICKNAME'])) {
             if (!is_null($thread['PEER_NICKNAME']) && strlen($thread['PEER_NICKNAME']) > 0) {
@@ -1364,15 +1364,15 @@ function threads_get_folder_msgs()
 {
     $folder_msgs = array();
 
-    if (!$db_threads_get_folder_msgs = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return 0;
 
     $sql = "SELECT FID, COUNT(*) AS TOTAL FROM `{$table_prefix}THREAD` GROUP BY FID";
 
-    if (!$result = db_query($sql, $db_threads_get_folder_msgs)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    while (($folder = db_fetch_array($result))) {
+    while (($folder = $result->fetch_assoc())) {
         $folder_msgs[$folder['FID']] = $folder['TOTAL'];
     }
 
@@ -1381,7 +1381,7 @@ function threads_get_folder_msgs()
 
 function threads_any_unread()
 {
-    if (!$db_threads_any_unread = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
@@ -1413,9 +1413,9 @@ function threads_any_unread()
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1)";
 
-    if (!$result = db_query($sql, $db_threads_any_unread)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($unread_thread_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($unread_thread_count) = $result->fetch_row();
 
     return ($unread_thread_count > 0);
 }
@@ -1424,7 +1424,7 @@ function threads_mark_all_read()
 {
     if (($uid = session::get_value('UID')) === false) return false;
 
-    if (!$db_threads_mark_all_read = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1439,7 +1439,7 @@ function threads_mark_all_read()
     $sql.= "OR USER_THREAD.LAST_READ IS NULL) AND (THREAD.MODIFIED >= CAST('$unread_cutoff_datetime' AS DATETIME)) ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
-    if (!db_query($sql, $db_threads_mark_all_read)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
@@ -1448,7 +1448,7 @@ function threads_mark_50_read()
 {
     if (($uid = session::get_value('UID')) === false) return false;
 
-    if (!$db_threads_mark_50_read = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1463,14 +1463,14 @@ function threads_mark_50_read()
     $sql.= "OR USER_THREAD.LAST_READ IS NULL) AND (THREAD.MODIFIED >= CAST('$unread_cutoff_datetime' AS DATETIME)) ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 50 ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
-    if (!db_query($sql, $db_threads_mark_50_read)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function threads_mark_folder_read($fid)
 {
-    if (!$db_threads_mark_folder_read = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -1490,14 +1490,14 @@ function threads_mark_folder_read($fid)
     $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
-    if (!db_query($sql, $db_threads_mark_folder_read)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function threads_mark_read($tid_array)
 {
-    if (!$db_threads_mark_read = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1519,7 +1519,7 @@ function threads_mark_read($tid_array)
     $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
-    if (!db_query($sql, $db_threads_mark_read)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
@@ -1533,16 +1533,16 @@ function threads_get_unread_data(&$threads_array, $tid_array)
 
     $tid_list = implode(",", array_filter($tid_array, 'is_numeric'));
 
-    if (!$db_threads_get_modified = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT TID, LENGTH, LENGTH AS LAST_READ, UNIX_TIMESTAMP(MODIFIED) AS MODIFIED ";
     $sql.= "FROM `{$table_prefix}THREAD` WHERE TID IN ($tid_list)";
 
-    if (!$result = db_query($sql, $db_threads_get_modified)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    while (($thread_data = db_fetch_array($result))) {
+    while (($thread_data = $result->fetch_assoc())) {
         $threads_array[$thread_data['TID']] = $thread_data;
     }
 
@@ -1669,15 +1669,15 @@ function threads_have_attachments(&$threads_array)
 
     $tid_list = implode(",", array_filter(array_keys($threads_array), 'is_numeric'));
 
-    if (!$db_thread_has_attachments = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT PAI.TID, PAF.AID FROM POST_ATTACHMENT_IDS PAI ";
     $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
     $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.TID IN ($tid_list) ";
 
-    if (!$result = db_query($sql, $db_thread_has_attachments)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    while (($attachment_data = db_fetch_array($result))) {
+    while (($attachment_data = $result->fetch_assoc())) {
         $threads_array[$attachment_data['TID']]['AID'] = $attachment_data['AID'];
     }
 
@@ -1686,7 +1686,7 @@ function threads_have_attachments(&$threads_array)
 
 function thread_auto_prune_unread_data()
 {
-    if (!$db_thread_prune_unread_data = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1700,7 +1700,7 @@ function thread_auto_prune_unread_data()
         $sql.= "AND (`{$table_prefix}USER_THREAD`.`INTEREST` IS NULL ";
         $sql.= "OR `{$table_prefix}USER_THREAD`.`INTEREST` = 0)";
 
-        if (!db_query($sql, $db_thread_prune_unread_data)) return false;
+        if (!$db->query($sql)) return false;
     }
 
     return true;
@@ -1708,7 +1708,7 @@ function thread_auto_prune_unread_data()
 
 function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $page = 1)
 {
-    if (!$db_threads_get_user_subscriptions = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($interest_type)) $interest_type = THREAD_NOINTEREST;
 
@@ -1743,19 +1743,19 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $pag
         $sql.= "LIMIT $offset, 20";
     }
 
-    if (!$result = db_query($sql, $db_threads_get_user_subscriptions)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_threads_get_user_subscriptions)) return false;
+    if (!$result_count = $db->query($sql)) return false;
 
-    list($thread_subscriptions_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    list($thread_subscriptions_count) = $result_count->fetch_row();
 
-    if ((db_num_rows($result) == 0) && ($thread_subscriptions_count > 0) && ($page > 1)) {
+    if (($result->num_rows == 0) && ($thread_subscriptions_count > 0) && ($page > 1)) {
         return threads_get_user_subscriptions($interest_type, $page - 1);
     }
 
-    while (($thread_data_array = db_fetch_array($result))) {
+    while (($thread_data_array = $result->fetch_assoc())) {
         $thread_subscriptions_array[] = $thread_data_array;
     }
 
@@ -1767,7 +1767,7 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $pag
 
 function threads_search_user_subscriptions($thread_search, $interest_type = THREAD_NOINTEREST, $page = 1)
 {
-    if (!$db_threads_search_user_subscriptions = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($interest_type)) $interest_type = THREAD_NOINTEREST;
 
@@ -1777,7 +1777,7 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
 
     $offset = calculate_page_offset($page, 20);
 
-    $thread_search = db_escape_string($thread_search);
+    $thread_search = $db->escape($thread_search);
 
     $thread_subscriptions_array = array();
 
@@ -1806,19 +1806,19 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
         $sql.= "LIMIT $offset, 20";
     }
 
-    if (!$result = db_query($sql, $db_threads_search_user_subscriptions)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_threads_search_user_subscriptions)) return false;
+    if (!$result_count = $db->query($sql)) return false;
 
-    list($thread_subscriptions_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    list($thread_subscriptions_count) = $result_count->fetch_row();
 
-    if ((db_num_rows($result) == 0) && ($thread_subscriptions_count > 0) && ($page > 1)) {
+    if (($result->num_rows == 0) && ($thread_subscriptions_count > 0) && ($page > 1)) {
         return threads_search_user_subscriptions($thread_search, $interest_type, $page - 1);
     }
 
-    while (($thread_data_array = db_fetch_array($result))) {
+    while (($thread_data_array = $result->fetch_assoc())) {
         $thread_subscriptions_array[] = $thread_data_array;
     }
 

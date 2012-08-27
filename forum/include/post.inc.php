@@ -49,9 +49,9 @@ require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipaddress = false)
 {
-    if (!$db_post_create = db_connect()) return -1;
+    if (!$db = db::get()) return -1;
 
-    $post_content = db_escape_string($content);
+    $post_content = $db->escape($content);
 
     $ipaddress = ($hide_ipaddress == false) ? get_ip_address() : '';
 
@@ -79,19 +79,19 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
         $sql.= "CAST('$current_datetime' AS DATETIME), $fuid, '$ipaddress')";
     }
 
-    if (!db_query($sql, $db_post_create)) return -1;
+    if (!$db->query($sql)) return -1;
 
-    $new_pid = db_insert_id($db_post_create);
+    $new_pid = $db->insert_id;
 
     $sql = "INSERT INTO `{$table_prefix}POST_CONTENT` (TID, PID, CONTENT) ";
     $sql.= "VALUES ('$tid', '$new_pid', '$post_content')";
 
-    if (!db_query($sql, $db_post_create)) return -1;
+    if (!$db->query($sql)) return -1;
     
     $sql = "INSERT INTO `{$table_prefix}POST_SEARCH_ID` (TID, PID) ";
     $sql.= "VALUES('$tid', '$new_pid')";
     
-    if (!db_query($sql, $db_post_create)) return -1;
+    if (!$db->query($sql)) return -1;
 
     post_update_thread_length($tid, $new_pid);
 
@@ -109,7 +109,7 @@ function post_approve($tid, $pid)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
 
-    if (!$db_post_approve = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $approve_uid = session::get_value('UID');
 
@@ -122,7 +122,7 @@ function post_approve($tid, $pid)
     $sql.= "APPROVED_BY = '$approve_uid' WHERE TID = '$tid' ";
     $sql.= "AND PID = '$pid'";
 
-    if (!db_query($sql, $db_post_approve)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
@@ -133,7 +133,7 @@ function post_save_attachment_id($tid, $pid, $aid)
     if (!is_numeric($pid)) return false;
     if (!is_md5($aid)) return false;
 
-    if (!$db_post_save_attachment_id = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -143,7 +143,7 @@ function post_save_attachment_id($tid, $pid, $aid)
     $sql.= "VALUES ($forum_fid, $tid, $pid, '$aid') ON DUPLICATE KEY ";
     $sql.= "UPDATE AID = VALUES(AID)";
 
-    if (!db_query($sql, $db_post_save_attachment_id)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
@@ -154,7 +154,7 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
 
     if (!is_numeric($uid)) return false;
 
-    $title = db_escape_string($title);
+    $title = $db->escape($title);
 
     $poll = ($poll == 'Y') ? 'Y' : 'N';
 
@@ -164,7 +164,7 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
 
     $deleted = ($deleted === true) ? 'Y' : 'N';
 
-    if (!$db_post_create_thread = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -176,14 +176,14 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     $sql.= "'$sticky', CAST('$current_datetime' AS DATETIME), CAST('$current_datetime' AS DATETIME), ";
     $sql.= "$closed, '$deleted')";
 
-    if (!db_query($sql, $db_post_create_thread)) return false;
+    if (!$db->query($sql)) return false;
 
-    return db_insert_id($db_post_create_thread);
+    return $db->insert_id;
 }
 
 function post_update_thread_length($tid, $length)
 {
-    if (!$db_post_update_thread_length = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -195,7 +195,7 @@ function post_update_thread_length($tid, $length)
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET LENGTH = '$length', ";
     $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
 
-    if (!db_query($sql, $db_post_update_thread_length)) return false;
+    if (!$db->query($sql)) return false;
 
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) !== false) {
 
@@ -206,7 +206,7 @@ function post_update_thread_length($tid, $length)
         $sql.= "AND THREAD.TID = '$tid' GROUP BY THREAD.TID ";
         $sql.= "ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID)";
 
-        if (!db_query($sql, $db_post_update_thread_length)) return false;
+        if (!$db->query($sql)) return false;
     }
 
     return true;
@@ -218,7 +218,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
 
     $html = "<select name=\"t_to_uid\" class=\"$class\">";
 
-    if (!$db_post_draw_to_dropdown = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($default_uid)) $default_uid = 0;
 
@@ -235,11 +235,11 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
         $sql.= "WHERE USER.UID = '$default_uid' ";
 
-        if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
+        if (!$result = $db->query($sql)) return false;
 
-        if (db_num_rows($result) > 0) {
+        if ($result->num_rows > 0) {
 
-            if (($top_user = db_fetch_array($result))) {
+            if (($top_user = $result->fetch_assoc())) {
 
                 if (isset($top_user['PEER_NICKNAME'])) {
                     if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
@@ -266,9 +266,9 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     $sql.= "AND VISITOR_LOG.UID > 0 ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
-    if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    while (($user_data = db_fetch_array($result))) {
+    while (($user_data = $result->fetch_assoc())) {
 
         if (isset($user_data['LOGON'])) {
 
@@ -293,7 +293,7 @@ function post_draw_to_dropdown_recent($default_uid)
 
     $html = "<select name=\"t_to_uid_recent\" class=\"$class\">";
 
-    if (!$db_post_draw_to_dropdown = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
     
@@ -310,11 +310,11 @@ function post_draw_to_dropdown_recent($default_uid)
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
         $sql.= "WHERE USER.UID = '$default_uid' ";
 
-        if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
+        if (!$result = $db->query($sql)) return false;
 
-        if (db_num_rows($result) > 0) {
+        if ($result->num_rows > 0) {
 
-            if (($top_user = db_fetch_array($result))) {
+            if (($top_user = $result->fetch_assoc())) {
 
                 if (isset($top_user['PEER_NICKNAME'])) {
                     if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
@@ -339,9 +339,9 @@ function post_draw_to_dropdown_recent($default_uid)
     $sql.= "AND VISITOR_LOG.UID > 0 ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
-    if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    while (($user_data = db_fetch_array($result))) {
+    while (($user_data = $result->fetch_assoc())) {
 
         if (isset($user_data['LOGON'])) {
 
@@ -364,7 +364,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 {
     $html = "<select name=\"t_to_uid_in_thread\" class=\"$class\" $custom_html>";
 
-    if (!$db_post_draw_to_dropdown = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($tid)) return false;
     if (!is_numeric($default_uid)) $default_uid = 0;
@@ -380,11 +380,11 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
         $sql.= "WHERE USER.UID = '$default_uid' ";
 
-        if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
+        if (!$result = $db->query($sql)) return false;
 
-        if (db_num_rows($result) > 0) {
+        if ($result->num_rows > 0) {
 
-            if (($top_user = db_fetch_array($result))) {
+            if (($top_user = $result->fetch_assoc())) {
 
                 if (isset($top_user['PEER_NICKNAME'])) {
                     if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
@@ -419,9 +419,9 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
     $sql.= "WHERE POST.TID = '$tid' AND POST.FROM_UID <> '$default_uid' ";
     $sql.= "GROUP BY POST.FROM_UID LIMIT 0, 20";
 
-    if (!$result = db_query($sql, $db_post_draw_to_dropdown)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    while (($user_data = db_fetch_array($result))) {
+    while (($user_data = $result->fetch_assoc())) {
 
         if (isset($user_data['LOGON'])) {
 
@@ -442,7 +442,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
 
 function post_check_ddkey($ddkey)
 {
-    if (!$db_post_check_ddkey = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($ddkey)) return false;
 
@@ -455,16 +455,16 @@ function post_check_ddkey($ddkey)
     $sql = "SELECT DDKEY FROM `{$table_prefix}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_post_check_ddkey)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result)) {
+    if ($result->num_rows) {
 
-        list($ddkey_datetime_check) = db_fetch_array($result, DB_RESULT_NUM);
+        list($ddkey_datetime_check) = $result->fetch_row();
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
         $sql.= "SET DDKEY = CAST('$ddkey_datetime' AS DATETIME) WHERE UID = '$uid'";
 
-        if (!$result = db_query($sql, $db_post_check_ddkey)) return false;
+        if (!$result = $db->query($sql)) return false;
 
     } else{
 
@@ -473,7 +473,7 @@ function post_check_ddkey($ddkey)
         $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, DDKEY) ";
         $sql.= "VALUES ('$uid', CAST('$ddkey_datetime' AS DATETIME))";
 
-        if (!$result = db_query($sql, $db_post_check_ddkey)) return false;
+        if (!$result = $db->query($sql)) return false;
     }
 
     return !($ddkey_datetime == $ddkey_datetime_check);
@@ -481,13 +481,13 @@ function post_check_ddkey($ddkey)
 
 function post_check_frequency()
 {
-    if (!$db_post_check_frequency = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    $minimum_post_frequency = intval(forum_get_setting('minimum_post_frequency', false, 0));
+    $minimum_post_frequency = intval(forum_get_setting('minimum_post_frequency', null, 0));
 
     if ($minimum_post_frequency == 0) return true;
 
@@ -497,11 +497,11 @@ function post_check_frequency()
     $sql.= "UNIX_TIMESTAMP('$current_datetime') FROM `{$table_prefix}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
-    if (!$result = db_query($sql, $db_post_check_frequency)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) > 0) {
+    if ($result->num_rows > 0) {
 
-        list($last_post_stamp, $current_timestamp) = db_fetch_array($result, DB_RESULT_NUM);
+        list($last_post_stamp, $current_timestamp) = $result->fetch_row();
 
         if (!is_numeric($last_post_stamp) || $last_post_stamp < $current_timestamp) {
 
@@ -509,7 +509,7 @@ function post_check_frequency()
             $sql.= "SET LAST_POST = CAST('$current_datetime' AS DATETIME) ";
             $sql.= "WHERE UID = '$uid'";
 
-            if (!$result = db_query($sql, $db_post_check_frequency)) return false;
+            if (!$result = $db->query($sql)) return false;
 
             return true;
         }
@@ -519,7 +519,7 @@ function post_check_frequency()
         $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, LAST_POST) ";
         $sql.= "VALUES ('$uid', CAST('$current_datetime' AS DATETIME))";
 
-        if (!$result = db_query($sql, $db_post_check_frequency)) return false;
+        if (!$result = $db->query($sql)) return false;
 
         return true;
     }
@@ -532,23 +532,23 @@ function post_update($fid, $tid, $pid, $content)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
 
-    if (!$db_post_update = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
-    $content = db_escape_string($content);
+    $content = $db->escape($content);
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST_CONTENT` SET CONTENT = '$content' ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
-    if (!db_query($sql, $db_post_update)) return false;
+    if (!$db->query($sql)) return false;
 
     if (session::check_perm(USER_PERM_POST_APPROVAL, $fid) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST` SET APPROVED = 0, APPROVED_BY = 0 ";
         $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
-        if (!db_query($sql, $db_post_update)) return false;
+        if (!$db->query($sql)) return false;
     }
 
     return true;
@@ -559,7 +559,7 @@ function post_add_edit_text($tid, $pid)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
 
-    if (!$db_post_add_edit_text = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($edit_uid = session::get_value('UID')) === false) return false;
 
@@ -571,7 +571,7 @@ function post_add_edit_text($tid, $pid)
     $sql.= "SET EDITED = CAST('$current_datetime' AS DATETIME), ";
     $sql.= "EDITED_BY = '$edit_uid' WHERE TID = '$tid' AND PID = '$pid'";
 
-    if (!db_query($sql, $db_post_add_edit_text)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
@@ -583,7 +583,7 @@ function post_delete($tid, $pid)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (!$db_post_delete = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($approve_uid = session::get_value('UID')) === false) return false;
 
@@ -594,25 +594,25 @@ function post_delete($tid, $pid)
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET POLL_FLAG = 'N', ";
         $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
 
-        if (!db_query($sql, $db_post_delete)) return false;
+        if (!$db->query($sql)) return false;
     }
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET DELETED = 'Y', ";
     $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid' AND LENGTH = 1";
 
-    if (!db_query($sql, $db_post_delete)) return false;
+    if (!$db->query($sql)) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST_CONTENT` SET CONTENT = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
 
-    if (!db_query($sql, $db_post_delete)) return false;
+    if (!$db->query($sql)) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST` ";
     $sql.= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
     $sql.= "APPROVED_BY = '$approve_uid' WHERE TID = '$tid' ";
     $sql.= "AND PID = '$pid'";
 
-    if (!db_query($sql, $db_post_delete)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }

@@ -56,7 +56,7 @@ function get_forum_data()
 {
     static $forum_data = false;
 
-    if (!$db_get_forum_data = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_array($forum_data) || !isset($forum_data['WEBTAG']) || !isset($forum_data['PREFIX'])) {
 
@@ -64,17 +64,17 @@ function get_forum_data()
 
             // Check #1: See if the webtag specified in GET/POST
             // actually exists.
-            $webtag = db_escape_string($webtag);
+            $webtag = $db->escape($webtag);
 
             $sql = "SELECT FID, WEBTAG, ACCESS_LEVEL, DEFAULT_FORUM, DATABASE_NAME, ";
             $sql.= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX ";
             $sql.= "FROM FORUMS WHERE WEBTAG = '$webtag'";
 
-            if (($result = db_query($sql, $db_get_forum_data))) {
+            if (($result = $db->query($sql))) {
 
-                if (db_num_rows($result) == 0) return false;
+                if ($result->num_rows == 0) return false;
 
-                $forum_data = db_fetch_array($result);
+                $forum_data = $result->fetch_assoc();
 
                 if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
             }
@@ -87,11 +87,11 @@ function get_forum_data()
             $sql.= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX ";
             $sql.= "FROM FORUMS WHERE DEFAULT_FORUM = 1";
 
-            if (($result = db_query($sql, $db_get_forum_data))) {
+            if (($result = $db->query($sql))) {
 
-                if (db_num_rows($result) == 0) return false;
+                if ($result->num_rows == 0) return false;
 
-                $forum_data = db_fetch_array($result);
+                $forum_data = $result->fetch_assoc();
 
                 if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
             }
@@ -132,18 +132,18 @@ function get_forum_fid()
 
 function get_all_table_prefixes()
 {
-    $db_get_all_table_prefixes = db_connect();
+    $db = db::get();
 
     $sql = "SELECT FID, WEBTAG, ACCESS_LEVEL, DEFAULT_FORUM, DATABASE_NAME, ";
     $sql.= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX FROM FORUMS";
 
-    if (!($result = db_query($sql, $db_get_all_table_prefixes))) return false;
+    if (!($result = $db->query($sql))) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
     $forum_data_array = array();
 
-    while (($forum_data = db_fetch_array($result))) {
+    while (($forum_data = $result->fetch_assoc())) {
 
         if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
 
@@ -168,7 +168,7 @@ function forum_check_webtag_available(&$webtag = false)
 
 function forum_check_access_level()
 {
-    if (!($db_forum_check_access_level = db_connect())) return false;
+    if (!($db = db::get())) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -185,11 +185,11 @@ function forum_check_access_level()
     $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.FID = '$forum_fid' ";
     $sql.= "AND FORUMS.ACCESS_LEVEL < 3";
 
-    if (!$result = db_query($sql, $db_forum_check_access_level)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
     
-    if (!($forum_data = db_fetch_array($result))) return false;
+    if (!($forum_data = $result->fetch_assoc())) return false;
     
     if (!isset($forum_data['ACCESS_LEVEL'])) return true;
 
@@ -213,11 +213,11 @@ function forum_closed_message()
 {
     html_draw_top(sprintf("title=%s", gettext("Closed")));
 
-    $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+    $forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
 
     echo "<h1>", gettext("Closed"), "</h1>\n";
 
-    if (($closed_message = forum_get_setting('closed_message', false))) {
+    if (($closed_message = forum_get_setting('closed_message'))) {
 
         html_display_error_msg(fix_html($closed_message), '600', 'center');
 
@@ -247,13 +247,13 @@ function forum_restricted_message()
         $forum_owner_link_target = html_get_top_frame_name();
     }
 
-    if (($restricted_message = forum_get_setting('restricted_message', false))) {
+    if (($restricted_message = forum_get_setting('restricted_message'))) {
 
         html_draw_error(fix_html($restricted_message), '600', 'center');
 
     } else {
         
-        $forum_name = forum_get_setting('forum_name', false, 'A Beehive Forum');
+        $forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
 
         if (!($forum_owner_uid = forum_get_setting('owner_uid'))) {
             html_draw_error(sprintf(gettext("You do not have access to %s"), htmlentities_array($forum_name)));
@@ -273,17 +273,17 @@ function forum_restricted_message()
 
 function forum_get_password($forum_fid)
 {
-    if (!$db_forum_get_password = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($forum_fid)) return false;
 
     $sql = "SELECT FORUM_PASSWD FROM FORUMS WHERE FID = '$forum_fid'";
 
-    if (!$result = db_query($sql, $db_forum_get_password)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    list($forum_passwd) = db_fetch_array($result, DB_RESULT_NUM);
+    list($forum_passwd) = $result->fetch_row();
 
     return is_md5($forum_passwd) ? $forum_passwd : false;
 }
@@ -316,7 +316,7 @@ function forum_check_password($forum_fid)
         html_display_error_msg(gettext("The username or password you supplied is not valid."), '550', 'center');
     }
 
-    if (($password_protected_message = forum_get_setting('password_protected_message', false))) {
+    if (($password_protected_message = forum_get_setting('password_protected_message'))) {
 
         echo fix_html($password_protected_message);
 
@@ -381,171 +381,95 @@ function forum_check_password($forum_fid)
 
 function forum_get_settings()
 {
-    if (!$db_forum_get_settings = db_connect()) return false;
-
-    static $forum_settings_array = false;
-
-    if (!($table_prefix = get_table_prefix())) return false;
-
-    if (!($forum_fid = get_forum_fid())) return false;
-
-    if (!is_array($forum_settings_array)) {
-
-        $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid'";
-
-        if (!$result = db_query($sql, $db_forum_get_settings)) return false;
-
-        if (db_num_rows($result) > 0) {
-
-            $forum_settings_array = array(
-                'fid' => $forum_fid, 
-                'forum_gmt_offset' => 0, 
-                'forum_dst_offset' => 1
-            );
-
-            while (($forum_data = db_fetch_array($result))) {
-
-                if (forum_check_setting_name($forum_data['SNAME'])) {
-
-                    $forum_settings_array[$forum_data['SNAME']] = $forum_data['SVALUE'];
-                }
-            }
-        }
-
-        if (isset($forum_settings_array['forum_timezone'])) {
-
-            $sql = "SELECT GMT_OFFSET, DST_OFFSET FROM TIMEZONES ";
-            $sql.= "WHERE TZID = '{$forum_settings_array['forum_timezone']}'";
-
-            if (!$result = db_query($sql, $db_forum_get_settings)) return false;
-
-            if (db_num_rows($result) > 0) {
-
-                list($gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
-
-                $forum_settings_array['forum_gmt_offset'] = $gmt_offset;
-                $forum_settings_array['forum_dst_offset'] = $dst_offset;
-            }
-        }
-
-        $sql = "SELECT WEBTAG, ACCESS_LEVEL, OWNER_UID FROM FORUMS WHERE FID = '$forum_fid'";
-
-        if (!$result = db_query($sql, $db_forum_get_settings)) return false;
-
-        list($webtag, $access_level, $owner_uid) = db_fetch_array($result, DB_RESULT_NUM);
-
-        $forum_settings_array['webtag'] = $webtag;
-        $forum_settings_array['access_level'] = $access_level;
-        $forum_settings_array['owner_uid'] = $owner_uid;
+    static $forum_settings = array();
+    
+    if (!$forum_settings) {
+        
+        if (!($forum_fid = get_forum_fid())) return $forum_settings;
+        
+        $forum_settings = forum_get_settings_by_fid($forum_fid, 'forum_check_setting_name');
     }
-
-    return $forum_settings_array;
+    
+    return $forum_settings;
 }
 
 function forum_get_global_settings()
 {
-    if (!$db_forum_get_global_settings = db_connect()) return false;
-
-    static $forum_global_settings_array = false;
-
-    if (!is_array($forum_global_settings_array)) {
-
-        $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '0'";
-
-        if (!$result = db_query($sql, $db_forum_get_global_settings)) return false;
-
-        if (db_num_rows($result) > 0) {
-
-            $forum_global_settings_array = array(
-                'forum_gmt_offset' => 0, 
-                'forum_dst_offset' => 1
-            );
-
-            while (($forum_data = db_fetch_array($result))) {
-
-                if (forum_check_global_setting_name($forum_data['SNAME'])) {
-
-                    $forum_global_settings_array[$forum_data['SNAME']] = $forum_data['SVALUE'];
-                }
-            }
-        }
-
-        if (isset($forum_global_settings_array['forum_timezone'])) {
-
-            $sql = "SELECT GMT_OFFSET, DST_OFFSET FROM TIMEZONES ";
-            $sql.= "WHERE TZID = '{$forum_global_settings_array['forum_timezone']}'";
-
-            if (!$result = db_query($sql, $db_forum_get_global_settings)) return false;
-
-            if (db_num_rows($result) > 0) {
-
-                list($gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
-
-                $forum_global_settings_array['forum_gmt_offset'] = $gmt_offset;
-                $forum_global_settings_array['forum_dst_offset'] = $dst_offset;
-            }
-        }
+    static $forum_global_settings = array();
+    
+    if (!$forum_global_settings) {
+        $forum_global_settings = forum_get_settings_by_fid(0, 'forum_check_global_setting_name');
     }
-
-    return $forum_global_settings_array;
+    
+    return $forum_global_settings;
 }
 
-function forum_get_settings_by_fid($forum_fid)
+function forum_get_settings_by_fid($forum_fid, $callback = null)
 {
-    if (!$db_forum_get_settings = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
-    static $forum_settings_array = false;
+    $forum_settings = array();
+    
+    $forum_fid = $db->escape($forum_fid);
 
-    if (!is_numeric($forum_fid)) return false;
+    $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid'";
 
-    if (!is_array($forum_settings_array)) {
+    if (!$result = $db->query($sql)) return false;
 
-        $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid'";
+    if ($result->num_rows == 0) return false;
 
-        if (!$result = db_query($sql, $db_forum_get_settings)) return false;
+    $forum_settings = array(
+        'fid' => $forum_fid, 
+        'forum_gmt_offset' => 0, 
+        'forum_dst_offset' => 1
+    );
 
-        if (db_num_rows($result) > 0) {
-
-            $forum_settings_array = array(
-                'fid' => $forum_fid, 
-                'forum_gmt_offset' => 0, 
-                'forum_dst_offset' => 1
-            );
-
-            while (($forum_data = db_fetch_array($result))) {
-
-                if (forum_check_setting_name($forum_data['SNAME'])) {
-
-                    $forum_settings_array[$forum_data['SNAME']] = $forum_data['SVALUE'];
-                }
-            }
-        }
-
-        if (isset($forum_settings_array['forum_timezone'])) {
-
-            $sql = "SELECT GMT_OFFSET, DST_OFFSET FROM TIMEZONES ";
-            $sql.= "WHERE TZID = '{$forum_settings_array['forum_timezone']}'";
-
-            if (!$result = db_query($sql, $db_forum_get_settings)) return false;
-
-            if (db_num_rows($result) > 0) {
-
-                list($gmt_offset, $dst_offset) = db_fetch_array($result, DB_RESULT_NUM);
-
-                $forum_settings_array['forum_gmt_offset'] = $gmt_offset;
-                $forum_settings_array['forum_dst_offset'] = $dst_offset;
-            }
+    while (($forum_data = $result->fetch_assoc())) {
+        
+        if (!is_callable($callback) || $callback($forum_data['SNAME'])) {
+            $forum_settings[$forum_data['SNAME']] = $forum_data['SVALUE'];
         }
     }
 
-    return $forum_settings_array;
+    if (isset($forum_settings['forum_timezone'])) {
+        
+        $timezone = $db->escape($forum_settings['forum_timezone']);
+
+        $sql = "SELECT GMT_OFFSET, DST_OFFSET FROM TIMEZONES ";
+        $sql.= "WHERE TZID = '$timezone'";
+
+        if (!$result = $db->query($sql)) return false;
+
+        if ($result->num_rows > 0) {
+
+            list($gmt_offset, $dst_offset) = $result->fetch_row();
+
+            $forum_settings['forum_gmt_offset'] = $gmt_offset;
+            $forum_settings['forum_dst_offset'] = $dst_offset;
+        }
+    }
+
+    $sql = "SELECT WEBTAG, ACCESS_LEVEL, OWNER_UID FROM FORUMS WHERE FID = '$forum_fid'";
+
+    if (!$result = $db->query($sql)) return false;
+    
+    if ($result->num_rows > 0) {
+
+        list($webtag, $access_level, $owner_uid) = $result->fetch_row();
+
+        $forum_settings['webtag'] = $webtag;
+        $forum_settings['access_level'] = $access_level;
+        $forum_settings['owner_uid'] = $owner_uid;        
+    }
+
+    return $forum_settings;
 }
 
 function forum_save_settings($forum_settings_array)
 {
     if (!is_array($forum_settings_array)) return false;
 
-    if (!$db_forum_save_settings = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -555,14 +479,14 @@ function forum_save_settings($forum_settings_array)
 
         if (forum_check_setting_name($setting_name)) {
 
-            $setting_name  = db_escape_string($setting_name);
-            $setting_value = db_escape_string($setting_value);
+            $setting_name  = $db->escape($setting_name);
+            $setting_value = $db->escape($setting_value);
 
             $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
             $sql.= "VALUES ($forum_fid, '$setting_name', '$setting_value')";
             $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
-            if (!db_query($sql, $db_forum_save_settings)) return false;
+            if (!$db->query($sql)) return false;
         }
     }
 
@@ -573,20 +497,20 @@ function forum_save_default_settings($forum_settings_array)
 {
     if (!is_array($forum_settings_array)) return false;
 
-    if (!$db_forum_save_default_settings = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     foreach ($forum_settings_array as $setting_name => $setting_value) {
 
         if (forum_check_global_setting_name($setting_name)) {
 
-            $setting_name = db_escape_string($setting_name);
-            $setting_value = db_escape_string($setting_value);
+            $setting_name = $db->escape($setting_name);
+            $setting_value = $db->escape($setting_value);
 
             $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
             $sql.= "VALUES ('0', '$setting_name', '$setting_value') ";
             $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
-            if (!db_query($sql, $db_forum_save_default_settings)) return false;
+            if (!$db->query($sql)) return false;
         }
     }
 
@@ -730,126 +654,93 @@ function forum_check_global_setting_name($setting_name)
 
 function forum_get_name($fid)
 {
-    if (!$db_forum_get_name = db_connect()) return gettext("A Beehive Forum");
+    if (!$db = db::get()) return gettext("A Beehive Forum");
 
     if (!is_numeric($fid)) return gettext("A Beehive Forum");
 
     $sql = "SELECT SVALUE AS FORUM_NAME FROM FORUM_SETTINGS ";
     $sql.= "WHERE SNAME = 'forum_name' AND FID = '$fid'";
 
-    if (!$result = db_query($sql, $db_forum_get_name)) return gettext("A Beehive Forum");
+    if (!$result = $db->query($sql)) return gettext("A Beehive Forum");
 
-    if (db_num_rows($result) == 0) return gettext("A Beehive Forum");
+    if ($result->num_rows == 0) return gettext("A Beehive Forum");
 
-    list($forum_name) = db_fetch_array($result, DB_RESULT_NUM);
+    list($forum_name) = $result->fetch_row();
     
     return $forum_name;
 }
 
 function forum_get_webtag($fid)
 {
-    if (!$db_forum_get_webtag = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($fid)) return false;
 
     $sql = "SELECT WEBTAG FROM FORUMS WHERE FID = '$fid' AND ACCESS_LEVEL < 3";
 
-    if (!$result = db_query($sql, $db_forum_get_webtag)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    list($forum_webtag) = db_fetch_array($result, DB_RESULT_NUM);
+    list($forum_webtag) = $result->fetch_row();
 
     return $forum_webtag;
 }
 
 function forum_get_table_prefix($fid)
 {
-    if (!$db_forum_get_table_prefix = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($fid)) return false;
 
     $sql = "SELECT CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX, ";
     $sql.= "FID, WEBTAG FROM FORUMS WHERE FID = '$fid'";
 
-    if (!$result = db_query($sql, $db_forum_get_table_prefix)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    list($forum_prefix) = db_fetch_array($result, DB_RESULT_NUM);
+    list($forum_prefix) = $result->fetch_row();
 
     return $forum_prefix;
 }
 
-function forum_get_setting($setting_name, $callback = false, $default = false)
+function forum_get_setting($setting_name, $callback = null, $default = null)
 {
-    $forum_settings = (isset($GLOBALS['forum_settings'])) ? $GLOBALS['forum_settings'] : false;
-    $forum_global_settings = (isset($GLOBALS['forum_global_settings'])) ? $GLOBALS['forum_global_settings'] : false;
-
-    if (is_array($forum_settings) && isset($forum_settings[$setting_name])) {
-
-        if ($callback !== false) {
-
-            if (function_exists($callback) && is_callable($callback)) {
-
-                return ($callback($forum_settings[$setting_name])) ? $forum_settings[$setting_name] : $default;
-
-            } else if (is_string($callback)) {
-
-                return mb_strtoupper($forum_settings[$setting_name]) == mb_strtoupper($callback);
-            }
-        }
-
-        return $forum_settings[$setting_name];
+    $forum_settings = forum_get_settings();
+    
+    if (!is_array($forum_settings) || !isset($forum_settings[$setting_name])) {
+        return forum_get_global_setting($setting_name, $callback, $default);    
     }
 
-    if (is_array($forum_global_settings) && isset($forum_global_settings[$setting_name])) {
-
-        if ($callback !== false) {
-
-            if (function_exists($callback) && is_callable($callback)) {
-
-                return ($callback($forum_global_settings[$setting_name])) ? $forum_global_settings[$setting_name] : $default;
-
-            } else if (is_string($callback)) {
-
-                return mb_strtoupper($forum_global_settings[$setting_name]) == mb_strtoupper($callback);
-            }
-        }
-
-        return $forum_global_settings[$setting_name];
+    if (function_exists($callback) && is_callable($callback)) {
+        return ($callback($forum_settings[$setting_name])) ? $forum_settings[$setting_name] : $default;
+    } else if (is_scalar($callback)) {
+        return mb_strtoupper($forum_settings[$setting_name]) == mb_strtoupper($callback);
     }
 
-    return $default;
+    return $forum_settings[$setting_name];
 }
 
-function forum_get_global_setting($setting_name, $callback = false, $default = false)
+function forum_get_global_setting($setting_name, $callback = null, $default = null)
 {
-    $forum_global_settings = (isset($GLOBALS['forum_global_settings'])) ? $GLOBALS['forum_global_settings'] : false;
+    $forum_global_settings = forum_get_global_settings();
 
-    if (is_array($forum_global_settings) && isset($forum_global_settings[$setting_name])) {
-
-        if ($callback !== false) {
-
-            if (function_exists($callback) && is_callable($callback)) {
-
-                return ($callback($forum_global_settings[$setting_name])) ? $forum_global_settings[$setting_name] : $default;
-
-            } else if (is_string($callback)) {
-
-                return mb_strtoupper($forum_global_settings[$setting_name]) == mb_strtoupper($callback);
-            }
-        }
-
-        return $forum_global_settings[$setting_name];
+    if (!is_array($forum_global_settings) || !isset($forum_global_settings[$setting_name])) {
+        return $default;
     }
 
-    return $default;
+    if (function_exists($callback) && is_callable($callback)) {
+        return ($callback($forum_global_settings[$setting_name])) ? $forum_global_settings[$setting_name] : $default;
+    } else if (is_scalar($callback)) {
+        return mb_strtoupper($forum_global_settings[$setting_name]) == mb_strtoupper($callback);
+    }
+
+    return $forum_global_settings[$setting_name];
 }
 
 function forum_get_unread_cutoff()
 {
-    // Array of valid Unread cutoff periods.
     $unread_cutoff_periods = array(
         THIRTY_DAYS_IN_SECONDS, 
         SIXTY_DAYS_IN_SECONDS,
@@ -858,14 +749,10 @@ function forum_get_unread_cutoff()
         YEAR_IN_SECONDS
     );
 
-    // Fetch the unread cutoff value
     $messages_unread_cutoff = forum_get_setting('messages_unread_cutoff');
 
-    // If unread message support is disabled we return false.
     if ($messages_unread_cutoff == UNREAD_MESSAGES_DISABLED) return false;
 
-    // If unread message support isn't disabled we should check that
-    // It is a valid value and return it or return the default of one year.
     return in_array($messages_unread_cutoff, $unread_cutoff_periods) ? $messages_unread_cutoff : YEAR_IN_SECONDS;
 }
 
@@ -877,10 +764,8 @@ function forum_get_unread_cutoff_datetime()
 
 function forum_process_unread_cutoff($forum_settings)
 {
-    // Check the $forum_settings array.
     if (!is_array($forum_settings)) return YEAR_IN_SECONDS;
 
-    // Array of valid Unread cutoff periods.
     $unread_cutoff_periods = array(
         THIRTY_DAYS_IN_SECONDS, 
         SIXTY_DAYS_IN_SECONDS,
@@ -889,24 +774,20 @@ function forum_process_unread_cutoff($forum_settings)
         YEAR_IN_SECONDS
     );
 
-    // Fetch the unread cutoff value from the settings array
     if (isset($forum_settings['messages_unread_cutoff'])) {
         $messages_unread_cutoff = $forum_settings['messages_unread_cutoff'];
     } else {
         $messages_unread_cutoff = YEAR_IN_SECONDS;
     }
 
-    // If unread message support is disabled we return false.
     if ($messages_unread_cutoff == UNREAD_MESSAGES_DISABLED) return false;
 
-    // If unread message support isn't disabled we should check that
-    // It is a valid value and return it or return the default of one year.
     return in_array($messages_unread_cutoff, $unread_cutoff_periods) ? $messages_unread_cutoff : YEAR_IN_SECONDS;
 }
 
 function forum_update_unread_data($unread_cutoff_stamp)
 {
-    if (!$db_forum_update_unread_data = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($unread_cutoff_stamp)) return false;
 
@@ -924,7 +805,7 @@ function forum_update_unread_data($unread_cutoff_stamp)
         $sql.= "AND (`{$forum_prefix}USER_THREAD`.`INTEREST` IS NULL ";
         $sql.= "OR `{$forum_prefix}USER_THREAD`.`INTEREST` = 0)";
 
-        if (!db_query($sql, $db_forum_update_unread_data)) return false;
+        if (!$db->query($sql)) return false;
     }
 
     return true;
@@ -942,13 +823,13 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
     $forum_table_prefix = install_format_table_prefix($database_name, $webtag);
 
-    if (!$db_forum_create = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT FID FROM FORUMS WHERE WEBTAG = '$webtag'";
 
-    if (!($result = @db_query($sql, $db_forum_create))) return false;
+    if (!($result = @$db->query($sql))) return false;
 
-    if (db_num_rows($result) > 0) {
+    if ($result->num_rows > 0) {
 
         $error_str = gettext("The selected webtag is already in use. Please choose another.");
         return false;
@@ -973,7 +854,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (ID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table ADMIN_LOG');
         }
 
@@ -987,7 +868,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY BANTYPE (BANTYPE, BANDATA)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table BANNED');
         }
 
@@ -1004,7 +885,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (FID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table FOLDER');
         }
 
@@ -1016,7 +897,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (LID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table FORUM_LINKS');
         }
 
@@ -1034,7 +915,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY FID (FID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table LINKS');
         }
 
@@ -1047,7 +928,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (CID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table LINKS_COMMENT');
         }
 
@@ -1060,7 +941,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY PARENT_FID (PARENT_FID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table LINKS_FOLDERS');
         }
 
@@ -1072,7 +953,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (LID,UID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table LINKS_VOTE');
         }
 
@@ -1088,7 +969,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (`TID`)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table POLL');
         }
 
@@ -1100,7 +981,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (`TID`,`QUESTION_ID`)";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table POLL_QUESTIONS');
         }
 
@@ -1112,7 +993,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (`TID`,`QUESTION_ID`,`OPTION_ID`)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table POLL_VOTES');
         }
 
@@ -1140,7 +1021,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY CREATED (CREATED)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!($result = db_query($sql, $db_forum_create))) {
+        if (!($result = $db->query($sql))) {
             throw new Exception('Failed to create table POST');
         }
 
@@ -1152,7 +1033,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table POST_CONTENT');
         }
         
@@ -1164,7 +1045,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (SID,TID,PID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table POST_CONTENT');
         }
 
@@ -1179,7 +1060,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY PSID (PSID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table PROFILE_ITEM');
         }
 
@@ -1187,7 +1068,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
         $sql.= "VALUES (1, 'Location', 0, '', 1)";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create location profile item');
         }
 
@@ -1195,7 +1076,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
         $sql.= "VALUES (1, 'Age', 0, '', 2)";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create age profile item');
         }
 
@@ -1203,7 +1084,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) VALUES ";
         $sql.= "(1, 'Gender', 5, 'Male\nFemale\nUnspecified', 3)";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create gender profile item');
         }
 
@@ -1211,7 +1092,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
         $sql.= "VALUES (1, 'Quote', 0, '', 4)";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create quote profile item');
         }
 
@@ -1219,7 +1100,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
         $sql.= "VALUES (1, 'Occupation', 0, '', 5)";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create occupation profile item');
         }
 
@@ -1230,14 +1111,14 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (PSID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table PROFILE_SECTION');
         }
 
         $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_SECTION` ";
         $sql.= "(NAME, POSITION) VALUES ('Personal', 1)";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create first profile section.');
         }
 
@@ -1254,7 +1135,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (RSSID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table RSS_FEEDS');
         }
 
@@ -1264,7 +1145,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY RSSID (RSSID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table RSS_HISTORY');
         }
 
@@ -1279,7 +1160,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY MOST_USERS_COUNT (MOST_USERS_COUNT) ";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table STATS');
         }
 
@@ -1304,7 +1185,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  FULLTEXT KEY TITLE (TITLE) ";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table THREAD');
         }
 
@@ -1314,7 +1195,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (TID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table THREAD_STATS');
         }
 
@@ -1327,7 +1208,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY NEW_TID (NEW_TID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table THREAD_TRACK');
         }
 
@@ -1338,7 +1219,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (UID, FID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table USER_FOLDER');
         }
 
@@ -1350,7 +1231,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (UID, PEER_UID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table USER_PEER');
         }
 
@@ -1368,7 +1249,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY `UID` (`UID`)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table USER_POLL_VOTES');
         }
 
@@ -1406,7 +1287,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (UID)";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=utf8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table USER_PREFS');
         }
 
@@ -1418,7 +1299,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (UID,PIID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table USER_PROFILE');
         }
 
@@ -1429,7 +1310,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (UID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table USER_SIG');
         }
 
@@ -1445,7 +1326,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY INTEREST (INTEREST)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table USER_THREAD');
         }
 
@@ -1464,7 +1345,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (UID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table USER_TRACK');
         }
 
@@ -1479,7 +1360,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (UID, FID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create table WORD_FILTER');
         }
 
@@ -1487,12 +1368,12 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql = "INSERT INTO FORUMS (WEBTAG, OWNER_UID, DATABASE_NAME, ACCESS_LEVEL) ";
         $sql.= "VALUES ('$webtag', '$owner_uid', '$database_name', $access)";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create FORUMS record');
         }
 
         // Get the new FID so we can save the settings
-        if (!$forum_fid = db_insert_id($db_forum_create)) {
+        if (!$forum_fid = $db->insert_id) {
             throw new Exception('Failed to get new forum fid');
         }
 
@@ -1500,26 +1381,26 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql = "INSERT INTO `{$forum_table_prefix}FOLDER` (TITLE, CREATED, MODIFIED, ALLOWED_TYPES, POSITION, PERM) ";
         $sql.= "VALUES ('General', NOW(), NOW(), 3, 1, 14588)";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create first folder');
         }
 
         // Add some default forum links
         $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
         $sql.= "VALUES (2, 'Project Beehive Forum Home', 'http://www.beehiveforum.co.uk/')";
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create Beehive Forum link');
         }
 
         $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
         $sql.= "VALUES (3, 'Project Beehive Forum on Facebook', 'http://www.facebook.com/pages/Project-Beehive-Forum/100468551205')";
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create Beehive Forum Facebook link');
         }
 
         $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
         $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.co.uk/forum/')";
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create Teh Forum forum link');
         }
 
@@ -1534,12 +1415,12 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "VALUES (1, '$owner_uid', 'Welcome', 1, 'N', CAST('$current_datetime' AS DATETIME), ";
         $sql.= "CAST('$current_datetime' AS DATETIME), NULL, 'N', NULL, NULL)";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create first thread');
         }
 
         // Get the Thread ID. It should be 1, but just in case.
-        if (!$new_tid = db_insert_id($db_forum_create)) {
+        if (!$new_tid = $db->insert_id) {
             throw new Exception('Failed to get first thread tid');
         }
 
@@ -1550,12 +1431,12 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "VALUES ('$new_tid', 0, '$owner_uid', 0, NULL, CAST('$current_datetime' AS DATETIME), ";
         $sql.= "0, CAST('$current_datetime' AS DATETIME), '$owner_uid', NULL, 0, '')";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create first post');
         }
 
         // Get the Post ID. Again should be 1, but trying to be tidy here.
-        if (!$new_pid = db_insert_id($db_forum_create)) {
+        if (!$new_pid = $db->insert_id) {
             throw new Exception('Fauled to fetch new post pid');
         }
 
@@ -1563,7 +1444,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql = "INSERT INTO `{$forum_table_prefix}POST_CONTENT` (TID, PID, CONTENT) ";
         $sql.= "VALUES ('$new_tid', '$new_pid', 'Welcome to your new Beehive Forum')";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create first post content');
         }
         
@@ -1571,7 +1452,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql = "INSERT INTO `{$forum_table_prefix}POST_SEARCH_ID` (TID, PID) ";
         $sql.= "VALUES ('$new_tid', '$new_pid')";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create first post search index');
         }
 
@@ -1579,7 +1460,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql = "INSERT INTO `{$forum_table_prefix}LINKS_FOLDERS` ";
         $sql.= "(PARENT_FID, NAME, VISIBLE) VALUES (NULL, 'Top Level', 'Y')";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to create top level links folder');
         }
 
@@ -1611,13 +1492,13 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         foreach ($forum_settings as $setting_name => $setting_value) {
 
-            $setting_name = db_escape_string($setting_name);
-            $setting_value = db_escape_string($setting_value);
+            $setting_name = $db->escape($setting_name);
+            $setting_value = $db->escape($setting_value);
 
             $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
             $sql.= "VALUES ($forum_fid, '$setting_name', '$setting_value')";
 
-            if (!@db_query($sql, $db_forum_create)) {
+            if (!@$db->query($sql)) {
                 throw new Exception('Failed to save forum settings');
             }
         }
@@ -1626,7 +1507,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         // access the forum even if its not protected.
         $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) VALUES('$owner_uid', $forum_fid, 1)";
 
-        if (!@db_query($sql, $db_forum_create)) {
+        if (!@$db->query($sql)) {
             throw new Exception('Failed to set user access permissions');
         }
 
@@ -1644,7 +1525,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
 function forum_update($fid, $forum_name, $owner_uid, $access_level)
 {
-    if (!$db_forum_update = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -1652,20 +1533,20 @@ function forum_update($fid, $forum_name, $owner_uid, $access_level)
 
     if (!is_numeric($access_level)) return false;
 
-    $forum_name = db_escape_string($forum_name);
+    $forum_name = $db->escape($forum_name);
 
     if (!session::check_perm(USER_PERM_FORUM_TOOLS, 0)) return false;
 
     $sql = "UPDATE LOW_PRIORITY FORUMS SET ACCESS_LEVEL = '$access_level', ";
     $sql.= "OWNER_UID = '$owner_uid' WHERE FID = '$fid'";
 
-    if (!db_query($sql, $db_forum_update)) return false;
+    if (!$db->query($sql)) return false;
 
     $sql = "INSERT IGNORE INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
     $sql.= "VALUES ('$fid', 'forum_name', '$forum_name') ";
     $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
-    if (!db_query($sql, $db_forum_update)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
@@ -1674,47 +1555,47 @@ function forum_delete($fid)
 {
     if (!session::check_perm(USER_PERM_FORUM_TOOLS, 0)) return false;
 
-    if (!$db_forum_delete = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($fid)) return false;
 
     $sql = "SELECT WEBTAG, DATABASE_NAME FROM FORUMS WHERE FID = '$fid'";
 
-    if (!$result = db_query($sql, $db_forum_delete)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    list($webtag, $database_name) = db_fetch_array($result, DB_RESULT_NUM);
+    list($webtag, $database_name) = $result->fetch_row();
 
     $sql = "DELETE QUICK FROM FORUMS WHERE FID = '$fid'";
 
-    if (!db_query($sql, $db_forum_delete)) return false;
+    if (!$db->query($sql)) return false;
 
     $sql = "DELETE QUICK FROM FORUM_SETTINGS WHERE FID = '$fid'";
 
-    if (!db_query($sql, $db_forum_delete)) return false;
+    if (!$db->query($sql)) return false;
 
     $sql = "DELETE QUICK FROM SEARCH_RESULTS WHERE FID = '$fid'";
 
-    if (!db_query($sql, $db_forum_delete)) return false;
+    if (!$db->query($sql)) return false;
 
     $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$fid'";
 
-    if (!db_query($sql, $db_forum_delete)) return false;
+    if (!$db->query($sql)) return false;
 
     $sql = "DELETE QUICK FROM POST_ATTACHMENT_FILES ";
     $sql.= "WHERE AID IN (SELECT AID FROM POST_ATTACHMENT_IDS ";
     $sql.= "WHERE FID = '$fid')";
 
-    if (!db_query($sql, $db_forum_delete)) return false;
+    if (!$db->query($sql)) return false;
 
     $sql = "DELETE QUICK FROM POST_ATTACHMENT_IDS WHERE FID = '$fid'";
 
-    if (!db_query($sql, $db_forum_delete)) return false;
+    if (!$db->query($sql)) return false;
 
     $sql = "DELETE QUICK FROM GROUP_PERMS WHERE FORUM = '$fid'";
 
-    if (!db_query($sql, $db_forum_delete)) return false;
+    if (!$db->query($sql)) return false;
 
     if (!forum_delete_tables($webtag, $database_name)) return false;
     
@@ -1729,7 +1610,7 @@ function forum_delete_tables($webtag, $database_name)
 
     if (!session::check_perm(USER_PERM_FORUM_TOOLS, 0)) return false;
 
-    if (!$db_forum_delete_tables = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $forum_table_prefix = install_format_table_prefix($database_name, $webtag);
 
@@ -1773,7 +1654,7 @@ function forum_delete_tables($webtag, $database_name)
     foreach ($table_array as $table_name) {
 
         $sql = "DROP TABLE IF EXISTS `{$forum_table_prefix}{$table_name}`";
-        if (!db_query($sql, $db_forum_delete_tables)) return false;
+        if (!$db->query($sql)) return false;
     }
 
     return true;
@@ -1790,37 +1671,37 @@ function forum_update_access($fid, $access)
 
     if (($uid = session::get_value('UID')) === false) return false;
 
-    if (!$db_forum_update_access = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "UPDATE LOW_PRIORITY FORUMS SET ACCESS_LEVEL = '$access' ";
     $sql.= "WHERE FID = '$fid'";
 
-    if (!db_query($sql, $db_forum_update_access)) return false;
+    if (!$db->query($sql)) return false;
 
     $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
     $sql.= "VALUES ('$uid', '$fid', 1) ON DUPLICATE KEY ";
     $sql.= "UPDATE ALLOWED = VALUES(ALLOWED)";
 
-    if (!db_query($sql, $db_forum_update_access)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function forum_update_password($fid, $password)
 {
-    if (!$db_forum_update_password = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($fid)) return false;
 
     if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0) || 
         session::check_perm(USER_PERM_FORUM_TOOLS, 0))) return false;
 
-    $password = db_escape_string(md5($password));
+    $password = $db->escape(md5($password));
 
     $sql = "UPDATE LOW_PRIORITY FORUMS SET FORUM_PASSWD = '$password' ";
     $sql.= "WHERE FID = '$fid'";
 
-    if (!db_query($sql, $db_forum_update_password)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
@@ -1831,16 +1712,16 @@ function forum_get($fid)
 
     if (!session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) return false;
 
-    if (!$db_forum_get = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT FID, WEBTAG, OWNER_UID, DATABASE_NAME, DEFAULT_FORUM, ";
     $sql.= "ACCESS_LEVEL, FORUM_PASSWD FROM FORUMS WHERE FID = '$fid'";
 
-    if (!$result = db_query($sql, $db_forum_get)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    $forum_get_array = db_fetch_array($result);
+    $forum_get_array = $result->fetch_assoc();
 
     $forum_get_array['FORUM_SETTINGS'] = array();
 
@@ -1853,9 +1734,9 @@ function forum_get($fid)
 
     $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$fid'";
 
-    if (!$result = db_query($sql, $db_forum_get)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    while (($forum_data = db_fetch_array($result))) {
+    while (($forum_data = $result->fetch_assoc())) {
         $forum_get_array['FORUM_SETTINGS'][$forum_data['SNAME']] = $forum_data['SVALUE'];
     }
 
@@ -1864,7 +1745,7 @@ function forum_get($fid)
 
 function forum_get_permissions($fid, $page = 1)
 {
-    if (!$db_forum_get_permissions = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($fid)) return false;
 
@@ -1879,19 +1760,19 @@ function forum_get_permissions($fid, $page = 1)
     $sql.= "WHERE USER_FORUM.FID = '$fid' AND USER_FORUM.ALLOWED = 1 ";
     $sql.= "LIMIT $offset, 20";
 
-    if (!$result = db_query($sql, $db_forum_get_permissions)) return false;
+    if (!$result = $db->query($sql)) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_forum_get_permissions)) return false;
+    if (!$result_count = $db->query($sql)) return false;
 
-    list($perms_user_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    list($perms_user_count) = $result_count->fetch_row();
 
-    if ((db_num_rows($result) == 0) && ($perms_user_count > 0) && ($page > 1)) {
+    if (($result->num_rows == 0) && ($perms_user_count > 0) && ($page > 1)) {
         return forum_get_permissions($fid, $page - 1);
     }
 
-    while (($user_data = db_fetch_array($result))) {
+    while (($user_data = $result->fetch_assoc())) {
 
         if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
             if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
@@ -1917,27 +1798,27 @@ function forum_update_default($fid)
     
     if ($fid == 0) return false;
 
-    if (!$db_forum_get_permissions = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "UPDATE LOW_PRIORITY FORUMS SET DEFAULT_FORUM = 0";
 
-    if (!db_query($sql, $db_forum_get_permissions)) return false;
+    if (!$db->query($sql)) return false;
 
     $sql = "UPDATE LOW_PRIORITY FORUMS SET DEFAULT_FORUM = 1 WHERE FID = '$fid'";
 
-    if (!db_query($sql, $db_forum_get_permissions)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function forum_search_array_clean($forum_search)
 {
-    return db_escape_string(trim(str_replace("%", "", $forum_search)));
+    return $db->escape(trim(str_replace("%", "", $forum_search)));
 }
 
 function forum_search($forum_search, $page, $sort_by, $sort_dir)
 {
-    if (!$db_forum_search = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($page)) return false;
     
@@ -1982,20 +1863,20 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
     $sql.= "'%$forum_search_svalue%') GROUP BY FORUMS.FID ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
 
-    if (!$result_forums = db_query($sql, $db_forum_search)) return false;
+    if (!$result_forums = $db->query($sql)) return false;
 
     // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = db_query($sql, $db_forum_search)) return false;
+    if (!$result_count = $db->query($sql)) return false;
 
-    list($forums_count) = db_fetch_array($result_count, DB_RESULT_NUM);
+    list($forums_count) = $result_count->fetch_row();
 
-    if ((db_num_rows($result) == 0) && ($forums_count > 0) && ($page > 1)) {
+    if (($result->num_rows == 0) && ($forums_count > 0) && ($page > 1)) {
         return forum_search($forum_search, $page - 1, $sort_by, $sort_dir);
     }        
 
-    while (($forum_data = db_fetch_array($result_forums))) {
+    while (($forum_data = $result_forums->fetch_assoc())) {
 
         $forum_fid = $forum_data['FID'];
 
@@ -2028,9 +1909,9 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
             $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.FID IN ($folders) ";
             $sql.= "AND (THREAD.MODIFIED > CAST('$unread_cutoff_datetime' AS DATETIME)) ";
 
-            if (!$result_unread_count = db_query($sql, $db_forum_search)) return false;
+            if (!$result_unread_count = $db->query($sql)) return false;
 
-            list($unread_messages) = db_fetch_array($result_unread_count, DB_RESULT_NUM);
+            list($unread_messages) = $result_unread_count->fetch_row();
 
             $forum_data['UNREAD_MESSAGES'] = $unread_messages;
 
@@ -2043,9 +1924,9 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
         $sql = "SELECT SUM(THREAD.LENGTH) AS NUM_MESSAGES FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
         $sql.= "WHERE THREAD.FID IN ($folders) ";
 
-        if (!$result_messages_count = db_query($sql, $db_forum_search)) return false;
+        if (!$result_messages_count = $db->query($sql)) return false;
 
-        $num_messages_data = db_fetch_array($result_messages_count);
+        $num_messages_data = $result_messages_count->fetch_assoc();
 
         if (!isset($num_messages_data['NUM_MESSAGES']) || is_null($num_messages_data['NUM_MESSAGES'])) {
             $forum_data['NUM_MESSAGES'] = 0;
@@ -2060,9 +1941,9 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
         $sql.= "ON (POST.TID = THREAD.TID) WHERE THREAD.FID IN ($folders) ";
         $sql.= "AND POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
 
-        if (!$result_unread_to_me = db_query($sql, $db_forum_search)) return false;
+        if (!$result_unread_to_me = $db->query($sql)) return false;
 
-        $forum_unread_post_data = db_fetch_array($result_unread_to_me);
+        $forum_unread_post_data = $result_unread_to_me->fetch_assoc();
 
         if (!isset($forum_unread_post_data['UNREAD_TO_ME']) || is_null($forum_unread_post_data['UNREAD_TO_ME'])) {
             $forum_data['UNREAD_TO_ME'] = 0;
@@ -2088,18 +1969,18 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
 
 function forum_get_all_prefixes()
 {
-    if (!$db_forum_get_all_prefixes = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX, ";
     $sql.= "FID FROM FORUMS ";
 
-    if (!$result = db_query($sql, $db_forum_get_all_prefixes)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
     $prefix_array = array();
 
-    while (($forum_data = db_fetch_array($result))) {
+    while (($forum_data = $result->fetch_assoc())) {
         $prefix_array[$forum_data['FID']] = $forum_data['PREFIX'];
     }
 
@@ -2108,17 +1989,17 @@ function forum_get_all_prefixes()
 
 function forum_get_all_webtags()
 {
-    if (!$db_forum_get_all_webtags = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT FID, WEBTAG FROM FORUMS ";
 
-    if (!$result = db_query($sql, $db_forum_get_all_webtags)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
     $webtag_array = array();
 
-    while (($forum_data = db_fetch_array($result))) {
+    while (($forum_data = $result->fetch_assoc())) {
         $webtag_array[$forum_data['FID']] = $forum_data['WEBTAG'];
     }
 
@@ -2127,17 +2008,17 @@ function forum_get_all_webtags()
 
 function forum_get_all_fids()
 {
-    if (!$db_forum_get_all_fids = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT FID FROM FORUMS";
 
-    if (!$result = db_query($sql, $db_forum_get_all_fids)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
     $fids_array = array();
 
-    while (($forum_data = db_fetch_array($result))) {
+    while (($forum_data = $result->fetch_assoc())) {
         $fids_array[] = $forum_data['FID'];
     }
 
@@ -2148,7 +2029,7 @@ function forum_update_last_visit($uid)
 {
     if ($uid == 0) return false;
 
-    if (!$db_forum_update_last_visit = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($uid)) return false;
 
@@ -2162,24 +2043,24 @@ function forum_update_last_visit($uid)
     $sql.= "VALUES ('$uid', '$forum_fid', CAST('$current_datetime' AS DATETIME)) ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_VISIT = VALUES(LAST_VISIT)";
 
-    if (!db_query($sql, $db_forum_update_last_visit)) return false;
+    if (!$db->query($sql)) return false;
 
     return true;
 }
 
 function forums_get_available_dbs()
 {
-    if (!$db_forums_get_available_dbs = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SHOW DATABASES";
 
-    if (!$result = db_query($sql, $db_forums_get_available_dbs)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
     $database_array = array();
 
-    while (($database = db_fetch_array($result))) {
+    while (($database = $result->fetch_assoc())) {
 
         if (!stristr('information_schema', $database['Database'])) {
             $database_array[$database['Database']] = $database['Database'];
@@ -2191,7 +2072,7 @@ function forums_get_available_dbs()
 
 function forums_get_available_count()
 {
-    if (!$db_forums_get_available_count = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     if (($uid = session::get_value('UID')) === false) return 0;
 
@@ -2201,9 +2082,9 @@ function forums_get_available_count()
     $sql.= "OR FORUMS.ACCESS_LEVEL = 2 OR (FORUMS.ACCESS_LEVEL = 1 ";
     $sql.= "AND USER_FORUM.ALLOWED = 1) ";
 
-    if (!$result = db_query($sql, $db_forums_get_available_count)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    list($forum_available_count) = db_fetch_array($result, DB_RESULT_NUM);
+    list($forum_available_count) = $result->fetch_row();
 
     return $forum_available_count;
 }

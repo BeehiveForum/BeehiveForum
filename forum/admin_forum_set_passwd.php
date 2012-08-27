@@ -45,14 +45,18 @@ if (!session::logged_in()) {
 }
 
 // Check we have Admin / Moderator access
-if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) || (forum_get_setting('access_level') == FORUM_DISABLED)) {
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) || (forum_get_setting('access_level', FORUM_DISABLED))) {
     html_draw_error(gettext("You do not have permission to use this section."));
 }
 
 // Perform additional admin login.
 admin_check_credentials();
 
-$forum_fid = forum_get_setting('fid');
+// Get the forum settings
+$forum_settings = forum_get_settings();
+
+// Get forum fid
+$forum_fid = get_forum_fid();
 
 if (isset($_GET['ret']) && strlen(trim($_GET['ret'])) > 0) {
     $ret = rawurldecode(trim($_GET['ret']));
@@ -88,7 +92,7 @@ if (isset($_POST['enable'])) {
     }
 }
 
-if (!forum_get_setting('access_level', 2, false)) {
+if (!forum_get_setting('access_level', FORUM_PASSWD_PROTECTED)) {
     html_draw_error(gettext("Forum is not set to Password Protected Mode. Do you want to enable it now?"), 'admin_forum_set_passwd.php', 'post', array('enable' => gettext("Enable"), 'back' => gettext("Back")), array('ret' => $ret), false, 'center');
 }
 

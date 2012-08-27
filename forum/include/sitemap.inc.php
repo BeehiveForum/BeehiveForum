@@ -39,21 +39,21 @@ require_once BH_INCLUDE_PATH. 'server.inc.php';
 
 function sitemap_get_available_forums()
 {
-    if (!$db_sitemap_get_available_forums = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     // Query the database to get list of available forums.
     $sql = "SELECT FID, WEBTAG FROM FORUMS WHERE ACCESS_LEVEL = '0'";
 
-    if (!$result = db_query($sql, $db_sitemap_get_available_forums)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
     
     return $result;
 }
 
 function sitemap_forum_get_threads($forum_fid)
 {
-    if (!$db_sitemap_forum_get_threads = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     // If there are any problems with the function arguments we bail out.
     if (!is_numeric($forum_fid)) return false;
@@ -71,9 +71,9 @@ function sitemap_forum_get_threads($forum_fid)
     $sql.= "WHERE FOLDER.PERM & $user_perm_guest_access > 0 ";
     $sql.= "ORDER BY THREAD.TID";
 
-    if (!($result = db_query($sql, $db_sitemap_forum_get_threads))) return false;
+    if (!($result = $db->query($sql))) return false;
     
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
     return $result;
 }
@@ -142,16 +142,16 @@ function sitemap_create_file()
     $forum_location = html_get_forum_uri();
 
     // Check that search engine spidering is enabled
-    if (forum_get_setting('allow_search_spidering', 'N')) return __LINE__;
+    if (forum_get_setting('allow_search_spidering', 'N')) return false;
 
     // Check that the sitemap setting is enabled.
-    if (forum_get_setting('sitemap_enabled', 'N')) return __LINE__;
+    if (forum_get_setting('sitemap_enabled', 'N')) return false;
 
     // Fetch the sitemap path.
-    if (!$sitemap_path = sitemap_get_dir()) return __LINE__;
+    if (!$sitemap_path = sitemap_get_dir()) return false;
 
     // Get the sitemap update frequencey (default: 24 hours)
-    $sitemap_freq = forum_get_setting('sitemap_freq', false, DAY_IN_SECONDS);
+    $sitemap_freq = forum_get_setting('sitemap_freq', null, DAY_IN_SECONDS);
 
     // Clear the stat cache so we don't get any stale results.
     clearstatcache();
@@ -161,7 +161,7 @@ function sitemap_create_file()
 
         if ((@$file_modified = filemtime("$sitemap_path/sitemap.xml"))) {
 
-            if ((time() - $file_modified) < $sitemap_freq) return __LINE__;
+            if ((time() - $file_modified) < $sitemap_freq) return false;
         }
     }
 
@@ -169,28 +169,28 @@ function sitemap_create_file()
     $bytes_written = 0;
 
     // Open the index file for writing.
-    if (!(@$fp_index = fopen("{$sitemap_path}/sitemap.xml", 'w'))) return __LINE__;
+    if (!(@$fp_index = fopen("{$sitemap_path}/sitemap.xml", 'w'))) return false;
 
     // Write the sitemap index header to the index file
     fwrite($fp_index, $sitemap_index_header);
 
     // Open the sitemap file for writing.
-    if (!(@$fp = fopen("{$sitemap_path}/sitemap{$sitemap_file_count}.xml", 'w'))) return __LINE__;
+    if (!(@$fp = fopen("{$sitemap_path}/sitemap{$sitemap_file_count}.xml", 'w'))) return false;
 
     // Write the header to the file
     $bytes_written+= fwrite($fp, $sitemap_header);
 
     // Query the database to find available forums.
-    if (!($result_forums = sitemap_get_available_forums())) return __LINE__;
+    if (!($result_forums = sitemap_get_available_forums())) return false;
     
     // Iterate over each of the forums.
-    while (($forum_data = db_fetch_array($result_forums))) {
+    while (($forum_data = $result_forums->fetch_assoc())) {
 
         // Get the MySQL result set for the current forum's threads.
-        if (!($result_threads = sitemap_forum_get_threads($forum_data['FID']))) return __LINE__;
+        if (!($result_threads = sitemap_forum_get_threads($forum_data['FID']))) return false;
         
         // Iterate over the threads and add them to the sitemap file.
-        while (($thread_data = db_fetch_array($result_threads))) {
+        while (($thread_data = $result_threads->fetch_assoc())) {
 
             $thread_last_modified = date(MYSQL_DATE, $thread_data['MODIFIED']);
 
@@ -243,7 +243,7 @@ function sitemap_create_file()
 
                     fclose($fp_index);
 
-                    return __LINE__;
+                    return false;
                 }
             }
 

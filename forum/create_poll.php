@@ -350,7 +350,7 @@ if (isset($_POST['change_vote']) && is_numeric($_POST['change_vote'])) {
 
 if (isset($_POST['allow_guests']) && is_numeric($_POST['allow_guests'])) {
     $allow_guests = $_POST['allow_guests'];
-} else if (!forum_get_setting('poll_allow_guests', false)) {
+} else if (forum_get_setting('poll_allow_guests', 'N')) {
     $allow_guests = POLL_GUEST_DENIED;
 }
 
@@ -744,7 +744,7 @@ if ($valid && isset($_POST['post'])) {
 
     } else {
 
-        $error_msg_array[] = sprintf(gettext("You can only post once every %s seconds. Please try again later."), forum_get_setting('minimum_post_frequency', false, 0));
+        $error_msg_array[] = sprintf(gettext("You can only post once every %s seconds. Please try again later."), forum_get_setting('minimum_post_frequency', null, 0));
     }
 }
 
@@ -979,7 +979,7 @@ if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 echo "                    </table>\n";
 
 if (($user_emoticon_pack = session::get_value('EMOTICONS')) === false) {
-    $user_emoticon_pack = forum_get_setting('default_emoticons', false, 'default');
+    $user_emoticon_pack = forum_get_setting('default_emoticons', null, 'default');
 }
 
 if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
@@ -1142,7 +1142,7 @@ echo "                                          <tr>\n";
 echo "                                            <td align=\"left\">&nbsp;</td>\n";
 echo "                                          </tr>\n";
 
-if (forum_get_setting('poll_allow_guests', false)) {
+if (forum_get_setting('poll_allow_guests', 'Y')) {
 
     echo "                                          <tr>\n";
     echo "                                            <td align=\"left\"><h2>", gettext("Guest Voting"), "</h2></td>\n";

@@ -58,8 +58,10 @@ function exception_stack_trace_tidy($trace_data)
 function bh_exception_handler(Exception $exception)
 {
     if (!error_reporting()) return;
+    
+    $config = server_get_config();
 
-    if (isset($GLOBALS['error_report_verbose']) && $GLOBALS['error_report_verbose'] == true) {
+    if (isset($config['error_report_verbose']) && $config['error_report_verbose'] == true) {
         $error_report_verbose = true;
     } else {
         $error_report_verbose = false;
@@ -297,7 +299,7 @@ function bh_exception_process(Exception $exception)
 
     if (!in_array($exception->getCode(), array(MYSQL_CONNECT_ERROR, MYSQL_ACCESS_DENIED, MYSQL_PERMISSION_DENIED))) {
 
-        if (($mysql_version = db_fetch_mysql_version())) {
+        if (($mysql_version = db::fetch_mysql_version())) {
             $version_strings[] = sprintf('MySQL/%s', $mysql_version);
         } else {
             $version_strings[] = sprintf('MySQL Version Unknown');
@@ -355,14 +357,14 @@ function bh_exception_process(Exception $exception)
 
 function bh_exception_send_email(Exception $exception)
 {
-    if (isset($GLOBALS['error_report_email_addr_to']) && strlen(trim($GLOBALS['error_report_email_addr_to'])) > 0) {
-        $error_report_email_addr_to = trim($GLOBALS['error_report_email_addr_to']);
+    if (isset($config['error_report_email_addr_to']) && strlen(trim($config['error_report_email_addr_to'])) > 0) {
+        $error_report_email_addr_to = trim($config['error_report_email_addr_to']);
     } else {
         $error_report_email_addr_to = '';
     }
     
-    if (isset($GLOBALS['error_report_email_addr_from']) && strlen(trim($GLOBALS['error_report_email_addr_from'])) > 0) {
-        $error_report_email_addr_from = trim($GLOBALS['error_report_email_addr_from']);
+    if (isset($config['error_report_email_addr_from']) && strlen(trim($config['error_report_email_addr_from'])) > 0) {
+        $error_report_email_addr_from = trim($config['error_report_email_addr_from']);
     } else {
         $error_report_email_addr_from = 'no-reply@beehiveforum.co.uk';
     }

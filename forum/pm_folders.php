@@ -300,7 +300,8 @@ echo "  </table>\n";
 
 // Fetch the free PM space and calculate it as a percentage.
 $pm_free_space = pm_get_free_space();
-$pm_max_user_messages = forum_get_setting('pm_max_user_messages', false, 100);
+
+$pm_max_user_messages = forum_get_setting('pm_max_user_messages', null, 100);
 
 $pm_used_percent = (100 / $pm_max_user_messages) * ($pm_max_user_messages - $pm_free_space);
 

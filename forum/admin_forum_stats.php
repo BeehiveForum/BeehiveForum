@@ -375,9 +375,6 @@ echo "                  <td align=\"left\" rowspan=\"32\" width=\"1%\">&nbsp;</t
 echo "                </tr>\n";
 
 if (($most_popular_forum_style = stats_get_most_popular_forum_style()) !== false) {
-    
-    print_r_pre($most_popular_forum_style);
-    exit;
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"40%\">", gettext("Most used forum style"), ":&nbsp;</td>\n";

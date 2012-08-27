@@ -156,10 +156,10 @@ class Swift_MessageBeehive extends Swift_Message
     private function set_headers()
     {
         // Get the forum name.
-        $forum_name  = forum_get_setting('forum_name', false, 'A Beehive Forum');
+        $forum_name  = forum_get_setting('forum_name', null, 'A Beehive Forum');
 
         // Get the forum email address
-        $forum_email = forum_get_setting('forum_noreply_email', false, 'noreply@beehiveforum.co.uk');
+        $forum_email = forum_get_setting('forum_noreply_email', null, 'noreply@beehiveforum.co.uk');
 
         // Mail function we're using.
         $mail_function = forum_get_global_setting('mail_function', false, MAIL_FUNCTION_PHP);

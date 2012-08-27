@@ -21,50 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
+// Bootstrap
+require_once 'boot.php';
 
-// Constant to define where the include files are
-define("BH_INCLUDE_PATH", "include/");
-
-// Server checking functions
-require_once BH_INCLUDE_PATH. 'server.inc.php';
-
-// Caching functions
-require_once BH_INCLUDE_PATH. 'cache.inc.php';
-
-// Disable PHP's register_globals
-unregister_globals();
-
-// Correctly set server protocol
-set_server_protocol();
-
-// Disable caching if on AOL
-cache_disable_aol();
-
-// Disable caching if proxy server detected.
-cache_disable_proxy();
-
-// Compress the output
-require_once BH_INCLUDE_PATH. 'gzipenc.inc.php';
-
-// Enable the error handler
-require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
-
-// Installation checking functions
-require_once BH_INCLUDE_PATH. 'install.inc.php';
-
-// Check that Beehive is installed correctly
-check_install();
-
-// Multiple forum support
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-
-// Fetch Forum Settings
-$forum_settings = forum_get_settings();
-
-// Fetch Global Forum Settings
-//$forum_global_settings = forum_get_global_settings();
+// Includes required by this page.
 require_once BH_INCLUDE_PATH. 'admin.inc.php';
 require_once BH_INCLUDE_PATH. 'beehive.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';

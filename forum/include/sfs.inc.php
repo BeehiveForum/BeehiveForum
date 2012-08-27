@@ -66,7 +66,7 @@ function sfs_check_banned($user_data, &$cached_response = false)
         'email' => BAN_TYPE_EMAIL,
     );
     
-    $sfs_api_url_array = parse_url(forum_get_setting('sfs_api_url', false, 'http://www.stopforumspam.com/api'));
+    $sfs_api_url_array = parse_url(forum_get_setting('sfs_api_url', null, 'http://www.stopforumspam.com/api'));
     
     $sfs_api_url_array['query'] = http_build_query($request, false, '&');
     
@@ -74,7 +74,7 @@ function sfs_check_banned($user_data, &$cached_response = false)
     
     $sfs_api_url_md5 = md5($sfs_api_url);
     
-    $min_confidence = forum_get_setting('sfs_min_confidence', false, 75);
+    $min_confidence = forum_get_setting('sfs_min_confidence', null, 75);
     
     $response_confidence = 0;
     
@@ -111,33 +111,33 @@ function sfs_check_banned($user_data, &$cached_response = false)
 
 function sfs_cache_get($request_md5, &$cached_response = false)
 {
-    $db_sfs_cache_get = db_connect();
+    $db = db::get();
     
-    $request_md5 = db_escape_string($request_md5);
+    $request_md5 = $db->escape($request_md5);
     
     $current_datetime = date(MYSQL_DATETIME, time());
     
     $sql = "SELECT RESPONSE FROM SFS_CACHE WHERE REQUEST_MD5 = '$request_md5' ";
     $sql.= "AND EXPIRES > '$current_datetime'";
     
-    if (!($result = db_query($sql, $db_sfs_cache_get))) return false;
+    if (!($result = $db->query($sql))) return false;
     
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
     
     $cached_response = true;
         
-    list($response) = db_fetch_array($result, DB_RESULT_NUM);
+    list($response) = $result->fetch_row();
     
-    return unserialize(base64_decode($response));
+    return unserialize($response);
 }
 
 function sfs_cache_put($request_md5, $response)
 {
-    $db_sfs_cache_put = db_connect();
+    $db = db::get();
     
-    $request_md5 = db_escape_string($request_md5);
+    $request_md5 = $db->escape($request_md5);
     
-    $response = base64_encode(serialize($response));
+    $response = $db->escape(serialize($response));
     
     $current_datetime = date(MYSQL_DATETIME, time());
     
@@ -146,9 +146,9 @@ function sfs_cache_put($request_md5, $response)
     $sql = "REPLACE INTO SFS_CACHE (REQUEST_MD5, RESPONSE, CREATED, EXPIRES) ";
     $sql.= "VALUES('$request_md5', '$response', '$current_datetime', '$expires_datetime')";
     
-    if (!db_query($sql, $db_sfs_cache_put)) return false;
+    if (!$db->query($sql)) return false;
     
-    return db_affected_rows($db_sfs_cache_put) > 0;
+    return $db->affected_rows > 0;
 }
   
 ?>

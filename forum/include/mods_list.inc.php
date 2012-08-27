@@ -34,7 +34,7 @@ require_once BH_INCLUDE_PATH. 'forum.inc.php';
 
 function mods_list_get_mods($fid)
 {
-    if (!$db_mods_list_get_mods = db_connect()) return false;
+    if (!$db = db::get()) return false;
 
     $mod_list_array = array();
 
@@ -61,11 +61,11 @@ function mods_list_get_mods($fid)
         $sql.= "OR (GROUP_PERMS.PERM & $user_perm_folder_moderate) > 0) ";
     }
 
-    if (!$result = db_query($sql, $db_mods_list_get_mods)) return false;
+    if (!$result = $db->query($sql)) return false;
 
-    if (db_num_rows($result) == 0) return false;
+    if ($result->num_rows == 0) return false;
 
-    while (($mod_list_data = db_fetch_array($result))) {
+    while (($mod_list_data = $result->fetch_assoc())) {
         $mod_list_array[$mod_list_data['UID']] = $mod_list_data;
     }
 

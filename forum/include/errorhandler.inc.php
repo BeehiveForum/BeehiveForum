@@ -84,7 +84,7 @@ function bh_exception_handler(Exception $exception)
     @error_log($error_log_message);
 
     header_status(500, 'Internal Server Error');
-
+    
     if (($exception->getCode() == MYSQL_ERROR_NO_SUCH_TABLE) || ($exception->getCode() == MYSQL_ERROR_WRONG_COLUMN_NAME)) {
 
         if (function_exists('install_incomplete') && !defined('BEEHIVE_DEVELOPER_MODE')) {
@@ -299,7 +299,7 @@ function bh_exception_process(Exception $exception)
 
     if (!in_array($exception->getCode(), array(MYSQL_CONNECT_ERROR, MYSQL_ACCESS_DENIED, MYSQL_PERMISSION_DENIED))) {
 
-        if (($mysql_version = db::fetch_mysql_version())) {
+        if (($mysql_version = db::get_version())) {
             $version_strings[] = sprintf('MySQL/%s', $mysql_version);
         } else {
             $version_strings[] = sprintf('MySQL Version Unknown');

@@ -325,7 +325,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
         echo "</ol>\n";
 
-        if ($search_results_array['result_count'] > (sizeof($search_results_array['result_array']) + ($page * 20))) {
+        if (ceil($search_results_array['result_count'] / 20) > $page) {
             echo "<img src=\"", html_style_image('current_thread.png'), "\" alt=\"", gettext("Find more"), "\" title=\"", gettext("Find more"), "\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;page=", $page + 1, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">", gettext("Find more"), "</a><br />\n";
         }
 

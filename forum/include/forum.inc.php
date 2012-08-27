@@ -493,7 +493,7 @@ function forum_save_settings($forum_settings_array)
     return true;
 }
 
-function forum_save_default_settings($forum_settings_array)
+function forum_save_global_settings($forum_settings_array)
 {
     if (!is_array($forum_settings_array)) return false;
 

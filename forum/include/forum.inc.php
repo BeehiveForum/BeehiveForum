@@ -2176,7 +2176,7 @@ function forum_check_maintenance()
 
     $new_forum_settings['forum_maintenance_function'] = $forum_maintenance_function;
 
-    forum_save_default_settings($new_forum_settings);
+    forum_save_global_settings($new_forum_settings);
 }
 
 ?>

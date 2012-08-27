@@ -141,6 +141,9 @@ body {
 #header {
 	background-color: #FF9900;
     font-size: 13px;
+    height: 31px;
+    margin: 0;
+    padding: 0;
     position: relative;
 }
 
@@ -168,52 +171,60 @@ body {
     border-bottom: none;
     border-left: 1px solid rgba(0, 0, 0, 0.1);
     border-right: none;
-    min-height: 31px;
-    min-width: 130px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-weight: bold;
+    height: 19px;
+    padding: 8px 20px 4px;
     position: absolute;
     right: 0;
     top: 0;
-    z-index: 9999;
+    width: 100px;
 }
 
 #nav.menu_open {
-	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
-    padding: 0 0 5px;
+	box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-#nav ul {
+#menu {
+	background-color: #FF9900;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    border-right: none;
+    border-top: none;
+    box-shadow: -2px 10px 10px rgba(0, 0, 0, 0.2);
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 31px;
+    width: 140px;
+    z-index: 9999;
+}
+
+#menu ul {
 	border-collapse: collapse;
+    font-size: 13px;
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-#nav li {
+#menu li {
 	border: none;
     color: #FFFFFF;
     cursor: pointer;
     font-weight: bold;
 }
 
-#nav li.menu_item {
-	display: none;
-}
-
-#nav.menu_open li.menu_item {
-	display: block;
-}
-
-#nav li a,
-#nav li.menu_toggle {
+#menu li a {
 	color: #FFFFFF;
     display: block;
     padding: 5px 20px;
 }
 
-#nav ul li:first-child a,
-#nav ul li:last-child a,
-#nav li.menu_toggle {
+#menu ul li:first-child a,
+#menu ul li:last-child a,
+#menu li.menu_toggle {
 	padding: 6px 20px 6px;
 }
 
@@ -253,7 +264,8 @@ body {
 }
 
 #thread_mark_read h3 {
-	margin: 0;
+	font-size: 13px;
+    margin: 0;
     padding: 0;
 }
 
@@ -265,6 +277,7 @@ body {
 .forum h3,
 .folder h3 {
 	background: url('images/folder.png') transparent no-repeat scroll 0 0;
+    font-size: 13px;
     line-height: 150%;
     margin: 0;
     padding: 0 0 0 20px;
@@ -348,8 +361,9 @@ body {
     white-space: nowrap;
 }
 
-h2.thread_title {
-	line-height: 150%;
+h3.thread_title {
+	font-size: 13px;
+    line-height: 150%;
 }
 
 .message {
@@ -541,7 +555,8 @@ a.folder_list_link {
 }
 
 .poll h3 {
-	line-height: 200%;
+	font-size: 13px;
+    line-height: 200%;
     margin: 0;
 }
 
@@ -620,6 +635,7 @@ a.folder_list_link {
 .post h3 {
 	background-color: #FFA41A;
     color: #FFFFFF;
+    font-size: 13px;
     font-weight: normal;
     margin: 0;
     padding: 2px 3px;
@@ -696,6 +712,7 @@ a.folder_list_link {
 .logon h3 {
 	background-color: #FFA41A;
     color: #FFFFFF;
+    font-size: 13px;
     font-weight: normal;
     margin: 0;
     padding: 2px 3px;
@@ -820,16 +837,20 @@ span.user_enemy {
 
 .message_question h3 {
 	background: url('images/help.png') transparent no-repeat scroll 0 50%;
+    font-size: 13px;
 }
 
 .message_error h3 {
 	background: url('images/error.png') transparent no-repeat scroll 0 50%;
+    font-size: 13px;
 }
 
 .message_success h3 {
 	background: url('images/success.png') transparent no-repeat scroll 0 50%;
+    font-size: 13px;
 }
 
 .message_warning h3 {
 	background: url('images/warning.png') transparent no-repeat scroll 0 50%;
+    font-size: 13px;
 }

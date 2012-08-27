@@ -22,12 +22,26 @@ USA
 $(beehive).bind('init', function() {
         
     $('body').bind('click', function(event) {
-        $('div#nav').removeClass('menu_open');
+        
+        var $nav = $('div#nav');
+        
+        var $menu = $('div#menu');
+        
+        $nav.removeClass('menu_open');
+        
+        $menu.toggle($nav.hasClass('menu_open'));        
     });
 
     $('div#nav').bind('click', function(event) {
         
-        $(this).toggleClass('menu_open');
+        var $nav = $(this);
+        
+        var $menu = $('div#menu');
+        
+        $nav.toggleClass('menu_open');
+        
+        $menu.toggle($nav.hasClass('menu_open'));
+        
         event.stopPropagation();
     });
 });

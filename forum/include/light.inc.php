@@ -228,9 +228,10 @@ function light_html_draw_top()
     echo "<a name=\"top\"></a>\n";
     echo "<div id=\"header\">\n";
     echo "  <img src=\"", html_style_image('mobile_logo.png'), "\" alt=\"", gettext("Beehive Forum Logo"), "\" />\n";
-    echo "  <div id=\"nav\">\n";
+    echo "  <div id=\"nav\">", gettext("Menu"), "</div>\n";
+    echo "</div>\n";
+    echo "<div id=\"menu\">\n";
     echo "    <ul>\n";
-    echo "      <li class=\"menu_toggle\">", gettext("Menu"), "</li>\n";
 
     if (forums_get_available_count() > 1 || !forum_check_webtag_available($webtag)) {
         echo "      <li class=\"menu_item\"><a href=\"lforums.php?webtag=$webtag\">", gettext("My Forums"), "</a></li>\n";

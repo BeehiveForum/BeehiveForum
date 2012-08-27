@@ -169,10 +169,35 @@ function adsense_check_page_bottom()
 function adsense_get_banner_type(&$ad_type, &$ad_width, &$ad_height)
 {
     $ad_type = 'medium'; $ad_width = 468; $ad_height = 60;
+    
+    $ad_sense_small_banner_pages_preg = implode("|^", array_map('preg_quote_callback', adsense_small_banner_pages()));
 
-    if (preg_match("/^pm_folder\\.php|^start_left\\.php|^thread_list\\.php|^user_menu\\.php/u", basename($_SERVER['PHP_SELF'])) > 0) {
+    if (preg_match("/^$ad_sense_small_banner_pages_preg/u", basename($_SERVER['PHP_SELF'])) > 0) {
         $ad_type = 'small'; $ad_width = 234; $ad_height = 60;
     }
+}
+
+function adsense_small_banner_pages()
+{
+    return array(
+        'index.php', 
+        'ldelete.php', 
+        'ldisplay.php', 
+        'ledit.php', 
+        'lforums.php', 
+        'llogon.php',
+        'llogout.php',
+        'lmessages.php',
+        'lpm.php',
+        'lpm_edit.php',
+        'lpm_write.php',
+        'lpost.php',
+        'lthread_list.php',
+        'pm_folder.php',
+        'start_left.php',
+        'thread_list.php',
+        'user_menu.php',
+    );
 }
 
 function adsense_output_html()

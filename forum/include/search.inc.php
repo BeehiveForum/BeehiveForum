@@ -45,6 +45,13 @@ function search_execute($search_arguments, &$error)
 {
     if (($uid = session::get_value('UID')) === false) return false;
 
+    // If the user has performed a search within the last x minutes bail out
+    if (!check_search_frequency()) {
+
+        $error = SEARCH_FREQUENCY_TOO_GREAT;
+        return false;
+    }       
+
     // Database connection.
     if (!$db = db::get()) return false;
 
@@ -282,13 +289,6 @@ function search_mysql_execute($search_arguments, &$error)
     // Build the final query.
     $sql = "$select_sql $from_sql $join_sql $where_sql ";
     $sql.= "$group_sql $having_sql $order_sql $limit_sql";
-
-    // If the user has performed a search within the last x minutes bail out
-    if (!check_search_frequency()) {
-
-        $error = SEARCH_FREQUENCY_TOO_GREAT;
-        return false;
-    }
 
     // Execute the query
     if (!$db->query($sql)) return false;

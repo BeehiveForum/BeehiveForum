@@ -41,13 +41,15 @@ function sphinx_search_connect()
 
     if (!($sphinx_search_port = forum_get_setting('sphinx_search_port', 'is_numeric', false))) return false;
 
-    if (!($sphinx_link = mysqli_init())) return false;
+    if (!($sphinx = mysqli_init())) return false;
+    
+    if (!$sphinx->options(MYSQLI_OPT_CONNECT_TIMEOUT, 2)) return false;
+    
+    if (!$sphinx->real_connect($sphinx_search_host, null, null, null, $sphinx_search_port)) return false;
+    
+    if (mysqli_connect_error()) return false;
 
-    if (!mysqli_options($sphinx_link, MYSQLI_OPT_CONNECT_TIMEOUT, 2)) return false;
-
-    if (!(@mysqli_real_connect($sphinx_link, $sphinx_search_host, null, null, null, $sphinx_search_port))) return false;
-
-    return $sphinx_link;
+    return $sphinx;
 }
 
 function sphinx_search_execute($search_arguments, &$error)
@@ -59,7 +61,7 @@ function sphinx_search_execute($search_arguments, &$error)
     if (!($forum_fid = get_forum_fid())) return false;
 
     // Swift connection.
-    if (!$sphinx_connection = sphinx_search_connect()) {
+    if (!($sphinx = sphinx_search_connect())) {
 
         $error = SEARCH_SPHINX_UNAVAILABLE;
         return false;
@@ -109,8 +111,9 @@ function sphinx_search_execute($search_arguments, &$error)
     if (isset($search_arguments['search_string']) && strlen(trim($search_arguments['search_string'])) > 0) {
 
         // Sphinx doesn't like -- in MATCH. Don't know if it's because it
-        // thinks it is a MySQL-style comment or a bug. We have no choice but to strip it out.
-        $search_string = $db->escape(str_replace('--', '', $search_arguments['search_string']));
+        // thinks it is a MySQL-style comment or a bug. We have no choice 
+        // but to strip it out.
+        $search_string = $sphinx->real_escape_string(str_replace('--', '', $search_arguments['search_string']));
 
         search_save_arguments($search_arguments);
 
@@ -166,15 +169,8 @@ function sphinx_search_execute($search_arguments, &$error)
     $sql = "SELECT * FROM $sphinx_search_index, $sphinx_search_index_delta ";
     $sql.= "$where_sql $group_sql $order_sql LIMIT 1000";
 
-    // If the user has performed a search within the last x minutes bail out
-    if (!check_search_frequency()) {
-
-        $error = SEARCH_FREQUENCY_TOO_GREAT;
-        return false;
-    }
-
     // Execute the query
-    if (!($result = $db->query($sql))) return false;
+    if (!($result = $sphinx->query($sql))) return false;
 
     // Check if we have any results
     if ($result->num_rows == 0) {

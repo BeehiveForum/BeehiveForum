@@ -29,24 +29,31 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 }
 
 require_once BH_INCLUDE_PATH. 'cache.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'install.inc.php';
+require_once BH_INCLUDE_PATH. 'server.inc.php';
 
-function bh_error_handler($code, $message, $file = '', $line = 0)
+class bh_error_exception extends Exception 
 {
-    if (error_reporting()) {
-        throw new ErrorException($message, 0, $code, $file, $line);
+    protected $severity;
+   
+    public function __construct($message, $code, $severity, $filename, $lineno) 
+    {
+        $this->message = $message;
+        $this->code = $code;
+        $this->severity = $severity;
+        $this->file = $filename;
+        $this->line = $lineno;
+    }
+   
+    public function getSeverity() 
+    {
+        return $this->severity;
     }
 }
 
 function bh_shutdown_handler()
 {
     if (($error = error_get_last()) && (error_reporting())) {
-        bh_exception_processor(new Exception($error['message'], 0, $error['file'], $error['line']));
+        bh_exception_handler(new bh_error_exception($error['message'], 0, $error['type'], $error['file'], $error['line']));
     }
 }
 
@@ -57,8 +64,6 @@ function exception_stack_trace_tidy($trace_data)
 
 function bh_exception_handler(Exception $exception)
 {
-    if (!error_reporting()) return;
-    
     $config = server_get_config();
 
     if (isset($config['error_report_verbose']) && $config['error_report_verbose'] == true) {
@@ -100,6 +105,21 @@ function bh_exception_handler(Exception $exception)
             install_missing_files();
         }
     }
+    
+    $forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
+    
+    echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"utf-8\" lang=\"en\" dir=\"ltr\">\n";
+    echo "<head>\n";
+    echo "<title>Beehive Forum - Error Handler</title>\n";
+    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
+    echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
+    echo "<link rel=\"stylesheet\" href=\"", $forum_path, "/styles/default/style.css?", md5(uniqid(rand())), "\" type=\"text/css\" />\n";
+    echo "</head>\n";
+    echo "<body>\n";
+    echo "<h1>Error</h1>\n";
+    echo "<br />\n";
 
     if (defined('BEEHIVEMODE_LIGHT') && !defined('BEEHIVE_DEVELOPER_MODE')) {
 
@@ -110,67 +130,21 @@ function bh_exception_handler(Exception $exception)
 
             echo '<p>When reporting a bug in Project Beehive or when requesting support please include the details below.</p>';
 
-            echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
+            echo "<table cellpadding=\"0\" cellspacing=\"0\" class=\"warning_msg\">\n";
             echo "  <tr>\n";
             echo "    <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"styles/default/images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
             echo "    <td valign=\"top\" class=\"warning_msg_text\">Please note that there may be sensitive information such as passwords displayed here.</td>\n";
             echo "  </tr>\n";
             echo "</table>\n";
 
-            echo implode("\n", $error_msg_array);
+            echo "<p>", implode("</p><p>", $error_msg_array), "</p>\n";
         }
+    
+    } else {
 
-        exit;
-    }
-
-    echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"utf-8\" lang=\"en\" dir=\"ltr\">\n";
-    echo "<head>\n";
-    echo "<title>Beehive Forum - Error Handler</title>\n";
-    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-    echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
-    echo "<link rel=\"stylesheet\" href=\"styles/default/style.css?", md5(uniqid(rand())), "\" type=\"text/css\" />\n";
-    echo "</head>\n";
-    echo "<body>\n";
-    echo "<h1>Error</h1>\n";
-    echo "<br />\n";
-    echo "<div align=\"center\">\n";
-    echo "<form accept-charset=\"utf-8\" name=\"f_error\" method=\"post\" action=\"\" target=\"_self\">\n";
-    echo "  ", form_input_hidden_array($_POST), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">Error</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-    echo "                    <table class=\"posthead\" width=\"95%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"postbody\">An error has occured. Please wait a few moments and then click the Retry button below. Details of the error have been saved to the default error log.</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-
-    if ((isset($error_report_verbose) && ($error_report_verbose == true)) || defined('BEEHIVE_DEVELOPER_MODE')) {
-
-        echo "  <br />\n";
+        echo "<div align=\"center\">\n";    
+        echo "<form accept-charset=\"utf-8\" name=\"f_error\" method=\"post\" action=\"\" target=\"_self\">\n";
+        echo "  ", form_input_hidden_array($_POST), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -179,39 +153,13 @@ function bh_exception_handler(Exception $exception)
         echo "            <td align=\"left\" class=\"posthead\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">Error Details</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">Error</td>\n";
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">\n";
-        echo "                          <div align=\"center\">\n";
-        echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
-        echo "                              <tr>\n";
-        echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"styles/default/images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
-        echo "                                <td valign=\"top\" class=\"warning_msg_text\">When reporting a bug in Project Beehive or when requesting support please include the details below.</td>\n";
-        echo "                              </tr>\n";
-        echo "                            </table>\n";
-        echo "                          </div>\n";
-        echo "                        </td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">\n";
-        echo "                          <div align=\"center\">\n";
-        echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
-        echo "                              <tr>\n";
-        echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"styles/default/images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
-        echo "                                <td valign=\"top\" class=\"warning_msg_text\">Please note that there may be sensitive information such as passwords displayed here.</td>\n";
-        echo "                              </tr>\n";
-        echo "                            </table>\n";
-        echo "                          </div>\n";
-        echo "                        </td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td>\n";
-        echo "                          <div class=\"error_handler_details\">", implode("\n", $error_msg_array), "</div>\n";
-        echo "                        </td>\n";
+        echo "                        <td align=\"left\" class=\"postbody\">An error has occured. Please wait a few moments and then click the Retry button below. Details of the error have been saved to the default error log.</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -226,16 +174,77 @@ function bh_exception_handler(Exception $exception)
         echo "      </td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
-    }
 
-    echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\"><input class=\"button\" type=\"submit\" name=\"", md5(uniqid(mt_rand())), "\" value=\"Retry\" /></td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "</form>\n";
-    echo "</div>\n";
+        if ((isset($error_report_verbose) && ($error_report_verbose == true)) || defined('BEEHIVE_DEVELOPER_MODE')) {
+
+            echo "  <br />\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"left\">\n";
+            echo "        <table class=\"box\" width=\"100%\">\n";
+            echo "          <tr>\n";
+            echo "            <td align=\"left\" class=\"posthead\">\n";
+            echo "              <table class=\"posthead\" width=\"100%\">\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">Error Details</td>\n";
+            echo "                </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"center\">\n";
+            echo "                    <table class=\"posthead\" width=\"95%\">\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">\n";
+            echo "                          <div align=\"center\">\n";
+            echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
+            echo "                              <tr>\n";
+            echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"styles/default/images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
+            echo "                                <td valign=\"top\" class=\"warning_msg_text\">When reporting a bug in Project Beehive or when requesting support please include the details below.</td>\n";
+            echo "                              </tr>\n";
+            echo "                            </table>\n";
+            echo "                          </div>\n";
+            echo "                        </td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">\n";
+            echo "                          <div align=\"center\">\n";
+            echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
+            echo "                              <tr>\n";
+            echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"styles/default/images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
+            echo "                                <td valign=\"top\" class=\"warning_msg_text\">Please note that there may be sensitive information such as passwords displayed here.</td>\n";
+            echo "                              </tr>\n";
+            echo "                            </table>\n";
+            echo "                          </div>\n";
+            echo "                        </td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td>\n";
+            echo "                          <div class=\"error_handler_details\">", implode("\n", $error_msg_array), "</div>\n";
+            echo "                        </td>\n";
+            echo "                      </tr>\n";
+            echo "                      <tr>\n";
+            echo "                        <td align=\"left\">&nbsp;</td>\n";
+            echo "                      </tr>\n";
+            echo "                    </table>\n";
+            echo "                  </td>\n";
+            echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "      </td>\n";
+            echo "    </tr>\n";
+            echo "  </table>\n";
+        }
+
+        echo "  <br />\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\"><input class=\"button\" type=\"submit\" name=\"", md5(uniqid(mt_rand())), "\" value=\"Retry\" /></td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "</form>\n";
+        echo "</div>\n";
+    }
+    
     echo "</body>\n";
     echo "</html>\n";
     

@@ -31,29 +31,32 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 require_once BH_INCLUDE_PATH. 'cache.inc.php';
 require_once BH_INCLUDE_PATH. 'server.inc.php';
 
-class bh_error_exception extends Exception 
+function bh_exception_handler(Exception $exception)
 {
-    protected $severity;
-   
-    public function __construct($message, $code, $severity, $filename, $lineno) 
-    {
-        $this->message = $message;
-        $this->code = $code;
-        $this->severity = $severity;
-        $this->file = $filename;
-        $this->line = $lineno;
+    bh_error_display(
+        $exception->getCode(), 
+        $exception->getMessage(), 
+        $exception->getFile(), 
+        $exception->getLine(), 
+        $exception->getTrace()
+    );
+}
+
+function bh_error_handler($code, $message, $file, $line)
+{
+    if (error_reporting() == 0) {
+        return;
     }
-   
-    public function getSeverity() 
-    {
-        return $this->severity;
+    
+    if (error_reporting() & $code) {
+        bh_error_display($code, $message, $file, $line, debug_backtrace());
     }
 }
 
 function bh_shutdown_handler()
 {
-    if (($error = error_get_last()) && (error_reporting())) {
-        bh_exception_handler(new bh_error_exception($error['message'], 0, $error['type'], $error['file'], $error['line']));
+    if (($error = error_get_last()) && ($error['type'] == E_ERROR)) {
+        bh_error_display($error['type'], $error['message'], $error['file'], $error['line'], debug_backtrace());
     }
 }
 
@@ -62,7 +65,7 @@ function exception_stack_trace_tidy($trace_data)
     return !(isset($trace_data['function']) && in_array($trace_data['function'], array('bh_exception_handler', 'bh_error_handler', 'bh_shutdown_handler')));
 }
 
-function bh_exception_handler(Exception $exception)
+function bh_error_display($code, $message, $file, $line, $stack_trace)
 {
     $config = server_get_config();
 
@@ -80,9 +83,9 @@ function bh_exception_handler(Exception $exception)
 
     ob_implicit_flush(0);
     
-    bh_exception_send_email($exception);
+    bh_exception_send_email($code, $message, $file, $line, $stack_trace);
 
-    $error_msg_array = bh_exception_process($exception);
+    $error_msg_array = bh_exception_process($code, $message, $file, $line, $stack_trace);
     
     $error_log_message = sprintf('BEEHIVE_ERROR: %s', strip_tags(implode(". ", $error_msg_array)));
 
@@ -90,7 +93,7 @@ function bh_exception_handler(Exception $exception)
 
     header_status(500, 'Internal Server Error');
     
-    if (($exception->getCode() == MYSQL_ERROR_NO_SUCH_TABLE) || ($exception->getCode() == MYSQL_ERROR_WRONG_COLUMN_NAME)) {
+    if (($code == MYSQL_ERROR_NO_SUCH_TABLE) || ($code == MYSQL_ERROR_WRONG_COLUMN_NAME)) {
 
         if (function_exists('install_incomplete') && !defined('BEEHIVE_DEVELOPER_MODE')) {
 
@@ -98,7 +101,7 @@ function bh_exception_handler(Exception $exception)
         }
     }
 
-    if ((preg_match('/include|include_once/u', $exception->getMessage()) > 0)) {
+    if ((preg_match('/include|include_once/u', $message) > 0)) {
 
         if (function_exists('install_missing_files') && !defined('BEEHIVE_DEVELOPER_MODE')) {
 
@@ -251,23 +254,23 @@ function bh_exception_handler(Exception $exception)
     exit;
 }
 
-function bh_exception_process(Exception $exception)
+function bh_exception_process($code, $message, $file, $line, $stack_trace)
 {
     $error_msg_array = array();
 
     $version_strings = array();
 
-    $error_msg_array[] = sprintf('<p><b>E_USER_ERROR</b> %s</p>', $exception->getMessage());
+    $error_msg_array[] = sprintf('<p><b>E_USER_ERROR</b> %s</p>', $message);
 
-    if (strlen(trim(basename($exception->getFile()))) > 0) {
+    if (strlen(trim(basename($file))) > 0) {
 
         $error_msg_array[] = '<p><b>Error Message:</b></p>';
-        $error_msg_array[] = sprintf('<p>Error in line %s of file %s</p>', $exception->getLine(), basename($exception->getFile()));
+        $error_msg_array[] = sprintf('<p>Error in line %s of file %s</p>', $line, basename($file));
     }
 
     $error_msg_array[] = '<hr />';
     
-    $stack_trace = array_filter($exception->getTrace(), 'exception_stack_trace_tidy');
+    $stack_trace = array_filter($stack_trace, 'exception_stack_trace_tidy');
 
     if (count($stack_trace) > 0) {
 
@@ -306,7 +309,7 @@ function bh_exception_process(Exception $exception)
 
     $mysql_version = '';
 
-    if (!in_array($exception->getCode(), array(MYSQL_CONNECT_ERROR, MYSQL_ACCESS_DENIED, MYSQL_PERMISSION_DENIED))) {
+    if (!in_array($code, array(MYSQL_CONNECT_ERROR, MYSQL_ACCESS_DENIED, MYSQL_PERMISSION_DENIED))) {
 
         if (($mysql_version = db::get_version())) {
             $version_strings[] = sprintf('MySQL/%s', $mysql_version);
@@ -364,7 +367,7 @@ function bh_exception_process(Exception $exception)
     return $error_msg_array;
 }
 
-function bh_exception_send_email(Exception $exception)
+function bh_exception_send_email($code, $message, $file, $line, $stack_trace)
 {
     $config = server_get_config();
     
@@ -382,7 +385,7 @@ function bh_exception_send_email(Exception $exception)
     
     if (strlen($error_report_email_addr_to) > 0 && !defined('BEEHIVE_DEVELOPER_MODE')) {
 
-        $error_msg_array = bh_exception_process($exception);    
+        $error_msg_array = bh_exception_process($code, $message, $file, $line, $stack_trace);    
 
         $error_log_email_message = implode("\n\n", array_filter(array_map('strip_tags', $error_msg_array), 'strlen'));
 

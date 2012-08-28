@@ -49,6 +49,9 @@ register_shutdown_function('bh_shutdown_handler');
 // Enable the exception handler
 set_exception_handler('bh_exception_handler');
 
+// Enable the error handler
+set_error_handler('bh_error_handler');
+
 // Don't output errors to the browser
 ini_set('display_errors', '0');
 

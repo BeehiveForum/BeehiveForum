@@ -1126,6 +1126,8 @@ function user_get_forthcoming_birthdays()
 
 function user_search_array_clean($user_search)
 {
+    if (!($db = db::get())) return '';
+    
     return $db->escape(trim(str_replace("%", "", $user_search)));
 }
 

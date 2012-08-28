@@ -154,6 +154,10 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
 
     if (!is_numeric($uid)) return false;
 
+    if (!$db = db::get()) return false;
+
+    if (!($table_prefix = get_table_prefix())) return false;
+
     $title = $db->escape($title);
 
     $poll = ($poll == 'Y') ? 'Y' : 'N';
@@ -163,10 +167,6 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     $closed = ($closed === true) ? sprintf("'%s'", date(MYSQL_DATETIME, time())) : 'NULL';
 
     $deleted = ($deleted === true) ? 'Y' : 'N';
-
-    if (!$db = db::get()) return false;
-
-    if (!($table_prefix = get_table_prefix())) return false;
 
     // Current datetime
     $current_datetime = date(MYSQL_DATETIME, time());

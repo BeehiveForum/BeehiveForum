@@ -366,6 +366,8 @@ function bh_exception_process(Exception $exception)
 
 function bh_exception_send_email(Exception $exception)
 {
+    $config = server_get_config();
+    
     if (isset($config['error_report_email_addr_to']) && strlen(trim($config['error_report_email_addr_to'])) > 0) {
         $error_report_email_addr_to = trim($config['error_report_email_addr_to']);
     } else {
@@ -380,9 +382,9 @@ function bh_exception_send_email(Exception $exception)
     
     if (strlen($error_report_email_addr_to) > 0 && !defined('BEEHIVE_DEVELOPER_MODE')) {
 
-        $error_msg_array = bh_exception_format($exception);    
+        $error_msg_array = bh_exception_process($exception);    
 
-        $error_log_email_message = strip_tags(implode("\n\n", $error_msg_array));
+        $error_log_email_message = implode("\n\n", array_filter(array_map('strip_tags', $error_msg_array), 'strlen'));
 
         $headers = "Return-path: $error_report_email_addr_from\n";
         $headers.= "From: \"Beehive Forum Error Report\" <$error_report_email_addr_from>\n";

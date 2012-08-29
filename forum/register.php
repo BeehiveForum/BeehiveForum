@@ -397,7 +397,7 @@ if (isset($_POST['register'])) {
         
         $user_data = array(
             'IPADDRESS' => get_ip_address(),
-            'REFERER' => session::get_referer(),
+            'REFERER' => session::get_http_referer(),
             'LOGON' => $logon,
             'NICKNAME' => $nickname,
             'EMAIL' => $email

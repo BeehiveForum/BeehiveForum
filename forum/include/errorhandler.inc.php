@@ -49,23 +49,18 @@ function bh_error_handler($code, $message, $file, $line)
     }
     
     if (error_reporting() & $code) {
-        bh_error_display($code, $message, $file, $line, debug_backtrace());
+        bh_error_display($code, $message, $file, $line);
     }
 }
 
 function bh_shutdown_handler()
 {
     if (($error = error_get_last()) && ($error['type'] == E_ERROR)) {
-        bh_error_display($error['type'], $error['message'], $error['file'], $error['line'], debug_backtrace());
+        bh_error_display($error['type'], $error['message'], $error['file'], $error['line']);
     }
 }
 
-function exception_stack_trace_tidy($trace_data)
-{
-    return !(isset($trace_data['function']) && in_array($trace_data['function'], array('bh_exception_handler', 'bh_error_handler', 'bh_shutdown_handler')));
-}
-
-function bh_error_display($code, $message, $file, $line, $stack_trace)
+function bh_error_display($code, $message, $file, $line)
 {
     $config = server_get_config();
 
@@ -83,9 +78,9 @@ function bh_error_display($code, $message, $file, $line, $stack_trace)
 
     ob_implicit_flush(0);
     
-    bh_exception_send_email($code, $message, $file, $line, $stack_trace);
+    bh_error_send_email($code, $message, $file, $line);
 
-    $error_msg_array = bh_exception_process($code, $message, $file, $line, $stack_trace);
+    $error_msg_array = bh_error_process($code, $message, $file, $line);
     
     $error_log_message = sprintf('BEEHIVE_ERROR: %s', strip_tags(implode(". ", $error_msg_array)));
 
@@ -254,7 +249,7 @@ function bh_error_display($code, $message, $file, $line, $stack_trace)
     exit;
 }
 
-function bh_exception_process($code, $message, $file, $line, $stack_trace)
+function bh_error_process($code, $message, $file, $line)
 {
     $error_msg_array = array();
 
@@ -270,7 +265,7 @@ function bh_exception_process($code, $message, $file, $line, $stack_trace)
 
     $error_msg_array[] = '<hr />';
     
-    $stack_trace = array_filter($stack_trace, 'exception_stack_trace_tidy');
+    $stack_trace = array_values(array_filter(debug_backtrace(), 'bh_error_stack_trace_tidy'));
 
     if (count($stack_trace) > 0) {
 
@@ -367,7 +362,22 @@ function bh_exception_process($code, $message, $file, $line, $stack_trace)
     return $error_msg_array;
 }
 
-function bh_exception_send_email($code, $message, $file, $line, $stack_trace)
+function bh_error_stack_trace_tidy($trace_data)
+{
+    $ignore_functions = array(
+        'bh_exception_handler',
+        'bh_error_handler',
+        'bh_shutdown_handler',
+        'bh_error_display',
+        'bh_error_process',
+        'bh_error_stack_trace_tidy',
+        'bh_error_send_email',
+    );
+    
+    return !(isset($trace_data['function']) && in_array($trace_data['function'], $ignore_functions));
+}
+
+function bh_error_send_email($code, $message, $file, $line)
 {
     $config = server_get_config();
     
@@ -385,7 +395,7 @@ function bh_exception_send_email($code, $message, $file, $line, $stack_trace)
     
     if (strlen($error_report_email_addr_to) > 0 && !defined('BEEHIVE_DEVELOPER_MODE')) {
 
-        $error_msg_array = bh_exception_process($code, $message, $file, $line, $stack_trace);    
+        $error_msg_array = bh_error_process($code, $message, $file, $line);    
 
         $error_log_email_message = implode("\n\n", array_filter(array_map('strip_tags', $error_msg_array), 'strlen'));
 

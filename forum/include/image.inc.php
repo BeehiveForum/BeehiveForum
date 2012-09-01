@@ -33,24 +33,18 @@ require_once BH_INCLUDE_PATH. 'forum.inc.php';
 
 function image_enable_transparency($im)
 {
-    if (!function_exists('imageantialias')) return $im;
     if (!function_exists('imagealphablending')) return $im;
     if (!function_exists('imagesavealpha')) return $im;
 
-    imageantialias($im, true);
     imagealphablending($im, false);
+    
     imagesavealpha($im, true);
-
-    $im_width  = imagesx($im);
-    $im_height = imagesy($im);
-
-    $transparent = imagecolorallocatealpha($im, 255, 255, 255, 0);
-
-    for ($x = 0; $x < $im_width; $x++) {
-        for ($y = 0;$y < $im_height; $y++) {
-            imagesetpixel($im, $x, $y, $transparent);
-        }
-    }
+    
+    $transparent = imagecolorallocatealpha($im, 255,255,255, 127);
+    
+    imagefilledrectangle($im, 0, 0, imagesx($im), imagesy($im), $transparent);
+    
+    imagealphablending($im, true);
 
     return $im;
 }
@@ -84,6 +78,13 @@ function image_resize_imagemagick($src, $dest, $max_width = 150, $max_height = 1
 {
     if (!is_numeric($max_width)) return false;
     if (!is_numeric($max_height)) return false;
+    
+    // Array of mime-types to encoding types for imagemagick
+    $mime_type_encoding = array(
+        'image/gif' => 'gif',
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+    );
 
     // Get the imagemagick path from settings.
     if (!($imagemagick_path = forum_get_global_setting('attachment_imagemagick_path'))) return false;
@@ -91,35 +92,40 @@ function image_resize_imagemagick($src, $dest, $max_width = 150, $max_height = 1
     // Check that imagemagick is executable.
     if (!is_executable($imagemagick_path)) return false;
     
+    // Check the destination directory is writable.
+    if (!is_writable(dirname($dest))) return false;
+
     // Check the file exists and we can get some image data from it.
     if (!file_exists($src) || !($image_info = @getimagesize($src))) return false;
     
-    // Check the destination directory is writable.
-    if (!is_writable(dirname($dest))) return false;
+    // Check it's an image type we support.
+    if (!isset($image_info['mime']) || !isset($mime_type_encoding[$image_info['mime']])) return false;
 
     // If we're dealing with a GIF image, we need to
     // process it to correctly resize all the frames it
     // might contain - in the case of animated gifs.
-    if (($image_info[2] == IMAGETYPE_GIF)) {
+    if (false || ($image_info[2] == IMAGETYPE_GIF)) {
 
         // Resize the gif, dropping all but the first frame.
         exec(sprintf(
-            'convert %s[0] -resize "%dx%d>" %s', 
+            'convert -size "%3$dx%4$d" xc:transparent %1$s[0] -resize "%3$dx%4$d^>" -gravity center -compose over -composite %5$s:%2$s',
             escapeshellarg($src),
+            escapeshellarg($dest),
             $max_width,
             $max_height,
-            escapeshellarg($dest)
+            $mime_type_encoding[$image_info['mime']]
         ));
 
     } else {
 
         // It's not a gif, so carry on and resize the image.
         exec(sprintf(
-            'convert %s -resize "%dx%d>" %s', 
+            'convert -size "%3$dx%4$d" xc:transparent %1$s -resize "%3$dx%4$d^>" -gravity center -compose over -composite %5$s:%2$s',
             escapeshellarg($src),
+            escapeshellarg($dest),
             $max_width,
             $max_height,
-            escapeshellarg($dest)
+            $mime_type_encoding[$image_info['mime']]
         ));
     }
 
@@ -173,6 +179,9 @@ function image_resize_gd($src, $dest, $max_width, $max_height)
     // Check the gd_info function exists
     if (!function_exists('gd_info') || !($gd_info = gd_info())) return false;
 
+    // Check 0: Do we have a new enough version of GD?
+    if (stristr($gd_info['GD Version'], '2.0') === false) return false;
+
     // Check 1: Is the image format in our list of supported image types.
     if (!isset($required_read_support[$image_info[2]])) return false;
     if (!isset($required_write_support[$image_info[2]])) return false;
@@ -185,34 +194,34 @@ function image_resize_gd($src, $dest, $max_width, $max_height)
     if (!function_exists($required_read_functions[$image_info[2]])) return false;
     if (!function_exists($required_write_functions[$image_info[2]])) return false;
 
+    // Check 4: Can we actually read the image using the function?
     if (!($src_im = @$required_read_functions[$image_info[2]]($src))) return false;
-
+    
+    // Extract the dimensions from the image info.
     $target_width  = $image_info[0];
     $target_height = $image_info[1];
 
-    while ($target_width > $max_width || $target_height > $max_height) {
+    // Scale the width and height till we fit in 1 of the dimensions.
+    while ($target_width > $max_width && $target_height > $max_height) {
 
         $target_width--;
         $target_height = $target_width * ($image_info[1] / $image_info[0]);
     }
+    
+    // Calculate the offset.
+    $offset_width = floor(($max_width - $target_width) / 2);
+    $offset_height = floor(($max_height - $target_height) / 2);
 
-    if (strcmp($gd_info['GD Version'], '2.0') > -1) {
+    // Create a new true colour image
+    $dest_im = imagecreatetruecolor($max_width, $max_height);
 
-        $dest_im = imagecreatetruecolor($target_width, $target_height);
+    // Fill the background in white.
+    $dest_im = image_enable_transparency($dest_im);
 
-        $dest_im = image_enable_transparency($dest_im);
+    // Copy the source image onto the destination.
+    imagecopyresampled($dest_im, $src_im, $offset_width, $offset_height, 0, 0, $target_width, $target_height, $image_info[0], $image_info[1]);
 
-        imagecopyresampled($dest_im, $src_im, 0, 0, 0, 0, $target_width, $target_height, $image_info[0], $image_info[1]);
-
-    } else {
-
-        $dest_im = imagecreate($target_width, $target_height);
-
-        $dest_im = image_enable_transparency($dest_im);
-
-        imagecopyresized($dest_im, $src_im, 0, 0, 0, 0, $target_width, $target_height, $image_info[0], $image_info[1]);
-    }
-
+    // Write the file and return the result.
     return $required_write_functions[$image_info[2]]($dest_im, $dest);
 }
 

@@ -40,8 +40,8 @@ date_default_timezone_set('UTC');
 // Enable the error handler
 require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
 
-// Set the error reporting level to report all errors
-error_reporting(E_ALL | E_STRICT);
+// Set the error reporting level to report all errors exception fatal errors
+error_reporting((E_ALL | E_STRICT) & ~ E_ERROR);
 
 // Register shutdown function to check for uncaught errors
 register_shutdown_function('bh_shutdown_handler');

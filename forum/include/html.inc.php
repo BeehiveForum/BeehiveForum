@@ -922,7 +922,7 @@ function html_draw_top()
 
     foreach ($arg_array as $func_args) {
 
-        if (($func_args == "htmltools.js") && @file_exists(html_get_forum_file_path('tiny_mce/tiny_mce.js'))) {
+        if (($func_args == "htmltools.js") && @file_exists(html_get_forum_file_path('tiny_mce/tiny_mce.js', false))) {
 
             $page_prefs = session::get_post_page_prefs();
 

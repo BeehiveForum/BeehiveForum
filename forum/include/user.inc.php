@@ -626,23 +626,23 @@ function user_get_by_logon($logon)
     return $user_array;
 }
 
-function user_get_sig($uid, &$content, &$html)
+function user_get_sig($uid)
 {
-    if (!$db = db::get()) return false;
+    if (!$db = db::get()) return '';
 
-    if (!is_numeric($uid)) return false;
+    if (!is_numeric($uid)) return '';
 
-    if (!($table_prefix = get_table_prefix())) return false;
+    if (!($table_prefix = get_table_prefix())) return '';
 
-    $sql = "SELECT CONTENT, HTML FROM `{$table_prefix}USER_SIG` WHERE UID = '$uid'";
+    $sql = "SELECT CONTENT FROM `{$table_prefix}USER_SIG` WHERE UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!$result = $db->query($sql)) return '';
 
-    if ($result->num_rows == 0) return false;
+    if ($result->num_rows == 0) return '';
 
-    list($content, $html) = $result->fetch_row();
+    list($content) = $result->fetch_row();
 
-    return true;
+    return $content;
 }
 
 function user_get_last_ip_address($uid)
@@ -1028,7 +1028,7 @@ function user_check_pref($name, $value)
     return false;
 }
 
-function user_update_sig($uid, $content, $html, $global_update = false)
+function user_update_sig($uid, $content, $global_update = false)
 {
     if (!$db = db::get()) return false;
 
@@ -1036,17 +1036,15 @@ function user_update_sig($uid, $content, $html, $global_update = false)
 
     $content = $db->escape($content);
 
-    $html = $db->escape($html);
-
     if ($global_update === true) {
 
         if (!$forum_prefix_array = forum_get_all_prefixes()) return false;
 
         foreach ($forum_prefix_array as $forum_prefix) {
 
-            $sql = "INSERT INTO `{$forum_prefix}USER_SIG` (UID, CONTENT, HTML) ";
-            $sql.= "VALUES ('$uid', '$content', '$html') ON DUPLICATE KEY ";
-            $sql.= "UPDATE CONTENT = VALUES(CONTENT), HTML = VALUES(HTML)";
+            $sql = "INSERT INTO `{$forum_prefix}USER_SIG` (UID, CONTENT) ";
+            $sql.= "VALUES ('$uid', '$content') ON DUPLICATE KEY ";
+            $sql.= "UPDATE CONTENT = VALUES(CONTENT)";
 
             if (!$db->query($sql)) return false;
         }
@@ -1055,9 +1053,9 @@ function user_update_sig($uid, $content, $html, $global_update = false)
 
         if (!($table_prefix = get_table_prefix())) return false;
 
-        $sql = "INSERT INTO `{$table_prefix}USER_SIG` (UID, CONTENT, HTML) ";
-        $sql.= "VALUES ('$uid', '$content', '$html') ON DUPLICATE KEY UPDATE ";
-        $sql.= "CONTENT = VALUES(CONTENT), HTML = VALUES(HTML)";
+        $sql = "INSERT INTO `{$table_prefix}USER_SIG` (UID, CONTENT) ";
+        $sql.= "VALUES ('$uid', '$content') ON DUPLICATE KEY UPDATE ";
+        $sql.= "CONTENT = VALUES(CONTENT)";
 
         if (!$db->query($sql)) return false;
     }

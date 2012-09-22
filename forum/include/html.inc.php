@@ -40,7 +40,6 @@ require_once BH_INCLUDE_PATH. 'form.inc.php';
 require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'forum.inc.php';
 require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
 require_once BH_INCLUDE_PATH. 'lang.inc.php';
 require_once BH_INCLUDE_PATH. 'logon.inc.php';
 require_once BH_INCLUDE_PATH. 'messages.inc.php';
@@ -921,26 +920,11 @@ function html_draw_top()
     reset($arg_array);
 
     foreach ($arg_array as $func_args) {
-
-        if (($func_args == "htmltools.js") && @file_exists(html_get_forum_file_path('tiny_mce/tiny_mce.js', false))) {
-
-            $page_prefs = session::get_post_page_prefs();
-
-            if ($page_prefs & POST_TINYMCE_DISPLAY) {
-
-                html_include_javascript(html_get_forum_file_path('tiny_mce/tiny_mce.js'));
-                html_include_javascript(html_get_forum_file_path('js/tiny_mce.js'));
-
-            } else {
-
-                html_include_javascript(html_get_forum_file_path("js/$func_args"));
-            }
-
-        } else {
-
-            html_include_javascript(html_get_forum_file_path("js/$func_args"));
-        }
+        html_include_javascript(html_get_forum_file_path("js/$func_args"));
     }
+
+    html_include_javascript(html_get_forum_file_path("ckeditor/ckeditor.js"));
+    html_include_javascript(html_get_forum_file_path("ckeditor/adapters/jquery.js"));
 
     html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag"));
 
@@ -1246,7 +1230,7 @@ function html_style_image($img, $allow_cdn = true)
 function html_set_cookie($name, $value, $expires = 0)
 {
     $cookie_secure = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on');
-    return setcookie($name, $value, $expires, '', '', $cookie_secure, true);
+    return setcookie($name, $value, $expires, '/', '', $cookie_secure, true);
 }
 
 function html_get_cookie($cookie_name, $callback = null, $default = null)
@@ -1465,7 +1449,7 @@ function html_get_forum_file_path($file_path, $allow_cdn = true)
     if (!isset($file_path_cache_array[$file_path])) {
 
         // Get the BH_FORUM_PATH prefix.
-        $forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
+        $forum_path = server_get_forum_path();
 
         // HTTP schema
         $http_scheme = (isset($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';

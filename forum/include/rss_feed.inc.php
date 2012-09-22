@@ -292,12 +292,7 @@ function rss_feed_check_feeds()
 
                         $rss_feed_item_description = htmlentities_decode_array($rss_feed_item->description);
 
-                        $rss_feed_item_post = new MessageText(true, $rss_feed_item_description, false, true, false);
-                        $rss_feed_item_post->setHTML(POST_HTML_AUTO);
-
-                        $rss_content = $rss_feed_item_post->getContent();
-
-                        $rss_content = fix_html("<quote source=\"$rss_quote_source\" url=\"{$rss_feed_item->link}\">$rss_content</quote>");
+                        $rss_content = fix_html("<quote source=\"$rss_quote_source\" url=\"{$rss_feed_item->link}\">$rss_feed_item_description</quote>");
 
                     } else {
 

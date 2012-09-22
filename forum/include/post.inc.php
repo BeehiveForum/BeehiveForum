@@ -87,10 +87,10 @@ function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipadd
     $sql.= "VALUES ('$tid', '$new_pid', '$post_content')";
 
     if (!$db->query($sql)) return -1;
-    
+
     $sql = "INSERT INTO `{$table_prefix}POST_SEARCH_ID` (TID, PID) ";
     $sql.= "VALUES('$tid', '$new_pid')";
-    
+
     if (!$db->query($sql)) return -1;
 
     post_update_thread_length($tid, $new_pid);
@@ -296,7 +296,7 @@ function post_draw_to_dropdown_recent($default_uid)
     if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
-    
+
     if (!is_numeric($default_uid)) $default_uid = 0;
 
     if (!($forum_fid = get_forum_fid())) return false;
@@ -622,165 +622,22 @@ function post_edit_refuse($tid, $pid)
     html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => "$tid.$pid"));
 }
 
-class MessageText {
+class MessageTextParse
+{
+    protected $message;
 
-    private $html = "";
-    private $text = "";
-    private $original_text = "";
-    private $emoticons = true;
-    private $links = true;
-    private $tiny_mce;
+    protected $sig;
 
-    public $diff = false;
+    protected $original;
 
-    function MessageText ($html = 0, $content = "", $emoticons = true, $links = true, $tiny_mce = null)
-    {
-        $post_prefs = session::get_post_page_prefs();
-        
-        if (is_bool($tiny_mce)) {
-            $this->tiny_mce = $tiny_mce;
-        } else {
-            $this->tiny_mce = ($post_prefs & POST_TINYMCE_DISPLAY) && !defined('BEEHIVEMODE_LIGHT');
-        }
+    protected $emoticons;
 
-        $this->diff = false;
-        $this->original_text = "";
-        $this->links = $links;
-        $this->setEmoticons($emoticons);
-        $this->setHTML($html);
-        $this->setContent($content);
-    }
+    protected $links;
 
-    function setHTML ($html, $strip_tags = false)
-    {
-        if ($html == false || $html == "N") {
-            $this->html = POST_HTML_DISABLED;
-        } else if ($html == POST_HTML_AUTO || $html == "A") {
-            $this->html = POST_HTML_AUTO;
-        } else {
-            $this->html = POST_HTML_ENABLED;
-        }
-
-        if ($this->html == POST_HTML_DISABLED && $strip_tags === true) {
-            $this->setContent(strip_tags($this->getOriginalContent()));
-        } else {
-            $this->setContent($this->getOriginalContent());
-        }
-    }
-
-    function getHTML ()
-    {
-        return $this->html;
-    }
-
-    function setEmoticons ($bool)
-    {
-        $this->emoticons = ($bool == true) ? true : false;
-        $this->setContent($this->getOriginalContent());
-    }
-
-    function getEmoticons ()
-    {
-        return $this->emoticons;
-    }
-
-    function getLinks ()
-    {
-        return $this->links;
-    }
-
-    function setLinks($bool)
-    {
-        $this->links = ($bool == true) ? true : false;
-        $this->setContent($this->getOriginalContent());
-    }
-
-    function setContent($text)
-    {
-        $this->original_text = $text;
-
-        if ($this->html == POST_HTML_DISABLED) {
-
-            $text = make_html($text, false, $this->emoticons, $this->links);
-
-        } else if ($this->html > POST_HTML_DISABLED) {
-
-            $text = fix_html($text, $this->emoticons, $this->links);
-            
-            if ($this->tiny_mce) {
-                
-                $text = fix_tiny_mce_html($text);
-
-            } else {
-
-                $tidy_text = tidy_html($text, ($this->html == POST_HTML_AUTO) ? true : false);
-
-                if (trim(preg_replace('/<code[^>]*>.*<\/code>/su', '', $this->original_text)) != trim(preg_replace('/<code[^>]*>.*<\/code>/su', '', $tidy_text))) {
-                    $this->diff = true;
-                }
-            }
-
-            if ($this->html == POST_HTML_AUTO) {
-                $text = add_paragraphs($text);
-            }
-        }
-
-        $this->text = $text;
-    }
-
-    function getContent()
-    {
-        return $this->text;
-    }
-
-    function getTidyContent()
-    {
-        if ($this->tiny_mce) {
-
-            return htmlentities_array(tidy_tiny_mce($this->text));        
-            
-        } else if ($this->html > POST_HTML_DISABLED) {
-
-            return htmlentities_array(tidy_html($this->text, ($this->html == POST_HTML_AUTO) ? true : false, $this->links));
-        }
-
-        return strip_tags($this->text);
-    }
-
-    function getOriginalContent()
-    {
-        return $this->original_text;
-    }
-
-    function isDiff()
-    {
-        return $this->diff;
-    }
-}
-
-class MessageTextParse {
-
-    private $message;
-    private $message_html;
-    private $sig;
-    private $sig_html;
-    private $original;
-    private $tiny_mce;
-    private $emoticons;
-    private $links;
-
-    function MessageTextParse($message, $emots_default = true, $links_enabled = true, $tiny_mce = null)
+    public function __construct($message, $emoticons = true, $links = true)
     {
         $this->original = $message;
 
-        $post_prefs = session::get_post_page_prefs();
-
-        if (is_bool($tiny_mce)) {
-            $this->tiny_mce = $tiny_mce;
-        } else {
-            $this->tiny_mce = ($post_prefs & POST_TINYMCE_DISPLAY) && !defined('BEEHIVEMODE_LIGHT');
-        }
-        
         $message_parts = preg_split('/(<[^<>]+>)/u', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
         $signature_parts = array();
@@ -798,13 +655,9 @@ class MessageTextParse {
 
         $message = implode('', $message_parts);
 
-        $emoticons = $emots_default;
-
-        if (preg_match('/^<noemots>.*<\/noemots>$/Dsu', $message) > 0) {
+        if ($emoticons && preg_match('/^<noemots>.*<\/noemots>$/Dsu', $message) > 0) {
             $emoticons = false;
         }
-
-        $message_html = POST_HTML_DISABLED;
 
         $links_replace_count = 0;
 
@@ -812,90 +665,38 @@ class MessageTextParse {
 
         if ($links_replace_count > 0) {
             $links = true;
-        } else {
-            $links = $links_enabled;
-        }
-        
-        if ($this->tiny_mce) {
-            
-            $message = tidy_tiny_mce($message);
-
-            $message_html = POST_HTML_ENABLED;
-        
-        } else {
-            
-            $message = tidy_html($message, false, $links);
-            
-            $message_check_html = strip_tags($message, '<p><br>');
-
-            if (strcmp($message_check_html, $message) <> 0) {
-
-                $message_html = POST_HTML_ENABLED;
-
-                if (add_paragraphs($message) == $message) {
-                    $message_html = POST_HTML_AUTO;
-                }
-
-            } else {
-
-                $message = htmlentities_decode_array(tidy_html_linebreaks($message));
-            }
-        }
-        
-        $signature_check_html = strip_tags($signature);
-        
-        if (strcmp($signature_check_html, $signature) <> 0) {
-            
-            $sig_html = POST_HTML_ENABLED;
-            $signature = tidy_html($signature, false, false);
-        
-        } else {
-            
-            $sig_html = POST_HTML_DISABLED;        
-            $signature = htmlentities_decode_array($signature);
         }
 
-        $this->message = $message;
-        $this->message_html = $message_html;
-        
-        $this->sig = $signature;
-        $this->sig_html = $sig_html;
-        
+        $this->message = fix_html($message, $emoticons, $links);
+
+        $this->sig = fix_html($signature, false, true);
+
         $this->emoticons = $emoticons;
+
         $this->links = $links;
     }
 
-    function getMessage ()
+    public function getMessage()
     {
         return $this->message;
     }
 
-    function getSig ()
+    public function getSig()
     {
         return $this->sig;
     }
 
-    function getMessageHTML ()
-    {
-        return $this->message_html;
-    }
-    
-    function getSigHTML ()
-    {
-        return $this->sig_html;
-    }
-
-    function getEmoticons ()
+    public function getEmoticons()
     {
         return $this->emoticons;
     }
 
-    function getLinks ()
+    public function getLinks()
     {
         return $this->links;
     }
 
-    function getOriginal ()
+    public function getOriginal()
     {
         return $this->original;
     }

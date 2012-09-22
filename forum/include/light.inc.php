@@ -57,11 +57,11 @@ require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 function light_html_draw_top()
 {
     static $called = false;
-    
+
     if ($called) return;
-    
+
     $called = true;
-    
+
     $arg_array = func_get_args();
 
     $title = null;
@@ -89,16 +89,16 @@ function light_html_draw_top()
             $robots = (!isset($robots) && isset($func_matches[1]) ? $func_matches[1] : $robots);
             unset($arg_array[$key]);
         }
-        
+
         if (preg_match('/^link=([^:]+):(.+)$/Disu', $func_args, $func_matches) > 0) {
-            
+
             $link_array[] = array(
-                'rel' => $func_matches[1], 
+                'rel' => $func_matches[1],
                 'href' => $func_matches[2]
             );
-            
+
             unset($arg_array[$key]);
-        }        
+        }
     }
 
     // Default Meta keywords and description.
@@ -169,7 +169,7 @@ function light_html_draw_top()
     if (($emoticon_stylesheet = html_get_emoticon_style_sheet(true))) {
         echo "<link rel=\"stylesheet\" href=\"$emoticon_stylesheet\" type=\"text/css\" media=\"screen\" />\n";
     }
-    
+
     $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag");
 
     printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array(gettext("RSS Feed")), $rss_feed_path);
@@ -193,23 +193,23 @@ function light_html_draw_top()
         printf("<link rel=\"shortcut icon\" type=\"image/ico\"href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
     }
 
-    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery-1.7.1.min.js\"></script>\n";
-    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/jquery.sprintf.js\"></script>\n";
-    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/general.js\"></script>\n";
-    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/light.js\"></script>\n";
+    echo "<script type=\"text/javascript\" src=\"js/jquery-1.7.1.min.js\"></script>\n";
+    echo "<script type=\"text/javascript\" src=\"js/jquery.sprintf.js\"></script>\n";
+    echo "<script type=\"text/javascript\" src=\"js/general.js\"></script>\n";
+    echo "<script type=\"text/javascript\" src=\"js/light.js\"></script>\n";
 
     $message_display_pages = array(
-        'admin_post_approve.php', 
+        'admin_post_approve.php',
         'create_poll.php',
-        'delete.php', 
-        'display.php', 
+        'delete.php',
+        'display.php',
         'edit.php',
-        'edit_poll.php', 
+        'edit_poll.php',
         'edit_signature.php',
-        'ldisplay.php', 
+        'ldisplay.php',
         'lmessages.php',
-        'lpost.php', 
-        'messages.php', 
+        'lpost.php',
+        'messages.php',
         'post.php'
     );
 
@@ -217,11 +217,13 @@ function light_html_draw_top()
 
         if (session::get_value('USE_MOVER_SPOILER') == "Y") {
 
-            echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"js/spoiler.js\"></script>\n";
+            echo "<script type=\"text/javascript\" src=\"js/spoiler.js\"></script>\n";
         }
     }
 
-    echo "<script language=\"Javascript\" type=\"text/javascript\" src=\"json.php?webtag=$webtag\"></script>\n";
+    echo "<script type=\"text/javascript\" src=\"ckeditor/ckeditor.js\"></script>\n";
+    echo "<script type=\"text/javascript\" src=\"ckeditor/adapters/jquery.js\"></script>\n";
+    echo "<script type=\"text/javascript\" src=\"json.php?webtag=$webtag\"></script>\n";
 
     echo "</head>\n";
     echo "<body id=\"mobile\">\n";
@@ -231,23 +233,22 @@ function light_html_draw_top()
     echo "  <div id=\"nav\">", gettext("Menu"), "</div>\n";
     echo "</div>\n";
     echo "<div id=\"menu\">\n";
-    echo "    <ul>\n";
+    echo "  <ul>\n";
 
     if (forums_get_available_count() > 1 || !forum_check_webtag_available($webtag)) {
-        echo "      <li class=\"menu_item\"><a href=\"lforums.php?webtag=$webtag\">", gettext("My Forums"), "</a></li>\n";
+        echo "    <li class=\"menu_item\"><a href=\"lforums.php?webtag=$webtag\">", gettext("My Forums"), "</a></li>\n";
     }
 
-    echo "      <li class=\"menu_item\"><a href=\"lthread_list.php?webtag=$webtag\">", gettext("Messages"), "</a></li>\n";
-    echo "      <li class=\"menu_item\"><a href=\"lpm.php?webtag=$webtag\">", gettext("Inbox"), "</a></li>\n";
+    echo "    <li class=\"menu_item\"><a href=\"lthread_list.php?webtag=$webtag\">", gettext("Messages"), "</a></li>\n";
+    echo "    <li class=\"menu_item\"><a href=\"lpm.php?webtag=$webtag\">", gettext("Inbox"), "</a></li>\n";
 
     if (!session::logged_in()) {
-        echo "      <li class=\"menu_item\"><a href=\"llogon.php?webtag=$webtag\">", gettext("Login"), "</a></li>\n";
+        echo "    <li class=\"menu_item\"><a href=\"llogon.php?webtag=$webtag\">", gettext("Login"), "</a></li>\n";
     } else {
-        echo "      <li class=\"menu_item\"><a href=\"llogout.php?webtag=$webtag\">", gettext("Logout"), "</a></li>\n";
+        echo "    <li class=\"menu_item\"><a href=\"llogout.php?webtag=$webtag\">", gettext("Logout"), "</a></li>\n";
     }
 
-    echo "    </ul>\n";
-    echo "  </div>\n";
+    echo "  </ul>\n";
     echo "</div>\n";
     echo "<div id=\"content\">\n";
 
@@ -261,11 +262,11 @@ function light_html_draw_top()
 function light_html_draw_bottom()
 {
     static $called = false;
-    
+
     if ($called) return;
-    
+
     $called = true;
-    
+
     $webtag = get_webtag();
 
     echo "</div>\n";
@@ -277,7 +278,7 @@ function light_html_draw_bottom()
         echo "    <a href=\"#top\">", gettext("Top"), "</a> &middot; <a href=\"index.php?webtag=$webtag&amp;view=full\">", gettext("Desktop Version"), "</a>\n";
         echo "  </div>\n";
     }
-    
+
     echo "  <h6><a href=\"http://www.beehiveforum.co.uk/\" target=\"_blank\">Beehive Forum ", BEEHIVE_VERSION, "<br />&copy; ", strftime('%Y'), " Project Beehive Forum</a></h6>\n";
     echo "</div>\n";
     echo "</body>\n";
@@ -793,12 +794,12 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
                             // work out how long ago the thread was posted and format the time to display
                             $thread_time = format_time($thread['MODIFIED']);
-                            
+
                             echo "<span class=\"thread_title\">";
                             echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" ";
                             echo "title=\"", sprintf(gettext("Thread #%s Started by %s. Viewed %s"), $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME']), true), ($thread['VIEWCOUNT'] == 1) ? gettext("1 time") : sprintf(gettext("%d times"), $thread['VIEWCOUNT'])), "\">";
                             echo word_filter_add_ob_tags($thread['TITLE'], true), "</a> ";
-                            
+
                             echo "<span class=\"thread_detail\">";
 
                             if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<span class=\"thread_high_interest\" title=\"", gettext("High Interest"), "\">[H]</span>";
@@ -813,7 +814,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
                             echo "<span class=\"thread_length\">$number</span>";
                             echo "</span>";
                             echo "</span>";
-                            
+
                             echo "<span class=\"thread_time\">$thread_time</span>";
                             echo "</li>\n";
                         }
@@ -872,10 +873,10 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
         echo form_input_hidden("mark_read_confirm", 'N'), "\n";
 
         $labels = array(
-            gettext("All Discussions"), 
+            gettext("All Discussions"),
             gettext("Next 50 discussions")
         );
-        
+
         $selected_option = THREAD_MARK_READ_ALL;
 
         if (sizeof($visible_threads_array) > 0) {
@@ -1003,7 +1004,7 @@ function light_draw_pm_inbox()
         echo light_form_submit("pm_delete_confirm", gettext("Delete"));
         echo light_form_submit("cancel", gettext("Cancel"));
         echo "</div>\n";
-        
+
         return;
     }
 
@@ -1099,7 +1100,7 @@ function light_draw_pm_inbox()
                     } else {
                         echo "<li class=\"pm_read\">";
                     }
-                    
+
                     echo "<span class=\"pm_title\">";
                     echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;mid={$message['MID']}\">{$message['SUBJECT']}</a>";
                     echo "</span>";
@@ -1189,7 +1190,7 @@ function light_draw_my_forums()
 
                     echo gettext("No Unread Messages");
                 }
-                
+
                 echo "</span>\n";
                 echo "</li>\n";
                 echo "<li>";
@@ -1199,7 +1200,7 @@ function light_draw_my_forums()
                 } else {
                     echo "<span class=\"forum_last_visit\">", gettext("Last Visited"), ": ", gettext("Never"), "</span>\n";
                 }
-                
+
                 echo "</li>\n";
                 echo "</ul>\n";
                 echo "</div>\n";
@@ -1807,7 +1808,7 @@ function light_message_display_approval_req($tid, $pid)
 function light_messages_nav_strip($tid, $pid, $length, $ppp)
 {
     $webtag = get_webtag();
-    
+
     if ($pid < 2 && $length < $ppp) {
         return;
     } else if ($pid < 1) {
@@ -1821,7 +1822,7 @@ function light_messages_nav_strip($tid, $pid, $length, $ppp)
     if ($spid > 1) {
 
         if ($pid > 1) {
-            
+
             $navbits[0] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">". mess_nav_range(1, $spid - 1). "</a>";
 
         } else {
@@ -1944,7 +1945,7 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
     return light_form_dropdown_array($field_name. $suffix, $available_folders, $default_fid);
 }
 
-function light_form_textarea($name, $value = "", $rows = 0, $cols = 0, $custom_html = '')
+function light_form_textarea($name, $value = "", $rows = 0, $cols = 0, $custom_html = '', $class = 'textarea')
 {
     if (!is_numeric($rows)) $rows = 5;
     if (!is_numeric($cols)) $cols = 50;
@@ -1953,7 +1954,7 @@ function light_form_textarea($name, $value = "", $rows = 0, $cols = 0, $custom_h
         $custom_html = sprintf(' %s', trim($custom_html));
     }
 
-    return sprintf('<textarea name="%s" class="textarea" rows="%s" cols="%s"%s>%s</textarea>', $name, $rows, $cols, $custom_html, $value);
+    return sprintf('<textarea name="%s" class="%s" rows="%s" cols="%s"%s>%s</textarea>', $name, $class, $rows, $cols, $custom_html, $value);
 }
 
 function light_form_checkbox($name, $value, $text, $checked = false, $custom_html = false)
@@ -2035,7 +2036,7 @@ function light_threads_draw_discussions_dropdown($mode)
             TWO_DAYS_BACK => gettext("2 Days Back"),
             SEVEN_DAYS_BACK => gettext("7 Days Back")
         );
-            
+
     } else {
 
         $available_views = array(
@@ -2100,7 +2101,7 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
     $webtag = get_webtag();
 
     $available_methods = array(
-        'get', 
+        'get',
         'post'
     );
 
@@ -2194,6 +2195,15 @@ function light_html_user_require_approval()
     light_html_draw_error(gettext("Your user account needs to be approved by a forum admin before you can access the requested forum."));
 }
 
+function light_html_email_confirmation_error()
+{
+    if (($uid = session::get_value('UID')) === false) return;
+
+    $user_array = user_get($uid);
+
+    light_html_draw_error(gettext("Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details"), 'confirm_email.php', 'get', array('resend' => gettext("Resend Confirmation")), array('uid' => $user_array['UID'], 'resend' => 'Y'));
+}
+
 function light_pm_error_refuse()
 {
     light_html_draw_error(gettext("Cannot view PM. Message does not exist or it is inaccessible by you"));
@@ -2261,7 +2271,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
     if (strlen(trim($pm_message_array['SUBJECT'])) > 0) {
 
-        echo word_filter_add_ob_tags($pm_message_array['SUBJECT'], true), "</b>\n";
+        echo word_filter_add_ob_tags($pm_message_array['SUBJECT'], true), "\n";
 
     } else {
 

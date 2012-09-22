@@ -53,11 +53,11 @@ require_once BH_INCLUDE_PATH. 'visitor_log.inc.php';
 abstract class session
 {
     protected static $db;
-    
+
     public static function init()
     {
         session::$db = db::get(true);
-        
+
         session_set_save_handler(
             array('session', 'open'),
             array('session', 'close'),
@@ -66,107 +66,107 @@ abstract class session
             array('session', 'destroy'),
             array('session', 'gc')
         );
-        
+
         session_name('sess_hash');
-        
+
         if (!html_get_cookie('sess_hash') && ($hash = session::restore())) {
             session_id($hash);
         }
-        
+
         session_start();
-        
+
         session::refresh(session::get_value('UID'));
-        
+
         if (session::logged_in()) {
             html_set_cookie('sess_uid', session::get_value('UID'));
         } else {
             html_set_cookie('sess_uid', '', time() - YEAR_IN_SECONDS);
         }
     }
-    
+
     public static function open()
     {
         return true;
     }
-    
+
     public static function close()
     {
         return true;
     }
-    
+
     public static function read($id)
     {
         $id = session::$db->escape($id);
-        
+
         $user_agent = session::$db->escape(session::get_user_agent());
-        
+
         $sql = "SELECT DATA, MD5 FROM SESSIONS WHERE ID = '$id' ";
         $sql.= "AND USER_AGENT = '$user_agent'";
-        
+
         if (!($result = session::$db->query($sql))) return '';
-        
+
         if ($result->num_rows == 0) return '';
-        
+
         list($data, $md5) = $result->fetch_row();
-        
+
         if (md5($data) != $md5) return '';
-        
+
         return $data;
     }
-    
+
     public static function write($id, $data)
     {
         $id = session::$db->escape($id);
-        
+
         if (!($forum_fid = get_forum_fid())) $forum_fid = 0;
-        
+
         $md5 = session::$db->escape(md5($data));
-        
+
         $data = session::$db->escape($data);
-        
+
         $time = date(MYSQL_DATETIME, time());
-        
+
         $uid = session::$db->escape(session::get_value('UID'));
-        
+
         $ip_address = session::$db->escape(get_ip_address());
-        
+
         $http_referer = session::$db->escape(session::get_http_referer());
-        
+
         $user_agent = session::$db->escape(session::get_user_agent());
-        
+
         if (!($search_id = session::is_search_engine())) $search_id = 'NULL';
-        
+
         $sql = "REPLACE INTO SESSIONS (ID, UID, FID, DATA, MD5, TIME, IPADDRESS, REFERER, USER_AGENT, SID) ";
         $sql.= "VALUES ('$id', '$uid', '$forum_fid', '$data', '$md5', CAST('$time' AS DATETIME), ";
         $sql.= "'$ip_address', '$http_referer', '$user_agent', $search_id)";
-        
+
         if (!(session::$db->query($sql))) return false;
-        
+
         return true;
     }
-    
+
     public static function destroy($id)
     {
         $id = session::$db->escape($id);
-        
+
         $sql = "DELETE FROM SESSIONS WHERE ID = '$id'";
-        
+
         if (!(session::$db->query($sql))) return false;
-        
-        return true;        
+
+        return true;
     }
-    
+
     public static function gc($lifetime)
     {
         $expires_datetime = date(MYSQL_DATETIME, time() - ($lifetime + DAY_IN_SECONDS));
-        
+
         $sql = "DELETE FROM SESSIONS WHERE TIME < CAST('$expires_datetime' AS DATETIME)";
-        
+
         if (!(session::$db->query($sql))) return false;
-        
-        return true;        
+
+        return true;
     }
-    
+
     public static function get_http_referer()
     {
         if (!isset($_SERVER['HTTP_REFERER']) || strlen(trim($_SERVER['HTTP_REFERER'])) == 0) return '';
@@ -176,62 +176,60 @@ abstract class session
         $forum_uri_preg = preg_quote(html_get_forum_uri(), '/');
 
         if (preg_match("/^$forum_uri_preg/iu", $http_referer) > 0) $http_referer = '';
-        
+
         return $http_referer;
     }
-    
+
     public static function get_user_agent()
     {
         if (!isset($_SERVER['HTTP_USER_AGENT']) || strlen(trim($_SERVER['HTTP_USER_AGENT'])) == 0) return '';
-        
+
         return $_SERVER['HTTP_USER_AGENT'];
     }
-    
+
     public static function is_search_engine()
     {
         if (!array_key_exists('SID', $_SESSION)) {
-        
+
             $http_user_agent = session::$db->escape(session::get_user_agent());
 
             $sql = "SELECT SID FROM SEARCH_ENGINE_BOTS ";
             $sql.= "WHERE '$http_user_agent' LIKE AGENT_MATCH ";
 
             if (!($result = session::$db->query($sql))) {
-                
+
                 $_SESSION['SID'] = false;
                 return $_SESSION['SID'];
             }
 
             if ($result->num_rows == 0) {
-                
+
                 $_SESSION['SID'] = false;
                 return $_SESSION['SID'];
             }
 
             list($sid) = $result->fetch_row();
-            
+
             $_SESSION['SID'] = $sid;
         }
-        
+
         return $_SESSION['SID'];
     }
-    
+
     public static function get_post_page_prefs()
     {
         if (!array_key_exists('POST_PAGE', $_SESSION)) {
-            
-            $_SESSION['POST_PAGE'] = (double)POST_TOOLBAR_DISPLAY 
-                | POST_EMOTICONS_DISPLAY 
-                | POST_TEXT_DEFAULT 
+
+            $_SESSION['POST_PAGE'] = (double)POST_EMOTICONS_DISPLAY
                 | POST_AUTO_LINKS
-                | POST_SIGNATURE_DISPLAY 
-                | POLL_ADVANCED_DISPLAY 
+                | POST_SIGNATURE_DISPLAY
+                | POLL_ADVANCED_DISPLAY
                 | POLL_ADDITIONAL_MESSAGE_DISPLAY;
         }
-        
+
         return $_SESSION['POST_PAGE'];
     }
-    
+
     public static function get_folders_by_perm($perm, $forum_fid = false)
     {
         if (!is_numeric($perm)) return false;
@@ -239,7 +237,7 @@ abstract class session
         if (!isset($_SESSION['PERMS'])) return false;
 
         if (!(is_numeric($forum_fid) || ($forum_fid = get_forum_fid()))) return false;
-        
+
         if (!isset($_SESSION['PERMS'][$forum_fid])) {
 
             $_SESSION['PERMS'][$forum_fid] = array();
@@ -267,16 +265,16 @@ abstract class session
                 }
             }
         }
-        
+
         if (count($folder_fids) == 0) return false;
-        
+
         return $folder_fids;
     }
-    
+
     public static function user_approved()
     {
         if (!session::logged_in()) return true;
-        
+
         if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) return true;
 
         if (forum_get_setting('require_user_approval', 'Y')) {
@@ -285,16 +283,16 @@ abstract class session
 
         return true;
     }
-    
+
     public static function user_banned()
     {
         if (session::check_perm(USER_PERM_BANNED, 0)) return true;
-        
+
         if (session::check_perm(USER_PERM_BANNED, 0, 0)) return true;
 
         return false;
     }
-    
+
     public static function get_perm($folder_fid)
     {
         if (!is_numeric($folder_fid)) return false;
@@ -322,11 +320,11 @@ abstract class session
 
         return $user_perm;
     }
-    
+
     public static function check_perm($perm, $folder_fid, $forum_fid = false)
     {
         if (!is_numeric($folder_fid)) return false;
-        
+
         if (!(is_numeric($forum_fid) || ($forum_fid = get_forum_fid()))) $forum_fid = 0;
 
         $user_perm_test = 0;
@@ -354,15 +352,15 @@ abstract class session
 
         return (($user_perm_test & $perm) == $perm);
     }
-    
+
     public static function update_user_time($uid)
     {
         if (!($table_prefix = get_table_prefix())) return false;
-        
+
         if (!($forum_fid = get_forum_fid())) return false;
 
         $uid = session::$db->escape($uid);
-        
+
         $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, USER_TIME_BEST) ";
         $sql.= "SELECT USER_FORUM.UID, FROM_UNIXTIME(UNIX_TIMESTAMP(SESSIONS.TIME) - UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT)) ";
         $sql.= "FROM SESSIONS LEFT JOIN USER_FORUM ON (USER_FORUM.UID = SESSIONS.UID AND USER_FORUM.FID = SESSIONS.FID) ";
@@ -391,21 +389,21 @@ abstract class session
 
         return true;
     }
-    
+
     public static function update_visitor_log($uid, $forum_fid)
     {
         $ip_address = get_ip_address();
 
         $http_referer = session::$db->escape(session::get_http_referer());
-        
+
         $user_agent = session::$db->escape(session::get_user_agent());
 
         $ip_address = session::$db->escape($ip_address);
 
         $current_datetime = date(MYSQL_DATETIME, time());
-        
+
         $uid = (is_numeric($uid) && ($uid > 0)) ? $uid : 'NULL';
-        
+
         if (!($search_id = session::is_search_engine())) $search_id = 'NULL';
 
         $sql = "REPLACE INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER, USER_AGENT, SID) ";
@@ -416,7 +414,7 @@ abstract class session
 
         return true;
     }
-    
+
     public static function get_value($key)
     {
         if (isset($_SESSION[$key])) return $_SESSION[$key];
@@ -425,18 +423,18 @@ abstract class session
 
         return false;
     }
-    
+
     public static function set_value($key, $value)
     {
         $_SESSION[$key] = $value;
         return true;
-    }    
-    
+    }
+
     public static function unset_value($key)
     {
         unset($_SESSION[$key]);
     }
-    
+
     public static function get_perm_array($uid, $forum_fid)
     {
         $user_perm_array = array();
@@ -444,7 +442,7 @@ abstract class session
         if (!is_numeric($uid)) return $user_perm_array;
 
         if (!is_numeric($forum_fid)) return $user_perm_array;
-        
+
         if (!($table_prefix = forum_get_table_prefix($forum_fid))) return $user_perm_array;
 
         $sql = "SELECT FID, PERM, IF (PERM IS NULL, 0, 1) AS FOLDER_PERM_COUNT ";
@@ -489,13 +487,13 @@ abstract class session
 
         return $user_perm_array;
     }
-    
+
     public static function restore()
     {
         if (!($user_logon = html_get_cookie('user_logon'))) return false;
 
         if (!($user_token = html_get_cookie('user_token'))) return false;
-        
+
         if (!($uid = user_logon_token($user_logon, $user_token))) return false;
 
         $user_logon = session::$db->escape($user_logon);
@@ -503,53 +501,53 @@ abstract class session
         $user_token = session::$db->escape($user_token);
 
         $user_agent = session::$db->escape(session::get_user_agent());
-        
+
         $current_datetime = date(MYSQL_DATETIME, time());
-        
+
         $sql = "SELECT SESSIONS.ID FROM USER_TOKEN INNER JOIN USER ON (USER.UID = USER_TOKEN.UID) ";
         $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER_TOKEN.UID AND SESSIONS.USER_AGENT = '$user_agent') ";
         $sql.= "WHERE USER.LOGON = '$user_logon' AND USER_TOKEN.TOKEN = '$user_token' ";
         $sql.= "AND USER_TOKEN.EXPIRES > '$current_datetime' AND USER.UID = '$uid' ";
         $sql.= "GROUP BY USER.UID";
-        
+
         if (!($result = session::$db->query($sql))) return false;
-        
+
         if ($result->num_rows == 0) return false;
-        
+
         list($id) = $result->fetch_row();
-        
+
         if (isset($id) && !is_null($id)) {
-        
+
             html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
             html_set_cookie('user_token', $user_token, time() + YEAR_IN_SECONDS);
 
             return $id;
-        }   
-        
+        }
+
         return false;
     }
-    
+
     public static function create($uid)
     {
         if (!($forum_fid = get_forum_fid())) $forum_fid = 0;
-        
+
         session::refresh($uid);
-        
+
         session::update_visitor_log($uid, $forum_fid);
 
         forum_update_last_visit($uid);
     }
-    
+
     public static function refresh($uid)
     {
         $ip_address = get_ip_address();
-        
+
         $http_referer = session::get_http_referer();
-        
+
         if (!($forum_fid = get_forum_fid())) $forum_fid = 0;
 
         if (!($user = user_get($uid))) {
-            
+
             $user = array(
                 'UID' => 0,
                 'LOGON' => 'GUEST',
@@ -557,19 +555,19 @@ abstract class session
                 'EMAIL' => '',
             );
         }
-        
+
         unset($user['IPADDRESS'], $user['PASSWD'], $user['REFERER']);
-                
+
         $_SESSION = array_merge($_SESSION, $user);
 
         $_SESSION['FID'] = $forum_fid;
-        
+
         $_SESSION['IPADDRESS'] = get_ip_address();
 
         if (session::logged_in() && ($user_prefs = user_get_prefs($uid))) {
             $_SESSION = array_merge($_SESSION, $user_prefs);
-        }    
-        
+        }
+
         if (($user_perms = session::get_perm_array($uid, $forum_fid))) {
             $_SESSION['PERMS'] = $user_perms;
         }
@@ -586,14 +584,14 @@ abstract class session
             html_set_cookie("forum_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
         }
     }
-    
+
     public static function end()
     {
         session_destroy();
-        
+
         html_set_cookie('sess_uid', '', time() - YEAR_IN_SECONDS);
     }
-    
+
     public static function logged_in()
     {
         return isset($_SESSION['UID']) && is_numeric($_SESSION['UID']) && ($_SESSION['UID'] > 0);

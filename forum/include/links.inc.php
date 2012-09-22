@@ -45,14 +45,14 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
     if (!$db = db::get()) return false;
 
     $sort_by_array = array(
-        'TITLE', 
-        'DESCRIPTION', 
-        'CREATED', 
+        'TITLE',
+        'DESCRIPTION',
+        'CREATED',
         'RATING'
     );
 
     $sort_dir_array = array(
-        'ASC', 
+        'ASC',
         'DESC'
     );
 
@@ -105,7 +105,7 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
     if (($result->num_rows == 0) && ($links_count > 0) && ($page > 1)) {
         return links_get_in_folder($fid, $invisible, $sort_by, $sort_dir, $page - 1);
     }
-    
+
     while (($links_data = $result->fetch_assoc())) {
 
         if (isset($links_data['LOGON']) && isset($links_data['PEER_NICKNAME'])) {
@@ -131,12 +131,12 @@ function links_folders_get($visible = true)
     if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
-    
+
     $visible = ($visible) ? "AND VISIBLE = 'Y'" : '';
-    
+
     $sql = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM `{$table_prefix}LINKS_FOLDERS` ";
     $sql.= "WHERE PARENT_FID IS NULL $visible ORDER BY FID LIMIT 1";
-        
+
     if (!$result = $db->query($sql)) return false;
 
     if ($result->num_rows == 0) return false;
@@ -179,15 +179,15 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     if (!($table_prefix = get_table_prefix())) return false;
-    
+
     if (forum_get_setting('require_link_approval', 'Y') && !perm_is_links_moderator($uid)) {
 
         $sql = "INSERT INTO `{$table_prefix}LINKS` (URI, TITLE, DESCRIPTION, FID, ";
         $sql.= "UID, VISIBLE, CREATED, APPROVED) VALUES ('$uri', '$title', '$description', ";
         $sql.= "'$fid', '$uid', '$visible', CAST('$current_datetime' AS DATETIME), NULL)";
-        
+
     } else {
-        
+
         $sql = "INSERT INTO `{$table_prefix}LINKS` (URI, TITLE, DESCRIPTION, FID, ";
         $sql.= "UID, VISIBLE, CREATED, APPROVED, APPROVED_BY) VALUES ('$uri', '$title', ";
         $sql.= "'$description', '$fid', '$uid', '$visible', CAST('$current_datetime' AS DATETIME), ";
@@ -195,7 +195,7 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
     }
 
     if (!$db->query($sql)) return false;
-    
+
     if (forum_get_setting('require_link_approval', 'Y') && !perm_is_links_moderator($uid)) {
         admin_send_post_approval_notification($fid);
     }
@@ -222,7 +222,7 @@ function links_create_top_folder($name)
 function links_add_folder($fid, $name, $uid, $visible = false)
 {
     if (!is_numeric($fid)) return false;
-    
+
     if (!is_numeric($uid)) return false;
 
     $name = $db->escape($name);
@@ -232,7 +232,7 @@ function links_add_folder($fid, $name, $uid, $visible = false)
     $visible = $visible ? "Y" : "N";
 
     if (!($table_prefix = get_table_prefix())) return false;
-    
+
     $sql = "INSERT INTO `{$table_prefix}LINKS_FOLDERS` (PARENT_FID, NAME, ";
     $sql.= "VISIBLE) VALUES ($fid, '$name', '$visible')";
 
@@ -246,15 +246,15 @@ function links_update_folder($fid, $uid, $name)
     if (!$db = db::get()) return false;
 
     if (!is_numeric($fid)) return false;
-    
+
     if (!is_numeric($uid)) return false;
 
     $name = $db->escape($name);
 
     if (!($table_prefix = get_table_prefix())) return false;
-    
+
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}LINKS_FOLDERS` ";
-    $sql.= "SET NAME = '$name' WHERE FID = '$fid'";  
+    $sql.= "SET NAME = '$name' WHERE FID = '$fid'";
 
     if (!$db->query($sql)) return false;
 
@@ -268,7 +268,7 @@ function links_get_folder_path_links($fid, $folders, $html = true, $link_last_to
     if (!is_numeric($fid)) return false;
 
     if (!is_array($folders)) return false;
-    
+
     if (!isset($folders[$fid])) return false;
 
     $tree_fid = $fid; $tree_array = array();
@@ -306,9 +306,9 @@ function links_get_folder_path_links($fid, $folders, $html = true, $link_last_to
 function links_get_folder_page_title($fid, $folders, $link_title = false)
 {
     if (!is_numeric($fid)) return false;
-    
+
     if (!is_array($folders)) return false;
-    
+
     if (!isset($folders[$fid])) return false;
 
     $tree_fid = $fid;
@@ -316,9 +316,9 @@ function links_get_folder_page_title($fid, $folders, $link_title = false)
     $tree_array = array();
 
     list($key) = array_keys($folders);
-    
+
     while ($tree_fid != $key) {
-        
+
         $tree_array[] = $tree_fid;
         $tree_fid = $folders[$tree_fid]['PARENT_FID'];
     }
@@ -403,7 +403,7 @@ function links_get_single($lid, $approved = true)
     if (!$db = db::get()) return false;
 
     if (!is_numeric($lid)) return false;
-    
+
     $approved = ($approved) ? "AND LINKS.APPROVED IS NOT NULL" : '';
 
     if (!($table_prefix = get_table_prefix())) return false;
@@ -440,14 +440,14 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
     if (!$db = db::get()) return false;
 
     $sort_by_array = array(
-        'TITLE', 
-        'DESCRIPTION', 
-        'CREATED', 
+        'TITLE',
+        'DESCRIPTION',
+        'CREATED',
         'RATING'
     );
 
     $sort_dir_array = array(
-        'ASC', 
+        'ASC',
         'DESC'
     );
 
@@ -496,7 +496,7 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
     if (($result->num_rows == 0) && ($links_count > 0) && ($page > 1)) {
         return links_get_all($invisible, $sort_by, $sort_dir, $page - 1);
     }
-    
+
     while (($links_data = $result->fetch_assoc())) {
 
         if (isset($links_data['LOGON']) && isset($links_data['PEER_NICKNAME'])) {
@@ -599,7 +599,7 @@ function links_vote($lid, $vote, $uid)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "INSERT INTO `{$table_prefix}LINKS_VOTE` (LID, UID, RATING, TSTAMP) ";
+    $sql = "INSERT INTO `{$table_prefix}LINKS_VOTE` (LID, UID, RATING, VOTED) ";
     $sql.= "VALUES ($lid, $uid, $vote, CAST('$current_datetime' AS DATETIME)) ";
     $sql.= "ON DUPLICATE KEY UPDATE RATING = VALUES(RATING), ";
     $sql.= "VOTED = CAST('$current_datetime' AS DATETIME) ";
@@ -686,7 +686,7 @@ function links_get_comments($lid)
 function links_folder_dropdown($default_fid, $folders)
 {
     $default_value = 0;
-    
+
     while (list($key) = each($folders)) {
 
         $labels[$key] = links_get_folder_path_links($key, $folders, false);
@@ -739,29 +739,29 @@ function links_update($lid, $fid, $uid, $title, $uri, $description)
     if (!$db = db::get()) return false;
 
     if (!is_numeric($lid)) return false;
-    
+
     if (!is_numeric($fid)) return false;
-    
+
     if (!is_numeric($uid)) return false;
-    
+
     $uri = $db->escape($uri);
 
     $title = $db->escape($title);
 
     $description = $db->escape($description);
-    
+
     if (!($table_prefix = get_table_prefix())) return false;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     if (forum_get_setting('require_link_approval', 'Y') && !perm_is_links_moderator($uid)) {
-        
+
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}LINKS` SET FID = '$fid', ";
         $sql.= "TITLE = '$title', URI = '$uri', DESCRIPTION = '$description', ";
-        $sql.= "APPROVED = NULL, APPROVED_BY = NULL WHERE LID = '$lid'";    
+        $sql.= "APPROVED = NULL, APPROVED_BY = NULL WHERE LID = '$lid'";
 
     } else {
-        
+
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}LINKS` SET FID = '$fid', ";
         $sql.= "TITLE = '$title', URI = '$uri', DESCRIPTION = '$description', ";
         $sql.= "APPROVED = CAST('$current_datetime' AS DATETIME), APPROVED_BY = $uid ";

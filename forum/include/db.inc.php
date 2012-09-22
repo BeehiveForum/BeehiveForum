@@ -34,25 +34,29 @@ require_once BH_INCLUDE_PATH. 'server.inc.php';
 
 class db extends mysqli
 {
+    protected static $config;
+
     protected static $connection;
 
-    protected function __construct($host = null, $username = null, $password = null, $database = null, $port = null, $socket = null) 
-    { 
+    protected function __construct($host = null, $username = null, $password = null, $database = null, $port = null, $socket = null)
+    {
         parent::__construct($host, $username, $password, $database, $port, $socket);
     }
-    
+
     public static function get($new_connection = false)
     {
+        if (!isset(self::$config)) {
+            self::$config = server_get_config();
+        }
+
         if (!db::$connection || $new_connection) {
-            
-            $config = server_get_config();
-            
-            $db = new self($config['db_server'], $config['db_username'], $config['db_password'], $config['db_database'], $config['db_port']);
-            
+
+            $db = new self(self::$config['db_server'], self::$config['db_username'], self::$config['db_password'], self::$config['db_database'], self::$config['db_port']);
+
             if (mysqli_connect_error()) {
                 throw new Exception(sprintf('Could not connect to database server. Error received: %s', mysqli_connect_error()), MYSQL_CONNECT_ERROR);
             }
-            
+
             if (!$db->set_charset('utf8')) {
                 throw new Exception('Could not change MySQL character-set. Check your MySQL user credentials');
             }
@@ -60,20 +64,29 @@ class db extends mysqli
             if (!$db->set_time_zone()) {
                 throw new Exception('Could not change MySQL time-zone. Check your MySQL user credentials');
             }
-            
+
             if (isset($config['mysql_big_selects']) && ($config['mysql_big_selects'] === true)) {
-                
+
                 if (!$db->enable_compat_mode()) {
                     throw new Exception('Could not change MYSQL compatbility options. Check your MySQL user permissions.');
                 }
-            }            
-            
+            }
+
             if ($new_connection) return $db;
-            
+
             db::$connection = $db;
         }
 
         return db::$connection;
+    }
+
+    public static function set_config(array $config)
+    {
+        if (!isset($config['db_server'], $config['db_username'], $config['db_password'], $config['db_database'], $config['db_port'])) {
+            throw new Exception('Missing required database configuration. Config array should contain db_server, db_username, db_password, db_database and db_port keys');
+        }
+
+        self::$config = $config;
     }
 
     protected function set_time_zone()
@@ -88,7 +101,7 @@ class db extends mysqli
 
         return true;
     }
-    
+
     public function escape($var)
     {
         return $this->real_escape_string($var);
@@ -97,9 +110,9 @@ class db extends mysqli
     public static function get_version()
     {
         $db = db::get();
-        
+
         $sql = "SELECT VERSION() AS version";
-        
+
         if (!($result = $db->query($sql))) {
             return false;
         }
@@ -114,7 +127,7 @@ class db extends mysqli
 
             $version_data = $result->fetch_assoc();
         }
-        
+
         $version_array = explode('.', $version_data['version']);
 
         if (!isset($version_array[0])) {
@@ -130,9 +143,9 @@ class db extends mysqli
         }
 
         return sprintf(
-            '%d.%d.%d', 
-            $version_array[0], 
-            $version_array[1], 
+            '%d.%d.%d',
+            $version_array[0],
+            $version_array[1],
             intval($version_array[2])
         );
     }

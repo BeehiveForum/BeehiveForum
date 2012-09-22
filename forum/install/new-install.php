@@ -46,7 +46,7 @@ if (!isset($forum_webtag) || strlen(trim($forum_webtag)) < 1) {
 
 $remove_conflicts = (isset($remove_conflicts) && $remove_conflicts === true);
 
-if (($conflicting_tables = install_check_table_conflicts($db_database, $forum_webtag, true, true, $remove_conflicts))) {
+if (($conflicting_tables = install_check_table_conflicts($config['db_database'], $forum_webtag, true, true, $remove_conflicts))) {
 
     $error_str = "<h2>Selected database contains tables which conflict with Beehive Forum. ";
     $error_str.= "If this database contains an existing Beehive Forum installation please ";
@@ -314,6 +314,7 @@ $sql.= "  ID VARCHAR(40) NOT NULL,";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL,";
 $sql.= "  DATA LONGBLOB NOT NULL,";
+$sql.= "  MD5 VARCHAR(32) NOT NULL,";
 $sql.= "  TIME DATETIME NOT NULL,";
 $sql.= "  IPADDRESS VARCHAR(255) DEFAULT NULL,";
 $sql.= "  REFERER VARCHAR(255) DEFAULT NULL,";
@@ -540,7 +541,7 @@ if (!perm_update_global_perms($admin_uid, USER_PERM_ADMIN_TOOLS | USER_PERM_FORU
     return;
 }
 
-if (!($forum_fid = forum_create($forum_webtag, 'A Beehive Forum', $admin_uid, $db_database, FORUM_UNRESTRICTED))) {
+if (!($forum_fid = forum_create($forum_webtag, 'A Beehive Forum', $admin_uid, $config['db_database'], FORUM_UNRESTRICTED))) {
 
     $valid = false;
     return;

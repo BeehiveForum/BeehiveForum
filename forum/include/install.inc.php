@@ -51,7 +51,7 @@ function check_install()
 
     // Check the MySQL version
     install_check_mysql_version();
-    
+
     // Check if the installer files still exist. Ignore them
     // if the BEEHIVE_DEVELOPER_MODE constant has been defined.
     if (@file_exists('./install/index.php') && !defined("BEEHIVE_DEVELOPER_MODE")) {
@@ -62,7 +62,7 @@ function check_install()
         echo "<head>\n";
         echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-        echo html_include_css(html_get_forum_file_path('styles/default/install.css')), "\n";
+        echo html_include_css(html_get_forum_file_path('styles/default/style.css')), "\n";
         echo "</head>\n";
         echo "<body>\n";
         echo "<h1>Beehive Forum Installation Error</h1>\n";
@@ -122,7 +122,7 @@ function install_incomplete()
     echo "<head>\n";
     echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-    echo html_include_css(html_get_forum_file_path('styles/default/install.css')), "\n";
+    echo html_include_css(html_get_forum_file_path('styles/default/style.css')), "\n";
     echo "</head>\n";
     echo "<body>\n";
     echo "<h1>Beehive Forum Installation Error</h1>\n";
@@ -182,7 +182,7 @@ function install_missing_files()
     echo "<head>\n";
     echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-    echo html_include_css(html_get_forum_file_path('styles/default/install.css')), "\n";
+    echo html_include_css(html_get_forum_file_path('styles/default/style.css')), "\n";
     echo "</head>\n";
     echo "<body>\n";
     echo "<h1>Beehive Forum Installation Error</h1>\n";
@@ -237,7 +237,7 @@ function install_check_mysql_version()
         echo "<head>\n";
         echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-        echo html_include_css(html_get_forum_file_path('styles/default/install.css')), "\n";
+        echo html_include_css(html_get_forum_file_path('styles/default/style.css')), "\n";
         echo "</head>\n";
         echo "<body>\n";
         echo "<h1>Beehive Forum Minimum Requirements Error</h1>\n";
@@ -286,16 +286,16 @@ function install_check_php_extensions()
 
     // Initialise the variable store.
     if (!is_array($required_extensions)) {
-        
+
         $required_extensions = array(
-            'date',  
-            'fileinfo', 
-            'gd', 
-            'gettext', 
-            'json', 
-            'mbstring', 
-            'mysqli', 
-            'pcre', 
+            'date',
+            'fileinfo',
+            'gd',
+            'gettext',
+            'json',
+            'mbstring',
+            'mysqli',
+            'pcre',
             'xml'
         );
     }
@@ -322,7 +322,7 @@ function install_check_php_extensions()
         echo "<head>\n";
         echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-        echo html_include_css(html_get_forum_file_path('styles/default/install.css')), "\n";
+        echo html_include_css(html_get_forum_file_path('styles/default/style.css')), "\n";
         echo "</head>\n";
         echo "<body>\n";
         echo "<h1>Beehive Forum Minimum Requirements Error</h1>\n";
@@ -405,7 +405,7 @@ function install_check_php_version()
         echo "<head>\n";
         echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-        echo html_include_css(html_get_forum_file_path('styles/default/install.css')), "\n";
+        echo html_include_css(html_get_forum_file_path('styles/default/style.css')), "\n";
         echo "</head>\n";
         echo "<body>\n";
         echo "<h1>Beehive Forum Minimum Requirements Error</h1>\n";
@@ -529,7 +529,7 @@ function install_check_column_type($database_name, $table_name, $column_name, $c
     if (!$result = $db->query($sql)) return false;
 
     if (!$column_data = $result->fetch_assoc()) return false;
-    
+
     return ($column_data['Type'] == $column_type);
 }
 
@@ -762,50 +762,50 @@ function install_set_search_bots()
 
     $bots_array = array(
         'ia_archiver' => array(
-            'NAME' => 'Alexa', 
+            'NAME' => 'Alexa',
             'URL' => 'http://www.alexa.com/'
         ),
         'Ask Jeeves/Teoma' => array(
-            'NAME' => 'Ask.com', 
+            'NAME' => 'Ask.com',
             'URL' => 'http://www.ask.com/'
         ),
         'Baiduspider' => array(
-            'NAME' => 'Baidu', 
+            'NAME' => 'Baidu',
             'URL' => 'http://www.baidu.com/'
         ),
         'GameSpyHTTP' => array(
-            'NAME' => 'GameSpy', 
+            'NAME' => 'GameSpy',
             'URL' => 'http://www.gamespy.com/'
         ),
         'Gigabot' => array(
-            'NAME' => 'Gigablast', 
+            'NAME' => 'Gigablast',
             'URL' => 'http://www.gigablast.com/'
         ),
         'Googlebot' => array(
-            'NAME' => 'Google', 
+            'NAME' => 'Google',
             'URL' => 'http://www.google.com/'
         ),
         'Googlebot-Image' => array(
-            'NAME' => 'Google Images', 
+            'NAME' => 'Google Images',
             'URL' => 'http://images.google.com/'
         ),
         'Slurp/si' => array(
-            'NAME' => 'Inktomi', 
+            'NAME' => 'Inktomi',
             'URL' => 'http://searchmarketing.yahoo.com/'
         ),
         'msnbot' => array(
-            'NAME' => 'Bing', 
+            'NAME' => 'Bing',
             'URL' => 'http://www.bing.com/'
         ),
         'Scooter' => array(
-            'NAME' => 'Altavista', 
+            'NAME' => 'Altavista',
             'URL' => 'http://www.altavista.com/'
         ),
         'Yahoo! Slurp;' => array(
             'NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'
         ),
         'Yahoo-MMCrawler' => array(
-            'NAME' => 'Yahoo!', 
+            'NAME' => 'Yahoo!',
             'URL' => 'http://www.yahoo.com/'
         ),
     );

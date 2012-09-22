@@ -33,7 +33,6 @@ require_once BH_INCLUDE_PATH. 'admin.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'forum.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
 require_once BH_INCLUDE_PATH. 'server.inc.php';
 require_once BH_INCLUDE_PATH. 'swift.inc.php';
 

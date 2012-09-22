@@ -32,7 +32,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'forum.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
 require_once BH_INCLUDE_PATH. 'text_captcha.inc.php';
 
 // Include Swift Mailer

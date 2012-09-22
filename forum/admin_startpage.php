@@ -32,7 +32,6 @@ require_once BH_INCLUDE_PATH. 'form.inc.php';
 require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'header.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
 require_once BH_INCLUDE_PATH. 'lang.inc.php';
 require_once BH_INCLUDE_PATH. 'logon.inc.php';
 require_once BH_INCLUDE_PATH. 'perm.inc.php';
@@ -152,7 +151,7 @@ if (isset($_POST['save'])) {
     }
 }
 
-html_draw_top(sprintf('title=%s', gettext("Admin - Edit Start Page")), "dictionary.js", "htmltools.js", 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Admin - Edit Start Page")), "dictionary.js", 'class=window_title');
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Start Page"), "</h1>\n";
 

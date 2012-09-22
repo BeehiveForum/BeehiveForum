@@ -31,7 +31,6 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 
 require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
 require_once BH_INCLUDE_PATH. 'geshi.inc.php';
 require_once BH_INCLUDE_PATH. 'lang.inc.php';
 

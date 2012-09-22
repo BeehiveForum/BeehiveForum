@@ -34,7 +34,6 @@ require_once BH_INCLUDE_PATH. 'form.inc.php';
 require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'header.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
 require_once BH_INCLUDE_PATH. 'lang.inc.php';
 require_once BH_INCLUDE_PATH. 'logon.inc.php';
 require_once BH_INCLUDE_PATH. 'messages.inc.php';
@@ -150,7 +149,7 @@ if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
     html_draw_error(gettext("That post does not exist in this thread!"));
 }
 
-html_draw_top("title={$thread_data['TITLE']}", "class=window_title", "post.js", "poll.js", "htmltools.js", "basetarget=_blank");
+html_draw_top("title={$thread_data['TITLE']}", "class=window_title", "post.js", "poll.js", "basetarget=_blank");
 
 if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 
@@ -297,8 +296,6 @@ echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('t_tid', htmlentities_array($tid)), "\n";
 echo "  ", form_input_hidden('t_rpid', '0'), "\n";
 
-$quick_reply_tools = new TextAreaHTML('quick_reply_form');
-
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -322,16 +319,8 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
-
-if (($page_prefs & POST_TOOLBAR_DISPLAY) && ($page_prefs & POST_AUTOHTML_DEFAULT)) {
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"center\">", $quick_reply_tools->toolbar_reduced($page_prefs & POST_EMOTICONS_DISPLAY), "</td>\n";
-    echo "                      </tr>\n";
-}
-
 echo "                      <tr>\n";
-echo "                        <td align=\"center\">", $quick_reply_tools->textarea("t_content", "", 7, 75), "</td>\n";
+echo "                        <td align=\"center\">", form_textarea("t_content", "", 7, 75), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

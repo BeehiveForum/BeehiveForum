@@ -34,7 +34,6 @@ require_once BH_INCLUDE_PATH. 'form.inc.php';
 require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'header.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
 require_once BH_INCLUDE_PATH. 'lang.inc.php';
 require_once BH_INCLUDE_PATH. 'logon.inc.php';
 require_once BH_INCLUDE_PATH. 'pm.inc.php';
@@ -314,7 +313,7 @@ if ($valid && isset($_POST['preview'])) {
     }
 }
 
-html_draw_top(sprintf("title=%s", gettext("Private Messages")), "resize_width=720", "edit.js", "pm.js", "dictionary.js", "htmltools.js", "emoticons.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Private Messages")), "resize_width=720", "edit.js", "pm.js", "dictionary.js", "emoticons.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
 
 echo "<h1>", gettext("Private Messages"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Message"), "</h1>\n";
 
@@ -423,75 +422,22 @@ echo "                    <table border=\"0\" class=\"posthead\" width=\"100%\">
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">";
 echo "                         <h2>", gettext("Message"), "</h2>\n";
-
-$tools = new TextAreaHTML("f_post");
-
-$t_content = $post->getTidyContent();
-
-$tool_type = POST_TOOLBAR_DISABLED;
-
-if ($page_prefs & POST_TOOLBAR_DISPLAY) {
-    $tool_type = POST_TOOLBAR_SIMPLE;
-} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
-    $tool_type = POST_TOOLBAR_TINYMCE;
-}
-
-if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
-    echo $tools->toolbar(false, form_submit('apply', gettext("Apply")));
-
-} else {
-    $tools->set_tinymce(false);
-}
-
-echo $tools->textarea("t_content", $t_content, 20, 75, true, 'tabindex="1"', 'post_content'), "\n";
-
+echo "                         ", form_textarea("t_content", $post->getTidyContent(), 20, 75, 'tabindex="1"', 'post_content'), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
-
-if ($post->isDiff()) {
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">\n";
-    echo "                          ", $tools->compare_original("t_content", $post), "\n";
-    echo "                        </td>\n";
-    echo "                      </tr>\n";
-}
-
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
+echo "                          <br />\n";
 
-if ($allow_html == true) {
+echo form_submit('apply', gettext("Apply"), "tabindex=\"2\""), "&nbsp;";
 
-    if (($tools->get_tinymce())) {
+echo form_submit('preview', gettext("Preview"), "tabindex=\"3\""), "&nbsp;";
 
-        echo form_input_hidden("t_post_html", "enabled");
-
-    } else {
-
-        echo "              <h2>", gettext("HTML in message"), "</h2>\n";
-
-        $tph_radio = $post->getHTML();
-
-        echo form_radio("t_post_html", "disabled", gettext("Disabled"), $tph_radio == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
-        echo form_radio("t_post_html", "enabled_auto", gettext("Enabled with auto-line-breaks"), $tph_radio == POST_HTML_AUTO)." \n";
-        echo form_radio("t_post_html", "enabled", gettext("Enabled"), $tph_radio == POST_HTML_ENABLED)." \n";
-        echo "              <br />";
-    }
-
-} else {
-
-    echo form_input_hidden("t_post_html", "disabled");
-}
-
-echo "              <br />\n";
-
-echo form_submit('apply', gettext("Apply"), "tabindex=\"2\"");
-echo "&nbsp;", form_submit('preview', gettext("Preview"), "tabindex=\"3\"");
-echo "&nbsp;<a href=\"pm.php?webtag=$webtag&mid=$mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
+echo "<a href=\"pm.php?webtag=$webtag&mid=$mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>&nbsp;";
 
 if (forum_get_setting('attachments_enabled', 'Y') && forum_get_setting('pm_allow_attachments', 'Y')) {
 
-    echo "&nbsp;<a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
+    echo "<a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
     echo form_input_hidden('aid', htmlentities_array($aid));
 }
 

@@ -35,7 +35,7 @@ var beehive = $.extend({}, beehive, {
             console.log('AJAX ERROR', message);
         }
     },
-
+    
     get_resize_width : function() {
 
         var $max_width = $(this).closest('.max_width[width]');
@@ -311,5 +311,56 @@ $(beehive).bind('init', function() {
         }
 
         return false;
+    });
+    
+    $('textarea.editor').each(function() {
+        
+        var $editor = $(this);
+        
+        $('<div id="toolbar">').insertBefore($editor);
+        
+        //var contentsCss = beehive.forum_path + '/styles/' + beehive.user_style + '/editor.css';
+        
+        var skin = beehive.forum_path + '/styles/' + beehive.user_style + '/editor/';
+        
+        $(this).ckeditor({
+            //contentsCss: contentsCss,
+            customConfig: '',
+            font_defaultLabel: 'Verdana',
+            height: $editor.height() - 35,
+            width: $editor.width() + 6,
+            resize_maxWidth: $editor.width() + 6,
+            removeDialogTabs: 'link:target;link:advanced;image:Link;image:advanced',
+            skin: 'beehive,' + skin,
+            startupFocus: $editor.hasClass('focus'),
+            sharedSpaces : {
+                top: 'toolbar',
+            },
+            toolbarCanCollapse: false,
+            toolbar: [
+                [
+                    'Bold',
+                    'Italic',
+                    'Underline',
+                    'Strike',
+                    'Superscript',
+                    'Subscript',
+                    'JustifyLeft',
+                    'JustifyCenter',
+                    'JustifyRight',
+                    'NumberedList',
+                    'BulletedList',
+                    'Indent',
+                    'HorizontalRule',
+                    'Image',
+                    'Link'
+                ],
+                [
+                    'Font',
+                    'FontSize',
+                    'TextColor'
+                ]
+            ],
+        }); 
     });
 });

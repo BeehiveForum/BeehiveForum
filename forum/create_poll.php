@@ -34,7 +34,6 @@ require_once BH_INCLUDE_PATH. 'form.inc.php';
 require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'header.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
 require_once BH_INCLUDE_PATH. 'lang.inc.php';
 require_once BH_INCLUDE_PATH. 'logon.inc.php';
 require_once BH_INCLUDE_PATH. 'messages.inc.php';
@@ -752,7 +751,7 @@ if (!$folder_dropdown = folder_draw_dropdown($fid, "fid", "" ,FOLDER_ALLOW_POLL_
     html_draw_error(gettext("You cannot create new threads."));
 }
 
-html_draw_top(sprintf("title=%s", gettext("Create Poll")), "basetarget=_blank", "resize_width=785", "post.js", "poll.js", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js", 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Create Poll")), "basetarget=_blank", "resize_width=785", "post.js", "poll.js", "attachments.js", "dictionary.js", "emoticons.js", 'class=window_title');
 
 echo "<h1>", gettext("Create Poll"), "</h1>\n";
 

@@ -43,8 +43,10 @@ if (($user_style = session::get_value('STYLE')) === false) {
     $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', null, 'default'));
 }
 
-// Get the forum path
-$forum_path = defined('BH_FORUM_PATH') ? rtrim(BH_FORUM_PATH, '/') : '.';
+// User emoticons
+if (($user_emoticons = session::get_value('EMOTICONS')) === false) {
+    $user_emoticons = forum_get_setting('default_emoticons');
+}
 
 // Get the user's saved left frame width.
 if (($left_frame_width = session::get_value('LEFT_FRAME_WIDTH')) === false) {
@@ -73,11 +75,11 @@ $json_data = array(
     ),
     'images' => array(),
     'font_size' => $font_size,
-    'user_style' => html_get_style_sheet(),
-    'emoticons' => html_get_emoticon_style_sheet(),
+    'user_style' => $user_style,
+    'emoticons' => $user_emoticons,
     'top_frame' => html_get_top_page(),
     'left_frame_width' => $left_frame_width,
-    'forum_path' => $forum_path,
+    'forum_path' => server_get_forum_path(),
     'use_mover_spoiler' => session::get_value('USE_MOVER_SPOILER'),
     'frames' => array(
         'index' => html_get_frame_name('index'),

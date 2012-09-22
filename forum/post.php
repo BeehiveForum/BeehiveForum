@@ -37,7 +37,6 @@ require_once BH_INCLUDE_PATH. 'form.inc.php';
 require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'header.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
 require_once BH_INCLUDE_PATH. 'lang.inc.php';
 require_once BH_INCLUDE_PATH. 'logon.inc.php';
 require_once BH_INCLUDE_PATH. 'messages.inc.php';
@@ -731,7 +730,7 @@ if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !session::che
     html_draw_error(gettext("This thread is closed, you cannot post in it!"));
 }
 
-html_draw_top(sprintf("title=%s", gettext("Post message")), "resize_width=720", "basetarget=_blank", "post.js", "attachments.js", "htmltools.js", "emoticons.js", "dictionary.js", 'search.js', 'search_popup.js', 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Post message")), "resize_width=720", "basetarget=_blank", "post.js", "attachments.js", "emoticons.js", "dictionary.js", 'search.js', 'search_popup.js', 'class=window_title');
 
 echo "<h1>", gettext("Post message"), "</h1>\n";
 
@@ -752,8 +751,6 @@ echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
-
-$tools = new TextAreaHTML("f_post");
 
 if ($valid && isset($_POST['preview'])) {
 
@@ -954,84 +951,44 @@ echo "                    <table class=\"posthead\" width=\"500\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 echo "                          <h2>", gettext("Message"), "</h2>\n";
+echo "                          ", form_textarea("t_content", $post->getTidyContent(), 20, 75, 'tabindex="1"', 'post_content editor'), "\n";
+echo "                        </td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\">\n";
 
-$t_content = $post->getTidyContent();
+echo form_submit("post", gettext("Post"), "tabindex=\"2\""), "\n";
 
-$tool_type = POST_TOOLBAR_DISABLED;
-
-if ($page_prefs & POST_TOOLBAR_DISPLAY) {
-    $tool_type = POST_TOOLBAR_SIMPLE;
-} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
-    $tool_type = POST_TOOLBAR_TINYMCE;
-}
-
-if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
-    echo $tools->toolbar(false, form_submit("post", gettext("Post")));
-} else {
-    $tools->set_tinymce(false);
-}
-
-echo $tools->textarea("t_content", $t_content, 20, 75, true, 'tabindex="1"', 'post_content'), "\n";
-
-if ($post->isDiff()) {
-
-    echo $tools->compare_original("t_content", $post);
-
-    if (($tools->get_tinymce())) {
-        echo "  <br />\n";
-    } else {
-        echo "  <br /><br />\n";
-    }
-}
-
-if ($allow_html == true) {
-
-    if (($tools->get_tinymce())) {
-
-        echo form_input_hidden("t_post_html", "enabled");
-
-    } else {
-
-        echo "                          <h2>", gettext("HTML in message"), "</h2>\n";
-
-        echo form_radio("t_post_html", "disabled", gettext("Disabled"), $post->getHTML() == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
-        echo form_radio("t_post_html", "enabled_auto", gettext("Enabled with auto-line-breaks"), $post->getHTML() == POST_HTML_AUTO)." \n";
-        echo form_radio("t_post_html", "enabled", gettext("Enabled"), $post->getHTML() == POST_HTML_ENABLED)." \n";
-    }
-
-} else {
-
-    echo form_input_hidden("t_post_html", "disabled");
-}
-
-// SUBMIT BUTTONS
-if (($tools->get_tinymce())) {
-    echo "  <br />\n";
-} else {
-    echo "  <br /><br />\n";
-}
-
-echo form_submit("post", gettext("Post"), "tabindex=\"2\"");
-
-echo "&nbsp;", form_submit("preview", gettext("Preview"), "tabindex=\"3\"");
+echo form_submit("preview", gettext("Preview"), "tabindex=\"3\""), "\n";
 
 if (isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid']) ) {
-    echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&amp;msg={$_POST['t_tid']}.{$_POST['t_rpid']}\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
+
+    echo "<a href=\"discussion.php?webtag=$webtag&amp;msg={$_POST['t_tid']}.{$_POST['t_rpid']}\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+
 } else if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
-    echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&amp;msg={$_GET['replyto']}\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
+
+    echo "<a href=\"discussion.php?webtag=$webtag&amp;msg={$_GET['replyto']}\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+
 } else {
-    echo "&nbsp;<a href=\"discussion.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
+
+    echo "<a href=\"discussion.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 }
 
 if (forum_get_setting('attachments_enabled', 'Y') && (session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid) || $new_thread)) {
 
-    echo "&nbsp;<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
+    echo "<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
     echo form_input_hidden("aid", htmlentities_array($aid));
 }
 
 if ($allow_sig == true) {
 
-    echo "                          <br /><br />\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">\n";
     echo "                          <table class=\"messagefoot\" width=\"486\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" class=\"subhead\">", gettext("Signature"), "</td>\n";
@@ -1046,20 +1003,11 @@ if ($allow_sig == true) {
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" colspan=\"2\">\n";
     echo "                                <div class=\"sig_toggle\" style=\"display: ", (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) ? "block" : "none", "\">\n";
-
-    $t_sig = $sig->getTidyContent();
-
-    echo $tools->textarea("t_sig", $t_sig, 5, 75, false, 'tabindex="7"', 'signature_content');
-
-    if ($sig->isDiff() && !$fetched_sig) {
-        echo $tools->compare_original("t_sig", $sig);
-    }
-
+    echo "                                  ", form_textarea("t_sig", $sig->getTidyContent(), 5, 75, 'tabindex="7"', 'signature_content editor');
     echo "                                </div>\n";
     echo "                              </td>\n";
     echo "                            </tr>\n";
     echo "                          </table>\n";
-    echo "                          ", form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "\n";
 }
 
 echo "                        </td>\n";

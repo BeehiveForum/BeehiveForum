@@ -35,7 +35,6 @@ require_once BH_INCLUDE_PATH. 'form.inc.php';
 require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'header.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'htmltools.inc.php';
 require_once BH_INCLUDE_PATH. 'lang.inc.php';
 require_once BH_INCLUDE_PATH. 'logon.inc.php';
 require_once BH_INCLUDE_PATH. 'messages.inc.php';
@@ -553,7 +552,7 @@ if (isset($_POST['preview'])) {
 
 $page_title = sprintf(gettext("Edit message %s"), $edit_msg);
 
-html_draw_top("title=$page_title", "resize_width=720", "basetarget=_blank", "attachments.js", "dictionary.js", "htmltools.js", "emoticons.js", "post.js", 'class=window_title');
+html_draw_top("title=$page_title", "resize_width=720", "basetarget=_blank", "attachments.js", "dictionary.js", "emoticons.js", "post.js", 'class=window_title');
 
 echo "<h1>$page_title</h1>\n";
 

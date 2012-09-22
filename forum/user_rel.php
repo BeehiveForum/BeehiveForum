@@ -176,10 +176,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 if (isset($_POST['preview_signature'])) {
 
-    $t_sig_content = '';
-    $t_sig_html = 'N';
-
-    if (user_get_sig($peer_uid, $t_sig_content, $t_sig_html)) {
+    if (($t_sig_content = user_get_sig($peer_uid)) {
 
         $preview_message['TLOGON'] = gettext("ALL");
         $preview_message['TNICK'] = gettext("ALL");
@@ -192,11 +189,7 @@ if (isset($_POST['preview_signature'])) {
 
         $preview_message['CONTENT'] = gettext("Signature Preview");
 
-        if ($t_sig_html == "Y") {
-            $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig_content</div>";
-        } else {
-            $preview_message['CONTENT'].= "<div class=\"sig\">". make_html($t_sig_content). "</div>";
-        }
+        $preview_message['CONTENT'].= "<div class=\"sig\">". fix_html($t_sig_content). "</div>";
 
         $preview_message['CREATED'] = time();
 

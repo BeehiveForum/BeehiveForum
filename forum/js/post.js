@@ -143,15 +143,17 @@ $(beehive).bind('init', function() {
 
             var $quick_reply_location = $('#quick_reply_' + quick_reply_data[2]);
 
+            var $quick_reply_container = $('#quick_reply_container');
+
             if ($quick_reply_location.length == 1) {
 
-                $('#quick_reply_container #t_rpid').val(quick_reply_data[2]);
+                $quick_reply_container.find('#t_rpid').val(quick_reply_data[2]);
 
-                $('#quick_reply_container').appendTo($quick_reply_location).show();
+                $quick_reply_container.appendTo($quick_reply_location).show();
 
-                $('#quick_reply_container #t_content').focus();
+                $quick_reply_container.find('#t_content').focus().each(beehive.editor);
 
-                $('#quick_reply_container input#post').get(0).scrollIntoView(false);
+                $quick_reply_container.find('input#post').get(0).scrollIntoView(false);
             }
         }
     });

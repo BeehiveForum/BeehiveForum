@@ -22,12 +22,13 @@ USA
 ======================================================================*/
 
 // Bootstrap
-require_once 'lboot.php';
+require_once 'boot.php';
 
 // Includes required by this page.
 require_once BH_INCLUDE_PATH. 'admin.inc.php';
 require_once BH_INCLUDE_PATH. 'attachments.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
 require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
 require_once BH_INCLUDE_PATH. 'folder.inc.php';
 require_once BH_INCLUDE_PATH. 'form.inc.php';
@@ -35,7 +36,6 @@ require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'header.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
 require_once BH_INCLUDE_PATH. 'lang.inc.php';
-require_once BH_INCLUDE_PATH. 'light.inc.php';
 require_once BH_INCLUDE_PATH. 'logon.inc.php';
 require_once BH_INCLUDE_PATH. 'messages.inc.php';
 require_once BH_INCLUDE_PATH. 'poll.inc.php';
@@ -43,6 +43,7 @@ require_once BH_INCLUDE_PATH. 'post.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'thread.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 // Check we're logged in correctly
 if (!session::logged_in()) {
@@ -51,75 +52,60 @@ if (!session::logged_in()) {
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    $edit_msg = $_GET['msg'];
+    $msg = $_GET['msg'];
 
     list($tid, $pid) = explode('.', $_GET['msg']);
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
-
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-        light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
-        light_html_draw_bottom();
-        exit;
+        light_html_draw_error(gettext("The requested thread could not be found or access was denied."));
     }
 
-} else if (isset($_POST['t_msg']) && validate_msg($_POST['t_msg'])) {
+} else if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
-    $edit_msg = $_POST['t_msg'];
+    $msg = $_POST['msg'];
 
-    list($tid, $pid) = explode('.', $_POST['t_msg']);
+    list($tid, $pid) = explode('.', $_POST['msg']);
 
     if (!$t_fid = thread_get_folder($tid, $pid)) {
-
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-        light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
-        light_html_draw_bottom();
-        exit;
+        light_html_draw_error(gettext("The requested thread could not be found or access was denied."));
     }
 
 } else {
 
-    light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-    light_html_display_error_msg(gettext("No message specified for editing"));
+    light_html_draw_error(gettext("No message specified for editing"), 'lthread_list.php', 'get', array('back' => gettext("Back")));
+}
+
+if (!($edit_message = messages_get($tid, $pid, 1))) {
+
+    light_html_draw_top(sprintf("title=%s", gettext("Error")));
+    light_html_display_error_msg(gettext("That post does not exist in this thread!"));
     light_html_draw_bottom();
     exit;
 }
 
 if (thread_is_poll($tid) && $pid == 1) {
 
-    light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-    light_html_display_error_msg(gettext("Cannot edit polls in Mobile version"));
+    light_html_draw_top(sprintf("title=%s", gettext("Error")));
+    light_html_display_error_msg(gettext("Cannot edit polls in Mobile mode"));
     light_html_draw_bottom();
-    exit;
-}
-
-if (isset($_POST['cancel'])) {
-
-    header_redirect("lmessages.php?webtag=$webtag&msg=$edit_msg");
     exit;
 }
 
 if (session::check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
-    html_email_confirmation_error();
+    light_html_email_confirmation_error();
     exit;
 }
 
 if (!session::check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
-
-    light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-    light_html_display_error_msg(gettext("You cannot edit posts in this folder"));
-    light_html_draw_bottom();
-    exit;
+    light_html_draw_error(gettext("You cannot edit posts in this folder"));
 }
 
 if (!$thread_data = thread_get($tid)) {
-
-    light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-    light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
-    light_html_draw_bottom();
-    exit;
+    light_html_draw_error(gettext("The requested thread could not be found or access was denied."));
 }
+
+$error_msg_array = array();
 
 $show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
 
@@ -129,116 +115,34 @@ $page_prefs = session::get_post_page_prefs();
 
 $valid = true;
 
-light_html_draw_top(sprintf("title=%s %s", gettext("Edit message"), $edit_msg), "robots=noindex,nofollow");
-
-$t_content = "";
-
-$t_sig = "";
-
-if (isset($_POST['t_post_emots'])) {
-
-    if ($_POST['t_post_emots'] == "disabled") {
-        $emots_enabled = false;
-    } else {
-        $emots_enabled = true;
-    }
-
+if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
+    $emots_enabled = false;
 } else {
-
     $emots_enabled = true;
 }
 
-if (isset($_POST['t_post_links'])) {
-
-    if ($_POST['t_post_links'] == "enabled") {
-        $links_enabled = true;
-    } else {
-        $links_enabled = false;
-    }
-
+if (($page_prefs & POST_AUTO_LINKS) > 0) {
+    $links_enabled = true;
 } else {
-
     $links_enabled = false;
 }
 
-if (isset($_POST['t_check_spelling'])) {
-
-    if ($_POST['t_check_spelling'] == "enabled") {
-        $spelling_enabled = true;
-    } else {
-        $spelling_enabled = false;
-    }
-
+if (($page_prefs & POST_CHECK_SPELLING) > 0) {
+    $spelling_enabled = true;
 } else {
-
-    $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
-}
-
-if (isset($_POST['t_post_html'])) {
-
-    $t_post_html = $_POST['t_post_html'];
-
-    if ($t_post_html == "enabled_auto") {
-        $post_html = POST_HTML_AUTO;
-    } else if ($t_post_html == "enabled") {
-        $post_html = POST_HTML_ENABLED;
-    } else {
-        $post_html = POST_HTML_DISABLED;
-    }
-
-} else {
-
-    if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-        $post_html = POST_HTML_AUTO;
-    } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-        $post_html = POST_HTML_ENABLED;
-    } else {
-        $post_html = POST_HTML_DISABLED;
-    }
-
-    if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
-        $emots_enabled = false;
-    } else {
-        $emots_enabled = true;
-    }
-
-    if (($page_prefs & POST_AUTO_LINKS) > 0) {
-        $links_enabled = true;
-    } else {
-        $links_enabled = false;
-    }
-}
-
-if (isset($_POST['t_sig_html'])) {
-
-    $t_sig_html = $_POST['t_sig_html'];
-
-    if ($t_sig_html != "N") {
-        $sig_html = POST_HTML_ENABLED;
-    }
-
-} else {
-    
-    $sig_html = POST_HTML_DISABLED;
+    $spelling_enabled = false;
 }
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
-
     $aid = $_POST['aid'];
-
-} else if (!$aid = attachments_get_id($tid, $pid)) {
-
+} else{
     $aid = md5(uniqid(mt_rand()));
 }
 
-if (!isset($sig_html)) $sig_html = POST_HTML_DISABLED;
-
 post_save_attachment_id($tid, $pid, $aid);
 
-$post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
-$sig = new MessageText($sig_html, "", true, false, false);
-
 $allow_html = true;
+
 $allow_sig = true;
 
 if (isset($t_fid) && !session::check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
@@ -251,332 +155,247 @@ if (isset($t_fid) && !session::check_perm(USER_PERM_SIGNATURE, $t_fid)) {
 
 if ($allow_html == false) {
 
-    if ($post->getHTML() > 0) {
-
-        $post->setHTML(false);
-        $t_content = $post->getContent();
-    }
-
-    $sig->setHTML(false, true);
-    $t_sig = $sig->getContent();
+    $t_content = htmlentities_array($t_content);
+    $t_sig = htmlentities_array($t_sig);
 }
 
-if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
+if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
-    $t_content = trim($_POST['t_content']);
+    if (isset($_POST['t_post_emots'])) {
 
-    if ($post_html && attachments_embed_check($t_content)) {
-
-        $error_msg_array[] = gettext("You are not allowed to embed attachments in your posts.");
-        $valid = false;
-    }
-
-    $post->setContent($t_content);
-    $t_content = $post->getContent();
-
-    if (mb_strlen($t_content) >= 65535) {
-
-        $error_msg_array[] = sprintf(gettext("Message length must be under 65,535 characters (currently: %s)"), number_format(mb_strlen($t_content)));
-        $valid = false;
-    }
-}
-
-if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
-
-    $t_sig = trim($_POST['t_sig']);
-
-    if (attachments_embed_check($t_sig)) {
-
-        $error_msg_array[] = gettext("You are not allowed to embed attachments in your posts.");
-        $valid = false;
-    }
-
-    $sig->setContent($t_sig);
-    $t_sig = $sig->getContent();
-
-    if (mb_strlen($t_sig) >= 65535) {
-
-        $error_msg_array[] = sprintf(gettext("Signature length must be under 65,535 characters (currently: %s)"), number_format(mb_strlen($t_sig)));
-        $valid = false;
-    }
-}
-
-if (isset($_POST['preview'])) {
-
-    if (!$preview_message = messages_get($tid, $pid, 1)) {
-
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-        light_html_display_error_msg(gettext("That post does not exist in this thread!"));
-        light_html_draw_bottom();
-        exit;
-    }
-
-    if (isset($_POST['t_to_uid'])) {
-
-        $to_uid = $_POST['t_to_uid'];
+        if ($_POST['t_post_emots'] == "disabled") {
+            $emots_enabled = false;
+        } else {
+            $emots_enabled = true;
+        }
 
     } else {
 
-        $error_msg_array[] = gettext("Invalid username!");
-        $valid = false;
+        $emots_enabled = false;
     }
 
-    if (isset($_POST['t_from_uid'])) {
+    if (isset($_POST['t_post_links'])) {
 
-        $from_uid = $_POST['t_from_uid'];
+        if ($_POST['t_post_links'] == "enabled") {
+            $links_enabled = true;
+        } else {
+            $links_enabled = false;
+        }
 
     } else {
 
-        $error_msg_array[] = gettext("Invalid username!");
-        $valid = false;
+        $links_enabled = false;
     }
 
-    if (strlen(trim($t_content)) < 1) {
+    if (isset($_POST['t_check_spelling'])) {
+
+        if ($_POST['t_check_spelling'] == "enabled") {
+            $spelling_enabled = true;
+        } else {
+            $spelling_enabled = false;
+        }
+
+    } else {
+
+        $spelling_enabled = false;
+    }
+}
+
+if (isset($_POST['apply']) || isset($_POST['preview'])) {
+
+    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
+
+        $t_content = fix_html($_POST['t_content'], $emots_enabled, $links_enabled);
+
+        if (attachments_embed_check($t_content)) {
+
+            $error_msg_array[] = gettext("You are not allowed to embed attachments in your posts.");
+            $valid = false;
+        }
+
+    } else {
 
         $error_msg_array[] = gettext("You must enter some content for the post!");
         $valid = false;
     }
 
+    if (isset($_POST['t_sig'])) {
+
+        $t_sig = fix_html($_POST['t_sig'], false, true);
+
+        if (attachments_embed_check($t_sig)) {
+
+            $error_msg_array[] = gettext("You are not allowed to embed attachments in your signature.");
+            $valid = false;
+        }
+    }
+}
+
+if (!isset($t_content)) $t_content = "";
+
+if (!isset($t_sig)) $t_sig = "";
+
+if ($valid && isset($_POST['preview'])) {
+
     if (attachments_get_count($aid) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+
         $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
         $valid = false;
     }
 
     if ($valid) {
 
-        $preview_message['CONTENT'] = $t_content;
+        $edit_message['CONTENT'] = $t_content;
 
-        if ($allow_sig == true) {
-
-            $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig</div>";
+        if ($allow_sig == true && isset($t_sig)) {
+            $edit_message['CONTENT'].= "<div class=\"sig\">$t_sig</div>";
         }
 
-        if ($to_uid == 0) {
+        if ($edit_message['TO_UID'] == 0) {
 
-            $preview_message['TLOGON'] = gettext("ALL");
-            $preview_message['TNICK'] = gettext("ALL");
-
-        } else{
-
-            $preview_tuser = user_get($_POST['t_to_uid']);
-            $preview_message['TLOGON'] = $preview_tuser['LOGON'];
-            $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-            $preview_message['TO_UID'] = $preview_tuser['UID'];
+            $edit_message['TLOGON'] = gettext("ALL");
+            $edit_message['TNICK'] = gettext("ALL");
         }
 
-        $preview_tuser = user_get($from_uid);
-        $preview_message['FLOGON'] = $preview_tuser['LOGON'];
-        $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
-        $preview_message['FROM_UID'] = $from_uid;
-        $preview_message['AID'] = $aid;
+        $edit_message['AID'] = $aid;
     }
 
-} else if (isset($_POST['apply'])) {
+} else if ($valid && isset($_POST['apply'])) {
 
-    if (!$edit_message = messages_get($tid, $pid, 1)) {
-
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-        light_html_display_error_msg(gettext("That post does not exist in this thread!"));
-        light_html_draw_bottom();
-        exit;
-    }
-
-    if (isset($_POST['t_to_uid'])) {
-        $to_uid = $_POST['t_to_uid'];
-    } else {
-        $error_msg_array[] = gettext("Invalid username!");
-        $valid = false;
-    }
-
-    if (isset($_POST['t_from_uid'])) {
-        $from_uid = $_POST['t_from_uid'];
-    } else {
-        $error_msg_array[] = gettext("Invalid username!");
-        $valid = false;
-    }
-
-    if (strlen(trim($t_content)) < 1) {
-        $error_msg_array[] = gettext("You must enter some content for the post!");
-        $valid = false;
-    }
+    $post_edit_time = forum_get_setting('post_edit_time', null, 0);
 
     if (attachments_get_count($aid) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+
         $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
         $valid = false;
     }
 
-    if (((forum_get_setting('allow_post_editing', 'N')) || ((session::get_value('UID') != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || (((time() - $edit_message['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', null, 0)) != 0)) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-        light_html_display_error_msg(gettext("You are not permitted to edit this message."));
-        light_html_draw_bottom();
-        exit;
+    if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+        light_html_draw_error(gettext("You are not permitted to edit this message."), 'lmessages.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
     }
 
     if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-        light_html_display_error_msg(gettext("You are not permitted to edit this message."));
-        light_html_draw_bottom();
-        exit;
+        light_html_draw_error(gettext("You are not permitted to edit this message."), 'lmessages.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
     }
-
-    $preview_message = $edit_message;
 
     if ($valid) {
 
-        if ($allow_sig == true) {
+        $t_content_new = $t_content;
 
-            $t_content_tmp = $t_content."<div class=\"sig\">$t_sig</div>";
-
-        } else {
-
-            $t_content_tmp = $t_content;
+        if ($allow_sig == true && isset($t_sig)) {
+            $t_content_new.= "<div class=\"sig\">$t_sig</div>";
         }
 
-        if (post_update($t_fid, $tid, $pid, $t_content_tmp)) {
+        if (post_update($t_fid, $tid, $pid, $t_content_new)) {
 
             post_add_edit_text($tid, $pid);
 
             post_save_attachment_id($tid, $pid, $aid);
 
-            if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != session::get_value('UID')) {
+            if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && ($edit_message['FROM_UID'] != $uid)) {
                 admin_add_log_entry(EDIT_POST, array($t_fid, $tid, $pid));
             }
 
-            header_redirect("lmessages.php?webtag=$webtag&msg=$edit_msg");
+            header_redirect("lmessages.php?webtag=$webtag&msg=$msg");
             exit;
 
-        } else{
+        } else {
 
             $error_msg_array[] = gettext("Error updating post");
         }
     }
 
+} else if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
+
+    if (isset($_POST['emots_toggle'])) {
+
+        $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
+
+    } else if (isset($_POST['sig_toggle'])) {
+
+        $page_prefs = (double) $page_prefs ^ POST_SIGNATURE_DISPLAY;
+    }
+
+    $user_prefs = array(
+        'POST_PAGE' => $page_prefs
+    );
+
+    $user_prefs_global = array();
+
+    if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+
+        $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
+        $valid = false;
+    }
+
 } else {
 
-    if (!$edit_message = messages_get($tid, $pid, 1)) {
-
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-        light_html_display_error_msg(gettext("That post does not exist in this thread!"));
-        light_html_draw_bottom();
-        exit;
-    }
+    $post_edit_time = forum_get_setting('post_edit_time', null, 0);
 
     if (count($edit_message) > 0) {
 
         if (($edit_message['CONTENT'] = message_get_content($tid, $pid))) {
 
-            if (((forum_get_setting('allow_post_editing', 'N')) || ((session::get_value('UID') != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || (((time() - $edit_message['CREATED']) >= (intval(forum_get_setting('post_edit_time', false, 0)) * MINUTE_IN_SECONDS)) && intval(forum_get_setting('post_edit_time', null, 0)) != 0)) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-                light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-                light_html_display_error_msg(gettext("You are not permitted to edit this message."));
-                light_html_draw_bottom();
-                exit;
+            if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+                light_html_draw_error(gettext("You are not permitted to edit this message."), 'lmessages.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
             }
 
             if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-                light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-                light_html_display_error_msg(gettext("You are not permitted to edit this message."));
-                light_html_draw_bottom();
-                exit;
+                light_html_draw_error(gettext("You are not permitted to edit this message."), 'lmessages.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
             }
-
-            $preview_message = $edit_message;
 
             $to_uid = $edit_message['TO_UID'];
 
             $from_uid = $edit_message['FROM_UID'];
-            
+
             $parsed_message = new MessageTextParse($edit_message['CONTENT'], $emots_enabled, $links_enabled);
-            
+
             $emots_enabled = $parsed_message->getEmoticons();
 
             $links_enabled = $parsed_message->getLinks();
 
             $t_content = $parsed_message->getMessage();
-            
-            $post_html = $parsed_message->getMessageHTML();
 
             $t_sig = $parsed_message->getSig();
-            
-            $sig_html = $parsed_message->getSigHTML();
-            
-            $post->setHTML($allow_html ? $post_html : POST_HTML_DISABLED);
-            $sig->setHTML($allow_html ? $sig_html : POST_HTML_DISABLED, true);
-
-            $post->setContent($t_content);
-            $post->setEmoticons($emots_enabled);
-            $post->setLinks($links_enabled);
-            
-            $sig->setContent($t_sig);
-            $sig->setEmoticons($emots_enabled);
-            $sig->setLinks($links_enabled);
-
-            $post->diff = false;
-            $sig->diff = false;
-
-            $t_content = $post->getContent();
-            $t_sig = $sig->getContent();
 
         } else {
 
-            echo sprintf("<h3>%s %s</h3>", gettext("Edit message"), $edit_msg);
-            echo "<p>", gettext("Message was not found"), "</p>\n";
-            exit;
+            light_html_draw_error(sprintf(gettext("Message %s was not found"), $msg), 'lthread_list.php', 'get', array('back' => gettext("Back")));
         }
 
     } else{
 
-        echo sprintf("<h3>%s %s</h3>", gettext("Edit message"), $edit_msg);
-        echo "<p>", gettext("Message was not found"), "</p>\n";
-        exit;
+        light_html_draw_error(sprintf(gettext("Message %s was not found"), $msg), 'lthread_list.php', 'get', array('back' => gettext("Back")));
     }
 }
+
+$page_title = sprintf(gettext("Edit message %s"), $msg);
+
+light_html_draw_top("title=$page_title");
 
 if ($valid && isset($_POST['preview'])) {
 
     echo "<h3>", gettext("Message Preview"), "</h3>";
 
-    light_message_display($tid, $preview_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, false, false, false, true);
+    light_message_display($tid, $edit_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, false, false, false, true);
 }
 
 echo "<form accept-charset=\"utf-8\" name=\"f_edit\" action=\"ledit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-echo form_input_hidden("t_msg", htmlentities_array($edit_msg));
-echo form_input_hidden("t_to_uid", htmlentities_array($to_uid));
-echo form_input_hidden("t_from_uid", htmlentities_array($from_uid));
+echo form_input_hidden("msg", htmlentities_array($msg));
 
 echo "<div class=\"post\">\n";
-echo sprintf("<h3>%s %s</h3>", gettext("Edit message"), $edit_msg);
+echo sprintf("<h3>%s %s</h3>", gettext("Edit message"), $msg);
 echo "<div class=\"post_inner\">\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);
 }
 
-echo "<div class=\"post_content\">", gettext("Content"), ":", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</div>";
+echo "<div class=\"post_content\">", gettext("Content"), ":", light_form_textarea("t_content", htmlentities_array($t_content), 10, 50, false, 'textarea editor mobile'), "</div>";
 
 if ($allow_sig == true) {
-
-    echo form_input_hidden("t_sig", $sig->getTidyContent());
-    echo form_input_hidden("t_sig_html", $sig->getHTML() ? "Y" : "N"), "\n";
-}
-
-if ($allow_html == true) {
-
-    $tph_radio = $post->getHTML();
-
-    echo "<div class=\"post_html\"><span>", gettext("HTML in message"), ":</span>\n";
-    echo light_form_radio("t_post_html", "disabled", gettext("Disabled"), $tph_radio == POST_HTML_DISABLED);
-    echo light_form_radio("t_post_html", "enabled_auto", gettext("Enabled with auto-line-breaks"), $tph_radio == POST_HTML_AUTO);
-    echo light_form_radio("t_post_html", "enabled", gettext("Enabled"), $tph_radio == POST_HTML_ENABLED);
-    echo "</div>";
-
-} else {
-
-    echo form_input_hidden("t_post_html", "disabled");
+    echo form_input_hidden("t_sig", htmlentities_array($t_sig));
 }
 
 echo "<div class=\"post_buttons\">";

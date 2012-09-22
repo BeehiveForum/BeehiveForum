@@ -49,11 +49,11 @@ $admin_edit = false;
 
 if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
-    if (isset($_GET['siguid'])) {
+    if (isset($_GET['sig_uid'])) {
 
-        if (is_numeric($_GET['siguid'])) {
+        if (is_numeric($_GET['sig_uid'])) {
 
-            $uid = $_GET['siguid'];
+            $uid = $_GET['sig_uid'];
             $admin_edit = true;
 
         } else {
@@ -61,11 +61,11 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             html_draw_error(gettext("No user specified."));
         }
 
-    } else if (isset($_POST['siguid'])) {
+    } else if (isset($_POST['sig_uid'])) {
 
-        if (is_numeric($_POST['siguid'])) {
+        if (is_numeric($_POST['sig_uid'])) {
 
-            $uid = $_POST['siguid'];
+            $uid = $_POST['sig_uid'];
             $admin_edit = true;
 
         } else {
@@ -97,18 +97,14 @@ $valid = true;
 
 $error_msg_array = array();
 
+$sig_text = user_get_sig($uid);
+
 if (isset($_POST['save']) || isset($_POST['preview'])) {
 
     if (isset($_POST['sig_content']) && strlen(trim($_POST['sig_content'])) > 0) {
-        $t_sig_content = trim($_POST['sig_content']);
+        $sig_text = trim($_POST['sig_content']);
     } else {
-        $t_sig_content = "";
-    }
-
-    if (isset($_POST['t_post_html']) && $_POST['t_post_html'] == "Y") {
-        $t_t_post_html = "Y";
-    } else {
-        $t_t_post_html = "N";
+        $sig_text = "";
     }
 
     if (isset($_POST['sig_global']) && $_POST['sig_global'] == 'Y') {
@@ -117,23 +113,23 @@ if (isset($_POST['save']) || isset($_POST['preview'])) {
         $t_sig_global = 'N';
     }
 
-    if ($t_t_post_html == "Y") $t_sig_content = fix_html($t_sig_content);
-
     if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0) && $admin_edit === true) $t_sig_global = 'N';
 
-    if (attachments_embed_check($t_sig_content) && $t_t_post_html == "Y") {
+    if (attachments_embed_check($sig_text)) {
 
         $error_msg_array[] = gettext("You are not allowed to embed attachments in your signature.");
         $valid = false;
     }
 }
 
+$sig_text = fix_html($sig_text, false, true);
+
 if (isset($_POST['save'])) {
 
     if ($valid) {
 
         // Update USER_SIG
-        if (user_update_sig($uid, $t_sig_content, $t_t_post_html, ($t_sig_global == 'Y'))) {
+        if (user_update_sig($uid, $sig_text, ($t_sig_global == 'Y'))) {
 
             if ($admin_edit === true) {
 
@@ -155,19 +151,6 @@ if (isset($_POST['save'])) {
             }
         }
     }
-}
-
-// Initialise the $user_sig array
-$user_sig = array(
-    'SIG_CONTENT' => '', 
-    't_post_html' => 'N'
-);
-
-// Get the User's Signature
-if (!user_get_sig($uid, $user_sig['SIG_CONTENT'], $user_sig['t_post_html'])) {
-
-    $user_sig['SIG_CONTENT'] = '';
-    $user_sig['t_post_html'] = 'Y';
 }
 
 // Start Output Here
@@ -199,42 +182,10 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_success_msg(gettext("Signature Updated For All Forums"), '600', 'left');
 }
 
-if (isset($t_t_post_html)) {
-    $t_post_html = ($t_t_post_html == "Y");
-} else {
-    $t_post_html = ($user_sig['t_post_html'] == "Y");
-}
-
-if (isset($t_sig_content)) {
-
-    if ($t_post_html == "Y") {
-
-        $sig_code = htmlentities_array(tidy_html($t_sig_content, false, false));
-
-    } else {
-
-        $sig_code = $t_sig_content;
-    }
-
-} else {
-
-    if ($t_post_html == "Y") {
-
-        $sig_code = htmlentities_array(tidy_html($user_sig['SIG_CONTENT'], false, false));
-
-    } else {
-
-        $sig_code = $user_sig['SIG_CONTENT'];
-    }
-}
-
-$tools = new TextAreaHTML("prefs");
-
 echo "<br />\n";
 
 if ($admin_edit === true) echo "<div align=\"center\">\n";
 
-// Check to see if we should show the set for all forums checkboxes
 if ((session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == session::get_value('UID')) && $admin_edit === false)) {
     $show_set_all = (forums_get_available_count() > 1);
 } else {
@@ -245,7 +196,7 @@ echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"edit_signature.php\
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
 if ($admin_edit === true) {
-    echo "  ", form_input_hidden('siguid', htmlentities_array($uid)), "\n";
+    echo "  ", form_input_hidden('sig_uid', htmlentities_array($uid)), "\n";
 }
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -264,17 +215,12 @@ if (isset($_POST['preview'])) {
 
         $preview_tuser = user_get($uid);
 
-        $preview_message['FLOGON']   = $preview_tuser['LOGON'];
-        $preview_message['FNICK']    = $preview_tuser['NICKNAME'];
+        $preview_message['FLOGON'] = $preview_tuser['LOGON'];
+        $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
         $preview_message['FROM_UID'] = $preview_tuser['UID'];
 
         $preview_message['CONTENT'] = gettext("Signature Preview");
-
-        if ($t_t_post_html == "Y") {
-            $preview_message['CONTENT'].= "<div class=\"sig\">$t_sig_content</div>";
-        } else {
-            $preview_message['CONTENT'].= "<div class=\"sig\">". make_html($t_sig_content). "</div>";
-        }
+        $preview_message['CONTENT'].= "<div class=\"sig\">$sig_text</div>";
 
         $preview_message['CREATED'] = time();
 
@@ -314,24 +260,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
-
-$page_prefs = session::get_post_page_prefs();
-
-$tool_type = POST_TOOLBAR_DISABLED;
-
-if ($page_prefs & POST_TOOLBAR_DISPLAY) {
-    $tool_type = POST_TOOLBAR_SIMPLE;
-} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
-    $tool_type = POST_TOOLBAR_TINYMCE;
-}
-
-if ($tool_type <> POST_TOOLBAR_DISABLED) {
-    echo $tools->toolbar();
-} else {
-    $tools->set_tinymce(false);
-}
-
-echo $tools->textarea("sig_content", $sig_code, 12, 85, true, 'tabindex="7"', 'edit_signature_content');
+echo "                          ", form_textarea('sig_content', $sig_text, 12, 85, true, 'tabindex="7"', 'edit_signature_content editor');
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -364,61 +293,42 @@ if ($admin_edit === true) {
 }
 
 echo "  </table>\n";
-echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
-echo "    <tr>\n";
-echo "      <td align=\"left\">\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\">", gettext("Options"), "</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"center\">\n";
-
-if ((!$tools->get_tinymce())) {
-
-    echo "                    <table class=\"posthead\" width=\"95%\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("t_post_html", "Y", gettext("Signature contains HTML code"), $t_post_html), "</td>\n";
-    echo "                      </tr>\n";
-
-} else {
-
-    echo "                    ", form_input_hidden("t_post_html", "Y");
-    echo "                    <table class=\"posthead\" width=\"95%\">\n";
-}
 
 if ($show_set_all) {
 
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Options"), "</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", form_checkbox("sig_global", "Y", gettext("Save signature for use on all forums"), (isset($t_sig_global) && $t_sig_global == 'Y')), "</td>\n";
     echo "                      </tr>\n";
-
-} else {
-
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_input_hidden("sig_global", 'Y'), "</td>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
     echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
 }
-
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                    </table>\n";
-echo "                  </td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "      </td>\n";
-echo "    </tr>\n";
-echo "  </table>\n";
 
 echo "</form>\n";
 

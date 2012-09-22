@@ -35,7 +35,7 @@ var beehive = $.extend({}, beehive, {
             console.log('AJAX ERROR', message);
         }
     },
-    
+
     get_resize_width : function() {
 
         var $max_width = $(this).closest('.max_width[width]');
@@ -96,6 +96,70 @@ var beehive = $.extend({}, beehive, {
         var $user_font = $head.find('link#user_font');
 
         $user_font.attr('href', beehive.forum_path + '/font_size.php?webtag=' + beehive.webtag + '&_=' + new Date().getTime() / 1000);
+    },
+
+    editor : function() {
+
+        var $editor = $(this), toolbar;
+
+        var skin = beehive.forum_path + '/styles/' + beehive.user_style + '/editor/';
+
+        var toolbar = $editor.hasClass('mobile') ? 'mobile' : 'full';
+
+        var remove_plugins = $editor.hasClass('mobile') ? 'elementspath' : '';
+
+        $('<div id="toolbar">').insertBefore($editor);
+
+        $(this).ckeditor({
+            contentsCss: skin + 'editor.css',
+            customConfig: '',
+            disableNativeSpellChecker: true,
+            font_defaultLabel: 'Verdana',
+            height: $editor.height() - 35,
+            width: '100%',
+            removeDialogTabs: 'link:target;link:advanced;image:Link;image:advanced',
+            removePlugins: remove_plugins,
+            resize_maxWidth: '100%',
+            resize_minWidth: '100%',
+            skin: 'beehive,' + skin,
+            startupFocus: $editor.hasClass('focus'),
+            sharedSpaces : {
+                top: 'toolbar',
+            },
+            toolbarCanCollapse: false,
+            toolbar_mobile: [
+                [
+                    'Bold',
+                    'Italic',
+                    'Underline',
+                ],
+            ],
+            toolbar_full: [
+                [
+                    'Bold',
+                    'Italic',
+                    'Underline',
+                    'Strike',
+                    'Superscript',
+                    'Subscript',
+                    'JustifyLeft',
+                    'JustifyCenter',
+                    'JustifyRight',
+                    'NumberedList',
+                    'BulletedList',
+                    'Indent',
+                    'HorizontalRule',
+                    'Image',
+                    'Link'
+                ],
+                [
+                    'Font',
+                    'FontSize',
+                    'TextColor'
+                ]
+            ],
+            toolbar: toolbar,
+        });
     },
 
     mobile_version : false
@@ -312,55 +376,6 @@ $(beehive).bind('init', function() {
 
         return false;
     });
-    
-    $('textarea.editor').each(function() {
-        
-        var $editor = $(this);
-        
-        $('<div id="toolbar">').insertBefore($editor);
-        
-        //var contentsCss = beehive.forum_path + '/styles/' + beehive.user_style + '/editor.css';
-        
-        var skin = beehive.forum_path + '/styles/' + beehive.user_style + '/editor/';
-        
-        $(this).ckeditor({
-            //contentsCss: contentsCss,
-            customConfig: '',
-            font_defaultLabel: 'Verdana',
-            height: $editor.height() - 35,
-            width: $editor.width() + 6,
-            resize_maxWidth: $editor.width() + 6,
-            removeDialogTabs: 'link:target;link:advanced;image:Link;image:advanced',
-            skin: 'beehive,' + skin,
-            startupFocus: $editor.hasClass('focus'),
-            sharedSpaces : {
-                top: 'toolbar',
-            },
-            toolbarCanCollapse: false,
-            toolbar: [
-                [
-                    'Bold',
-                    'Italic',
-                    'Underline',
-                    'Strike',
-                    'Superscript',
-                    'Subscript',
-                    'JustifyLeft',
-                    'JustifyCenter',
-                    'JustifyRight',
-                    'NumberedList',
-                    'BulletedList',
-                    'Indent',
-                    'HorizontalRule',
-                    'Image',
-                    'Link'
-                ],
-                [
-                    'Font',
-                    'FontSize',
-                    'TextColor'
-                ]
-            ],
-        }); 
-    });
+
+    $('textarea.editor').each(beehive.editor);
 });

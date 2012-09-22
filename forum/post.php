@@ -53,34 +53,56 @@ if (!session::logged_in()) {
     html_guest_error();
 }
 
-// Check that there are some available folders for this thread type
 if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
     html_message_type_error();
 }
 
-// Check if the user is viewing signatures.
 $show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
 
-// Get the user's post page preferences.
-$page_prefs = session::get_post_page_prefs();
-
-// Get the user's UID
 $uid = session::get_value('UID');
 
-// Assume everything is A-OK!
+$page_prefs = session::get_post_page_prefs();
+
+if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
+    $emots_enabled = false;
+} else {
+    $emots_enabled = true;
+}
+
+if (($page_prefs & POST_AUTO_LINKS) > 0) {
+    $links_enabled = true;
+} else {
+    $links_enabled = false;
+}
+
+if (($page_prefs & POST_CHECK_SPELLING) > 0) {
+    $spelling_enabled = true;
+} else {
+    $spelling_enabled = false;
+}
+
+if (($high_interest = session::get_value('MARK_AS_OF_INT')) === false) {
+    $high_interest = "N";
+}
+
 $valid = true;
 
 $new_thread = false;
 
 $t_to_uid = 0;
 
+$t_sig = user_get_sig($uid);
+
 if (isset($_POST['t_newthread']) && (isset($_POST['post']) || isset($_POST['preview']))) {
 
     $new_thread = true;
 
     if (isset($_POST['t_threadtitle']) && strlen(trim($_POST['t_threadtitle'])) > 0) {
+
         $t_threadtitle = trim($_POST['t_threadtitle']);
+
     } else{
+
         $error_msg_array[] = gettext("You must enter a title for the thread!");
         $valid = false;
     }
@@ -108,151 +130,6 @@ if (isset($_POST['t_newthread']) && (isset($_POST['post']) || isset($_POST['prev
     $valid = false;
 }
 
-if (isset($_POST['t_post_emots'])) {
-
-    if ($_POST['t_post_emots'] == "disabled") {
-        $emots_enabled = false;
-    } else {
-        $emots_enabled = true;
-    }
-
-} else {
-
-    $emots_enabled = true;
-}
-
-if (isset($_POST['t_check_spelling'])) {
-
-    if ($_POST['t_check_spelling'] == "enabled") {
-        $spelling_enabled = true;
-    } else {
-        $spelling_enabled = false;
-    }
-
-} else {
-
-    $spelling_enabled = false;
-}
-
-if (isset($_POST['t_post_links'])) {
-
-    if ($_POST['t_post_links'] == "enabled") {
-        $links_enabled = true;
-    } else {
-        $links_enabled = false;
-    }
-
-} else {
-
-    $links_enabled = false;
-}
-
-if (isset($_POST['t_post_interest'])) {
-
-    if ($_POST['t_post_interest'] == "Y") {
-        $high_interest = "Y";
-    } else {
-        $high_interest = "N";
-    }
-
-} else {
-
-    $high_interest = "N";
-}
-
-if (isset($_POST['t_sticky'])) {
-
-    if ($_POST['t_sticky'] == 'Y') {
-        $t_sticky = 'Y';
-    } else {
-        $t_sticky = 'N';
-    }
-}
-
-if (isset($_POST['t_closed'])) {
-
-    if ($_POST['t_closed'] == 'Y') {
-        $t_closed = 'Y';
-    } else {
-        $t_closed = 'N';
-    }
-}
-
-if (isset($_POST['t_post_html'])) {
-
-    $t_post_html = $_POST['t_post_html'];
-
-    if ($t_post_html == "enabled_auto") {
-        $post_html = POST_HTML_AUTO;
-    } else if ($t_post_html == "enabled") {
-        $post_html = POST_HTML_ENABLED;
-    } else {
-        $post_html = POST_HTML_DISABLED;
-    }
-
-} else {
-
-    if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-        $post_html = POST_HTML_AUTO;
-    } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-        $post_html = POST_HTML_ENABLED;
-    } else {
-        $post_html = POST_HTML_DISABLED;
-    }
-
-    if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
-        $emots_enabled = false;
-    } else {
-        $emots_enabled = true;
-    }
-
-    if (($page_prefs & POST_AUTO_LINKS) > 0) {
-        $links_enabled = true;
-    } else {
-        $links_enabled = false;
-    }
-
-    if (($page_prefs & POST_CHECK_SPELLING) > 0) {
-        $spelling_enabled = true;
-    } else {
-        $spelling_enabled = false;
-    }
-
-    if (($high_interest = session::get_value('MARK_AS_OF_INT')) === false) {
-        $high_interest = "N";
-    }
-}
-
-if (isset($_POST['t_sig_html'])) {
-
-    $t_sig_html = $_POST['t_sig_html'];
-
-    if ($t_sig_html != "N") {
-        $sig_html = POST_HTML_ENABLED;
-    }
-
-    $fetched_sig = false;
-
-} else {
-
-    $t_sig = '';
-    $t_sig_html = 'N';
-
-    if (!user_get_sig($uid, $t_sig, $t_sig_html)) {
-
-        $t_sig = '';
-        $t_sig_html = 'N';
-    }
-
-    if ($t_sig_html != "N") {
-        $sig_html = POST_HTML_ENABLED;
-    }
-
-    $t_sig = tidy_html($t_sig, false);
-
-    $fetched_sig = true;
-}
-
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];
 } else{
@@ -265,15 +142,94 @@ if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
     $t_dedupe = time();
 }
 
-if (!isset($sig_html)) $sig_html = POST_HTML_DISABLED;
+if (isset($_POST['post']) || isset($_POST['preview']) || isset($_POST['move']) || isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
+
+    if (isset($_POST['t_post_emots'])) {
+
+        if ($_POST['t_post_emots'] == "disabled") {
+            $emots_enabled = false;
+        } else {
+            $emots_enabled = true;
+        }
+
+    } else {
+
+        $emots_enabled = false;
+    }
+
+    if (isset($_POST['t_post_links'])) {
+
+        if ($_POST['t_post_links'] == "enabled") {
+            $links_enabled = true;
+        } else {
+            $links_enabled = false;
+        }
+
+    } else {
+
+        $links_enabled = false;
+    }
+
+    if (isset($_POST['t_check_spelling'])) {
+
+        if ($_POST['t_check_spelling'] == "enabled") {
+            $spelling_enabled = true;
+        } else {
+            $spelling_enabled = false;
+        }
+
+    } else {
+
+        $spelling_enabled = false;
+    }
+
+    if (isset($_POST['t_post_interest'])) {
+
+        if ($_POST['t_post_interest'] == "Y") {
+            $high_interest = "Y";
+        } else {
+            $high_interest = "N";
+        }
+
+    } else {
+
+        $high_interest = 'N';
+    }
+
+    if (isset($_POST['t_sticky'])) {
+
+        if ($_POST['t_sticky'] == 'Y') {
+            $t_sticky = 'Y';
+        } else {
+            $t_sticky = 'N';
+        }
+
+    } else {
+
+        $t_sticky = 'N';
+    }
+
+    if (isset($_POST['t_closed'])) {
+
+        if ($_POST['t_closed'] == 'Y') {
+            $t_closed = 'Y';
+        } else {
+            $t_closed = 'N';
+        }
+
+    } else {
+
+        $t_closed = 'N';
+    }
+}
 
 if (isset($_POST['post']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = trim($_POST['t_content']);
+        $t_content = fix_html($_POST['t_content'], $emots_enabled, $links_enabled);
 
-        if (($post_html > POST_HTML_DISABLED) && attachments_embed_check($t_content)) {
+        if (attachments_embed_check($t_content)) {
 
             $error_msg_array[] = gettext("You are not allowed to embed attachments in your posts.");
             $valid = false;
@@ -287,9 +243,9 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_sig'])) {
 
-        $t_sig = trim($_POST['t_sig']);
+        $t_sig = fix_html($_POST['t_sig'], false, true);
 
-        if ($sig_html && attachments_embed_check($t_sig)) {
+        if (attachments_embed_check($t_sig)) {
 
             $error_msg_array[] = gettext("You are not allowed to embed attachments in your signature.");
             $valid = false;
@@ -300,7 +256,7 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 if (isset($_POST['more'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-        $t_content = trim($_POST['t_content']);
+        $t_content = fix_html($_POST['t_content'], $emots_enabled, $links_enabled);
     }
 }
 
@@ -309,7 +265,6 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
     if (isset($_POST['t_newthread'])) {
 
         if (isset($_POST['t_threadtitle']) && strlen(trim($_POST['t_threadtitle'])) > 0) {
-
             $t_threadtitle = trim($_POST['t_threadtitle']);
         }
 
@@ -328,28 +283,26 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
     }
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-
-        $t_content = trim($_POST['t_content']);
+        $t_content = fix_html($_POST['t_content'], $emots_enabled, $links_enabled);
     }
 
     if (isset($_POST['t_sig'])) {
-
-        $t_sig = trim($_POST['t_sig']);
+        $t_sig = fix_html($_POST['t_sig'], false, true);
     }
 
     if (isset($_POST['emots_toggle'])) {
 
-        $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
+        $page_prefs = (double)$page_prefs ^ POST_EMOTICONS_DISPLAY;
 
     } else if (isset($_POST['sig_toggle'])) {
 
-        $page_prefs = (double) $page_prefs ^ POST_SIGNATURE_DISPLAY;
+        $page_prefs = (double)$page_prefs ^ POST_SIGNATURE_DISPLAY;
     }
 
     $user_prefs = array(
         'POST_PAGE' => $page_prefs
     );
-    
+
     $user_prefs_global = array();
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
@@ -360,13 +313,8 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
 }
 
 if (!isset($t_content)) $t_content = "";
+
 if (!isset($t_sig)) $t_sig = "";
-
-$post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
-$sig = new MessageText($sig_html, $t_sig, $emots_enabled, $links_enabled, false);
-
-$t_content = $post->getContent();
-$t_sig = $sig->getContent();
 
 if (mb_strlen($t_content) >= 65535) {
 
@@ -414,31 +362,20 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
                 $message_content = message_get_content($reply_to_tid, $quote_pid);
                 $message_content = message_apply_formatting($message_content, false, true);
-                
-                $message_content = trim(strip_tags(strip_paragraphs($message_content)));                
+
+                $message_content = trim(strip_tags(strip_paragraphs($message_content)));
                 $message_content = preg_replace("/(\r\n|\r|\n){2,}/", "\r\n\r\n", $message_content);
 
-                if ($page_prefs & POST_TINYMCE_DISPLAY) {
-
-                    $t_quoted_post = "<div class=\"quotetext\" id=\"quote\">";
-                    $t_quoted_post.= "<b>quote: </b>$message_author</div>";
-                    $t_quoted_post.= "<div class=\"quote\">". trim($message_content). "</div><br />";
-
-                } else {
-
-                    $t_quoted_post = "<quote source=\"$message_author\" ";
-                    $t_quoted_post.= "url=\"messages.php?webtag=$webtag&amp;msg=$reply_to_tid.$quote_pid\">";
-                    $t_quoted_post.= trim($message_content). "</quote>\n\n";
-                }
+                $t_quoted_post = "<quote source=\"$message_author\" ";
+                $t_quoted_post.= "url=\"messages.php?webtag=$webtag&amp;msg=$reply_to_tid.$quote_pid\">";
+                $t_quoted_post.= trim($message_content). "</quote>\n\n";
 
                 $t_content_array[] = $t_quoted_post;
             }
         }
 
         if (sizeof($t_content_array) > 0) {
-
-            $post->setContent(implode('', $t_content_array));
-            $post->setHTML(POST_HTML_AUTO);
+            $t_content = implode('', $t_content_array);
         }
     }
 
@@ -570,14 +507,8 @@ if (isset($t_fid) && !session::check_perm(USER_PERM_SIGNATURE, $t_fid)) {
 
 if ($allow_html == false) {
 
-    if ($post->getHTML() > 0) {
-
-        $post->setHTML(false);
-        $t_content = $post->getContent();
-    }
-
-    $sig->setHTML(false, true);
-    $t_sig = $sig->getContent();
+    $t_content = htmlentities_array($t_content);
+    $t_sig = htmlentities_array($t_sig);
 }
 
 if (!$new_thread) {
@@ -664,7 +595,7 @@ if ($valid && isset($_POST['post'])) {
                     if (!session::check_perm(USER_PERM_WORMED, 0) && !($user_rel & USER_IGNORED_COMPLETELY)) {
 
                         $exclude_user_array = array(
-                            $t_to_uid, 
+                            $t_to_uid,
                             $uid
                         );
 
@@ -778,7 +709,7 @@ if ($valid && isset($_POST['preview'])) {
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
     $preview_message['FROM_UID'] = $preview_tuser['UID'];
 
-    $preview_message['CONTENT'] = $post->getContent();
+    $preview_message['CONTENT'] = $t_content;
 
     if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
         $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
@@ -951,7 +882,7 @@ echo "                    <table class=\"posthead\" width=\"500\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 echo "                          <h2>", gettext("Message"), "</h2>\n";
-echo "                          ", form_textarea("t_content", $post->getTidyContent(), 20, 75, 'tabindex="1"', 'post_content editor'), "\n";
+echo "                          ", form_textarea("t_content", htmlentities_array($t_content), 20, 75, 'tabindex="1"', 'post_content editor'), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -1003,7 +934,7 @@ if ($allow_sig == true) {
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" colspan=\"2\">\n";
     echo "                                <div class=\"sig_toggle\" style=\"display: ", (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) ? "block" : "none", "\">\n";
-    echo "                                  ", form_textarea("t_sig", $sig->getTidyContent(), 5, 75, 'tabindex="7"', 'signature_content editor');
+    echo "                                  ", form_textarea("t_sig", htmlentities_array($t_sig), 5, 75, 'tabindex="7"', 'signature_content editor');
     echo "                                </div>\n";
     echo "                              </td>\n";
     echo "                            </tr>\n";

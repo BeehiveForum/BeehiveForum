@@ -147,40 +147,6 @@ $poll_questions_array = poll_get_votes($tid);
 
 $valid = true;
 
-if (isset($_POST['post_emots'])) {
-
-    if ($_POST['post_emots'] == "disabled") {
-        $emots_enabled = false;
-    } else {
-        $emots_enabled = true;
-    }
-
-} else {
-
-    if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
-        $emots_enabled = false;
-    } else {
-        $emots_enabled = true;
-    }
-}
-
-if (isset($_POST['post_links'])) {
-
-    if ($_POST['post_links'] == "enabled") {
-        $links_enabled = true;
-    } else {
-        $links_enabled = false;
-    }
-
-} else {
-
-    if (($page_prefs & POST_AUTO_LINKS) > 0) {
-        $links_enabled = true;
-    } else {
-        $links_enabled = false;
-    }
-}
-
 if (isset($_POST['options_html'])) {
 
     if ($_POST['options_html'] == 'Y') {
@@ -560,19 +526,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
                     foreach ($question['OPTIONS_ARRAY'] as $option_id => $option) {
 
                         if (($allow_html == true) && isset($options_html) && ($options_html == 'Y')) {
-
-                            $poll_option_check_html = new MessageText(POST_HTML_ENABLED, $option['OPTION_NAME']);
-
-                            $poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = $poll_option_check_html->getContent();
-
-                            if (strlen(trim($poll_option_check_html->getContent())) == 0) {
-
-                                $poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = $poll_option_check_html->getOriginalContent();
-
-                                $error_msg_array[] = gettext("One or more of your Poll Questions contains invalid HTML.");
-
-                                $valid = false;
-                            }
+                            $poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = fix_html($option['OPTION_NAME']);
                         }
 
                         if (attachments_embed_check($option['OPTION_NAME']) && ($options_html == 'Y')) {
@@ -647,7 +601,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
     $user_prefs = array(
         'POST_PAGE' => $page_prefs
     );
-    
+
     $user_prefs_global = array();
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
@@ -878,8 +832,6 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     echo "              </table>\n";
 }
 
-$tools = new TextAreaHTML("f_poll");
-
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Edit Poll"), "</td>\n";
@@ -898,15 +850,6 @@ echo "                        <td align=\"left\"><h2>", gettext("Thread title"),
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", form_input_text("thread_title", htmlentities_array($thread_title), 30, 64, false, "thread_title"), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\"><h2>", gettext("Message options"), "</h2></td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("post_links", "enabled", gettext("Automatically parse URLs"), $links_enabled), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("post_emots", "disabled", gettext("Disable emoticons"), !$emots_enabled), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 
@@ -994,7 +937,7 @@ echo "                            <tr>\n";
 echo "                              <td>", form_button_html('add_question', 'submit', 'button_image add_question', sprintf("<img src=\"%s\" alt=\"\" />&nbsp;%s", html_style_image('add.png'), gettext("Add new question"))), "</td>\n";
 
 if ($allow_html == true) {
-    echo "                              <td align=\"right\">", form_checkbox('options_html', 'Y', gettext("Options Contain HTML"), ($options_html == 'Y')), "</td>\n";
+    echo "                              <td align=\"right\">", form_checkbox('options_html', 'Y', gettext("Options Contain HTML"), (isset($options_html) && $options_html == 'Y')), "</td>\n";
 } else {
     echo "                              <td align=\"right\">", form_input_hidden('options_html', 'N'), "</td>\n";
 }

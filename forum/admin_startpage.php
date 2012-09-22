@@ -60,29 +60,17 @@ $error_msg_array = array();
 
 // Check to see if we're submitting new page or retrieving the old one.
 if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-    $t_content = trim($_POST['t_content']);
+    $t_content = fix_html($_POST['t_content']);
 } else {
     $t_content = forum_get_setting('start_page', null, '');
 }
-
-// Determine the toolbar type
-$tool_type = POST_TOOLBAR_DISABLED;
-
-if ($page_prefs & POST_TOOLBAR_DISPLAY) {
-    $tool_type = POST_TOOLBAR_SIMPLE;
-} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
-    $tool_type = POST_TOOLBAR_TINYMCE;
-}
-
-// Create a new instance of the Beehive editor.
-$startpage_editor_message = new MessageText(POST_HTML_AUTO, $t_content, true, true);
 
 // Submit code.
 if (isset($_POST['save'])) {
 
     // New array of forum settings.
     $new_forum_settings = array(
-        'start_page' => $startpage_editor_message->getContent()
+        'start_page' => $t_content
     );
 
     // Save the settings.
@@ -170,8 +158,6 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_success_msg(sprintf(gettext("CSS style sheet uploaded. %s"), $start_page_link), '700', 'center');
 }
 
-$startpage_editor = new TextAreaHTML("startpage");
-
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"startpage\" enctype=\"multipart/form-data\" method=\"post\" action=\"admin_startpage.php\">\n";
@@ -191,20 +177,8 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
-
-if ($tool_type <> POST_TOOLBAR_DISABLED) {
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", $startpage_editor->toolbar(true), "</td>\n";
-    echo "                      </tr>\n";
-
-} else {
-
-    $startpage_editor->set_tinymce(false);
-}
-
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $startpage_editor->textarea("t_content", $startpage_editor_message->getTidyContent(), 20, 80, false, false, 'admin_tools_textarea_large'), "</td>\n";
+echo "                        <td align=\"left\">", form_textarea("t_content", htmlentities_array($t_content), 20, 80, false, 'admin_tools_textarea_large editor'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

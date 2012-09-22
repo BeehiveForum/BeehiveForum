@@ -103,10 +103,10 @@ $mail_functions_array = array(
     MAIL_FUNCTION_SMTP => gettext("Use SMTP Server"),
     MAIL_FUNCTION_SENDMAIL => gettext("Use Sendmail")
 );
-                              
+
 // Array of valid attachment thumbnail methods.
 $attachment_thumbnail_methods = array(
-    ATTACHMENT_THUMBNAIL_IMAGEMAGICK => gettext("Use Imagemagick"), 
+    ATTACHMENT_THUMBNAIL_IMAGEMAGICK => gettext("Use Imagemagick"),
     ATTACHMENT_THUMBNAIL_PHPGD => gettext("Use PHP GD library")
 );
 
@@ -248,7 +248,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     }
 
     if (isset($_POST['forum_rules_message']) && strlen(trim($_POST['forum_rules_message'])) > 0) {
-        $new_forum_settings['forum_rules_message'] = trim($_POST['forum_rules_message']);
+        $new_forum_settings['forum_rules_message'] = fix_html($_POST['forum_rules_message']);
     } else {
         $new_forum_settings['forum_rules_message'] = "";
     }
@@ -312,7 +312,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     } else {
         $new_forum_settings['text_captcha_enabled'] = "N";
     }
-    
+
     if (isset($_POST['text_captcha_dir']) && strlen(trim($_POST['text_captcha_dir'])) > 0) {
 
         $new_forum_settings['text_captcha_dir'] = trim($_POST['text_captcha_dir']);
@@ -321,7 +321,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
         $error_msg_array[] = gettext("You must supply a directory to save text-captcha images in");
         $valid = false;
-    }    
+    }
 
     if (isset($_POST['new_user_email_notify']) && $_POST['new_user_email_notify'] == "Y") {
         $new_forum_settings['new_user_email_notify'] = "Y";
@@ -475,9 +475,9 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     } else {
         $new_forum_settings['attachment_mime_types'] = "";
     }
-    
+
     if (isset($_POST['attachment_thumbnail_method']) && in_array($_POST['attachment_thumbnail_method'], array_keys($attachment_thumbnail_methods))) {
-        $new_forum_settings['attachment_thumbnail_method'] = trim($_POST['attachment_thumbnail_method']); 
+        $new_forum_settings['attachment_thumbnail_method'] = trim($_POST['attachment_thumbnail_method']);
     } else {
         $new_forum_settings['attachment_thumbnail_method'] = ATTACHMENT_THUMBNAIL_PHPGD;
     }
@@ -487,7 +487,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     } else {
         $new_forum_settings['attachment_imagemagick_path'] = "";
     }
-    
+
     if (isset($_POST['attachments_max_user_space']) && is_numeric($_POST['attachments_max_user_space'])) {
         $new_forum_settings['attachments_max_user_space'] = ($_POST['attachments_max_user_space'] * 1024) * 1024;
     } else {
@@ -1240,25 +1240,13 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 
-$forum_rules = new TextAreaHTML("prefsform");
-
 $forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
 
 $frame_top_target = html_get_top_frame_name();
 
 $default_forum_rules = sprintf(gettext("<p><b>Forum Rules</b></p><p>Registration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click <a href=\"index.php?webtag=%2\$s\" target=\"%3\$s\">here</a> to return to the forums index.</p><p>Although the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project Beehive Forum and its affiliates will be held responsible for the content of any message.</p><p>By agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise in violation of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>"), $forum_name, $webtag, $frame_top_target);
 
-$tool_type = POST_TOOLBAR_DISABLED;
-
-if ($page_prefs & POST_TOOLBAR_DISPLAY) {
-    $tool_type = POST_TOOLBAR_SIMPLE;
-} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
-    $tool_type = POST_TOOLBAR_TINYMCE;
-}
-
 if (!isset($forum_global_settings['forum_rules_message'])) $forum_global_settings['forum_rules_message'] = $default_forum_rules;
-
-$forum_rules_message = new MessageText(POST_HTML_AUTO, $forum_global_settings['forum_rules_message'], true, true);
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
@@ -1273,20 +1261,8 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
-
-if ($tool_type <> POST_TOOLBAR_DISABLED) {
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", $forum_rules->toolbar(true), "</td>\n";
-    echo "                      </tr>\n";
-
-} else {
-
-    $forum_rules->set_tinymce(false);
-}
-
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", $forum_rules->textarea("forum_rules_message", $forum_rules_message->getTidyContent(), 10, 72, false, false, 'admin_tools_textarea'), "</td>\n";
+echo "                        <td align=\"left\">", form_textarea("forum_rules_message", htmlentities_array($forum_global_settings['forum_rules_message']), 10, 72, false, 'admin_tools_textarea editor'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

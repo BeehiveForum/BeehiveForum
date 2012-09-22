@@ -49,175 +49,126 @@ if (!session::logged_in()) {
     html_guest_error();
 }
 
-// Check to see if the forum owner has allowed the creation of polls
 if (forum_get_setting('allow_polls', 'N')) {
     html_draw_error(gettext("Polls have been disabled by the forum owner."));
 }
 
-// Check that there are some available folders for this thread type
 if (!folder_get_by_type_allowed(FOLDER_ALLOW_POLL_THREAD)) {
     html_message_type_error();
 }
 
-// Array to hold error messages
 $error_msg_array = array();
 
-// Check if the user is viewing signatures.
 $show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
 
-// Get the user's post page preferences.
 $page_prefs = session::get_post_page_prefs();
 
-// Get the user's UID. We need this a couple of times
 $uid = session::get_value('UID');
 
-// Assume everything is A-OK!
 $valid = true;
 
-if (isset($_POST['post_emots'])) {
-
-    if ($_POST['post_emots'] == "disabled") {
-        $emots_enabled = false;
-    } else {
-        $emots_enabled = true;
-    }
-
+if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
+    $emots_enabled = false;
 } else {
-
     $emots_enabled = true;
 }
 
-if (isset($_POST['post_links'])) {
-
-    if ($_POST['post_links'] == "enabled") {
-        $links_enabled = true;
-    } else {
-        $links_enabled = false;
-    }
-
+if (($page_prefs & POST_AUTO_LINKS) > 0) {
+    $links_enabled = true;
 } else {
-
     $links_enabled = false;
 }
 
-if (isset($_POST['check_spelling'])) {
-
-    if ($_POST['check_spelling'] == "enabled") {
-        $spelling_enabled = true;
-    } else {
-        $spelling_enabled = false;
-    }
-
+if (($page_prefs & POST_CHECK_SPELLING) > 0) {
+    $spelling_enabled = true;
 } else {
-
     $spelling_enabled = false;
 }
 
-if (isset($_POST['post_interest'])) {
-
-    if ($_POST['post_interest'] == "Y") {
-        $high_interest = "Y";
-    } else {
-        $high_interest = "N";
-    }
-
-} else {
-
+if (($high_interest = session::get_value('MARK_AS_OF_INT')) === false) {
     $high_interest = "N";
 }
 
-if (isset($_POST['sticky'])) {
+if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['post'])) {
 
-    if ($_POST['sticky'] == 'Y') {
-        $sticky = 'Y';
+    if (isset($_POST['post_emots'])) {
+
+        if ($_POST['post_emots'] == "disabled") {
+            $emots_enabled = false;
+        } else {
+            $emots_enabled = true;
+        }
+
     } else {
-        $sticky = 'N';
-    }
-}
 
-if (isset($_POST['closed'])) {
-
-    if ($_POST['closed'] == 'Y') {
-        $closed = 'Y';
-    } else {
-        $closed = 'N';
-    }
-}
-
-if (isset($_POST['message_html'])) {
-
-    $message_html = $_POST['message_html'];
-
-    if ($message_html == "enabled_auto") {
-        $message_html = POST_HTML_AUTO;
-    } else if ($message_html == "enabled") {
-        $message_html = POST_HTML_ENABLED;
-    } else {
-        $message_html = POST_HTML_DISABLED;
-    }
-
-} else {
-
-    if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-        $message_html = POST_HTML_AUTO;
-    } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-        $message_html = POST_HTML_ENABLED;
-    } else {
-        $message_html = POST_HTML_DISABLED;
-    }
-
-    if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
-        $emots_enabled = false;
-    } else {
         $emots_enabled = true;
     }
 
-    if (($page_prefs & POST_AUTO_LINKS) > 0) {
-        $links_enabled = true;
+    if (isset($_POST['post_links'])) {
+
+        if ($_POST['post_links'] == "enabled") {
+            $links_enabled = true;
+        } else {
+            $links_enabled = false;
+        }
+
     } else {
+
         $links_enabled = false;
     }
 
-    if (($page_prefs & POST_CHECK_SPELLING) > 0) {
-        $spelling_enabled = true;
+    if (isset($_POST['check_spelling'])) {
+
+        if ($_POST['check_spelling'] == "enabled") {
+            $spelling_enabled = true;
+        } else {
+            $spelling_enabled = false;
+        }
+
     } else {
+
         $spelling_enabled = false;
     }
 
-    if (($high_interest = session::get_value('MARK_AS_OF_INT')) === false) {
+    if (isset($_POST['post_interest'])) {
+
+        if ($_POST['post_interest'] == "Y") {
+            $high_interest = "Y";
+        } else {
+            $high_interest = "N";
+        }
+
+    } else {
+
         $high_interest = "N";
     }
-}
 
-if (isset($_POST['sig_html'])) {
+    if (isset($_POST['sticky'])) {
 
-    $sig_html = $_POST['sig_html'];
-
-    if ($sig_html != "N") {
-        $sig_html = POST_HTML_ENABLED;
+        if ($_POST['sticky'] == 'Y') {
+            $sticky = 'Y';
+        } else {
+            $sticky = 'N';
+        }
     }
 
-    $fetched_sig = false;
+    if (isset($_POST['closed'])) {
 
+        if ($_POST['closed'] == 'Y') {
+            $closed = 'Y';
+        } else {
+            $closed = 'N';
+        }
+    }
+}
+
+if (isset($_POST['sig_text'])) {
+    $sig_text = $_POST['sig_text'];
 } else {
-
-    $sig_text = '';
-    $sig_html = 'N';
-
-    if (!user_get_sig($uid, $sig_text, $sig_html)) {
-
-        $sig_text = '';
-        $sig_html = 'N';
-    }
-
-    if ($sig_html != "N") {
-        $sig_html = POST_HTML_ENABLED;
-    }
-
-    $sig_text = tidy_html($sig_text, false);
-
-    $fetched_sig = true;
+    $sig_text = user_get_sig($uid);
 }
+
+$sig_text = fix_html($sig_text, false, true);
 
 if (isset($_POST['options_html']) && ($_POST['options_html'] == 'Y')) {
     $options_html = 'Y';
@@ -280,7 +231,6 @@ if (isset($_POST['poll_questions'])) {
 }
 
 if (sizeof($poll_questions_array) == 0) {
-
     $poll_questions_array = poll_get_default_questions_array();
 }
 
@@ -347,9 +297,16 @@ if (isset($_POST['change_vote']) && is_numeric($_POST['change_vote'])) {
     $change_vote = $_POST['change_vote'];
 }
 
-if (isset($_POST['allow_guests']) && is_numeric($_POST['allow_guests'])) {
-    $allow_guests = $_POST['allow_guests'];
-} else if (forum_get_setting('poll_allow_guests', 'N')) {
+if (forum_get_setting('poll_allow_guests', 'Y')) {
+
+    if (isset($_POST['allow_guests']) && $_POST['allow_guests'] == POLL_GUEST_ALLOWED) {
+        $allow_guests = POLL_GUEST_ALLOWED;
+    } else {
+        $allow_guests = POLL_GUEST_DENIED;
+    }
+
+} else {
+
     $allow_guests = POLL_GUEST_DENIED;
 }
 
@@ -361,11 +318,8 @@ if (isset($_POST['message_text']) && strlen(trim($_POST['message_text'])) > 0) {
     $message_text = trim($_POST['message_text']);
 }
 
-if (isset($_POST['sig_text'])) {
-    $sig_text = trim($_POST['sig_text']);
-}
-
 $allow_html = true;
+
 $allow_sig = true;
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
@@ -373,8 +327,6 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 } else{
     $aid = md5(uniqid(mt_rand()));
 }
-
-if (!isset($sig_html)) $sig_html = POST_HTML_DISABLED;
 
 if (session::check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
@@ -524,19 +476,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
                     foreach ($question['OPTIONS_ARRAY'] as $option_id => $option) {
 
                         if (($allow_html == true) && isset($options_html) && ($options_html == 'Y')) {
-
-                            $poll_option_check_html = new MessageText(POST_HTML_ENABLED, $option['OPTION_NAME']);
-
-                            $poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = $poll_option_check_html->getContent();
-
-                            if (strlen(trim($poll_option_check_html->getContent())) == 0) {
-
-                                $poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = $poll_option_check_html->getOriginalContent();
-
-                                $error_msg_array[] = gettext("One or more of your Poll Questions contains invalid HTML.");
-
-                                $valid = false;
-                            }
+                            $poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = fix_html($option['OPTION_NAME']);
                         }
 
                         if (attachments_embed_check($option['OPTION_NAME']) && ($options_html == 'Y')) {
@@ -591,20 +531,17 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
     if (isset($message_text) && strlen(trim($message_text)) > 0) {
 
-        if (attachments_embed_check($message_text) && ($message_html == 'Y')) {
+        if (attachments_embed_check($message_text)) {
 
             $error_msg_array[] = gettext("You are not allowed to embed attachments in your posts.");
             $valid = false;
         }
     }
 
-    if (isset($sig_text)) {
+    if (isset($sig_text) && attachments_embed_check($sig_text)) {
 
-        if ($sig_html && attachments_embed_check($sig_text)) {
-
-            $error_msg_array[] = gettext("You are not allowed to embed attachments in your signature.");
-            $valid = false;
-        }
+        $error_msg_array[] = gettext("You are not allowed to embed attachments in your signature.");
+        $valid = false;
     }
 
 } else if (isset($_POST['emots_toggle_x']) || isset($_POST['sig_toggle_x']) || isset($_POST['poll_additional_message_toggle_x']) || isset($_POST['poll_advanced_toggle_x'])) {
@@ -629,7 +566,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
     $user_prefs = array(
         'POST_PAGE' => $page_prefs
     );
-    
+
     $user_prefs_global = array();
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
@@ -650,13 +587,6 @@ if (isset($fid) && !session::check_perm(USER_PERM_SIGNATURE, $fid)) {
 if (!isset($message_text)) $message_text = "";
 
 if (!isset($sig_text)) $sig_text = "";
-
-$post = new MessageText($message_html, $message_text, $emots_enabled, $links_enabled);
-$sig = new MessageText($sig_html, $sig_text, $emots_enabled, $links_enabled, false);
-
-$message_text = $post->getContent();
-
-$sig_text = $sig->getContent();
 
 if (mb_strlen($message_text) >= 65535) {
 
@@ -703,7 +633,7 @@ if ($valid && isset($_POST['post'])) {
                 $poll_closes = false;
             }
 
-            if ($allow_html == false || !isset($message_html) || $message_html == POST_HTML_DISABLED) {
+            if ($allow_html == false || !isset($options_html) || $options_html == 'N') {
 
                 foreach ($poll_questions_array as $question_id => $question) {
 
@@ -921,8 +851,6 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     echo "                </tr>\n";
     echo "              </table>\n";
 }
-
-$tools = new TextAreaHTML("f_poll");
 
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
@@ -1271,61 +1199,8 @@ echo "                                          <tr>\n";
 echo "                                            <td rowspan=\"6\" width=\"1%\">&nbsp;</td>\n";
 echo "                                            <td align=\"left\">", gettext("Do you want to include an additional post after the poll?"), "</td>\n";
 echo "                                          </tr>\n";
-
-$tool_type = POST_TOOLBAR_DISABLED;
-
-if ($page_prefs & POST_TOOLBAR_DISPLAY) {
-    $tool_type = POST_TOOLBAR_SIMPLE;
-} else if ($page_prefs & POST_TINYMCE_DISPLAY) {
-    $tool_type = POST_TOOLBAR_TINYMCE;
-}
-
-if ($allow_html == true && $tool_type <> POST_TOOLBAR_DISABLED) {
-
-    echo "                                          <tr>\n";
-    echo "                                            <td align=\"left\">", $tools->toolbar(false), "</td>\n";
-    echo "                                          </tr>\n";
-
-} else {
-
-    $tools->set_tinymce(false);
-}
-
-$message_text = $post->getTidyContent();
-
-$sig_text = $sig->getTidyContent();
-
 echo "                                          <tr>\n";
-echo "                                            <td align=\"left\">", $tools->textarea('message_text', $message_text, 20, 75, false, 'tabindex="1"', 'post_content'), "</td>\n";
-echo "                                          </tr>\n";
-echo "                                          <tr>\n";
-echo "                                            <td align=\"left\">\n";
-
-if ($post->isDiff()) {
-    echo $tools->compare_original("message_text", $post);
-}
-
-if ($allow_html == true) {
-
-    if (($tools->get_tinymce())) {
-
-        echo form_input_hidden("message_html", "enabled");
-
-    } else {
-
-        echo "                                              <h2>", gettext("HTML in message"), "</h2>\n";
-
-        echo form_radio("message_html", "disabled", gettext("Disabled"), $post->getHTML() == POST_HTML_DISABLED, "tabindex=\"6\"")." \n";
-        echo form_radio("message_html", "enabled_auto", gettext("Enabled with auto-line-breaks"), $post->getHTML() == POST_HTML_AUTO)." \n";
-        echo form_radio("message_html", "enabled", gettext("Enabled"), $post->getHTML() == POST_HTML_ENABLED)." \n";
-    }
-
-} else {
-
-    echo form_input_hidden("message_html", "disabled");
-}
-
-echo "                                            </td>\n";
+echo "                                            <td align=\"left\">", form_textarea('message_text', htmlentities_array($message_text), 20, 75, 'tabindex="1"', 'post_content editor'), "</td>\n";
 echo "                                          </tr>\n";
 echo "                                          <tr>\n";
 echo "                                            <td align=\"left\">&nbsp;</td>\n";
@@ -1349,20 +1224,11 @@ if ($allow_sig == true) {
     echo "                                                <tr>\n";
     echo "                                                  <td align=\"left\" colspan=\"2\">\n";
     echo "                                                    <div class=\"sig_toggle\" style=\"display: ", (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) ? "block" : "none", "\">\n";
-
-    $sig_text = $sig->getTidyContent();
-
-    echo $tools->textarea("sig_text", $sig_text, 5, 75, false, 'tabindex="7"', 'signature_content');
-
-    if ($sig->isDiff()) {
-        echo $tools->compare_original("sig_text", $sig);
-    }
-
+    echo "                                                      ", form_textarea("sig_text", $sig_text, 5, 75, 'tabindex="7"', 'signature_content editor');
     echo "                                                    </div>\n";
     echo "                                                  </td>\n";
     echo "                                                </tr>\n";
     echo "                                              </table>\n";
-    echo "                                              ", form_input_hidden("sig_html", $sig->getHTML() ? "Y" : "N"), "\n";
 }
 
 echo "                                            </td>\n";

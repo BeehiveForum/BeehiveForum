@@ -90,83 +90,65 @@ $valid = true;
 // Then just do something like $allow_html = forum_allow_html_pms() ? true : false
 $allow_html = true;
 
-$t_content = "";
-
-if (isset($_POST['t_post_emots'])) {
-
-    if ($_POST['t_post_emots'] == "disabled") {
-        $emots_enabled = false;
-    } else {
-        $emots_enabled = true;
-    }
-
+if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
+    $emots_enabled = false;
 } else {
-
     $emots_enabled = true;
 }
 
-if (isset($_POST['t_post_links'])) {
-
-    if ($_POST['t_post_links'] == "enabled") {
-        $links_enabled = true;
-    } else {
-        $links_enabled = false;
-    }
-
+if (($page_prefs & POST_AUTO_LINKS) > 0) {
+    $links_enabled = true;
 } else {
-
     $links_enabled = false;
 }
 
-if (isset($_POST['t_check_spelling'])) {
+if (($page_prefs & POST_CHECK_SPELLING) > 0) {
+    $spelling_enabled = true;
+} else {
+    $spelling_enabled = false;
+}
 
-    if ($_POST['t_check_spelling'] == "enabled") {
-        $spelling_enabled = true;
+if (isset($_POST['apply']) || isset($_POST['preview']) || isset($_POST['emots_toggle'])) {
+
+    if (isset($_POST['t_post_emots'])) {
+
+        if ($_POST['t_post_emots'] == "disabled") {
+            $emots_enabled = false;
+        } else {
+            $emots_enabled = true;
+        }
+
     } else {
+
+        $emots_enabled = false;
+    }
+
+    if (isset($_POST['t_post_links'])) {
+
+       if ($_POST['t_post_links'] == "enabled") {
+            $links_enabled = true;
+       } else {
+            $links_enabled = false;
+       }
+
+    } else {
+
+       $links_enabled = false;
+    }
+
+    if (isset($_POST['t_check_spelling'])) {
+
+        if ($_POST['t_check_spelling'] == "enabled") {
+            $spelling_enabled = true;
+        } else {
+            $spelling_enabled = false;
+        }
+
+    } else {
+
         $spelling_enabled = false;
     }
-
-} else {
-
-    $spelling_enabled = ($page_prefs & POST_CHECK_SPELLING);
 }
-
-if (isset($_POST['t_post_html'])) {
-
-    $t_post_html = $_POST['t_post_html'];
-
-    if ($t_post_html == "enabled_auto") {
-        $post_html = POST_HTML_AUTO;
-    } else if ($t_post_html == "enabled") {
-        $post_html = POST_HTML_ENABLED;
-    } else {
-        $post_html = POST_HTML_DISABLED;
-    }
-
-} else {
-
-    if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-        $post_html = POST_HTML_AUTO;
-    } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-        $post_html = POST_HTML_ENABLED;
-    } else {
-        $post_html = POST_HTML_DISABLED;
-    }
-
-    if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
-        $emots_enabled = false;
-    } else {
-        $emots_enabled = true;
-    }
-
-    if (($page_prefs & POST_AUTO_LINKS) > 0) {
-        $links_enabled = true;
-    } else {
-        $links_enabled = false;
-    }
-}
-
-$post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
 
 if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
@@ -182,10 +164,7 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = trim($_POST['t_content']);
-
-        $post->setContent($t_content);
-        $t_content = $post->getContent();
+        $t_content = fix_html($_POST['t_content']);
 
         if (mb_strlen($t_content) >= 65535) {
 
@@ -200,10 +179,9 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
     }
 }
 
-// Update the PM
-if ($valid && isset($_POST['preview'])) {
+if (!isset($t_content)) $t_content = "";
 
-    $edit_html = ($_POST['t_post_html'] == "Y");
+if ($valid && isset($_POST['preview'])) {
 
     if (($pm_message_array = pm_message_get($mid))) {
 
@@ -246,12 +224,7 @@ if ($valid && isset($_POST['preview'])) {
     }
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-
-        $t_content = trim($_POST['t_content']);
-
-        $post->setContent($t_content);
-
-        $t_content = $post->getContent();
+        $t_content = fix_html($_POST['t_content']);
     }
 
     if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
@@ -271,7 +244,7 @@ if ($valid && isset($_POST['preview'])) {
     $user_prefs = array(
         'POST_PAGE' => $page_prefs
     );
-    
+
     $user_prefs_global = array();
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
@@ -291,19 +264,10 @@ if ($valid && isset($_POST['preview'])) {
         $parsed_message = new MessageTextParse(pm_get_content($mid), $emots_enabled, $links_enabled);
 
         $emots_enabled = $parsed_message->getEmoticons();
+
         $links_enabled = $parsed_message->getLinks();
+
         $t_content = $parsed_message->getMessage();
-        $post_html = $parsed_message->getMessageHTML();
-        
-        $post->setHTML($allow_html ? $post_html : POST_HTML_DISABLED);
-
-        $post->setContent($t_content);
-        $post->setEmoticons($emots_enabled);
-        $post->setLinks($links_enabled);        
-
-        $post->diff = false;
-
-        $t_content = $post->getContent();
 
         $t_subject = $pm_message_array['SUBJECT'];
 
@@ -422,18 +386,17 @@ echo "                    <table border=\"0\" class=\"posthead\" width=\"100%\">
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">";
 echo "                         <h2>", gettext("Message"), "</h2>\n";
-echo "                         ", form_textarea("t_content", $post->getTidyContent(), 20, 75, 'tabindex="1"', 'post_content'), "\n";
+echo "                         ", form_textarea("t_content", htmlentities_array($t_content), 20, 75, 'tabindex="1"', 'post_content editor'), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
-echo "                          <br />\n";
 
-echo form_submit('apply', gettext("Apply"), "tabindex=\"2\""), "&nbsp;";
+echo form_submit('apply', gettext("Apply"), "tabindex=\"2\""), "\r\n";
 
-echo form_submit('preview', gettext("Preview"), "tabindex=\"3\""), "&nbsp;";
+echo form_submit('preview', gettext("Preview"), "tabindex=\"3\""), "\r\n";
 
-echo "<a href=\"pm.php?webtag=$webtag&mid=$mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>&nbsp;";
+echo "<a href=\"pm.php?webtag=$webtag&mid=$mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\r\n";
 
 if (forum_get_setting('attachments_enabled', 'Y') && forum_get_setting('pm_allow_attachments', 'Y')) {
 

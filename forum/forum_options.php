@@ -333,19 +333,6 @@ if (isset($_POST['save'])) {
 
     $user_prefs['POST_PAGE'] = 0;
 
-    // toolbar_toggle emots_toggle emots_disable  post_html
-    if (isset($_POST['toolbar_toggle'])) {
-
-        if ($_POST['toolbar_toggle'] == POST_TOOLBAR_SIMPLE) {
-
-            $user_prefs['POST_PAGE'] |= POST_TOOLBAR_DISPLAY;
-
-        } else if ($_POST['toolbar_toggle'] == POST_TOOLBAR_TINYMCE) {
-
-            $user_prefs['POST_PAGE'] |= POST_TINYMCE_DISPLAY;
-        }
-    }
-
     if (isset($_POST['emots_toggle']) && $_POST['emots_toggle'] == "Y") {
         $user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISPLAY;
     }
@@ -364,22 +351,6 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['post_links']) && $_POST['post_links'] == "Y") {
         $user_prefs['POST_PAGE'] |= POST_AUTO_LINKS;
-    }
-
-    if (isset($_POST['post_html'])) {
-
-        if ($_POST['post_html'] == POST_HTML_DISABLED) {
-
-            $user_prefs['POST_PAGE'] |= POST_TEXT_DEFAULT;
-
-        } else if ($_POST['post_html'] == POST_HTML_AUTO) {
-
-            $user_prefs['POST_PAGE'] |= POST_AUTOHTML_DEFAULT;
-
-        } else {
-
-            $user_prefs['POST_PAGE'] |= POST_HTML_DEFAULT;
-        }
     }
 
     // User's UID for updating with.
@@ -406,10 +377,7 @@ $user_prefs = user_get_prefs($uid);
 
 // Set the default POST_PAGE options if none set
 if (!isset($user_prefs['POST_PAGE']) || $user_prefs['POST_PAGE'] == 0) {
-
-    $user_prefs['POST_PAGE']  = POST_TOOLBAR_DISPLAY | POST_EMOTICONS_DISPLAY;
-    $user_prefs['POST_PAGE'] |= POST_TEXT_DEFAULT | POST_AUTO_LINKS;
-    $user_prefs['POST_PAGE'] |= POST_SIGNATURE_DISPLAY;
+    $user_prefs['POST_PAGE']  = POST_EMOTICONS_DISPLAY | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
 }
 
 // Check to see if we should show the set for all forums checkboxes
@@ -661,23 +629,6 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" rowspan=\"15\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_radio("toolbar_toggle", "0", gettext("No HTML toolbar"), $user_prefs['POST_PAGE'] ^ POST_TOOLBAR_DISPLAY && $user_prefs['POST_PAGE'] ^ POST_TINYMCE_DISPLAY), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_radio("toolbar_toggle", "1", gettext("Display simple HTML toolbar"), $user_prefs['POST_PAGE'] & POST_TOOLBAR_DISPLAY), "</td>\n";
-echo "                </tr>\n";
-
-if (@file_exists("tiny_mce/tiny_mce.js")) {
-
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_radio("toolbar_toggle", "2", gettext("Display WYSIWYG HTML toolbar"), $user_prefs['POST_PAGE'] & POST_TINYMCE_DISPLAY), "</td>\n";
-    echo "                </tr>\n";
-}
-
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("emots_toggle", "Y", gettext("Display emoticons panel"), $user_prefs['POST_PAGE'] & POST_EMOTICONS_DISPLAY), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
@@ -694,18 +645,6 @@ echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("post_links", "Y", gettext("Automatically parse URLs in messages by default"), $user_prefs['POST_PAGE'] & POST_AUTO_LINKS), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_radio("post_html", "0", gettext("Post in plain text by default"), ($user_prefs['POST_PAGE'] & POST_TEXT_DEFAULT) > 0), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_radio("post_html", "1", gettext("Post in HTML with auto-line-breaks by default"), ($user_prefs['POST_PAGE'] & POST_AUTOHTML_DEFAULT) > 0), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_radio("post_html", "2", gettext("Post in HTML by default"), ($user_prefs['POST_PAGE'] & POST_HTML_DEFAULT) > 0), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

@@ -394,7 +394,7 @@ if (isset($_POST['register'])) {
     }
 
     if ($valid) {
-        
+
         $user_data = array(
             'IPADDRESS' => get_ip_address(),
             'REFERER' => session::get_http_referer(),
@@ -402,14 +402,14 @@ if (isset($_POST['register'])) {
             'NICKNAME' => $nickname,
             'EMAIL' => $email
         );
-        
+
         if (ban_check($user_data)) {
-        
+
             $error_msg_array[] = gettext("The username or password you supplied is not valid.");
             $valid = false;
         }
     }
-    
+
     if ($valid) {
 
         if (($new_uid = user_create($logon, $password, $nickname, $email))) {
@@ -785,8 +785,6 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
         $forum_rules = sprintf(gettext("<p><b>Forum Rules</b></p><p>Registration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click <a href=\"index.php?webtag=%2\$s\">here</a> to return to the forums index.</p><p>Although the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project Beehive Forum and its affiliates will be held responsible for the content of any message.</p><p>By agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise in violation of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>"), $forum_name, $webtag);
     }
 
-    $forum_rules_message = new MessageText(POST_HTML_AUTO, $forum_rules, true, true, false);
-
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"register.php\" method=\"post\" target=\"_self\">\n";
@@ -809,7 +807,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td>\n";
-    echo "                          <div class=\"forum_rules_box\"><p>", $forum_rules_message->getContent(), "</p></div>\n";
+    echo "                          <div class=\"forum_rules_box\">", fix_html($forum_rules), "</div>\n";
     echo "                        </td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";

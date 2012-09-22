@@ -35,7 +35,6 @@ require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'header.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
 require_once BH_INCLUDE_PATH. 'lang.inc.php';
-require_once BH_INCLUDE_PATH. 'light.inc.php';
 require_once BH_INCLUDE_PATH. 'logon.inc.php';
 require_once BH_INCLUDE_PATH. 'pm.inc.php';
 require_once BH_INCLUDE_PATH. 'post.inc.php';
@@ -49,11 +48,11 @@ if (!session::logged_in()) {
     light_html_guest_error();
 }
 
-// Check that PM system is enabled
-light_pm_enabled();
-
 // Get the user's UID
 $uid = session::get_value('UID');
+
+// Check that PM system is enabled
+pm_enabled();
 
 // Get the user's post page preferences.
 $page_prefs = session::get_post_page_prefs();
@@ -132,62 +131,11 @@ if (isset($_GET['folder'])) {
     }
 }
 
-// User clicked cancel
-if (isset($_POST['cancel'])) {
-
-    if (isset($t_reply_mid) && is_numeric($t_reply_mid)  && $t_reply_mid > 0) {
-
-        $uri = "lpm.php?webtag=$webtag&mid=$t_reply_mid";
-
-    } else if (isset($t_forward_mid) && is_numeric($t_forward_mid)  && $t_forward_mid > 0) {
-
-        $uri = "lpm.php?webtag=$webtag&mid=$t_forward_mid";
-
-    } else if (isset($t_edit_mid) && is_numeric($t_edit_mid) && $t_edit_mid > 0) {
-
-        $uri = "lpm.php?webtag=$webtag&mid=$t_edit_mid";
-
-    } else {
-
-        $uri = "lpm.php?webtag=$webtag";
-    }
-
-    header_redirect($uri);
-}
-
 // Assume everything is correct (form input, etc)
 $valid = true;
 
 // Array to hold error messages
 $error_msg_array = array();
-
-// For future's sake, if we ever add an admin option for allowing/disallowing HTML PMs.
-// Then just do something like $allow_html = forum_allow_html_pms() ? true : false
-$allow_html = true;
-
-// Some Options.
-if (isset($_POST['t_post_html'])) {
-
-    $t_post_html = $_POST['t_post_html'];
-
-    if ($t_post_html == "enabled_auto") {
-        $post_html = POST_HTML_AUTO;
-    } else if ($t_post_html == "enabled") {
-        $post_html = POST_HTML_ENABLED;
-    } else {
-        $post_html = POST_HTML_DISABLED;
-    }
-
-} else if (!isset($post_html)) {
-
-    if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-        $post_html = POST_HTML_AUTO;
-    } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-        $post_html = POST_HTML_ENABLED;
-    } else {
-        $post_html = POST_HTML_DISABLED;
-    }
-}
 
 if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
     $emots_enabled = false;
@@ -201,9 +149,94 @@ if (($page_prefs & POST_AUTO_LINKS) > 0) {
     $links_enabled = false;
 }
 
-$post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
+if (($page_prefs & POST_CHECK_SPELLING) > 0) {
+    $spelling_enabled = true;
+} else {
+    $spelling_enabled = false;
+}
 
-$t_content = $post->getContent();
+if (isset($_POST['send']) || isset($_POST['preview']) || isset($_POST['emots_toggle'])) {
+
+    if (isset($_POST['t_post_emots'])) {
+
+        if ($_POST['t_post_emots'] == "disabled") {
+            $emots_enabled = false;
+        } else {
+            $emots_enabled = true;
+        }
+
+    } else {
+
+        $emots_enabled = false;
+    }
+
+    if (isset($_POST['t_post_links'])) {
+
+       if ($_POST['t_post_links'] == "enabled") {
+            $links_enabled = true;
+       } else {
+            $links_enabled = false;
+       }
+
+    } else {
+
+       $links_enabled = false;
+    }
+
+    if (isset($_POST['t_check_spelling'])) {
+
+        if ($_POST['t_check_spelling'] == "enabled") {
+            $spelling_enabled = true;
+        } else {
+            $spelling_enabled = false;
+        }
+
+    } else {
+
+        $spelling_enabled = false;
+    }
+}
+
+if (isset($_POST['emots_toggle'])) {
+
+    if (isset($_POST['t_subject']) && strlen(trim($_POST['t_subject'])) > 0) {
+        $t_subject = trim($_POST['t_subject']);
+    }
+
+    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
+        $t_content = fix_html($_POST['t_content']);
+    }
+
+    if (isset($_POST['to_radio']) && strlen(trim($_POST['to_radio'])) > 0) {
+        $to_radio = trim($_POST['to_radio']);
+    } else {
+        $to_radio = '';
+    }
+
+    if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
+        $t_to_uid = $_POST['t_to_uid'];
+    } else {
+        $t_to_uid = 0;
+    }
+
+    if (isset($_POST['t_to_uid_others']) && strlen(trim($_POST['t_to_uid_others'])) > 0) {
+        $t_to_uid_others = trim($_POST['t_to_uid_others']);
+    }
+
+    $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
+
+    $user_prefs = array(
+        'POST_PAGE' => $page_prefs
+    );
+
+    $user_prefs_global = array();
+
+    if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+
+        $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
+        $valid = false;
+    }
+}
 
 // Submit handling code
 if (isset($_POST['send']) || isset($_POST['preview'])) {
@@ -221,15 +254,29 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = trim($_POST['t_content']);
-
-        $post->setContent($t_content);
-
-        $t_content = $post->getContent();
+        $t_content = fix_html($_POST['t_content']);
 
     } else {
 
         $error_msg_array[] = gettext("Enter some content for the message");
+        $valid = false;
+    }
+
+    if (isset($_POST['to_radio']) && strlen(trim($_POST['to_radio'])) > 0) {
+        $to_radio = trim($_POST['to_radio']);
+    } else {
+        $to_radio = '';
+    }
+
+    if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
+        $t_to_uid = $_POST['t_to_uid'];
+    } else {
+        $t_to_uid = 0;
+    }
+
+    if ($to_radio == 'friends' && $t_to_uid == 0) {
+
+        $error_msg_array[] = gettext("You must specify at least one recipient.");
         $valid = false;
     }
 
@@ -241,10 +288,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         } else {
 
-            light_html_draw_top(sprintf("title=%s", gettext("Error")));
             light_pm_error_refuse();
-            light_html_draw_bottom();
-            exit;
         }
     }
 
@@ -271,20 +315,23 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
                     $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
                 }
 
-                if ((($peer_relationship ^ USER_BLOCK_PM) && user_allow_pm($to_user['UID'])) || session::check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
+                if ($to_radio == 'others') {
 
-                    pm_user_prune_folders();
+                    if ((($peer_relationship ^ USER_BLOCK_PM) && user_allow_pm($to_user['UID'])) || session::check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
 
-                    if (pm_get_free_space($uid) < sizeof($t_new_recipient_array['TO_UID'])) {
+                        pm_user_prune_folders();
 
-                        $error_msg_array[] = gettext("You do not have enough free space to send this message.");
+                        if (pm_get_free_space($uid) < sizeof($t_new_recipient_array['TO_UID'])) {
+
+                            $error_msg_array[] = gettext("You do not have enough free space to send this message.");
+                            $valid = false;
+                        }
+
+                    } else {
+
+                        $error_msg_array[] = sprintf(gettext("%s has opted out of receiving personal messages"), $to_logon);
                         $valid = false;
                     }
-
-                } else {
-
-                    $error_msg_array[] = sprintf(gettext("%s has opted out of receiving personal messages"), $to_logon);
-                    $valid = false;
                 }
 
             } else {
@@ -296,19 +343,22 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $t_to_uid_others = implode('; ', $t_new_recipient_array['LOGON']);
 
-        if ($valid && sizeof($t_new_recipient_array['TO_UID']) > 10) {
+        if ($to_radio == 'others') {
 
-            $error_msg_array[] = gettext("There is a limit of 10 recipients per message. Please amend your recipient list.");
-            $valid = false;
+            if ($valid && sizeof($t_new_recipient_array['TO_UID']) > 10) {
+
+                $error_msg_array[] = gettext("There is a limit of 10 recipients per message. Please amend your recipient list.");
+                $valid = false;
+            }
+
+            if ($valid && sizeof($t_new_recipient_array['TO_UID']) < 1) {
+
+                $error_msg_array[] = gettext("You must specify at least one recipient.");
+                $valid = false;
+            }
         }
 
-        if ($valid && sizeof($t_new_recipient_array['TO_UID']) < 1) {
-
-            $error_msg_array[] = gettext("You must specify at least one recipient.");
-            $valid = false;
-        }
-
-    } else {
+    } else if ($to_radio == 'others') {
 
         $error_msg_array[] = gettext("You must specify at least one recipient.");
         $valid = false;
@@ -328,15 +378,23 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = trim($_POST['t_content']);
-
-        $post->setContent($t_content);
-
-        $t_content = $post->getContent();
+        $t_content = fix_html($_POST['t_content']);
 
     } else {
 
         $t_content = "";
+    }
+
+    if (isset($_POST['to_radio']) && strlen(trim($_POST['to_radio'])) > 0) {
+        $to_radio = trim($_POST['to_radio']);
+    } else {
+        $to_radio = '';
+    }
+
+    if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
+        $t_to_uid = $_POST['t_to_uid'];
+    } else {
+        $t_to_uid = 0;
     }
 
     if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
@@ -374,39 +432,18 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $message_author = htmlentities_array(format_user_name($pm_data['FLOGON'], $pm_data['FNICK']));
 
+        $pm_data['CONTENT'] = trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
+        $pm_data['CONTENT'] = preg_replace("/(\r\n|\r|\n){2,}/", "\r\n\r\n", $pm_data['CONTENT']);
+
         if (session::get_value('PM_INCLUDE_REPLY') == 'Y') {
 
-            if ($page_prefs & POST_TINYMCE_DISPLAY) {
-
-                $t_content = "<div class=\"quotetext\" id=\"quote\">";
-                $t_content.= "<b>quote: </b>$message_author</div>";
-                $t_content.= "<div class=\"quote\">";
-                $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
-                $t_content.= "</div><p>&nbsp;</p>";
-
-            } else {
-
-                $t_content = "<quote source=\"$message_author\" url=\"\">";
-                $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
-                $t_content.= "</quote>\n\n";
-            }
-
-            // Set the HTML mode to 'with automatic line breaks' so
-            // the quote is handled correctly when the user previews
-            // the message.
-            $post->setHTML(POST_HTML_AUTO);
-
-            $t_content = $post->getContent();
-
-            $post_html = POST_HTML_AUTO;
+            $t_content = "<quote source=\"$message_author\" url=\"\">";
+            $t_content.= $pm_data['CONTENT']. "</quote>\n\n";
         }
 
     } else {
 
-        light_html_draw_top(sprintf("title=%s", gettext("Error")));
         light_pm_error_refuse();
-        light_html_draw_bottom();
-        exit;
     }
 
 } else if (isset($t_forward_mid) && is_numeric($t_forward_mid) && $t_forward_mid > 0) {
@@ -419,36 +456,13 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $message_author = htmlentities_array(format_user_name($pm_data['FLOGON'], $pm_data['FNICK']));
 
-        if ($page_prefs & POST_TINYMCE_DISPLAY) {
-
-            $t_content = "<div class=\"quotetext\" id=\"quote\">";
-            $t_content.= "<b>quote: </b>$message_author</div>";
-            $t_content.= "<div class=\"quote\">";
-            $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
-            $t_content.= "</div><p>&nbsp;</p>";
-
-        } else {
-
-            $t_content = "<quote source=\"$message_author\" url=\"\">";
-            $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
-            $t_content.= "</quote>\n\n";
-        }
-
-        // Set the HTML mode to 'with automatic line breaks' so
-        // the quote is handled correctly when the user previews
-        // the message.
-        $post->setHTML(POST_HTML_AUTO);
-
-        $t_content = $post->getContent();
-
-        $post_html = POST_HTML_AUTO;
+        $t_content = "<quote source=\"$message_author\" url=\"\">";
+        $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
+        $t_content.= "</quote>\n\n";
 
     } else {
 
-        light_html_draw_top(sprintf("title=%s", gettext("Error")));
         light_pm_error_refuse();
-        light_html_draw_bottom();
-        exit;
     }
 
 } else if (isset($t_edit_mid) && is_numeric($t_edit_mid) && $t_edit_mid > 0) {
@@ -462,35 +476,32 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $parsed_message = new MessageTextParse($pm_data['CONTENT'], $emots_enabled, $links_enabled);
 
         $emots_enabled = $parsed_message->getEmoticons();
+
         $links_enabled = $parsed_message->getLinks();
 
         $t_content = $parsed_message->getMessage();
-        $post_html = $parsed_message->getMessageHTML();
-        
-        $post->setHTML($allow_html ? $post_html : POST_HTML_DISABLED);
-
-        $post->setContent($t_content);
-        $post->setEmoticons($emots_enabled);
-        $post->setLinks($links_enabled);        
-
-        $post->diff = false;
-
-        $t_content = $post->getContent();
 
         $t_subject = $pm_data['SUBJECT'];
 
+        $t_to_uid = $pm_data['TO_UID'];
+
         $t_to_uid_others = $pm_data['RECIPIENTS'];
+
+        if (strlen($t_to_uid_others) > 0) {
+            $to_radio = 'others';
+        } else if ($t_to_uid > 0) {
+            $to_radio = 'friends';
+        }
 
         $aid = $pm_data['AID'];
 
     } else {
 
-        light_html_draw_top(sprintf("title=%s", gettext("Error")));
         light_pm_error_refuse();
-        light_html_draw_bottom();
-        exit;
     }
 }
+
+if (!isset($t_content)) $t_content = "";
 
 // Check the message length.
 if (mb_strlen($t_content) >= 65535) {
@@ -518,7 +529,7 @@ if ($valid && isset($_POST['send'])) {
 
     if (post_check_ddkey($t_dedupe)) {
 
-        foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
+        if (isset($to_radio) && $to_radio == 'friends') {
 
             if (($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid))) {
 
@@ -529,10 +540,29 @@ if ($valid && isset($_POST['send'])) {
                 $error_msg_array[] = gettext("Error creating PM! Please try again in a few minutes");
                 $valid = false;
             }
-        }
 
-        if (isset($t_edit_mid) && is_numeric($t_edit_mid)) {
-            pm_delete_message($t_edit_mid);
+            if (isset($t_edit_mid) && is_numeric($t_edit_mid)) {
+                pm_delete_message($t_edit_mid);
+            }
+
+        } else {
+
+            foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
+
+                if (($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid))) {
+
+                    email_send_pm_notification($t_to_uid, $new_mid, $uid);
+
+                } else {
+
+                    $error_msg_array[] = gettext("Error creating PM! Please try again in a few minutes");
+                    $valid = false;
+                }
+            }
+
+            if (isset($t_edit_mid) && is_numeric($t_edit_mid)) {
+                pm_delete_message($t_edit_mid);
+            }
         }
     }
 
@@ -546,7 +576,7 @@ if ($valid && isset($_POST['send'])) {
 
     if (isset($t_edit_mid) && is_numeric($t_edit_mid)) {
 
-        if (pm_update_saved_message($t_edit_mid, $t_subject, $t_content, 0, $t_to_uid_others)) {
+        if (pm_update_saved_message($t_edit_mid, $t_subject, $t_content, $t_to_uid, $t_to_uid_others)) {
 
             header_redirect("lpm.php?webtag=$webtag&mid=$t_edit_mid&message_saved=true");
             exit;
@@ -559,7 +589,7 @@ if ($valid && isset($_POST['send'])) {
 
     } else {
 
-        if (($saved_mid = pm_save_message($t_subject, $t_content, 0, $t_to_uid_others))) {
+        if (($saved_mid = pm_save_message($t_subject, $t_content, $t_to_uid, $t_to_uid_others))) {
 
             pm_save_attachment_id($saved_mid, $aid);
 
@@ -615,22 +645,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<div class=\"post_thread_title\">", gettext("Subject"), ":", light_form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 30, 64), "</div>\n";
 echo "<div class=\"post_to\">", gettext("To"), ":", light_form_input_text("t_to_uid_others", isset($t_to_uid_others) ? htmlentities_array($t_to_uid_others) : "", 0, 0), "</div>\n";
-echo "<div class=\"post_content\">", gettext("Content"), ":", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</div>\n";
-
-if ($allow_html == true) {
-
-    $tph_radio = $post->getHTML();
-
-    echo "<div class=\"post_html\"><span>", gettext("HTML in message"), ":</span>\n";
-    echo light_form_radio("t_post_html", "disabled", gettext("Disabled"), $tph_radio == POST_HTML_DISABLED);
-    echo light_form_radio("t_post_html", "enabled_auto", gettext("Enabled with auto-line-breaks"), $tph_radio == POST_HTML_AUTO);
-    echo light_form_radio("t_post_html", "enabled", gettext("Enabled"), $tph_radio == POST_HTML_ENABLED);
-    echo "</div>";
-
-} else {
-
-    echo form_input_hidden("t_post_html", "disabled");
-}
+echo "<div class=\"post_content\">", light_form_textarea("t_content", htmlentities_array($t_content), 10, 50, false, 'textarea editor mobile'), "</div>\n";
 
 echo "<div class=\"post_buttons\">";
 echo light_form_submit("send", gettext("Send"));

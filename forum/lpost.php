@@ -1,6 +1,7 @@
 <?php
 
 /*======================================================================
+
 Copyright Project Beehive Forum 2002
 
 This file is part of Beehive Forum.
@@ -19,6 +20,7 @@ You should have received a copy of the GNU General Public License
 along with Beehive; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
+
 ======================================================================*/
 
 // Bootstrap
@@ -26,8 +28,8 @@ require_once 'lboot.php';
 
 // Includes required by this page.
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
 require_once BH_INCLUDE_PATH. 'email.inc.php';
+require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
 require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
 require_once BH_INCLUDE_PATH. 'folder.inc.php';
 require_once BH_INCLUDE_PATH. 'form.inc.php';
@@ -51,158 +53,15 @@ if (!session::logged_in()) {
     light_html_guest_error();
 }
 
-// Check that there are some available folders for this thread type
 if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
     light_html_message_type_error();
 }
 
-if (isset($_POST['cancel'])) {
+$show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
 
-    if (isset($_POST['t_tid']) && isset($_POST['t_rpid'])) {
-        $uri = "lmessages.php?webtag=$webtag&msg={$_POST['t_tid']}.{$_POST['t_rpid']}";
-    } else if (isset($_GET['replyto'])) {
-        $uri = "lmessages.php?webtag=$webtag&msg={$_GET['replyto']}";
-    } else {
-        $uri = "lthread_list.php?webtag=$webtag";
-    }
-
-    header_redirect($uri);
-}
-
-// Get the user's post page preferences.
-$page_prefs = session::get_post_page_prefs();
-
-// Get the user's UID
 $uid = session::get_value('UID');
 
-// Assume everything is A-OK!
-$valid = true;
-
-$new_thread = false;
-
-if (isset($_POST['t_newthread'])) {
-
-    $new_thread = true;
-
-    if (isset($_POST['t_threadtitle']) && strlen(trim($_POST['t_threadtitle'])) > 0) {
-
-        $t_threadtitle = trim($_POST['t_threadtitle']);
-
-    } else {
-
-        $error_msg_array[] = gettext("You must enter a title for the thread!");
-        $valid = false;
-    }
-
-    if (isset($_POST['t_fid'])) {
-
-        if (folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
-
-            $t_fid = $_POST['t_fid'];
-
-        } else {
-
-            $error_msg_array[] = gettext("You cannot post this thread type in that folder!");
-            $valid = false;
-        }
-
-    } else {
-
-        $error_msg_array[] = gettext("Please select a folder");
-        $valid = false;
-    }
-
-    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-
-        $t_content = $_POST['t_content'];
-
-    } else {
-
-        $error_msg_array[] = gettext("You must enter some content for the post!");
-        $valid = false;
-    }
-
-} else {
-
-    if (isset($_POST['t_tid'])) {
-
-        if (isset($_POST['t_content']) && strlen($_POST['t_content']) > 0) {
-
-            $t_content = $_POST['t_content'];
-
-        } else {
-
-            $error_msg_array[] = gettext("You must enter some content for the post!");
-            $valid = false;
-        }
-
-    } else {
-
-        $valid = false;
-    }
-}
-
-if (($high_interest = session::get_value('MARK_AS_OF_INT')) === false) {
-    $high_interest = "N";
-}
-
-if (isset($_POST['t_post_html'])) {
-
-    $t_post_html = $_POST['t_post_html'];
-
-    if ($t_post_html == "enabled_auto") {
-        $post_html = POST_HTML_AUTO;
-    } else if ($t_post_html == "enabled") {
-        $post_html = POST_HTML_ENABLED;
-    } else {
-        $post_html = POST_HTML_DISABLED;
-    }
-
-} else {
-
-    if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-        $post_html = POST_HTML_AUTO;
-    } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-        $post_html = POST_HTML_ENABLED;
-    } else {
-        $post_html = POST_HTML_DISABLED;
-    }
-}
-
-if (isset($_POST['t_sig_html'])) {
-
-    $t_sig_html = $_POST['t_sig_html'];
-
-    if ($t_sig_html != "N") {
-        $sig_html = POST_HTML_ENABLED;
-    }
-
-    $fetched_sig = false;
-
-    if (isset($_POST['t_sig']) && strlen(trim($_POST['t_sig'])) > 0) {
-        $t_sig = $_POST['t_sig'];
-    } else {
-        $t_sig = "";
-    }
-
-} else {
-
-    if (!user_get_sig($uid, $t_sig, $t_sig_html)) {
-
-        $t_sig = '';
-        $t_sig_html = 'Y';
-    }
-
-    if ($t_sig_html != "N") {
-        $sig_html = POST_HTML_ENABLED;
-    }
-
-    $t_sig = tidy_html($t_sig, false);
-
-    $fetched_sig = true;
-}
-
-if (!isset($sig_html)) $sig_html = POST_HTML_DISABLED;
+$page_prefs = session::get_post_page_prefs();
 
 if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
     $emots_enabled = false;
@@ -216,37 +75,275 @@ if (($page_prefs & POST_AUTO_LINKS) > 0) {
     $links_enabled = false;
 }
 
+if (($page_prefs & POST_CHECK_SPELLING) > 0) {
+    $spelling_enabled = true;
+} else {
+    $spelling_enabled = false;
+}
+
+if (($high_interest = session::get_value('MARK_AS_OF_INT')) === false) {
+    $high_interest = "N";
+}
+
+$valid = true;
+
+$new_thread = false;
+
+$t_to_uid = 0;
+
+$t_sig = user_get_sig($uid);
+
+if (isset($_POST['t_newthread']) && (isset($_POST['post']) || isset($_POST['preview']))) {
+
+    $new_thread = true;
+
+    if (isset($_POST['t_threadtitle']) && strlen(trim($_POST['t_threadtitle'])) > 0) {
+
+        $t_threadtitle = trim($_POST['t_threadtitle']);
+
+    } else{
+
+        $error_msg_array[] = gettext("You must enter a title for the thread!");
+        $valid = false;
+    }
+
+    if (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
+
+        if (folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
+
+            $t_fid = $_POST['t_fid'];
+
+        } else {
+
+            $error_msg_array[] = gettext("You cannot post this thread type in that folder!");
+            $valid = false;
+        }
+
+    } else if ($valid) {
+
+        $error_msg_array[] = gettext("Please select a folder");
+        $valid = false;
+    }
+
+} else if (!isset($_POST['t_tid'])) {
+
+    $valid = false;
+}
+
+if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
+    $aid = $_POST['aid'];
+} else{
+    $aid = md5(uniqid(mt_rand()));
+}
+
+if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
+    $t_dedupe = $_POST['t_dedupe'];
+} else{
+    $t_dedupe = time();
+}
+
+if (isset($_POST['post']) || isset($_POST['preview']) || isset($_POST['move']) || isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
+
+    if (isset($_POST['t_post_emots'])) {
+
+        if ($_POST['t_post_emots'] == "disabled") {
+            $emots_enabled = false;
+        } else {
+            $emots_enabled = true;
+        }
+
+    } else {
+
+        $emots_enabled = false;
+    }
+
+    if (isset($_POST['t_post_links'])) {
+
+        if ($_POST['t_post_links'] == "enabled") {
+            $links_enabled = true;
+        } else {
+            $links_enabled = false;
+        }
+
+    } else {
+
+        $links_enabled = false;
+    }
+
+    if (isset($_POST['t_check_spelling'])) {
+
+        if ($_POST['t_check_spelling'] == "enabled") {
+            $spelling_enabled = true;
+        } else {
+            $spelling_enabled = false;
+        }
+
+    } else {
+
+        $spelling_enabled = false;
+    }
+
+    if (isset($_POST['t_post_interest'])) {
+
+        if ($_POST['t_post_interest'] == "Y") {
+            $high_interest = "Y";
+        } else {
+            $high_interest = "N";
+        }
+
+    } else {
+
+        $high_interest = 'N';
+    }
+
+    if (isset($_POST['t_sticky'])) {
+
+        if ($_POST['t_sticky'] == 'Y') {
+            $t_sticky = 'Y';
+        } else {
+            $t_sticky = 'N';
+        }
+
+    } else {
+
+        $t_sticky = 'N';
+    }
+
+    if (isset($_POST['t_closed'])) {
+
+        if ($_POST['t_closed'] == 'Y') {
+            $t_closed = 'Y';
+        } else {
+            $t_closed = 'N';
+        }
+
+    } else {
+
+        $t_closed = 'N';
+    }
+}
+
+if (isset($_POST['post']) || isset($_POST['preview'])) {
+
+    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
+
+        $t_content = fix_html($_POST['t_content'], $emots_enabled, $links_enabled);
+
+        if (attachments_embed_check($t_content)) {
+
+            $error_msg_array[] = gettext("You are not allowed to embed attachments in your posts.");
+            $valid = false;
+        }
+
+    } else {
+
+        $error_msg_array[] = gettext("You must enter some content for the post!");
+        $valid = false;
+    }
+
+    if (isset($_POST['t_sig'])) {
+
+        $t_sig = fix_html($_POST['t_sig'], false, true);
+
+        if (attachments_embed_check($t_sig)) {
+
+            $error_msg_array[] = gettext("You are not allowed to embed attachments in your signature.");
+            $valid = false;
+        }
+    }
+}
+
+if (isset($_POST['more'])) {
+
+    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
+        $t_content = fix_html($_POST['t_content'], $emots_enabled, $links_enabled);
+    }
+}
+
+if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
+
+    if (isset($_POST['t_newthread'])) {
+
+        if (isset($_POST['t_threadtitle']) && strlen(trim($_POST['t_threadtitle'])) > 0) {
+            $t_threadtitle = trim($_POST['t_threadtitle']);
+        }
+
+        if (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
+
+            if (folder_thread_type_allowed($_POST['t_fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
+
+                $t_fid = $_POST['t_fid'];
+
+            } else {
+
+                $error_msg_array[] = gettext("You cannot post this thread type in that folder!");
+                $valid = false;
+            }
+        }
+    }
+
+    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
+        $t_content = fix_html($_POST['t_content'], $emots_enabled, $links_enabled);
+    }
+
+    if (isset($_POST['t_sig'])) {
+        $t_sig = fix_html($_POST['t_sig'], false, true);
+    }
+
+    if (isset($_POST['emots_toggle'])) {
+
+        $page_prefs = (double)$page_prefs ^ POST_EMOTICONS_DISPLAY;
+
+    } else if (isset($_POST['sig_toggle'])) {
+
+        $page_prefs = (double)$page_prefs ^ POST_SIGNATURE_DISPLAY;
+    }
+
+    $user_prefs = array(
+        'POST_PAGE' => $page_prefs
+    );
+
+    $user_prefs_global = array();
+
+    if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+
+        $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
+        $valid = false;
+    }
+}
+
 if (!isset($t_content)) $t_content = "";
+
 if (!isset($t_sig)) $t_sig = "";
 
-$post = new MessageText($post_html, $t_content, $emots_enabled, $links_enabled);
-$sig = new MessageText($sig_html, $t_sig, $emots_enabled, $links_enabled, false);
+if (mb_strlen($t_content) >= 65535) {
 
-$t_content = $post->getContent();
-$t_sig = $sig->getContent();
+    $error_msg_array[] = sprintf(gettext("Message length must be under 65,535 characters (currently: %s)"), number_format(mb_strlen($t_content)));
+    $valid = false;
+}
+
+if (mb_strlen($t_sig) >= 65535) {
+
+    $error_msg_array[] = sprintf(gettext("Signature length must be under 65,535 characters (currently: %s)"), number_format(mb_strlen($t_sig)));
+    $valid = false;
+}
 
 if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     list($reply_to_tid, $reply_to_pid) = explode(".", $_GET['replyto']);
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
-
-        light_html_draw_top();
-        light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
-        light_html_draw_bottom();
+        light_html_draw_error(gettext("The requested thread could not be found or access was denied."));
     }
 
     if (session::check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
-        html_email_confirmation_error();
+        light_html_email_confirmation_error();
         exit;
     }
 
     if (!session::check_perm(USER_PERM_POST_CREATE, $t_fid)) {
-        
-        light_html_draw_top();
-        light_html_display_error_msg(gettext("You cannot reply to posts in this folder"));
-        light_html_draw_bottom();
+        light_html_draw_error(gettext("You cannot reply to posts in this folder"));
     }
 
     $new_thread = false;
@@ -257,30 +354,28 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     $reply_to_pid = (is_numeric($_POST['t_rpid']) ? $_POST['t_rpid'] : 0);
 
     if (!$t_fid = thread_get_folder($reply_to_tid, $reply_to_pid)) {
-
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-        light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
-        light_html_draw_bottom();
-        exit;
+        light_html_draw_error(gettext("The requested thread could not be found or access was denied."));
     }
 
     if (session::check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
-        html_email_confirmation_error();
+        light_html_email_confirmation_error();
         exit;
     }
 
-    if (!session::check_perm(USER_PERM_POST_CREATE | USER_PERM_POST_READ, $t_fid)) {
+    if (!session::check_perm(USER_PERM_POST_CREATE, $t_fid)) {
+        light_html_draw_error(gettext("You cannot reply to posts in this folder"));
+    }
 
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-        light_html_display_error_msg(gettext("You cannot reply to posts in this folder"));
-        light_html_draw_bottom();
-        exit;
+    if (attachments_get_count($aid) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+
+        $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
+        $valid = false;
     }
 
     $new_thread = false;
 
-} else {
+} else{
 
     $new_thread = true;
 
@@ -298,37 +393,42 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     if (session::check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
-        html_email_confirmation_error();
+        light_html_email_confirmation_error();
         exit;
     }
 
     if (isset($t_fid) && !session::check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $t_fid)) {
 
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-        light_html_display_error_msg(gettext("You cannot create new threads in this folder"));
-        light_html_draw_bottom();
-        exit;
+        $error_msg_array[] = gettext("You cannot create new threads in this folder");
+        $valid = false;
     }
+
+    if (attachments_get_count($aid) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+
+        $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
+        $valid = false;
+    }
+}
+
+if (isset($_POST['to_radio']) && strlen(trim($_POST['to_radio'])) > 0) {
+    $to_radio = trim($_POST['to_radio']);
+} else {
+    $to_radio = '';
 }
 
 if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
 
     $t_to_uid = $_POST['t_to_uid'];
 
-} else {
+} else if (isset($reply_to_tid) && isset($reply_to_pid)) {
 
-    $t_to_uid = 0;
-
-    if (isset($reply_to_tid) && isset($reply_to_pid)) {
-
-        if (!$t_to_uid = message_get_user($reply_to_tid, $reply_to_pid)) {
-
-            $t_to_uid = 0;
-        }
+    if (!$t_to_uid = message_get_user($reply_to_tid, $reply_to_pid)) {
+        $t_to_uid = 0;
     }
 }
 
 $allow_html = true;
+
 $allow_sig = true;
 
 if (isset($t_fid) && !session::check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
@@ -341,48 +441,25 @@ if (isset($t_fid) && !session::check_perm(USER_PERM_SIGNATURE, $t_fid)) {
 
 if ($allow_html == false) {
 
-    if ($post->getHTML() > 0) {
-
-        $post->setHTML(false);
-        $t_content = $post->getContent();
-    }
-
-    $sig->setHTML(false, true);
-    $t_sig = $sig->getContent();
+    $t_content = htmlentities_array($t_content);
+    $t_sig = htmlentities_array($t_sig);
 }
 
 if (!$new_thread) {
 
     if (!$reply_message = messages_get($reply_to_tid, $reply_to_pid)) {
-
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-        light_html_display_error_msg(gettext("That post does not exist in this thread!"));
-        light_html_draw_bottom();
-        exit;
+        light_html_draw_error(gettext("That post does not exist in this thread!"));
     }
 
     if (!$thread_data = thread_get($reply_to_tid)) {
-
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-        light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
-        light_html_draw_bottom();
-        exit;
+        light_html_draw_error(gettext("The requested thread could not be found or access was denied."));
     }
 
     $reply_message['CONTENT'] = message_get_content($reply_to_tid, $reply_to_pid);
 
     if (((perm_get_user_permissions($reply_message['FROM_UID']) & USER_PERM_WORMED) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) || ((!isset($reply_message['CONTENT']) || $reply_message['CONTENT'] == "") && $thread_data['POLL_FLAG'] != 'Y' && $reply_to_pid != 0)) {
-
-        $error_msg_array[] = gettext("Message not found. Check that it hasn't been deleted.");
-        $valid = false;
+        light_html_draw_error(gettext("Message not found. Check that it hasn't been deleted."));
     }
-}
-
-// De-dupe key
-if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
-    $t_dedupe = $_POST['t_dedupe'];
-} else{
-    $t_dedupe = time();
 }
 
 if ($valid && isset($_POST['post'])) {
@@ -393,14 +470,46 @@ if ($valid && isset($_POST['post'])) {
 
             if ($new_thread) {
 
-                $t_tid = post_create_thread($t_fid, $uid, $t_threadtitle);
+                if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+
+                    $t_closed = isset($_POST['t_closed']) && $_POST['t_closed'] == 'Y' ? true : false;
+                    $t_sticky = isset($_POST['t_sticky']) && $_POST['t_sticky'] == 'Y' ? 'Y' : 'N';
+
+                } else {
+
+                    $t_closed = false;
+                    $t_sticky = "N";
+                }
+
+                $t_tid = post_create_thread($t_fid, $uid, $t_threadtitle, "N", $t_sticky, $t_closed);
                 $t_rpid = 0;
 
-            } else {
+            } else{
 
-                $t_tid = $_POST['t_tid'];
-                $t_rpid = $_POST['t_rpid'];
+                $t_tid  = (isset($_POST['t_tid']) && is_numeric($_POST['t_tid'])) ? $_POST['t_tid'] : 0;
+                $t_rpid = (isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid'])) ? $_POST['t_rpid'] : 0;
 
+                if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && (!session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
+                    light_html_draw_error(gettext("This thread is closed, you cannot post in it!"));
+                }
+
+                if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+
+                    $t_closed = isset($_POST['t_closed']) && $_POST['t_closed'] == 'Y' ? true : false;
+                    $t_sticky = isset($_POST['t_sticky']) && $_POST['t_sticky'] == 'Y' ? 'Y' : 'N';
+
+                    if (isset($t_closed) && $t_closed == "Y") {
+                        thread_set_closed($t_tid, true);
+                    } else {
+                        thread_set_closed($t_tid, false);
+                    }
+
+                    if (isset($t_sticky) && $t_sticky == "Y") {
+                        thread_set_sticky($t_tid, true);
+                    } else {
+                        thread_set_sticky($t_tid, false);
+                    }
+                }
             }
 
             if ($t_tid > 0) {
@@ -420,7 +529,7 @@ if ($valid && isset($_POST['post'])) {
                     if (!session::check_perm(USER_PERM_WORMED, 0) && !($user_rel & USER_IGNORED_COMPLETELY)) {
 
                         $exclude_user_array = array(
-                            $t_to_uid, 
+                            $t_to_uid,
                             $uid
                         );
 
@@ -432,6 +541,8 @@ if ($valid && isset($_POST['post'])) {
 
                         email_send_thread_subscription($uid, $t_tid, $new_pid, $thread_modified, $exclude_user_array);
                     }
+
+                    post_save_attachment_id($t_tid, $new_pid, $aid);
                 }
             }
 
@@ -439,31 +550,29 @@ if ($valid && isset($_POST['post'])) {
 
             $new_pid = 0;
 
-            if ($new_thread) {
-
-                $t_tid = 0;
-                $t_rpid = 0;
-
-            } else {
-
-                $t_tid = $_POST['t_tid'];
-                $t_rpid = $_POST['t_rpid'];
-
-            }
+            $t_tid  = (isset($_POST['t_tid']) && is_numeric($_POST['t_tid'])) ? $_POST['t_tid'] : 0;
+            $t_rpid = (isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid'])) ? $_POST['t_rpid'] : 0;
         }
 
         if ($new_pid > -1) {
 
-            if ($t_tid > 0 && $t_rpid > 0) {
-                $uri = "lmessages.php?webtag=$webtag&msg=$t_tid.$t_rpid";
+            if ($new_thread && $t_tid > 0) {
+
+                $uri = "lmessages.php?webtag=$webtag&msg=$t_tid.1";
+
             } else {
-                $uri = "lmessages.php?webtag=$webtag";
+
+                if ($t_tid > 0 && $t_rpid > 0) {
+                    $uri = "lmessages.php?webtag=$webtag&msg=$t_tid.$t_rpid";
+                } else{
+                    $uri = "lmessages.php?webtag=$webtag";
+                }
             }
 
             header_redirect($uri);
             exit;
 
-        } else {
+        } else{
 
             $error_msg_array[] = gettext("Error creating post! Please try again in a few minutes.");
         }
@@ -474,12 +583,28 @@ if ($valid && isset($_POST['post'])) {
     }
 }
 
-light_html_draw_top(sprintf("title=%s", gettext("Post message")), "robots=noindex,nofollow");
+if (!isset($t_fid)) {
+    $t_fid = 1;
+}
 
-if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
-    $aid = $_POST['aid'];
-} else{
-    $aid = md5(uniqid(mt_rand()));
+if (($new_thread && !$folder_dropdown = folder_draw_dropdown($t_fid, "t_fid", "", FOLDER_ALLOW_NORMAL_THREAD, USER_PERM_THREAD_CREATE, "", "post_folder_dropdown"))) {
+    light_html_draw_error(gettext("You cannot create new threads."));
+}
+
+if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+    light_html_draw_error(gettext("This thread is closed, you cannot post in it!"));
+}
+
+light_html_draw_top(sprintf("title=%s", gettext("Post message")));
+
+echo "<h1>", gettext("Post message"), "</h1>\n";
+
+if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+    light_html_display_error_array($error_msg_array);
+}
+
+if (!$new_thread && isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+    light_html_display_warning_msg(gettext("Warning: this thread is closed for posting to normal users."));
 }
 
 if ($valid && isset($_POST['preview'])) {
@@ -491,23 +616,31 @@ if ($valid && isset($_POST['preview'])) {
         $preview_message['TLOGON'] = gettext("ALL");
         $preview_message['TNICK'] = gettext("ALL");
 
-    } else {
+    } else if ($t_to_uid > 0) {
 
         $preview_tuser = user_get($t_to_uid);
         $preview_message['TLOGON'] = $preview_tuser['LOGON'];
         $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
         $preview_message['TO_UID'] = $preview_tuser['UID'];
+
     }
 
-    $preview_tuser = user_get(session::get_value('UID'));
+    $preview_tuser = user_get($uid);
     $preview_message['FLOGON'] = $preview_tuser['LOGON'];
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
     $preview_message['FROM_UID'] = $preview_tuser['UID'];
 
     $preview_message['CONTENT'] = $t_content;
 
+    if ($allow_sig == true && strlen(trim($t_sig)) > 0) {
+        $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $t_sig. "</div>";
+    }
+
+    $preview_message['CREATED'] = time();
+
     light_message_display(0, $preview_message, 0, 0, 0, false, false, false, false, true);
 }
+
 
 if (!$new_thread) {
 
@@ -546,11 +679,6 @@ if ($new_thread) {
 
     echo "<h3>", gettext("Create new thread"), "</h3>\n";
     echo "<div class=\"post_inner\">\n";
-
-    if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-        light_html_display_error_array($error_msg_array);
-    }
-
     echo "<div class=\"post_folder\">", gettext("Select folder"), ":", light_folder_draw_dropdown($t_fid, "t_fid"), "</div>";
     echo "<div class=\"post_thread_title\">", gettext("Thread title"), ":", light_form_input_text("t_threadtitle", htmlentities_array($t_threadtitle), 30, 64), "</div>";
 
@@ -575,38 +703,16 @@ if ($new_thread) {
 
         echo "<h3>", gettext("Post Reply"), ": ", word_filter_add_ob_tags(thread_get_title($reply_to_tid), true), "</h3>\n";
         echo "<div class=\"post_inner\">\n";
-
-        if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-            light_html_display_error_array($error_msg_array);
-        }
-
         echo form_input_hidden("t_tid", htmlentities_array($reply_to_tid));
         echo form_input_hidden("t_rpid", htmlentities_array($reply_to_pid))."\n";
     }
 }
 
 echo "<div class=\"post_to\">", gettext("To"), ":", post_draw_to_dropdown($t_to_uid), "</div>";
-echo "<div class=\"post_content\">", gettext("Content"), ":", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</div>";
+echo "<div class=\"post_content\">", gettext("Content"), ":", light_form_textarea("t_content", htmlentities_array($t_content), 10, 50, false, 'textarea editor mobile'), "</div>";
 
 if ($allow_sig == true) {
-
-    echo form_input_hidden("t_sig", $sig->getTidyContent());
-    echo form_input_hidden("t_sig_html", htmlentities_array($t_sig_html));
-}
-
-if ($allow_html == true) {
-
-    $tph_radio = $post->getHTML();
-
-    echo "<div class=\"post_html\"><span>", gettext("HTML in message"), ":</span>\n";
-    echo light_form_radio("t_post_html", "disabled", gettext("Disabled"), $tph_radio == POST_HTML_DISABLED);
-    echo light_form_radio("t_post_html", "enabled_auto", gettext("Auto"), $tph_radio == POST_HTML_AUTO);
-    echo light_form_radio("t_post_html", "enabled", gettext("Enabled"), $tph_radio == POST_HTML_ENABLED);
-    echo "</div>";
-
-} else {
-
-    echo form_input_hidden("t_post_html", "disabled");
+    echo form_input_hidden("t_sig", htmlentities_array($t_sig));
 }
 
 echo "<div class=\"post_buttons\">";

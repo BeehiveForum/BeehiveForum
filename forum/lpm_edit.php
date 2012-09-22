@@ -35,7 +35,6 @@ require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'header.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
 require_once BH_INCLUDE_PATH. 'lang.inc.php';
-require_once BH_INCLUDE_PATH. 'light.inc.php';
 require_once BH_INCLUDE_PATH. 'logon.inc.php';
 require_once BH_INCLUDE_PATH. 'pm.inc.php';
 require_once BH_INCLUDE_PATH. 'post.inc.php';
@@ -49,7 +48,7 @@ if (!session::logged_in()) {
 }
 
 // Check that PM system is enabled
-light_pm_enabled();
+pm_enabled();
 
 // Get the user's UID
 $uid = session::get_value('UID');
@@ -71,10 +70,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
 } else {
 
-    light_html_draw_top(sprintf('title=%s', gettext("Error")), 'pm_popup_disabled');
-    light_html_display_error_msg(gettext("No message specified for editing"));
-    light_html_draw_bottom();
-    exit;
+    light_html_draw_error(gettext("No message specified for editing"));
 }
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
@@ -88,41 +84,7 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
 pm_save_attachment_id($mid, $aid);
 
-// User clicked cancel
-if (isset($_POST['cancel'])) {
-    header_redirect("lpm.php?webtag=$webtag&mid=$mid");
-}
-
 $valid = true;
-
-// For future's sake, if we ever add an admin option for allowing/disallowing HTML PMs.
-// Then just do something like $allow_html = forum_allow_html_pms() ? true : false
-$allow_html = true;
-
-$t_content = "";
-
-if (isset($_POST['t_post_html'])) {
-
-    $t_post_html = $_POST['t_post_html'];
-
-    if ($t_post_html == "enabled_auto") {
-        $post_html = POST_HTML_AUTO;
-    } else if ($t_post_html == "enabled") {
-        $post_html = POST_HTML_ENABLED;
-    } else {
-        $post_html = POST_HTML_DISABLED;
-    }
-
-} else {
-
-    if (($page_prefs & POST_AUTOHTML_DEFAULT) > 0) {
-        $post_html = POST_HTML_AUTO;
-    } else if (($page_prefs & POST_HTML_DEFAULT) > 0) {
-        $post_html = POST_HTML_ENABLED;
-    } else {
-        $post_html = POST_HTML_DISABLED;
-    }
-}
 
 if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
     $emots_enabled = false;
@@ -136,7 +98,53 @@ if (($page_prefs & POST_AUTO_LINKS) > 0) {
     $links_enabled = false;
 }
 
-$post = new MessageText($post_html, "", $emots_enabled, $links_enabled);
+if (($page_prefs & POST_CHECK_SPELLING) > 0) {
+    $spelling_enabled = true;
+} else {
+    $spelling_enabled = false;
+}
+
+if (isset($_POST['apply']) || isset($_POST['preview']) || isset($_POST['emots_toggle'])) {
+
+    if (isset($_POST['t_post_emots'])) {
+
+        if ($_POST['t_post_emots'] == "disabled") {
+            $emots_enabled = false;
+        } else {
+            $emots_enabled = true;
+        }
+
+    } else {
+
+        $emots_enabled = false;
+    }
+
+    if (isset($_POST['t_post_links'])) {
+
+       if ($_POST['t_post_links'] == "enabled") {
+            $links_enabled = true;
+       } else {
+            $links_enabled = false;
+       }
+
+    } else {
+
+       $links_enabled = false;
+    }
+
+    if (isset($_POST['t_check_spelling'])) {
+
+        if ($_POST['t_check_spelling'] == "enabled") {
+            $spelling_enabled = true;
+        } else {
+            $spelling_enabled = false;
+        }
+
+    } else {
+
+        $spelling_enabled = false;
+    }
+}
 
 if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
@@ -152,10 +160,7 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = trim($_POST['t_content']);
-
-        $post->setContent($t_content);
-        $t_content = $post->getContent();
+        $t_content = fix_html($_POST['t_content']);
 
         if (mb_strlen($t_content) >= 65535) {
 
@@ -170,10 +175,9 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
     }
 }
 
-// Update the PM
-if ($valid && isset($_POST['preview'])) {
+if (!isset($t_content)) $t_content = "";
 
-    $edit_html = ($_POST['t_post_html'] == "Y");
+if ($valid && isset($_POST['preview'])) {
 
     if (($pm_message_array = pm_message_get($mid))) {
 
@@ -184,7 +188,7 @@ if ($valid && isset($_POST['preview'])) {
 
     } else {
 
-        light_pm_edit_refuse();
+        pm_edit_refuse();
     }
 
 } else if ($valid && isset($_POST['apply'])) {
@@ -206,7 +210,7 @@ if ($valid && isset($_POST['preview'])) {
 
     } else {
 
-        light_pm_edit_refuse();
+        pm_edit_refuse();
     }
 
 } else if (isset($_POST['emots_toggle'])) {
@@ -216,12 +220,7 @@ if ($valid && isset($_POST['preview'])) {
     }
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-
-        $t_content = trim($_POST['t_content']);
-
-        $post->setContent($t_content);
-
-        $t_content = $post->getContent();
+        $t_content = fix_html($_POST['t_content']);
     }
 
     if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
@@ -241,7 +240,7 @@ if ($valid && isset($_POST['preview'])) {
     $user_prefs = array(
         'POST_PAGE' => $page_prefs
     );
-    
+
     $user_prefs_global = array();
 
     if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
@@ -255,31 +254,22 @@ if ($valid && isset($_POST['preview'])) {
     if (($pm_message_array = pm_message_get($mid))) {
 
         if ($pm_message_array['TYPE'] != PM_OUTBOX) {
-            light_pm_edit_refuse();
+            pm_edit_refuse();
         }
 
         $parsed_message = new MessageTextParse(pm_get_content($mid), $emots_enabled, $links_enabled);
 
         $emots_enabled = $parsed_message->getEmoticons();
+
         $links_enabled = $parsed_message->getLinks();
+
         $t_content = $parsed_message->getMessage();
-        $post_html = $parsed_message->getMessageHTML();
-        
-        $post->setHTML($allow_html ? $post_html : POST_HTML_DISABLED);
-
-        $post->setContent($t_content);
-        $post->setEmoticons($emots_enabled);
-        $post->setLinks($links_enabled);        
-
-        $post->diff = false;
-
-        $t_content = $post->getContent();
 
         $t_subject = $pm_message_array['SUBJECT'];
 
     } else {
 
-        light_pm_edit_refuse();
+        pm_edit_refuse();
     }
 }
 
@@ -305,22 +295,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<div class=\"post_thread_title\">", gettext("Subject"), ":", light_form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 30, 64), "</div>\n";
 echo "<div class=\"post_to\">", gettext("To"), ":", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), true), "</div>\n";
-echo "<div class=\"post_content\">", gettext("Content"), ":", light_form_textarea("t_content", $post->getTidyContent(), 10, 50), "</div>\n";
-
-if ($allow_html == true) {
-
-    $tph_radio = $post->getHTML();
-
-    echo "<div class=\"post_html\"><span>", gettext("HTML in message"), ":</span>\n";
-    echo light_form_radio("t_post_html", "disabled", gettext("Disabled"), $tph_radio == POST_HTML_DISABLED);
-    echo light_form_radio("t_post_html", "enabled_auto", gettext("Enabled with auto-line-breaks"), $tph_radio == POST_HTML_AUTO);
-    echo light_form_radio("t_post_html", "enabled", gettext("Enabled"), $tph_radio == POST_HTML_ENABLED);
-    echo "</div>";
-
-} else {
-
-    echo form_input_hidden("t_post_html", "disabled");
-}
+echo "<div class=\"post_content\">", light_form_textarea("t_content", htmlentities_array($t_content), 10, 50, false, 'textarea editor mobile'), "</div>\n";
 
 echo "<div class=\"post_buttons\">";
 echo light_form_submit("apply", gettext("Apply"));

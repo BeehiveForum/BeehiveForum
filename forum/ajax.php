@@ -51,7 +51,7 @@ switch ($_GET['action']) {
     case 'user_autocomplete':
 
         if (!session::logged_in()) break;
-        
+
         cache_disable();
 
         if (!isset($_GET['term']) || strlen(trim($_GET['term'])) == 0) {
@@ -67,9 +67,9 @@ switch ($_GET['action']) {
             $content = '';
             break;
         }
-        
+
         header('Content-Type: application/json');
-        
+
         $content = json_encode($search_results_array);
 
         break;
@@ -77,7 +77,7 @@ switch ($_GET['action']) {
     case 'sig_toggle':
 
         if (!session::logged_in()) break;
-        
+
         cache_disable();
 
         $page_prefs = session::get_post_page_prefs();
@@ -109,7 +109,7 @@ switch ($_GET['action']) {
     case 'emots_toggle':
 
         if (!session::logged_in()) break;
-        
+
         cache_disable();
 
         $page_prefs = session::get_post_page_prefs();
@@ -141,7 +141,7 @@ switch ($_GET['action']) {
     case 'poll_advanced_toggle':
 
         if (!session::logged_in()) break;
-        
+
         cache_disable();
 
         $page_prefs = session::get_post_page_prefs();
@@ -173,7 +173,7 @@ switch ($_GET['action']) {
     case 'poll_additional_message_toggle':
 
         if (!session::logged_in()) break;
-        
+
         cache_disable();
 
         $page_prefs = session::get_post_page_prefs();
@@ -205,7 +205,7 @@ switch ($_GET['action']) {
     case 'poll_soft_edit_toggle':
 
         if (!session::logged_in()) break;
-        
+
         cache_disable();
 
         $page_prefs = session::get_post_page_prefs();
@@ -237,7 +237,7 @@ switch ($_GET['action']) {
     case 'forum_stats_toggle':
 
         if (!session::logged_in()) break;
-        
+
         cache_disable();
 
         if (!isset($_GET['display']) || !in_array($_GET['display'], array('true', 'false'))) {
@@ -251,7 +251,7 @@ switch ($_GET['action']) {
             $user_prefs = array(
                 'SHOW_STATS' => 'Y'
             );
-            
+
             $user_prefs_global = array(
                 'SHOW_STATS' => false
             );
@@ -261,7 +261,7 @@ switch ($_GET['action']) {
             $user_prefs = array(
                 'SHOW_STATS' => 'N'
             );
-            
+
             $user_prefs_global = array(
                 'SHOW_STATS' => false
             );
@@ -278,7 +278,7 @@ switch ($_GET['action']) {
     case 'frame_resize':
 
         if (!session::logged_in()) break;
-        
+
         cache_disable();
 
         if (!isset($_GET['size']) || !is_numeric($_GET['size'])) {
@@ -306,16 +306,16 @@ switch ($_GET['action']) {
     case 'pm_check_messages':
 
         if (!session::logged_in()) break;
-        
+
         cache_disable();
-        
+
         if (($pm_notification_data = pm_check_messages()) === false) {
-            
+
             header_status(500, 'Internal Server Error');
             exit;
         }
-        
-        header('Content-Type: application/json');        
+
+        header('Content-Type: application/json');
 
         $content = json_encode($pm_notification_data);
 
@@ -324,32 +324,38 @@ switch ($_GET['action']) {
     case 'get_forum_stats':
 
         cache_check_last_modified(time() + 300);
-        
+
         if (!($content = stats_get_html())) {
 
             header_status(500, 'Internal Server Error');
             exit;
         }
-        
+
         break;
 
     case 'reload_captcha':
 
         $text_captcha = new captcha(6, 15, 25, 9, 30);
 
-        if (($text_captcha->generate_keys() || ($text_captcha_image = $text_captcha->make_image())) === false) {
-            
+        if (!$text_captcha->generate_keys()) {
+
             header_status(500, 'Internal Server Error');
             exit;
-        }            
-        
+        }
+
+        if (!($text_captcha_image = $text_captcha->make_image())) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
         cache_disable();
-            
+
         header('Content-Type: application/json');
-        
+
         $content = json_encode(array(
             'image' => sprintf(
-                "data:image/jpeg;base64,%s", 
+                "data:image/jpeg;base64,%s",
                 base64_encode(file_get_contents($text_captcha_image))
             ),
             'chars' => $text_captcha->get_num_chars(),
@@ -362,7 +368,7 @@ switch ($_GET['action']) {
     case 'font_size_smaller':
 
         if (!session::logged_in()) break;
-        
+
         cache_disable();
 
         if (!isset($_GET['msg']) || !validate_msg($_GET['msg'])) {
@@ -382,7 +388,7 @@ switch ($_GET['action']) {
                 $user_prefs = array(
                     'FONT_SIZE' => $user_prefs['FONT_SIZE'] - 1
                 );
-                
+
                 break;
 
             case 'font_size_larger':
@@ -390,7 +396,7 @@ switch ($_GET['action']) {
                 $user_prefs = array(
                     'FONT_SIZE' => $user_prefs['FONT_SIZE'] + 1
                 );
-                
+
                 break;
         }
 
@@ -407,7 +413,7 @@ switch ($_GET['action']) {
             header_status(500, 'Internal Server Error');
             exit;
         }
-        
+
         header('Content-Type: application/json');
 
         $content = json_encode(array(
@@ -421,7 +427,7 @@ switch ($_GET['action']) {
     case 'post_options':
 
         if (!session::logged_in()) break;
-        
+
         cache_disable();
 
         if (!isset($_GET['msg']) || !validate_msg($_GET['msg'])) {
@@ -439,17 +445,17 @@ switch ($_GET['action']) {
         }
 
         if (!($content = message_get_post_options_html($tid, $pid, $thread_data['FID']))) {
-            
+
             header_status(500, 'Internal Server Error');
             exit;
-        }            
+        }
 
         break;
 
     case 'poll_add_question':
 
         if (!session::logged_in()) break;
-        
+
         cache_disable();
 
         if (!isset($_GET['question_number']) || !is_numeric($_GET['question_number'])) {
@@ -469,7 +475,7 @@ switch ($_GET['action']) {
     case 'poll_add_option':
 
         if (!session::logged_in()) break;
-        
+
         cache_disable();
 
         if (!isset($_GET['question_number']) || !is_numeric($_GET['question_number'])) {

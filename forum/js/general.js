@@ -116,7 +116,7 @@ var beehive = $.extend({}, beehive, {
             disableNativeSpellChecker: true,
             font_defaultLabel: 'Verdana',
             height: $editor.height() - 35,
-            width: '100%',
+            width: $editor.width() + 6,
             removeDialogTabs: 'link:target;link:advanced;image:Link;image:advanced',
             removePlugins: remove_plugins,
             resize_maxWidth: '100%',
@@ -377,5 +377,5 @@ $(beehive).bind('init', function() {
         return false;
     });
 
-    $('textarea.editor').each(beehive.editor);
+    $('textarea.editor:visible').each(beehive.editor);
 });

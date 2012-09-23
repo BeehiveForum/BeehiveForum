@@ -260,7 +260,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
-echo "                          ", form_textarea('sig_content', $sig_text, 12, 85, true, 'tabindex="7"', 'edit_signature_content editor');
+echo "                          ", form_textarea('sig_content', $sig_text, 12, 85, 'tabindex="7"', 'edit_signature_content editor');
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

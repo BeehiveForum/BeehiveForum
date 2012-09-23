@@ -137,7 +137,7 @@ function links_folders_get($visible = true)
     $sql = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM `{$table_prefix}LINKS_FOLDERS` ";
     $sql.= "WHERE PARENT_FID IS NULL $visible ORDER BY FID LIMIT 1";
 
-    if (!$result = $db->query($sql)) return false;
+    $result = $db->query($sql);
 
     if ($result->num_rows == 0) return false;
 
@@ -150,12 +150,13 @@ function links_folders_get($visible = true)
     $sql = "SELECT FID, PARENT_FID, NAME, VISIBLE FROM `{$table_prefix}LINKS_FOLDERS` ";
     $sql.= "WHERE FID NOT IN ($top_level) $visible ORDER BY NAME";
 
-    if (!$result = $db->query($sql)) return false;
+    $result = $db->query($sql);
 
-    if ($result->num_rows == 0) return false;
+    if ($result->num_rows > 0) {
 
-    while (($links_data = $result->fetch_assoc())) {
-        $folders[$links_data['FID']] =  $links_data;
+        while (($links_data = $result->fetch_assoc())) {
+            $folders[$links_data['FID']] =  $links_data;
+        }
     }
 
     return $folders;
@@ -170,6 +171,7 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
     $uri = $db->escape($uri);
 
     $title = $db->escape($title);
+
     $description = $db->escape($description);
 
     if (!$db = db::get()) return false;

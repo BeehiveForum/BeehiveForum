@@ -151,7 +151,7 @@ $(beehive).bind('init', function() {
 
                 $quick_reply_container.appendTo($quick_reply_location).show();
 
-                $quick_reply_container.find('#t_content').focus().each(beehive.editor);
+                $quick_reply_container.find('#t_content').each(beehive.editor);
 
                 $quick_reply_container.find('input#post').get(0).scrollIntoView(false);
             }

@@ -155,45 +155,60 @@ function get_all_table_prefixes()
 
 function forum_check_webtag_available(&$webtag = false)
 {
-    if (!($forum_data = get_forum_data())) return false;
+    $result = forum_check_webtag_available_ignore();
 
-    if (!isset($forum_data['WEBTAG'])) return false;
+    if (!($forum_data = get_forum_data())) return $result;
 
-    if (isset($forum_data['DEFAULT_FORUM']) && $webtag === false) {
+    if (!isset($forum_data['WEBTAG'])) return $result;
+
+    if (isset($forum_data['DEFAULT_FORUM']) && ($webtag === false)) {
         $webtag = ($forum_data['DEFAULT_FORUM'] == FORUM_DEFAULT) ? $forum_data['WEBTAG'] : $webtag;
     }
 
-    return ($forum_data['ACCESS_LEVEL'] != FORUM_DISABLED);
+    if ($forum_data['ACCESS_LEVEL'] != FORUM_DISABLED) {
+        return true;
+    }
+
+    return $result;
+}
+
+function forum_check_webtag_available_ignore()
+{
+    $forum_check_webtag_ignore_files_preg = implode("|^", array_map('preg_quote_callback', get_forum_check_webtag_ignore_files()));
+
+    if (preg_match("/^$forum_check_webtag_ignore_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) {
+        return true;
+    }
+
+    return false;
 }
 
 function forum_check_access_level()
 {
-    if (!($db = db::get())) return false;
+    $result = forum_check_access_level_ignore();
 
-    if (!($table_prefix = get_table_prefix())) return false;
+    if (!($db = db::get())) return $result;
 
-    if (!($forum_fid = get_forum_fid())) return false;
+    if (!($table_prefix = get_table_prefix())) return $result;
+
+    if (!($forum_fid = get_forum_fid())) return $result;
 
     $uid = session::get_value('UID');
-
-    $forum_access_ignore_files_preg = implode("|^", array_map('preg_quote_callback', get_forum_access_ignore_files()));
-
-    if (preg_match("/^$forum_access_ignore_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) return true;
 
     $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED FROM FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
     $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.FID = '$forum_fid' ";
     $sql.= "AND FORUMS.ACCESS_LEVEL < 3";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!$result = $db->query($sql)) return $result;
 
-    if ($result->num_rows == 0) return false;
+    if ($result->num_rows == 0) return $result;
 
-    if (!($forum_data = $result->fetch_assoc())) return false;
+    if (!($forum_data = $result->fetch_assoc())) return $result;
 
     if (!isset($forum_data['ACCESS_LEVEL'])) return true;
 
-    if ($forum_data['ACCESS_LEVEL'] < FORUM_UNRESTRICTED) {
+    if ($forum_data['ACCESS_LEVEL'] == FORUM_CLOSED) {
 
         return forum_closed_message();
 
@@ -207,6 +222,17 @@ function forum_check_access_level()
     }
 
     return true;
+}
+
+function forum_check_access_level_ignore()
+{
+    $forum_access_ignore_files_preg = implode("|^", array_map('preg_quote_callback', get_forum_access_ignore_files()));
+
+    if (preg_match("/^$forum_access_ignore_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) {
+        return true;
+    }
+
+    return false;
 }
 
 function forum_closed_message()

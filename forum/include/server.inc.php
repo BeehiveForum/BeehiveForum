@@ -33,7 +33,7 @@ function server_os_mswin()
     if (!defined('PHP_OS')) return false;
 
     if (stristr(PHP_OS, 'WIN') === false) return false;
-    
+
     if (stristr(PHP_OS, 'DARWIN')) return false;
 
     return true;
@@ -100,7 +100,6 @@ function get_available_files()
         'font_size.php',
         'forgot_pw.php',
         'forum_options.php',
-        'forum_password.php',
         'forums.php',
         'get_attachment.php',
         'index.php',
@@ -192,18 +191,18 @@ function get_available_admin_files()
 function get_available_user_files()
 {
     return array(
-        'edit_prefs.php', 
-        'edit_profile.php', 
+        'edit_prefs.php',
+        'edit_profile.php',
         'edit_password.php',
-        'edit_email.php', 
-        'edit_attachments.php', 
+        'edit_email.php',
+        'edit_attachments.php',
         'edit_signature.php',
         'edit_subscriptions.php',
-        'edit_relations.php', 
-        'edit_wordfilter.php', 
+        'edit_relations.php',
+        'edit_wordfilter.php',
         'edit_subscriptions.php',
-        'folder_subscriptions.php', 
-        'forum_options.php', 
+        'folder_subscriptions.php',
+        'forum_options.php',
         'pm_options.php'
     );
 }
@@ -227,11 +226,29 @@ function get_available_popup_files()
 function get_available_support_files()
 {
     return array(
-        'ajax.php', 
-        'font_size.php', 
-        'json.php', 
-        'user_font.php', 
+        'ajax.php',
+        'font_size.php',
+        'json.php',
+        'user_font.php',
         'user_stats.php'
+    );
+}
+
+function get_forum_check_webtag_ignore_files()
+{
+    return array(
+        'admin.php',
+        'admin_menu.php',
+        'index.php',
+        'forums.php',
+        'lforums.php',
+        'llogon.php',
+        'llogout.php',
+        'logon.php',
+        'logout.php',
+        'nav.php',
+        'user.php',
+        'user_menu.php',
     );
 }
 
@@ -240,40 +257,27 @@ function get_forum_access_ignore_files()
     return array_merge(
         get_available_admin_files(),
         get_available_user_files(),
-        array(
-            'admin.php',
-            'admin_menu.php',
-            'index.php',
-            'forums.php',
-            'forum_password.php',
-            'llogon.php',
-            'llogout.php',
-            'logon.php',
-            'logout.php',
-            'nav.php',
-            'user.php',
-            'user_menu.php',
-        )
+        get_forum_check_webtag_ignore_files()
     );
 }
 
 function get_proxy_cache_headers()
 {
     return array(
-        'HTTP_VIA', 
-        'HTTP_X_FORWARDED_FOR', 
+        'HTTP_VIA',
+        'HTTP_X_FORWARDED_FOR',
         'HTTP_FORWARDED_FOR',
-        'HTTP_X_FORWARDED', 
-        'HTTP_FORWARDED', 
+        'HTTP_X_FORWARDED',
+        'HTTP_FORWARDED',
         'HTTP_CLIENT_IP',
-        'HTTP_FORWARDED_FOR_IP', 
-        'VIA', 
+        'HTTP_FORWARDED_FOR_IP',
+        'VIA',
         'X_FORWARDED_FOR',
-        'FORWARDED_FOR', 
-        'X_FORWARDED', 
+        'FORWARDED_FOR',
+        'X_FORWARDED',
         'FORWARDED',
-        'CLIENT_IP', 
-        'FORWARDED_FOR_IP', 
+        'CLIENT_IP',
+        'FORWARDED_FOR_IP',
         'HTTP_PROXY_CONNECTION',
     );
 }
@@ -283,10 +287,10 @@ function unregister_globals()
     if (!ini_get('register_globals')) return;
 
     $super_globals_array = array(
-        '_REQUEST', 
-        '_SESSION', 
-        '_SERVER', 
-        '_ENV', 
+        '_REQUEST',
+        '_SESSION',
+        '_SERVER',
+        '_ENV',
         '_FILES'
     );
 
@@ -312,14 +316,14 @@ function disable_magic_quotes()
     if (!get_magic_quotes_gpc()) return;
 
     $process = array(
-        &$_GET, 
-        &$_POST, 
-        &$_COOKIE, 
+        &$_GET,
+        &$_POST,
+        &$_COOKIE,
         &$_REQUEST
     );
 
     while (list($index, $array) = each($process)) {
-        
+
         foreach ($array as $key => $value) {
 
             unset($process[$index][$key]);
@@ -348,20 +352,20 @@ function set_server_protocol()
 function server_get_config()
 {
     static $config = false;
-    
+
     if (!$config) {
-    
+
         require_once BH_INCLUDE_PATH. 'config.inc.php';
-        
+
         if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
             require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
         }
-        
+
         $config = get_defined_vars();
-        
+
         unset($config['config']);
     }
-    
+
     return $config;
 }
 
@@ -370,7 +374,7 @@ function server_get_forum_path()
     if (defined('BH_FORUM_PATH')) {
         return rtrim(BH_FORUM_PATH, '/');
     }
-    
+
     return rtrim(dirname($_SERVER['PHP_SELF']), '/');
 }
 

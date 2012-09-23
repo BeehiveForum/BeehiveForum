@@ -89,24 +89,6 @@ class db extends mysqli
         self::$config = $config;
     }
 
-    protected function set_time_zone()
-    {
-        return $this->query("SET SESSION time_zone = '+0:00'");
-    }
-
-    protected function enable_compat_mode()
-    {
-        if (!$this->query('SET SESSION SQL_BIG_SELECTS = 1')) return false;
-        if (!$this->query('SET SESSION SQL_MAX_JOIN_SIZE = DEFAULT')) return false;
-
-        return true;
-    }
-
-    public function escape($var)
-    {
-        return $this->real_escape_string($var);
-    }
-
     public static function get_version()
     {
         $db = db::get();
@@ -148,6 +130,33 @@ class db extends mysqli
             $version_array[1],
             intval($version_array[2])
         );
+    }
+
+    protected function set_time_zone()
+    {
+        return $this->query("SET SESSION time_zone = '+0:00'");
+    }
+
+    protected function enable_compat_mode()
+    {
+        if (!$this->query('SET SESSION SQL_BIG_SELECTS = 1')) return false;
+        if (!$this->query('SET SESSION SQL_MAX_JOIN_SIZE = DEFAULT')) return false;
+
+        return true;
+    }
+
+    public function escape($var)
+    {
+        return $this->real_escape_string($var);
+    }
+
+    public function query($sql, $resultmode = MYSQLI_STORE_RESULT)
+    {
+        if (($result = parent::query($sql, $resultmode)) === false) {
+            throw new Exception($this->error, $this->errno);
+        }
+
+        return $result;
     }
 }
 

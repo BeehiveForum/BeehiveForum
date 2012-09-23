@@ -386,7 +386,7 @@ echo "                    <table border=\"0\" class=\"posthead\" width=\"100%\">
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">";
 echo "                         <h2>", gettext("Message"), "</h2>\n";
-echo "                         ", form_textarea("t_content", htmlentities_array($t_content), 20, 75, 'tabindex="1"', 'post_content editor'), "\n";
+echo "                         ", form_textarea("t_content", htmlentities_array($t_content), 20, 75, 'tabindex="1"', 'post_content editor focus'), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

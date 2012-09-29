@@ -80,6 +80,7 @@ function fix_html($html, $emoticons = true, $links = true)
          h6,
          hr[size|width|noshade],
          i,
+         iframe[width|height|scrolling|type|src],
          img[src|width|height|alt|border|usemap|longdesc|vspace|hspace|ismap],
          ins[cite|datetime],
          li[type|start],
@@ -169,6 +170,9 @@ function fix_html($html, $emoticons = true, $links = true)
     $config->set('AutoFormat.AutoParagraph', true);
     $config->set('AutoFormat.Linkify', true);
     $config->set('AutoFormat.RemoveEmpty', true);
+
+    $config->set('HTML.SafeIframe', true);
+    $config->set('URI.SafeIframeRegexp', '/^http(s)?:\/\/www\.youtube\.com\/embed\//');
 
     $purifier = new HTMLPurifier($config);
 

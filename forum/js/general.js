@@ -114,6 +114,7 @@ var beehive = $.extend({}, beehive, {
             contentsCss: skin + 'editor.css',
             customConfig: '',
             disableNativeSpellChecker: true,
+            extraPlugins: 'youtube',
             font_defaultLabel: 'Verdana',
             height: $editor.height() - 35,
             width: $editor.width() + 6,
@@ -150,7 +151,8 @@ var beehive = $.extend({}, beehive, {
                     'Indent',
                     'HorizontalRule',
                     'Image',
-                    'Link'
+                    'Link',
+                    'Youtube'
                 ],
                 [
                     'Font',

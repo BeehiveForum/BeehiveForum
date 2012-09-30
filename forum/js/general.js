@@ -50,7 +50,9 @@ var beehive = $.extend({}, beehive, {
     get_frame_name : function(frame_name) {
 
         for(var key in beehive.frames) {
-            if (beehive.frames[key] == frame_name) return key;
+            if (beehive.frames[key] == frame_name) {
+                return key;
+            }
         }
     },
 
@@ -86,7 +88,9 @@ var beehive = $.extend({}, beehive, {
 
         $(context).find('frame').each(function() {
 
-            if (!$.inArray($(this).attr('name'), beehive.frames)) return true;
+            if (!$.inArray($(this).attr('name'), beehive.frames)) {
+                return true;
+            }
 
             beehive.reload_user_font(this.contentDocument);
         });
@@ -100,7 +104,7 @@ var beehive = $.extend({}, beehive, {
 
     editor : function() {
 
-        var $editor = $(this), toolbar;
+        var $editor = $(this);
 
         var skin = beehive.forum_path + '/styles/' + beehive.user_style + '/editor/';
 
@@ -125,15 +129,15 @@ var beehive = $.extend({}, beehive, {
             skin: 'beehive,' + skin,
             startupFocus: $editor.hasClass('focus'),
             sharedSpaces : {
-                top: 'toolbar',
+                top: 'toolbar'
             },
             toolbarCanCollapse: false,
             toolbar_mobile: [
                 [
                     'Bold',
                     'Italic',
-                    'Underline',
-                ],
+                    'Underline'
+                ]
             ],
             toolbar_full: [
                 [
@@ -160,7 +164,7 @@ var beehive = $.extend({}, beehive, {
                     'TextColor'
                 ]
             ],
-            toolbar: toolbar,
+            toolbar: toolbar
         });
     },
 
@@ -183,7 +187,7 @@ $(beehive).bind('init', function() {
     beehive.mobile_version = $('body#mobile').length > 0;
 
     $('form[method="get"]').append(
-        $('<input type="hidden" name="_">').val((new Date).getTime())
+        $('<input type="hidden" name="_">').val((new Date()).getTime())
     );
 
     $('.move_up_ctrl_disabled, .move_down_ctrl_disabled').bind('click', function() {
@@ -200,9 +204,13 @@ $(beehive).bind('init', function() {
 
         var window_options = beehive.window_options;
 
-        for (var key in class_names) {
+        var dimensions;
 
-            if (dimensions = /^([0-9]+)x([0-9]+)$/.exec(class_names[key])) {
+        for (var key = 0; key < class_names.length; key++) {
+
+            dimensions = /^([0-9]+)x([0-9]+)$/.exec(class_names[key]);
+
+            if (dimensions && dimensions[1] && dimensions[2]) {
 
                 window_options.unshift('width=' + dimensions[1], 'height=' + dimensions[2]);
             }
@@ -243,7 +251,9 @@ $(beehive).bind('init', function() {
 
         var $parent = $this.closest('td');
 
-        if (beehive.uid == 0) return true;
+        if (beehive.uid == 0) {
+            return true;
+        }
 
         $.ajax({
             'cache' : true,
@@ -302,9 +312,13 @@ $(beehive).bind('init', function() {
 
         var frame_name = $(this).attr('name');
 
-        if ((frame_name != beehive.frames.left) && (frame_name != beehive.frames.pm_folders)) return true;
+        if ((frame_name != beehive.frames.left) && (frame_name != beehive.frames.pm_folders)) {
+            return true;
+        }
 
-        if (beehive.uid == 0) return true;
+        if (beehive.uid == 0) {
+            return true;
+        }
 
         window.clearTimeout(frame_resize_timeout);
 

@@ -56,7 +56,7 @@ $(beehive).bind('init', function() {
                </button>\
              </li>', [[ question_id,
                         option_id,
-                        beehive.lang['deleteoption'],
+                        beehive.lang.deleteoption,
                         beehive.images['delete.png']
                      ]]);
     };
@@ -85,14 +85,14 @@ $(beehive).bind('init', function() {
                </div>\
                <button class="button_image add_option" name="add_option[%(0)d]" type="submit"><img alt="" src="%(7)s">&nbsp;%(8)s</button>\
              </fieldset>', [[ question_id,
-                              beehive.lang['pollquestion'],
-                              beehive.lang['deletequestion'],
+                              beehive.lang.pollquestion,
+                              beehive.lang.deletequestion,
                               beehive.images['delete.png'],
-                              beehive.lang['allowmultipleoptions'],
+                              beehive.lang.allowmultipleoptions,
                               option_html(question_id, 1),
                               option_html(question_id, 2),
                               beehive.images['add.png'],
-                              beehive.lang['addnewoption']
+                              beehive.lang.addnewoption
                            ]]);
     };
 
@@ -120,7 +120,9 @@ $(beehive).bind('init', function() {
 
     $('button.delete_question').live('click', function() {
 
-        if ($(this).hasClass('disabled')) return false;
+        if ($(this).hasClass('disabled')) {
+            return false;
+        }
 
        if (!window.confirm('Are you sure you want to delete this question?')) {
            return false;
@@ -140,7 +142,9 @@ $(beehive).bind('init', function() {
 
     $('button.delete_option').live('click', function() {
 
-        if ($(this).hasClass('disabled')) return false;
+        if ($(this).hasClass('disabled')) {
+            return false;
+        }
 
        if (!window.confirm('Are you sure you want to delete this option?')) {
            return false;
@@ -160,9 +164,13 @@ $(beehive).bind('init', function() {
 
     $('button.add_option').live('click', function() {
 
-        if ($(this).hasClass('disabled')) return false;
+        if ($(this).hasClass('disabled')) {
+            return false;
+        }
 
-        if (add_process_running) return false;
+        if (add_process_running) {
+            return false;
+        }
 
         var $poll_question_fieldset = $(this).closest('fieldset.poll_question');
 
@@ -194,9 +202,13 @@ $(beehive).bind('init', function() {
 
     $('button#add_question').bind('click', function() {
 
-        if ($(this).hasClass('disabled')) return false;
+        if ($(this).hasClass('disabled')) {
+            return false;
+        }
 
-        if (add_process_running) return false;
+        if (add_process_running) {
+            return false;
+        }
 
         var $poll_questions_container = $('.poll_questions_container');
 

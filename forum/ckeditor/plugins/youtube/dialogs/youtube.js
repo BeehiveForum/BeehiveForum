@@ -3,7 +3,7 @@
 
     function (editor) {
         return {
-            title: editor.lang.youtube.title,
+            title: 'Embed Youtube Video',
             minWidth: CKEDITOR.env.ie && CKEDITOR.env.quirks ? 368 : 350,
             minHeight: 240,
             onShow: function () {
@@ -54,6 +54,6 @@
                     required: true
                 }]
             }]
-        }
-    })
+        };
+    });
 })();

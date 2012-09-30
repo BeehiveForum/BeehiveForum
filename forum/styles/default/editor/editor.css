@@ -352,6 +352,13 @@ a:active.cke_colormore {
     display: none;
 }
 
+.cke_skin_beehive .cke_button {
+    display: inline-block;
+    height: 22px;
+    margin: 2px 0 0;
+    width: 24px;
+}
+
 .cke_skin_beehive .cke_button a,
 .cke_skin_beehive .cke_button a:hover,
 .cke_skin_beehive .cke_button a:focus,
@@ -360,7 +367,6 @@ a:active.cke_colormore {
     border: solid 1px transparent;
     outline: none;
     padding: 0;
-    margin: 2px 0 0;
     height: 20px;
     vertical-align: top;
     cursor: default;
@@ -385,10 +391,11 @@ a:active.cke_colormore {
 
 .cke_skin_beehive .cke_button .cke_icon {
     background: transparent url(icons.png) no-repeat;
-    width: 22px;
-    height: 20px;
-    display: inline-block;
     cursor: default;
+    display: inline-block;
+    height: 18px;
+    margin: 2px 0 0 2px;
+    width: 20px;
 }
 
 .cke_skin_beehive .cke_button .cke_label {
@@ -691,83 +698,71 @@ a:active.cke_colormore {
 }
 
 .cke_skin_beehive .cke_button_bold .cke_icon {
-    background-position: 0 0;
+    background-position: -2px -1px;
 }
 
 .cke_skin_beehive .cke_button_italic .cke_icon {
-    background-position: -22px 0;
+    background-position: -24px -1px;
 }
 
 .cke_skin_beehive .cke_button_underline .cke_icon {
-    background-position: -44px 0;
+    background-position: -46px -1px;
 }
 
 .cke_skin_beehive .cke_button_strike .cke_icon {
-    background-position: -66px 0;
+    background-position: -68px -1px;
 }
 
 .cke_skin_beehive .cke_button_subscript .cke_icon {
-    background-position: -110px 0;
+    background-position: -112px -1px;
 }
 
 .cke_skin_beehive .cke_button_superscript .cke_icon {
-    background-position: -88px 0;
+    background-position: -90px -1px;
 }
 
 .cke_skin_beehive .cke_button_horizontalrule .cke_icon {
-    background-position: -330px 0;
+    background-position: -332px -1px;
 }
 
 .cke_skin_beehive .cke_button_link .cke_icon {
-    background-position: -418px 0px;
+    background-position: -420px -1px;
 }
 
 .cke_skin_beehive .cke_button_image .cke_icon {
-    background-position: -352px 0px;
+    background-position: -354px -1px;
 }
 
 .cke_skin_beehive .cke_button_flash .cke_icon {
-    background-position: -396px 0px;
+    background-position: -398px -1px;
 }
 
 .cke_skin_beehive .cke_button_textcolor .cke_icon {
-    background-position: -506px 0px;
-}
-
-.cke_skin_beehive .cke_button_undo .cke_icon {
-    background-position: 0 -208px;
-}
-
-.cke_skin_beehive .cke_button_redo .cke_icon {
-    background-position: 0 -224px;
+    background-position: -508px -1px;
 }
 
 .cke_skin_beehive .cke_button_numberedlist .cke_icon {
-    background-position: -198px 0px;
+    background-position: -200px -1px;
 }
 
 .cke_skin_beehive .cke_button_bulletedlist .cke_icon {
-    background-position: -220px 0px;
+    background-position: -222px -1px;
 }
 
 .cke_skin_beehive .cke_button_indent .cke_icon {
-    background-position: -242px 0px;
+    background-position: -244px -1px;
 }
 
 .cke_skin_beehive .cke_button_justifyleft .cke_icon {
-    background-position: -132px 0px;
+    background-position: -136px -1px;
 }
 
 .cke_skin_beehive .cke_button_justifycenter .cke_icon {
-    background-position: -154px 0px;
+    background-position: -156px -1px;
 }
 
 .cke_skin_beehive .cke_button_justifyright .cke_icon {
-    background-position: -176px 0px;
-}
-
-.cke_skin_beehive .cke_button_source .cke_icon {
-    background-position: 0 0;
+    background-position: -178px -1px;
 }
 
 .cke_skin_beehive .cke_button_source .cke_label {

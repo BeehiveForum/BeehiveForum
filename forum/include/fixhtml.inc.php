@@ -44,6 +44,8 @@ function html_purifier_error()
 
 function fix_html($html, $emoticons = true, $links = true)
 {
+    return $html;
+
     $bh_error_handler = set_error_handler('html_purifier_error');
 
     $config = HTMLPurifier_Config::createDefault();

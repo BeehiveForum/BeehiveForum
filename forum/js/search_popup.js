@@ -26,67 +26,67 @@ $(beehive).bind('init', function() {
         var $search_input = $(this);
 
         var $container = $('<div class="bhinputsearch">');
-        
+
         var $search_button = $('<img src="' + beehive.images['search_button.png'] + '" class="search_button" />');
-        
+
         $search_button.bind('click', function() {
 
-            var popup_query = { 
+            var popup_query = {
                 'webtag' : beehive.webtag,
                 'obj_id' : $search_input.attr('id'),
                 'type' : $search_input.hasClass('search_logon') ? 1 : 2,
                 'multi' : $search_input.hasClass('allow_multi') ? 'Y' : 'N',
-                'selected' : $search_input.val() 
+                'selected' : $search_input.val()
             };
 
             window.open('search_popup.php?' + $.param(popup_query), null, beehive.window_options.join(','));
         });
 
         $search_button.load(function() {
-            
+
             $search_input.css({
                 'border' : 'none',
-                'width' : $search_input.width() - ($(this).width()),
+                'width' : $search_input.width() - ($(this).width())
             });
         });
-        
+
         $search_input.before($container);
-        
+
         $search_input.appendTo($container);
-        
+
         $search_button.appendTo($container);
-        
+
         if ($search_input.hasClass('search_logon')) {
-            
+
             $search_input.autocomplete({
-                
+
                 'minLength': 2,
 
                 'source': function(request, response) {
-                    
+
                     $.ajax({
                         'cache' : false,
                         'data' : {
                             'webtag' : beehive.webtag,
                             'ajax' : true,
                             'action' : 'user_autocomplete',
-                            'term' : request.term,
+                            'term' : request.term
                         },
                         'url' : beehive.forum_path + '/ajax.php',
                         'success': function(data) {
-                            
+
                             response($.map(data.results_array, function(item) {
                                 return {
                                     'label': item.NICKNAME + ' (' + item.LOGON + ')',
                                     'value': item.LOGON
                                 };
                             }));
-                        },
+                        }
                     });
                 },
                 'open': function(){
                     $('.ui-autocomplete').width($search_input.width() + 30);
-                },
+                }
             });
         }
     });

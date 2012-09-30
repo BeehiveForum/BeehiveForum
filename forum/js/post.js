@@ -112,7 +112,7 @@ $(beehive).bind('init', function() {
         });
     });
 
-    $('body').bind('click', function(e) {
+    $('body').bind('click', function() {
         hide_post_options_containers();
     });
 

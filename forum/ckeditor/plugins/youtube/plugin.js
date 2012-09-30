@@ -40,7 +40,7 @@ USA
 
             CKEDITOR.dialog.add(commandName, CKEDITOR.getUrl(this.path + 'dialogs/youtube.js'));
 
-            CKEDITOR.dialog.on('resize', function(event) {
+            CKEDITOR.dialog.on('resize', function (event) {
 
                 var data = event.data,
                     dialog = data.dialog,
@@ -51,7 +51,8 @@ USA
                     return;
                 }
 
-                element.setSize('height', dialog.getSize().height - 150, true);
+                element.setSize('height', dialog.getSize()
+                    .height - 150, true);
             });
 
             if (editor.contextMenu) {
@@ -90,13 +91,27 @@ USA
 
                         'iframe': function (element) {
 
-                            var attributes = element.attributes,
-                                fakeElement = editor.createFakeParserElement(element, 'cke_youtube', 'youtube', false);
+                            var fakeElement,
+                                videoCode;
 
-                            fakeElement.attributes.height = attributes.height || 315;
-                            fakeElement.attributes.width = attributes.width || 560;
+                            if (element && element.attributes && element.attributes.src) {
 
-                            return fakeElement;
+                                videoCode = element.attributes.src.match(/^http(s)?:\/\/www\.youtube\.com\/embed\/(.+)/);
+
+                                if (videoCode && videoCode[2]) {
+
+                                    fakeElement = editor.createFakeParserElement(element, 'cke_youtube', 'youtube', false);
+
+                                    fakeElement.attributes.src = 'http://img.youtube.com/vi/' + videoCode[2] + '/0.jpg';
+                                    fakeElement.attributes.height = element.attributes.height || 315;
+                                    fakeElement.attributes.width = element.attributes.width || 560;
+                                    fakeElement.attributes.title = 'Youtube Video';
+
+                                    return fakeElement;
+                                }
+                            }
+
+                            return null;
                         }
                     }
                 },

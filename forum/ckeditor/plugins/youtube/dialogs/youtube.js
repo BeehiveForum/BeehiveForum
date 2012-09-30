@@ -20,6 +20,7 @@ USA
 ======================================================================*/
 (function () {
     CKEDITOR.dialog.add('youtube',
+
     function (editor) {
         return {
             title: 'Embed Youtube Video',
@@ -49,7 +50,14 @@ USA
                         .getInputElement()
                         .getValue(),
                     realElement = CKEDITOR.dom.element.createFromHtml(embedCode, editor.document),
-                    fakeElement = editor.createFakeElement(realElement, 'cke_youtube', 'youtube', true);
+                    fakeElement = editor.createFakeElement(realElement, 'cke_youtube', 'youtube', false),
+                    videoCode = realElement.getAttribute('src')
+                        .match(/^http(s)?:\/\/www\.youtube\.com\/embed\/(.+)/);
+
+                fakeElement.setAttribute('src', 'http://img.youtube.com/vi/' + videoCode[2] + '/0.jpg');
+                fakeElement.setAttribute('height', realElement.getAttribute('height') || 315);
+                fakeElement.setAttribute('width', realElement.getAttribute('width') || 560);
+                fakeElement.setAttribute('title', 'Youtube Video');
 
                 if (self.fakeImage) {
 
@@ -69,7 +77,29 @@ USA
                     type: 'textarea',
                     id: 'contents',
                     label: 'Youtube Embed Code',
-                    validate: CKEDITOR.dialog.validate.notEmpty('The Displayed Text field cannot be empty.'),
+                    validate: function () {
+
+                        try {
+
+                            var value = this.getValue(),
+                                element = CKEDITOR.dom.element.createFromHtml(value, editor.document),
+                                src;
+
+                            if (element && element.getName() == 'iframe' && element.getAttribute('src')) {
+
+                                src = element.getAttribute('src');
+
+                                if (src && src.match(/^http(s)?:\/\/www\.youtube\.com\/embed\//)) {
+                                    return true;
+                                }
+                            }
+
+                        } catch (e) {
+
+                        }
+
+                        return false;
+                    },
                     required: true
                 }]
             }]

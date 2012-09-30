@@ -200,7 +200,8 @@ body .cke_dialog {
     border: 1px inset threedface;
     background-color: #FFFFFF;
     color: #000000;
-    width: 100%;}
+    width: 100%;
+}
 
 .cke_skin_beehive .cke_dialog_ui_input_file {
     width: 100%;

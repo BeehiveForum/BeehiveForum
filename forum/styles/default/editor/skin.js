@@ -18,7 +18,6 @@ along with Beehive; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
-
 CKEDITOR.skins.add('beehive', (function () {
     return {
         editor: {
@@ -46,28 +45,27 @@ CKEDITOR.skins.add('beehive', (function () {
                 e = c.height,
                 f = c.dialog,
                 g = f.parts.contents;
-            if (c.skin != 'office2003') return;
+            if (c.skin != 'beehive') return;
             g.setStyles({
                 width: d + 'px',
                 height: e + 'px'
             });
             if (!CKEDITOR.env.ie || CKEDITOR.env.ie9Compat) return;
-            var h = function () {
-                var i = f.parts.dialog.getChild([0, 0, 0]),
-                    j = i.getChild(0),
-                    k = j.getSize('width');
-                e += j.getChild(0).getSize('height') + 1;
-                var l = i.getChild(2);
-                l.setSize('width', k);
-                l = i.getChild(7);
-                l.setSize('width', k - 28);
-                l = i.getChild(4);
-                l.setSize('height', e);
-                l = i.getChild(5);
-                l.setSize('height', e);
-            };
-            setTimeout(h, 100);
-            if (b.editor.lang.dir == 'rtl') setTimeout(h, 1000);
+            setTimeout(function () {
+                var h = f.parts.dialog.getChild([0, 0, 0]),
+                    i = h.getChild(0),
+                    j = i.getSize('width');
+                e += i.getChild(0)
+                    .getSize('height') + 1;
+                var k = h.getChild(2);
+                k.setSize('width', j);
+                k = h.getChild(7);
+                k.setSize('width', j - 28);
+                k = h.getChild(4);
+                k.setSize('height', e);
+                k = h.getChild(5);
+                k.setSize('height', e);
+            }, 100);
         });
     };
 })();

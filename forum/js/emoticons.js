@@ -21,22 +21,7 @@ USA
 
 $(beehive).bind('init', function() {
 
-    $('.emoticon_preview_popup .emoticon_preview_img').bind('click', function() {
-        if ($.isFunction(window.opener.htmltools.add_text)) {
-            window.opener.htmltools.add_text(' ' + $(this).attr('title') + ' ');
-        }
-    });
-
     $('.emoticon_preview .emoticon_preview_img').bind('click', function() {
-        htmltools.add_text(' ' + $(this).attr('title') + ' ');
-    });
-
-    $('.emoticon_preview .view_more').bind('click', function() {
-
-        var popup_window_options = beehive.window_options;
-
-        window.open($(this).attr('href'), $(this).attr('id'), popup_window_options.join(','));
-
-        return false;
+        CKEDITOR.currentInstance.insertText(' ' + $(this).attr('title') + ' ');
     });
 });

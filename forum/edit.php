@@ -169,7 +169,7 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
     } else {
 
-        $emots_enabled = false;
+        $emots_enabled = true;
     }
 
     if (isset($_POST['t_post_links'])) {

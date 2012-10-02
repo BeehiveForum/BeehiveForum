@@ -47,17 +47,18 @@ function ban_check($user_data, $send_error = true)
     if (!$db = db::get()) return false;
 
     if (!is_array($user_data)) return false;
-    
+
     $user_data_keys = array(
-        'IPADDRESS', 
-        'REFERER', 
-        'LOGON', 
-        'NICKNAME', 
+        'UID',
+        'IPADDRESS',
+        'REFERER',
+        'LOGON',
+        'NICKNAME',
         'EMAIL'
     );
-    
+
     $user_data = array_intersect_key(
-        $user_data, 
+        $user_data,
         array_flip($user_data_keys)
     );
 
@@ -73,9 +74,9 @@ function ban_check($user_data, $send_error = true)
 
     $ban_check_select_array = array();
     $ban_check_where_array  = array();
-    
+
     $user_banned = false;
-    
+
     if (isset($user_data['IPADDRESS']) && strlen(trim($user_data['IPADDRESS'])) > 0) {
 
         $ban_check_select_array[] = sprintf("'%s' AS IPADDRESS", $db->escape($user_data['IPADDRESS']));
@@ -88,22 +89,25 @@ function ban_check($user_data, $send_error = true)
         $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", $db->escape($user_data['REFERER']), BAN_TYPE_REF);
     }
 
-    if (isset($user_data['LOGON']) && strlen(trim($user_data['LOGON'])) > 0) {
+    if (!isset($user_data['UID']) || ($user_data['UID'] > 0)) {
 
-        $ban_check_select_array[] = sprintf("'%s' AS LOGON", $db->escape($user_data['LOGON']));
-        $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", $db->escape($user_data['LOGON']), BAN_TYPE_LOGON);
-    }
+        if (isset($user_data['LOGON']) && strlen(trim($user_data['LOGON'])) > 0) {
 
-    if (isset($user_data['NICKNAME']) && strlen(trim($user_data['NICKNAME'])) > 0) {
+            $ban_check_select_array[] = sprintf("'%s' AS LOGON", $db->escape($user_data['LOGON']));
+            $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", $db->escape($user_data['LOGON']), BAN_TYPE_LOGON);
+        }
 
-        $ban_check_select_array[] = sprintf("'%s' AS NICKNAME", $db->escape($user_data['NICKNAME']));
-        $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", $db->escape($user_data['NICKNAME']), BAN_TYPE_NICK);
-    }
+        if (isset($user_data['NICKNAME']) && strlen(trim($user_data['NICKNAME'])) > 0) {
 
-    if (isset($user_data['EMAIL']) && strlen(trim($user_data['EMAIL'])) > 0) {
+            $ban_check_select_array[] = sprintf("'%s' AS NICKNAME", $db->escape($user_data['NICKNAME']));
+            $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", $db->escape($user_data['NICKNAME']), BAN_TYPE_NICK);
+        }
 
-        $ban_check_select_array[] = sprintf("'%s' AS EMAIL", $db->escape($user_data['EMAIL']));
-        $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", $db->escape($user_data['EMAIL']), BAN_TYPE_EMAIL);
+        if (isset($user_data['EMAIL']) && strlen(trim($user_data['EMAIL'])) > 0) {
+
+            $ban_check_select_array[] = sprintf("'%s' AS EMAIL", $db->escape($user_data['EMAIL']));
+            $ban_check_where_array[]  = sprintf("('%s' LIKE BANDATA AND BANTYPE = %d)", $db->escape($user_data['EMAIL']), BAN_TYPE_EMAIL);
+        }
     }
 
     $ban_check_select_list = implode(", ", $ban_check_select_array);
@@ -120,7 +124,7 @@ function ban_check($user_data, $send_error = true)
         if (!$result = $db->query($sql)) return false;
 
         if ($result->num_rows > 0) {
-            
+
             $user_banned = true;
 
             while (($ban_check_result_array = $result->fetch_assoc())) {
@@ -141,25 +145,25 @@ function ban_check($user_data, $send_error = true)
             }
         }
     }
-    
+
     if ($user_banned !== true) {
-        
+
         $cached_response = false;
-        
+
         if (($user_banned = sfs_check_banned($user_data, $cached_response))) {
-            
+
             if ($cached_response === false) {
-                admin_add_log_entry(BAN_HIT_TYPE_SFS, $user_data);    
+                admin_add_log_entry(BAN_HIT_TYPE_SFS, $user_data);
             }
         }
     }
-    
+
     if (($user_banned === true) && ($send_error === true)) {
-        
+
         header_status(500, 'Internal Server Error');
-        exit;                
+        exit;
     }
-    
+
     return $user_banned;
 }
 
@@ -323,10 +327,10 @@ function add_ban_data($type, $data, $comment, $expires)
     if (!$db = db::get()) return false;
 
     $data_types_array = array(
-        BAN_TYPE_IP, 
-        BAN_TYPE_LOGON, 
-        BAN_TYPE_NICK, 
-        BAN_TYPE_EMAIL, 
+        BAN_TYPE_IP,
+        BAN_TYPE_LOGON,
+        BAN_TYPE_NICK,
+        BAN_TYPE_EMAIL,
         BAN_TYPE_REF
     );
 
@@ -378,10 +382,10 @@ function update_ban_data($ban_id, $type, $data, $comment, $expires)
     if (!is_numeric($ban_id)) return false;
 
     $data_types_array = array(
-        BAN_TYPE_IP, 
-        BAN_TYPE_LOGON, 
-        BAN_TYPE_NICK, 
-        BAN_TYPE_EMAIL, 
+        BAN_TYPE_IP,
+        BAN_TYPE_LOGON,
+        BAN_TYPE_NICK,
+        BAN_TYPE_EMAIL,
         BAN_TYPE_REF
     );
 
@@ -508,8 +512,8 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
     for ($i = 0; $i < $affected_guest_count; $i++) {
 
         $affected_sessions[] = array(
-            'UID' => 0, 
-            'LOGON' => 'GUEST', 
+            'UID' => 0,
+            'LOGON' => 'GUEST',
             'NICKNAME' => 'GUEST'
         );
     }

@@ -154,7 +154,7 @@ if (isset($_POST['post']) || isset($_POST['preview']) || isset($_POST['move']) |
 
     } else {
 
-        $emots_enabled = false;
+        $emots_enabled = true;
     }
 
     if (isset($_POST['t_post_links'])) {

@@ -191,7 +191,7 @@ function emoticons_set_exists($emoticon_set)
     return (@file_exists("emoticons/$emoticon_set/style.css") || $emoticon_set == "text" || $emoticon_set == "none");
 }
 
-function emoticons_preview($emoticon_set, $width = 190, $height = 100, $display_limit = 35)
+function emoticons_preview($emoticon_set, $width = 190, $height = 100)
 {
     $webtag = get_webtag();
 
@@ -226,23 +226,13 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100, $display_
     // Array to hold emoticon preview images
     $emoticon_preview = array();
 
-    // Iterate over the emoticons.
+    // Iterate over the emoticons and generate HTML
     foreach ($emoticon as $emot_text => $emot_class) {
-
-        // Generate HTML for the emoticon.
         $emoticon_preview[] = sprintf('<span class="e_%1$s emoticon_preview_img" title="%2$s"><span class="e__">%2$s</span></span>', $emot_class, $emot_text);
-
-        // Only generate emoticons up to $display_limit.
-        if (sizeof($emoticon_preview) == $display_limit) break;
     }
 
     // Add the emoticons to the HTML.
     $html.= implode(' ', $emoticon_preview);
-
-    // Add a "More" link if we're not displaying all emoticons.
-    if ($display_limit < sizeof($emoticon)) {
-        $html.= "<div><b><a href=\"display_emoticons.php?webtag=$webtag&amp;pack=user\" target=\"_blank\" class=\"view_more\">". gettext("More"). "</a></b></div>";
-    }
 
     // Close the container.
     $html.= "</div>";

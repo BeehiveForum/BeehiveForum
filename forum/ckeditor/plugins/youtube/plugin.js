@@ -43,13 +43,14 @@ USA
             CKEDITOR.dialog.on('resize', function (event) {
 
                 var data = event.data,
-                    dialog = data.dialog,
-                    element = dialog.getContentElement('general', 'contents')
-                        .getInputElement();
+                    dialog = data.dialog;
 
                 if (dialog.getName() != 'youtube') {
                     return;
                 }
+
+                var element = dialog.getContentElement('general', 'contents')
+                    .getInputElement();
 
                 element.setSize('height', dialog.getSize()
                     .height - 150, true);

@@ -22,6 +22,25 @@ USA
 $(beehive).bind('init', function() {
 
     $('.emoticon_preview .emoticon_preview_img').bind('click', function() {
-        CKEDITOR.currentInstance.insertText(' ' + $(this).attr('title') + ' ');
+
+        var $emoticon = $(this).closest('span.emoticon_preview_img');
+
+        var element = new CKEDITOR.dom.text($emoticon.attr('title'));
+
+        element.getOuterHtml = function() {
+            return this.$.data;
+        };
+
+        element.getAttribute = function() {
+            return null;
+        }
+
+        var fakeElement = beehive.active_editor.createFakeElement(element, $emoticon.attr('class'), 'emoticon', false);
+
+        fakeElement.setAttribute('height', $emoticon.height());
+        fakeElement.setAttribute('width', $emoticon.width());
+        fakeElement.setAttribute('title', $emoticon.attr('title'));
+
+        beehive.active_editor.insertElement(fakeElement);
     });
 });

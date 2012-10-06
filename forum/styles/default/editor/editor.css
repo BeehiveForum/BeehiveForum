@@ -753,6 +753,18 @@ a:active.cke_colormore {
     background-position: -244px -1px;
 }
 
+.cke_skin_beehive .cke_button_code .cke_icon {
+    background-position: -266px -1px;
+}
+
+.cke_skin_beehive .cke_button_quote .cke_icon {
+    background-position: -288px -1px;
+}
+
+.cke_skin_beehive .cke_button_spoiler .cke_icon {
+    background-position: -310px -1px;
+}
+
 .cke_skin_beehive .cke_button_justifyleft .cke_icon {
     background-position: -136px -1px;
 }

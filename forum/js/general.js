@@ -102,9 +102,13 @@ var beehive = $.extend({}, beehive, {
         $user_font.attr('href', beehive.forum_path + '/font_size.php?webtag=' + beehive.webtag + '&_=' + new Date().getTime() / 1000);
     },
 
+    active_editor : null,
+
     editor : function() {
 
         var $editor = $(this);
+
+        var editor_id = $editor.attr('id');
 
         var skin = beehive.forum_path + '/styles/' + beehive.user_style + '/editor/';
 
@@ -115,14 +119,14 @@ var beehive = $.extend({}, beehive, {
         $('<div id="toolbar">').insertBefore($editor);
 
         $(this).ckeditor({
+            browserContextMenuOnCtrl: true,
             contentsCss: skin + 'editor.css',
             customConfig: '',
-            disableNativeSpellChecker: true,
-            extraPlugins: 'youtube',
+            disableNativeSpellChecker: false,
+            extraPlugins: 'youtube,beehive,flash',
             font_defaultLabel: 'Verdana',
             height: $editor.height() - 35,
             width: $editor.width() + 6,
-            removeDialogTabs: 'link:target;link:advanced;image:Link;image:advanced',
             removePlugins: remove_plugins,
             resize_maxWidth: '100%',
             resize_minWidth: '100%',
@@ -153,10 +157,14 @@ var beehive = $.extend({}, beehive, {
                     'NumberedList',
                     'BulletedList',
                     'Indent',
+                    'Code',
+                    'Quote',
+                    'Spoiler',
                     'HorizontalRule',
                     'Image',
-                    'Link',
-                    'Youtube'
+                    'Youtube',
+                    'Flash',
+                    'Link'
                 ],
                 [
                     'Font',
@@ -165,6 +173,46 @@ var beehive = $.extend({}, beehive, {
                 ]
             ],
             toolbar: toolbar
+        });
+
+        CKEDITOR.instances[editor_id].on('focus', function(event) {
+            beehive.active_editor = event.editor;
+        });
+
+        CKEDITOR.on('dialogDefinition', function(event) {
+
+            var dialogName = event.data.name;
+            var dialogDefinition = event.data.definition;
+
+            switch (dialogName) {
+
+                case 'link':
+
+                    dialogDefinition.removeContents('target');
+                    dialogDefinition.removeContents('advanced');
+                    dialogDefinition.getContents('info').remove('linkType');
+                    dialogDefinition.getContents('info').remove('protocol');
+                    break;
+
+                case 'image':
+
+                    dialogDefinition.removeContents('Link');
+                    dialogDefinition.removeContents('advanced');
+                    break;
+
+                case 'flash':
+
+                    dialogDefinition.removeContents('advanced');
+                    dialogDefinition.getContents('properties').remove('menu');
+                    dialogDefinition.getContents('properties').remove('scale');
+                    dialogDefinition.getContents('properties').remove('align');
+                    dialogDefinition.getContents('properties').remove('bgcolor');
+                    dialogDefinition.getContents('properties').remove('base');
+                    dialogDefinition.getContents('properties').remove('flashvars');
+                    dialogDefinition.getContents('properties').remove('allowScriptAccess');
+                    dialogDefinition.getContents('properties').remove('allowFullScreen');
+                    break;
+            }
         });
     },
 

@@ -135,12 +135,16 @@
 
                     var state = editor.getCommand('spoiler').state,
                         spoilerElement,
+                        spoilerContainer,
                         range;
 
                     if (state == CKEDITOR.TRISTATE_ON) {
 
                         spoilerElement = editor.getSelection().getStartElement();
+                        spoilerContainer = spoilerElement.getParent();
+
                         spoilerElement.remove(true);
+                        spoilerContainer.remove(true);
 
                     } else {
 

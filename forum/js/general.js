@@ -120,7 +120,7 @@ var beehive = $.extend({}, beehive, {
 
         $(this).ckeditor({
             browserContextMenuOnCtrl: true,
-            contentsCss: skin + 'editor.css',
+            contentsCss: skin + 'content.css',
             customConfig: '',
             disableNativeSpellChecker: false,
             extraPlugins: 'youtube,beehive,flash',
@@ -192,6 +192,7 @@ var beehive = $.extend({}, beehive, {
                     dialogDefinition.removeContents('advanced');
                     dialogDefinition.getContents('info').remove('linkType');
                     dialogDefinition.getContents('info').remove('protocol');
+                    dialogDefinition.minHeight = 0;
                     break;
 
                 case 'image':

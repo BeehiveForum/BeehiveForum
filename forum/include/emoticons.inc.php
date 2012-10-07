@@ -228,7 +228,7 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100)
 
     // Iterate over the emoticons and generate HTML
     foreach ($emoticon as $emot_text => $emot_class) {
-        $emoticon_preview[] = sprintf('<span class="e_%1$s emoticon_preview_img" title="%2$s"><span class="e__">%2$s</span></span>', $emot_class, $emot_text);
+        $emoticon_preview[] = sprintf('<span class="e_%1$s emoticon_preview" title="%2$s"><span class="e__">%2$s</span></span>', $emot_class, $emot_text);
     }
 
     // Add the emoticons to the HTML.

@@ -112,6 +112,10 @@ var beehive = $.extend({}, beehive, {
 
         var skin = beehive.forum_path + '/styles/' + beehive.user_style + '/editor/';
 
+        var emoticons = beehive.forum_path + '/emoticons/' + beehive.emoticons + '/style.css';
+
+        var contents = skin + 'content.css';
+
         var toolbar = $editor.hasClass('mobile') ? 'mobile' : 'full';
 
         var remove_plugins = $editor.hasClass('mobile') ? 'elementspath' : '';
@@ -120,11 +124,15 @@ var beehive = $.extend({}, beehive, {
 
         $(this).ckeditor({
             browserContextMenuOnCtrl: true,
-            contentsCss: skin + 'content.css',
+            contentsCss: [
+                emoticons,
+                contents
+            ],
             customConfig: '',
             disableNativeSpellChecker: false,
             extraPlugins: 'youtube,beehive,flash',
             font_defaultLabel: 'Verdana',
+            fontSize_defaultLabel: '12',
             height: $editor.height() - 35,
             width: $editor.width() + 6,
             removePlugins: remove_plugins,

@@ -1,3 +1,8 @@
+body {
+    font-family: verdana,arial,helvetica,sans-serif;
+    font-size: 12px;
+}
+
 pre.code {
     background-color: #EEEEEE;
     border: 1px solid #CCCCCC;
@@ -41,4 +46,9 @@ span.spoiler {
 
 span.spoiler > span {
     color: transparent;
+}
+
+img.emoticon_preview {
+    margin: 0 4px;
+    vertical-align: inherit;
 }

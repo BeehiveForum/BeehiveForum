@@ -21,11 +21,11 @@ USA
 
 $(beehive).bind('init', function() {
 
-    $('.emoticon_preview .emoticon_preview_img').bind('click', function() {
+    $('.emoticon_preview .emoticon_preview').bind('click', function() {
 
-        var $emoticon = $(this).closest('span.emoticon_preview_img');
+        var $emoticon = $(this).closest('span.emoticon_preview');
 
-        var element = new CKEDITOR.dom.text($emoticon.attr('title'));
+        var element = new CKEDITOR.dom.text(' ' + $emoticon.attr('title') + ' ');
 
         element.getOuterHtml = function() {
             return this.$.data;

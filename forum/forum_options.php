@@ -415,7 +415,7 @@ echo "                  <td align=\"left\" rowspan=\"3\" width=\"1%\">&nbsp;</td
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", gettext("Time zone"), ":</td>\n";
-echo "                  <td align=\"left\">", form_dropdown_array("timezone", htmlentities_array($available_timezones), (isset($user_prefs['TIMEZONE']) && in_array($user_prefs['TIMEZONE'], array_keys($available_timezones))) ? $user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', false, 27), null, 'timezone_dropdown'), "</td>\n";
+echo "                  <td align=\"left\">", form_dropdown_array("timezone", htmlentities_array($available_timezones), (isset($user_prefs['TIMEZONE']) && in_array($user_prefs['TIMEZONE'], array_keys($available_timezones))) ? $user_prefs['TIMEZONE'] : forum_get_setting('forum_timezone', null, 27), null, 'timezone_dropdown'), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\">&nbsp;</td>\n";

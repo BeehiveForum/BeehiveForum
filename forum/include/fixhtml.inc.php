@@ -94,7 +94,7 @@ function fix_html($html, $emoticons = true, $links = true)
          s,
          samp,
          small,
-         span,
+         span[class],
          strike,
          strong,
          sub,

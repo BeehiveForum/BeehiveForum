@@ -48,7 +48,14 @@ span.spoiler > span {
     color: transparent;
 }
 
-img.emoticon_preview {
-    margin: 0 4px;
-    vertical-align: inherit;
+span.emoticon {
+    vertical-align: bottom;
+}
+
+pre.code span.emoticon {
+    background-image: none;
+}
+
+pre.code span.emoticon span {
+    display: inherit;
 }

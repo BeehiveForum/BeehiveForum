@@ -181,6 +181,40 @@
                 label: 'Add Spoiler',
                 command: 'spoiler',
             });
+        },
+
+        afterInit: function (editor) {
+
+            var dataProcessor = editor.dataProcessor,
+                dataFilter = dataProcessor && dataProcessor.dataFilter;
+
+            if (dataFilter) {
+
+                dataFilter.addRules({
+                    elements: {
+
+                        'span': function (element) {
+
+                            var test = element.attributes
+                                && element.attributes.class
+                                && element.attributes.class.match(/emoticon/);
+
+                            if (!test || test.length == 0) {
+                                return null;
+                            }
+
+                            element.attributes.contentEditable = "false";
+
+                            for (var key in element.children) {
+                                element.children[key].attributes.contentEditable = "false";
+                            }
+
+                            return element;
+                        }
+                    }
+                },
+                9);
+            }
         }
     });
 }());

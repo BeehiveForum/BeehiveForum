@@ -480,17 +480,9 @@ div.poll_option_list ol li {
     padding: 2px;
 }
 
-.emoticon_preview {
+.emoticon_preview .emoticon {
 	cursor: pointer;
     padding: 2px;
-}
-
-.emoticon_preview_popup {
-	padding: 2px;
-}
-
-.emoticon_preview_popup img {
-	cursor: pointer;
 }
 
 .error_handler_details {

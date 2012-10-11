@@ -21,26 +21,24 @@ USA
 
 $(beehive).bind('init', function() {
 
-    $('.emoticon_preview .emoticon_preview').bind('click', function() {
+    $('.emoticon_preview .emoticon').bind('click', function() {
 
-        var $emoticon = $(this).closest('span.emoticon_preview');
+        var $emoticon = $(this).closest('span.emoticon').clone();
 
-        var element = new CKEDITOR.dom.text(' ' + $emoticon.attr('title') + ' ');
+        var element = CKEDITOR.dom.element.createFromHtml(
+            $.sprintf(
+                '<span class="%s" contenteditable="false"><span class="e__" contenteditable="false">%s</span></span>',
+                $emoticon.attr('class'),
+                $emoticon.attr('title')
+            )
+        );
 
-        element.getOuterHtml = function() {
-            return this.$.data;
-        };
+        /*element.setAttributes({
+            contentEditable: 'false',
+            'data-cke-emoticon': 1,
+        });*/
 
-        element.getAttribute = function() {
-            return null;
-        }
-
-        var fakeElement = beehive.active_editor.createFakeElement(element, $emoticon.attr('class'), 'emoticon', false);
-
-        fakeElement.setAttribute('height', $emoticon.height());
-        fakeElement.setAttribute('width', $emoticon.width());
-        fakeElement.setAttribute('title', $emoticon.attr('title'));
-
-        beehive.active_editor.insertElement(fakeElement);
+        beehive.active_editor.insertElement(element);
+        beehive.active_editor.insertText(' ');
     });
 });

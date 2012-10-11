@@ -40,7 +40,7 @@ if (($font_size = session::get_value('FONT_SIZE')) === false) {
 
 // User style
 if (($user_style = session::get_value('STYLE')) === false) {
-    $user_style = html_get_cookie("forum_style", false, forum_get_setting('default_style', null, 'default'));
+    $user_style = html_get_cookie("forum_style", null, forum_get_setting('default_style', null, 'default'));
 }
 
 // User emoticons
@@ -97,7 +97,7 @@ $json_data = array(
         'pm_messages' => html_get_frame_name('pm_messages')
     )
 );
-                                                
+
 if (($images_array = glob("styles/$user_style/images/*.png"))) {
 
     foreach ($images_array as $image_filename) {

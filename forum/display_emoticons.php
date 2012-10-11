@@ -116,9 +116,9 @@ echo "                        <table class=\"posthead\" width=\"300\">\n";
 foreach ($emoticon_text as $emot_class => $emot_text_array) {
 
     echo "                          <tr>\n";
-    echo "                            <td align=\"left\" width=\"100\" class=\"emoticon_preview_popup\">\n";
+    echo "                            <td align=\"left\" width=\"100\">\n";
 
-    printf('                              <span class="e_%1$s" title="%2$s"><span class="e__">%2$s</span></span>', $emot_class, $emot_text_array[0]);
+    printf('                              <span class="emoticon e_%1$s" title="%2$s"><span class="e__">%2$s</span></span>', $emot_class, $emot_text_array[0]);
 
     echo "                            </td>\n";
     echo "                            <td align=\"left\">", implode('&nbsp;', htmlentities_array($emot_text_array)), "</td>\n";

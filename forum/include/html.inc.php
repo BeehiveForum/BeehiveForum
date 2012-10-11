@@ -58,11 +58,11 @@ function html_guest_error($final_uri = null)
     $frame_top_target = html_get_top_frame_name();
 
     $webtag = get_webtag();
-    
+
     if (!isset($final_uri)) {
         $final_uri = get_request_uri(true, false);
     }
-        
+
     $final_uri = sprintf("logon.php?webtag=%s&final_uri=%s", $webtag, rawurlencode($final_uri));
 
     $available_popup_files_preg = implode("|^", array_map('preg_quote_callback', get_available_popup_files()));
@@ -91,15 +91,15 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
     if (!is_string($string_msg)) return;
 
     $available_methods = array(
-        'get', 
+        'get',
         'post'
     );
 
     if (!in_array($method, $available_methods)) $method = 'get';
 
     $available_alignments = array(
-        'left', 
-        'center', 
+        'left',
+        'center',
         'right'
     );
 
@@ -194,8 +194,8 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
     }
 
     $available_alignments = array(
-        'left', 
-        'center', 
+        'left',
+        'center',
         'right'
     );
 
@@ -225,8 +225,8 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
     if (!is_string($string_msg)) return;
 
     $available_alignments = array(
-        'left', 
-        'center', 
+        'left',
+        'center',
         'right'
     );
 
@@ -249,8 +249,8 @@ function html_display_error_msg($string_msg, $width = '600', $align = 'center', 
     if (!is_string($string_msg)) return;
 
     $available_alignments = array(
-        'left', 
-        'center', 
+        'left',
+        'center',
         'right'
     );
 
@@ -273,8 +273,8 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
     if (!is_string($string_msg)) return;
 
     $available_alignments = array(
-        'left', 
-        'center', 
+        'left',
+        'center',
         'right'
     );
 
@@ -322,7 +322,7 @@ function html_get_user_style_path()
     if ($user_style === false) {
 
         if (!($user_style = session::get_value('STYLE'))) {
-            $user_style = html_get_cookie('forum_style', false, forum_get_setting('default_style', null, 'default'));
+            $user_style = html_get_cookie('forum_style', null, forum_get_setting('default_style', null, 'default'));
         }
 
         if (!style_exists($user_style)) {
@@ -438,7 +438,7 @@ function html_get_frame_name($basename)
 function html_get_top_frame_name()
 {
     $config = server_get_config();
-    
+
     if (!isset($config['frame_top_target']) || strlen(trim($config['frame_top_target'])) == 0) {
         return '_top';
     }
@@ -547,7 +547,7 @@ function html_draw_top()
     $body_class = null;
 
     $base_target = null;
-    
+
     $stylesheet_array = array();
 
     $meta_refresh = array(
@@ -556,13 +556,13 @@ function html_draw_top()
     );
 
     $robots = null;
-    
+
     $frame_set_html = false;
 
     $pm_popup_disabled = false;
-    
+
     $inline_css = null;
-    
+
     $emoticons = null;
 
     $webtag = get_webtag();
@@ -594,7 +594,7 @@ function html_draw_top()
         if (preg_match('/^stylesheet=([^:]+)(:(.+))?$/Disu', $func_args, $func_matches) > 0) {
 
             $stylesheet_array[] = array(
-                'filename' => $func_matches[1], 
+                'filename' => $func_matches[1],
                 'media' => (isset($func_matches[3]) ? $func_matches[3] : 'screen'),
             );
 
@@ -602,7 +602,7 @@ function html_draw_top()
         }
 
         if (preg_match('/^refresh=([^:]+):(.+)$/Disu', $func_args, $func_matches) > 0) {
-            
+
             $meta_refresh['delay'] = isset($func_matches[1]) ? $func_matches[1] : null;
             $meta_refresh['url'] = isset($func_matches[2]) ? $func_matches[2] : null;
 
@@ -622,19 +622,19 @@ function html_draw_top()
         }
 
         if (preg_match('/^pm_popup_disabled$/Disu', $func_args, $func_matches) > 0) {
-            
+
             $pm_popup_disabled = true;
             unset($arg_array[$key]);
         }
-        
+
         if (preg_match('/^inline_css=(.+)/Disu', $func_args, $func_matches) > 0) {
-            
+
             $inline_css = (!isset($inline_css) && isset($func_matches[1]) ? $func_matches[1] : $inline_css);
             unset($arg_array[$key]);
         }
 
         if (preg_match('/^emoticons=(.+)?$/Disu', $func_args, $func_matches) > 0) {
-            
+
             $emoticons = (!isset($emoticons) && isset($func_matches[1]) ? $func_matches[1] : $emoticons);
             unset($arg_array[$key]);
         }
@@ -652,7 +652,7 @@ function html_draw_top()
     echo "<head>\n";
 
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
-    
+
     // Default Meta keywords and description.
     $meta_keywords = html_get_forum_keywords();
     $meta_description = html_get_forum_description();
@@ -692,7 +692,7 @@ function html_draw_top()
 
         echo "<title>", htmlentities_array($forum_name), "</title>\n";
     }
-    
+
     $forum_content_rating = html_get_forum_content_rating();
 
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";
@@ -825,11 +825,11 @@ function html_draw_top()
 
                 // Pages we don't want the popup to appear on
                 $pm_popup_disabled_pages = array(
-                    'admin.php', 
-                    'attachments.php', 
+                    'admin.php',
+                    'attachments.php',
                     'change_pw.php',
-                    'confirm_email.php', 
-                    'dictionary.php', 
+                    'confirm_email.php',
+                    'dictionary.php',
                     'discussion.php',
                     'display_emoticons.php',
                     'edit_attachments.php',
@@ -863,17 +863,17 @@ function html_draw_top()
 
             // Overflow auto-resize functionality.
             $resize_images_page = array(
-                'admin_post_approve.php', 
+                'admin_post_approve.php',
                 'create_poll.php',
-                'delete.php', 
-                'display.php', 
+                'delete.php',
+                'display.php',
                 'edit.php',
-                'edit_poll.php', 
+                'edit_poll.php',
                 'edit_signature.php',
-                'messages.php', 
-                'post.php', 
+                'messages.php',
+                'post.php',
                 'pm_write.php',
-                'pm_edit.php', 
+                'pm_edit.php',
                 'pm_messages.php'
             );
 
@@ -887,17 +887,17 @@ function html_draw_top()
 
             // Mouseover spoiler pages
             $message_display_pages = array(
-                'admin_post_approve.php', 
+                'admin_post_approve.php',
                 'create_poll.php',
-                'delete.php', 
-                'display.php', 
+                'delete.php',
+                'display.php',
                 'edit.php',
-                'edit_poll.php', 
+                'edit_poll.php',
                 'edit_signature.php',
-                'ldisplay.php', 
+                'ldisplay.php',
                 'lmessages.php',
-                'lpost.php', 
-                'messages.php', 
+                'lpost.php',
+                'messages.php',
                 'post.php',
             );
 
@@ -964,7 +964,7 @@ function html_draw_top()
             adsense_output_html();
             echo "<br />\n";
         }
-        
+
         if ((forum_get_setting('show_share_links', 'Y')) && (session::get_value('SHOW_SHARE_LINKS') == 'Y')) {
             echo '<div id="fb-root"></div>';
         }
@@ -980,7 +980,7 @@ function html_draw_bottom($frame_set_html = false)
         if (($page_footer = html_get_page_footer())) {
             echo fix_html($page_footer);
         }
-        
+
         if (adsense_publisher_id() && adsense_check_user() && adsense_check_page_bottom()) {
             echo '<br>'; adsense_output_html();
         }
@@ -1204,14 +1204,14 @@ function html_output_adsense_settings()
 function html_js_safe_str($str)
 {
     $unsafe_chars_tbl = array(
-        '\\' => '\\\\',  
-        "'" => "\\'",   
+        '\\' => '\\\\',
+        "'" => "\\'",
         '"' => '\\"',
-        "\r" => '\\r',   
-        "\n" => '\\n',   
+        "\r" => '\\r',
+        "\n" => '\\n',
         '<' => '\\074',
-        '>' => '\\076', 
-        '&' => '\\046', 
+        '>' => '\\076',
+        '&' => '\\046',
         '--' => '\\055\\055'
     );
 
@@ -1242,8 +1242,8 @@ function html_get_cookie($cookie_name, $callback = null, $default = null)
     } else if (is_scalar($callback)) {
         return mb_strtoupper($_COOKIE[$cookie_name]) == mb_strtoupper($callback);
     }
-    
-    return $_COOKIE[$cookie_name];    
+
+    return $_COOKIE[$cookie_name];
 }
 
 function html_remove_all_cookies()
@@ -1262,7 +1262,7 @@ function href_cleanup_query_keys($uri, $remove_keys = null)
         $uri_query_array = array();
 
         parse_str($uri_array['query'], $uri_query_array);
-        
+
         if (is_array($remove_keys)) {
             $uri_query_array = array_diff_key($uri_query_array, $remove_keys);
         } else if (is_string($remove_keys)) {
@@ -1278,7 +1278,7 @@ function href_cleanup_query_keys($uri, $remove_keys = null)
 function html_page_links($uri, $page, $record_count, $rows_per_page, $page_var = "page")
 {
     $uri = href_cleanup_query_keys($uri, $page_var);
-    
+
     $page_count = ceil($record_count / $rows_per_page);
 
     $sep = strstr($uri, '?') ? "&amp;" : "?";

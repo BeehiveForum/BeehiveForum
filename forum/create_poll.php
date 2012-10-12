@@ -67,68 +67,11 @@ $uid = session::get_value('UID');
 
 $valid = true;
 
-if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
-    $emots_enabled = false;
-} else {
-    $emots_enabled = true;
-}
-
-if (($page_prefs & POST_AUTO_LINKS) > 0) {
-    $links_enabled = true;
-} else {
-    $links_enabled = false;
-}
-
-if (($page_prefs & POST_CHECK_SPELLING) > 0) {
-    $spelling_enabled = true;
-} else {
-    $spelling_enabled = false;
-}
-
 if (($high_interest = session::get_value('MARK_AS_OF_INT')) === false) {
     $high_interest = "N";
 }
 
 if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['post'])) {
-
-    if (isset($_POST['post_emots'])) {
-
-        if ($_POST['post_emots'] == "disabled") {
-            $emots_enabled = false;
-        } else {
-            $emots_enabled = true;
-        }
-
-    } else {
-
-        $emots_enabled = true;
-    }
-
-    if (isset($_POST['post_links'])) {
-
-        if ($_POST['post_links'] == "enabled") {
-            $links_enabled = true;
-        } else {
-            $links_enabled = false;
-        }
-
-    } else {
-
-        $links_enabled = false;
-    }
-
-    if (isset($_POST['check_spelling'])) {
-
-        if ($_POST['check_spelling'] == "enabled") {
-            $spelling_enabled = true;
-        } else {
-            $spelling_enabled = false;
-        }
-
-    } else {
-
-        $spelling_enabled = false;
-    }
 
     if (isset($_POST['post_interest'])) {
 
@@ -693,7 +636,7 @@ echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_poll\" action=\"create_poll.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('dedupe', htmlentities_array($dedupe)), "\n";
-echo "  <table width=\"785\" class=\"max_width\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\" class=\"max_width\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -852,13 +795,13 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     echo "              </table>\n";
 }
 
-echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "              <table class=\"posthead\" width=\"785\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Create Poll"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" valign=\"top\" width=\"220\">\n";
-echo "                    <table class=\"posthead\" width=\"220\">\n";
+echo "                  <td align=\"left\" valign=\"top\" width=\"210\">\n";
+echo "                    <table class=\"posthead\" width=\"210\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>", gettext("Folder"), "</h2></td>\n";
 echo "                      </tr>\n";
@@ -872,16 +815,10 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">", form_input_text("thread_title", isset($thread_title) ? htmlentities_array($thread_title) : '', 30, 64, false, "thread_title"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\"><h2>", gettext("Message options"), "</h2></td>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("post_links", "enabled", gettext("Automatically parse URLs"), $links_enabled), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("check_spelling", "enabled", gettext("Automatically check spelling"), $spelling_enabled), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("post_emots", "disabled", gettext("Disable emoticons"), !$emots_enabled), "</td>\n";
+echo "                        <td align=\"left\"><h2>", gettext("Thread options"), "</h2></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", form_checkbox("post_interest", "Y", gettext("Set thread to high interest"), $high_interest == "Y"), "</td>\n";
@@ -938,8 +875,8 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
 }
 
 echo "                  </td>\n";
-echo "                  <td align=\"left\" valign=\"top\">\n";
-echo "                    <table class=\"posthead\" width=\"530\">\n";
+echo "                  <td align=\"left\" valign=\"top\" width=\"575\">\n";
+echo "                    <table class=\"posthead\" width=\"575\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 echo "                          <h2>", gettext("Poll"), "</h2>\n";
@@ -1027,9 +964,8 @@ if (($page_prefs & POLL_ADVANCED_DISPLAY) > 0) {
 echo "                                  <table border=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "                                    <tr>\n";
 echo "                                      <td align=\"left\" colspan=\"2\">\n";
-echo "                                        <table border=\"0\" class=\"posthead\" width=\"510\">\n";
+echo "                                        <table border=\"0\" class=\"posthead\" width=\"575\">\n";
 echo "                                          <tr>\n";
-echo "                                            <td rowspan=\"27\" width=\"1%\">&nbsp;</td>\n";
 echo "                                            <td align=\"left\"><h2>", gettext("Options display type"), "</h2></td>\n";
 echo "                                          </tr>\n";
 echo "                                          <tr>\n";
@@ -1194,13 +1130,12 @@ if (($page_prefs & POLL_ADDITIONAL_MESSAGE_DISPLAY) > 0) {
 echo "                                  <table border=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "                                    <tr>\n";
 echo "                                      <td align=\"left\" colspan=\"2\">\n";
-echo "                                        <table border=\"0\" class=\"posthead\" width=\"510\">\n";
+echo "                                        <table border=\"0\" class=\"posthead\" width=\"575\">\n";
 echo "                                          <tr>\n";
-echo "                                            <td rowspan=\"6\" width=\"1%\">&nbsp;</td>\n";
 echo "                                            <td align=\"left\">", gettext("Do you want to include an additional post after the poll?"), "</td>\n";
 echo "                                          </tr>\n";
 echo "                                          <tr>\n";
-echo "                                            <td align=\"left\">", form_textarea('message_text', htmlentities_array($message_text), 20, 75, 'tabindex="1"', 'post_content editor'), "</td>\n";
+echo "                                            <td align=\"left\">", form_textarea('message_text', htmlentities_array($message_text), 22, 100, 'tabindex="1"', 'post_content editor'), "</td>\n";
 echo "                                          </tr>\n";
 echo "                                          <tr>\n";
 echo "                                            <td align=\"left\">&nbsp;</td>\n";
@@ -1224,7 +1159,7 @@ if ($allow_sig == true) {
     echo "                                                <tr>\n";
     echo "                                                  <td align=\"left\" colspan=\"2\">\n";
     echo "                                                    <div class=\"sig_toggle\" style=\"display: ", (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) ? "block" : "none", "\">\n";
-    echo "                                                      ", form_textarea("sig_text", $sig_text, 5, 75, 'tabindex="7"', 'signature_content editor');
+    echo "                                                      ", form_textarea("sig_text", $sig_text, 7, 100, 'tabindex="7"', 'signature_content editor');
     echo "                                                    </div>\n";
     echo "                                                  </td>\n";
     echo "                                                </tr>\n";

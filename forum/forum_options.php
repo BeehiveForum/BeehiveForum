@@ -341,18 +341,6 @@ if (isset($_POST['save'])) {
         $user_prefs['POST_PAGE'] |= POST_SIGNATURE_DISPLAY;
     }
 
-    if (isset($_POST['emots_disable']) && $_POST['emots_disable'] == "Y") {
-        $user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISABLED;
-    }
-
-    if (isset($_POST['check_spelling']) && $_POST['check_spelling'] == "Y") {
-        $user_prefs['POST_PAGE'] |= POST_CHECK_SPELLING;
-    }
-
-    if (isset($_POST['post_links']) && $_POST['post_links'] == "Y") {
-        $user_prefs['POST_PAGE'] |= POST_AUTO_LINKS;
-    }
-
     // User's UID for updating with.
     $uid = session::get_value('UID');
 
@@ -377,7 +365,7 @@ $user_prefs = user_get_prefs($uid);
 
 // Set the default POST_PAGE options if none set
 if (!isset($user_prefs['POST_PAGE']) || $user_prefs['POST_PAGE'] == 0) {
-    $user_prefs['POST_PAGE']  = POST_EMOTICONS_DISPLAY | POST_AUTO_LINKS | POST_SIGNATURE_DISPLAY;
+    $user_prefs['POST_PAGE']  = POST_EMOTICONS_DISPLAY | POST_SIGNATURE_DISPLAY;
 }
 
 // Check to see if we should show the set for all forums checkboxes
@@ -609,42 +597,6 @@ echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", gettext("Start page"), ":</td>\n";
 echo "                  <td align=\"left\">", form_dropdown_array("start_page", array(START_PAGE_NORMAL => gettext("Start"), START_PAGE_MESSAGES => gettext("Messages"), START_PAGE_INBOX => gettext("Inbox"), START_PAGE_THREAD_LIST => gettext("Start page with thread list")), (isset($user_prefs['START_PAGE'])) ? $user_prefs['START_PAGE'] : 0), "</td>\n";
 echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("start_page_global", "Y", '', (isset($user_prefs['START_PAGE_GLOBAL']) ? $user_prefs['START_PAGE_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("start_page_global", 'Y'), "&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
-echo "            </td>\n";
-echo "          </tr>\n";
-echo "        </table>\n";
-echo "        <br />\n";
-echo "        <table class=\"box\" width=\"100%\">\n";
-echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"posthead\">\n";
-echo "              <table class=\"posthead\" width=\"100%\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">", gettext("Post Page"), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" rowspan=\"15\" width=\"1%\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("emots_toggle", "Y", gettext("Display emoticons panel"), $user_prefs['POST_PAGE'] & POST_EMOTICONS_DISPLAY), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("sig_toggle", "Y", gettext("Display signature"), $user_prefs['POST_PAGE'] & POST_SIGNATURE_DISPLAY), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("emots_disable", "Y", gettext("Disable emoticons in messages by default"), $user_prefs['POST_PAGE'] & POST_EMOTICONS_DISABLED), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("check_spelling", "Y", gettext("Automatically check spelling"), $user_prefs['POST_PAGE'] & POST_CHECK_SPELLING), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("post_links", "Y", gettext("Automatically parse URLs in messages by default"), $user_prefs['POST_PAGE'] & POST_AUTO_LINKS), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

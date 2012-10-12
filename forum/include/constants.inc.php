@@ -157,10 +157,7 @@ define('STYLE_WRITE_ERROR', 2);
 
 // Constants for post page preferences
 define('POST_EMOTICONS_DISPLAY', 2);
-define('POST_EMOTICONS_DISABLED', 32);
-define('POST_AUTO_LINKS', 64);
 define('POST_SIGNATURE_DISPLAY', 128);
-define('POST_CHECK_SPELLING', 256);
 define('POLL_ADVANCED_DISPLAY', 1024);
 define('POLL_ADDITIONAL_MESSAGE_DISPLAY', 2048);
 define('POLL_EDIT_SOFT_DISPLAY', 4096);

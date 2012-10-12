@@ -145,6 +145,15 @@ function emoticons_apply($content)
     return $content;
 }
 
+function emoticons_strip($content)
+{
+    return preg_replace(
+        '/<span class="emoticon e_[^"]+" title="([^"]+)"><span class="e__">\1<\/span><\/span>/Uu',
+        '$1',
+        $content
+    );
+}
+
 function emoticons_get_available($include_text_none = true)
 {
     $emoticon_sets_normal = array();

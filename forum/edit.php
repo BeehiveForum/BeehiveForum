@@ -113,24 +113,6 @@ $page_prefs = session::get_post_page_prefs();
 
 $valid = true;
 
-if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
-    $emots_enabled = false;
-} else {
-    $emots_enabled = true;
-}
-
-if (($page_prefs & POST_AUTO_LINKS) > 0) {
-    $links_enabled = true;
-} else {
-    $links_enabled = false;
-}
-
-if (($page_prefs & POST_CHECK_SPELLING) > 0) {
-    $spelling_enabled = true;
-} else {
-    $spelling_enabled = false;
-}
-
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];
 } else{
@@ -139,71 +121,11 @@ if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
 
 post_save_attachment_id($tid, $pid, $aid);
 
-$allow_html = true;
-
-$allow_sig = true;
-
-if (isset($t_fid) && !session::check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
-    $allow_html = false;
-}
-
-if (isset($t_fid) && !session::check_perm(USER_PERM_SIGNATURE, $t_fid)) {
-    $allow_sig = false;
-}
-
-if ($allow_html == false) {
-
-    $t_content = htmlentities_array($t_content);
-    $t_sig = htmlentities_array($t_sig);
-}
-
-if (isset($_POST['apply']) || isset($_POST['preview'])) {
-
-    if (isset($_POST['t_post_emots'])) {
-
-        if ($_POST['t_post_emots'] == "disabled") {
-            $emots_enabled = false;
-        } else {
-            $emots_enabled = true;
-        }
-
-    } else {
-
-        $emots_enabled = true;
-    }
-
-    if (isset($_POST['t_post_links'])) {
-
-        if ($_POST['t_post_links'] == "enabled") {
-            $links_enabled = true;
-        } else {
-            $links_enabled = false;
-        }
-
-    } else {
-
-        $links_enabled = false;
-    }
-
-    if (isset($_POST['t_check_spelling'])) {
-
-        if ($_POST['t_check_spelling'] == "enabled") {
-            $spelling_enabled = true;
-        } else {
-            $spelling_enabled = false;
-        }
-
-    } else {
-
-        $spelling_enabled = false;
-    }
-}
-
 if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = fix_html($_POST['t_content'], $emots_enabled, $links_enabled);
+        $t_content = fix_html(emoticons_strip($_POST['t_content']));
 
         if (attachments_embed_check($t_content)) {
 
@@ -232,6 +154,23 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
 if (!isset($t_content)) $t_content = "";
 
 if (!isset($t_sig)) $t_sig = "";
+
+$allow_html = true;
+$allow_sig = true;
+
+if (isset($t_fid) && !session::check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
+    $allow_html = false;
+}
+
+if (isset($t_fid) && !session::check_perm(USER_PERM_SIGNATURE, $t_fid)) {
+    $allow_sig = false;
+}
+
+if ($allow_html == false) {
+
+    $t_content = htmlentities_array($t_content);
+    $t_sig = htmlentities_array($t_sig);
+}
 
 if ($valid && isset($_POST['preview'])) {
 
@@ -346,11 +285,7 @@ if ($valid && isset($_POST['preview'])) {
 
             $from_uid = $edit_message['FROM_UID'];
 
-            $parsed_message = new MessageTextParse($edit_message['CONTENT'], $emots_enabled, $links_enabled);
-
-            $emots_enabled = $parsed_message->getEmoticons();
-
-            $links_enabled = $parsed_message->getLinks();
+            $parsed_message = new MessageTextParse($edit_message['CONTENT']);
 
             $t_content = $parsed_message->getMessage();
 
@@ -368,18 +303,18 @@ if ($valid && isset($_POST['preview'])) {
 
 $page_title = sprintf(gettext("Edit message %s"), $msg);
 
-html_draw_top("title=$page_title", "resize_width=720", "basetarget=_blank", "attachments.js", "dictionary.js", "emoticons.js", "post.js", 'class=window_title');
+html_draw_top("title=$page_title", "resize_width=785", "basetarget=_blank", "attachments.js", "dictionary.js", "emoticons.js", "post.js", 'class=window_title');
 
 echo "<h1>$page_title</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    html_display_error_array($error_msg_array, '720', 'left');
+    html_display_error_array($error_msg_array, '785', 'left');
 }
 
 echo "<br /><form accept-charset=\"utf-8\" name=\"f_post\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('msg', htmlentities_array($msg)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\" class=\"max_width\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\" class=\"max_width\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -388,7 +323,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "              <table class=\"posthead\" width=\"720\">\n";
+    echo "              <table class=\"posthead\" width=\"785\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\">", gettext("Message Preview"), "</td>\n";
     echo "                </tr>\n";
@@ -401,7 +336,7 @@ if ($valid && isset($_POST['preview'])) {
     echo "              </table>\n";
 }
 
-echo "              <table class=\"posthead\" width=\"720\">\n";
+echo "              <table class=\"posthead\" width=\"785\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", sprintf(gettext("Edit message %s"), $msg), "</td>\n";
 echo "                </tr>\n";
@@ -436,18 +371,6 @@ if ($edit_message['TO_UID'] > 0) {
 }
 
 echo "                        </td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\"><h2>", gettext("Message options"), "</h2></td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_post_links", "enabled", gettext("Automatically parse URLs"), $links_enabled), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_check_spelling", "enabled", gettext("Automatically check spelling"), $spelling_enabled), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_post_emots", "disabled", gettext("Disable emoticons"), !$emots_enabled), "</td>\n";
 echo "                      </tr>\n";
 
 if (($user_emoticon_pack = session::get_value('EMOTICONS')) === false) {
@@ -490,12 +413,12 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
 
 echo "                    </table>\n";
 echo "                  </td>\n";
-echo "                  <td align=\"left\" valign=\"top\" width=\"500\">\n";
-echo "                    <table class=\"posthead\" width=\"500\">\n";
+echo "                  <td align=\"left\" valign=\"top\" width=\"575\">\n";
+echo "                    <table class=\"posthead\" width=\"575\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 echo "                          <h2>", gettext("Message"), "</h2>\n";
-echo "                          ", form_textarea("t_content", htmlentities_array($t_content), 20, 75, 'tabindex="1"', 'post_content editor focus'), "\n";
+echo "                          ", form_textarea("t_content", htmlentities_array(emoticons_apply($t_content)), 22, 100, 'tabindex="1"', 'post_content editor focus'), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -536,7 +459,7 @@ if ($allow_sig == true) {
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" colspan=\"2\">\n";
     echo "                                <div class=\"sig_toggle\" style=\"display: ", (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) ? "block" : "none", "\">\n";
-    echo "                                  ", form_textarea("t_sig", htmlentities_array($t_sig), 5, 75, 'tabindex="7"', 'signature_content editor');
+    echo "                                  ", form_textarea("t_sig", htmlentities_array(emoticons_apply($t_sig)), 7, 100, 'tabindex="7"', 'signature_content editor');
     echo "                                </div>\n";
     echo "                              </td>\n";
     echo "                            </tr>\n";

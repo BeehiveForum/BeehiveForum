@@ -137,66 +137,6 @@ $valid = true;
 // Array to hold error messages
 $error_msg_array = array();
 
-if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
-    $emots_enabled = false;
-} else {
-    $emots_enabled = true;
-}
-
-if (($page_prefs & POST_AUTO_LINKS) > 0) {
-    $links_enabled = true;
-} else {
-    $links_enabled = false;
-}
-
-if (($page_prefs & POST_CHECK_SPELLING) > 0) {
-    $spelling_enabled = true;
-} else {
-    $spelling_enabled = false;
-}
-
-if (isset($_POST['send']) || isset($_POST['preview']) || isset($_POST['emots_toggle'])) {
-
-    if (isset($_POST['t_post_emots'])) {
-
-        if ($_POST['t_post_emots'] == "disabled") {
-            $emots_enabled = false;
-        } else {
-            $emots_enabled = true;
-        }
-
-    } else {
-
-        $emots_enabled = false;
-    }
-
-    if (isset($_POST['t_post_links'])) {
-
-       if ($_POST['t_post_links'] == "enabled") {
-            $links_enabled = true;
-       } else {
-            $links_enabled = false;
-       }
-
-    } else {
-
-       $links_enabled = false;
-    }
-
-    if (isset($_POST['t_check_spelling'])) {
-
-        if ($_POST['t_check_spelling'] == "enabled") {
-            $spelling_enabled = true;
-        } else {
-            $spelling_enabled = false;
-        }
-
-    } else {
-
-        $spelling_enabled = false;
-    }
-}
-
 if (isset($_POST['emots_toggle'])) {
 
     if (isset($_POST['t_subject']) && strlen(trim($_POST['t_subject'])) > 0) {
@@ -204,7 +144,7 @@ if (isset($_POST['emots_toggle'])) {
     }
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-        $t_content = fix_html($_POST['t_content']);
+        $t_content = fix_html(emoticons_strip($_POST['t_content']));
     }
 
     if (isset($_POST['to_radio']) && strlen(trim($_POST['to_radio'])) > 0) {
@@ -254,7 +194,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = fix_html($_POST['t_content']);
+        $t_content = fix_html(emoticons_strip($_POST['t_content']));
 
     } else {
 
@@ -378,7 +318,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = fix_html($_POST['t_content']);
+        $t_content = fix_html(emoticons_strip($_POST['t_content']));
 
     } else {
 
@@ -473,11 +413,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $t_subject = $pm_data['SUBJECT'];
 
-        $parsed_message = new MessageTextParse($pm_data['CONTENT'], $emots_enabled, $links_enabled);
-
-        $emots_enabled = $parsed_message->getEmoticons();
-
-        $links_enabled = $parsed_message->getLinks();
+        $parsed_message = new MessageTextParse($pm_data['CONTENT']);
 
         $t_content = $parsed_message->getMessage();
 

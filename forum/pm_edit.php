@@ -90,66 +90,6 @@ $valid = true;
 // Then just do something like $allow_html = forum_allow_html_pms() ? true : false
 $allow_html = true;
 
-if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
-    $emots_enabled = false;
-} else {
-    $emots_enabled = true;
-}
-
-if (($page_prefs & POST_AUTO_LINKS) > 0) {
-    $links_enabled = true;
-} else {
-    $links_enabled = false;
-}
-
-if (($page_prefs & POST_CHECK_SPELLING) > 0) {
-    $spelling_enabled = true;
-} else {
-    $spelling_enabled = false;
-}
-
-if (isset($_POST['apply']) || isset($_POST['preview']) || isset($_POST['emots_toggle'])) {
-
-    if (isset($_POST['t_post_emots'])) {
-
-        if ($_POST['t_post_emots'] == "disabled") {
-            $emots_enabled = false;
-        } else {
-            $emots_enabled = true;
-        }
-
-    } else {
-
-        $emots_enabled = false;
-    }
-
-    if (isset($_POST['t_post_links'])) {
-
-       if ($_POST['t_post_links'] == "enabled") {
-            $links_enabled = true;
-       } else {
-            $links_enabled = false;
-       }
-
-    } else {
-
-       $links_enabled = false;
-    }
-
-    if (isset($_POST['t_check_spelling'])) {
-
-        if ($_POST['t_check_spelling'] == "enabled") {
-            $spelling_enabled = true;
-        } else {
-            $spelling_enabled = false;
-        }
-
-    } else {
-
-        $spelling_enabled = false;
-    }
-}
-
 if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_subject']) && strlen(trim($_POST['t_subject'])) > 0) {
@@ -164,7 +104,7 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = fix_html($_POST['t_content']);
+        $t_content = fix_html(emoticons_strip($_POST['t_content']));
 
         if (mb_strlen($t_content) >= 65535) {
 
@@ -224,7 +164,7 @@ if ($valid && isset($_POST['preview'])) {
     }
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-        $t_content = fix_html($_POST['t_content']);
+        $t_content = fix_html(emoticons_strip($_POST['t_content']));
     }
 
     if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
@@ -261,11 +201,7 @@ if ($valid && isset($_POST['preview'])) {
             pm_edit_refuse();
         }
 
-        $parsed_message = new MessageTextParse(pm_get_content($mid), $emots_enabled, $links_enabled);
-
-        $emots_enabled = $parsed_message->getEmoticons();
-
-        $links_enabled = $parsed_message->getLinks();
+        $parsed_message = new MessageTextParse(pm_get_content($mid));
 
         $t_content = $parsed_message->getMessage();
 
@@ -277,19 +213,19 @@ if ($valid && isset($_POST['preview'])) {
     }
 }
 
-html_draw_top(sprintf("title=%s", gettext("Private Messages")), "resize_width=720", "edit.js", "pm.js", "dictionary.js", "emoticons.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Private Messages")), "resize_width=785", "edit.js", "pm.js", "dictionary.js", "emoticons.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
 
 echo "<h1>", gettext("Private Messages"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Message"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    html_display_error_array($error_msg_array, '720', 'left');
+    html_display_error_array($error_msg_array, '785', 'left');
 }
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"pm_edit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('mid', htmlentities_array($mid)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -298,7 +234,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "              <table class=\"posthead\" width=\"720\">\n";
+    echo "              <table class=\"posthead\" width=\"785\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\">", gettext("Message Preview"), "</td>\n";
     echo "                </tr>";
@@ -311,7 +247,7 @@ if ($valid && isset($_POST['preview'])) {
     echo "              </table>\n";
 }
 
-echo "              <table width=\"720\" class=\"posthead\">\n";
+echo "              <table width=\"785\" class=\"posthead\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Edit Message"), "</td>\n";
 echo "                </tr>\n";
@@ -329,16 +265,6 @@ echo "                        <td align=\"left\"><h2>", gettext("To"), "</h2></t
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), true), "</a></td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\"><h2>", gettext("Message options"), "</h2>\n";
-echo "                          ".form_checkbox("t_post_links", "enabled", gettext("Automatically parse URLs"), $links_enabled)."<br />\n";
-echo "                          ".form_checkbox("t_check_spelling", "enabled", gettext("Automatically check spelling"), $spelling_enabled)."<br />\n";
-echo "                          ".form_checkbox("t_post_emots", "disabled", gettext("Disable emoticons"), !$emots_enabled)."\n";
-echo "                        </td>\n";
 echo "                      </tr>\n";
 
 if (($user_emoticon_pack = session::get_value('EMOTICONS')) === false) {
@@ -381,12 +307,12 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
 
 echo "                    </table>\n";
 echo "                  </td>\n";
-echo "                  <td align=\"left\" width=\"500\" valign=\"top\">\n";
+echo "                  <td align=\"left\" width=\"575\" valign=\"top\">\n";
 echo "                    <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">";
 echo "                         <h2>", gettext("Message"), "</h2>\n";
-echo "                         ", form_textarea("t_content", htmlentities_array($t_content), 20, 75, 'tabindex="1"', 'post_content editor focus'), "\n";
+echo "                         ", form_textarea("t_content", htmlentities_array(emoticons_apply($t_content)), 22, 100, 'tabindex="1"', 'post_content editor focus'), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

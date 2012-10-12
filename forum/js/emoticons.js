@@ -27,16 +27,20 @@ $(beehive).bind('init', function() {
 
         var element = CKEDITOR.dom.element.createFromHtml(
             $.sprintf(
-                '<span class="%s" contenteditable="false"><span class="e__" contenteditable="false">%s</span></span>',
+                '<span class="%s" title="%s"><span class="e__">%s</span></span>',
                 $emoticon.attr('class'),
+                $emoticon.attr('title'),
                 $emoticon.attr('title')
             )
         );
 
-        /*element.setAttributes({
+        element.setAttributes({
             contentEditable: 'false',
-            'data-cke-emoticon': 1,
-        });*/
+        });
+
+        for (var key in element.children) {
+            element.children[key].attributes.contentEditable = "false";
+        }
 
         beehive.active_editor.insertElement(element);
         beehive.active_editor.insertText(' ');

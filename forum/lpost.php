@@ -63,24 +63,6 @@ $uid = session::get_value('UID');
 
 $page_prefs = session::get_post_page_prefs();
 
-if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
-    $emots_enabled = false;
-} else {
-    $emots_enabled = true;
-}
-
-if (($page_prefs & POST_AUTO_LINKS) > 0) {
-    $links_enabled = true;
-} else {
-    $links_enabled = false;
-}
-
-if (($page_prefs & POST_CHECK_SPELLING) > 0) {
-    $spelling_enabled = true;
-} else {
-    $spelling_enabled = false;
-}
-
 if (($high_interest = session::get_value('MARK_AS_OF_INT')) === false) {
     $high_interest = "N";
 }

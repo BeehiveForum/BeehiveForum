@@ -122,50 +122,33 @@ h2 {
     text-decoration: none;
 }
 
-.ac_even {
-	border-bottom: 1px solid #C8D7E6;
-}
-
-.ac_odd {
-	border-bottom: 1px solid #C8D7E6;
-}
-
-.ac_over {
-	background-color: #EAEFF4;
-}
-
-.ac_results {
-	background-color: white;
-    border-bottom: 1px solid #F9F9F6;
-    border-left: 1px solid #82827E;
-    border-right: 1px solid #F9F9F6;
-    border-top: 1px solid #82827E;
+ul.ui-autocomplete {
+    background-color: white;
+    border-color: #82827E #F9F9F6 #F9F9F6 #82827E;
+    border-style: solid;
+    border-width: 1px;
     overflow: hidden;
-    padding: 0px;
-    z-index: 99999;
+    padding: 0;
 }
 
-.ac_results li {
-	cursor: default;
+ul.ui-autocomplete li {
+    cursor: default;
     display: block;
-    font: menu;
     font-size: 100%;
     line-height: 16px;
-    margin: 0px;
-    overflow: hidden;
-    padding: 2px 5px;
-}
-
-.ac_results li:last-child {
-	border: none;
-}
-
-.ac_results ul {
-	list-style: none;
-    list-style-position: outside;
     margin: 0;
-    padding: 0;
-    width: 100%;
+    overflow: hidden;
+}
+
+ul.ui-autocomplete li a {
+    display: block;
+    padding: 3px;
+    text-decoration: none;
+}
+
+ul.ui-autocomplete li a:hover {
+    background-color: #A6BED7;
+    color: #FFFFFF;
 }
 
 .activeusers {
@@ -252,7 +235,6 @@ h2 {
     border-right: 1px solid #F9F9F6;
     border-top: 1px solid #82827E;
     float: left;
-    padding-left: 2px;
 }
 
 .bhinputtext,
@@ -858,9 +840,9 @@ div.poll_option_list ol li {
 }
 
 .post_content {
-	max-width: 480px;
-    min-width: 480px;
-    width: 480px;
+    max-width: 550px;
+    min-width: 550px;
+    width: 550px;
 }
 
 .post_folder_dropdown {
@@ -1085,6 +1067,7 @@ div.poll_option_list ol li {
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
+    padding-left: 2px;
 }
 
 .search_keyword_highlight {
@@ -1093,9 +1076,9 @@ div.poll_option_list ol li {
 }
 
 .signature_content {
-	max-width: 480px;
-    min-width: 480px;
-    width: 480px;
+    max-width: 550px;
+    min-width: 550px;
+    width: 550px;
 }
 
 .small_optional_text {

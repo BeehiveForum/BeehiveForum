@@ -186,14 +186,15 @@
         afterInit: function (editor) {
 
             var dataProcessor = editor.dataProcessor,
-                dataFilter = dataProcessor && dataProcessor.dataFilter;
+                dataFilter = dataProcessor && dataProcessor.dataFilter,
+                htmlFilter = dataProcessor && dataProcessor.htmlFilter;
 
             if (dataFilter) {
 
                 dataFilter.addRules({
                     elements: {
 
-                        'span': function (element) {
+                        span: function (element) {
 
                             var test = element.attributes
                                 && element.attributes.class
@@ -214,6 +215,32 @@
                     }
                 },
                 9);
+            }
+
+            if (htmlFilter) {
+
+                htmlFilter.addRules({
+                    elements: {
+                        $: function (element) {
+
+                            var test = element.attributes
+                                && element.attributes.class
+                                && element.attributes.class.match(/emoticon/);
+
+                            if (!test || test.length == 0) {
+                                return element;
+                            }
+
+                            delete element.attributes.contenteditable;
+
+                            for (var key in element.children) {
+                                delete element.children[key].attributes.contenteditable;
+                            }
+
+                            return element;
+                        }
+                    }
+                });
             }
         }
     });

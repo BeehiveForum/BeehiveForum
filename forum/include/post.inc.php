@@ -630,11 +630,7 @@ class MessageTextParse
 
     protected $original;
 
-    protected $emoticons;
-
-    protected $links;
-
-    public function __construct($message, $emoticons = true, $links = true)
+    public function __construct($message)
     {
         $this->original = $message;
 
@@ -655,25 +651,9 @@ class MessageTextParse
 
         $message = implode('', $message_parts);
 
-        if ($emoticons && preg_match('/^<noemots>.*<\/noemots>$/Dsu', $message) > 0) {
-            $emoticons = false;
-        }
+        $this->message = fix_html($message);
 
-        $links_replace_count = 0;
-
-        $message = preg_replace('/<a href="(http:\/\/)?([^"]*)">((http:\/\/)?\\2)<\/a>/u', '\3', $message, -1, $links_replace_count);
-
-        if ($links_replace_count > 0) {
-            $links = true;
-        }
-
-        $this->message = fix_html($message, $emoticons, $links);
-
-        $this->sig = fix_html($signature, false, true);
-
-        $this->emoticons = $emoticons;
-
-        $this->links = $links;
+        $this->sig = fix_html($signature);
     }
 
     public function getMessage()
@@ -684,16 +664,6 @@ class MessageTextParse
     public function getSig()
     {
         return $this->sig;
-    }
-
-    public function getEmoticons()
-    {
-        return $this->emoticons;
-    }
-
-    public function getLinks()
-    {
-        return $this->links;
     }
 
     public function getOriginal()

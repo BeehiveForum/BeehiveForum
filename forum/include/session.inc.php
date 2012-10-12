@@ -220,9 +220,7 @@ abstract class session
     {
         if (!array_key_exists('POST_PAGE', $_SESSION)) {
 
-            $_SESSION['POST_PAGE'] = (double)POST_EMOTICONS_DISPLAY
-                | POST_AUTO_LINKS
-                | POST_SIGNATURE_DISPLAY
+            $_SESSION['POST_PAGE'] = (double)POST_SIGNATURE_DISPLAY
                 | POLL_ADVANCED_DISPLAY
                 | POLL_ADDITIONAL_MESSAGE_DISPLAY;
         }

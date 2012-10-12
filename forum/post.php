@@ -63,24 +63,6 @@ $uid = session::get_value('UID');
 
 $page_prefs = session::get_post_page_prefs();
 
-if (($page_prefs & POST_EMOTICONS_DISABLED) > 0) {
-    $emots_enabled = false;
-} else {
-    $emots_enabled = true;
-}
-
-if (($page_prefs & POST_AUTO_LINKS) > 0) {
-    $links_enabled = true;
-} else {
-    $links_enabled = false;
-}
-
-if (($page_prefs & POST_CHECK_SPELLING) > 0) {
-    $spelling_enabled = true;
-} else {
-    $spelling_enabled = false;
-}
-
 if (($high_interest = session::get_value('MARK_AS_OF_INT')) === false) {
     $high_interest = "N";
 }
@@ -90,6 +72,8 @@ $valid = true;
 $new_thread = false;
 
 $t_to_uid = 0;
+
+$t_to_user = '';
 
 $t_sig = user_get_sig($uid);
 
@@ -144,45 +128,6 @@ if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
 
 if (isset($_POST['post']) || isset($_POST['preview']) || isset($_POST['move']) || isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
 
-    if (isset($_POST['t_post_emots'])) {
-
-        if ($_POST['t_post_emots'] == "disabled") {
-            $emots_enabled = false;
-        } else {
-            $emots_enabled = true;
-        }
-
-    } else {
-
-        $emots_enabled = true;
-    }
-
-    if (isset($_POST['t_post_links'])) {
-
-        if ($_POST['t_post_links'] == "enabled") {
-            $links_enabled = true;
-        } else {
-            $links_enabled = false;
-        }
-
-    } else {
-
-        $links_enabled = false;
-    }
-
-    if (isset($_POST['t_check_spelling'])) {
-
-        if ($_POST['t_check_spelling'] == "enabled") {
-            $spelling_enabled = true;
-        } else {
-            $spelling_enabled = false;
-        }
-
-    } else {
-
-        $spelling_enabled = false;
-    }
-
     if (isset($_POST['t_post_interest'])) {
 
         if ($_POST['t_post_interest'] == "Y") {
@@ -227,7 +172,7 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = fix_html($_POST['t_content'], $emots_enabled, $links_enabled);
+        $t_content = fix_html(emoticons_strip($_POST['t_content']));
 
         if (attachments_embed_check($t_content)) {
 
@@ -256,7 +201,7 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 if (isset($_POST['more'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-        $t_content = fix_html($_POST['t_content'], $emots_enabled, $links_enabled);
+        $t_content = fix_html(emoticons_strip($_POST['t_content']));
     }
 }
 
@@ -283,7 +228,7 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
     }
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-        $t_content = fix_html($_POST['t_content'], $emots_enabled, $links_enabled);
+        $t_content = fix_html(emoticons_strip($_POST['t_content']));
     }
 
     if (isset($_POST['t_sig'])) {
@@ -443,33 +388,11 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
     }
 }
 
-if (isset($_POST['to_radio']) && strlen(trim($_POST['to_radio'])) > 0) {
-    $to_radio = trim($_POST['to_radio']);
-} else {
-    $to_radio = '';
-}
+if (isset($_POST['t_to_user']) && strlen(trim($_POST['t_to_user'])) > 0) {
 
-if (isset($_POST['t_to_uid_in_thread']) && is_numeric($_POST['t_to_uid_in_thread'])) {
-    $t_to_uid_in_thread = $_POST['t_to_uid_in_thread'];
-} else {
-    $t_to_uid_in_thread = '';
-}
+    $t_to_user = trim($_POST['t_to_user']);
 
-if (isset($_POST['t_to_uid_recent']) && is_numeric($_POST['t_to_uid_recent'])) {
-    $t_to_uid_recent = $_POST['t_to_uid_recent'];
-} else {
-    $t_to_uid_recent = '';
-}
-
-if (isset($_POST['t_to_uid_others']) && strlen(trim($_POST['t_to_uid_others'])) > 0) {
-    $t_to_uid_others = trim($_POST['t_to_uid_others']);
-} else {
-    $t_to_uid_others = '';
-}
-
-if ($to_radio == 'others') {
-
-    if (($to_user = user_get_by_logon($t_to_uid_others))) {
+    if (($to_user = user_get_by_logon($t_to_user))) {
 
         $t_to_uid = $to_user['UID'];
 
@@ -479,17 +402,9 @@ if ($to_radio == 'others') {
         $valid = false;
     }
 
-} else if ($to_radio == 'in_thread') {
-
-    $t_to_uid = $t_to_uid_in_thread;
-
-} else if ($to_radio == 'recent') {
-
-    $t_to_uid = $t_to_uid_recent;
-
 } else if (isset($reply_to_tid) && isset($reply_to_pid)) {
 
-    if (!$t_to_uid = message_get_user($reply_to_tid, $reply_to_pid)) {
+    if (!($t_to_uid = message_get_user($reply_to_tid, $reply_to_pid))) {
         $t_to_uid = 0;
     }
 }
@@ -661,22 +576,22 @@ if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !session::che
     html_draw_error(gettext("This thread is closed, you cannot post in it!"));
 }
 
-html_draw_top(sprintf("title=%s", gettext("Post message")), "resize_width=720", "basetarget=_blank", "post.js", "attachments.js", "emoticons.js", "dictionary.js", 'search.js', 'search_popup.js', 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Post message")), "resize_width=785", "basetarget=_blank", "post.js", "attachments.js", "emoticons.js", "dictionary.js", 'search.js', 'search_popup.js', 'class=window_title');
 
 echo "<h1>", gettext("Post message"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    html_display_error_array($error_msg_array, '720', 'left');
+    html_display_error_array($error_msg_array, '785', 'left');
 }
 
 if (!$new_thread && isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-    html_display_warning_msg(gettext("Warning: this thread is closed for posting to normal users."), '720', 'left');
+    html_display_warning_msg(gettext("Warning: this thread is closed for posting to normal users."), '785', 'left');
 }
 
 echo "<br /><form accept-charset=\"utf-8\" name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('t_dedupe', htmlentities_array($t_dedupe)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\" class=\"max_width\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\" class=\"max_width\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -685,7 +600,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "              <table class=\"posthead\" width=\"720\">\n";
+    echo "              <table class=\"posthead\" width=\"785\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\">", gettext("Message Preview"), "</td>\n";
     echo "                </tr>\n";
@@ -701,7 +616,6 @@ if ($valid && isset($_POST['preview'])) {
         $preview_message['TLOGON'] = $preview_tuser['LOGON'];
         $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
         $preview_message['TO_UID'] = $preview_tuser['UID'];
-
     }
 
     $preview_tuser = user_get($uid);
@@ -729,7 +643,7 @@ if ($valid && isset($_POST['preview'])) {
 
 if (!isset($t_threadtitle)) $t_threadtitle = "";
 
-echo "              <table class=\"posthead\" width=\"720\">\n";
+echo "              <table class=\"posthead\" width=\"785\">\n";
 
 if ($new_thread) {
 
@@ -782,40 +696,14 @@ if ($new_thread) {
 echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>", gettext("To"), "</h2></td>\n";
 echo "                      </tr>\n";
-
-if (!$new_thread) {
-
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_radio("to_radio", "in_thread", gettext("Users in thread"), true), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", post_draw_to_dropdown_in_thread($reply_to_tid, $t_to_uid, true, false), "</td>\n";
-    echo "                      </tr>\n";
-}
-
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_radio("to_radio", "recent", gettext("Recent Visitors"), $new_thread ? true : false), "</td>\n";
+echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text_search("t_to_user", htmlentities_array($t_to_user), false, false, SEARCH_LOGON, false, "", "post_to_others"), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", post_draw_to_dropdown_recent($t_to_uid, $new_thread), "</td>\n";
+echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_radio("to_radio", "others", gettext("Others")), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text_search("t_to_uid_others", "", false, false, SEARCH_LOGON, false, "", "post_to_others"), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\"><h2>", gettext("Message options"), "</h2></td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_post_links", "enabled", gettext("Automatically parse URLs"), $links_enabled), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_check_spelling", "enabled", gettext("Automatically check spelling"), $spelling_enabled), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_post_emots", "disabled", gettext("Disable emoticons"), !$emots_enabled), "</td>\n";
+echo "                        <td align=\"left\"><h2>", gettext("Thread options"), "</h2></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", form_checkbox("t_post_interest", "Y", gettext("Set thread to high interest"), $high_interest == "Y"), "</td>\n";
@@ -877,12 +765,12 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
 
 echo "                    </table>\n";
 echo "                  </td>\n";
-echo "                  <td align=\"left\" valign=\"top\" width=\"500\">\n";
-echo "                    <table class=\"posthead\" width=\"500\">\n";
+echo "                  <td align=\"left\" valign=\"top\" width=\"575\">\n";
+echo "                    <table class=\"posthead\" width=\"575\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 echo "                          <h2>", gettext("Message"), "</h2>\n";
-echo "                          ", form_textarea("t_content", htmlentities_array($t_content), 20, 75, 'tabindex="1"', 'post_content editor focus'), "\n";
+echo "                          ", form_textarea("t_content", htmlentities_array(emoticons_apply($t_content)), 22, 100, 'tabindex="1"', 'post_content editor focus'), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -934,7 +822,7 @@ if ($allow_sig == true) {
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" colspan=\"2\">\n";
     echo "                                <div class=\"sig_toggle\" style=\"display: ", (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) ? "block" : "none", "\">\n";
-    echo "                                  ", form_textarea("t_sig", htmlentities_array($t_sig), 5, 75, 'tabindex="7"', 'signature_content editor');
+    echo "                                  ", form_textarea("t_sig", htmlentities_array(emoticons_apply($t_sig)), 7, 100, 'tabindex="7"', 'signature_content editor');
     echo "                                </div>\n";
     echo "                              </td>\n";
     echo "                            </tr>\n";
@@ -953,7 +841,7 @@ echo "              </table>\n";
 
 if (!$new_thread && $reply_to_pid > 0) {
 
-    echo "              <table class=\"posthead\" width=\"720\">\n";
+    echo "              <table class=\"posthead\" width=\"785\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\">", gettext("In reply to"), "</td>\n";
     echo "                </tr>\n";
@@ -987,7 +875,7 @@ echo "  </table>\n";
 if (!$new_thread) {
 
     echo "  <br />\n";
-    echo "  <table  width=\"720\">\n";
+    echo "  <table  width=\"785\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\"><img src=\"", html_style_image('current_thread.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"index.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\" title=\"", gettext("Review entire thread in new window"), "\">", gettext("Review Thread"), "</a></td>\n";
     echo "    </tr>\n";

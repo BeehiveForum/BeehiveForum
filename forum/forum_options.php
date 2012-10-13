@@ -56,10 +56,15 @@ $available_langs = lang_get_available();
 // Get an array of available timezones.
 $available_timezones = get_available_timezones();
 
+// User UID
+$uid = session::get_value('UID');
+
+// Get User Prefs
+$user_prefs = user_get_prefs($uid);
+
 // Submit code starts here.
 if (isset($_POST['save'])) {
 
-    $user_prefs = array();
     $user_prefs_global = array();
 
     if (isset($_POST['timezone']) && in_array($_POST['timezone'], array_keys($available_timezones))) {
@@ -331,18 +336,11 @@ if (isset($_POST['save'])) {
         $user_prefs_global['START_PAGE'] = false;
     }
 
-    $user_prefs['POST_PAGE'] = 0;
-
-    if (isset($_POST['emots_toggle']) && $_POST['emots_toggle'] == "Y") {
-        $user_prefs['POST_PAGE'] |= POST_EMOTICONS_DISPLAY;
-    }
-
     if (isset($_POST['sig_toggle']) && $_POST['sig_toggle'] == "Y") {
-        $user_prefs['POST_PAGE'] |= POST_SIGNATURE_DISPLAY;
+        $user_prefs['POST_PAGE'] = $user_prefs['POST_PAGE'] | POST_SIGNATURE_DISPLAY;
+    } else {
+        $user_prefs['POST_PAGE'] = $user_prefs['POST_PAGE'] & ~POST_SIGNATURE_DISPLAY;
     }
-
-    // User's UID for updating with.
-    $uid = session::get_value('UID');
 
     // Update USER_PREFS
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
@@ -356,16 +354,6 @@ if (isset($_POST['save'])) {
         $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
     }
-}
-
-if (!isset($uid)) $uid = session::get_value('UID');
-
-// Get User Prefs
-$user_prefs = user_get_prefs($uid);
-
-// Set the default POST_PAGE options if none set
-if (!isset($user_prefs['POST_PAGE']) || $user_prefs['POST_PAGE'] == 0) {
-    $user_prefs['POST_PAGE']  = POST_EMOTICONS_DISPLAY | POST_SIGNATURE_DISPLAY;
 }
 
 // Check to see if we should show the set for all forums checkboxes

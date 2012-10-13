@@ -510,9 +510,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
         'POST_PAGE' => $page_prefs
     );
 
-    $user_prefs_global = array();
-
-    if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+    if (!user_update_prefs($uid, $user_prefs)) {
 
         $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
@@ -1145,7 +1143,7 @@ echo "                                            <td align=\"left\">\n";
 
 if ($allow_sig == true) {
 
-    echo "                                              <table class=\"messagefoot\" width=\"486\" cellspacing=\"0\">\n";
+    echo "                                              <table class=\"messagefoot\" width=\"556\" cellspacing=\"0\">\n";
     echo "                                                <tr>\n";
     echo "                                                  <td align=\"left\" class=\"subhead\">", gettext("Signature"), "</td>\n";
 

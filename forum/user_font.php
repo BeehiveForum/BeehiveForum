@@ -64,7 +64,7 @@ switch ($fontsize) {
         $user_prefs = array(
             'FONT_SIZE' => $user_prefs['FONT_SIZE'] - 1
         );
-        
+
         break;
 
     case 'larger':
@@ -72,15 +72,15 @@ switch ($fontsize) {
         $user_prefs = array(
             'FONT_SIZE' => $user_prefs['FONT_SIZE'] + 1
         );
-        
+
         break;
-        
+
     default:
-    
+
         $user_prefs = array(
             'FONT_SIZE' => $user_prefs['FONT_SIZE']
         );
-        
+
         break;
 }
 
@@ -90,13 +90,8 @@ if ($user_prefs['FONT_SIZE'] < 5) $user_prefs['FONT_SIZE'] = 5;
 // Check the font size is not greater than 15
 if ($user_prefs['FONT_SIZE'] > 15) $user_prefs['FONT_SIZE'] = 15;
 
-// Apply the font size to this forum only.
-$user_prefs_global = array(
-    'FONT_SIZE' => false
-);
-
 // Update the user prefs.
-if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+if (!user_update_prefs($uid, $user_prefs)) {
     html_draw_error(gettext("Your user preferences could not be updated. Please try again later."));
 }
 

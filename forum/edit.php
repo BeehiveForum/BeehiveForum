@@ -257,9 +257,7 @@ if ($valid && isset($_POST['preview'])) {
         'POST_PAGE' => $page_prefs
     );
 
-    $user_prefs_global = array();
-
-    if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+    if (!user_update_prefs($uid, $user_prefs)) {
 
         $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
@@ -445,7 +443,7 @@ if ($allow_sig == true) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">\n";
-    echo "                          <table class=\"messagefoot\" width=\"486\" cellspacing=\"0\">\n";
+    echo "                          <table class=\"messagefoot\" width=\"556\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" class=\"subhead\">", gettext("Signature"), "</td>\n";
 

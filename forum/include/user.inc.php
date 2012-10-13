@@ -664,7 +664,6 @@ function user_get_last_ip_address($uid)
 
 function user_get_prefs($uid)
 {
-    // See user_update_prefs() below for an explanation of the prefs system.
     if (!$db = db::get()) return false;
 
     if (!is_numeric($uid)) return false;
@@ -758,55 +757,55 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
     // names of preferences that can be set globally
     $global_pref_names = array(
-        'FIRSTNAME', 
-        'LASTNAME', 
-        'DOB', 
-        'HOMEPAGE_URL', 
-        'PIC_URL', 
-        'EMAIL_NOTIFY', 
-        'TIMEZONE', 
-        'DL_SAVING', 
-        'MARK_AS_OF_INT', 
-        'POSTS_PER_PAGE', 
-        'FONT_SIZE', 
-        'STYLE', 
-        'EMOTICONS', 
-        'VIEW_SIGS', 
-        'START_PAGE', 
-        'LANGUAGE', 
-        'PM_NOTIFY', 
-        'PM_NOTIFY_EMAIL', 
-        'PM_SAVE_SENT_ITEM', 
-        'PM_INCLUDE_REPLY', 
-        'PM_AUTO_PRUNE', 
-        'PM_EXPORT_TYPE', 
-        'PM_EXPORT_FILE', 
-        'PM_EXPORT_ATTACHMENTS', 
-        'PM_EXPORT_STYLE', 
-        'PM_EXPORT_WORDFILTER', 
-        'DOB_DISPLAY', 
-        'ANON_LOGON', 
-        'SHOW_STATS', 
-        'IMAGES_TO_LINKS', 
-        'USE_WORD_FILTER', 
-        'USE_ADMIN_FILTER', 
-        'ALLOW_EMAIL', 
-        'USE_EMAIL_ADDR', 
-        'ALLOW_PM', 
-        'POST_PAGE', 
-        'SHOW_THUMBS', 
-        'ENABLE_WIKI_WORDS', 
-        'USE_MOVER_SPOILER', 
-        'USE_LIGHT_MODE_SPOILER', 
-        'USE_OVERFLOW_RESIZE', 
-        'PIC_AID', 
-        'AVATAR_URL', 
-        'AVATAR_AID', 
-        'REPLY_QUICK', 
-        'THREADS_BY_FOLDER', 
-        'THREAD_LAST_PAGE', 
-        'LEFT_FRAME_WIDTH', 
-        'SHOW_AVATARS', 
+        'FIRSTNAME',
+        'LASTNAME',
+        'DOB',
+        'HOMEPAGE_URL',
+        'PIC_URL',
+        'EMAIL_NOTIFY',
+        'TIMEZONE',
+        'DL_SAVING',
+        'MARK_AS_OF_INT',
+        'POSTS_PER_PAGE',
+        'FONT_SIZE',
+        'STYLE',
+        'EMOTICONS',
+        'VIEW_SIGS',
+        'START_PAGE',
+        'LANGUAGE',
+        'PM_NOTIFY',
+        'PM_NOTIFY_EMAIL',
+        'PM_SAVE_SENT_ITEM',
+        'PM_INCLUDE_REPLY',
+        'PM_AUTO_PRUNE',
+        'PM_EXPORT_TYPE',
+        'PM_EXPORT_FILE',
+        'PM_EXPORT_ATTACHMENTS',
+        'PM_EXPORT_STYLE',
+        'PM_EXPORT_WORDFILTER',
+        'DOB_DISPLAY',
+        'ANON_LOGON',
+        'SHOW_STATS',
+        'IMAGES_TO_LINKS',
+        'USE_WORD_FILTER',
+        'USE_ADMIN_FILTER',
+        'ALLOW_EMAIL',
+        'USE_EMAIL_ADDR',
+        'ALLOW_PM',
+        'POST_PAGE',
+        'SHOW_THUMBS',
+        'ENABLE_WIKI_WORDS',
+        'USE_MOVER_SPOILER',
+        'USE_LIGHT_MODE_SPOILER',
+        'USE_OVERFLOW_RESIZE',
+        'PIC_AID',
+        'AVATAR_URL',
+        'AVATAR_AID',
+        'REPLY_QUICK',
+        'THREADS_BY_FOLDER',
+        'THREAD_LAST_PAGE',
+        'LEFT_FRAME_WIDTH',
+        'SHOW_AVATARS',
         'SHOW_SHARE_LINKS'
     );
 
@@ -849,7 +848,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
         if (user_check_pref($pref_name, $pref_setting)) {
 
-            if (!isset($prefs_global_setting_array[$pref_name]) || $prefs_global_setting_array[$pref_name] == true) {
+            if (isset($prefs_global_setting_array[$pref_name]) && $prefs_global_setting_array[$pref_name] == true) {
 
                 if (in_array($pref_name, $global_pref_names)) {
 
@@ -875,9 +874,9 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         // Concat the values together, escaping them and enclosing them in quotes.
         $column_insert_values = implode("', '", array_map(array($db, 'escape'), array_values($global_prefs_array)));
 
-        // Concat the column names together, pass them through user_update_prefs_helper
+        // Concat the column names together, pass them through user_update_prefs_callback
         // which constructs a valid ON DUPLICATE KEY UPDATE statement for the INSERT.
-        $column_update_values = implode(", ", array_map('user_update_prefs_callback', array_keys($global_prefs_array)));
+        $column_update_values = implode(", ", array_map('user_update_prefs_callback_insert', array_keys($global_prefs_array)));
 
         // Construct the query and run it.
         $sql = "INSERT INTO USER_PREFS (`UID`, `$column_names`) VALUES('$uid', '$column_insert_values') ";
@@ -897,7 +896,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
             foreach ($forum_prefix_array as $forum_prefix) {
 
-                $update_prefs_sql = implode(", ", array_map('user_update_prefs_callback2', $update_prefs_array));
+                $update_prefs_sql = implode(", ", array_map('user_update_prefs_callback_update', $update_prefs_array));
 
                 $sql = "UPDATE LOW_PRIORITY `{$forum_prefix}USER_PREFS` SET $update_prefs_sql WHERE UID = '$uid'";
 
@@ -914,9 +913,9 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         // Concat the values together, escaping them and enclosing them in quotes.
         $column_insert_values = implode("', '", array_map(array($db, 'escape'), array_values($forum_prefs_array)));
 
-        // Concat the column names together, pass them through user_update_prefs_helper
+        // Concat the column names together, pass them through user_update_prefs_callback
         // which constructs a valid ON DUPLICATE KEY UPDATE statement for the INSERT.
-        $column_update_values = implode(", ", array_map('user_update_prefs_callback', array_keys($forum_prefs_array)));
+        $column_update_values = implode(", ", array_map('user_update_prefs_callback_insert', array_keys($forum_prefs_array)));
 
         // Construct the query and run it.
         $sql = "INSERT INTO `{$table_prefix}USER_PREFS` (`UID`, `$column_names`) ";
@@ -928,12 +927,12 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     return true;
 }
 
-function user_update_prefs_callback($column)
+function user_update_prefs_callback_insert($column)
 {
     return sprintf('%s = VALUES(%s)', $column, $column);
 }
 
-function user_update_prefs_callback2($column)
+function user_update_prefs_callback_update($column)
 {
     return sprintf("%s = ''", $column);
 }
@@ -1063,11 +1062,6 @@ function user_update_sig($uid, $content, $global_update = false)
     return true;
 }
 
-function user_update_global_sig($uid, $value, $global = true)
-{
-    return user_update_prefs($uid, array('VIEW_SIGS' => ($value == 'N') ? 'N' : 'Y'), array('VIEW_SIGS' => $global));
-}
-
 function user_guest_enabled()
 {
     if (forum_get_setting('guest_account_enabled', 'N')) {
@@ -1125,7 +1119,7 @@ function user_get_forthcoming_birthdays()
 function user_search_array_clean($user_search)
 {
     if (!($db = db::get())) return '';
-    
+
     return $db->escape(trim(str_replace("%", "", $user_search)));
 }
 
@@ -1274,7 +1268,7 @@ function user_get_relationships($uid, $page = 1)
     $user_get_peers_array = array();
 
     if (!is_numeric($uid)) return false;
-    
+
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
     $offset = calculate_page_offset($page, 10);
@@ -1409,7 +1403,7 @@ function user_search_relationships($user_search, $page = 1, $exclude_uid = 0)
     if (($result->num_rows == 0) && ($user_search_peers_count > 0) && ($page > 1)) {
         return user_search_relationships($user_search, $page - 1, $exclude_uid);
     }
-        
+
     while (($user_data = $result->fetch_assoc())) {
 
         if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {

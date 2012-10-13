@@ -252,22 +252,14 @@ switch ($_GET['action']) {
                 'SHOW_STATS' => 'Y'
             );
 
-            $user_prefs_global = array(
-                'SHOW_STATS' => false
-            );
-
         } else {
 
             $user_prefs = array(
                 'SHOW_STATS' => 'N'
             );
-
-            $user_prefs_global = array(
-                'SHOW_STATS' => false
-            );
         }
 
-        if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+        if (!user_update_prefs($uid, $user_prefs)) {
 
             header_status(500, 'Internal Server Error');
             exit;
@@ -291,11 +283,7 @@ switch ($_GET['action']) {
             'LEFT_FRAME_WIDTH' => abs($_GET['size'])
         );
 
-        $user_prefs_global = array(
-            'LEFT_FRAME_WIDTH' => false
-        );
-
-        if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+        if (!user_update_prefs($uid, $user_prefs)) {
 
             header_status(500, 'Internal Server Error');
             exit;
@@ -404,11 +392,7 @@ switch ($_GET['action']) {
 
         if ($user_prefs['FONT_SIZE'] > 15) $user_prefs['FONT_SIZE'] = 15;
 
-        $user_prefs_global = array(
-            'FONT_SIZE' => false
-        );
-
-        if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+        if (!user_update_prefs($uid, $user_prefs)) {
 
             header_status(500, 'Internal Server Error');
             exit;

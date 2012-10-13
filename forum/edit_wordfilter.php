@@ -99,23 +99,19 @@ if (isset($_POST['delete'])) {
 
     if (isset($_POST['use_admin_filter']) && $_POST['use_admin_filter'] == "Y") {
         $user_prefs['USE_ADMIN_FILTER'] = "Y";
-        $user_prefs_global['USE_ADMIN_FILTER'] = false;
     } else {
         $user_prefs['USE_ADMIN_FILTER'] = "N";
-        $user_prefs_global['USE_ADMIN_FILTER'] = false;
     }
 
     if (isset($_POST['use_word_filter']) && $_POST['use_word_filter'] == "Y") {
         $user_prefs['USE_WORD_FILTER'] = "Y";
-        $user_prefs_global['USE_WORD_FILTER'] = false;
     } else {
         $user_prefs['USE_WORD_FILTER'] = "N";
-        $user_prefs_global['USE_WORD_FILTER'] = false;
     }
 
     $uid = session::get_value('UID');
 
-    if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+    if (user_update_prefs($uid, $user_prefs)) {
 
         header_redirect("edit_wordfilter.php?webtag=$webtag&updated=true", gettext("Preferences were successfully updated."));
         exit;

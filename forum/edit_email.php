@@ -45,10 +45,15 @@ if (!session::logged_in()) {
 // Array to hold error messages
 $error_msg_array = array();
 
+// User UID
+$uid = session::get_value('UID');
+
+// Get User Prefs
+$user_prefs = user_get_prefs($uid);
+
 // Submit code
 if (isset($_POST['save'])) {
 
-    $user_prefs = array();
     $user_prefs_global = array();
 
     if (isset($_POST['allow_email']) && $_POST['allow_email'] == "Y") {
@@ -99,9 +104,6 @@ if (isset($_POST['save'])) {
         $user_prefs['DOB_DISPLAY'] = 0;
     }
 
-    // User's UID for updating with.
-    $uid = session::get_value('UID');
-
     // Update USER_PREFS
     if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
 
@@ -114,11 +116,6 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 }
-
-if (!isset($uid)) $uid = session::get_value('UID');
-
-// Get User Prefs
-$user_prefs = user_get_prefs($uid);
 
 // Check to see if we should show the set for all forums checkboxes
 $show_set_all = (forums_get_available_count() > 1) ? true : false;

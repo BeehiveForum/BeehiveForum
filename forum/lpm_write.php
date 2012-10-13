@@ -169,9 +169,7 @@ if (isset($_POST['emots_toggle'])) {
         'POST_PAGE' => $page_prefs
     );
 
-    $user_prefs_global = array();
-
-    if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+    if (!user_update_prefs($uid, $user_prefs)) {
 
         $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;

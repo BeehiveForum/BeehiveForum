@@ -49,17 +49,12 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $msg = $_GET['msg'];
 
     if (isset($_GET['forum_stats_toggle']) && $_GET['forum_stats_toggle'] == "show") {
-
         $user_prefs['SHOW_STATS'] = "Y";
-        $user_prefs_global['SHOW_STATS'] = false;
-
     } else {
-
         $user_prefs['SHOW_STATS'] = "N";
-        $user_prefs_global['SHOW_STATS'] = false;
     }
 
-    if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+    if (user_update_prefs($uid, $user_prefs)) {
 
         header_redirect("messages.php?webtag=$webtag&msg=$msg&setstats=1", gettext("Stats Display Changed"));
         exit;

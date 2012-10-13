@@ -365,10 +365,6 @@ if (isset($_POST['register'])) {
         }
     }
 
-    foreach ($new_user_prefs as $key => $value) {
-        $new_user_prefs_global[$key] = true;
-    }
-
     if ($valid) {
 
         if ($password != $check_password) {
@@ -415,7 +411,7 @@ if (isset($_POST['register'])) {
         if (($new_uid = user_create($logon, $password, $nickname, $email))) {
 
             // Save the new user preferences
-            user_update_prefs($new_uid, $new_user_prefs, $new_user_prefs_global);
+            user_update_prefs($new_uid, $new_user_prefs);
 
             // Save the new user signature
             user_update_sig($new_uid, $sig_content, $sig_html);

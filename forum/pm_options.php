@@ -47,11 +47,14 @@ if (!session::logged_in()) {
 // Array to hold error messages.
 $error_msg_array = array();
 
+// User UID
+$uid = session::get_value('UID');
+
+// Get User Prefs
+$user_prefs = user_get_prefs($uid);
+
 // Submit code starts here.
 if (isset($_POST['save'])) {
-
-    $user_prefs = array();
-    $user_prefs_global = array();
 
     if (isset($_POST['pm_notify']) && $_POST['pm_notify'] == "Y") {
         $user_prefs['PM_NOTIFY'] = "Y";
@@ -124,11 +127,8 @@ if (isset($_POST['save'])) {
         $user_prefs['PM_EXPORT_WORDFILTER'] = "N";
     }
 
-    // User's UID for updating with.
-    $uid = session::get_value('UID');
-
     // Update USER_PREFS
-    if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+    if (user_update_prefs($uid, $user_prefs)) {
 
         // Redirect back to the page so we correctly reload the user's preferences.
         header_redirect("pm_options.php?webtag=$webtag&updated=true", gettext("Preferences were successfully updated."));
@@ -140,11 +140,6 @@ if (isset($_POST['save'])) {
         $valid = false;
     }
 }
-
-if (!isset($uid)) $uid = session::get_value('UID');
-
-// Get User Prefs
-$user_prefs = user_get_prefs($uid);
 
 // Start output here
 html_draw_top(sprintf("title=%s", gettext("Private Message Options")), "emoticons.js", 'class=window_title');

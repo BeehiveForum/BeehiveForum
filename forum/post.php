@@ -248,9 +248,7 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
         'POST_PAGE' => $page_prefs
     );
 
-    $user_prefs_global = array();
-
-    if (!user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+    if (!user_update_prefs($uid, $user_prefs)) {
 
         $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
@@ -404,8 +402,10 @@ if (isset($_POST['t_to_user']) && strlen(trim($_POST['t_to_user'])) > 0) {
 
 } else if (isset($reply_to_tid) && isset($reply_to_pid)) {
 
-    if (!($t_to_uid = message_get_user($reply_to_tid, $reply_to_pid))) {
-        $t_to_uid = 0;
+    if (($message_user = message_get_user($reply_to_tid, $reply_to_pid))) {
+
+        $t_to_uid = $message_user['UID'];
+        $t_to_user = $message_user['LOGON'];
     }
 }
 
@@ -808,7 +808,7 @@ if ($allow_sig == true) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">\n";
-    echo "                          <table class=\"messagefoot\" width=\"486\" cellspacing=\"0\">\n";
+    echo "                          <table class=\"messagefoot\" width=\"556\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" class=\"subhead\">", gettext("Signature"), "</td>\n";
 

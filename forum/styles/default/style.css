@@ -392,6 +392,14 @@ ul.ui-autocomplete li a:hover {
     padding: 3px;
 }
 
+pre.code span.emoticon {
+    background-image: none;
+}
+
+pre.code span.emoticon span {
+    display: inherit;
+}
+
 fieldset.poll_question {
 	margin: 5px 0px;
 }

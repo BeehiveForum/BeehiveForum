@@ -58,7 +58,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
     if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
-    
+
     if (!($forum_fid = get_forum_fid())) return false;
 
     $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
@@ -90,7 +90,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql.= "LIMIT 0, $limit";
 
     if (!($result = $db->query($sql))) return false;
-    
+
     if ($result->num_rows == 0) return false;
 
     $messages = array();
@@ -138,7 +138,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
         $messages[] = $message;
     }
-    
+
     return ($limit > 1) ? $messages : array_shift($messages);
 }
 
@@ -188,7 +188,7 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 {
     $webtag = get_webtag();
 
-    $message_parts = preg_split('/(<[^<>]+>)/u', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
+    $message_parts = preg_split('/(<[^>]+>)/u', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     $signature_parts = array();
 
@@ -205,280 +205,69 @@ function message_apply_formatting($message, $emoticons = true, $ignore_sig = fal
 
     $message = implode('', $message_parts);
 
-    $message_parts = preg_split('/<([^<>]+)>/u', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
-
-    for ($j = 0; $j < 1; $j++) {
-
-        $noemots = 0;
-        $nowiki = 0;
-
-        $fakenoemots = "";
-        $fakenowiki = "";
-
-        $opendivs = 0;
-        $opena = 0;
-
-        for ($i = 0; $i < sizeof($message_parts); $i++) {
-
-            if ($i % 2) {
-
-                if ($message_parts[$i] == 'noemots') {
-                    $noemots++;
-                } else if ($message_parts[$i] == '/noemots') {
-                    $noemots--;
-                }
-
-                if ($noemots == 0 || $nowiki == 0) {
-
-                    if (mb_strpos($message_parts[$i], 'div class="quotetext" id="code-') !== false) {
-
-                        if ($noemots == 0) {
-
-                            $fakenoemots = 'pre';
-                            $noemots++;
-                            array_splice($message_parts, $i, 0, array('noemots', ""));
-                            $i += 2;
-                        }
-
-                        if ($nowiki == 0) {
-
-                            $fakenowiki = 'pre';
-                            $nowiki++;
-                            array_splice($message_parts, $i, 0, array('nowiki', ""));
-                            $i += 2;
-                        }
-
-                    } else if (mb_strpos($message_parts[$i], 'div class="quotetext" id="spoiler"') !== false) {
-
-                        $opendivs = -1;
-
-                        if ($noemots == 0) {
-
-                            $fakenoemots = 'div';
-                            $noemots++;
-                            array_splice($message_parts, $i, 0, array('noemots', ""));
-                            $i += 2;
-                        }
-
-                        if ($nowiki == 0) {
-
-                            $fakenowiki = 'div';
-                            $nowiki++;
-                            array_splice($message_parts, $i, 0, array('nowiki', ""));
-                            $i += 2;
-                        }
-                    }
-                }
-
-                if ($noemots != 0 || $nowiki != 0) {
-
-                    if ($fakenoemots == 'pre' || $fakenowiki == 'pre') {
-
-                        if ($message_parts[$i] == '/pre') {
-
-                            if ($fakenowiki == 'pre') {
-
-                                $fakenowiki = "";
-                                $nowiki--;
-                                array_splice($message_parts, $i+1, 0, array("", '/nowiki'));
-                                $i += 2;
-                            }
-
-                            if ($fakenoemots == 'pre') {
-
-                                $fakenoemots = "";
-                                $noemots--;
-                                array_splice($message_parts, $i+1, 0, array("", '/noemots'));
-                                $i += 2;
-                            }
-                        }
-
-                    } else if ($fakenoemots == 'div' || $fakenowiki == 'div') {
-
-                        if (mb_substr($message_parts[$i], 0, 4) == 'div ' || $message_parts[$i] == 'div') {
-
-                            if ($opendivs != -1) {
-
-                                $opendivs++;
-                            }
-
-                        } else if ($message_parts[$i] == '/div') {
-
-                            if ($opendivs != -1) {
-
-                                $opendivs--;
-
-                                if ($opendivs == 0) {
-
-                                    if ($fakenowiki == 'div') {
-
-                                        $fakenowiki = "";
-                                        $nowiki--;
-                                        array_splice($message_parts, $i+1, 0, array("", '/nowiki'));
-                                        $i += 2;
-                                    }
-
-                                    if ($fakenoemots == 'div') {
-
-                                        $fakenoemots = "";
-                                        $noemots--;
-                                        array_splice($message_parts, $i+1, 0, array("", '/noemots'));
-                                        $i += 2;
-                                    }
-                                }
-
-                            } else {
-
-                                $opendivs = 0;
-                            }
-                        }
-                    }
-                }
-
-                if ($nowiki == 0) {
-
-                    if (mb_substr($message_parts[$i], 0, 2) == 'a ' || $message_parts[$i] == 'a') {
-
-                        $nowiki++;
-                        $opena++;
-                        array_splice($message_parts, $i, 0, array('nowiki', ""));
-                        $i += 2;
-                    }
-
-                } else {
-
-                    if (mb_substr($message_parts[$i], 0, 2) == 'a ' || $message_parts[$i] == 'a') {
-
-                        $opena++;
-
-                    } else if ($message_parts[$i] == '/a') {
-
-                        $opena--;
-
-                        if ($opena == 0) {
-
-                            $nowiki--;
-                            array_splice($message_parts, $i+1, 0, array("", '/nowiki'));
-                            $i += 2;
-                        }
-                    }
-                }
-            }
-        }
-
-        if ($j == 0) {
-
-            $message = "";
-
-            for ($i = 0; $i < sizeof($message_parts); $i++) {
-
-                if ($i % 2) {
-
-                    $message.= '<'.$message_parts[$i].'>';
-
-                } else {
-
-                    $message.= $message_parts[$i];
-                }
-            }
-
-            if ($ignore_sig == false) {
-
-                $message_parts = preg_split('/<([^<>]+)>/u', $signature, -1, PREG_SPLIT_DELIM_CAPTURE);
-
-            } else {
-
-                $signature = "";
-                break;
-            }
-
-        } else {
-
-            $signature = "";
-
-            for ($i = 0; $i < sizeof($message_parts); $i++) {
-
-                if ($i % 2) {
-
-                    $signature.= '<'.$message_parts[$i].'>';
-
-                } else {
-
-                    $signature.= $message_parts[$i];
-                }
-            }
-        }
-    }
-
     $enable_wiki_words = forum_get_setting('enable_wiki_integration', 'Y') && session::get_value('ENABLE_WIKI_WORDS') == 'Y';
+
     $enable_wiki_links = forum_get_setting('enable_wiki_quick_links', 'Y');
+
+    if (($wiki_location = forum_get_setting('wiki_integration_uri'))) {
+        $wiki_location = str_replace("[WikiWord]", "\\1", $wiki_location);
+    }
 
     if ($enable_wiki_words || $enable_wiki_links) {
 
-        if ($enable_wiki_words) {
-
-            $wiki_location = forum_get_setting('wiki_integration_uri', null, "");
-            if (strlen($wiki_location) > 0) $wiki_location = str_replace("[WikiWord]", "\\1", $wiki_location);
-        }
-
-        $message_parts = preg_split('/<\/?nowiki>/u', $message);
+        $message_parts = preg_split('/([<|>])/u', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
         for ($i = 0; $i < sizeof($message_parts); $i++) {
 
-            if (!($i % 2)) {
+            if (!($i % 4) && (!isset($message_parts[$i - 2]) || !strstr($message_parts[$i - 2], "href"))) {
 
-                $html_parts = preg_split('/([<|>])/u', $message_parts[$i], -1, PREG_SPLIT_DELIM_CAPTURE);
+                if ($enable_wiki_words && $wiki_location) {
 
-                for ($j = 0; $j < sizeof($html_parts); $j++) {
-
-                    if (!($j % 4) && (!isset($html_parts[$j - 2]) || !strstr($html_parts[$j - 2], "href"))) {
-
-                        if ($enable_wiki_words) {
-
-                            $html_parts[$j] = preg_replace('/\b(([A-Z][a-z]+){2,})\b/u', "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
-                        }
-
-                        if ($enable_wiki_links) {
-
-                            if (defined('BEEHIVEMODE_LIGHT')) {
-
-                                $html_parts[$j] = preg_replace('/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/iu', "<a href=\"lmessages.php?webtag=$webtag&amp;msg=\\2\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
-
-                            } else {
-
-                                $html_parts[$j] = preg_replace('/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/iu', "<a href=\"index.php?webtag=$webtag&amp;msg=\\2\" target=\"_blank\" class=\"wikiword\">\\1</a>", $html_parts[$j]);
-                                $html_parts[$j] = preg_replace('/\b(user:([a-z0-9_-]{2,15}))\b/iu', "<a href=\"user_profile.php?webtag=$webtag&amp;logon=\\2\" target=\"_blank\" class=\"wikiword popup 650x500\">\\1</a>", $html_parts[$j]);
-                            }
-                        }
-                    }
+                    $message_parts[$i] = preg_replace(
+                        '/\b(([A-Z][a-z]+){2,})\b/u',
+                        "<a href=\"$wiki_location\" class=\"wikiword\">\\1</a>",
+                        $message_parts[$i]
+                    );
                 }
 
-                $message_parts[$i] = implode("", $html_parts);
+                if ($enable_wiki_links) {
+
+                    if (defined('BEEHIVEMODE_LIGHT')) {
+
+                        $message_parts[$i] = preg_replace(
+                            '/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/iu',
+                            "<a href=\"lmessages.php?webtag=$webtag&amp;msg=\\2\" class=\"wikiword\">\\1</a>",
+                            $message_parts[$i]
+                        );
+
+                    } else {
+
+                        $message_parts[$i] = preg_replace(
+                            '/\b(msg:([0-9]{1,}\.[0-9]{1,}))\b/iu',
+                            "<a href=\"index.php?webtag=$webtag&amp;msg=\\2\" target=\"_blank\" class=\"wikiword\">\\1</a>",
+                            $message_parts[$i]
+                        );
+
+                        $message_parts[$i] = preg_replace(
+                            '/\b(user:([a-z0-9_-]{2,15}))\b/iu',
+                            "<a href=\"user_profile.php?webtag=$webtag&amp;logon=\\2\" target=\"_blank\" class=\"wikiword popup 650x500\">\\1</a>",
+                            $message_parts[$i]
+                        );
+                    }
+                }
             }
         }
 
-        $message = implode("", $message_parts);
+        $message = implode('', $message_parts);
     }
 
-    if ($emoticons == true) {
+    $message = emoticons_apply($message);
 
-        $message_parts = preg_split('/<\/?noemots>/u', $message);
-        $signature_parts = preg_split('/<\/?noemots>/u', $signature);
-
-        $message_parts = array_merge($message_parts, $signature_parts);
-
-        for ($i = 0; $i < sizeof($message_parts); $i++) {
-
-            if (!($i % 2)) {
-
-                $message_parts[$i] = emoticons_apply($message_parts[$i]);
-            }
-        }
-
-        $message = implode("", $message_parts);
+    if (!$ignore_sig) {
+        $message.= emoticons_apply($signature);
     }
 
-    return preg_replace('/<\/?noemots>|<\/?nowiki>/u', '', $message);
+    return $message;
 }
 
 function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $thread_interest_level = THREAD_NOINTEREST, $folder_interest_level = FOLDER_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false, $frame_links = true, $highlight_array = array())
@@ -545,7 +334,7 @@ function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $th
 function messages_social_links($tid)
 {
     $webtag = get_webtag();
-    
+
     if ((forum_get_setting('show_share_links', 'Y')) && (session::get_value('SHOW_SHARE_LINKS') == 'Y')) {
 
         echo "      <div style=\"display: inline-block; vertical-align: middle; margin-top: 1px\">\n";
@@ -561,7 +350,7 @@ function messages_social_links($tid)
     } else {
 
         echo "&nbsp;";
-    }    
+    }
 }
 
 function messages_bottom()
@@ -648,11 +437,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $message['CONTENT'] = fix_html($cut_msg, false);
         $message['CONTENT'].= "&hellip;[". gettext("Message Truncated"). "]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">". gettext("View full message"). "</a>";
     }
-    
+
     // Check for words that should be filtered ---------------------------------
     if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
         $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT'], false);
-    }    
+    }
 
     if ($in_list && isset($message['PID'])) {
         echo "<a name=\"a{$tid}_{$message['PID']}\"></a>\n";
@@ -979,7 +768,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "            <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
             echo "              <tr>\n";
-            
+
             if ((isset($message['ANON_LOGON']) && $message['ANON_LOGON'] > USER_ANON_DISABLED) || !isset($message['USER_ACTIVE']) || is_null($message['USER_ACTIVE'])) {
 
                 echo "                <td width=\"25%\" align=\"left\">";
@@ -1478,23 +1267,24 @@ function messages_interest_form($tid, $pid, $interest)
 
 function message_get_user($tid, $pid)
 {
-    if (!$db = db::get()) return '';
+    if (!$db = db::get()) return false;
 
-    if (!is_numeric($tid)) return '';
-    if (!is_numeric($pid)) return '';
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
 
-    if (!($table_prefix = get_table_prefix())) return '';
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "SELECT FROM_UID FROM `{$table_prefix}POST` ";
-    $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
+    $sql = "SELECT USER.UID, USER.LOGON FROM USER ";
+    $sql.= "INNER JOIN `{$table_prefix}POST` POST ON (POST.FROM_UID = USER.UID) ";
+    $sql.= "WHERE POST.TID = '$tid' AND POST.PID = '$pid'";
 
-    if (!$result = $db->query($sql)) return '';
+    if (!$result = $db->query($sql)) return false;
 
-    if ($result->num_rows == 0) return '';
+    if ($result->num_rows == 0) return false;
 
-    list($from_uid) = $result->fetch_row();
+    $user_data = $result->fetch_assoc();
 
-    return $from_uid;
+    return $user_data;
 }
 
 function message_get_user_array($tid, $pid)
@@ -1811,8 +1601,8 @@ function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
 
     // Start of HTML.
     $font_size_html = array(
-        "", 
-        gettext("Adjust text size"), 
+        "",
+        gettext("Adjust text size"),
         ":"
     );
 

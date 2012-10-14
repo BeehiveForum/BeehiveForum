@@ -1,0 +1,361 @@
+body .cke_dialog {
+    visibility: visible;
+}
+
+.cke_skin_beehive .cke_dialog_body {
+    background-color: #C9C9E4;
+    border: 1px solid #000000;
+    margin: 0;
+    padding: 2px;
+    z-index: 1;
+}
+
+.cke_skin_beehive .cke_dialog_tl,
+.cke_skin_beehive .cke_dialog_tr,
+.cke_skin_beehive .cke_dialog_tc,
+.cke_skin_beehive .cke_dialog_ml,
+.cke_skin_beehive .cke_dialog_mr,
+.cke_skin_beehive .cke_dialog_bl,
+.cke_skin_beehive .cke_dialog_br,
+.cke_skin_beehive .cke_dialog_bc {
+    display: none;
+}
+
+.cke_skin_beehive .cke_dialog_title {
+    background-color: #7572BA;
+    font-size: 12px;
+    margin-bottom: 10px;
+    color: #FFFFFF;
+    padding: 3px 5px;
+    cursor: move;
+    position: relative;
+}
+
+.cke_skin_beehive .cke_dialog_contents {
+    background-color: #9999CC;
+    margin: 0 10px 10px;
+    overflow: auto;
+    padding: 5px;
+}
+
+.cke_skin_beehive table.cke_dialog_contents {
+    border: 1px solid #000000;
+}
+
+.cke_skin_beehive .cke_dialog_footer {
+    text-align: right;
+}
+
+.cke_skin_beehive .cke_dialog_footer .cke_resizer {
+    margin-top: 21px;
+}
+
+.cke_skin_beehive .cke_dialog_tabs {
+    background-color: #7572BA;
+    border-left: 1px solid #000000;
+    display: inline-block;
+    height: 23px;
+    margin: 0 10px;
+    z-index: 2;
+}
+
+.cke_skin_beehive a.cke_dialog_tab,
+.cke_skin_beehive a:link.cke_dialog_tab,
+.cke_skin_beehive a:active.cke_dialog_tab,
+.cke_skin_beehive a:hover.cke_dialog_tab,
+.cke_skin_beehive a:visited.cke_dialog_tab {
+    color: #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+    height: 14px;
+    padding: 4px 5px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.cke_skin_beehive a.cke_dialog_tab_selected,
+.cke_skin_beehive a:link.cke_dialog_tab_selected,
+.cke_skin_beehive a:active.cke_dialog_tab_selected,
+.cke_skin_beehive a:hover.cke_dialog_tab_selected,
+.cke_skin_beehive a:visited.cke_dialog_tab_selected {
+    border-bottom: 1px solid #9999CC;
+    background-color: #9999CC;
+    cursor: default;
+}
+
+.cke_skin_beehive .cke_single_page .cke_dialog_tabs {
+    display: none;
+}
+
+.cke_skin_beehive .cke_single_page .cke_dialog_title {
+    padding-bottom: 3px;
+}
+
+.cke_skin_beehive .cke_dialog_ui_vbox table,
+.cke_skin_beehive .cke_dialog_ui_hbox table {
+    margin: auto;
+}
+
+.cke_skin_beehive .cke_dialog_ui_vbox_child {
+    padding: 5px 0;
+}
+
+.cke_skin_beehive input.cke_dialog_ui_input_text,
+.cke_skin_beehive input.cke_dialog_ui_input_password {
+    background-color: #FFFFFF;
+    color: #000000;
+    width: 100%;
+}
+
+.cke_skin_beehive div.cke_dialog_ui_input_text,
+.cke_skin_beehive div.cke_dialog_ui_input_password {
+    background-color: #FFFFFF;
+    border: 1px inset threedface;
+    margin-right: 15px;
+    padding: 1px 0 1px 2px;
+}
+
+.cke_skin_beehive textarea.cke_dialog_ui_input_textarea {
+    background-color: #FFFFFF;
+    color: #000000;
+    width: 100%;
+    overflow: auto;
+    resize: none;
+}
+
+.cke_skin_beehive div.cke_dialog_ui_input_textarea {
+    background-color: #FFFFFF;
+    border: 1px inset threedface;
+    padding: 1px 0 1px 2px;
+}
+
+.cke_skin_beehive div.cke_disabled .cke_dialog_ui_labeled_content * {
+    background-color: #a0a0a0;
+    cursor: default;
+}
+
+.cke_skin_beehive .cke_dialog_ui_hbox {
+    width: 100%;
+}
+
+.cke_skin_beehive .cke_dialog_ui_hbox_first,
+.cke_skin_beehive .cke_dialog_ui_hbox_child,
+.cke_skin_beehive .cke_dialog_ui_hbox_last {
+    vertical-align: top;
+}
+
+.cke_skin_beehive a.cke_dialog_ui_button {
+    border-collapse: separate;
+    cursor: default;
+}
+
+.cke_skin_beehive span.cke_dialog_ui_button {
+    background-color: #624792;
+    border: 1px outset buttonface;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: bold;
+    padding: 1px 6px;
+    text-align: center;
+}
+
+.cke_skin_beehive a.cke_dialog_ui_button span.cke_disabled {
+    border: #898980 1px solid;
+    color: #5e5e55;
+    background-color: #c5c5b3;
+}
+
+.cke_skin_beehive a:focus span.cke_dialog_ui_button,
+.cke_skin_beehive a:active span.cke_dialog_ui_button {
+    background-color: #624792;
+}
+
+.cke_skin_beehive .cke_dialog_footer_buttons {
+    display: inline-table;
+    margin-right: 12px;
+    margin-left: 12px;
+    width: auto;
+    position: relative;
+}
+
+.cke_skin_beehive .cke_dialog_footer_buttons span.cke_dialog_ui_button {
+    margin: 7px 0;
+}
+
+.cke_skin_beehive strong {
+    font-weight: bold;
+}
+
+.cke_skin_beehive a.cke_dialog_close_button,
+.cke_skin_beehive a:hover.cke_dialog_close_button {
+    display: none;
+}
+
+.cke_skin_beehive a.cke_dialog_close_button span {
+    display: none;
+}
+
+.cke_skin_beehive .cke_dialog_ui_input_select {
+    border: 1px inset threedface;
+    background-color: #FFFFFF;
+    color: #000000;
+    width: 100%;
+}
+
+.cke_skin_beehive .cke_dialog_ui_input_file {
+    width: 100%;
+    height: 25px;
+}
+
+.cke_skin_beehive .cke_dialog .cke_dark_background {
+    background-color: #eaead1;
+}
+
+.cke_skin_beehive .cke_dialog .cke_hand {
+    cursor: pointer;
+}
+
+.cke_skin_beehive .cke_dialog .cke_centered {
+    text-align: center;
+}
+
+.cke_skin_beehive .cke_dialog a.cke_btn_reset {
+    float: right;
+    background-position: 0 -32px;
+    background-image: url(images/mini.gif);
+    width: 16px;
+    height: 16px;
+    background-repeat: no-repeat;
+    border: 1px none;
+    font-size: 1px;
+}
+
+.cke_skin_beehive .cke_dialog a.cke_btn_locked,
+.cke_skin_beehive .cke_dialog a.cke_btn_unlocked {
+    float: left;
+    background-position: 0 0;
+    background-image: url(images/mini.gif);
+    width: 16px;
+    height: 16px;
+    background-repeat: no-repeat;
+    border: none 1px;
+    font-size: 1px;
+}
+
+.cke_skin_beehive .cke_dialog a.cke_btn_locked .cke_icon {
+    display: none;
+}
+
+.cke_skin_beehive .cke_dialog a.cke_btn_unlocked {
+    background-position: 0 -16px;
+    background-image: url(images/mini.gif);
+}
+
+.cke_skin_beehive .cke_dialog .cke_btn_over {
+    border: outset 1px;
+    cursor: pointer;
+}
+
+.cke_skin_beehive .cke_dialog .ImagePreviewBox {
+    border: 2px ridge black;
+    overflow: scroll;
+    height: 210px;
+    width: 230px;
+    padding: 2px;
+    background-color: white;
+}
+
+.cke_skin_beehive .cke_dialog .ImagePreviewBox table td {
+    white-space: normal;
+}
+
+.cke_skin_beehive .cke_dialog .ImagePreviewLoader {
+    position: absolute;
+    white-space: normal;
+    overflow: hidden;
+    height: 160px;
+    width: 230px;
+    margin: 2px;
+    padding: 2px;
+    opacity: .9;
+    background-color: #e4e4e4;
+}
+
+.cke_skin_beehive .cke_dialog .FlashPreviewBox {
+    white-space: normal;
+    border: 2px ridge black;
+    overflow: auto;
+    height: 160px;
+    width: 390px;
+    padding: 2px;
+    background-color: white;
+}
+
+.cke_skin_beehive .cke_dialog .cke_pastetext {
+    width: 346px;
+    height: 170px;
+}
+
+.cke_skin_beehive .cke_dialog .cke_pastetext textarea {
+    width: 340px;
+    height: 170px;
+    resize: none;
+}
+
+.cke_skin_beehive .cke_dialog iframe.cke_pasteframe {
+    width: 346px;
+    height: 130px;
+    background-color: white;
+    border: 1px solid black;
+}
+
+.cke_skin_beehive .cke_dialog .cke_dark_background {
+    text-align: center;
+    background-color: #eaead1;
+    font-size: 14px;
+}
+
+.cke_skin_beehive .cke_dialog .cke_light_background {
+    text-align: center;
+    background-color: #ffffbe;
+}
+
+.cke_skin_beehive .cke_dialog .cke_hand {
+    cursor: pointer;
+}
+
+.cke_skin_beehive .cke_disabled {
+    color: #a0a0a0;
+}
+
+.cke_skin_beehive .cke_dialog_body .cke_label {
+    display: none;
+}
+
+.cke_skin_beehive .cke_dialog_contents a.colorChooser {
+    display: block;
+    margin-top: 12px;
+    margin-left: 10px;
+    width: 40px;
+}
+
+.cke_skin_beehive .cke_dialog_contents a.colorChooser .cke_dialog_ui_button {
+    width: 100%;
+}
+
+.cke_skin_beehive .cke_iframe_shim {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+}
+
+.cke_dialog label {
+    display: inline;
+    margin-bottom: auto;
+    cursor: default;
+}

@@ -1,0 +1,61 @@
+body {
+    font-family: verdana,arial,helvetica,sans-serif;
+    font-size: 80%;
+}
+
+pre.code {
+    background-color: #EEEEEE;
+    border: 1px solid #CCCCCC;
+    font-family: monospace;
+    font-size: 120%;
+    margin-bottom: 10px;
+    margin-left: 40px;
+    margin-right: 10px;
+    margin-top: 0px;
+    overflow: auto;
+    padding: 3px;
+}
+
+div.quote {
+    background-color: #EEEEEE;
+    border: 1px solid #CCCCCC;
+    margin-bottom: 10px;
+    margin-left: 40px;
+    margin-right: 10px;
+    margin-top: 0px;
+    padding: 3px;
+}
+
+div.quotetext {
+    font-size: 100%;
+    margin-left: 40px;
+    margin-right: 10px;
+    margin-top: 5px;
+    padding: 3px;
+}
+
+span.spoiler {
+    background: #EEEEEE url('../images/spoiler.png');
+    border: 1px solid #CCCCCC;
+    color: #EEEEEE;
+    display: inline-block;
+    min-height: 16px;
+    min-width: 55px;
+    padding: 0px 3px;
+}
+
+span.spoiler > span {
+    color: transparent;
+}
+
+span.emoticon {
+    vertical-align: bottom;
+}
+
+pre.code span.emoticon {
+    background-image: none;
+}
+
+pre.code span.emoticon span {
+    display: inherit;
+}

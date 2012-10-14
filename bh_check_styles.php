@@ -119,8 +119,8 @@ function parse_array_to_css($css_rules_array)
         $selector = implode(",\n", array_map('trim', explode(',', $selector)));
 
         $css_file_contents.= sprintf(
-            "%s {\n\t%s;\n}\n\n", 
-            $selector, 
+            "%s {\n    %s;\n}\n\n",
+            $selector,
             implode_assoc($rules_set, ': ', ";\n    ")
         );
     }
@@ -170,35 +170,38 @@ foreach ($file_list as $css_filepath) {
 foreach ($css_rules_array as $css_filepath => $css_rules_set) {
 
     $default_css_filepath = sprintf(
-        'forum/styles/default/%s', 
+        'forum/styles/default/%s',
         basename($css_filepath)
     );
 
     $default_css_rules = parse_css_to_array(file_get_contents($default_css_filepath));
 
-    file_put_contents($default_css_filepath, parse_array_to_css($default_css_rules));    
+    file_put_contents($default_css_filepath, parse_array_to_css($default_css_rules));
 
-    $css_rules_set = array_diff_key($css_rules_set, array_diff_key($css_rules_set, $default_css_rules));
+    $default_css_rules = parse_css_to_array(file_get_contents($default_css_filepath));
 
-    $css_rules_set = array_merge($css_rules_set, array_diff_key($default_css_rules, $css_rules_set));
+    foreach ($default_css_rules as $selector => $default_rules_set) {
 
-    $css_rules_set = sort_array_by_array($css_rules_set, array_keys($default_css_rules));
+        if (!isset($css_rules_set[$selector])) {
 
-    foreach (array_diff_key_recursive($default_css_rules, $css_rules_set) as $selector => $missing_rules_set) {
+            $css_rules_set[$selector] = $default_rules_set;
 
-        foreach ($missing_rules_set as $rule_name => $value) {
+        } else {
 
-            $css_rules_set[$selector][$rule_name] = $value;
+            foreach ($default_rules_set as $rule_name => $value) {
+
+                if (preg_match('/color|background-image/', $rule_name) < 1) {
+
+                    $css_rules_set[$selector][$rule_name] = $value;
+                }
+            }
         }
     }
 
-    foreach (array_diff_key_recursive($css_rules_set, $default_css_rules) as $selector => $additional_rules_set) {
+    foreach ($css_rules_set as $selector => $css_rules) {
 
-        foreach ($additional_rules_set as $rule_name => $value) {
-
-            if (preg_match('/color|background-image/', $rule_name) < 1) {
-                unset($css_rules_set[$selector][$rule_name]);
-            }
+        if (!isset($default_css_rules[$selector])) {
+            unset($css_rules_set[$selector]);
         }
     }
 

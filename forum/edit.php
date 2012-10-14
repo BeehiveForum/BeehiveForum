@@ -443,7 +443,7 @@ if ($allow_sig == true) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">\n";
-    echo "                          <table class=\"messagefoot\" width=\"556\" cellspacing=\"0\">\n";
+    echo "                          <table class=\"messagefoot\" width=\"553\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" class=\"subhead\">", gettext("Signature"), "</td>\n";
 

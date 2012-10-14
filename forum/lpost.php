@@ -402,8 +402,8 @@ if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
 
 } else if (isset($reply_to_tid) && isset($reply_to_pid)) {
 
-    if (!$t_to_uid = message_get_user($reply_to_tid, $reply_to_pid)) {
-        $t_to_uid = 0;
+    if (($message_user = message_get_user($reply_to_tid, $reply_to_pid))) {
+        $t_to_uid = $message_user['UID'];
     }
 }
 

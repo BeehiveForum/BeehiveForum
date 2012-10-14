@@ -876,7 +876,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
         $sql.= "  CREATED DATETIME DEFAULT NULL,";
         $sql.= "  ACTION MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  ENTRY TEXT,";
+        $sql.= "  ENTRY LONGBLOB,";
         $sql.= "  PRIMARY KEY  (ID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 

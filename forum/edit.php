@@ -279,10 +279,6 @@ if ($valid && isset($_POST['preview'])) {
                 html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
             }
 
-            $to_uid = $edit_message['TO_UID'];
-
-            $from_uid = $edit_message['FROM_UID'];
-
             $parsed_message = new MessageTextParse($edit_message['CONTENT']);
 
             $t_content = $parsed_message->getMessage();
@@ -361,7 +357,7 @@ echo "                        <td align=\"left\">";
 
 if ($edit_message['TO_UID'] > 0) {
 
-    echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$to_uid\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($edit_message['TLOGON'], $edit_message['TNICK']), true), "</a>\n";
+    echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$edit_message['TO_UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($edit_message['TLOGON'], $edit_message['TNICK']), true), "</a>\n";
 
 } else {
 

@@ -785,6 +785,10 @@ a:active.cke_colormore {
     background-position: -574px -1px;
 }
 
+.cke_skin_beehive .cke_button_source .cke_icon {
+    background-position: -596px -1px;
+}
+
 .cke_skin_beehive .cke_font_panel {
     width: 150px;
     height: 170px;

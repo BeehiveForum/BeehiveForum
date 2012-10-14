@@ -177,7 +177,8 @@ var beehive = $.extend({}, beehive, {
                 [
                     'Font',
                     'FontSize',
-                    'TextColor'
+                    'TextColor',
+                    'Source'
                 ]
             ],
             toolbar: toolbar

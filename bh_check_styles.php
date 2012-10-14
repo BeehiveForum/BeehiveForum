@@ -190,10 +190,15 @@ foreach ($css_rules_array as $css_filepath => $css_rules_set) {
 
             foreach ($default_rules_set as $rule_name => $value) {
 
-                if (preg_match('/color|background-image/', $rule_name) < 1) {
-
-                    $css_rules_set[$selector][$rule_name] = $value;
+                if (preg_match('/(#[0-9A-F]{3,6}|rgba?)/i', $value) > 0) {
+                    continue;
                 }
+
+                if (preg_match('/color/i', $rule_name) > 0) {
+                    continue;
+                }
+
+                $css_rules_set[$selector][$rule_name] = $value;
             }
         }
     }

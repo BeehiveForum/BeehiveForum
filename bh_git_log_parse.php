@@ -40,18 +40,18 @@ require_once BH_INCLUDE_PATH. 'db.inc.php';
 function get_git_log_data($date)
 {
     $temp_file = tempnam(sys_get_temp_dir(), 'beehive_change_log');
-    
+
     file_put_contents($temp_file, "<log>\n");
-    
+
     exec(sprintf(
-        'git log --pretty=format:"<entry>%%n<author><![CDATA[%%an]]></author>%%n<date><![CDATA[%%ad]]></date>%%n<msg><![CDATA[%%B]]></msg>%%n</entry>%%n" --since=%s --until=%s >> %s', 
-        escapeshellarg($date), 
+        'git log --pretty=format:"<entry>%%n<author><![CDATA[%%an]]></author>%%n<date><![CDATA[%%ad]]></date>%%n<msg><![CDATA[%%B]]></msg>%%n</entry>%%n" --since=%s --until=%s >> %s',
+        escapeshellarg($date),
         escapeshellarg(date('Y-m-d', time() + 86400)),
         escapeshellarg($temp_file)
     ));
-    
+
     file_put_contents($temp_file, "</log>\n", FILE_APPEND);
-    
+
     return $temp_file;
 }
 
@@ -82,16 +82,16 @@ function git_mysql_parse($git_log_temp_file)
     if (!$db = db::get()) return false;
 
     $git_log_xml_data = simplexml_load_file($git_log_temp_file, NULL, LIBXML_NOCDATA);
-    
+
     foreach ($git_log_xml_data as $git_log_xml) {
-        
+
         if ((strlen(trim((string)$git_log_xml->msg)) > 0)) {
-            
-            $git_log_message = preg_replace("/(\r|\r\n|\n)/", "\r\n", trim((string)$git_log_xml->msg));
+
+            $git_log_message = preg_replace("/(\r|\r\n|\n)/", "\n", trim((string)$git_log_xml->msg));
 
             $sql = sprintf(
                 "INSERT INTO BEEHIVE_GIT_LOG (DATE, AUTHOR, COMMENTS)
-                 VALUES (DATE(FROM_UNIXTIME('%s')), '%s', '%s')", 
+                 VALUES (DATE(FROM_UNIXTIME('%s')), '%s', '%s')",
                 $db->escape(strtotime((string)$git_log_xml->date)),
                 $db->escape(trim((string)$git_log_xml->author)),
                 $db->escape($git_log_message)
@@ -115,7 +115,7 @@ function git_mysql_output_log($log_filename = null)
 
     if ($result->num_rows == 0) {
 
-        echo "Table BEEHIVE_GIT_LOG is empty. No Changelog generated.\r\n";
+        echo "Table BEEHIVE_GIT_LOG is empty. No Changelog generated.\n";
         exit;
     }
 
@@ -125,51 +125,51 @@ function git_mysql_output_log($log_filename = null)
     ob_start();
 
     printf(
-        "# Beehive Forum Change Log (Generated: %s)\r\n\r\n", 
+        "# Beehive Forum Change Log (Generated: %s)\n\n",
         gmdate('D, d M Y H:i:s')
     );
-    
+
     while (($git_log_entry_array = $result->fetch_assoc())) {
-        
+
         if (preg_match_all('/^((Fixed|Changed|Added):)\s*(.+)/im', $git_log_entry_array['COMMENTS'], $git_log_entry_matches_array, PREG_SET_ORDER) > 0) {
-            
+
             if ($git_log_entry_date != $git_log_entry_array['DATE']) {
 
                 $git_log_entry_date = $git_log_entry_array['DATE'];
-                
+
                 printf(
-                    "## Date: %s\n\n", 
+                    "## Date: %s\n\n",
                     gmdate('D, d M Y', $git_log_entry_date)
                 );
-            }                
+            }
 
             foreach ($git_log_entry_matches_array as $git_log_entry_matches) {
-            
+
                 $git_log_comment = trim(preg_replace("/(\r|\r\n|\n)/", '', $git_log_entry_matches[3]));
-                
+
                 $git_log_comment = str_replace('_', '\_', htmlentities($git_log_comment));
 
-                $git_log_comment_array = explode("\r\n", wordwrap($git_log_comment, (70 - (strlen($git_log_entry_matches[2]) + 4)), "\r\n"));
+                $git_log_comment_array = explode("\n", wordwrap($git_log_comment, (70 - (strlen($git_log_entry_matches[2]) + 4)), "\n"));
 
                 foreach ($git_log_comment_array as $line => $git_log_comment_line) {
-                    
+
                     if ($line == 0) {
-                        
+
                         sprintf(
-                            '- %s: ', 
+                            '- %s: ',
                             $git_log_entry_matches[2]
                         );
-                    
+
                     } else {
-                        
+
                         echo str_repeat(' ', strlen($git_log_entry_matches[2]) + 4);
                     }
-                    
+
                     echo $git_log_comment_line, "\n";
                 }
             }
 
-            echo "\r\n";
+            echo "\n";
         }
     }
 
@@ -178,7 +178,7 @@ function git_mysql_output_log($log_filename = null)
         file_put_contents($log_filename, ob_get_clean());
         exit;
     }
-    
+
     echo ob_get_clean();
 }
 
@@ -196,28 +196,28 @@ if (isset($modified_date)) {
 
     if (git_mysql_prepare_table()) {
 
-        if (!isset($_GET['output'])) echo "Fetching GIT Log Data...\r\n";
+        if (!isset($_GET['output'])) echo "Fetching GIT Log Data...\n";
 
         if (($git_log_temp_file = get_git_log_data($modified_date))) {
 
-            if (!isset($_GET['output'])) echo "Parsing GIT Log Data...\r\n";
+            if (!isset($_GET['output'])) echo "Parsing GIT Log Data...\n";
 
             if (!git_mysql_parse($git_log_temp_file)) {
 
-                echo "Error while fetching or parsing GIT log contents\r\n";
+                echo "Error while fetching or parsing GIT log contents\n";
                 exit;
             }
 
         } else {
 
-            echo "Error while fetching GIT log\r\n";
+            echo "Error while fetching GIT log\n";
             exit;
         }
 
         if (isset($_SERVER['argv'][2]) && strlen(trim($_SERVER['argv'][2])) > 0) {
 
             $output_log_filename = trim($_SERVER['argv'][2]);
-            echo "Generating Change Log. Saving to $output_log_filename\r\n";
+            echo "Generating Change Log. Saving to $output_log_filename\n";
             git_mysql_output_log($output_log_filename);
 
         } else if (isset($_GET['output'])) {
@@ -237,7 +237,7 @@ if (isset($modified_date)) {
 
     if (git_mysql_prepare_table(false)) {
 
-        echo "Generating Change Log. Saving to $output_log_filename\r\n";
+        echo "Generating Change Log. Saving to $output_log_filename\n";
         git_mysql_output_log($output_log_filename);
 
     } else {
@@ -260,27 +260,27 @@ if (isset($modified_date)) {
 
 } else {
 
-    echo "Generate changelog.md Markdown from GIT comments\r\n\r\n";
-    echo "Usage: php-bin bh_git_log_parse.php [YYYY-MM-DD] [FILE]\r\n";
-    echo "   OR: bh_git_log_parse.php?date=YYYY-MM-DD[&output]\r\n\r\n";
-    echo "Examples:\r\n";
-    echo "  php-bin bh_git_log_parse.php 2007-01-01\r\n";
-    echo "  php-bin bh_git_log_parse.php 2007-01-01 changelog.md\r\n";
-    echo "  php-bin bh_git_log_parse.php changelog.md\r\n\r\n";
-    echo "[FILE] specifies the output filename for the changelog.md\r\n";
-    echo "       Only available when run from a shell.\r\n\r\n";
-    echo "[YYYY-MM-DD] specifies the date the changelog should start from\r\n\r\n";
-    echo "Both arguments can be combined or used separatly to achieve\r\n";
-    echo "different results.\r\n\r\n";
-    echo "Specifying the date on it's own will save the results from the\r\n";
-    echo "GIT comments to a MySQL database named BEEHIVE_GIT_LOG using the\r\n";
-    echo "connection details from your Beehive Forum config.inc.php\r\n\r\n";
-    echo "Specifying only the output filename will take any saved results\r\n";
-    echo "in the BEEHIVE_GIT_LOG table and generate a changelog from them.\r\n\r\n";
-    echo "Using them together will both save the results to the BEEHIVE_GIT_LOG\r\n";
-    echo "table and generate the specified changelog.\r\n\r\n";
-    echo "Subsequent runs using the date argument will truncate the database\r\n";
-    echo "table before generating the changelog.\r\n";
+    echo "Generate changelog.md Markdown from GIT comments\n\n";
+    echo "Usage: php-bin bh_git_log_parse.php [YYYY-MM-DD] [FILE]\n";
+    echo "   OR: bh_git_log_parse.php?date=YYYY-MM-DD[&output]\n\n";
+    echo "Examples:\n";
+    echo "  php-bin bh_git_log_parse.php 2007-01-01\n";
+    echo "  php-bin bh_git_log_parse.php 2007-01-01 changelog.md\n";
+    echo "  php-bin bh_git_log_parse.php changelog.md\n\n";
+    echo "[FILE] specifies the output filename for the changelog.md\n";
+    echo "       Only available when run from a shell.\n\n";
+    echo "[YYYY-MM-DD] specifies the date the changelog should start from\n\n";
+    echo "Both arguments can be combined or used separatly to achieve\n";
+    echo "different results.\n\n";
+    echo "Specifying the date on it's own will save the results from the\n";
+    echo "GIT comments to a MySQL database named BEEHIVE_GIT_LOG using the\n";
+    echo "connection details from your Beehive Forum config.inc.php\n\n";
+    echo "Specifying only the output filename will take any saved results\n";
+    echo "in the BEEHIVE_GIT_LOG table and generate a changelog from them.\n\n";
+    echo "Using them together will both save the results to the BEEHIVE_GIT_LOG\n";
+    echo "table and generate the specified changelog.\n\n";
+    echo "Subsequent runs using the date argument will truncate the database\n";
+    echo "table before generating the changelog.\n";
 }
 
 ?>

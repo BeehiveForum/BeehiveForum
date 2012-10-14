@@ -80,7 +80,7 @@ function fix_html($html, $emoticons = true, $links = true)
          h6,
          hr[size|width|noshade],
          i,
-         iframe[width|height|scrolling|type|src],
+         iframe[width|height|scrolling|type|src|frameborder],
          img[src|width|height|alt|border|usemap|longdesc|vspace|hspace|ismap],
          ins[cite|datetime],
          li[type|start],

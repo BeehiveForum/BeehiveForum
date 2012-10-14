@@ -28,7 +28,17 @@ USA
 
             var commandName = 'youtube',
                 iconPath = this.path + 'images/icon.png',
-                dialog;
+                dialog,
+                youtubeTag = new CKEDITOR.style({
+                    element: 'img',
+                    attributes: {
+                        'class': 'cke_youtube'
+                    }
+                });
+
+            editor.attachStyleStateChange(youtubeTag, function (state) {
+                !editor.readOnly && editor.getCommand(commandName).setState(state);
+            });
 
             editor.addCommand(commandName, new CKEDITOR.dialogCommand(commandName));
 
@@ -39,22 +49,6 @@ USA
             });
 
             CKEDITOR.dialog.add(commandName, CKEDITOR.getUrl(this.path + 'dialogs/youtube.js'));
-
-            CKEDITOR.dialog.on('resize', function (event) {
-
-                var data = event.data,
-                    dialog = data.dialog;
-
-                if (dialog.getName() != 'youtube') {
-                    return;
-                }
-
-                var element = dialog.getContentElement('general', 'contents')
-                    .getInputElement();
-
-                element.setSize('height', dialog.getSize()
-                    .height - 150, true);
-            });
 
             if (editor.contextMenu) {
 

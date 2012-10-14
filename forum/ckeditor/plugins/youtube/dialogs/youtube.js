@@ -22,25 +22,27 @@ USA
     CKEDITOR.dialog.add('youtube',
 
     function (editor) {
+
         return {
             title: 'Embed Youtube Video',
-            minHeight: 150,
+            minHeight: 440,
             minWidth: 500,
             onShow: function () {
 
-                var self = this,
+                var inputElement = this.getContentElement('general', 'contents')
+                        .getInputElement(),
                     selectedElement = this.getSelectedElement(),
                     originalElement;
 
                 if (selectedElement && selectedElement.data('cke-real-element-type') && selectedElement.data('cke-real-element-type') == 'youtube') {
 
-                    self.fakeImage = selectedElement;
+                    this.fakeImage = selectedElement;
 
                     originalElement = editor.restoreRealElement(selectedElement);
 
-                    this.getContentElement('general', 'contents')
-                        .getInputElement()
-                        .setValue(originalElement.getOuterHtml());
+                    inputElement.setValue(originalElement.getOuterHtml());
+
+                    this.showPreview(inputElement.getValue());
                 }
             },
             onOk: function () {
@@ -70,37 +72,88 @@ USA
                     editor.insertElement(fakeElement);
                 }
             },
+            onHide: function () {
+                if (this.showPreview) this.showPreview('');
+            },
             contents: [{
                 label: editor.lang.common.generalTab,
                 id: 'general',
                 elements: [{
-                    type: 'textarea',
-                    id: 'contents',
-                    label: 'Youtube Embed Code',
-                    validate: function () {
+                    type: 'hbox',
+                    padding: 0,
+                    children: [{
+                        id: 'contents',
+                        type: 'textarea',
+                        label: 'Youtube Embed Code',
+                        rows: 3,
+                        onLoad: function () {
 
-                        try {
+                            var dialog = this.getDialog();
 
-                            var value = this.getValue(),
-                                element = CKEDITOR.dom.element.createFromHtml(value, editor.document),
-                                src;
+                            dialog.checkEmbedCode = function(code, returnElement) {
 
-                            if (element && element.getName() == 'iframe' && element.getAttribute('src')) {
+                                try {
 
-                                src = element.getAttribute('src');
+                                    var element = CKEDITOR.dom.element.createFromHtml(code, editor.document),
+                                        src;
 
-                                if (src && src.match(/^http(s)?:\/\/www\.youtube\.com\/embed\//)) {
-                                    return true;
-                                }
-                            }
+                                    if (element && element.getName() == 'iframe' && element.getAttribute('src')) {
 
-                        } catch (e) {
+                                        src = element.getAttribute('src');
 
-                        }
+                                        if (src && src.match(/^http(s)?:\/\/www\.youtube\.com\/embed\//)) {
+                                            return returnElement ? element : true;
+                                        }
+                                    }
 
-                        return false;
-                    },
-                    required: true
+                                } catch (e) { }
+
+                                return false;
+                            };
+
+                            dialog.showPreview = function(code) {
+
+                                var element = dialog.checkEmbedCode(code, true),
+                                    previewContainer = this.getContentElement('general', 'preview').getElement().getChild(3);
+
+                                try {
+
+                                    if (element) {
+
+                                        element.setStyle('width', '560px');
+                                        element.setStyle('height', '315px');
+                                        element.removeAttribute('allowfullscreen');
+
+                                        previewContainer.setHtml(element.getOuterHtml());
+
+                                        return;
+                                    }
+
+                                } catch (e) { }
+
+                                previewContainer.setHtml('');
+                            };
+
+                            this.getInputElement().on('change', function (q) {
+                                dialog.showPreview(input.getValue());
+                            }, this);
+                        },
+                        validate: function () {
+                            var dialog = this.getDialog();
+                            return dialog.checkEmbedCode(this.getValue(), false);
+                        },
+                        required: true
+                    }]
+                }, {
+                    type: 'hbox',
+                    children: [{
+                        type: 'html',
+                        id: 'preview',
+                        style: 'width:95%;',
+                        html: '<div>Preview<br /> \
+                            <div id="cke_YoutubePreviewBox' + CKEDITOR.tools.getNextNumber() + '" \
+                            style="width: 560px; height: 315px; background-color: #000000"></div></div>'
+                    }]
                 }]
             }]
         };

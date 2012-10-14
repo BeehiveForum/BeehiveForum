@@ -681,10 +681,10 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     } else {
 
         $poll_display = "<div align=\"center\">\n";
-        $poll_display.= "  <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"580\">\n";
+        $poll_display.= "  <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
         $poll_display.= "    <tr>\n";
         $poll_display.= "      <td align=\"center\">\n";
-        $poll_display.= "        <table width=\"560\">\n";
+        $poll_display.= "        <table width=\"100%\">\n";
 
         foreach ($poll_preview_questions_array as $question_id => $question) {
 
@@ -793,13 +793,13 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     echo "              </table>\n";
 }
 
-echo "              <table class=\"posthead\" width=\"785\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Create Poll"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" valign=\"top\" width=\"210\">\n";
-echo "                    <table class=\"posthead\" width=\"210\">\n";
+echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>", gettext("Folder"), "</h2></td>\n";
 echo "                      </tr>\n";
@@ -874,7 +874,7 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
 
 echo "                  </td>\n";
 echo "                  <td align=\"left\" valign=\"top\" width=\"575\">\n";
-echo "                    <table class=\"posthead\" width=\"575\">\n";
+echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 echo "                          <h2>", gettext("Poll"), "</h2>\n";
@@ -918,7 +918,7 @@ foreach ($poll_questions_array as $question_id => $question) {
 }
 
 echo "                          </div>\n";
-echo "                          <table width=\"530\">\n";
+echo "                          <table width=\"100%\">\n";
 echo "                            <tr>\n";
 echo "                              <td>", form_button_html('add_question', 'submit', 'button_image add_question', sprintf("<img src=\"%s\" alt=\"\" />&nbsp;%s", html_style_image('add.png'), gettext("Add new question"))), "</td>\n";
 
@@ -933,7 +933,7 @@ echo "                            <tr>\n";
 echo "                              <td align=\"left\">&nbsp;</td>\n";
 echo "                            </tr>\n";
 echo "                          </table>\n";
-echo "                          <table width=\"530\">\n";
+echo "                          <table width=\"100%\">\n";
 echo "                            <tr>\n";
 echo "                              <td>\n";
 echo "                                <table border=\"0\" cellspacing=\"0\" width=\"100%\">\n";
@@ -962,7 +962,7 @@ if (($page_prefs & POLL_ADVANCED_DISPLAY) > 0) {
 echo "                                  <table border=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "                                    <tr>\n";
 echo "                                      <td align=\"left\" colspan=\"2\">\n";
-echo "                                        <table border=\"0\" class=\"posthead\" width=\"575\">\n";
+echo "                                        <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                                          <tr>\n";
 echo "                                            <td align=\"left\"><h2>", gettext("Options display type"), "</h2></td>\n";
 echo "                                          </tr>\n";
@@ -1120,20 +1120,20 @@ echo "                            <tr>\n";
 echo "                              <td>\n";
 
 if (($page_prefs & POLL_ADDITIONAL_MESSAGE_DISPLAY) > 0) {
-    echo "                                <div class=\"poll_additional_message_toggle\">\n";
+    echo "                                <div class=\"poll_additional_message_toggle\" style=\"width: 540px\">\n";
 } else {
-    echo "                                <div class=\"poll_additional_message_toggle\" style=\"display: none\">\n";
+    echo "                                <div class=\"poll_additional_message_toggle\" style=\"display: none; width: 540px\">\n";
 }
 
 echo "                                  <table border=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "                                    <tr>\n";
 echo "                                      <td align=\"left\" colspan=\"2\">\n";
-echo "                                        <table border=\"0\" class=\"posthead\" width=\"575\">\n";
+echo "                                        <table border=\"0\" class=\"posthead\" width=\"100%\" cellpadding=\"0\">\n";
 echo "                                          <tr>\n";
 echo "                                            <td align=\"left\">", gettext("Do you want to include an additional post after the poll?"), "</td>\n";
 echo "                                          </tr>\n";
 echo "                                          <tr>\n";
-echo "                                            <td align=\"left\">", form_textarea('message_text', htmlentities_array($message_text), 22, 100, 'tabindex="1"', 'post_content editor'), "</td>\n";
+echo "                                            <td align=\"left\">", form_textarea('message_text', htmlentities_array($message_text), 22, 100, 'tabindex="1"', 'create_poll post_content editor'), "</td>\n";
 echo "                                          </tr>\n";
 echo "                                          <tr>\n";
 echo "                                            <td align=\"left\">&nbsp;</td>\n";
@@ -1143,7 +1143,7 @@ echo "                                            <td align=\"left\">\n";
 
 if ($allow_sig == true) {
 
-    echo "                                              <table class=\"messagefoot\" width=\"556\" cellspacing=\"0\">\n";
+    echo "                                              <table class=\"messagefoot\" width=\"100%\" cellspacing=\"0\">\n";
     echo "                                                <tr>\n";
     echo "                                                  <td align=\"left\" class=\"subhead\">", gettext("Signature"), "</td>\n";
 
@@ -1157,7 +1157,7 @@ if ($allow_sig == true) {
     echo "                                                <tr>\n";
     echo "                                                  <td align=\"left\" colspan=\"2\">\n";
     echo "                                                    <div class=\"sig_toggle\" style=\"display: ", (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) ? "block" : "none", "\">\n";
-    echo "                                                      ", form_textarea("sig_text", $sig_text, 7, 100, 'tabindex="7"', 'signature_content editor');
+    echo "                                                      ", form_textarea("sig_text", $sig_text, 7, 100, 'tabindex="7"', 'create_poll signature_content editor');
     echo "                                                    </div>\n";
     echo "                                                  </td>\n";
     echo "                                                </tr>\n";

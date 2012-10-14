@@ -1089,6 +1089,12 @@ div.poll_option_list ol li {
     width: 550px;
 }
 
+.create_poll {
+    max-width: 540px;
+    min-width: 540px;
+    width: 540px;
+}
+
 .small_optional_text {
 	font-size: 80%;
 }

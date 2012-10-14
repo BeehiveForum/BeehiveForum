@@ -134,7 +134,7 @@ var beehive = $.extend({}, beehive, {
             font_defaultLabel: 'Verdana',
             fontSize_defaultLabel: '12',
             height: $editor.height() - 35,
-            width: $editor.width() + 6,
+            width: $editor.width(),
             removePlugins: remove_plugins,
             resize_maxWidth: '100%',
             resize_minWidth: '100%',
@@ -442,7 +442,12 @@ $(beehive).bind('init', function() {
                         'display' : 'true'
                     },
 
-                    'url' : beehive.forum_path + '/ajax.php'
+                    'url' : beehive.forum_path + '/ajax.php',
+
+                    'success' : function(response) {
+
+                        $element.find('textarea.editor:visible').each(beehive.editor);
+                    }
                 });
             });
         }

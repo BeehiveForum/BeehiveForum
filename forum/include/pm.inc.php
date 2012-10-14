@@ -85,18 +85,18 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limi
     if (!$db = db::get()) return false;
 
     $sort_by_array  = array(
-        'PM.SUBJECT', 
-        'PM.FROM_UID', 
+        'PM.SUBJECT',
+        'PM.FROM_UID',
         'CREATED'
     );
 
     $sort_dir_array = array(
-        'ASC', 
+        'ASC',
         'DESC'
     );
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
-    
+
     if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
@@ -104,11 +104,11 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limi
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     if (($uid = session::get_value('UID')) === false) return false;
-    
+
     $limit = abs($limit);
 
     $offset = calculate_page_offset($page, $limit);
-    
+
     $message_array = array();
 
     $pm_inbox_items = PM_INBOX_ITEMS;
@@ -131,7 +131,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limi
 
     if (($result->num_rows == 0) && ($message_count > 0) && ($page > 1)) {
         return pm_get_inbox($sort_by, $sort_dir, $page - 1, $limit);
-    }        
+    }
 
     while (($pm_data = $result->fetch_assoc())) {
 
@@ -169,18 +169,18 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
     if (!$db = db::get()) return false;
 
     $sort_by_array  = array(
-        'PM.SUBJECT', 
-        'PM.FROM_UID', 
+        'PM.SUBJECT',
+        'PM.FROM_UID',
         'CREATED'
     );
 
     $sort_dir_array = array(
-        'ASC', 
+        'ASC',
         'DESC'
     );
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
-    
+
     if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
@@ -188,11 +188,11 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     if (($uid = session::get_value('UID')) === false) return false;
-    
+
     $limit = abs($limit);
 
     $offset = calculate_page_offset($page, $limit);
-    
+
     $message_array = array();
 
     $pm_outbox_items = PM_OUTBOX_ITEMS;
@@ -216,7 +216,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
     if (($result->num_rows == 0) && ($message_count > 0) && ($page > 1)) {
         return pm_get_outbox($sort_by, $sort_dir, $page - 1, $limit);
     }
-    
+
     while (($pm_data = $result->fetch_assoc())) {
 
         if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
@@ -253,18 +253,18 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit
     if (!$db = db::get()) return false;
 
     $sort_by_array  = array(
-        'PM.SUBJECT', 
-        'PM.FROM_UID', 
+        'PM.SUBJECT',
+        'PM.FROM_UID',
         'CREATED'
     );
 
     $sort_dir_array = array(
-        'ASC', 
+        'ASC',
         'DESC'
     );
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
-    
+
     if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
@@ -272,11 +272,11 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     if (($uid = session::get_value('UID')) === false) return false;
-    
+
     $limit = abs($limit);
 
     $offset = calculate_page_offset($page, $limit);
-    
+
     $message_array = array();
 
     $pm_sent_items = PM_SENT_ITEMS;
@@ -299,7 +299,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit
 
     if (($result->num_rows == 0) && ($message_count > 0) && ($page > 1)) {
         return pm_get_sent($sort_by, $sort_dir, $page - 1, $limit);
-    }        
+    }
 
     while (($pm_data = $result->fetch_assoc())) {
 
@@ -337,18 +337,18 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1,
     if (!$db = db::get()) return false;
 
     $sort_by_array  = array(
-        'PM.SUBJECT', 
-        'PM.FROM_UID', 
+        'PM.SUBJECT',
+        'PM.FROM_UID',
         'CREATED'
     );
 
     $sort_dir_array = array(
-        'ASC', 
+        'ASC',
         'DESC'
     );
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
-    
+
     if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
@@ -356,11 +356,11 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1,
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     if (($uid = session::get_value('UID')) === false) return false;
-    
+
     $limit = abs($limit);
 
     $offset = calculate_page_offset($page, $limit);
-    
+
     $message_array = array();
 
     $pm_saved_out = PM_SAVED_OUT;
@@ -385,7 +385,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1,
 
     if (($result->num_rows == 0) && ($message_count > 0) && ($page > 1)) {
         return pm_get_saved_items($sort_by, $sort_dir, $page - 1, $limit);
-    }        
+    }
 
     while (($pm_data = $result->fetch_assoc())) {
 
@@ -423,18 +423,18 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
     if (!$db = db::get()) return false;
 
     $sort_by_array  = array(
-        'PM.SUBJECT', 
-        'PM.FROM_UID', 
+        'PM.SUBJECT',
+        'PM.FROM_UID',
         'CREATED'
     );
 
     $sort_dir_array = array(
-        'ASC', 
+        'ASC',
         'DESC'
     );
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
-    
+
     if (!is_numeric($limit)) $limit = 10;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
@@ -442,11 +442,11 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     if (($uid = session::get_value('UID')) === false) return false;
-    
+
     $limit = abs($limit);
 
     $offset = calculate_page_offset($page, $limit);
-    
+
     $message_array = array();
 
     $pm_draft_items = PM_DRAFT_ITEMS;
@@ -469,7 +469,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
 
     if (($result->num_rows == 0) && ($message_count > 0) && ($page > 1)) {
         return pm_get_drafts($sort_by, $sort_dir, $page - 1, $limit);
-    }        
+    }
 
     while (($pm_data = $result->fetch_assoc())) {
 
@@ -521,7 +521,7 @@ function pm_search_execute($search_string, &$error)
     $search_keywords_array = search_extract_keywords($search_string);
 
     if ($search_keywords_array['filtered_count'] == 0) {
-        
+
         $error = SEARCH_NO_MATCHES;
         return false;
     }
@@ -566,22 +566,22 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $pag
     if (!$db = db::get()) return false;
 
     $sort_by_array  = array(
-        'PM.SUBJECT', 
-        'TYPE', 
-        'PM.FROM_UID', 
-        'PM.TO_UID', 
+        'PM.SUBJECT',
+        'TYPE',
+        'PM.FROM_UID',
+        'PM.TO_UID',
         'CREATED'
     );
-    
+
     $sort_dir_array = array(
-        'ASC', 
+        'ASC',
         'DESC'
     );
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
     if (!is_numeric($limit)) $limit = 10;
-    
+
     $limit = abs($limit);
 
     $offset = calculate_page_offset($page, $limit);
@@ -655,9 +655,9 @@ function pm_get_folder_message_counts()
     if (($uid = session::get_value('UID')) === false) return false;
 
     $message_count_array = array(
-        PM_FOLDER_INBOX => 0, 
+        PM_FOLDER_INBOX => 0,
         PM_FOLDER_SENT => 0,
-        PM_FOLDER_OUTBOX => 0, 
+        PM_FOLDER_OUTBOX => 0,
         PM_FOLDER_SAVED => 0,
         PM_FOLDER_DRAFTS => 0
     );
@@ -906,7 +906,7 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "        <table class=\"box\" width=\"100%\" cellpadding=\"0\">\n";
     echo "          <tr>\n";
     echo "            <td align=\"left\">\n";
     echo "              <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
@@ -2084,18 +2084,18 @@ function pm_export_csv($messages_array, &$zip_file, $options_array = array())
     $pm_csv_export = fopen('php://temp', 'w');
 
     $pm_csv_header = array(
-        'MID', 
-        'TYPE', 
-        'FROM_UID', 
-        'TO_UID', 
+        'MID',
+        'TYPE',
+        'FROM_UID',
+        'TO_UID',
         'SUBJECT',
-        'RECIPIENTS', 
-        'CREATED', 
-        'FLOGON', 
+        'RECIPIENTS',
+        'CREATED',
+        'FLOGON',
         'TLOGON',
-        'FNICK', 
-        'TNICK', 
-        'FOLDER', 
+        'FNICK',
+        'TNICK',
+        'FOLDER',
         'CONTENT'
     );
 
@@ -2220,7 +2220,7 @@ function pm_export_attachments($aid, $from_uid, &$zip_file)
         $attach_img_contents = implode("", file($attach_img));
         $zip_file->add_file($attach_img_contents, $attach_img);
     }
-    
+
     return true;
 }
 
@@ -2235,7 +2235,7 @@ function pm_get_folder_names($include_search_results = true)
             PM_FOLDER_SAVED => gettext("Saved Items"),
             PM_FOLDER_DRAFTS => gettext("Drafts")
         );
-        
+
     } else {
 
         $pm_folder_names_array = array(

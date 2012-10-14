@@ -573,7 +573,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 // preview message
 if ($valid && isset($_POST['preview'])) {
 
-    echo "              <table class=\"posthead\" width=\"785\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">", gettext("Message Preview"), "</td>\n";
     echo "                </tr>\n";
@@ -606,9 +606,7 @@ if ($valid && isset($_POST['preview'])) {
     $pm_preview_array['CONTENT'] = $t_content;
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_preview_array, PM_FOLDER_OUTBOX, true), "</td>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\" width=\"100%\"><br />", pm_display($pm_preview_array, PM_FOLDER_OUTBOX, true), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
@@ -616,13 +614,13 @@ if ($valid && isset($_POST['preview'])) {
     echo "              </table>\n";
 }
 
-echo "              <table width=\"785\" class=\"posthead\">\n";
+echo "              <table width=\"100%\" class=\"posthead\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Write Message"), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" valign=\"top\" width=\"210\">\n";
-echo "                    <table class=\"posthead\" width=\"210\">\n";
+echo "                    <table class=\"posthead\" width=\"100%\" cellpadding=\"0\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>", gettext("Subject"), "</h2></td>\n";
 echo "                      </tr>\n";
@@ -730,8 +728,8 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
 
 echo "                    </table>\n";
 echo "                  </td>\n";
-echo "                  <td align=\"left\" width=\"575\" valign=\"top\">\n";
-echo "                    <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
+echo "                  <td align=\"left\" valign=\"top\" width=\"575\">\n";
+echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">";
 echo "                         <h2>", gettext("Message"), "</h2>\n";
@@ -795,14 +793,12 @@ if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
 
 if (isset($pm_data) && is_array($pm_data) && isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
 
-    echo "              <table class=\"posthead\" width=\"785\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">", gettext("In reply to"), "</td>\n";
     echo "                </tr>";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" width=\"690\"><br />", pm_display($pm_data, PM_FOLDER_INBOX, true), "</td>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\" width=\"100%\"><br />", pm_display($pm_data, PM_FOLDER_INBOX, true), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";

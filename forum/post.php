@@ -600,7 +600,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "              <table class=\"posthead\" width=\"785\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\">", gettext("Message Preview"), "</td>\n";
     echo "                </tr>\n";
@@ -643,7 +643,7 @@ if ($valid && isset($_POST['preview'])) {
 
 if (!isset($t_threadtitle)) $t_threadtitle = "";
 
-echo "              <table class=\"posthead\" width=\"785\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
 
 if ($new_thread) {
 
@@ -660,7 +660,7 @@ if ($new_thread) {
 
 echo "                <tr>\n";
 echo "                  <td align=\"left\" valign=\"top\" width=\"210\">\n";
-echo "                    <table class=\"posthead\" width=\"210\" cellpadding=\"0\">\n";
+echo "                    <table class=\"posthead\" width=\"100%\" cellpadding=\"0\">\n";
 
 if ($new_thread) {
 
@@ -766,7 +766,7 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
 echo "                    </table>\n";
 echo "                  </td>\n";
 echo "                  <td align=\"left\" valign=\"top\" width=\"575\">\n";
-echo "                    <table class=\"posthead\" width=\"575\">\n";
+echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 echo "                          <h2>", gettext("Message"), "</h2>\n";
@@ -808,7 +808,7 @@ if ($allow_sig == true) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">\n";
-    echo "                          <table class=\"messagefoot\" width=\"556\" cellspacing=\"0\">\n";
+    echo "                          <table class=\"messagefoot\" width=\"559\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" class=\"subhead\">", gettext("Signature"), "</td>\n";
 
@@ -841,7 +841,7 @@ echo "              </table>\n";
 
 if (!$new_thread && $reply_to_pid > 0) {
 
-    echo "              <table class=\"posthead\" width=\"785\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\">", gettext("In reply to"), "</td>\n";
     echo "                </tr>\n";

@@ -113,6 +113,18 @@ $page_prefs = session::get_post_page_prefs();
 
 $valid = true;
 
+$allow_html = true;
+
+$allow_sig = true;
+
+if (isset($t_fid) && !session::check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
+    $allow_html = false;
+}
+
+if (isset($t_fid) && !session::check_perm(USER_PERM_SIGNATURE, $t_fid)) {
+    $allow_sig = false;
+}
+
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];
 } else{
@@ -141,7 +153,7 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_sig'])) {
 
-        $t_sig = fix_html($_POST['t_sig'], false, true);
+        $t_sig = fix_html(emoticons_strip($_POST['t_sig']));
 
         if (attachments_embed_check($t_sig)) {
 
@@ -154,17 +166,6 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
 if (!isset($t_content)) $t_content = "";
 
 if (!isset($t_sig)) $t_sig = "";
-
-$allow_html = true;
-$allow_sig = true;
-
-if (isset($t_fid) && !session::check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
-    $allow_html = false;
-}
-
-if (isset($t_fid) && !session::check_perm(USER_PERM_SIGNATURE, $t_fid)) {
-    $allow_sig = false;
-}
 
 if ($allow_html == false) {
 

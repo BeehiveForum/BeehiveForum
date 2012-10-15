@@ -434,7 +434,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $cut_msg = mb_substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', null, 6226)));
         $cut_msg = preg_replace("/(<[^>]+)?$/Du", "", $cut_msg);
 
-        $message['CONTENT'] = fix_html($cut_msg, false);
+        $message['CONTENT'] = fix_html($cut_msg);
         $message['CONTENT'].= "&hellip;[". gettext("Message Truncated"). "]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">". gettext("View full message"). "</a>";
     }
 

@@ -248,7 +248,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     }
 
     if (isset($_POST['forum_rules_message']) && strlen(trim($_POST['forum_rules_message'])) > 0) {
-        $new_forum_settings['forum_rules_message'] = fix_html($_POST['forum_rules_message']);
+        $new_forum_settings['forum_rules_message'] = fix_html(emoticons_strip($_POST['forum_rules_message']));
     } else {
         $new_forum_settings['forum_rules_message'] = "";
     }

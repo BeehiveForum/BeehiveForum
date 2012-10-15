@@ -106,17 +106,9 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 }
 
 if (isset($_POST['sig_text'])) {
-    $sig_text = $_POST['sig_text'];
+    $sig_text = fix_html(emoticons_strip($_POST['sig_text']));
 } else {
     $sig_text = user_get_sig($uid);
-}
-
-$sig_text = fix_html($sig_text, false, true);
-
-if (isset($_POST['options_html']) && ($_POST['options_html'] == 'Y')) {
-    $options_html = 'Y';
-} else {
-    $options_html = 'N';
 }
 
 if (isset($_POST['thread_title']) && strlen(trim($_POST['thread_title'])) > 0) {
@@ -258,12 +250,26 @@ if (isset($_POST['close_poll']) && is_numeric($_POST['close_poll'])) {
 }
 
 if (isset($_POST['message_text']) && strlen(trim($_POST['message_text'])) > 0) {
-    $message_text = trim($_POST['message_text']);
+    $message_text = fix_html(emoticons_strip($_POST['message_text']));
 }
 
 $allow_html = true;
 
 $allow_sig = true;
+
+if (isset($fid) && !session::check_perm(USER_PERM_HTML_POSTING, $fid)) {
+    $allow_html = false;
+}
+
+if (isset($fid) && !session::check_perm(USER_PERM_SIGNATURE, $fid)) {
+    $allow_sig = false;
+}
+
+if ($allow_html == false) {
+
+    $message_text = htmlentities_array($message_text);
+    $sig_text = htmlentities_array($sig_text);
+}
 
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];
@@ -407,6 +413,12 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
                     }
                 }
 
+                if ($allow_html == true) {
+                    $question['QUESTION'] = fix_html(emoticons_strip($question['QUESTION']));
+                } else {
+                    $question['QUESTION'] = htmlentities_array($question['QUESTION']);
+                }
+
                 $poll_option_count+= sizeof($question['OPTIONS_ARRAY']);
 
                 if (sizeof($question['OPTIONS_ARRAY']) < 2) {
@@ -418,11 +430,13 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
                     foreach ($question['OPTIONS_ARRAY'] as $option_id => $option) {
 
-                        if (($allow_html == true) && isset($options_html) && ($options_html == 'Y')) {
+                        if ($allow_html == true) {
                             $poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = fix_html($option['OPTION_NAME']);
-                        }
+                        } else {
+							$poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = htmlentities_array($option['OPTION_NAME']);
+						}
 
-                        if (attachments_embed_check($option['OPTION_NAME']) && ($options_html == 'Y')) {
+                        if (attachments_embed_check($option['OPTION_NAME']) && ($allow_html == true)) {
 
                             $error_msg_array[] = gettext("You are not allowed to embed attachments in your posts.");
                             $valid = false;
@@ -517,14 +531,6 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
     }
 }
 
-if (isset($fid) && !session::check_perm(USER_PERM_HTML_POSTING, $fid)) {
-    $allow_html = false;
-}
-
-if (isset($fid) && !session::check_perm(USER_PERM_SIGNATURE, $fid)) {
-    $allow_sig = false;
-}
-
 if (!isset($message_text)) $message_text = "";
 
 if (!isset($sig_text)) $sig_text = "";
@@ -572,16 +578,6 @@ if ($valid && isset($_POST['post'])) {
             } else if ($close_poll == POLL_CLOSE_NEVER) {
 
                 $poll_closes = false;
-            }
-
-            if ($allow_html == false || !isset($options_html) || $options_html == 'N') {
-
-                foreach ($poll_questions_array as $question_id => $question) {
-
-                    foreach ($question['OPTIONS_ARRAY'] as $option_id => $option) {
-                        $poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = htmlentities_array($option['OPTION_NAME']);
-                    }
-                }
             }
 
             $tid = post_create_thread($fid, $uid, $thread_title, 'Y', 'N');
@@ -662,17 +658,6 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $poll_data['FROM_UID'] = $preview_tuser['UID'];
 
     $poll_preview_questions_array = $poll_questions_array;
-
-    if ($allow_html == false || !isset($options_html) || $options_html == 'N') {
-
-        foreach ($poll_preview_questions_array as $question_id => $poll_question) {
-
-            foreach ($poll_question['OPTIONS_ARRAY'] as $option_id => $option) {
-
-                $poll_preview_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = htmlentities_array($option['OPTION_NAME']);
-            }
-        }
-    }
 
     if (isset($_POST['preview_form'])) {
 
@@ -921,13 +906,6 @@ echo "                          </div>\n";
 echo "                          <table width=\"100%\">\n";
 echo "                            <tr>\n";
 echo "                              <td>", form_button_html('add_question', 'submit', 'button_image add_question', sprintf("<img src=\"%s\" alt=\"\" />&nbsp;%s", html_style_image('add.png'), gettext("Add new question"))), "</td>\n";
-
-if ($allow_html == true) {
-    echo "                              <td align=\"right\">", form_checkbox('options_html', 'Y', gettext("Options Contain HTML"), (isset($options_html) && $options_html == 'Y')), "</td>\n";
-} else {
-    echo "                              <td align=\"right\">", form_input_hidden('options_html', 'N'), "</td>\n";
-}
-
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td align=\"left\">&nbsp;</td>\n";
@@ -1133,7 +1111,7 @@ echo "                                          <tr>\n";
 echo "                                            <td align=\"left\">", gettext("Do you want to include an additional post after the poll?"), "</td>\n";
 echo "                                          </tr>\n";
 echo "                                          <tr>\n";
-echo "                                            <td align=\"left\">", form_textarea('message_text', htmlentities_array($message_text), 22, 100, 'tabindex="1"', 'create_poll post_content editor'), "</td>\n";
+echo "                                            <td align=\"left\">", form_textarea('message_text', htmlentities_array(emoticons_apply($message_text)), 22, 100, 'tabindex="1"', 'create_poll post_content editor'), "</td>\n";
 echo "                                          </tr>\n";
 echo "                                          <tr>\n";
 echo "                                            <td align=\"left\">&nbsp;</td>\n";
@@ -1157,7 +1135,7 @@ if ($allow_sig == true) {
     echo "                                                <tr>\n";
     echo "                                                  <td align=\"left\" colspan=\"2\">\n";
     echo "                                                    <div class=\"sig_toggle\" style=\"display: ", (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) ? "block" : "none", "\">\n";
-    echo "                                                      ", form_textarea("sig_text", $sig_text, 7, 100, 'tabindex="7"', 'create_poll signature_content editor');
+    echo "                                                      ", form_textarea("sig_text", htmlentities_array(emoticons_apply($sig_text)), 7, 100, 'tabindex="7"', 'create_poll signature_content editor');
     echo "                                                    </div>\n";
     echo "                                                  </td>\n";
     echo "                                                </tr>\n";

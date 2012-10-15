@@ -124,92 +124,11 @@ if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
     $t_dedupe = time();
 }
 
-if (isset($_POST['post']) || isset($_POST['preview']) || isset($_POST['move']) || isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
-
-    if (isset($_POST['t_post_emots'])) {
-
-        if ($_POST['t_post_emots'] == "disabled") {
-            $emots_enabled = false;
-        } else {
-            $emots_enabled = true;
-        }
-
-    } else {
-
-        $emots_enabled = false;
-    }
-
-    if (isset($_POST['t_post_links'])) {
-
-        if ($_POST['t_post_links'] == "enabled") {
-            $links_enabled = true;
-        } else {
-            $links_enabled = false;
-        }
-
-    } else {
-
-        $links_enabled = false;
-    }
-
-    if (isset($_POST['t_check_spelling'])) {
-
-        if ($_POST['t_check_spelling'] == "enabled") {
-            $spelling_enabled = true;
-        } else {
-            $spelling_enabled = false;
-        }
-
-    } else {
-
-        $spelling_enabled = false;
-    }
-
-    if (isset($_POST['t_post_interest'])) {
-
-        if ($_POST['t_post_interest'] == "Y") {
-            $high_interest = "Y";
-        } else {
-            $high_interest = "N";
-        }
-
-    } else {
-
-        $high_interest = 'N';
-    }
-
-    if (isset($_POST['t_sticky'])) {
-
-        if ($_POST['t_sticky'] == 'Y') {
-            $t_sticky = 'Y';
-        } else {
-            $t_sticky = 'N';
-        }
-
-    } else {
-
-        $t_sticky = 'N';
-    }
-
-    if (isset($_POST['t_closed'])) {
-
-        if ($_POST['t_closed'] == 'Y') {
-            $t_closed = 'Y';
-        } else {
-            $t_closed = 'N';
-        }
-
-    } else {
-
-        $t_closed = 'N';
-    }
-}
-
 if (isset($_POST['post']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = fix_html($_POST['t_content'], $emots_enabled, $links_enabled);
+        $t_content = fix_html(emoticons_strip($_POST['t_content']));
 
         if (attachments_embed_check($t_content)) {
 
@@ -225,7 +144,7 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_sig'])) {
 
-        $t_sig = fix_html($_POST['t_sig'], false, true);
+        $t_sig = fix_html(emoticons_strip($_POST['t_sig']));
 
         if (attachments_embed_check($t_sig)) {
 
@@ -238,7 +157,7 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 if (isset($_POST['more'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-        $t_content = fix_html($_POST['t_content'], $emots_enabled, $links_enabled);
+        $t_content = fix_html(emoticons_strip($_POST['t_content']));
     }
 }
 
@@ -265,11 +184,11 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
     }
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-        $t_content = fix_html($_POST['t_content'], $emots_enabled, $links_enabled);
+        $t_content = fix_html(emoticons_strip($_POST['t_content']));
     }
 
     if (isset($_POST['t_sig'])) {
-        $t_sig = fix_html($_POST['t_sig'], false, true);
+        $t_sig = fix_html(emoticons_strip($_POST['t_sig']));
     }
 
     if (isset($_POST['emots_toggle'])) {
@@ -450,18 +369,7 @@ if ($valid && isset($_POST['post'])) {
 
             if ($new_thread) {
 
-                if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-                    $t_closed = isset($_POST['t_closed']) && $_POST['t_closed'] == 'Y' ? true : false;
-                    $t_sticky = isset($_POST['t_sticky']) && $_POST['t_sticky'] == 'Y' ? 'Y' : 'N';
-
-                } else {
-
-                    $t_closed = false;
-                    $t_sticky = "N";
-                }
-
-                $t_tid = post_create_thread($t_fid, $uid, $t_threadtitle, "N", $t_sticky, $t_closed);
+                $t_tid = post_create_thread($t_fid, $uid, $t_threadtitle, 'N', 'N', false);
                 $t_rpid = 0;
 
             } else{
@@ -471,24 +379,6 @@ if ($valid && isset($_POST['post'])) {
 
                 if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && (!session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
                     light_html_draw_error(gettext("This thread is closed, you cannot post in it!"));
-                }
-
-                if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-                    $t_closed = isset($_POST['t_closed']) && $_POST['t_closed'] == 'Y' ? true : false;
-                    $t_sticky = isset($_POST['t_sticky']) && $_POST['t_sticky'] == 'Y' ? 'Y' : 'N';
-
-                    if (isset($t_closed) && $t_closed == "Y") {
-                        thread_set_closed($t_tid, true);
-                    } else {
-                        thread_set_closed($t_tid, false);
-                    }
-
-                    if (isset($t_sticky) && $t_sticky == "Y") {
-                        thread_set_sticky($t_tid, true);
-                    } else {
-                        thread_set_sticky($t_tid, false);
-                    }
                 }
             }
 

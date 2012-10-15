@@ -42,7 +42,7 @@ function html_purifier_error()
     return;
 }
 
-function fix_html($html, $emoticons = true, $links = true)
+function fix_html($html)
 {
     $bh_error_handler = set_error_handler('html_purifier_error');
 

@@ -122,7 +122,7 @@ if (isset($_POST['save']) || isset($_POST['preview'])) {
     }
 }
 
-$sig_text = fix_html($sig_text, false, true);
+$sig_text = fix_html(emoticons_strip($sig_text));
 
 if (isset($_POST['save'])) {
 

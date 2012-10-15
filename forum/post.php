@@ -188,7 +188,7 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_sig'])) {
 
-        $t_sig = fix_html($_POST['t_sig'], false, true);
+        $t_sig = fix_html(emoticons_strip($_POST['t_sig']));
 
         if (attachments_embed_check($t_sig)) {
 
@@ -232,7 +232,7 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
     }
 
     if (isset($_POST['t_sig'])) {
-        $t_sig = fix_html($_POST['t_sig'], false, true);
+        $t_sig = fix_html(emoticons_strip($_POST['t_sig']));
     }
 
     if (isset($_POST['emots_toggle'])) {

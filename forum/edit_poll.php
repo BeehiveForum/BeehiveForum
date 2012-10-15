@@ -147,29 +147,6 @@ $poll_questions_array = poll_get_votes($tid);
 
 $valid = true;
 
-if (isset($_POST['options_html'])) {
-
-    if ($_POST['options_html'] == 'Y') {
-        $options_html = 'Y';
-    } else {
-        $options_html = 'N';
-    }
-
-} else {
-
-    $options_html = 'N';
-
-    foreach ($poll_questions_array as $question) {
-
-        foreach ($question['OPTIONS_ARRAY'] as $option) {
-
-            if (strip_tags($option['OPTION_NAME']) != $option['OPTION_NAME']) {
-                $options_html = 'Y';
-            }
-        }
-    }
-}
-
 if (isset($_POST['thread_title'])) {
 
     if (strlen(trim($_POST['thread_title'])) > 0) {
@@ -378,6 +355,10 @@ if (isset($_POST['close_poll'])) {
 
 $allow_html = true;
 
+if (isset($fid) && !session::check_perm(USER_PERM_HTML_POSTING, $fid)) {
+    $allow_html = false;
+}
+
 if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
     $aid = $_POST['aid'];
 } else if (!$aid = attachments_get_id($tid, $pid)) {
@@ -514,6 +495,12 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
                     }
                 }
 
+                if ($allow_html == true) {
+                    $question['QUESTION'] = fix_html(emoticons_strip($question['QUESTION']));
+                } else {
+                    $question['QUESTION'] = htmlentities_array($question['QUESTION']);
+                }
+
                 $poll_option_count+= sizeof($question['OPTIONS_ARRAY']);
 
                 if (sizeof($question['OPTIONS_ARRAY']) < 2) {
@@ -525,11 +512,13 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
                     foreach ($question['OPTIONS_ARRAY'] as $option_id => $option) {
 
-                        if (($allow_html == true) && isset($options_html) && ($options_html == 'Y')) {
+                        if ($allow_html == true) {
                             $poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = fix_html($option['OPTION_NAME']);
+                        } else {
+                            $poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = htmlentities_array($option['OPTION_NAME']);
                         }
 
-                        if (attachments_embed_check($option['OPTION_NAME']) && ($options_html == 'Y')) {
+                        if (attachments_embed_check($option['OPTION_NAME']) && ($allow_html == true)) {
 
                             $error_msg_array[] = gettext("You are not allowed to embed attachments in your posts.");
                             $valid = false;
@@ -609,10 +598,6 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
     }
 }
 
-if (isset($fid) && !session::check_perm(USER_PERM_HTML_POSTING, $fid)) {
-    $allow_html = false;
-}
-
 if (isset($_POST['dedupe']) && is_numeric($_POST['dedupe'])) {
     $dedupe = $_POST['dedupe'];
 } else{
@@ -642,16 +627,6 @@ if ($valid && isset($_POST['apply'])) {
         } else {
 
             $poll_closes = false;
-        }
-
-        if ($allow_html == false || !isset($options_html) || $options_html == 'N') {
-
-            foreach ($poll_questions_array as $question_id => $question) {
-
-                foreach ($question['OPTIONS_ARRAY'] as $option_id => $option) {
-                    $poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = htmlentities_array($option['OPTION_NAME']);
-                }
-            }
         }
 
         $poll_delete_votes = poll_edit_check_questions($tid, $poll_questions_array) || ($poll_data['POLLTYPE'] != $poll_type) || ($poll_data['VOTETYPE'] != $poll_vote_type);
@@ -713,17 +688,6 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $poll_data['FROM_UID'] = $preview_tuser['UID'];
 
     $poll_preview_questions_array = $poll_questions_array;
-
-    if ($allow_html == false || !isset($options_html) || $options_html == 'N') {
-
-        foreach ($poll_preview_questions_array as $question_id => $question) {
-
-            foreach ($question['OPTIONS_ARRAY'] as $option_id => $option) {
-
-                $poll_preview_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = htmlentities_array($option['OPTION_NAME']);
-            }
-        }
-    }
 
     if (isset($_POST['preview_form'])) {
 
@@ -933,13 +897,6 @@ echo "                          </div>\n";
 echo "                          <table width=\"530\">\n";
 echo "                            <tr>\n";
 echo "                              <td>", form_button_html('add_question', 'submit', 'button_image add_question', sprintf("<img src=\"%s\" alt=\"\" />&nbsp;%s", html_style_image('add.png'), gettext("Add new question"))), "</td>\n";
-
-if ($allow_html == true) {
-    echo "                              <td align=\"right\">", form_checkbox('options_html', 'Y', gettext("Options Contain HTML"), (isset($options_html) && $options_html == 'Y')), "</td>\n";
-} else {
-    echo "                              <td align=\"right\">", form_input_hidden('options_html', 'N'), "</td>\n";
-}
-
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td align=\"left\">&nbsp;</td>\n";

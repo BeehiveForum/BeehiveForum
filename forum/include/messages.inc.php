@@ -184,7 +184,7 @@ function message_get_meta_content($msg, &$meta_keywords, &$meta_description)
     }
 }
 
-function message_apply_formatting($message, $emoticons = true, $ignore_sig = false)
+function message_apply_formatting($message, $ignore_sig = false)
 {
     $webtag = get_webtag();
 
@@ -425,7 +425,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
-        $message['CONTENT'] = message_apply_formatting($message['CONTENT'], true, (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs));
+        $message['CONTENT'] = message_apply_formatting($message['CONTENT'], (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs));
     }
 
     // Check length of post to see if we should truncate it for display --------

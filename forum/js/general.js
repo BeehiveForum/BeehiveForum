@@ -133,6 +133,7 @@ var beehive = $.extend({}, beehive, {
             extraPlugins: 'youtube,beehive,flash',
             font_defaultLabel: 'Verdana',
             fontSize_defaultLabel: '12',
+            forceEnterMode: true,
             height: $editor.height() - 35,
             width: $editor.width(),
             removePlugins: remove_plugins,

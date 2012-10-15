@@ -177,7 +177,7 @@ if (($threads_array = threads_get_most_recent($limit, $fid, ($sort_created == 'Y
         }
 
         // Strip signatures from the RSS feed
-        $t_content = message_apply_formatting($t_content, false, true);
+        $t_content = message_apply_formatting($t_content, true);
 
         // Strip HTML and trim the content back.
         $t_content = strip_tags(trim(xml_strip_invalid_chars($t_content)));

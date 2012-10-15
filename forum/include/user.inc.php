@@ -843,25 +843,28 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     );
 
     // Loop through the passed preference names and check they're valid
-    // and whether the value needs to go in the global or forum USER_PREFS table.
+    // and whether the value needs to go in the global or forum USER_PREFS
+    // table. If the preference is a global only preference it goes into
+    // global USER_PREFS table regardless, otherwise the preference will
+    // be checked against to see if the user wants it setting globally
+    // or only on the current forum.
     foreach ($prefs_array as $pref_name => $pref_setting) {
 
-        if (user_check_pref($pref_name, $pref_setting)) {
+        if (!user_check_pref($pref_name, $pref_setting)) {
+            continue;
+        }
 
-            if (isset($prefs_global_setting_array[$pref_name]) && $prefs_global_setting_array[$pref_name] == true) {
+        if (in_array($pref_name, $global_pref_names) && !in_array($pref_name, $forum_pref_names)) {
 
-                if (in_array($pref_name, $global_pref_names)) {
+            $global_prefs_array[$pref_name] = $pref_setting;
 
-                    $global_prefs_array[$pref_name] = $pref_setting;
-                }
+        } else if (in_array($pref_name, $global_pref_names) && isset($prefs_global_setting_array[$pref_name]) && ($prefs_global_setting_array[$pref_name] == true)) {
 
-            } else {
+            $global_prefs_array[$pref_name] = $pref_setting;
 
-                if (in_array($pref_name, $forum_pref_names)) {
+        } else if (in_array($pref_name, $forum_pref_names)) {
 
-                    $forum_prefs_array[$pref_name] = $pref_setting;
-                }
-            }
+            $forum_prefs_array[$pref_name] = $pref_setting;
         }
     }
 

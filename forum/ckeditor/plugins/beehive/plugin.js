@@ -4,37 +4,35 @@
 
         init: function (editor) {
 
-            var codeTag = new CKEDITOR.style({
-                element: 'pre',
-                attributes: {
-                    'class': 'code'
+            var allStyles = new CKEDITOR.style({
+                element: $,
+            });
+
+            var findAscendant = function (element, reference, className) {
+
+                var ascendant = element.getAscendant(reference);
+                return ascendant && ascendant.hasClass(className);
+            };
+
+            editor.attachStyleStateChange(allStyles, function (state) {
+
+                var element = this.getSelection().getStartElement();
+
+                if ((element.getName() == 'div' && element.hasClass('quote')) || findAscendant(element, 'div', 'quote')) {
+                    return !editor.readOnly && editor.getCommand('quote').setState(CKEDITOR.TRISTATE_ON);
                 }
-            });
 
-            var quoteTag = new CKEDITOR.style({
-                element: 'div',
-                attributes: {
-                    'class': 'quote'
+                if ((element.getName() == 'pre' && element.hasClass('code')) || findAscendant(element, 'pre', 'code')) {
+                    return !editor.readOnly && editor.getCommand('code').setState(CKEDITOR.TRISTATE_ON);
                 }
-            });
 
-            var spoilerTag = new CKEDITOR.style({
-                element: 'span',
-                attributes: {
-                    'class': 'spoiler'
+                if ((element.getName() == 'span' && element.hasClass('spoiler')) || findAscendant(element, 'span', 'spoiler')) {
+                    return !editor.readOnly && editor.getCommand('spoiler').setState(CKEDITOR.TRISTATE_ON);
                 }
-            });
 
-            editor.attachStyleStateChange(codeTag, function (state) {
-                !editor.readOnly && editor.getCommand('code').setState(state);
-            });
-
-            editor.attachStyleStateChange(quoteTag, function (state) {
-                !editor.readOnly && editor.getCommand('quote').setState(state);
-            });
-
-            editor.attachStyleStateChange(spoilerTag, function (state) {
-                !editor.readOnly && editor.getCommand('spoiler').setState(state);
+                !editor.readOnly && editor.getCommand('quote').setState(CKEDITOR.TRISTATE_OFF);
+                !editor.readOnly && editor.getCommand('code').setState(CKEDITOR.TRISTATE_OFF);
+                !editor.readOnly && editor.getCommand('spoiler').setState(CKEDITOR.TRISTATE_OFF);
             });
 
             editor.addCommand('code', {
@@ -62,7 +60,7 @@
 
                     } else {
 
-                        quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><b>code:</b>&nbsp;</div>');
+                        quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><b>' + beehive.lang.code + ':</b>&nbsp;</div>');
                         codeElement = CKEDITOR.dom.element.createFromHtml('<pre class="code">' + editor.getSelection().getNative() + '</pre>');
                         range = new CKEDITOR.dom.range(editor.document);
 
@@ -108,7 +106,7 @@
 
                     } else {
 
-                        quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><b>quote:</b>&nbsp;</div>');
+                        quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><b>' + beehive.lang.quote + ':</b>&nbsp;</div>');
                         quoteElement = CKEDITOR.dom.element.createFromHtml('<div class="quote">' + editor.getSelection().getNative() + '</div>');
                         range = new CKEDITOR.dom.range(editor.document);
 
@@ -146,7 +144,7 @@
                         spoilerElement.remove(true);
                         spoilerContainer.remove(true);
 
-                    } else {
+                    } else if (editor.getSelection().getSelectedText().length > 0) {
 
                         spoilerElement = CKEDITOR.dom.element.createFromHtml('<span class="spoiler"><span>' + editor.getSelection().getNative() + '</span></span>');
 

@@ -1680,7 +1680,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     echo "</div>\n";
 
     if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
-        $message['CONTENT'] = message_apply_formatting($message['CONTENT'], true, true);
+        $message['CONTENT'] = message_apply_formatting($message['CONTENT'], true);
     }
 
     $message['CONTENT'] = light_spoiler_enable($message['CONTENT']);

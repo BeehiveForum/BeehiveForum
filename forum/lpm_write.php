@@ -368,17 +368,6 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $t_subject = preg_replace('/^(RE:)?/iu', 'RE:', $pm_data['SUBJECT']);
 
-        $message_author = htmlentities_array(format_user_name($pm_data['FLOGON'], $pm_data['FNICK']));
-
-        $pm_data['CONTENT'] = trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
-        $pm_data['CONTENT'] = preg_replace("/(\r\n|\r|\n){2,}/", "\r\n\r\n", $pm_data['CONTENT']);
-
-        if (session::get_value('PM_INCLUDE_REPLY') == 'Y') {
-
-            $t_content = "<quote source=\"$message_author\" url=\"\">";
-            $t_content.= $pm_data['CONTENT']. "</quote>\n\n";
-        }
-
     } else {
 
         light_pm_error_refuse();
@@ -391,12 +380,6 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $pm_data['CONTENT'] = pm_get_content($t_forward_mid);
 
         $t_subject = preg_replace('/^(FWD:)?/iu', 'FWD:', $pm_data['SUBJECT']);
-
-        $message_author = htmlentities_array(format_user_name($pm_data['FLOGON'], $pm_data['FNICK']));
-
-        $t_content = "<quote source=\"$message_author\" url=\"\">";
-        $t_content.= trim(strip_tags(strip_paragraphs($pm_data['CONTENT'])));
-        $t_content.= "</quote>\n\n";
 
     } else {
 

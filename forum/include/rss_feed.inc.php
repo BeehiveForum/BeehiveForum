@@ -285,18 +285,30 @@ function rss_feed_check_feeds()
                             $rss_title = trim(mb_substr($rss_title, 0, $pos));
                         }
 
-                        $rss_title.= " ...";
+                        $rss_title.= "...";
                     }
 
                     if (strlen($rss_feed_item->description) > 1) {
 
                         $rss_feed_item_description = htmlentities_decode_array($rss_feed_item->description);
 
-                        $rss_content = fix_html("<quote source=\"$rss_quote_source\" url=\"{$rss_feed_item->link}\">$rss_feed_item_description</quote>");
+                        $rss_content = fix_html(sprintf(
+                            '<div class="quotetext"><b>%s:</b> <a href="%s">%s</a></div>
+                             <div class="quote">%s</div>',
+                            gettext('quote'),
+                            $rss_feed_item->link,
+                            $rss_quote_source,
+                            $rss_feed_item_description
+                        ));
 
                     } else {
 
-                        $rss_content = fix_html("<p>$rss_quote_source</p>\n<p><a href=\"{$rss_feed_item->link}\" target=\"_blank\">", gettext("Click here to read this article"), "</a></p>");
+                        $rss_content = fix_html(sprintf(
+                            '<p>%s</p><a href=\"%s\" target=\"_blank\">%s</a>',
+                            $rss_quote_source,
+                            $rss_feed_item->link,
+                            gettext("Click here to read this article")
+                        ));
                     }
 
                     $tid = post_create_thread($rss_feed['FID'], $rss_feed['UID'], $rss_title);

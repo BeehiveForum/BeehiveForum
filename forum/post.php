@@ -304,16 +304,18 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
                 $message_author = htmlentities_array(format_user_name($message_array['FLOGON'], $message_array['FNICK']));
 
                 $message_content = message_get_content($reply_to_tid, $quote_pid);
-                $message_content = message_apply_formatting($message_content, false, true);
+                $message_content = message_apply_formatting($message_content, true);
 
-                $message_content = trim(strip_tags(strip_paragraphs($message_content)));
-                $message_content = preg_replace("/(\r\n|\r|\n){2,}/", "\r\n\r\n", $message_content);
+                $message_link = "messages.php?webtag=$webtag&amp;msg=$reply_to_tid.$quote_pid";
 
-                $t_quoted_post = "<quote source=\"$message_author\" ";
-                $t_quoted_post.= "url=\"messages.php?webtag=$webtag&amp;msg=$reply_to_tid.$quote_pid\">";
-                $t_quoted_post.= trim($message_content). "</quote>\n\n";
-
-                $t_content_array[] = $t_quoted_post;
+                $t_content_array[] = sprintf(
+                    '<div class="quotetext"><b>%s:</b> <a href="%s">%s</a></div>
+                     <div class="quote">%s</div>',
+                    gettext('quote'),
+                    $message_link,
+                    $message_author,
+                    fix_html($message_content)
+                );
             }
         }
 

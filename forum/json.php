@@ -58,7 +58,6 @@ $json_data = array(
     'webtag' => $webtag,
     'uid' => session::get_value('UID'),
     'lang' => array(
-        'fixhtmlexplanation' => gettext("This forum uses HTML filtering. Your submitted HTML has been modified by the filters in some way.\n\nTo view your original code, select the 'Submitted code' radio button.\nTo view the modified code, select the 'Corrected code' radio button."),
         'imageresized' => gettext("This image has been resized (original size %dx%d). To view the full-size image click here."),
         'deletemessagesconfirmation' => gettext("Are you sure you want to delete all of the selected messages?"),
         'unquote' => gettext("Unquote"),
@@ -72,6 +71,8 @@ $json_data = array(
         'allowmultipleoptions' => gettext("Allow multiple options to be selected"),
         'addnewoption' => gettext("Add new option"),
         'deleteoption' => gettext("Delete option"),
+        'code' => gettext('code'),
+        'quote' => gettext('quote'),
     ),
     'images' => array(),
     'font_size' => $font_size,

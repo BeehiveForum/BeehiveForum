@@ -30,6 +30,11 @@ select {
     text-decoration: none;
 }
 
+a.button {
+    border: 1px outset threedface;
+    padding: 4px 7px 2px;
+}
+
 .checkbox,
 .radio {
     margin-right: 3px;
@@ -167,7 +172,7 @@ body {
 }
 
 #nav {
-	background: url("images/mobile_icon.png") no-repeat scroll 90% 5px #6D496D;
+    background: url("images/mobile_icon.png") no-repeat scroll 90% 5px #6D496D;
     border-bottom: none;
     border-left: 1px solid rgba(0, 0, 0, 0.1);
     border-right: none;

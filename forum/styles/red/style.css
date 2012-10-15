@@ -917,7 +917,7 @@ div.poll_option_list ol li {
 }
 
 .postresponse {
-	border-top: 1px #FF6666 solid;
+    border-top: 1px #FF6666 solid;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
@@ -958,7 +958,7 @@ div.poll_option_list ol li {
 }
 
 .profile_image_none {
-	border: 1px solid #CC3333;
+    border: 1px solid #CC3333;
     height: 95px;
     margin: 10px;
     width: 95px;

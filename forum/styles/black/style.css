@@ -917,7 +917,7 @@ div.poll_option_list ol li {
 }
 
 .postresponse {
-	border-top: 1px #666666 solid;
+    border-top: 1px #666666 solid;
     color: #FFFFFF;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
@@ -958,7 +958,7 @@ div.poll_option_list ol li {
 }
 
 .profile_image_none {
-	border: 1px solid #3E3E3E;
+    border: 1px solid #3E3E3E;
     height: 95px;
     margin: 10px;
     width: 95px;
@@ -975,7 +975,7 @@ div.poll_option_list ol li {
 }
 
 .profile_item_value {
-	border-left: 1px solid #666666;
+    border-left: 1px solid #666666;
     color: #DEDEDE;
     font-size: 100%;
     padding: 2px 2px 2px 10px;

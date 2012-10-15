@@ -210,6 +210,8 @@ foreach ($css_rules_array as $css_filepath => $css_rules_set) {
         }
     }
 
+    $css_rules_set = sort_array_by_array($css_rules_set, array_keys($default_css_rules));
+
     file_put_contents($css_filepath, parse_array_to_css($css_rules_set));
 }
 

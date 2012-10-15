@@ -588,7 +588,20 @@ if ($allow_sig == true) {
 echo "<div class=\"post_buttons\">";
 echo light_form_submit("post", gettext("Post"));
 echo light_form_submit("preview", gettext("Preview"));
-echo light_form_submit("cancel", gettext("Cancel"));
+
+if (isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && isset($_POST['t_rpid']) && is_numeric($_POST['t_rpid']) ) {
+
+    echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$_POST['t_tid']}.{$_POST['t_rpid']}\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+
+} else if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
+
+    echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$_GET['replyto']}\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+
+} else {
+
+    echo "<a href=\"lmessages.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+}
+
 echo "</div>";
 
 echo "</div>";

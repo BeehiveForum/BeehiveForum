@@ -33,32 +33,7 @@ require_once BH_INCLUDE_PATH. 'format.inc.php';
 
 $exclude_files_array = array('start_main.css', 'style_ie6.css', 'gallery.css');
 
-$exclude_dirs_array = array('forum/styles/default');
-
-function get_file_list(&$file_list_array, $path, $extension)
-{
-    $extension_preg = preg_quote($extension, '/');
-
-    if (!is_array($file_list_array)) $file_list_array = array();
-
-    if (($dir_handle = opendir($path))) {
-
-        while (($file_name = readdir($dir_handle)) !== false) {
-
-            if ($file_name != "." && $file_name != "..") {
-
-                if (@is_dir("$path/$file_name") && !in_array("$path/$file_name", $GLOBALS['exclude_dirs_array'])) {
-
-                    get_file_list($file_list_array, "$path/$file_name", $extension);
-
-                } else if ((preg_match("/$extension_preg$/iu", $file_name) > 0) && !in_array($file_name, $GLOBALS['exclude_files_array'])) {
-
-                    $file_list_array[] = "$path/$file_name";
-                }
-            }
-        }
-    }
-}
+$exclude_dirs_array = array('default', 'tehforum');
 
 function parse_css_to_array($css_file_contents)
 {
@@ -84,30 +59,6 @@ function parse_css_to_array($css_file_contents)
     return $css_rules_array;
 }
 
-function selector_sort($a, $b)
-{
-    if ($a == 'html' && $b == 'body') return -1;
-    if ($a == 'body' && $b == 'html') return 1;
-
-    if ($a == 'html') return -1;
-    if ($b == 'html') return 1;
-
-    if ($a == 'body') return -1;
-    if ($b == 'body') return 1;
-
-    if (substr($a, 0, 1) == '.' && substr($b, 0, 1) != '.') return 1;
-    if (substr($a, 0, 1) != '.' && substr($b, 0, 1) == '.') return -1;
-
-    return strcmp($a, $b);
-}
-
-function sort_array_by_array($array, $sort_by)
-{
-    $common_keys = array_intersect_key(array_flip($sort_by), $array);
-    $common_key_values = array_intersect_key($array, $common_keys);
-    return array_merge($common_keys, $common_key_values);
-}
-
 function parse_array_to_css($css_rules_array)
 {
     $css_file_contents = '';
@@ -128,91 +79,138 @@ function parse_array_to_css($css_rules_array)
     return trim($css_file_contents);
 }
 
-function array_diff_key_recursive($array1, $array2)
+function sort_array_by_array($array, $sort_by)
 {
-    foreach ($array1 as $key => $value) {
+    $common_keys = array_intersect_key(array_flip($sort_by), $array);
+    $common_key_values = array_intersect_key($array, $common_keys);
+    return array_merge($common_keys, $common_key_values);
+}
 
-        if (is_array($value) && array_key_exists($key, $array2)) {
+function get_css_styles($path, $pattern, $exclude_dirs_array, $exclude_files_array)
+{
+    $output = array();
 
-            $result[$key] = array_diff_key_recursive($array1[$key], $array2[$key]);
+    $directory_iterator = new DirectoryIterator($path);
 
-        } else if (is_array($value)) {
+    foreach ($directory_iterator as $fileinfo) {
 
-            $result[$key] = $array1[$key];
+        if ($fileinfo->isDir() && !$fileinfo->isDot() && !in_array($fileinfo->getBasename(), $exclude_dirs_array)) {
 
-        } else {
+            $style_name = $fileinfo->getBasename();
 
-            $result = array_diff_key($array1, $array2);
-        }
+            $style_pathname = $fileinfo->getPathname();
 
-        if (is_array($result) && isset($result[$key]) && is_array($result[$key]) && count($result[$key]) == 0) {
-            unset($result[$key]);
+            $regex_iterator = new RegexIterator(
+                new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($style_pathname)
+                ),
+                $pattern,
+                RegexIterator::GET_MATCH
+            );
+
+            foreach ($regex_iterator as $filename => $regex_match) {
+
+                if (!in_array(basename($filename), $exclude_files_array)) {
+
+                    $css_filename = ltrim(
+                        str_replace(
+                            $style_pathname,
+                            '',
+                            $filename
+                        ),
+                        '/'
+                    );
+
+                    if (!isset($output[$style_name])) {
+                        $output[$style_name] = array();
+                    }
+
+                    $output[$style_name][$css_filename] = parse_css_to_array(file_get_contents($filename));
+                }
+            }
         }
     }
 
-    return $result;
+    return $output;
 }
 
 set_time_limit(0);
 
 header('Content-Type: text/plain');
 
-$css_rules_array = array();
+$style_css_files_array = get_css_styles('forum/styles/', '/\.css$/i', $exclude_dirs_array, $exclude_files_array);
 
-get_file_list($file_list, 'forum/styles', 'style.css');
+$default_css_files_array = get_css_styles('forum/styles/', '/default\/.+\.css$/i', array(), $exclude_files_array);
 
-get_file_list($file_list, 'forum/styles', 'mobile.css');
+$default_css_files_array = $default_css_files_array['default'];
 
-foreach ($file_list as $css_filepath) {
-    $css_rules_array[$css_filepath] = parse_css_to_array(file_get_contents($css_filepath));
-}
+foreach ($default_css_files_array as $default_css_filename => $default_css_rules) {
 
-foreach ($css_rules_array as $css_filepath => $css_rules_set) {
+    foreach ($style_css_files_array as $style_name => $style_css_files) {
 
-    $default_css_filepath = sprintf(
-        'forum/styles/default/%s',
-        basename($css_filepath)
-    );
+        if (!isset($style_css_files_array[$style_name][$default_css_filename])) {
 
-    $default_css_rules = parse_css_to_array(file_get_contents($default_css_filepath));
+            $style_css_files_array[$style_name][$default_css_filename] = $default_css_rules;
+            continue;
+        }
 
-    file_put_contents($default_css_filepath, parse_array_to_css($default_css_rules));
+        foreach ($default_css_rules as $default_css_selector => $default_css_properties) {
 
-    $default_css_rules = parse_css_to_array(file_get_contents($default_css_filepath));
+            if (!isset($style_css_files_array[$style_name][$default_css_filename][$default_css_selector])) {
 
-    foreach ($default_css_rules as $selector => $default_rules_set) {
+                $style_css_files_array[$style_name][$default_css_filename][$default_css_selector] = $default_css_properties;
+                continue;
+            }
 
-        if (!isset($css_rules_set[$selector])) {
+            foreach ($default_css_properties as $default_property_name => $default_property_value) {
 
-            $css_rules_set[$selector] = $default_rules_set;
-
-        } else {
-
-            foreach ($default_rules_set as $rule_name => $value) {
-
-                if (preg_match('/(#[0-9A-F]{3,6}|rgba?)/i', $value) > 0) {
+                if (preg_match('/(#[0-9A-F]{3,6}|rgba?)/i', $default_property_value) > 0) {
                     continue;
                 }
 
-                if (preg_match('/color/i', $rule_name) > 0) {
+                if (preg_match('/color/i', $default_property_name) > 0) {
                     continue;
                 }
 
-                $css_rules_set[$selector][$rule_name] = $value;
+                $style_css_files_array[$style_name][$default_css_filename][$default_css_selector][$default_property_name] = $default_property_value;
+            }
+
+            sort_array_by_array(
+                $style_css_files_array[$style_name][$default_css_filename][$default_css_selector],
+                array_keys($default_css_files_array[$default_css_filename][$default_css_selector])
+            );
+        }
+
+        foreach ($style_css_files as $style_css_filename => $style_css_rules) {
+
+            foreach ($style_css_rules as $style_css_selector => $style_css_properties) {
+
+                if (!isset($default_css_files_array[$style_css_filename][$style_css_selector])) {
+                    unset($style_css_files_array[$style_name][$style_css_filename][$style_css_selector]);
+                }
             }
         }
+
+        sort_array_by_array(
+            $style_css_files_array[$style_name][$default_css_filename],
+            array_keys($default_css_files_array[$default_css_filename])
+        );
     }
+}
 
-    foreach ($css_rules_set as $selector => $css_rules) {
+foreach ($style_css_files_array as $style_name => $style_css_files) {
 
-        if (!isset($default_css_rules[$selector])) {
-            unset($css_rules_set[$selector]);
-        }
+    foreach ($style_css_files as $style_css_filename => $style_css_rules) {
+
+        file_put_contents(
+            sprintf(
+                'forum/styles/%s/%s',
+                $style_name,
+                $style_css_filename
+            ),
+            parse_array_to_css($style_css_rules)
+        );
     }
-
-    $css_rules_set = sort_array_by_array($css_rules_set, array_keys($default_css_rules));
-
-    file_put_contents($css_filepath, parse_array_to_css($css_rules_set));
 }
 
 ?>

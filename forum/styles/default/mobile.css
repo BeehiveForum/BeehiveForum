@@ -2,6 +2,10 @@
     font-family: verdana, arial, helvetica, sans-serif;
 }
 
+p:first-child {
+    margin-top: 0;
+}
+
 input,
 .select,
 .textarea,

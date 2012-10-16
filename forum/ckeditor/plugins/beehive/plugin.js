@@ -195,8 +195,8 @@
                         span: function (element) {
 
                             var test = element.attributes
-                                && element.attributes.class
-                                && element.attributes.class.match(/emoticon/);
+                                && element.attributes['class']
+                                && element.attributes['class'].match(/emoticon/);
 
                             if (!test || test.length == 0) {
                                 return null;
@@ -222,8 +222,8 @@
                         $: function (element) {
 
                             var test = element.attributes
-                                && element.attributes.class
-                                && element.attributes.class.match(/emoticon/);
+                                && element.attributes['class']
+                                && element.attributes['class'].match(/emoticon/);
 
                             if (!test || test.length == 0) {
                                 return element;

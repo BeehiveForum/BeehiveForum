@@ -72,9 +72,6 @@ USA
                     editor.insertElement(fakeElement);
                 }
             },
-            onHide: function () {
-                if (this.showPreview) this.showPreview('');
-            },
             contents: [{
                 label: editor.lang.common.generalTab,
                 id: 'general',
@@ -113,10 +110,10 @@ USA
 
                             dialog.showPreview = function(code) {
 
-                                var element = dialog.checkEmbedCode(code, true),
-                                    previewContainer = this.getContentElement('general', 'preview').getElement().getChild(3);
-
                                 try {
+
+                                    var element = dialog.checkEmbedCode(code, true),
+                                        previewContainer = this.getContentElement('general', 'preview').getElement().getChild(2);
 
                                     if (element) {
 
@@ -126,16 +123,16 @@ USA
 
                                         previewContainer.setHtml(element.getOuterHtml());
 
-                                        return;
+                                    } else {
+
+                                        previewContainer.setHtml('');
                                     }
 
                                 } catch (e) { }
-
-                                previewContainer.setHtml('');
                             };
 
                             this.getInputElement().on('change', function (q) {
-                                dialog.showPreview(input.getValue());
+                                dialog.showPreview(this.getValue());
                             }, this);
                         },
                         validate: function () {
@@ -150,9 +147,7 @@ USA
                         type: 'html',
                         id: 'preview',
                         style: 'width:95%;',
-                        html: '<div>Preview<br /> \
-                            <div id="cke_YoutubePreviewBox' + CKEDITOR.tools.getNextNumber() + '" \
-                            style="width: 560px; height: 315px; background-color: #000000"></div></div>'
+                        html: '<div>Preview<br /><div id="cke_YoutubePreviewBox' + CKEDITOR.tools.getNextNumber() + '" style="width: 560px; height: 315px; background-color: #000000"></div></div>'
                     }]
                 }]
             }]

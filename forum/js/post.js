@@ -128,6 +128,14 @@ $(beehive).bind('init', function() {
     });
 
     $('#quick_reply_container input#cancel').bind('click', function() {
+
+        for (var key in CKEDITOR.instances) {
+
+            if (CKEDITOR.instances[key].element.hasClass('quick_reply')) {
+                CKEDITOR.instances[key].destroy();
+            }
+        }
+
         $('#quick_reply_container').hide();
     });
 

@@ -320,7 +320,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"center\">", form_textarea("t_content", "", 7, 75, false, 'editor mobile'), "</td>\n";
+echo "                        <td align=\"center\">", form_textarea("t_content", "", 7, 75, false, 'editor mobile focus quick_reply'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

@@ -119,7 +119,7 @@ function emoticons_apply($content)
     if (!$emoticons_array = emoticons_initialise()) return $content;
 
     // PREG match for emoticons.
-    $emoticon_preg_match = '/(?<=\s|^|>)%s(?=\s|$|<)/';
+    $emoticon_preg_match = '/(?<=\s|^|>)%s(?=\s|$|<)/Uu';
 
     // HTML code for emoticons.
     $emoticon_html_code = "<span class=\"emoticon e_%1\$s\" title=\"%2\$s\"><span class=\"e__\">%2\$s</span></span>";
@@ -139,7 +139,7 @@ function emoticons_apply($content)
         $replace_array[] = sprintf($emoticon_html_code, $emoticon, $key_encoded);
     }
 
-    $content = preg_replace($pattern_array, $replace_array, $content, 100);
+    $content = preg_replace($pattern_array, $replace_array, $content);
 
     // Return the content.
     return $content;

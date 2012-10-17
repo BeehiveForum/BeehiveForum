@@ -118,8 +118,6 @@ var beehive = $.extend({}, beehive, {
 
         var toolbar = $editor.hasClass('mobile') ? 'mobile' : 'full';
 
-        var remove_plugins = $editor.hasClass('mobile') ? 'elementspath' : '';
-
         $('<div id="toolbar">').insertBefore($editor);
 
         $(this).ckeditor({
@@ -136,7 +134,7 @@ var beehive = $.extend({}, beehive, {
             forceEnterMode: true,
             height: $editor.height() - 35,
             width: $editor.width(),
-            removePlugins: remove_plugins,
+            removePlugins: 'elementspath',
             resize_maxWidth: '100%',
             resize_minWidth: '100%',
             skin: 'beehive,' + skin,

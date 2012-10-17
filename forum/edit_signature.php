@@ -97,7 +97,9 @@ $valid = true;
 
 $error_msg_array = array();
 
-$sig_text = user_get_sig($uid);
+if (($sig_text = user_get_sig($uid))) {
+    $sig_text = fix_html($sig_text);
+}
 
 if (isset($_POST['save']) || isset($_POST['preview'])) {
 

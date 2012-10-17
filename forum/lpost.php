@@ -73,7 +73,9 @@ $new_thread = false;
 
 $t_to_uid = 0;
 
-$t_sig = user_get_sig($uid);
+if (($t_sig = user_get_sig($uid))) {
+    $t_sig = fix_html($t_sig);
+}
 
 if (isset($_POST['t_newthread']) && (isset($_POST['post']) || isset($_POST['preview']))) {
 

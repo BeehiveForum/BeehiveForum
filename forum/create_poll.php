@@ -105,10 +105,12 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
     }
 }
 
+if (($sig_text = user_get_sig($uid))) {
+    $sig_text = fix_html($sig_text);
+}
+
 if (isset($_POST['sig_text'])) {
     $sig_text = fix_html(emoticons_strip($_POST['sig_text']));
-} else {
-    $sig_text = user_get_sig($uid);
 }
 
 if (isset($_POST['thread_title']) && strlen(trim($_POST['thread_title'])) > 0) {

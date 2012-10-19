@@ -116,17 +116,6 @@ $(beehive).bind('init', function() {
         hide_post_options_containers();
     });
 
-    $('#quick_reply_container #t_content').bind('keyup', function(e) {
-
-        if ($(this).val().trim().length > 0 && e.ctrlKey && e.which == 13) {
-            $('#quick_reply_container input#post').click();
-        }
-    });
-
-    $('#quick_reply_container input#post').bind('click', function() {
-        return $('#quick_reply_container #t_content').val().trim().length > 0;
-    });
-
     $('#quick_reply_container input#cancel').bind('click', function() {
 
         for (var key in CKEDITOR.instances) {

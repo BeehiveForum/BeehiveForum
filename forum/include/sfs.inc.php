@@ -81,6 +81,8 @@ function sfs_check_banned($user_data, &$cached_response = false)
 
     $response_confidence = 0;
 
+    $cached_response = false;
+
     try {
 
         if (!($response = sfs_cache_get($sfs_api_url_md5, $cached_response))) {
@@ -94,10 +96,12 @@ function sfs_check_banned($user_data, &$cached_response = false)
             $response = json_decode(file_get_contents($sfs_api_url, null, $context), true);
         }
 
-        sfs_cache_put($sfs_api_url_md5, $response);
-
         if (!isset($response['success']) || $response['success'] <> 1) {
             return false;
+        }
+
+        if (!$cached_response) {
+            sfs_cache_put($sfs_api_url_md5, $response);
         }
 
         foreach (array_keys($ban_type_array) as $key) {

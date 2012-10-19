@@ -924,8 +924,6 @@ function html_draw_top()
     }
 
     html_include_javascript(html_get_forum_file_path("ckeditor/ckeditor.js"));
-    html_include_javascript(html_get_forum_file_path("ckeditor/adapters/jquery.js"));
-
     html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag"));
 
     if (($frame_set_html === true) && $google_analytics_code = html_get_google_analytics_code()) {

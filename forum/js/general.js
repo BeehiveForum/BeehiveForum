@@ -120,7 +120,7 @@ var beehive = $.extend({}, beehive, {
 
         $('<div id="toolbar">').insertBefore($editor);
 
-        $(this).ckeditor({
+        var editor = CKEDITOR.replace(editor_id, {
             browserContextMenuOnCtrl: true,
             contentsCss: [
                 emoticons,
@@ -183,9 +183,29 @@ var beehive = $.extend({}, beehive, {
             toolbar: toolbar
         });
 
-        CKEDITOR.instances[editor_id].on('focus', function(event) {
+        editor.on('focus', function(event) {
             beehive.active_editor = event.editor;
         });
+
+        if ($editor.hasClass('quick_reply')) {
+
+            var $post_button = $editor.closest('form').find('input#post');
+
+            editor.on('key', function(event) {
+
+                if (event.data.keyCode != CKEDITOR.CTRL + 13) {
+                    return;
+                }
+
+                if (event.editor.getData().length == 0) {
+                    return;
+                }
+
+                $editor.val(event.editor.getData());
+
+                $post_button.click();
+            });
+        }
 
         CKEDITOR.on('dialogDefinition', function(event) {
 

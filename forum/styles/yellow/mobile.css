@@ -32,7 +32,10 @@ select {
 
 a.button {
     border: 1px outset threedface;
-    padding: 4px 7px 2px;
+    display: inline-block;
+    line-height: 21px;
+    padding: 2px 7px 0;
+    vertical-align: top;
 }
 
 .checkbox,
@@ -858,4 +861,8 @@ span.user_enemy {
 .message_warning h3 {
     background: url('images/warning.png') transparent no-repeat scroll 0 50%;
     font-size: 13px;
+}
+
+p:first-child {
+    margin-top: 0;
 }

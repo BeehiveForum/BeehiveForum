@@ -164,6 +164,8 @@ function fix_html($html)
         'list-style',
     ));
 
+    $config->set('Cache.SerializerPath', sys_get_temp_dir());
+
     $config->set('HTML.SafeObject', true);
     $config->set('Output.FlashCompat', true);
 

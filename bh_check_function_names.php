@@ -33,7 +33,7 @@ $source_files_array = array();
 
 $source_files_dir_array = array('forum\include');
 
-$ignore_files_array = array('dictionary.inc.php', 'text_captcha.inc.php', 'swift.inc.php', 'zip_lib.inc.php');
+$ignore_files_array = array('db.inc.php', 'dictionary.inc.php', 'text_captcha.inc.php', 'swift.inc.php', 'session.inc.php', 'zip_lib.inc.php');
 
 set_time_limit(0);
 
@@ -48,23 +48,23 @@ foreach ($source_files_dir_array as $include_file_dir) {
         while (($file = readdir($dir)) !== false) {
 
             $path_info_array = pathinfo("$include_file_dir\\$file");
-            
+
             if (isset($path_info_array['extension']) && $path_info_array['extension'] == 'php' && !in_array($path_info_array['basename'], $ignore_files_array)) {
-            
+
                 $function_prefix = str_replace('.inc.php', '', $file);
-            
+
                 $source_file_contents = file_get_contents("$include_file_dir\\$file");
-                
+
                 if (preg_match_all("/function ([a-z_-]+)\s?\(([^\)]*)\)/", $source_file_contents, $function_matches_array, PREG_SET_ORDER) > 0) {
-                    
+
                     foreach ($function_matches_array as $function_match) {
-                    
+
                         if (substr($function_match[1], 0, strlen($function_prefix)) != $function_prefix) {
-                        
+
                             echo $file, ": ", $function_match[0], "\n";
                         }
                     }
-                }            
+                }
             }
         }
     }

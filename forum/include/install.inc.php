@@ -773,6 +773,10 @@ function install_set_search_bots()
             'NAME' => 'Baidu',
             'URL' => 'http://www.baidu.com/'
         ),
+        'bingbot' => array(
+            'NAME' => 'Bing',
+            'URL' => 'http://www.bing.com/'
+        ),
         'GameSpyHTTP' => array(
             'NAME' => 'GameSpy',
             'URL' => 'http://www.gamespy.com/'
@@ -789,9 +793,13 @@ function install_set_search_bots()
             'NAME' => 'Google Images',
             'URL' => 'http://images.google.com/'
         ),
-        'Slurp/si' => array(
-            'NAME' => 'Inktomi',
-            'URL' => 'http://searchmarketing.yahoo.com/'
+        'Mediapartners-Google' => array(
+            'NAME' => 'Google Adsense',
+            'URL' => 'http://www.google.co.uk/adsense'
+        ),
+        'MJ12bot' => array(
+            'NAME' => 'Majestic-12',
+            'URL' => 'http://www.majestic12.co.uk/'
         ),
         'msnbot' => array(
             'NAME' => 'Bing',
@@ -800,6 +808,10 @@ function install_set_search_bots()
         'Scooter' => array(
             'NAME' => 'Altavista',
             'URL' => 'http://www.altavista.com/'
+        ),
+        'Slurp/si' => array(
+            'NAME' => 'Inktomi',
+            'URL' => 'http://searchmarketing.yahoo.com/'
         ),
         'Yahoo! Slurp;' => array(
             'NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'

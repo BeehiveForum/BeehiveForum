@@ -2,8 +2,8 @@
     font-family: verdana, arial, helvetica, sans-serif;
 }
 
-p:first-child {
-    margin-top: 0;
+p {
+    margin: 0;
 }
 
 input,

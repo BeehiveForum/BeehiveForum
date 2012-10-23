@@ -113,6 +113,7 @@ img {
 p {
     color: #000000;
     font-size: 100%;
+    margin: 0;
 }
 
 p,
@@ -120,10 +121,6 @@ h1,
 h2 {
     font-family: verdana, arial, helvetica, sans-serif;
     text-decoration: none;
-}
-
-p:first-child {
-    margin-top: 0;
 }
 
 ul.ui-autocomplete {
@@ -965,7 +962,6 @@ div.poll_option_list ol li {
 }
 
 .profile_item_name {
-    color: #DEDEDE;
     font-size: 100%;
     padding: 2px 10px 2px 2px;
 }
@@ -976,13 +972,11 @@ div.poll_option_list ol li {
 
 .profile_item_value {
     border-left: 1px solid #666666;
-    color: #DEDEDE;
     font-size: 100%;
     padding: 2px 2px 2px 10px;
 }
 
 .profile_item_value a {
-    color: #DEDEDE;
     font-size: 100%;
 }
 
@@ -994,7 +988,6 @@ div.poll_option_list ol li {
 .profile_items_section {
     border-bottom: 0px solid #FFFFFF;
     border-top: 1px solid #FFFFFF;
-    color: #DEDEDE;
     padding-bottom: 5px;
     padding-top: 10px;
 }

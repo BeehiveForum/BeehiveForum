@@ -79,11 +79,16 @@ function parse_array_to_css($css_rules_array)
     return trim($css_file_contents);
 }
 
-function sort_array_by_array($array, $sort_by)
+function sort_array_by_array(&$array, $sort_by)
 {
-    $common_keys = array_intersect_key(array_flip($sort_by), $array);
-    $common_key_values = array_intersect_key($array, $common_keys);
-    return array_merge($common_keys, $common_key_values);
+    $array = array_intersect_key(
+        $array,
+        array_flip(
+            array_keys(
+                $sort_by
+            )
+        )
+    );
 }
 
 function get_css_styles($path, $pattern, $exclude_dirs_array, $exclude_files_array)
@@ -177,7 +182,7 @@ foreach ($default_css_files_array as $default_css_filename => $default_css_rules
 
             sort_array_by_array(
                 $style_css_files_array[$style_name][$default_css_filename][$default_css_selector],
-                array_keys($default_css_files_array[$default_css_filename][$default_css_selector])
+                $default_css_files_array[$default_css_filename][$default_css_selector]
             );
         }
 
@@ -193,7 +198,7 @@ foreach ($default_css_files_array as $default_css_filename => $default_css_rules
 
         sort_array_by_array(
             $style_css_files_array[$style_name][$default_css_filename],
-            array_keys($default_css_files_array[$default_css_filename])
+            $default_css_files_array[$default_css_filename]
         );
     }
 }

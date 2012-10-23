@@ -863,6 +863,6 @@ span.user_enemy {
     font-size: 13px;
 }
 
-p:first-child {
-    margin-top: 0;
+p {
+    margin: 0;
 }

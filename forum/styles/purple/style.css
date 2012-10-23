@@ -113,6 +113,7 @@ img {
 p {
     color: #000000;
     font-size: 100%;
+    margin: 0;
 }
 
 p,
@@ -120,10 +121,6 @@ h1,
 h2 {
     font-family: verdana, arial, helvetica, sans-serif;
     text-decoration: none;
-}
-
-p:first-child {
-    margin-top: 0;
 }
 
 ul.ui-autocomplete {

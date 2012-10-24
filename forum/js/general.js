@@ -128,10 +128,10 @@ var beehive = $.extend({}, beehive, {
             ],
             customConfig: '',
             disableNativeSpellChecker: false,
+            enterMode: CKEDITOR.ENTER_BR,
             extraPlugins: 'youtube,beehive,flash',
             font_defaultLabel: 'Verdana',
             fontSize_defaultLabel: '12',
-            forceEnterMode: true,
             height: $editor.height() - 35,
             width: $editor.width(),
             removePlugins: 'elementspath',
@@ -218,9 +218,7 @@ var beehive = $.extend({}, beehive, {
 
                     dialogDefinition.removeContents('target');
                     dialogDefinition.removeContents('advanced');
-                    dialogDefinition.getContents('info').remove('linkType');
-                    dialogDefinition.getContents('info').remove('protocol');
-                    dialogDefinition.minHeight = 0;
+                    dialogDefinition.minHeight = 150;
                     break;
 
                 case 'image':

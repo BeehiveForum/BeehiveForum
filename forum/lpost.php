@@ -130,7 +130,7 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = fix_html(emoticons_strip($_POST['t_content']));
+        $t_content = nl2br(fix_html(emoticons_strip($_POST['t_content'])));
 
         if (attachments_embed_check($t_content)) {
 
@@ -159,7 +159,7 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
 if (isset($_POST['more'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-        $t_content = fix_html(emoticons_strip($_POST['t_content']));
+        $t_content = nl2br(fix_html(emoticons_strip($_POST['t_content'])));
     }
 }
 
@@ -186,7 +186,7 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
     }
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-        $t_content = fix_html(emoticons_strip($_POST['t_content']));
+        $t_content = nl2br(fix_html(emoticons_strip($_POST['t_content'])));
     }
 
     if (isset($_POST['t_sig'])) {
@@ -581,7 +581,7 @@ if ($new_thread) {
 }
 
 echo "<div class=\"post_to\">", gettext("To"), ":", post_draw_to_dropdown($t_to_uid), "</div>";
-echo "<div class=\"post_content\">", gettext("Content"), ":", light_form_textarea("t_content", htmlentities_array($t_content), 10, 50, false, 'textarea editor mobile'), "</div>";
+echo "<div class=\"post_content\">", gettext("Content"), ":", light_form_textarea("t_content", htmlentities_array(strip_paragraphs($t_content)), 10, 50, false, 'textarea'), "</div>";
 
 if ($allow_sig == true) {
     echo form_input_hidden("t_sig", htmlentities_array($t_sig));

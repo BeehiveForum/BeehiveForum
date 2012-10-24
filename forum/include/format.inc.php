@@ -128,11 +128,11 @@ function format_time($time)
 
         // If the year is different, show everything.
         if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-        
+
             $format = strftime('%#d %b %Y %H:%M', $time);
-            
+
         } else {
-            
+
             $format = strftime('%e %b %Y %H:%M', $time);
         }
 
@@ -140,13 +140,13 @@ function format_time($time)
 
         // If the month or day are different, show them with the time.
         if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-        
+
             $format = strftime('%#d %b %H:%M', $time);
-            
+
         } else {
-            
+
             $format = strftime('%e %b %H:%M', $time);
-        }        
+        }
 
     } else {
 
@@ -199,24 +199,24 @@ function format_date($time)
 
     // Only show the year if it is different to the current year
     if (($time_year != $current_year)) {
-        
+
         if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-            
+
             $format = strftime('%#d %b %Y', $time);
-        
+
         } else {
-            
+
             $format = strftime('%e %b %Y', $time);
         }
 
     } else {
 
         if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-            
+
             $format = strftime('%#d %b', $time);
-        
+
         } else {
-            
+
             $format = strftime('%e %b', $time);
         }
     }
@@ -228,38 +228,38 @@ function format_time_display($seconds, $abbrv_units = true)
 {
     $periods_array = array(
         31556926 => array(
-            '%s year',   
-            '%s years',   
+            '%s year',
+            '%s years',
             '%sy'
         ),
         2629743 => array(
-            '%s month',  
-            '%s months',  
+            '%s month',
+            '%s months',
             '%sm'
         ),
         604800 => array(
-            '%s week',   
-            '%s weeks',   
+            '%s week',
+            '%s weeks',
             '%sw'
         ),
         86400 => array(
-            '%s day',    
-            '%s days',    
+            '%s day',
+            '%s days',
             '%sd'
         ),
         3600 => array(
-            '%s hour',   
-            '%s hours',   
+            '%s hour',
+            '%s hours',
             '%shr'
         ),
         60 => array(
-            '%s minute', 
-            '%s minutes', 
+            '%s minute',
+            '%s minutes',
             '%smin'
         ),
         1 => array(
-            '%s second', 
-            '%s seconds', 
+            '%s second',
+            '%s seconds',
             '%ssec'
         ),
     );
@@ -280,7 +280,7 @@ function format_time_display($seconds, $abbrv_units = true)
 
                 $value_text = ngettext($periods[0], $periods[1], $count);
             }
-            
+
             $values_array[] = sprintf($value_text, $count);
         }
 
@@ -374,7 +374,7 @@ function xml_strip_invalid_chars($string)
 function html_entity_to_decimal($string)
 {
     $entity_to_decimal = array(
-        '&nbsp;' => '&#160;',  
+        '&nbsp;' => '&#160;',
         '&iexcl;' => '&#161;',
         '&cent;' => '&#162;',
         '&pound;' => '&#163;',
@@ -633,7 +633,22 @@ function html_entity_to_decimal($string)
 
 function strip_paragraphs($string)
 {
-    return preg_replace(array('/<p[^>]*>/iUu', '/<\/p[^>]*>\n/iUu', '/<\/p[^>]*>/iUu', '/<br\s*?\/?>/iu'), array('', chr(10)), $string);
+    $replacement = array(
+        '/<p[^>]*>(\r\n|\n|\r)?/iUu' => '',
+        '/<\/p[^>]*>(\r\n|\n|\r)?/iUu' => '',
+        '/<br\s*\/?>(\r\n|\n|\r)?/iu' => "\r\n"
+    );
+
+    $string = preg_replace(
+        array_keys($replacement),
+        array_values($replacement),
+        $string
+    );
+
+    return implode(
+		"\n", 
+		array_map('trim', explode("\n", $string))
+	);
 }
 
 function range_keys($low, $high)
@@ -706,15 +721,15 @@ function format_birthday($date)
         list(, $month, $day) = $matches_array;
 
         $month = floor($month); $day = floor($day);
-        
+
         $timestamp = mktime(0, 0, 0, $month, $day, date('Y'));
-        
+
         if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-            
+
             return strftime('%#d %b', $timestamp);
-            
+
         } else {
-            
+
             return strftime('%e %b', $timestamp);
         }
     }
@@ -821,14 +836,14 @@ function build_url_str($uri_array)
     if (!is_array($uri_array)) {
         throw new Exception('$uri_array needs to be an array');
     }
-    
+
     $uri = (isset($uri_array['scheme']))   ? "{$uri_array['scheme']}://" : '';
     $uri.= (isset($uri_array['host']))     ? "{$uri_array['host']}"      : '';
     $uri.= (isset($uri_array['port']))     ? ":{$uri_array['port']}"     : '';
     $uri.= (isset($uri_array['path']))     ? "{$uri_array['path']}"      : '';
     $uri.= (isset($uri_array['query']))    ? "?{$uri_array['query']}"    : '';
-    $uri.= (isset($uri_array['fragment'])) ? "#{$uri_array['fragment']}" : '';    
-    
+    $uri.= (isset($uri_array['fragment'])) ? "#{$uri_array['fragment']}" : '';
+
     return $uri;
 }
 
@@ -840,19 +855,19 @@ function get_request_uri($include_webtag = true, $encode_uri_query = true)
     $webtag = get_webtag();
 
     $request_uri = basename($_SERVER['PHP_SELF']);
-    
+
     $query_string_array = array();
-    
+
     unset($_GET['webtag']);
-    
+
     if ($include_webtag) {
         $query_string_array['webtag'] = $webtag;
     }
-    
+
     $query_string_array+= array_diff($_GET, $query_string_array);
-    
+
     $query_string = http_build_query($query_string_array, null, (($encode_uri_query) ? '&amp;' : '&'));
-    
+
     return sprintf('%s?%s', $request_uri, $query_string);
 }
 

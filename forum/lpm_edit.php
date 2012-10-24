@@ -100,7 +100,7 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = fix_html(emoticons_strip($_POST['t_content']));
+        $t_content = nl2br(fix_html(emoticons_strip($_POST['t_content'])));
 
         if (mb_strlen($t_content) >= 65535) {
 
@@ -160,7 +160,7 @@ if ($valid && isset($_POST['preview'])) {
     }
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-        $t_content = fix_html(emoticons_strip($_POST['t_content']));
+        $t_content = nl2br(fix_html(emoticons_strip($_POST['t_content'])));
     }
 
     if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
@@ -229,7 +229,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<div class=\"post_thread_title\">", gettext("Subject"), ":", light_form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 30, 64), "</div>\n";
 echo "<div class=\"post_to\">", gettext("To"), ":", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), true), "</div>\n";
-echo "<div class=\"post_content\">", light_form_textarea("t_content", htmlentities_array($t_content), 10, 50, false, 'textarea editor mobile'), "</div>\n";
+echo "<div class=\"post_content\">", light_form_textarea("t_content", htmlentities_array(strip_paragraphs($t_content)), 10, 50, false, 'textarea'), "</div>\n";
 
 echo "<div class=\"post_buttons\">";
 echo light_form_submit("apply", gettext("Apply"));

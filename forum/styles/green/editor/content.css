@@ -60,6 +60,6 @@ pre.code span.emoticon span {
     display: inherit;
 }
 
-p {
-    margin: 0;
+p:first-child {
+    margin-top: 0;
 }

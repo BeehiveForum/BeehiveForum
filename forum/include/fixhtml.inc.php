@@ -169,7 +169,6 @@ function fix_html($html)
     $config->set('HTML.SafeObject', true);
     $config->set('Output.FlashCompat', true);
 
-    $config->set('AutoFormat.AutoParagraph', true);
     $config->set('AutoFormat.Linkify', true);
 
     $config->set('HTML.SafeIframe', true);

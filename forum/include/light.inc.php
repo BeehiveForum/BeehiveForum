@@ -1239,7 +1239,9 @@ function light_draw_my_forums()
 
 function light_form_dropdown_array($name, $options_array, $default = "", $custom_html = false)
 {
-    $html = "<select name=\"$name\" class=\"select\"";
+    $id = form_unique_id($name);
+
+    $html = "<select name=\"$name\" id=\"$id\" class=\"select\"";
 
     if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf(" %s", trim($custom_html));
@@ -1262,7 +1264,9 @@ function light_form_dropdown_array($name, $options_array, $default = "", $custom
 
 function light_form_submit($name = "submit", $value = "Submit", $custom_html = "")
 {
-    $html = "<input type=\"submit\" name=\"$name\" value=\"$value\" class=\"button\" ";
+    $id = form_unique_id($name);
+
+    $html = "<input type=\"submit\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"button\" ";
 
     if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf("%s ", trim($custom_html));
@@ -1291,7 +1295,9 @@ function light_messages_top($tid, $pid, $thread_title, $thread_interest_level = 
 
 function light_form_radio($name, $value, $text, $checked = false, $custom_html = false)
 {
-    $html = "<label><input type=\"radio\" name=\"$name\" value=\"$value\" class=\"radio\"";
+    $id = form_unique_id($name);
+
+    $html = "<label><input type=\"radio\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"radio\"";
 
     if ($checked) {
         $html.= " checked=\"checked\"";
@@ -1950,16 +1956,29 @@ function light_form_textarea($name, $value = "", $rows = 0, $cols = 0, $custom_h
     if (!is_numeric($rows)) $rows = 5;
     if (!is_numeric($cols)) $cols = 50;
 
+    $id = form_unique_id($name);
+
     if (strlen(trim($custom_html)) > 0) {
         $custom_html = sprintf(' %s', trim($custom_html));
     }
 
-    return sprintf('<textarea name="%s" class="%s" rows="%s" cols="%s"%s>%s</textarea>', $name, $class, $rows, $cols, $custom_html, $value);
+    return sprintf(
+        '<textarea name="%s" id="%s" class="%s" rows="%s" cols="%s"%s>%s</textarea>',
+        $name,
+        $id,
+        $class,
+        $rows,
+        $cols,
+        $custom_html,
+        $value
+    );
 }
 
 function light_form_checkbox($name, $value, $text, $checked = false, $custom_html = false)
 {
-    $html = "<label><input type=\"checkbox\" name=\"$name\" value=\"$value\" class=\"checkbox\"";
+    $id = form_unique_id($name);
+
+    $html = "<label><input type=\"checkbox\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"checkbox\"";
 
     if ($checked) {
         $html.= " checked=\"checked\"";
@@ -1976,7 +1995,9 @@ function light_form_checkbox($name, $value, $text, $checked = false, $custom_htm
 
 function light_form_field($name, $value = "", $width = false, $maxchars = false, $type = "text", $custom_html = false)
 {
-    $html = "<input type=\"$type\" name=\"$name\" value=\"$value\" class=\"$type\"";
+    $id = form_unique_id($name);
+
+    $html = "<input type=\"$type\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$type\"";
 
     if (strlen(trim($custom_html)) > 0) {
         $html.= sprintf(" %s", trim($custom_html));

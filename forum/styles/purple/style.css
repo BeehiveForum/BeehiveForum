@@ -113,7 +113,10 @@ img {
 p {
     color: #000000;
     font-size: 100%;
-    margin: 0;
+}
+
+p:first-child {
+    margin-top: 0;
 }
 
 p,

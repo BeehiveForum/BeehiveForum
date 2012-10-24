@@ -81,14 +81,9 @@ function parse_array_to_css($css_rules_array)
 
 function sort_array_by_array(&$array, $sort_by)
 {
-    $array = array_intersect_key(
-        $array,
-        array_flip(
-            array_keys(
-                $sort_by
-            )
-        )
-    );
+    $common_keys = array_intersect_key(array_flip(array_keys($sort_by)), $array);
+    $common_values = array_intersect_key($array, $common_keys);
+    $array = array_merge($common_keys, $common_values);
 }
 
 function get_css_styles($path, $pattern, $exclude_dirs_array, $exclude_files_array)

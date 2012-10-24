@@ -144,7 +144,7 @@ if (isset($_POST['emots_toggle'])) {
     }
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-        $t_content = fix_html(emoticons_strip($_POST['t_content']));
+        $t_content = nl2br(fix_html(emoticons_strip($_POST['t_content'])));
     }
 
     if (isset($_POST['to_radio']) && strlen(trim($_POST['to_radio'])) > 0) {
@@ -192,7 +192,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = fix_html(emoticons_strip($_POST['t_content']));
+        $t_content = nl2br(fix_html(emoticons_strip($_POST['t_content'])));
 
     } else {
 
@@ -316,7 +316,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
 
-        $t_content = fix_html(emoticons_strip($_POST['t_content']));
+        $t_content = nl2br(fix_html(emoticons_strip($_POST['t_content'])));
 
     } else {
 
@@ -562,7 +562,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<div class=\"post_thread_title\">", gettext("Subject"), ":", light_form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 30, 64), "</div>\n";
 echo "<div class=\"post_to\">", gettext("To"), ":", light_form_input_text("t_to_uid_others", isset($t_to_uid_others) ? htmlentities_array($t_to_uid_others) : "", 0, 0), "</div>\n";
-echo "<div class=\"post_content\">", light_form_textarea("t_content", htmlentities_array($t_content), 10, 50, false, 'textarea editor mobile'), "</div>\n";
+echo "<div class=\"post_content\">", light_form_textarea("t_content", htmlentities_array(strip_paragraphs($t_content)), 10, 50, false, 'textarea'), "</div>\n";
 
 echo "<div class=\"post_buttons\">";
 echo light_form_submit("send", gettext("Send"));

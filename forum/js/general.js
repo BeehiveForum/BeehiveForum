@@ -206,41 +206,6 @@ var beehive = $.extend({}, beehive, {
                 $post_button.click();
             });
         }
-
-        CKEDITOR.on('dialogDefinition', function(event) {
-
-            var dialogName = event.data.name;
-            var dialogDefinition = event.data.definition;
-
-            switch (dialogName) {
-
-                case 'link':
-
-                    dialogDefinition.removeContents('target');
-                    dialogDefinition.removeContents('advanced');
-                    dialogDefinition.minHeight = 150;
-                    break;
-
-                case 'image':
-
-                    dialogDefinition.removeContents('Link');
-                    dialogDefinition.removeContents('advanced');
-                    break;
-
-                case 'flash':
-
-                    dialogDefinition.removeContents('advanced');
-                    dialogDefinition.getContents('properties').remove('menu');
-                    dialogDefinition.getContents('properties').remove('scale');
-                    dialogDefinition.getContents('properties').remove('align');
-                    dialogDefinition.getContents('properties').remove('bgcolor');
-                    dialogDefinition.getContents('properties').remove('base');
-                    dialogDefinition.getContents('properties').remove('flashvars');
-                    dialogDefinition.getContents('properties').remove('allowScriptAccess');
-                    dialogDefinition.getContents('properties').remove('allowFullScreen');
-                    break;
-            }
-        });
     },
 
     mobile_version : false
@@ -471,6 +436,41 @@ $(beehive).bind('init', function() {
         }
 
         return false;
+    });
+
+    CKEDITOR.on('dialogDefinition', function(event) {
+
+        var dialogName = event.data.name;
+        var dialogDefinition = event.data.definition;
+
+        switch (dialogName) {
+
+            case 'link':
+
+                dialogDefinition.removeContents('target');
+                dialogDefinition.removeContents('advanced');
+                dialogDefinition.minHeight = 150;
+                break;
+
+            case 'image':
+
+                dialogDefinition.removeContents('Link');
+                dialogDefinition.removeContents('advanced');
+                break;
+
+            case 'flash':
+
+                dialogDefinition.removeContents('advanced');
+                dialogDefinition.getContents('properties').remove('menu');
+                dialogDefinition.getContents('properties').remove('scale');
+                dialogDefinition.getContents('properties').remove('align');
+                dialogDefinition.getContents('properties').remove('bgcolor');
+                dialogDefinition.getContents('properties').remove('base');
+                dialogDefinition.getContents('properties').remove('flashvars');
+                dialogDefinition.getContents('properties').remove('allowScriptAccess');
+                dialogDefinition.getContents('properties').remove('allowFullScreen');
+                break;
+        }
     });
 
     $('textarea.editor:visible').each(beehive.editor);

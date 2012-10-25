@@ -274,10 +274,6 @@ a:active.cke_colormore {
     border: 1px solid;
 }
 
-@media print { .cke_skin_beehive .cke_toolbox {
-    display: none;
-}
-
 .cke_skin_beehive .cke_browser_webkit .cke_toolbox,
 .cke_skin_beehive .cke_browser_webkit .cke_toolbox>span {
     white-space: normal;
@@ -643,10 +639,6 @@ a:active.cke_colormore {
 .cke_skin_beehive .cke_browser_webkit .cke_rcombo .cke_openbutton {
     display: block;
     float: left;
-}
-
-@media print { .cke_path {
-    display: none;
 }
 
 .cke_skin_beehive .cke_path {

@@ -73,6 +73,8 @@ $new_thread = false;
 
 $t_to_uid = 0;
 
+$t_sig = '';
+
 if (($t_sig = user_get_sig($uid))) {
     $t_sig = fix_html($t_sig);
 }
@@ -143,17 +145,6 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
         $error_msg_array[] = gettext("You must enter some content for the post!");
         $valid = false;
     }
-
-    if (isset($_POST['t_sig'])) {
-
-        $t_sig = fix_html(emoticons_strip($_POST['t_sig']));
-
-        if (attachments_embed_check($t_sig)) {
-
-            $error_msg_array[] = gettext("You are not allowed to embed attachments in your signature.");
-            $valid = false;
-        }
-    }
 }
 
 if (isset($_POST['more'])) {
@@ -189,10 +180,6 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
         $t_content = nl2br(fix_html(emoticons_strip($_POST['t_content'])));
     }
 
-    if (isset($_POST['t_sig'])) {
-        $t_sig = fix_html(emoticons_strip($_POST['t_sig']));
-    }
-
     if (isset($_POST['emots_toggle'])) {
 
         $page_prefs = (double)$page_prefs ^ POST_EMOTICONS_DISPLAY;
@@ -215,17 +202,9 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
 
 if (!isset($t_content)) $t_content = "";
 
-if (!isset($t_sig)) $t_sig = "";
-
 if (mb_strlen($t_content) >= 65535) {
 
     $error_msg_array[] = sprintf(gettext("Message length must be under 65,535 characters (currently: %s)"), number_format(mb_strlen($t_content)));
-    $valid = false;
-}
-
-if (mb_strlen($t_sig) >= 65535) {
-
-    $error_msg_array[] = sprintf(gettext("Signature length must be under 65,535 characters (currently: %s)"), number_format(mb_strlen($t_sig)));
     $valid = false;
 }
 
@@ -582,11 +561,6 @@ if ($new_thread) {
 
 echo "<div class=\"post_to\">", gettext("To"), ":", post_draw_to_dropdown($t_to_uid), "</div>";
 echo "<div class=\"post_content\">", gettext("Content"), ":", light_form_textarea("t_content", htmlentities_array(strip_paragraphs($t_content)), 10, 50, false, 'textarea'), "</div>";
-
-if ($allow_sig == true) {
-    echo form_input_hidden("t_sig", htmlentities_array($t_sig));
-}
-
 echo "<div class=\"post_buttons\">";
 echo light_form_submit("post", gettext("Post"));
 echo light_form_submit("preview", gettext("Preview"));

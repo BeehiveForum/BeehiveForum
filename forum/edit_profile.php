@@ -49,11 +49,11 @@ $admin_edit = false;
 
 if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
-    if (isset($_GET['profileuid'])) {
+    if (isset($_GET['profile_uid'])) {
 
-        if (is_numeric($_GET['profileuid'])) {
+        if (is_numeric($_GET['profile_uid'])) {
 
-            $uid = $_GET['profileuid'];
+            $uid = $_GET['profile_uid'];
             $admin_edit = true;
 
         } else {
@@ -61,11 +61,11 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             html_draw_error(gettext("No user specified."));
         }
 
-    } else if (isset($_POST['profileuid'])) {
+    } else if (isset($_POST['profile_uid'])) {
 
-        if (is_numeric($_POST['profileuid'])) {
+        if (is_numeric($_POST['profile_uid'])) {
 
-            $uid = $_POST['profileuid'];
+            $uid = $_POST['profile_uid'];
             $admin_edit = true;
 
         } else {
@@ -191,7 +191,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
     echo "<form accept-charset=\"utf-8\" name=\"f_profile\" action=\"edit_profile.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
-    if ($admin_edit === true) echo "  ", form_input_hidden('profileuid', htmlentities_array($uid)), "\n";
+    if ($admin_edit === true) echo "  ", form_input_hidden('profile_uid', htmlentities_array($uid)), "\n";
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";

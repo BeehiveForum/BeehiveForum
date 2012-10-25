@@ -51,11 +51,11 @@ $admin_edit = false;
 
 if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
-    if (isset($_GET['profileuid'])) {
+    if (isset($_GET['profile_uid'])) {
 
-        if (is_numeric($_GET['profileuid'])) {
+        if (is_numeric($_GET['profile_uid'])) {
 
-            $uid = $_GET['profileuid'];
+            $uid = $_GET['profile_uid'];
             $admin_edit = true;
 
         } else {
@@ -63,11 +63,11 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             html_draw_error(gettext("No user specified."));
         }
 
-    } else if (isset($_POST['profileuid'])) {
+    } else if (isset($_POST['profile_uid'])) {
 
-        if (is_numeric($_POST['profileuid'])) {
+        if (is_numeric($_POST['profile_uid'])) {
 
-            $uid = $_POST['profileuid'];
+            $uid = $_POST['profile_uid'];
             $admin_edit = true;
 
         } else {
@@ -100,9 +100,9 @@ $error_msg_array = array();
 
 // List of allowed image types
 $allowed_image_types_array = array(
-    'jpg', 
-    'jpeg', 
-    'png', 
+    'jpg',
+    'jpeg',
+    'png',
     'gif'
 );
 
@@ -308,13 +308,13 @@ if (isset($_POST['save'])) {
                 $path_parts = pathinfo($attachment_details['filename']);
 
                 if (!isset($path_parts['extension']) || !in_array($path_parts['extension'], $allowed_image_types_array)) {
-                    
+
                     $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
                     $valid = false;
-                }                    
+                }
 
                 if (!($image_info = getimagesize("$attachment_dir/{$user_prefs['PIC_AID']}"))) {
-                    
+
                     $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
                     $valid = false;
                 }
@@ -372,15 +372,15 @@ if (isset($_POST['save'])) {
             } else if (($attachment_dir = attachments_check_dir())) {
 
                 if (!($attachment_details = attachments_get_by_hash($user_prefs['AVATAR_AID']))) {
-                    
+
                     $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
                     $valid = false;
                 }
-                    
+
                 $path_parts = pathinfo($attachment_details['filename']);
 
                 if (!isset($path_parts['extension']) || !in_array($path_parts['extension'], $allowed_image_types_array)) {
-                    
+
                     $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
                     $valid = false;
                 }
@@ -390,7 +390,7 @@ if (isset($_POST['save'])) {
                     $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
                     $valid = false;
                 }
-                    
+
                 if (($image_info[0] > 95) || ($image_info[1] > 95)) {
 
                     $error_msg_array[] = gettext("Selected attachment is too large for avatar picture. Maximum dimensions are 15x15px");
@@ -538,7 +538,7 @@ echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"edit_prefs.php\" me
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('aid', htmlentities_array($aid)), "\n";
 
-if ($admin_edit === true) echo "  ", form_input_hidden('profileuid', htmlentities_array($uid)), "\n";
+if ($admin_edit === true) echo "  ", form_input_hidden('profile_uid', htmlentities_array($uid)), "\n";
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";

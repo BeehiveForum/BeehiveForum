@@ -134,17 +134,17 @@ if (isset($_POST['action_submit'])) {
 
         if ($post_action == 'edit_details') {
 
-            header_redirect("edit_prefs.php?webtag=$webtag&profileuid=$uid");
+            header_redirect("edit_prefs.php?webtag=$webtag&profile_uid=$uid");
             exit;
 
         } else if ($post_action == 'edit_signature') {
 
-            header_redirect("edit_signature.php?webtag=$webtag&siguid=$uid");
+            header_redirect("edit_signature.php?webtag=$webtag&sig_uid=$uid");
             exit;
 
         } else if ($post_action == 'edit_profile') {
 
-            header_redirect("edit_profile.php?webtag=$webtag&profileuid=$uid");
+            header_redirect("edit_profile.php?webtag=$webtag&profile_uid=$uid");
             exit;
 
         } else if ($post_action == 'reset_passwd') {

@@ -546,7 +546,6 @@ function install_get_table_names(&$global_tables, &$forum_tables)
 
         // Initislise the global store.
         $global_tables_store = array(
-            'DICTIONARY',
             'FORUMS',
             'FORUM_SETTINGS',
             'GROUPS',
@@ -931,42 +930,6 @@ function install_set_timezones()
 
         if (!@$db->query($sql)) return false;
     }
-
-    return true;
-}
-
-function install_import_dictionary($dictionary_path)
-{
-    if (!@file_exists("$dictionary_path/english.dic")) return false;
-
-    if (!is_readable("$dictionary_path/english.dic")) return false;
-
-    if (!$db = db::get()) return false;
-
-    try {
-
-        $sql = "LOAD DATA INFILE '$dictionary_path/english.dic' ";
-        $sql.= "INTO TABLE DICTIONARY LINES TERMINATED BY '\\n' (WORD)";
-
-        @$db->query($sql);
-
-    } catch (Exception $e) {
-
-        $dictionary_words_array = file("$dictionary_path/english.dic");
-
-        foreach ($dictionary_words_array as $word) {
-
-            $word = $db->escape(trim($word));
-
-            $sql = "INSERT INTO DICTIONARY (WORD) VALUES('$word')";
-
-            if (!@$db->query($sql)) return false;
-        }
-    }
-
-    $sql = "UPDATE DICTIONARY SET SOUND = SOUNDEX(WORD)";
-
-    if (!@$db->query($sql)) return false;
 
     return true;
 }

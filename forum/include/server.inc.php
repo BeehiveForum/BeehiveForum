@@ -79,7 +79,6 @@ function get_available_files()
         'confirm_email.php',
         'create_poll.php',
         'delete.php',
-        'dictionary.php',
         'discussion.php',
         'display.php',
         'display_emoticons.php',
@@ -211,7 +210,6 @@ function get_available_popup_files()
 {
     return array(
         'attachments.php',
-        'dictionary.php',
         'display_emoticons.php',
         'edit_attachments.php',
         'email.php',

@@ -33,7 +33,7 @@ $source_files_array = array();
 
 $source_files_dir_array = array('forum\include');
 
-$ignore_files_array = array('db.inc.php', 'dictionary.inc.php', 'text_captcha.inc.php', 'swift.inc.php', 'session.inc.php', 'zip_lib.inc.php');
+$ignore_files_array = array('db.inc.php', 'text_captcha.inc.php', 'swift.inc.php', 'session.inc.php', 'zip_lib.inc.php');
 
 set_time_limit(0);
 

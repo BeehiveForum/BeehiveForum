@@ -186,12 +186,6 @@ if (isset($_POST['install_method'])) {
         $remove_conflicts = false;
     }
 
-    if (isset($_POST['skip_dictionary']) && $_POST['skip_dictionary'] == 'Y') {
-        $skip_dictionary = true;
-    } else {
-        $skip_dictionary = false;
-    }
-
     if (isset($_POST['enable_error_reports']) && $_POST['enable_error_reports'] == 'Y') {
         $enable_error_reports = true;
     } else {
@@ -758,9 +752,6 @@ echo "                  <td align=\"center\" colspan=\"2\">\n";
 echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"remove_conflicts\" id=\"remove_conflicts\" value=\"Y\" tabindex=\"12\"", (isset($remove_conflicts) && $remove_conflicts == 'Y' ? " checked=\"checked\"" : ""), " /><label for=\"remove_conflicts\">Automatically remove tables that conflict with Beehive Forum's own.</label></span></td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"skip_dictionary\" id=\"skip_dictionary\" value=\"Y\" tabindex=\"13\"", (isset($skip_dictionary) && $skip_dictionary == 'Y' ? " checked=\"checked\"" : ""), " /><label for=\"skip_dictionary\">Skip dictionary setup. Recommended only if install fails to complete.</label></span></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"enable_error_reports\" id=\"enable_error_reports\" value=\"Y\" tabindex=\"14\"", (isset($enable_error_reports) && $enable_error_reports == 'Y' ? " checked=\"checked\"" : ""), " /><label for=\"enable_error_reports\">Send error reports to Admin email address.</label></span></td>\n";

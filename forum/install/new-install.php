@@ -70,20 +70,6 @@ if (($conflicting_tables = install_check_table_conflicts($config['db_database'],
     return;
 }
 
-$sql = "CREATE TABLE DICTIONARY (";
-$sql.= "  WORD VARCHAR(64) NOT NULL DEFAULT '', ";
-$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  SOUND VARCHAR(64) NOT NULL DEFAULT '', ";
-$sql.= "  PRIMARY KEY (WORD, UID), ";
-$sql.= "  KEY SOUND (SOUND)";
-$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
-if (!$result = $db->query($sql)) {
-
-    $valid = false;
-    return;
-}
-
 $sql = "CREATE TABLE FORUMS (";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
 $sql.= "  WEBTAG VARCHAR(255) NOT NULL DEFAULT '', ";
@@ -557,17 +543,6 @@ if (!perm_update_user_forum_permissions($forum_fid, $admin_uid, USER_PERM_ADMIN_
 
     $valid = false;
     return;
-}
-
-if (!isset($skip_dictionary) || $skip_dictionary === false) {
-
-    $dictionary_path = str_replace('\\', '/', rtrim(dirname(__FILE__), DIRECTORY_SEPARATOR));
-
-    if (!install_import_dictionary($dictionary_path)) {
-
-        $valid = false;
-        return;
-    }
 }
 
 ?>

@@ -160,13 +160,13 @@ if ($admin_edit === true) {
 
     $user = user_get($uid);
 
-    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage User - %s "), format_user_name($user['LOGON'], $user['NICKNAME']))), "basetarget=_blank", "resize_width=600", "dictionary.js", "post.js", 'class=window_title');
+    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage User - %s "), format_user_name($user['LOGON'], $user['NICKNAME']))), "basetarget=_blank", "resize_width=600", "post.js", 'class=window_title');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
 } else {
 
-    html_draw_top(sprintf('title=%s', gettext("My Controls - Edit Signature")), "basetarget=_blank", "resize_width=600", "dictionary.js", "post.js", 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("My Controls - Edit Signature")), "basetarget=_blank", "resize_width=600", "post.js", 'class=window_title');
 
     echo "<h1>", gettext("Edit Signature"), "</h1>\n";
 }

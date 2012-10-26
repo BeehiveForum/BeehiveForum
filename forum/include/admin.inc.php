@@ -48,7 +48,7 @@ function admin_add_log_entry($action, array $data = array())
     if (($uid = session::get_value('UID')) === false) return false;
 
     if (!is_numeric($action)) return false;
-    
+
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $data = $db->escape(base64_encode(serialize($data)));
@@ -96,16 +96,16 @@ function admin_get_log_entries($page = 1, $group_by = 'DAY', $sort_by = 'CREATED
         ADMIN_LOG_GROUP_MINUTE => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y%m%d%H%i')",
         ADMIN_LOG_GROUP_SECOND => "DATE_FORMAT(ADMIN_LOG.CREATED, '%Y%m%d%H%i%s')",
     );
-    
+
     $sort_by_array = array(
-        'CREATED', 
-        'UID', 
-        'ACTION', 
+        'CREATED',
+        'UID',
+        'ACTION',
         'COUNT'
     );
-    
+
     $sort_dir_array = array(
-        'ASC', 
+        'ASC',
         'DESC'
     );
 
@@ -114,7 +114,7 @@ function admin_get_log_entries($page = 1, $group_by = 'DAY', $sort_by = 'CREATED
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
     $offset = calculate_page_offset($page, 10);
-    
+
     if (!isset($group_by_array[$group_by])) $group_by = ADMIN_LOG_GROUP_NONE;
 
     if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
@@ -148,7 +148,7 @@ function admin_get_log_entries($page = 1, $group_by = 'DAY', $sort_by = 'CREATED
     if (($result->num_rows == 0) && ($admin_log_count > 0) && ($page > 1)) {
         return admin_get_log_entries($page - 1, $sort_by, $sort_dir);
     }
-    
+
     while (($admin_log_data = $result->fetch_assoc())) {
 
         if (isset($admin_log_data['LOGON']) && isset($admin_log_data['PEER_NICKNAME'])) {
@@ -159,7 +159,7 @@ function admin_get_log_entries($page = 1, $group_by = 'DAY', $sort_by = 'CREATED
 
         if (!isset($admin_log_data['LOGON'])) $admin_log_data['LOGON'] = gettext("Unknown user");
         if (!isset($admin_log_data['NICKNAME'])) $admin_log_data['NICKNAME'] = "";
-        
+
         $admin_log_data['ENTRY'] = unserialize(base64_decode($admin_log_data['ENTRY']));
 
         $admin_log_array[] = $admin_log_data;
@@ -199,7 +199,7 @@ function admin_get_word_filter_list($page = 1)
     if (($result->num_rows == 0) && ($word_filter_count > 0) && ($page > 1)) {
         return admin_get_word_filter_list($page - 1);
     }
-    
+
     while (($word_filter_data = $result->fetch_assoc())) {
         $word_filter_array[$word_filter_data['FID']] = $word_filter_data;
     }
@@ -321,11 +321,11 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
     if (!in_array($sort_dir, array('ASC', 'DESC'))) $sort_dir = 'ASC';
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
-    
+
     if (!is_numeric($filter)) $filter = ADMIN_USER_FILTER_NONE;
 
     $offset = calculate_page_offset($page, 10);
-    
+
     if (!($forum_fid = get_forum_fid())) {
         $forum_fid = 0;
     }
@@ -440,7 +440,7 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
 
     if (!($forum_fid = get_forum_fid())) {
         $forum_fid = 0;
-    }    
+    }
 
     if (in_array($sort_by, array_keys($sort_by_array))) {
         $sort_by = $sort_by_array[$sort_by];
@@ -510,7 +510,7 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     if (($result->num_rows == 0) && ($user_get_all_count > 0) && ($page > 1)) {
         return admin_user_get_all($sort_by, $sort_dir, $filter, $page - 1);
     }
-        
+
     while (($user_data = $result->fetch_assoc())) {
         $user_get_all_array[$user_data['UID']] = $user_data;
     }
@@ -529,7 +529,7 @@ function admin_user_get($uid)
 
     if (!($forum_fid = get_forum_fid())) {
         $forum_fid = 0;
-    }    
+    }
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL, ";
     $sql.= "USER.IPADDRESS, SESSIONS.ID, SESSIONS.REFERER AS SESSION_REFERER, ";
@@ -667,7 +667,7 @@ function admin_get_forum_list($page = 1)
     if (($result->num_rows == 0) && ($forums_count > 0) && ($page > 1)) {
         return admin_get_forum_list($page - 1);
     }
-    
+
     $forums_array = array();
 
     while (($forum_data = $result->fetch_assoc())) {
@@ -709,15 +709,15 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $page = 1)
     if (!$db = db::get()) return false;
 
     $sort_by_array = array(
-        'ID', 
-        'BANTYPE', 
-        'BANDATA', 
-        'COMMENT', 
+        'ID',
+        'BANTYPE',
+        'BANDATA',
+        'COMMENT',
         'EXPIRES'
     );
 
     $sort_dir_array = array(
-        'ASC', 
+        'ASC',
         'DESC'
     );
 
@@ -749,7 +749,7 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $page = 1)
     if (($result->num_rows == 0) && ($ban_data_count > 0) && ($page > 1)) {
         return admin_get_ban_data($sort_by, $sort_dir, $page - 1);
     }
-    
+
     while (($ban_data = $result->fetch_assoc())) {
         $ban_data_array[$ban_data['ID']] = $ban_data;
     }
@@ -879,7 +879,7 @@ function admin_get_link_approval_queue($page = 1)
     if (($result->num_rows == 0) && ($link_count > 0) && ($page > 1)) {
         return admin_get_link_approval_queue($page - 1);
     }
-        
+
     while (($link_array = $result->fetch_assoc())) {
         $link_approval_array[] = $link_array;
     }
@@ -899,7 +899,7 @@ function admin_get_visitor_log($page = 1)
     $offset = calculate_page_offset($page, 10);
 
     if (!($table_prefix = get_table_prefix())) return false;
-    
+
     if (!($forum_fid = get_forum_fid())) return false;
 
     $users_get_recent_array = array();
@@ -930,7 +930,7 @@ function admin_get_visitor_log($page = 1)
 
     if (($result->num_rows == 0) && ($users_get_recent_count > 0) && ($page > 1)) {
         return admin_get_visitor_log($page - 1);
-    }        
+    }
 
     while (($visitor_array = $result->fetch_assoc())) {
 
@@ -1022,7 +1022,7 @@ function admin_get_user_ip_matches($uid)
     if (($ipaddress = user_get_last_ip_address($uid))) {
         $user_ip_address_array[] = $ipaddress;
     }
-    
+
     if (sizeof($user_ip_address_array) == 0) return false;
 
     $user_ip_address_list = implode("', '", $user_ip_address_array);
@@ -1043,7 +1043,7 @@ function admin_get_user_ip_matches($uid)
     if (!$result = $db->query($sql)) return false;
 
     if ($result->num_rows == 0) return false;
-    
+
     $user_aliases_array = array();
 
     while (($user_aliases = $result->fetch_assoc())) {
@@ -1422,11 +1422,6 @@ function admin_delete_user($uid, $delete_content = false)
                 }
             }
 
-            // Delete Dictionary entries added by user
-            $sql = "DELETE QUICK FROM DICTIONARY WHERE UID = '$uid'";
-
-            if (!$db->query($sql)) return false;
-
             // Delete User Group Entries related to this user.
             $sql = "DELETE QUICK FROM GROUP_USERS WHERE UID = '$uid'";
 
@@ -1697,36 +1692,36 @@ function admin_reset_user_password($uid, $password)
 function admin_check_credentials()
 {
     $webtag = get_webtag();
-    
+
     if (($admin_timeout = session::get_value('ADMIN_TIMEOUT')) && ($admin_timeout > time())) {
-        
+
         session::set_value('ADMIN_TIMEOUT', time() + HOUR_IN_SECONDS);
         return true;
     }
-    
+
     if (isset($_POST['admin_logon']) && isset($_POST['admin_password'])) {
-        
+
         $admin_logon = $_POST['admin_logon'];
 
         $admin_password = $_POST['admin_password'];
-        
+
         if (($admin_uid = user_logon($admin_logon, $admin_password)) && ($admin_uid == session::get_value('UID'))) {
-            
+
             session::set_value('ADMIN_TIMEOUT', time() + HOUR_IN_SECONDS);
             return true;
-        
+
         } else {
-                
+
             html_display_error_msg(gettext("The username or password you supplied are not valid."), '500', 'center');
         }
     }
-    
+
     html_draw_top();
-    
+
     if (isset($error_message) && strlen(trim($error_message)) > 0) {
         html_display_error_msg($error_message, '500', 'center');
     }
-    
+
     if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
         html_display_warning_msg(gettext('To save any changes you must re-authenticate yourself'), '500', 'center');
     } else {
@@ -1760,7 +1755,7 @@ function admin_check_credentials()
     echo "                        <tr>\n";
     echo "                          <td align=\"right\" width=\"90\">", gettext("Username"), ":</td>\n";
     echo "                          <td align=\"left\">", form_input_text('admin_logon', '', 24, 32, '', 'bhinputlogon'), "</td>\n";
-    echo "                        </tr>\n";    
+    echo "                        </tr>\n";
     echo "                        <tr>\n";
     echo "                          <td align=\"right\" width=\"90\">", gettext("Password"), ":</td>\n";
     echo "                          <td align=\"left\">", form_input_password('admin_password', '', 24, 32, '', 'bhinputlogon'), "</td>\n";
@@ -1786,7 +1781,7 @@ function admin_check_credentials()
     echo "    </table>\n";
     echo "  </form>\n";
     echo "</div>\n";
-    
+
     html_draw_bottom();
     exit;
 }

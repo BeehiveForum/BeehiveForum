@@ -399,11 +399,6 @@ define('TEXT_CAPTCHA_DIR_ERROR', 3);
 define('TEXT_CAPTCHA_GD_ERROR', 4);
 define('TEXT_CAPTCHA_FONT_ERROR', 5);
 
-// Return codes for Dictionary
-define('DICTIONARY_EXACT', 1);
-define('DICTIONARY_NOMATCH', 2);
-define('DICTIONARY_SUGGEST', 3);
-
 // PM Export constants
 define('PM_EXPORT_HTML', 0);
 define('PM_EXPORT_XML', 1);

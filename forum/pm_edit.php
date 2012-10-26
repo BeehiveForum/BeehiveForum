@@ -211,7 +211,7 @@ if ($valid && isset($_POST['preview'])) {
     }
 }
 
-html_draw_top(sprintf("title=%s", gettext("Private Messages")), "resize_width=785", "edit.js", "pm.js", "dictionary.js", "emoticons.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Private Messages")), "resize_width=785", "edit.js", "pm.js", "emoticons.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
 
 echo "<h1>", gettext("Private Messages"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Message"), "</h1>\n";
 

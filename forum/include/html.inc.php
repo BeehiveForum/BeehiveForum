@@ -808,6 +808,7 @@ function html_draw_top()
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 
+    html_include_javascript(html_get_forum_file_path("ckeditor/ckeditor.js"));
     html_include_javascript(html_get_forum_file_path('js/jquery-1.7.1.min.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery-ui-1.8.22.autocomplete.min.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.parsequery.js'));
@@ -829,7 +830,6 @@ function html_draw_top()
                     'attachments.php',
                     'change_pw.php',
                     'confirm_email.php',
-                    'dictionary.php',
                     'discussion.php',
                     'display_emoticons.php',
                     'edit_attachments.php',
@@ -857,7 +857,7 @@ function html_draw_top()
 
                 // Check that we're not on one of the pages.
                 if ((!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages))) {
-                    html_include_javascript(html_get_forum_file_path('js/pm.js'));
+                    //html_include_javascript(html_get_forum_file_path('js/pm.js'));
                 }
             }
 
@@ -881,7 +881,7 @@ function html_draw_top()
 
                 if (session::get_value('USE_OVERFLOW_RESIZE') == 'Y') {
 
-                    html_include_javascript(html_get_forum_file_path('js/overflow.js'));
+                    //html_include_javascript(html_get_forum_file_path('js/overflow.js'));
                 }
             }
 
@@ -903,7 +903,7 @@ function html_draw_top()
 
             if (in_array(basename($_SERVER['PHP_SELF']), $message_display_pages)) {
 
-                html_include_javascript(html_get_forum_file_path('js/spoiler.js'));
+                //html_include_javascript(html_get_forum_file_path('js/spoiler.js'));
             }
         }
 
@@ -913,7 +913,7 @@ function html_draw_top()
         );
 
         if (in_array(basename($_SERVER['PHP_SELF']), $stats_display_pages)) {
-            html_include_javascript(html_get_forum_file_path('js/stats.js'));
+            //html_include_javascript(html_get_forum_file_path('js/stats.js'));
         }
     }
 
@@ -923,7 +923,6 @@ function html_draw_top()
         html_include_javascript(html_get_forum_file_path("js/$func_args"));
     }
 
-    html_include_javascript(html_get_forum_file_path("ckeditor/ckeditor.js"));
     html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag"));
 
     if (($frame_set_html === true) && $google_analytics_code = html_get_google_analytics_code()) {

@@ -129,7 +129,7 @@ var beehive = $.extend({}, beehive, {
             customConfig: '',
             disableNativeSpellChecker: false,
             enterMode: CKEDITOR.ENTER_BR,
-            extraPlugins: 'youtube,beehive,flash',
+            extraPlugins: 'beehive',
             font_defaultLabel: 'Verdana',
             fontSize_defaultLabel: '12',
             height: $editor.height() - 35,
@@ -427,8 +427,7 @@ $(beehive).bind('init', function() {
 
                     'url' : beehive.forum_path + '/ajax.php',
 
-                    'success' : function(response) {
-
+                    'success' : function() {
                         $element.find('textarea.editor:visible').each(beehive.editor);
                     }
                 });

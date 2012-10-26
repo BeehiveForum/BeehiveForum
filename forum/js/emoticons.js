@@ -35,11 +35,13 @@ $(beehive).bind('init', function() {
         );
 
         element.setAttributes({
-            contentEditable: 'false',
+            contentEditable: 'false'
         });
 
         for (var key in element.children) {
-            element.children[key].attributes.contentEditable = "false";
+            if (element.children[key].attributes) {
+                element.children[key].attributes.contentEditable = "false";
+            }
         }
 
         beehive.active_editor.insertElement(element);

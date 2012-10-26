@@ -1,11 +1,33 @@
+/*======================================================================
+Copyright Project Beehive Forum 2002
+
+This file is part of Beehive Forum.
+
+Beehive Forum is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+Beehive Forum is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Beehive; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+USA
+======================================================================*/
 (function () {
 
     CKEDITOR.plugins.add('beehive', {
 
+        requires: ['dialog'],
+
         init: function (editor) {
 
             var allStyles = new CKEDITOR.style({
-                element: $,
+                element: $
             });
 
             var findAscendant = function (element, reference, className) {
@@ -167,17 +189,17 @@
 
             editor.ui.addButton('Code', {
                 label: 'Add Code',
-                command: 'code',
+                command: 'code'
             });
 
             editor.ui.addButton('Quote', {
                 label: 'Add Quote',
-                command: 'quote',
+                command: 'quote'
             });
 
             editor.ui.addButton('Spoiler', {
                 label: 'Add Spoiler',
-                command: 'spoiler',
+                command: 'spoiler'
             });
         },
 
@@ -194,9 +216,9 @@
 
                         span: function (element) {
 
-                            var test = element.attributes
-                                && element.attributes['class']
-                                && element.attributes['class'].match(/emoticon/);
+                            var test = element.attributes &&
+                                element.attributes['class'] &&
+                                element.attributes['class'].match(/emoticon/);
 
                             if (!test || test.length == 0) {
                                 return null;
@@ -205,7 +227,12 @@
                             element.attributes.contentEditable = "false";
 
                             for (var key in element.children) {
-                                element.children[key].attributes.contentEditable = "false";
+
+                                if (element.children[key].attributes) {
+                                    if (element.children[key].attributes) {
+                                        element.children[key].attributes.contentEditable = "false";
+                                    }
+                                }
                             }
 
                             return element;
@@ -221,9 +248,9 @@
                     elements: {
                         $: function (element) {
 
-                            var test = element.attributes
-                                && element.attributes['class']
-                                && element.attributes['class'].match(/emoticon/);
+                            var test = element.attributes &&
+                                element.attributes['class'] &&
+                                element.attributes['class'].match(/emoticon/);
 
                             if (!test || test.length == 0) {
                                 return element;
@@ -232,7 +259,9 @@
                             delete element.attributes.contenteditable;
 
                             for (var key in element.children) {
-                                delete element.children[key].attributes.contenteditable;
+                                if (element.children[key].attributes) {
+                                    delete element.children[key].attributes.contenteditable;
+                                }
                             }
 
                             return element;
@@ -242,4 +271,4 @@
             }
         }
     });
-}());
+})();

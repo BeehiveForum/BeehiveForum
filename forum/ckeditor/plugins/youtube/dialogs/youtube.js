@@ -131,7 +131,7 @@ USA
                                 } catch (e) { }
                             };
 
-                            this.getInputElement().on('change', function (q) {
+                            this.getInputElement().on('change', function () {
                                 dialog.showPreview(this.getValue());
                             }, this);
                         },

@@ -28,7 +28,6 @@ USA
 
             var commandName = 'youtube',
                 iconPath = this.path + 'images/icon.png',
-                dialog,
                 youtubeTag = new CKEDITOR.style({
                     element: 'img',
                     attributes: {

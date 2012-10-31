@@ -279,8 +279,10 @@ switch ($_GET['action']) {
             exit;
         }
 
+        $left_frame_width = max(100, abs($_GET['size']));
+
         $user_prefs = array(
-            'LEFT_FRAME_WIDTH' => abs($_GET['size'])
+            'LEFT_FRAME_WIDTH' => $left_frame_width,
         );
 
         if (!user_update_prefs($uid, $user_prefs)) {

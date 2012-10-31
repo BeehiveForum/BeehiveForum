@@ -48,11 +48,11 @@ $error_msg_array = array();
 
 // Available PM Folders
 $available_folders = array(
-    PM_FOLDER_INBOX, 
-    PM_FOLDER_SENT, 
+    PM_FOLDER_INBOX,
+    PM_FOLDER_SENT,
     PM_FOLDER_OUTBOX,
-    PM_FOLDER_SAVED, 
-    PM_FOLDER_DRAFTS, 
+    PM_FOLDER_SAVED,
+    PM_FOLDER_DRAFTS,
     PM_SEARCH_RESULTS
 );
 
@@ -62,6 +62,9 @@ $uid = session::get_value('UID');
 if (($left_frame_width = session::get_value('LEFT_FRAME_WIDTH')) === false) {
     $left_frame_width = 280;
 }
+
+// Prevent the frame width from being less than 100px
+$left_frame_width = max(100, $left_frame_width);
 
 // Output starts here
 html_draw_top('frame_set_html', 'pm_popup_disabled');

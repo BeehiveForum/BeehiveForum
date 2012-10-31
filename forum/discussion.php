@@ -48,6 +48,9 @@ if (($left_frame_width = session::get_value('LEFT_FRAME_WIDTH')) === false) {
     $left_frame_width = 280;
 }
 
+// Prevent the frame width from being less than 100px
+$left_frame_width = max(100, $left_frame_width);
+
 if (!$folder_info = threads_get_folders()) {
     html_draw_error(gettext("There are no folders available."));
 }

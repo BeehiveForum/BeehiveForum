@@ -372,7 +372,7 @@ $(beehive).bind('init', function() {
                     'webtag' : beehive.webtag,
                     'ajax'   : true,
                     'action' : 'frame_resize',
-                    'size'   : this.innerWidth
+                    'size'   : Math.max(100, this.innerWidth)
                 },
 
                 'url' : beehive.forum_path + '/ajax.php'

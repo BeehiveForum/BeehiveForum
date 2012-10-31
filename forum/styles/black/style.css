@@ -856,9 +856,9 @@ div.poll_option_list ol li {
 }
 
 .post_content {
-    max-width: 550px;
-    min-width: 550px;
-    width: 550px;
+    max-width: 720px;
+    min-width: 720px;
+    width: 720px;
 }
 
 .post_folder_dropdown {
@@ -1092,9 +1092,9 @@ div.poll_option_list ol li {
 }
 
 .signature_content {
-    max-width: 550px;
-    min-width: 550px;
-    width: 550px;
+    max-width: 720px;
+    min-width: 720px;
+    width: 720px;
 }
 
 .create_poll {

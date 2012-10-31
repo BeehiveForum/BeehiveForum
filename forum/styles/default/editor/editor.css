@@ -319,9 +319,8 @@ a:active.cke_colormore {
 }
 
 .cke_skin_beehive .cke_toolbar {
-    display: inline-block;
-    float: left;
-    height: 27px;
+    display: block;
+    height: 30px;
 }
 
 .cke_skin_beehive .cke_toolgroup {

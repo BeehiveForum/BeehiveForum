@@ -406,6 +406,7 @@ pre.code span.emoticon span {
 
 fieldset.poll_question {
     margin: 5px 0px;
+    width: 680px;
 }
 
 fieldset.poll_question + fieldset.poll_question {
@@ -1098,9 +1099,9 @@ div.poll_option_list ol li {
 }
 
 .create_poll {
-    max-width: 540px;
-    min-width: 540px;
-    width: 540px;
+    max-width: 710px;
+    min-width: 710px;
+    width: 710px;
 }
 
 .small_optional_text {

@@ -620,19 +620,19 @@ if (!$folder_dropdown = folder_draw_dropdown($fid, "fid", "" ,FOLDER_ALLOW_POLL_
     html_draw_error(gettext("You cannot create new threads."));
 }
 
-html_draw_top(sprintf("title=%s", gettext("Create Poll")), "basetarget=_blank", "resize_width=785", "post.js", "poll.js", "attachments.js", "emoticons.js", 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Create Poll")), "basetarget=_blank", "resize_width=960", "post.js", "poll.js", "attachments.js", "emoticons.js", 'class=window_title');
 
 echo "<h1>", gettext("Create Poll"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    html_display_error_array($error_msg_array, '785', 'left');
+    html_display_error_array($error_msg_array, '960', 'left');
 }
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_poll\" action=\"create_poll.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('dedupe', htmlentities_array($dedupe)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\" class=\"max_width\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"960\" class=\"max_width\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -860,7 +860,7 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
 }
 
 echo "                  </td>\n";
-echo "                  <td align=\"left\" valign=\"top\" width=\"575\">\n";
+echo "                  <td align=\"left\" valign=\"top\" width=\"740\">\n";
 echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
@@ -953,8 +953,10 @@ echo "                                          <tr>\n";
 echo "                                            <td align=\"left\">\n";
 echo "                                              <table border=\"0\" width=\"100%\">\n";
 echo "                                                <tr>\n";
-echo "                                                  <td align=\"left\" width=\"30%\">", form_radio('option_type', POLL_OPTIONS_RADIOS, gettext("As a series of radio buttons"), isset($option_type) ? $option_type == POLL_OPTIONS_RADIOS : true), "</td>\n";
-echo "                                                  <td align=\"left\" width=\"30%\">", form_radio('option_type', POLL_OPTIONS_DROPDOWN, gettext("As drop-down list(s)"), isset($option_type) ? $option_type == POLL_OPTIONS_DROPDOWN : false), "</td>\n";
+echo "                                                  <td align=\"left\">", form_radio('option_type', POLL_OPTIONS_RADIOS, gettext("As a series of radio buttons"), isset($option_type) ? $option_type == POLL_OPTIONS_RADIOS : true), "</td>\n";
+echo "                                                </tr>\n";
+echo "                                                <tr>\n";
+echo "                                                  <td align=\"left\">", form_radio('option_type', POLL_OPTIONS_DROPDOWN, gettext("As drop-down list(s)"), isset($option_type) ? $option_type == POLL_OPTIONS_DROPDOWN : false), "</td>\n";
 echo "                                                </tr>\n";
 echo "                                              </table>\n";
 echo "                                            </td>\n";
@@ -972,8 +974,12 @@ echo "                                          <tr>\n";
 echo "                                            <td align=\"left\">\n";
 echo "                                              <table border=\"0\" width=\"100%\">\n";
 echo "                                                <tr>\n";
-echo "                                                  <td align=\"left\" width=\"25%\">", form_radio('change_vote', POLL_VOTE_CAN_CHANGE, gettext("Yes"), isset($change_vote) ? $change_vote == POLL_VOTE_CAN_CHANGE : true), "</td>\n";
-echo "                                                  <td align=\"left\" width=\"25%\">", form_radio('change_vote', POLL_VOTE_CANNOT_CHANGE, gettext("No"), isset($change_vote) ? $change_vote == POLL_VOTE_CANNOT_CHANGE : false), "</td>\n";
+echo "                                                  <td align=\"left\">", form_radio('change_vote', POLL_VOTE_CAN_CHANGE, gettext("Yes"), isset($change_vote) ? $change_vote == POLL_VOTE_CAN_CHANGE : true), "</td>\n";
+echo "                                                </tr>\n";
+echo "                                                <tr>\n";
+echo "                                                  <td align=\"left\">", form_radio('change_vote', POLL_VOTE_CANNOT_CHANGE, gettext("No"), isset($change_vote) ? $change_vote == POLL_VOTE_CANNOT_CHANGE : false), "</td>\n";
+echo "                                                </tr>\n";
+echo "                                                <tr>\n";
 echo "                                                  <td align=\"left\">", form_radio('change_vote', POLL_VOTE_MULTI, gettext("Allow Multiple Votes"), isset($change_vote) ? $change_vote == POLL_VOTE_MULTI : false), "</td>\n";
 echo "                                                </tr>\n";
 echo "                                              </table>\n";
@@ -995,8 +1001,10 @@ if (forum_get_setting('poll_allow_guests', 'Y')) {
     echo "                                            <td align=\"left\">\n";
     echo "                                              <table border=\"0\" width=\"100%\">\n";
     echo "                                                <tr>\n";
-    echo "                                                  <td align=\"left\" width=\"25%\">", form_radio('allow_guests', POLL_GUEST_ALLOWED, gettext("Yes"), isset($allow_guests) ? $allow_guests == POLL_GUEST_ALLOWED : false), "</td>\n";
-    echo "                                                  <td align=\"left\" width=\"25%\">", form_radio('allow_guests', POLL_GUEST_DENIED, gettext("No"), isset($allow_guests) ? $allow_guests == POLL_GUEST_DENIED : true), "</td>\n";
+    echo "                                                  <td align=\"left\">", form_radio('allow_guests', POLL_GUEST_ALLOWED, gettext("Yes"), isset($allow_guests) ? $allow_guests == POLL_GUEST_ALLOWED : false), "</td>\n";
+    echo "                                                </tr>\n";
+    echo "                                                <tr>\n";
+    echo "                                                  <td align=\"left\">", form_radio('allow_guests', POLL_GUEST_DENIED, gettext("No"), isset($allow_guests) ? $allow_guests == POLL_GUEST_DENIED : true), "</td>\n";
     echo "                                                </tr>\n";
     echo "                                              </table>\n";
     echo "                                            </td>\n";
@@ -1016,8 +1024,12 @@ echo "                                          <tr>\n";
 echo "                                            <td align=\"left\">\n";
 echo "                                              <table border=\"0\" width=\"100%\">\n";
 echo "                                                <tr>\n";
-echo "                                                  <td align=\"left\" width=\"25%\" style=\"white-space: nowrap\">", form_radio('poll_type', POLL_HORIZONTAL_GRAPH, gettext("Horizontal graph"), isset($poll_type) ? $poll_type == POLL_HORIZONTAL_GRAPH : true), "</td>\n";
-echo "                                                  <td align=\"left\" width=\"25%\" style=\"white-space: nowrap\">", form_radio('poll_type', POLL_VERTICAL_GRAPH, gettext("Vertical graph"), isset($poll_type) ? $poll_type == POLL_VERTICAL_GRAPH : false), "</td>\n";
+echo "                                                  <td align=\"left\" style=\"white-space: nowrap\">", form_radio('poll_type', POLL_HORIZONTAL_GRAPH, gettext("Horizontal graph"), isset($poll_type) ? $poll_type == POLL_HORIZONTAL_GRAPH : true), "</td>\n";
+echo "                                                </tr>\n";
+echo "                                                <tr>\n";
+echo "                                                  <td align=\"left\" style=\"white-space: nowrap\">", form_radio('poll_type', POLL_VERTICAL_GRAPH, gettext("Vertical graph"), isset($poll_type) ? $poll_type == POLL_VERTICAL_GRAPH : false), "</td>\n";
+echo "                                                </tr>\n";
+echo "                                                <tr>\n";
 echo "                                                  <td align=\"left\" style=\"white-space: nowrap\">", form_radio('poll_type', POLL_TABLE_GRAPH, gettext("Tabular format"), isset($poll_type) ? $poll_type == POLL_TABLE_GRAPH : false), "</td>\n";
 echo "                                                </tr>\n";
 echo "                                              </table>\n";
@@ -1037,6 +1049,8 @@ echo "                                            <td align=\"left\">\n";
 echo "                                              <table border=\"0\" width=\"100%\">\n";
 echo "                                                <tr>\n";
 echo "                                                  <td align=\"left\" width=\"50%\">", form_radio('poll_vote_type', POLL_VOTE_ANON, gettext("Anonymously"), isset($poll_vote_type) ? $poll_vote_type == POLL_VOTE_ANON : true), "</td>\n";
+echo "                                                </tr>\n";
+echo "                                                <tr>\n";
 echo "                                                  <td align=\"left\" width=\"50%\">", form_radio('poll_vote_type', POLL_VOTE_PUBLIC, gettext("Public ballot"), isset($poll_vote_type) ? $poll_vote_type == POLL_VOTE_PUBLIC : false), "</td>\n";
 echo "                                                </tr>\n";
 echo "                                              </table>\n";
@@ -1056,6 +1070,8 @@ echo "                                            <td align=\"left\">\n";
 echo "                                              <table border=\"0\" width=\"100%\">\n";
 echo "                                                <tr>\n";
 echo "                                                  <td align=\"left\" width=\"50%\">", form_radio('show_results', POLL_SHOW_RESULTS, gettext("Yes"), isset($show_results) ? $show_results == POLL_SHOW_RESULTS : true), "</td>\n";
+echo "                                                </tr>\n";
+echo "                                                <tr>\n";
 echo "                                                  <td align=\"left\" width=\"50%\">", form_radio('show_results', POLL_HIDE_RESULTS, gettext("No"), isset($show_results) ? $show_results == POLL_HIDE_RESULTS : false), "</td>\n";
 echo "                                                </tr>\n";
 echo "                                              </table>\n";

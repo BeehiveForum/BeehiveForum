@@ -305,7 +305,7 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
 
 echo "                    </table>\n";
 echo "                  </td>\n";
-echo "                  <td align=\"left\" width=\"575\" valign=\"top\">\n";
+echo "                  <td align=\"left\" width=\"740\" valign=\"top\">\n";
 echo "                    <table border=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">";

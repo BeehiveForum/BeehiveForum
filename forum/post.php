@@ -580,22 +580,22 @@ if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !session::che
     html_draw_error(gettext("This thread is closed, you cannot post in it!"));
 }
 
-html_draw_top(sprintf("title=%s", gettext("Post message")), "resize_width=785", "basetarget=_blank", "post.js", "attachments.js", "emoticons.js", 'search.js', 'search_popup.js', 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Post message")), "resize_width=960", "basetarget=_blank", "post.js", "attachments.js", "emoticons.js", 'search.js', 'search_popup.js', 'class=window_title');
 
 echo "<h1>", gettext("Post message"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    html_display_error_array($error_msg_array, '785', 'left');
+    html_display_error_array($error_msg_array, '960', 'left');
 }
 
 if (!$new_thread && isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-    html_display_warning_msg(gettext("Warning: this thread is closed for posting to normal users."), '785', 'left');
+    html_display_warning_msg(gettext("Warning: this thread is closed for posting to normal users."), '960', 'left');
 }
 
 echo "<br /><form accept-charset=\"utf-8\" name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('t_dedupe', htmlentities_array($t_dedupe)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\" class=\"max_width\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"960\" class=\"max_width\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -769,7 +769,7 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
 
 echo "                    </table>\n";
 echo "                  </td>\n";
-echo "                  <td align=\"left\" valign=\"top\" width=\"575\">\n";
+echo "                  <td align=\"left\" valign=\"top\" width=\"750\">\n";
 echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
@@ -812,7 +812,7 @@ if ($allow_sig == true) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">\n";
-    echo "                          <table class=\"messagefoot\" width=\"553\" cellspacing=\"0\">\n";
+    echo "                          <table class=\"messagefoot\" width=\"722\" cellspacing=\"0\">\n";
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" class=\"subhead\">", gettext("Signature"), "</td>\n";
 
@@ -879,7 +879,7 @@ echo "  </table>\n";
 if (!$new_thread) {
 
     echo "  <br />\n";
-    echo "  <table  width=\"785\">\n";
+    echo "  <table  width=\"960\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\"><img src=\"", html_style_image('current_thread.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"index.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\" title=\"", gettext("Review entire thread in new window"), "\">", gettext("Review Thread"), "</a></td>\n";
     echo "    </tr>\n";

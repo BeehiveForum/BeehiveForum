@@ -211,19 +211,19 @@ if ($valid && isset($_POST['preview'])) {
     }
 }
 
-html_draw_top(sprintf("title=%s", gettext("Private Messages")), "resize_width=785", "edit.js", "pm.js", "emoticons.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Private Messages")), "resize_width=960", "edit.js", "pm.js", "emoticons.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
 
 echo "<h1>", gettext("Private Messages"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Message"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    html_display_error_array($error_msg_array, '785', 'left');
+    html_display_error_array($error_msg_array, '960', 'left');
 }
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"pm_edit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('mid', htmlentities_array($mid)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"960\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -232,7 +232,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "              <table class=\"posthead\" width=\"785\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\">", gettext("Message Preview"), "</td>\n";
     echo "                </tr>";
@@ -245,7 +245,7 @@ if ($valid && isset($_POST['preview'])) {
     echo "              </table>\n";
 }
 
-echo "              <table width=\"785\" class=\"posthead\">\n";
+echo "              <table width=\"100%\" class=\"posthead\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Edit Message"), "</td>\n";
 echo "                </tr>\n";

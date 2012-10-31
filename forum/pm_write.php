@@ -556,12 +556,12 @@ if ($valid && isset($_POST['send'])) {
     }
 }
 
-html_draw_top(sprintf('title=%s', gettext("Private Messages - Send New PM")), "resize_width=785", "pm.js", "attachments.js", "emoticons.js", "search_popup.js", "basetarget=_blank", 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Private Messages - Send New PM")), "resize_width=960", "pm.js", "attachments.js", "emoticons.js", "search_popup.js", "basetarget=_blank", 'class=window_title');
 
 echo "<h1>", gettext("Private Messages"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Send New PM"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    html_display_error_array($error_msg_array, '785', 'left');
+    html_display_error_array($error_msg_array, '960', 'left');
 }
 
 echo "<br />\n";
@@ -569,7 +569,7 @@ echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"pm_write.php\" met
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
 echo "  ", form_input_hidden("t_dedupe", htmlentities_array($t_dedupe));
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\" class=\"max_width\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"960\" class=\"max_width\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

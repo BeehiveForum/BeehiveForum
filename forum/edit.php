@@ -298,18 +298,18 @@ if ($valid && isset($_POST['preview'])) {
 
 $page_title = sprintf(gettext("Edit message %s"), $msg);
 
-html_draw_top("title=$page_title", "resize_width=785", "basetarget=_blank", "attachments.js", "emoticons.js", "post.js", 'class=window_title');
+html_draw_top("title=$page_title", "resize_width=960", "basetarget=_blank", "attachments.js", "emoticons.js", "post.js", 'class=window_title');
 
 echo "<h1>$page_title</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    html_display_error_array($error_msg_array, '785', 'left');
+    html_display_error_array($error_msg_array, '960', 'left');
 }
 
 echo "<br /><form accept-charset=\"utf-8\" name=\"f_post\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('msg', htmlentities_array($msg)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"785\" class=\"max_width\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"960\" class=\"max_width\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -318,7 +318,7 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 
 if ($valid && isset($_POST['preview'])) {
 
-    echo "              <table class=\"posthead\" width=\"785\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\">", gettext("Message Preview"), "</td>\n";
     echo "                </tr>\n";
@@ -331,7 +331,7 @@ if ($valid && isset($_POST['preview'])) {
     echo "              </table>\n";
 }
 
-echo "              <table class=\"posthead\" width=\"785\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", sprintf(gettext("Edit message %s"), $msg), "</td>\n";
 echo "                </tr>\n";

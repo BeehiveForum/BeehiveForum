@@ -134,7 +134,7 @@ var beehive = $.extend({}, beehive, {
             fontSize_defaultLabel: '12',
             height: $editor.height() - 35,
             width: $editor.width(),
-            removePlugins: 'elementspath',
+            removePlugins: 'elementspath,contextmenu,tabletools,liststyle',
             resize_maxWidth: '100%',
             resize_minWidth: '100%',
             skin: 'beehive,' + skin,

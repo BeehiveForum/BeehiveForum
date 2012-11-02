@@ -857,7 +857,7 @@ function html_draw_top()
 
                 // Check that we're not on one of the pages.
                 if ((!in_array(basename($_SERVER['PHP_SELF']), $pm_popup_disabled_pages))) {
-                    //html_include_javascript(html_get_forum_file_path('js/pm.js'));
+                    html_include_javascript(html_get_forum_file_path('js/pm.js'));
                 }
             }
 
@@ -880,8 +880,7 @@ function html_draw_top()
             if (in_array(basename($_SERVER['PHP_SELF']), $resize_images_page)) {
 
                 if (session::get_value('USE_OVERFLOW_RESIZE') == 'Y') {
-
-                    //html_include_javascript(html_get_forum_file_path('js/overflow.js'));
+                    html_include_javascript(html_get_forum_file_path('js/overflow.js'));
                 }
             }
 
@@ -902,8 +901,7 @@ function html_draw_top()
             );
 
             if (in_array(basename($_SERVER['PHP_SELF']), $message_display_pages)) {
-
-                //html_include_javascript(html_get_forum_file_path('js/spoiler.js'));
+                html_include_javascript(html_get_forum_file_path('js/spoiler.js'));
             }
         }
 
@@ -913,7 +911,7 @@ function html_draw_top()
         );
 
         if (in_array(basename($_SERVER['PHP_SELF']), $stats_display_pages)) {
-            //html_include_javascript(html_get_forum_file_path('js/stats.js'));
+            html_include_javascript(html_get_forum_file_path('js/stats.js'));
         }
     }
 

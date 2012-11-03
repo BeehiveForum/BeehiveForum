@@ -500,102 +500,102 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
         case UNREAD_DISCUSSIONS:
 
-            list($thread_info, $folder_order) = threads_get_unread($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_unread($uid, $folder, $page);
             break;
 
         case UNREAD_DISCUSSIONS_TO_ME:
 
-            list($thread_info, $folder_order) = threads_get_unread_to_me($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_unread_to_me($uid, $folder, $page);
             break;
 
         case TODAYS_DISCUSSIONS:
 
-            list($thread_info, $folder_order) = threads_get_by_days($uid, $folder, $page, 1);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_days($uid, $folder, $page, 1);
             break;
 
         case UNREAD_TODAY:
 
-            list($thread_info, $folder_order) = threads_get_unread_by_days($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_days($uid, $folder, $page);
             break;
 
         case TWO_DAYS_BACK:
 
-            list($thread_info, $folder_order) = threads_get_by_days($uid, $folder, $page, 2);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_days($uid, $folder, $page, 2);
             break;
 
         case SEVEN_DAYS_BACK:
 
-            list($thread_info, $folder_order) = threads_get_by_days($uid, $folder, $page, 7);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_days($uid, $folder, $page, 7);
             break;
 
         case HIGH_INTEREST:
 
-            list($thread_info, $folder_order) = threads_get_by_interest($uid, $folder, $page, 1);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($uid, $folder, $page, 1);
             break;
 
         case UNREAD_HIGH_INTEREST:
 
-            list($thread_info, $folder_order) = threads_get_unread_by_interest($uid, $folder, $page, 1);
+            list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_interest($uid, $folder, $page, 1);
             break;
 
         case RECENTLY_SEEN:
 
-            list($thread_info, $folder_order) = threads_get_recently_viewed($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_recently_viewed($uid, $folder, $page);
             break;
 
         case IGNORED_THREADS:
 
-            list($thread_info, $folder_order) = threads_get_by_interest($uid, $folder, $page, -1);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($uid, $folder, $page, -1);
             break;
 
         case BY_IGNORED_USERS:
 
-            list($thread_info, $folder_order) = threads_get_by_relationship($uid, $folder, $page, USER_IGNORED_COMPLETELY);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_relationship($uid, $folder, $page, USER_IGNORED_COMPLETELY);
             break;
 
         case SUBSCRIBED_TO:
 
-            list($thread_info, $folder_order) = threads_get_by_interest($uid, $folder, $page, 2);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($uid, $folder, $page, 2);
             break;
 
         case STARTED_BY_FRIEND:
 
-            list($thread_info, $folder_order) = threads_get_by_relationship($uid, $folder, $page, USER_FRIEND);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_relationship($uid, $folder, $page, USER_FRIEND);
             break;
 
         case UNREAD_STARTED_BY_FRIEND:
 
-            list($thread_info, $folder_order) = threads_get_unread_by_relationship($uid, $folder, $page, USER_FRIEND);
+            list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_relationship($uid, $folder, $page, USER_FRIEND);
             break;
 
         case STARTED_BY_ME:
 
-            list($thread_info, $folder_order) = threads_get_started_by_me($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_started_by_me($uid, $folder, $page);
             break;
 
         case POLL_THREADS:
 
-            list($thread_info, $folder_order) = threads_get_polls($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_polls($uid, $folder, $page);
             break;
 
         case STICKY_THREADS:
 
-            list($thread_info, $folder_order) = threads_get_sticky($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_sticky($uid, $folder, $page);
             break;
 
         case MOST_UNREAD_POSTS:
 
-            list($thread_info, $folder_order) = threads_get_longest_unread($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_longest_unread($uid, $folder, $page);
             break;
 
         case DELETED_THREADS:
 
-            list($thread_info, $folder_order) = threads_get_deleted($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_deleted($uid, $folder, $page);
             break;
 
         default:
 
-            list($thread_info, $folder_order) = threads_get_all($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_all($uid, $folder, $page);
             break;
     }
 
@@ -754,7 +754,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
                     echo "  </div>\n";
 
                     if (($page > 1) && is_numeric($folder) && ($folder_number == $folder)) {
-                        echo "<div class=\"folder_navigation\"><a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder&amp;page=", ($page - 1), "\">", gettext("Previous 50 threads"), "</a></div>\n";
+                        echo "<div class=\"folder_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder&amp;page=", ($page - 1), "\">", gettext("Previous 50 threads"), "</a></div>\n";
                     }
 
                     $folder_list_start = false;
@@ -826,11 +826,11 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
                         $folder_list_end = true;
                     }
 
-                    if (is_numeric($folder) && ($folder_number == $folder)) {
+                    if (is_numeric($folder) && ($folder_number == $folder) && ($thread_count >= 50)) {
                         echo "<div class=\"folder_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder&amp;page=", ($page + 1), "\">", gettext("Next 50 threads"), "</a></div>\n";
                     }
 
-                } else if ($folder_info[$folder_number]['INTEREST'] != -1) {
+                } else if ($folder_info[$folder_number]['INTEREST'] != FOLDER_IGNORED) {
 
                     echo "<div class=\"folder_info\"><a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder_number\">";
 
@@ -857,7 +857,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
         }
     }
 
-    if ($mode == ALL_DISCUSSIONS && !isset($folder)) {
+    if (!is_numeric($folder) && ($thread_count >= 50)) {
         echo "<div class=\"thread_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page + 1), "\">", gettext("Next 50 threads"), "</a></div>\n";
     }
 

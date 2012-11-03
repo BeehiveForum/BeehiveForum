@@ -56,10 +56,10 @@ if (isset($_REQUEST['folder']) && in_array($_REQUEST['folder'], $available_folde
 }
 
 // View offset.
-if (isset($_REQUEST['start_from']) && is_numeric($_REQUEST['start_from'])) {
-    $start_from = $_REQUEST['start_from'];
+if (isset($_REQUEST['page']) && is_numeric($_REQUEST['page'])) {
+    $page = $_REQUEST['page'];
 } else {
-    $start_from = 0;
+    $page = 1;
 }
 
 // View mode
@@ -176,7 +176,7 @@ if (!session::logged_in()) {
 
 light_html_draw_top();
 
-light_draw_thread_list($mode, $folder, $start_from);
+light_draw_thread_list($mode, $folder, $page);
 
 light_html_draw_bottom();
 

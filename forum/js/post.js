@@ -118,11 +118,8 @@ $(beehive).bind('init', function() {
 
     $('#quick_reply_container input#cancel').bind('click', function() {
 
-        for (var key in CKEDITOR.instances) {
-
-            if (CKEDITOR.instances[key].element.hasClass('quick_reply')) {
-                CKEDITOR.instances[key].destroy();
-            }
+        if (CKEDITOR.instances.t_content) {
+            CKEDITOR.instances.t_content.destroy();
         }
 
         $('#quick_reply_container').hide();
@@ -135,6 +132,10 @@ $(beehive).bind('init', function() {
         $('.post_options_container').find('*').css('margin-left', -9999);
 
         var quick_reply_data = /^([0-9]+)\.([0-9]+)$/.exec($(this).attr('rel'));
+
+        if (CKEDITOR.instances.t_content) {
+            CKEDITOR.instances.t_content.destroy();
+        }
 
         if (quick_reply_data.length === 3) {
 

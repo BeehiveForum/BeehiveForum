@@ -307,7 +307,15 @@ body {
 .folder_pagination {
     background-color: #996699;
     border: 1px solid #996699;
+}
+
+.forum_info,
+.folder_info {
     padding: 3px 3px 0;
+}
+
+.folder_pagination {
+    padding: 5px 3px;
 }
 
 .forum_info span,
@@ -820,6 +828,10 @@ span.user_friend {
 
 span.user_enemy {
     background: url('images/enemy.png') transparent no-repeat scroll 0 2px;
+}
+
+.thread_pagination {
+    margin: 10px 0;
 }
 
 .message_box {

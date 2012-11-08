@@ -137,6 +137,7 @@ var beehive = $.extend({}, beehive, {
             removePlugins: 'elementspath,contextmenu,tabletools,liststyle',
             resize_maxWidth: '100%',
             resize_minWidth: '100%',
+            shiftEnterMode: CKEDITOR.ENTER_BR,
             skin: 'beehive,' + skin,
             startupFocus: $editor.hasClass('focus'),
             sharedSpaces : {

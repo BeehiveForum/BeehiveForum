@@ -12,6 +12,7 @@ pre.code {
     margin-left: 40px;
     margin-right: 10px;
     margin-top: 0px;
+    min-height: 16px;
     overflow: auto;
     padding: 3px;
 }
@@ -23,6 +24,7 @@ div.quote {
     margin-left: 40px;
     margin-right: 10px;
     margin-top: 0px;
+    min-height: 16px;
     padding: 3px;
 }
 
@@ -38,9 +40,6 @@ span.spoiler {
     background: #EEEEEE url('../images/spoiler.png');
     border: 1px solid #CCCCCC;
     color: #EEEEEE;
-    display: inline-block;
-    min-height: 16px;
-    min-width: 55px;
     padding: 0px 3px;
 }
 
@@ -62,4 +61,10 @@ pre.code span.emoticon span {
 
 p:first-child {
     margin-top: 0;
+}
+
+a {
+    background-color: transparent;
+    color: #000000;
+    text-decoration: underline;
 }

@@ -377,7 +377,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
             $t_content = sprintf(
                 '<div class="quotetext"><b>%s:</b> %s</div>
-                 <div class="quote">%s</div>',
+                 <div class="quote">%s</div><p>&nbsp;</p>',
                 gettext('quote'),
                 $message_author,
                 fix_html($pm_data['CONTENT'])
@@ -404,7 +404,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
         $t_content = sprintf(
             '<div class="quotetext"><b>%s:</b> %s</div>
-             <div class="quote">%s</div>',
+             <div class="quote">%s</div><p>&nbsp;</p>',
             gettext('quote'),
             $message_author,
             fix_html($pm_data['CONTENT'])

@@ -321,6 +321,8 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
             }
         }
 
+        $t_content_array[] = '<p>&nbsp;</p>';
+
         if (sizeof($t_content_array) > 0) {
             $t_content = implode('', $t_content_array);
         }

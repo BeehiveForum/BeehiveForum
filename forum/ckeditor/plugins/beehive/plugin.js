@@ -64,6 +64,7 @@ USA
                     var state = editor.getCommand('code').state,
                         quoteTextElement,
                         codeElement,
+                        selection,
                         range;
 
                     if (state == CKEDITOR.TRISTATE_ON) {
@@ -82,8 +83,9 @@ USA
 
                     } else {
 
+                        selection = (CKEDITOR.env.ie) ? editor.getSelection().getNative().createRange().text : editor.getSelection().getNative();
                         quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><b>' + beehive.lang.code + ':</b>&nbsp;</div>');
-                        codeElement = CKEDITOR.dom.element.createFromHtml('<pre class="code">' + editor.getSelection().getNative() + '</pre>');
+                        codeElement = CKEDITOR.dom.element.createFromHtml('<pre class="code">' + selection + '</pre>');
                         range = new CKEDITOR.dom.range(editor.document);
 
                         editor.insertElement(quoteTextElement);
@@ -110,6 +112,7 @@ USA
                     var state = editor.getCommand('quote').state,
                         quoteTextElement,
                         quoteElement,
+                        selection,
                         range;
 
                     if (state == CKEDITOR.TRISTATE_ON) {
@@ -128,8 +131,9 @@ USA
 
                     } else {
 
+                        selection = (CKEDITOR.env.ie) ? editor.getSelection().getNative().createRange().text : editor.getSelection().getNative();
                         quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><b>' + beehive.lang.quote + ':</b>&nbsp;</div>');
-                        quoteElement = CKEDITOR.dom.element.createFromHtml('<div class="quote">' + editor.getSelection().getNative() + '</div>');
+                        quoteElement = CKEDITOR.dom.element.createFromHtml('<div class="quote">' + selection + '</div>');
                         range = new CKEDITOR.dom.range(editor.document);
 
                         editor.insertElement(quoteTextElement);
@@ -156,6 +160,7 @@ USA
                     var state = editor.getCommand('spoiler').state,
                         spoilerElement,
                         spoilerContainer,
+                        selection,
                         range;
 
                     if (state == CKEDITOR.TRISTATE_ON) {
@@ -168,8 +173,8 @@ USA
 
                     } else if (editor.getSelection().getSelectedText().length > 0) {
 
-                        spoilerElement = CKEDITOR.dom.element.createFromHtml('<span class="spoiler"><span>' + editor.getSelection().getNative() + '</span></span>');
-
+                        selection = (CKEDITOR.env.ie) ? editor.getSelection().getNative().createRange().text : editor.getSelection().getNative();
+                        spoilerElement = CKEDITOR.dom.element.createFromHtml('<span class="spoiler"><span>' + selection + '</span></span>');
                         range = new CKEDITOR.dom.range(editor.document);
 
                         editor.insertElement(spoilerElement);

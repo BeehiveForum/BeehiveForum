@@ -34,7 +34,7 @@ require_once BH_INCLUDE_PATH. 'server.inc.php';
 class Error extends Exception
 {
     protected $severity;
-    
+
     public function __construct($message, $code, $severity, $file, $line)
     {
         $this->message = $message;
@@ -43,7 +43,7 @@ class Error extends Exception
         $this->file = $file;
         $this->line = $line;
     }
-    
+
     public function getSeverity()
     {
         return $this->severity;
@@ -55,7 +55,7 @@ function bh_error_handler($errno, $errstr, $errfile, $errline, $errcontext)
     if (error_reporting() == 0) {
         return;
     }
-    
+
     if (error_reporting() & $errno) {
         throw new Error($errstr, 0, $errno, $errfile, $errline);
     }
@@ -85,17 +85,17 @@ function bh_exception_handler(Exception $exception)
     ob_start();
 
     ob_implicit_flush(0);
-    
+
     bh_error_send_email($exception);
 
     $error_msg_array = bh_error_process($exception);
-    
+
     $error_log_message = sprintf('BEEHIVE_ERROR: %s', strip_tags(implode(". ", $error_msg_array)));
 
     @error_log($error_log_message);
 
     header_status(500, 'Internal Server Error');
-    
+
     if (($exception->getCode() == MYSQL_ERROR_NO_SUCH_TABLE) || ($exception->getCode() == MYSQL_ERROR_WRONG_COLUMN_NAME)) {
 
         if (function_exists('install_incomplete') && !defined('BEEHIVE_DEVELOPER_MODE')) {
@@ -111,9 +111,9 @@ function bh_exception_handler(Exception $exception)
             install_missing_files();
         }
     }
-    
+
     $forum_path = server_get_forum_path();
-    
+
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"utf-8\" lang=\"en\" dir=\"ltr\">\n";
@@ -138,20 +138,20 @@ function bh_exception_handler(Exception $exception)
 
             echo "<table cellpadding=\"0\" cellspacing=\"0\" class=\"warning_msg\">\n";
             echo "  <tr>\n";
-            echo "    <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"styles/default/images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
+            echo "    <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", html_style_image("warning.png", false), "\" alt=\"Warning\" title=\"Warning\" /></td>\n";
             echo "    <td valign=\"top\" class=\"warning_msg_text\">Please note that there may be sensitive information such as passwords displayed here.</td>\n";
             echo "  </tr>\n";
             echo "</table>\n";
 
             echo "<p>", implode("</p><p>", $error_msg_array), "</p>\n";
         }
-    
+
     } else {
 
-        echo "<div align=\"center\">\n";    
+        echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"f_error\" method=\"post\" action=\"\" target=\"_self\">\n";
         echo "  ", form_input_hidden_array($_POST), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
@@ -163,7 +163,7 @@ function bh_exception_handler(Exception $exception)
         echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
-        echo "                    <table class=\"posthead\" width=\"95%\">\n";
+        echo "                    <table class=\"posthead\" width=\"98%\">\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" class=\"postbody\">An error has occured. Please wait a few moments and then click the Retry button below. Details of the error have been saved to the default error log.</td>\n";
         echo "                      </tr>\n";
@@ -184,7 +184,7 @@ function bh_exception_handler(Exception $exception)
         if ((isset($error_report_verbose) && ($error_report_verbose == true)) || defined('BEEHIVE_DEVELOPER_MODE')) {
 
             echo "  <br />\n";
-            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
             echo "    <tr>\n";
             echo "      <td align=\"left\">\n";
             echo "        <table class=\"box\" width=\"100%\">\n";
@@ -196,13 +196,13 @@ function bh_exception_handler(Exception $exception)
             echo "                </tr>\n";
             echo "                <tr>\n";
             echo "                  <td align=\"center\">\n";
-            echo "                    <table class=\"posthead\" width=\"95%\">\n";
+            echo "                    <table class=\"posthead\" width=\"98%\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">\n";
             echo "                          <div align=\"center\">\n";
             echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
             echo "                              <tr>\n";
-            echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"styles/default/images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
+            echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", html_style_image("warning.png", false), "\" alt=\"Warning\" title=\"Warning\" /></td>\n";
             echo "                                <td valign=\"top\" class=\"warning_msg_text\">When reporting a bug in Project Beehive or when requesting support please include the details below.</td>\n";
             echo "                              </tr>\n";
             echo "                            </table>\n";
@@ -214,7 +214,7 @@ function bh_exception_handler(Exception $exception)
             echo "                          <div align=\"center\">\n";
             echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" class=\"warning_msg\">\n";
             echo "                              <tr>\n";
-            echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"styles/default/images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
+            echo "                                <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", html_style_image("warning.png", false), "\" alt=\"Warning\" title=\"Warning\" /></td>\n";
             echo "                                <td valign=\"top\" class=\"warning_msg_text\">Please note that there may be sensitive information such as passwords displayed here.</td>\n";
             echo "                              </tr>\n";
             echo "                            </table>\n";
@@ -242,7 +242,7 @@ function bh_exception_handler(Exception $exception)
         }
 
         echo "  <br />\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"center\"><input class=\"button\" type=\"submit\" name=\"", md5(uniqid(mt_rand())), "\" value=\"Retry\" /></td>\n";
         echo "    </tr>\n";
@@ -250,10 +250,10 @@ function bh_exception_handler(Exception $exception)
         echo "</form>\n";
         echo "</div>\n";
     }
-    
+
     echo "</body>\n";
     echo "</html>\n";
-    
+
     exit;
 }
 
@@ -272,7 +272,7 @@ function bh_error_process(Exception $exception)
     }
 
     $error_msg_array[] = '<hr />';
-    
+
     $stack_trace = array_values(array_filter($exception->getTrace(), 'bh_error_stack_trace_tidy'));
 
     if (count($stack_trace) > 0) {
@@ -280,7 +280,7 @@ function bh_error_process(Exception $exception)
         $error_msg_array[] = '<p><b>Stack trace:</b></p>';
 
         foreach ($stack_trace as $key => $trace_data) {
-            
+
             $error_msg_array[] = sprintf(
                 '#%s %s(%s): %s%s%s(%s)<br />',
                 $key,
@@ -366,7 +366,7 @@ function bh_error_process(Exception $exception)
 
         $error_msg_array[] = sprintf('<pre>%s</pre>', $server_vars);
     }
-    
+
     return $error_msg_array;
 }
 
@@ -381,26 +381,26 @@ function bh_error_stack_trace_tidy($trace_data)
         'bh_error_stack_trace_tidy',
         'bh_error_send_email',
     );
-    
+
     return !(isset($trace_data['function']) && in_array($trace_data['function'], $ignore_functions));
 }
 
 function bh_error_send_email(Exception $exception)
 {
     $config = server_get_config();
-    
+
     if (isset($config['error_report_email_addr_to']) && strlen(trim($config['error_report_email_addr_to'])) > 0) {
         $error_report_email_addr_to = trim($config['error_report_email_addr_to']);
     } else {
         $error_report_email_addr_to = '';
     }
-    
+
     if (isset($config['error_report_email_addr_from']) && strlen(trim($config['error_report_email_addr_from'])) > 0) {
         $error_report_email_addr_from = trim($config['error_report_email_addr_from']);
     } else {
         $error_report_email_addr_from = 'no-reply@beehiveforum.co.uk';
     }
-    
+
     if (strlen($error_report_email_addr_to) > 0 && !defined('BEEHIVE_DEVELOPER_MODE')) {
 
         $error_msg_array = bh_error_process($exception);
@@ -415,7 +415,7 @@ function bh_error_send_email(Exception $exception)
         $headers.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
 
         @mail($error_report_email_addr_to, "Beehive Forum Error Report", $error_log_email_message, $headers);
-    }    
+    }
 }
 
 ?>

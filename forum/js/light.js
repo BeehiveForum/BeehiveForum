@@ -20,28 +20,22 @@ USA
 ======================================================================*/
 
 $(beehive).bind('init', function() {
-        
+
     $('body').bind('click', function(event) {
-        
-        var $nav = $('div#nav');
-        
+
         var $menu = $('div#menu');
-        
-        $nav.removeClass('menu_open');
-        
-        $menu.toggle($nav.hasClass('menu_open'));        
+
+        $menu.hide();
     });
 
     $('div#nav').bind('click', function(event) {
-        
-        var $nav = $(this);
-        
+
         var $menu = $('div#menu');
-        
-        $nav.toggleClass('menu_open');
-        
-        $menu.toggle($nav.hasClass('menu_open'));
-        
+
+        $menu.show();
+
         event.stopPropagation();
+
+        return false;
     });
 });

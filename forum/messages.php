@@ -134,6 +134,10 @@ if (($posts_per_page = session::get_value('POSTS_PER_PAGE'))) {
     $posts_per_page = 20;
 }
 
+if (($high_interest = session::get_value('MARK_AS_OF_INT')) === false) {
+    $high_interest = "N";
+}
+
 // Check the thread exists.
 if (!$thread_data = thread_get($tid, session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
     html_draw_error(gettext("The requested thread could not be found or access was denied."));
@@ -295,7 +299,7 @@ echo "<form accept-charset=\"utf-8\" name=\"quick_reply_form\" action=\"post.php
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('t_tid', htmlentities_array($tid)), "\n";
 echo "  ", form_input_hidden('t_rpid', '0'), "\n";
-
+echo "  ", form_input_hidden('t_post_interest', $high_interest), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

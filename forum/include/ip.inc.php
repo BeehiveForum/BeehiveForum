@@ -34,13 +34,22 @@ function get_ip_address()
     if (isset($_SERVER['REMOTE_ADDR']) && filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) {
         return $_SERVER['REMOTE_ADDR'];
     }
-    
+
     return false;
 }
 
 function check_ip_address($ip)
 {
     return filter_var($ip, FILTER_VALIDATE_IP);
+}
+
+function ipv6_to_ipv4($ipv6)
+{
+    if (preg_match('/^::ffff:(((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4})$/i', $ipv6, $matches_array)) {
+        return $matches_array[1];
+    }
+
+    return $ipv6;
 }
 
 ?>

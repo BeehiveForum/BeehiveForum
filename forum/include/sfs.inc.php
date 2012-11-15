@@ -45,7 +45,7 @@ function sfs_check_banned($user_data, &$cached_response = false)
     );
 
     if (isset($user_data['IPADDRESS']) && strlen(trim($user_data['IPADDRESS'])) > 0) {
-        $request['ip'] = $user_data['IPADDRESS'];
+        $request['ip'] = ipv6_to_ipv4($user_data['IPADDRESS']);
     }
 
     if (!isset($user_data['UID']) || ($user_data['UID'] > 0)) {

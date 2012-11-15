@@ -153,7 +153,15 @@ function ban_check($user_data, $send_error = true)
         if (($user_banned = sfs_check_banned($user_data, $cached_response))) {
 
             if ($cached_response === false) {
-                admin_add_log_entry(BAN_HIT_TYPE_SFS, $user_data);
+
+                $log_data = array(
+                    $user_data['IPADDRESS'],
+                    $user_data['LOGON'],
+                    $user_data['EMAIL'],
+                    $user_data['UID']
+                );
+
+                admin_add_log_entry(BAN_HIT_TYPE_SFS, $log_data);
             }
         }
     }

@@ -46,19 +46,19 @@ if (!($forum_prefix_array = install_get_table_data())) {
 }
 
 foreach ($forum_prefix_array as $forum_fid => $table_data) {
-    
+
     if (!install_check_column_type($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_ADMIN_LOG", "ENTRY", "longblob")) {
-        
+
         $sql = "ALTER TABLE `{$table_data['PREFIX']}ADMIN_LOG` CHANGE `ENTRY` `ENTRY` LONGBLOB NULL";
-        
+
         if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
-        }        
-    
+        }
+
         $sql = "SELECT ID, ENTRY FROM `{$table_data['PREFIX']}ADMIN_LOG`";
-        
+
         if (!$result = $db->query($sql)) {
 
             $valid = false;
@@ -66,22 +66,22 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         }
 
         while ($admin_log_data = $result->fetch_assoc()) {
-            
+
             $admin_log_data['ENTRY'] = explode("\x00", $admin_log_data['ENTRY']);
             $admin_log_data['ENTRY'] = base64_encode(serialize($admin_log_data['ENTRY']));
-            
+
             $sql = "UPDATE `{$table_data['PREFIX']}ADMIN_LOG` ";
             $sql.= "SET ENTRY = '{$admin_log_data['ENTRY']}' ";
             $sql.= "WHERE ID = '{$admin_log_data['ID']}'";
-            
+
             if (!$db->query($sql)) {
 
                 $valid = false;
                 return;
-            }        
+            }
         }
     }
-    
+
     $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` CHANGE `IPADDRESS` `IPADDRESS` VARCHAR(255) NOT NULL";
 
     if (!$result = $db->query($sql)) {
@@ -89,46 +89,46 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $valid = false;
         return;
     }
-    
+
     if (!install_table_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_POST_SEARCH_ID")) {
-        
+
         $sql = "CREATE TABLE `{$table_data['PREFIX']}POST_SEARCH_ID` (";
         $sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  INDEXED DATETIME DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (SID,TID,PID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";        
-        
-        if (!$result = $db->query($sql)) {
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-            $valid = false;
-            return;
-        }        
-    }
-        
-    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_FOLDER", "PERM")) {
-        
-        $sql = "ALTER TABLE `{$table_data['PREFIX']}FOLDER` ADD COLUMN `PERM` INT(32) UNSIGNED DEFAULT NULL";
-        
-        if (!$result = $db->query($sql)) {
-
-            $valid = false;
-            return;
-        }        
-    
-        $sql = "INSERT INTO `{$table_data['PREFIX']}FOLDER` (FID, PERM) SELECT FOLDER.FID, ";
-        $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
-        $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
-        $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.GID = 0) GROUP BY FOLDER.FID ";
-        $sql.= "ON DUPLICATE KEY UPDATE PERM = VALUES(PERM)";
-        
         if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
         }
-          
+    }
+
+    if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_FOLDER", "PERM")) {
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}FOLDER` ADD COLUMN `PERM` INT(32) UNSIGNED DEFAULT NULL";
+
+        if (!$result = $db->query($sql)) {
+
+            $valid = false;
+            return;
+        }
+
+        $sql = "INSERT INTO `{$table_data['PREFIX']}FOLDER` (FID, PERM) SELECT FOLDER.FID, ";
+        $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM FROM `{$table_data['PREFIX']}FOLDER` FOLDER ";
+        $sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.FID = FOLDER.FID ";
+        $sql.= "AND GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.GID = 0) GROUP BY FOLDER.FID ";
+        $sql.= "ON DUPLICATE KEY UPDATE PERM = VALUES(PERM)";
+
+        if (!$result = $db->query($sql)) {
+
+            $valid = false;
+            return;
+        }
+
         $sql = "DELETE FROM GROUP_PERMS WHERE GROUP_PERMS.FORUM = '$forum_fid' ";
         $sql.= "AND GROUP_PERMS.GID = 0 ";
 
@@ -336,7 +336,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_POST", "SEARCH_ID")) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` DROP COLUMN SEARCH_ID";
-        
+
         if (!$result = $db->query($sql)) {
 
             $valid = false;
@@ -351,49 +351,49 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $valid = false;
         return;
     }
-    
+
     if (!install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_LINKS", 'APPROVED')) {
-    
+
         $sql = "ALTER TABLE `{$table_data['PREFIX']}LINKS` ADD COLUMN `APPROVED` DATETIME NULL AFTER CREATED";
-        
+
         if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
         }
-    
+
         $sql = "ALTER TABLE `{$table_data['PREFIX']}LINKS` ADD COLUMN `APPROVED_BY` MEDIUMINT(8) NULL AFTER `APPROVED`";
-        
+
         if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
         }
-        
+
         $approved_datetime = date(MYSQL_DATETIME, time());
-        
+
         $sql = "UPDATE `{$table_data['PREFIX']}LINKS` SET APPROVED = '$approved_datetime', APPROVED_BY = UID";
-        
+
         if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
-        }        
+        }
     }
 
     if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", 'DOB_DISPLAY')) {
-        
+
         $sql = "UPDATE USER_PREFS INNER JOIN `{$table_data['PREFIX']}USER_PREFS` ";
         $sql.= "ON (`{$table_data['PREFIX']}USER_PREFS`.UID = USER_PREFS.UID) ";
         $sql.= "SET USER_PREFS.DOB_DISPLAY = `{$table_data['PREFIX']}USER_PREFS`.DOB_DISPLAY ";
         $sql.= "WHERE `{$table_data['PREFIX']}USER_PREFS`.DOB_DISPLAY < 3 ";
         $sql.= "AND USER_PREFS.DOB_DISPLAY > `{$table_data['PREFIX']}USER_PREFS`.DOB_DISPLAY";
-        
+
         if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
-        }           
+        }
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN DOB_DISPLAY";
 
@@ -405,17 +405,17 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     }
 
     if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", 'ANON_LOGON')) {
-        
+
         $sql = "UPDATE USER_PREFS INNER JOIN `{$table_data['PREFIX']}USER_PREFS` ";
         $sql.= "ON (`{$table_data['PREFIX']}USER_PREFS`.UID = USER_PREFS.UID) ";
         $sql.= "SET USER_PREFS.ANON_LOGON = `{$table_data['PREFIX']}USER_PREFS`.ANON_LOGON ";
         $sql.= "WHERE `{$table_data['PREFIX']}USER_PREFS`.ANON_LOGON = 'Y'";
-        
+
         if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
-        }          
+        }
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN ANON_LOGON";
 
@@ -425,19 +425,19 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
             return;
         }
     }
-        
+
     if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", 'ALLOW_EMAIL')) {
-        
+
         $sql = "UPDATE USER_PREFS INNER JOIN `{$table_data['PREFIX']}USER_PREFS` ";
         $sql.= "ON (`{$table_data['PREFIX']}USER_PREFS`.UID = USER_PREFS.UID) ";
         $sql.= "SET USER_PREFS.ALLOW_EMAIL = `{$table_data['PREFIX']}USER_PREFS`.ALLOW_EMAIL ";
         $sql.= "WHERE `{$table_data['PREFIX']}USER_PREFS`.ALLOW_EMAIL = 'N'";
-        
+
         if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
-        }          
+        }
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN ALLOW_EMAIL";
 
@@ -447,19 +447,19 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
             return;
         }
     }
-        
+
     if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", 'USE_EMAIL_ADDR')) {
-        
+
         $sql = "UPDATE USER_PREFS INNER JOIN `{$table_data['PREFIX']}USER_PREFS` ";
         $sql.= "ON (`{$table_data['PREFIX']}USER_PREFS`.UID = USER_PREFS.UID) ";
         $sql.= "SET USER_PREFS.USE_EMAIL_ADDR = `{$table_data['PREFIX']}USER_PREFS`.USE_EMAIL_ADDR ";
         $sql.= "WHERE `{$table_data['PREFIX']}USER_PREFS`.USE_EMAIL_ADDR = 'N' ";
-        
+
         if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
-        }        
+        }
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN USE_EMAIL_ADDR";
 
@@ -469,19 +469,19 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
             return;
         }
     }
-        
+
     if (install_column_exists($table_data['DATABASE_NAME'], "{$table_data['WEBTAG']}_USER_PREFS", 'ALLOW_PM')) {
 
         $sql = "UPDATE USER_PREFS INNER JOIN `{$table_data['PREFIX']}USER_PREFS` ";
         $sql.= "ON (`{$table_data['PREFIX']}USER_PREFS`.UID = USER_PREFS.UID) ";
         $sql.= "SET USER_PREFS.ALLOW_PM = `{$table_data['PREFIX']}USER_PREFS`.ALLOW_PM ";
         $sql.= "WHERE `{$table_data['PREFIX']}USER_PREFS`.ALLOW_PM = 'N'";
-        
+
         if (!$result = $db->query($sql)) {
 
             $valid = false;
             return;
-        }         
+        }
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` DROP COLUMN ALLOW_PM";
 
@@ -758,7 +758,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     $sql.= "AVATAR_URL = IF (LENGTH(TRIM(BOTH FROM AVATAR_URL)) > 0, AVATAR_URL, NULL), ";
     $sql.= "AVATAR_AID = IF (LENGTH(TRIM(BOTH FROM AVATAR_AID)) > 0, AVATAR_AID, NULL), ";
     $sql.= "REPLY_QUICK = IF (LENGTH(TRIM(BOTH FROM REPLY_QUICK)) > 0, REPLY_QUICK, NULL), ";
-    $sql.= "THREADS_BY_FOLDER = IF (LENGTH(TRIM(BOTH FROM THREADS_BY_FOLDER)) > 0, THREADS_BY_FOLDER, NULL), "; 
+    $sql.= "THREADS_BY_FOLDER = IF (LENGTH(TRIM(BOTH FROM THREADS_BY_FOLDER)) > 0, THREADS_BY_FOLDER, NULL), ";
     $sql.= "THREAD_LAST_PAGE = IF (LENGTH(TRIM(BOTH FROM THREAD_LAST_PAGE)) > 0, THREAD_LAST_PAGE, NULL), ";
     $sql.= "LEFT_FRAME_WIDTH = IF (LENGTH(TRIM(BOTH FROM LEFT_FRAME_WIDTH)) > 0, LEFT_FRAME_WIDTH, NULL),  ";
     $sql.= "SHOW_AVATARS = IF (LENGTH(TRIM(BOTH FROM SHOW_AVATARS)) > 0, SHOW_AVATARS, NULL), ";
@@ -777,7 +777,7 @@ if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
-}    
+}
 
 $sql = "CREATE TABLE SFS_CACHE (";
 $sql.= "  REQUEST_MD5 varchar(32) NOT NULL, ";
@@ -792,9 +792,9 @@ if (!$result = $db->query($sql)) {
 
     $valid = false;
     return;
-}    
+}
 
-if (!install_table_exists($database, "USER_TOKEN")) {
+if (!install_table_exists($config['db_database'], "USER_TOKEN")) {
 
     $sql = "ALTER TABLE USER CHANGE PASSWD PASSWD VARCHAR(255)";
 
@@ -826,10 +826,10 @@ if (!install_table_exists($database, "USER_TOKEN")) {
     }
 }
 
-if (!install_column_exists($database, "VISITOR_LOG", "USER_AGENT")) {
-    
+if (!install_column_exists($config['db_database'], "VISITOR_LOG", "USER_AGENT")) {
+
     $sql = "ALTER TABLE VISITOR_LOG ADD COLUMN USER_AGENT VARCHAR(255) DEFAULT NULL";
-    
+
     if (!$result = $db->query($sql)) {
 
         $valid = false;
@@ -837,7 +837,7 @@ if (!install_column_exists($database, "VISITOR_LOG", "USER_AGENT")) {
     }
 }
 
-if (!install_column_exists($database, "USER_PREFS", "SHOW_SHARE_LINKS")) {
+if (!install_column_exists($config['db_database'], "USER_PREFS", "SHOW_SHARE_LINKS")) {
 
     $sql = "ALTER TABLE USER_PREFS ADD SHOW_SHARE_LINKS CHAR(1) NOT NULL DEFAULT 'Y'";
 
@@ -848,7 +848,7 @@ if (!install_column_exists($database, "USER_PREFS", "SHOW_SHARE_LINKS")) {
     }
 }
 
-if (!install_column_exists($database, "USER_PREFS", 'LEFT_FRAME_WIDTH')) {
+if (!install_column_exists($config['db_database'], "USER_PREFS", 'LEFT_FRAME_WIDTH')) {
 
     $sql = "ALTER TABLE USER_PREFS ADD COLUMN LEFT_FRAME_WIDTH SMALLINT(4) DEFAULT '280' NOT NULL AFTER THREAD_LAST_PAGE";
 
@@ -992,6 +992,7 @@ $sql.= "  ID VARCHAR(40) NOT NULL,";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL,";
 $sql.= "  DATA LONGBLOB NOT NULL,";
+$sql.= "  MD5 VARCHAR(32) NOT NULL,";
 $sql.= "  TIME DATETIME NOT NULL,";
 $sql.= "  IPADDRESS VARCHAR(255) DEFAULT NULL,";
 $sql.= "  REFERER VARCHAR(255) DEFAULT NULL,";

@@ -21,21 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-date_default_timezone_set('UTC');
+// Include path
+define('BH_INCLUDE_PATH', 'forum/include/');
 
-define("BH_INCLUDE_PATH", "./forum/include/");
-
-define("BEEHIVEMODE_LIGHT", true);
-
-require_once BH_INCLUDE_PATH. 'config.inc.php';
-
-if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
-}
-
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-
-require_once BH_INCLUDE_PATH. 'db.inc.php';
+ // Bootstrap
+require_once 'forum/boot.php';
 
 function get_git_log_data($date)
 {
@@ -155,7 +145,7 @@ function git_mysql_output_log($log_filename = null)
 
                     if ($line == 0) {
 
-                        sprintf(
+                        printf(
                             '- %s: ',
                             $git_log_entry_matches[2]
                         );

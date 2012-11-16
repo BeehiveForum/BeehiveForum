@@ -1,17 +1,34 @@
 # Beehive Forum Release Notes
 
+## What's new in 1.3.0 (Released 16th November 2012)
+
+- Changes from 1.2.0
+
+    - Removed non-wysiwyg HTML toolbar and TinyMCE and
+      replaced with CKEditor.
+    - Fixed many XSS flaws.
+    - Fixed Admin Stats display not working correctly.
+    - Fixed StopForumSpam not working correctly with
+      IPv4 addresses encoded as IPv6.
+    - Changed to GNU gettext for translations.
+    - Changed Sphinxsearch integration. Please see
+      docs in sphinx directory for more information.
+
+    For more detail please see changelog.
+
+
 ## What's new in 1.2.0 (Released 16th April 2012)
 
 - Changes from 1.1.0
 
     - We got the beehiveforum.net domain back. Hooray!
-    - Added IPv6 support.  
+    - Added IPv6 support.
     - Fixed merging and splitting threads created empty
       target threads and left the source threads
       locked.
     - Some PHP 5.4.0 fixes.
     - Experimental StopForumSpam integration.
-    - Fixed editing posts would strip some HTML in 
+    - Fixed editing posts would strip some HTML in
       signature even if HTML was enabled.
     - Word Filter wasn't being applied to HTML meta
       keywords, description and title.
@@ -270,7 +287,7 @@
     - Fixed: Text stuck to border on admin\_folders.php and
              admin\_folder\_add.php
     - Fixed: sprintf() error in admin\_rss\_feeds.php
-    - Fixed: install\_remove\_table\_keys() wasn't working correctly. 
+    - Fixed: install\_remove\_table\_keys() wasn't working correctly.
              It would bail out when it encountered a primary
              key and not remove any keys after that in the list
     - Fixed: upgrade-06x-to-07.php now works on all 0.6.x
@@ -333,12 +350,12 @@
              folders the user didn't have access to.
     - Fixed: Clicking the "eye" in messages to mark a thread as
              unread wasn't working, Had been broken with previous
-             update to message\_update\_read / message\_set\_read 
+             update to message\_update\_read / message\_set\_read
              functions
     - Fixed: Removed if (IE) checks from post.js and made better
              checks against available JS functions.
     - Fixed: Made addOverflow function in post.js set the
-             overflowX and overflowY separately for IE so as to not 
+             overflowX and overflowY separately for IE so as to not
              add a vertical scrollbar.
     - Fixed: Possible to edit someone elses signature without
              being an Admin by saving the form locally and editing.
@@ -446,7 +463,7 @@
     - Fixed: Patch to thumbnails in PM export was incorrectly
              using ?thumb=1
     - Fixed: USER\_TRACK table turned into a per-forum table to
-             fix post count and post and search frequency 
+             fix post count and post and search frequency
              restrictions across multiple forums.
     - Fixed: Possible for user's to discover nicknames assigned
              to them by another user by means of a PM with a quoted
@@ -589,7 +606,7 @@
     - Fixed: Threads not modified since the cut-off were
              sometimes showing as unread in All Discussions.
     - Fixed: Thread with no LAST\_READ data now automatically
-             mark as read posts older than the cut-off so you don't 
+             mark as read posts older than the cut-off so you don't
              end up re-reading old posts.
     - Fixed: If statement error in threads\_process\_list()
     - Fixed: Thread list mode drop down wasn't returning the
@@ -708,7 +725,7 @@
              html files (1 for each message) and includes your
              attachments and your user style. No emoticons because it
              wouldn't make sense to include all the files! Coming soon
-             some options in My Controls to specify what gets 
+             some options in My Controls to specify what gets
              exported.
     - Added: Thread type drop down list added to top of
              search.php for display when no results found.
@@ -868,8 +885,8 @@
     - Changed: Updated Installer to add the relevant new PM
                exporting columns to USER\_PREFS (global) table.
     - Changed: Removed redudant final\_uri code from light mode
-               as it doesn't do anything at the moment. Will work 
-               out a better way to handle it some time, but for now 
+               as it doesn't do anything at the moment. Will work
+               out a better way to handle it some time, but for now
                the frame set and the &lt;noframes&gt; tags and the whole
                redirecting causes too many headaches.
     - Changed: Removed lforums.php from robots.txt so that
@@ -878,7 +895,7 @@
     - Changed: Less Resource Intensive way of updating
                THREAD\_STATS table UNREAD\_PID, UNREAD\_CREATED columns.
     - Changed: Lack of LAST\_READ data is now calculated as
-               threads are viewed and as the USER\_THREAD data is 
+               threads are viewed and as the USER\_THREAD data is
                pruned rather than working it out on the fly with a
                join against the POST table.
     - Changed: Updated en-us and x-hacker language files.
@@ -959,7 +976,7 @@
                on the primary key to make queries faster.
     - Changed: Probability code for update\_stats(),
                thread\_auto\_prune\_unread\_data(),
-               bh\_remove\_stale\_sessions() and 
+               bh\_remove\_stale\_sessions() and
                pm\_system\_prune\_folders()
                now used mt\_rand() rather than time() which means the
                functions are less likely to fire when two users load a
@@ -1041,20 +1058,20 @@
 - Changes from 0.6.2
 
     - Fixed: html\_draw\_top() and html\_draw\_bottom() are now used for
-             the frames pages (admin.php, discussion.php, index.php, 
-             start.php and user.php) so we correctly add the forum 
+             the frames pages (admin.php, discussion.php, index.php,
+             start.php and user.php) so we correctly add the forum
              description and RSS feed links rather than the generic
              Beehive ones.
-    - Fixed: Second attempt at fixing the error when updating your 
+    - Fixed: Second attempt at fixing the error when updating your
              user prefs. Not even sure that the first patch didn't fix
              it to be honest.
     - Fixed: Added some code to disable register\_globals to prevent an
              exploit involving passing values in the URL
-    - Fixed: Links pages weren't filtering the input correctly and 
+    - Fixed: Links pages weren't filtering the input correctly and
              were allowing HTML to be posted.
     - Fixed: potential exploit made available though page url var in
              admin.php
-    - Fixed: Prevented the use of a hyphen in the forum webtag 
+    - Fixed: Prevented the use of a hyphen in the forum webtag
              because it breaks things.
     - Fixed: Not being able to access restricted forum when access is
              applied correctly to user account.
@@ -1885,7 +1902,7 @@
       Admins can prevent this functionality by 'edit locking' the
       thread to prevent it from being changed.
     - Users can access 'Thread Options' by clicking the icon to
-      the left of every thread title in the thread list frame. 
+      the left of every thread title in the thread list frame.
       From here a thread can be ignored without ever reading it.
     - Posts can now be marked as unread, for later reading.
     - New 'Reply as PM' link on every post will quickly create a new PM

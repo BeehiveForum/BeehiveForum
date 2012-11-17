@@ -99,7 +99,7 @@ function git_mysql_output_log($log_filename = null)
     if (!$db = db::get()) return false;
 
     $sql = "SELECT UNIX_TIMESTAMP(DATE) AS DATE, AUTHOR, COMMENTS ";
-    $sql.= "FROM BEEHIVE_GIT_LOG GROUP BY DATE ORDER BY DATE DESC";
+    $sql.= "FROM BEEHIVE_GIT_LOG ORDER BY DATE DESC";
 
     if (!$result = $db->query($sql)) return false;
 
@@ -109,29 +109,11 @@ function git_mysql_output_log($log_filename = null)
         exit;
     }
 
-    $git_log_entry_author = '';
-    $git_log_entry_date = '';
-
-    ob_start();
-
-    printf(
-        "# Beehive Forum Change Log (Generated: %s)\n\n",
-        gmdate('D, d M Y H:i:s')
-    );
+    $git_log_comments_array = array();
 
     while (($git_log_entry_array = $result->fetch_assoc())) {
 
         if (preg_match_all('/^((Fixed|Changed|Added):)\s*(.+)/im', $git_log_entry_array['COMMENTS'], $git_log_entry_matches_array, PREG_SET_ORDER) > 0) {
-
-            if ($git_log_entry_date != $git_log_entry_array['DATE']) {
-
-                $git_log_entry_date = $git_log_entry_array['DATE'];
-
-                printf(
-                    "## Date: %s\n\n",
-                    gmdate('D, d M Y', $git_log_entry_date)
-                );
-            }
 
             foreach ($git_log_entry_matches_array as $git_log_entry_matches) {
 
@@ -145,22 +127,46 @@ function git_mysql_output_log($log_filename = null)
 
                     if ($line == 0) {
 
-                        printf(
-                            '- %s: ',
-                            $git_log_entry_matches[2]
+                        $git_log_comments_array[$git_log_entry_array['DATE']][] = sprintf(
+                            "- %s: %s",
+                            $git_log_entry_matches[2],
+                            $git_log_comment_line
                         );
 
                     } else {
 
-                        echo str_repeat(' ', strlen($git_log_entry_matches[2]) + 4);
+                        $git_log_comments_array[$git_log_entry_array['DATE']][] = sprintf(
+                            "%s %s",
+                            str_repeat(
+                                ' ',
+                                strlen($git_log_entry_matches[2]) + 3
+                            ),
+                            $git_log_comment_line
+                        );
                     }
-
-                    echo $git_log_comment_line, "\n";
                 }
             }
-
-            echo "\n";
         }
+    }
+
+    ob_start();
+
+    printf(
+        "# Beehive Forum Change Log (Generated: %s)\n\n",
+        gmdate('D, d M Y H:i:s')
+    );
+
+    foreach ($git_log_comments_array as $git_log_entry_date => $git_log_comments) {
+
+        printf(
+            "## Date: %s\n\n",
+            gmdate('D, d M Y', $git_log_entry_date)
+        );
+
+        printf(
+            "%s\n\n",
+            implode("\n", $git_log_comments)
+        );
     }
 
     if (isset($log_filename)) {

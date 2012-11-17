@@ -1,6 +1,6 @@
 # Beehive Forum Release Notes
 
-## What's new in 1.3.0 (Released 16th November 2012)
+## What's new in 1.3.0 (Released 18th November 2012)
 
 - Changes from 1.2.0
 

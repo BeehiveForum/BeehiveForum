@@ -32,7 +32,7 @@ in release.txt.
         4. The top frame
         5. Emoticons
         6. GeSHi
-        7. TinyMCE
+        7. WYSIWYG Editor
     4. Upgrading from previous versions of Beehive Forum
         1. Upgrading your Beehive Forum installation
             1. Make a back up of your database
@@ -119,6 +119,9 @@ looks a bit like this:
         |  |- attachments
         |  |  |- ...
         |  |
+        |  |- ckeditor
+        |  |  |- ...
+        |  |  |
         |  |- emoticons
         |  |  |- default
         |  |  |  |- images
@@ -162,16 +165,6 @@ looks a bit like this:
         |  |  |  |
         |  |  |  |- style.css
         |  |  |  |- top.html
-        |  |
-        |  |- tiny\_mce
-        |  |  |- plugins
-        |  |  |  |- beehive
-        |  |  |  |  |- images
-        |  |  |  |  |  |- code.gif
-        |  |  |  |  |  |- noemots.gif
-        |  |  |  |  |  |- ...
-        |  |  |  |  |-langs
-        |  |  |  |  |  |- en.js
 
 As you can see the main distribution contains a docs and forum
 folder. The main forum folder, which actually contains the
@@ -452,24 +445,20 @@ To change any GeSHi settings edit the file include/geshi.inc.php.
 Note: GeSHi is not created nor supported by the Beehive Forum
 developers.
 
-##### 1.3.7 TinyMCE
+##### 1.3.7 WYSIWYG Editor
 
-Beehive Forum has a simple HTML toolbar built in, but also allows
-the use of the open-source WYSIWYG TinyMCE version 3.5.5 or later
-by Moxiecode Systems. You can downloaded TinyMCE from
-<http://tinymce.moxiecode.com/>
+Since release 1.3.0, Beehive Forum uses CKEditor to provide it's
+HTML WYSIWYG editor. This replaces the built-in HTML editor and
+TinyMCE that was used in older releases.
 
-To install TinyMCE in to your Beehive Forum simply copy everything
-from the tinymce/jscripts/tiny\_mce directory into a subdirectory
-named 'tiny\_mce' in your main forum folder.
+CKEditor version 3.6.4 is included with Beehive Forum 1.3.0. You
+DO NOT need to download and install any additional software for
+it to work.
 
-There is a Beehive Forum plugin for TinyMCE which should have
-already been in your forum's tiny\_mce directory, under the
-subdirectory plugins/beehive. If this is not the case copy the
-directory tiny\_mce/plugins/beehive from a fresh download of
-Beehive Forum to your forum.
-
-Note: TinyMCE is not created by the Beehive Forum developers.
+Note: Neither CKEditor nor TinyMCE are created by the Beehive
+Forum developers. Although we will provide support while integrating
+and using the software with your Beehive Forum, please note that
+we are unable to fix bugs or help with the software generally.
 
 #### 1.4 Upgrading from previous versions of Beehive Forum
 

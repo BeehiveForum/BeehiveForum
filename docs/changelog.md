@@ -1,7 +1,16 @@
-# Beehive Forum Change Log (Generated: Sat, 17 Nov 2012 13:12:54)
+# Beehive Forum Change Log (Generated: Sun, 18 Nov 2012 11:55:40)
+
+## Date: Sun, 18 Nov 2012
+
+- Changed: Page titles on ledit.php and ldelete.php were clumsly
+           generated.
+- Changed: Complete English British language pack.
+- Changed: User's local time display in User Profile is now formatted
+           using strftime.
 
 ## Date: Sat, 17 Nov 2012
 
+- Changed: Updated documentation for 1.3.0 release.
 - Fixed: bh\_git\_log\_parse.php not including all log entries.
 
 ## Date: Fri, 16 Nov 2012
@@ -913,8 +922,4 @@
 - Fixed: Text Captcha was case-sensitive and would only use files with
          lowercase ttf extension.
 - Changed: Sphinx integration is now handled via Sphinx's own indexer.
-
-## Date: Mon, 16 Apr 2012
-
-- Changed: Updated release date for 1.2.0
 

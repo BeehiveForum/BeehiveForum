@@ -319,7 +319,7 @@ echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo form_input_hidden("msg", htmlentities_array($msg));
 
 echo "<div class=\"post\">\n";
-echo sprintf("<h3>%s %s</h3>", gettext("Edit message"), $msg);
+echo "<h3>", $page_title, "</h3>\n";
 echo "<div class=\"post_inner\">\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {

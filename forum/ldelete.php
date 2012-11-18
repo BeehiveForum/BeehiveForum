@@ -182,9 +182,11 @@ if (isset($_POST['delete'])) {
     }
 }
 
-light_html_draw_top(sprintf('title=%s %s.%s', gettext("Delete Message"), $tid, $pid), "robots=noindex,nofollow");
+$page_title = sprintf(gettext("Delete message %s"), $msg);
 
-echo "<h3>", gettext("Delete Message"), " {$tid}.{$pid}</h3>\n";
+light_html_draw_top("title=$page_title");
+
+echo "<h3>", $page_title, "</h3>\n";
 
 if ($preview_message['TO_UID'] == 0) {
 

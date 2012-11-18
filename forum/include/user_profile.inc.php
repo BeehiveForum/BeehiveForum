@@ -87,7 +87,7 @@ function user_get_profile($uid)
     $user_groups_array = array();
 
     $user_prefs = user_get_prefs($uid);
-    
+
     $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
 
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
@@ -274,11 +274,7 @@ function user_format_local_time(&$user_prefs_array)
         $local_time = time() + ($gmt_offset * HOUR_IN_SECONDS);
     }
 
-    $date_string = gmdate("i G j M Y", $local_time);
-
-    list($min, $hour, $day, $month, $year) = explode(" ", $date_string);
-
-    return sprintf(gettext("%s %s %s %s:%s"), $day, $month, $year, $hour, $min); // j M Y H:i
+    return strftime('%#d %b %Y %H:%M', $local_time);
 }
 
 function user_get_profile_entries($uid)
@@ -355,7 +351,7 @@ function user_get_profile_image($uid)
     $user_profile_data = $result->fetch_assoc();
 
     if (!isset($user_profile_data['PIC_URL']) || strlen($user_profile_data['PIC_URL']) == 0) return false;
-    
+
     return $user_profile_data['PIC_URL'];
 }
 

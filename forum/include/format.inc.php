@@ -57,7 +57,7 @@ function format_user_name($logon, $nickname)
     return mb_strtoupper(strip_tags($logon));
 }
 
-function format_file_size($size)
+/*function format_file_size($size)
 {
     if ($size >= 1000000) {
         $resized = round($size / 1048576, 2). " MiB";
@@ -68,6 +68,38 @@ function format_file_size($size)
     }
 
     return $resized;
+}*/
+
+function format_file_name($filename)
+{
+    if (strlen($filename) > 33) {
+        return substr($filename, 0, 19). '...'. substr($filename, -13);
+    }
+
+    return $filename;
+}
+
+function format_file_size($size)
+{
+    $b = -1;
+
+    $units = array(
+        "kB",
+        "MB",
+        "GB",
+        "TB",
+        "PB",
+        "EB"
+    );
+
+    do {
+
+        $size = $size / 1024;
+        $b++;
+
+    } while ($size > 99);
+
+    return round(max($size, 0.1), 1). $units[$b];
 }
 
 function format_version_number($version, $glue = '.')
@@ -646,7 +678,7 @@ function strip_paragraphs($string)
     );
 
     return implode(
-		"\n", 
+		"\n",
 		array_map('trim', explode("\n", $string))
 	);
 }

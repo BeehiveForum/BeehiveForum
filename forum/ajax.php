@@ -106,6 +106,38 @@ switch ($_GET['action']) {
 
         break;
 
+    case 'attachment_toggle':
+
+        if (!session::logged_in()) break;
+
+        cache_disable();
+
+        $page_prefs = session::get_post_page_prefs();
+
+        if (!isset($_GET['display']) || !in_array($_GET['display'], array('true', 'false'))) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
+        if ($_GET['display'] === 'true') {
+            $page_prefs = (double)$page_prefs | POST_ATTACHMENT_DISPLAY;
+        } else {
+            $page_prefs = (double)$page_prefs ^ ($page_prefs & POST_ATTACHMENT_DISPLAY);
+        }
+
+        $user_prefs = array(
+            'POST_PAGE' => $page_prefs
+        );
+
+        if (!user_update_prefs($uid, $user_prefs)) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
+        break;
+
     case 'emots_toggle':
 
         if (!session::logged_in()) break;

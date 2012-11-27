@@ -811,6 +811,7 @@ function html_draw_top()
     html_include_javascript(html_get_forum_file_path("ckeditor/ckeditor.js"));
     html_include_javascript(html_get_forum_file_path('js/jquery-1.7.1.min.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery-ui-1.8.22.autocomplete.min.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.fineuploader-3.0.min.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.parsequery.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.url.js'));

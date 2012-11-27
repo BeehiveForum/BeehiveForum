@@ -161,6 +161,7 @@ define('POST_SIGNATURE_DISPLAY', 128);
 define('POLL_ADVANCED_DISPLAY', 1024);
 define('POLL_ADDITIONAL_MESSAGE_DISPLAY', 2048);
 define('POLL_EDIT_SOFT_DISPLAY', 4096);
+define('POST_ATTACHMENT_DISPLAY', 8128);
 
 // Constants for post page HTML in message
 define('POST_HTML_DISABLED', 0);

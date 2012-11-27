@@ -221,6 +221,7 @@ abstract class session
         if (!array_key_exists('POST_PAGE', $_SESSION)) {
 
             $_SESSION['POST_PAGE'] = (double)POST_SIGNATURE_DISPLAY
+                | POST_ATTACHMENT_DISPLAY
                 | POLL_ADVANCED_DISPLAY
                 | POLL_ADDITIONAL_MESSAGE_DISPLAY;
         }

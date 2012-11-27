@@ -1642,3 +1642,69 @@ div.spoiler_reveal * {
     border-top-width: 0px;
     text-decoration: none;
 }
+
+#attachments ul {
+    list-style: none;
+    margin: 5px 0 15px;
+    padding: 0;
+}
+
+#attachments ul li {
+    margin: 6px 0;
+}
+
+#attachments ul li + li {
+    margin-top: 0;
+}
+
+#attachments ul li label span {
+    margin-right: 5px;
+}
+
+#attachments ul li span.filename {
+    display:inline-block;
+    padding-left: 20px;
+}
+
+#attachments ul li.complete span.filename {
+    background: transparent url('images/attach.png') no-repeat 0 50%;
+}
+
+#attachments ul li.error span.filename {
+    background: transparent url('images/error.png') no-repeat 0 50%;
+}
+
+#attachments ul li.uploading span.filename {
+    background: transparent url('images/loading.gif') no-repeat 0 50%;
+}
+
+#attachments ul li button {
+    float: right;
+}
+
+#attachments ul li.file span.cancel,
+#attachments ul li.file span.retry {
+    display: inline-block;
+    height: 16px;
+    text-indent: -9999px;
+    width: 16px;
+}
+
+#attachments ul li.file span.cancel {
+    background: transparent url('images/stop.png') no-repeat 0 50%;
+}
+
+#attachments ul li.file span.retry {
+    background: transparent url('images/reload.png') no-repeat 0 50%;
+}
+
+#attachments ul li.error span.progress,
+#attachments ul li.cancelled span.progress,
+#attachments ul li.complete span.progress,
+#attachments ul li.complete span.cancel,
+#attachments ul li.complete span.retry,
+#attachments ul li.uploading span.delete,
+#attachments ul li.uploading span.retry,
+#attachments ul li.error span.delete {
+    display: none;
+}

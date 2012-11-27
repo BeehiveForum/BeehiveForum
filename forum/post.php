@@ -801,8 +801,78 @@ if (isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && isset($_POST['t_rpi
 
 if (forum_get_setting('attachments_enabled', 'Y') && (session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid) || $new_thread)) {
 
-    echo "<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
-    echo form_input_hidden("aid", htmlentities_array($aid));
+    echo "                          ", form_input_hidden("aid", htmlentities_array($aid)), "\n";
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">\n";
+    echo "                          <table class=\"messagefoot\" width=\"722\" cellspacing=\"0\">\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" class=\"subhead\">", gettext("Attachments"), "</td>\n";
+
+    if (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) {
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'attachment_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+    } else {
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'attachment_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+    }
+
+    echo "                            </tr>\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" colspan=\"2\">\n";
+    echo "                                <div id=\"attachments\" class=\"attachment_toggle\" style=\"display: ", (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) ? "block" : "none", "\">\n";
+    echo "                                  <ul>\n";
+
+    if (attachments_get($uid, $aid, $attachments_array, $image_attachments_array)) {
+
+        if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
+
+            foreach ($attachments_array as $attachment) {
+
+                echo "<li class=\"file complete\" id=\"", $attachment['hash'], "\">\n";
+                echo "  <label for=\"file-", $attachment['hash'], "\">\n";
+                echo "    <input type=\"checkbox\" id=\"file-", $attachment['hash'], "\">\n";
+                echo "    <span class=\"filename\">\n";
+                echo "      <a href=\"get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}&amp;filename=", urlencode($attachment['filename']), "\">", format_file_name($attachment['filename']), "</a>\n";
+                echo "    </span>\n";
+                echo "    <span class=\"filesize\">", format_file_size($attachment['filesize']), "</span>\n";
+                echo "    <span class=\"status\"></span>\n";
+                echo "    <span class=\"progress\"></span>\n";
+                echo "  </label>\n";
+                echo "  <span class=\"retry\" title=\"", gettext('Retry'), "\">", gettext('Retry'), "</span>\n";
+                echo "  <span class=\"cancel\" title=\"", gettext('Cancel'), "\">", gettext('Cancel'), "</span>\n";
+                echo "</li>\n";
+            }
+        }
+
+        if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
+
+            foreach ($image_attachments_array as $attachment) {
+
+                echo "<li class=\"file complete\" id=\"", $attachment['hash'], "\">\n";
+                echo "  <label for=\"file-", $attachment['hash'], "\">\n";
+                echo "    <input type=\"checkbox\" id=\"file-", $attachment['hash'], "\">\n";
+                echo "    <span class=\"filename\">\n";
+                echo "      <a href=\"get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}&amp;filename=", urlencode($attachment['filename']), "\">", format_file_name($attachment['filename']), "</a>\n";
+                echo "    </span>\n";
+                echo "    <span class=\"filesize\">", format_file_size($attachment['filesize']), "</span>\n";
+                echo "    <span class=\"status\"></span>\n";
+                echo "    <span class=\"progress\"></span>\n";
+                echo "  </label>\n";
+                echo "  <span class=\"retry\" title=\"", gettext('Retry'), "\">", gettext('Retry'), "</span>\n";
+                echo "  <span class=\"cancel\" title=\"", gettext('Cancel'), "\">", gettext('Cancel'), "</span>\n";
+                echo "</li>\n";
+            }
+        }
+    }
+
+    echo "                                  </ul>\n";
+    echo "                                </div>\n";
+    echo "                              </td>\n";
+    echo "                            </tr>\n";
+    echo "                          </table>\n";
 }
 
 if ($allow_sig == true) {

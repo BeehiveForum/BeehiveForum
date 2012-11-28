@@ -456,7 +456,7 @@ function html_include_javascript($script_filepath)
         $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
     }
 
-    $script_filepath = "{$path_parts['dirname']}/{$path_parts['basename']}";
+    $script_filepath = rtrim($path_parts['dirname'], '/'). '/'. $path_parts['basename'];
 
     $script_filepath.= isset($path_parts['query']) ? "?{$path_parts['query']}" : '';
 
@@ -473,7 +473,7 @@ function html_include_css($script_filepath, $media = 'screen')
         $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
     }
 
-    $script_filepath = "{$path_parts['dirname']}/{$path_parts['basename']}";
+    $script_filepath = rtrim($path_parts['dirname'], '/'). '/'. $path_parts['basename'];
 
     $script_filepath.= isset($path_parts['query']) ? "?{$path_parts['query']}" : '';
 
@@ -1425,7 +1425,7 @@ function html_get_forum_uri($append_path = null)
     $uri_array['path'] = str_replace(DIRECTORY_SEPARATOR, '/', dirname(rtrim($uri_array['path'], '/'). '/a'));
 
     if (strlen(trim($append_path)) > 0) {
-        $uri_array['path'].= '/'. $append_path;
+        $uri_array['path'] = rtrim($uri_array['path'], '/'). '/'. $append_path;
     }
 
     $server_uri = (isset($uri_array['scheme'])) ? "{$uri_array['scheme']}://" : '';
@@ -1457,9 +1457,9 @@ function html_get_forum_file_path($file_path, $allow_cdn = true)
 
         // If CDN is allowed, get the CDN path including the domain.
         if (($allow_cdn === true) && ($cdn_domain = forum_get_content_delivery_path($file_path))) {
-            $final_file_path = sprintf('%s://%s/%s', $http_scheme, trim($cdn_domain, '/'), ltrim($file_path, '/'));
+            $final_file_path = sprintf('%s://%s/%s', $http_scheme, trim($cdn_domain, '/'), $file_path);
         } else {
-            $final_file_path = preg_replace('/^.\//', '', sprintf('%s/%s', $forum_path, ltrim($file_path, '/')));
+            $final_file_path = rtrim($forum_path, '/'). '/'. $file_path;
         }
 
         // Add final file path to the cache.

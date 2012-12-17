@@ -244,7 +244,7 @@ function poll_get_random_users($limit)
     if (!is_numeric($limit)) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
-    
+
     if (!($forum_fid = get_forum_fid())) return false;
 
     if (($uid = session::get_value('UID')) === false) return false;
@@ -374,9 +374,9 @@ function poll_get_votes($tid, $include_votes = true)
     $sql.= "INNER JOIN `{$table_prefix}POLL_QUESTIONS` POLL_QUESTIONS ON (POLL_QUESTIONS.TID = POLL.TID) ";
     $sql.= "INNER JOIN `{$table_prefix}POLL_VOTES` POLL_VOTES ON (POLL_VOTES.TID = POLL.TID AND ";
     $sql.= "POLL_VOTES.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID) LEFT JOIN (SELECT USER_POLL_VOTES.TID, ";
-    $sql.= "USER_POLL_VOTES.QUESTION_ID, USER_POLL_VOTES.OPTION_ID, USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "USER_PEER.PEER_NICKNAME FROM `{$table_prefix}USER_POLL_VOTES` USER_POLL_VOTES ";
-    $sql.= "INNER JOIN USER ON (USER.UID = USER_POLL_VOTES.UID) LEFT JOIN `{$table_prefix}USER_PEER` ";
+    $sql.= "USER_POLL_VOTES.QUESTION_ID, USER_POLL_VOTES.OPTION_ID, COALESCE(USER.UID, 0) AS UID, ";
+    $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME FROM `{$table_prefix}USER_POLL_VOTES` USER_POLL_VOTES ";
+    $sql.= "LEFT JOIN USER ON (USER.UID = USER_POLL_VOTES.UID) LEFT JOIN `{$table_prefix}USER_PEER` ";
     $sql.= "USER_PEER ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') WHERE USER_POLL_VOTES.TID = '$tid') ";
     $sql.= "AS USER_POLL_VOTES ON (USER_POLL_VOTES.TID = POLL.TID AND USER_POLL_VOTES.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID ";
     $sql.= "AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) WHERE POLL.TID = '$tid'";
@@ -1135,7 +1135,7 @@ function poll_table_graph($poll_results, $total_votes)
 function poll_public_ballot_user_callback($user_data)
 {
     $webtag = get_webtag();
-    
+
     if (isset($user_data['UID']) && ($user_data['UID'] > 0)) {
 
         $user_profile_link_html = "<a href=\"user_profile.php?webtag=$webtag&amp;uid=%1\$s\" target=\"_blank\" class=\"popup 650x500\" style=\"white-space: nowrap\">%2\$s</a>";
@@ -1149,7 +1149,7 @@ function poll_public_ballot_user_callback($user_data)
 
         return $user_data;
     }
-    
+
     return gettext("Unknown user");
 }
 
@@ -1301,7 +1301,7 @@ function poll_is_closed($tid)
     if ($result->num_rows == 0) return false;
 
     list($poll_closes) = $result->fetch_row();
-    
+
     return ($poll_closes > 0) && ($poll_closes <= time());
 }
 

@@ -149,8 +149,6 @@ function bh_exception_handler(Exception $exception)
     } else {
 
         echo "<div align=\"center\">\n";
-        echo "<form accept-charset=\"utf-8\" name=\"f_error\" method=\"post\" action=\"\" target=\"_self\">\n";
-        echo "  ", form_input_hidden_array($_POST), "\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
@@ -244,10 +242,11 @@ function bh_exception_handler(Exception $exception)
         echo "  <br />\n";
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
         echo "    <tr>\n";
-        echo "      <td align=\"center\"><input class=\"button\" type=\"submit\" name=\"", md5(uniqid(mt_rand())), "\" value=\"Retry\" /></td>\n";
+        echo "      <td align=\"center\">\n";
+        echo "        <button class=\"button\" type=\"button\" onclick=\"window.location.reload()\">Retry</button>\n";
+        echo "      </td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
-        echo "</form>\n";
         echo "</div>\n";
     }
 

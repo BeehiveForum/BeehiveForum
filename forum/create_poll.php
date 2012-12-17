@@ -273,10 +273,10 @@ if ($allow_html == false) {
     $sig_text = htmlentities_array($sig_text);
 }
 
-if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
-    $aid = $_POST['aid'];
-} else{
-    $aid = md5(uniqid(mt_rand()));
+if (isset($_POST['attachment']) && is_array($_POST['attachment'])) {
+    $attachments = array_filter($_POST['attachment'], 'is_md5');
+} else {
+    $attachments = array();
 }
 
 if (session::check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
@@ -307,9 +307,15 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
         $valid = false;
     }
 
-    if (attachments_get_count($aid) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid)) {
+    if (isset($fid) && sizeof($attachments) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid)) {
 
         $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
+        $valid = false;
+    }
+
+    if (sizeof($attachments) > 0 && !attachments_check_post_space($uid, $attachments)) {
+
+        $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
         $valid = false;
     }
 
@@ -588,7 +594,13 @@ if ($valid && isset($_POST['post'])) {
 
             poll_create($tid, $poll_questions_array, $poll_closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests);
 
-            post_save_attachment_id($tid, $pid, $aid);
+            if (($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+
+                foreach ($attachments_array as $attachment) {
+
+                    post_add_attachment($tid, $pid, $attachment['aid']);
+                }
+            }
 
             if (strlen($message_text) > 0) {
 
@@ -750,8 +762,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $poll_display.= "<p class=\"postbody\" align=\"center\">". gettext("Note: Poll votes are randomly generated for preview only."). "</p>\n";
 
     $poll_data['CONTENT'] = $poll_display;
-
-    $poll_data['AID'] = $aid;
+    $poll_data['ATTACHMENTS'] = $attachments;
 
     echo "                <tr>\n";
     echo "                  <td align=\"center\"><br />\n";
@@ -1134,11 +1145,41 @@ echo "                                          </tr>\n";
 echo "                                          <tr>\n";
 echo "                                            <td align=\"left\">&nbsp;</td>\n";
 echo "                                          </tr>\n";
-echo "                                          <tr>\n";
-echo "                                            <td align=\"left\">\n";
+
+if (forum_get_setting('attachments_enabled', 'Y') && (session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid))) {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">\n";
+    echo "                          <table class=\"messagefoot\" width=\"100%\" cellspacing=\"0\">\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" class=\"subhead\">", gettext("Attachments"), "</td>\n";
+
+    if (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) {
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'attachment_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+    } else {
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'attachment_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+    }
+
+    echo "                            </tr>\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" colspan=\"2\">\n";
+    echo "                                <div class=\"attachments attachment_toggle\" style=\"display: ", (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) ? "block" : "none", "\">\n";
+    echo "                                  ", attachments_form($uid, $attachments, ATTACHMENT_FILTER_UNASSIGNED), "\n";
+    echo "                                </div>\n";
+    echo "                              </td>\n";
+    echo "                            </tr>\n";
+    echo "                          </table>\n";
+}
 
 if ($allow_sig == true) {
 
+    echo "                                            </td>\n";
+    echo "                                          </tr>\n";
+    echo "                                          <tr>\n";
+    echo "                                            <td align=\"left\">&nbsp;</td>\n";
+    echo "                                          </tr>\n";
+    echo "                                          <tr>\n";
+    echo "                                            <td align=\"left\">\n";
     echo "                                              <table class=\"messagefoot\" width=\"100%\" cellspacing=\"0\">\n";
     echo "                                                <tr>\n";
     echo "                                                  <td align=\"left\" class=\"subhead\">", gettext("Signature"), "</td>\n";
@@ -1175,15 +1216,7 @@ echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td align=\"left\">\n";
 echo "                                ", form_submit("post", gettext("Post")), "&nbsp;", form_submit("preview_poll", gettext("Preview")), "&nbsp;", form_submit("preview_form", gettext("Preview Voting Form"));
-
 echo "&nbsp;<a href=\"discussion.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
-
-if (forum_get_setting('attachments_enabled', 'Y')) {
-
-    echo "&nbsp;<a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
-    echo "                                        ", form_input_hidden("aid", htmlentities_array($aid)), "\n";
-}
-
 echo "                              </td>\n";
 echo "                            </tr>\n";
 echo "                          </table>\n";

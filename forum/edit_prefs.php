@@ -282,40 +282,41 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['pic_aid'])) {
 
-        $user_prefs['PIC_AID'] = $_POST['pic_aid'];
         $user_prefs_global['PIC_AID'] = (isset($_POST['pic_url_global'])) ? $_POST['pic_url_global'] == "Y" : true;
 
-        if (strlen(trim($user_prefs['PIC_AID'])) > 0) {
+        if (is_numeric($_POST['pic_aid'])) {
 
-            if (!is_md5($user_prefs['PIC_AID'])) {
+            $user_prefs['PIC_AID'] = $_POST['pic_aid'];
 
-                $error_msg_array[] = gettext("Invalid Attachment. Check that is hasn't been deleted.");
-                $valid = false;
-
-            } else if (isset($user_prefs['PIC_URL']) && strlen(trim($user_prefs['PIC_URL'])) > 0) {
+            if (isset($user_prefs['PIC_URL']) && strlen(trim($user_prefs['PIC_URL'])) > 0) {
 
                 $error_msg_array[] = gettext("To use an attachment for your profile picture the Picture URL field must be blank.");
                 $valid = false;
 
-            } else if (($attachment_dir = attachments_check_dir())) {
+            } else if (!($attachment_dir = attachments_check_dir())) {
 
-                if (!($attachment_details = attachments_get_by_hash($user_prefs['PIC_AID']))) {
+                $error_msg_array[] = gettext("Attachments have been disabled by the forum owner.");
+                $valid = false;
 
-                    $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
-                    $valid = false;
-                }
+            } else if (!($attachment_details = attachments_get_by_aid($user_prefs['PIC_AID'], $uid))) {
+
+                $error_msg_array[] = gettext("Invalid Attachment. Check that is hasn't been deleted.");
+                $valid = false;
+            }
+
+            if ($valid) {
 
                 $path_parts = pathinfo($attachment_details['filename']);
 
                 if (!isset($path_parts['extension']) || !in_array($path_parts['extension'], $allowed_image_types_array)) {
 
-                    $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
+                    $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your profile picture.");
                     $valid = false;
                 }
 
-                if (!($image_info = getimagesize("$attachment_dir/{$user_prefs['PIC_AID']}"))) {
+                if (!($image_info = getimagesize("$attachment_dir/{$attachment_details['hash']}"))) {
 
-                    $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
+                    $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your profile picture.");
                     $valid = false;
                 }
 
@@ -324,12 +325,11 @@ if (isset($_POST['save'])) {
                     $error_msg_array[] = gettext("Selected attachment is too large for profile picture. Maximum dimensions are 95x95px");
                     $valid = false;
                 }
-
-            } else {
-
-                $error_msg_array[] = gettext("Attachments have been disabled by the forum owner.");
-                $valid = false;
             }
+
+        } else {
+
+            $user_prefs['PIC_AID'] = null;
         }
     }
 
@@ -354,54 +354,54 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['avatar_aid'])) {
 
-        $user_prefs['AVATAR_AID'] = $_POST['avatar_aid'];
         $user_prefs_global['AVATAR_AID'] = (isset($_POST['avatar_url_global'])) ? $_POST['avatar_url_global'] == "Y" : true;
 
-        if (strlen(trim($user_prefs['AVATAR_AID'])) > 0) {
+        if (is_numeric($_POST['avatar_aid'])) {
 
-            if (!is_md5($user_prefs['AVATAR_AID'])) {
+            $user_prefs['AVATAR_AID'] = $_POST['avatar_aid'];
+
+            if (isset($user_prefs['AVATAR_URL']) && strlen(trim($user_prefs['AVATAR_URL'])) > 0) {
+
+                $error_msg_array[] = gettext("To use an attachment for your profile picture the Picture URL field must be blank.");
+                $valid = false;
+
+            } else if (!($attachment_dir = attachments_check_dir())) {
+
+                $error_msg_array[] = gettext("Attachments have been disabled by the forum owner.");
+                $valid = false;
+
+            } else if (!($attachment_details = attachments_get_by_aid($user_prefs['AVATAR_AID'], $uid))) {
 
                 $error_msg_array[] = gettext("Invalid Attachment. Check that is hasn't been deleted.");
                 $valid = false;
+            }
 
-            } else if (isset($user_prefs['AVATAR_URL']) && strlen(trim($user_prefs['AVATAR_URL'])) > 0) {
-
-                $error_msg_array[] = gettext("To use an attachment for your avatar picture the Avatar URL field must be blank.");
-                $valid = false;
-
-            } else if (($attachment_dir = attachments_check_dir())) {
-
-                if (!($attachment_details = attachments_get_by_hash($user_prefs['AVATAR_AID']))) {
-
-                    $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
-                    $valid = false;
-                }
+            if ($valid) {
 
                 $path_parts = pathinfo($attachment_details['filename']);
 
                 if (!isset($path_parts['extension']) || !in_array($path_parts['extension'], $allowed_image_types_array)) {
 
-                    $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
+                    $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your profile picture.");
                     $valid = false;
                 }
 
-                if (!($image_info = getimagesize("$attachment_dir/{$user_prefs['AVATAR_AID']}"))) {
+                if (!($image_info = getimagesize("$attachment_dir/{$attachment_details['hash']}"))) {
 
-                    $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your avatar and profile picture.");
+                    $error_msg_array[] = gettext("Unsupported image attachment. You can only use jpg, gif and png image attachments for your profile picture.");
                     $valid = false;
                 }
 
                 if (($image_info[0] > 95) || ($image_info[1] > 95)) {
 
-                    $error_msg_array[] = gettext("Selected attachment is too large for avatar picture. Maximum dimensions are 15x15px");
+                    $error_msg_array[] = gettext("Selected attachment is too large for profile picture. Maximum dimensions are 95x95px");
                     $valid = false;
                 }
-
-            } else {
-
-                $error_msg_array[] = gettext("Attachments have been disabled by the forum owner.");
-                $valid = false;
             }
+
+        } else {
+
+            $user_prefs['AVATAR_AID'] = null;
         }
     }
 
@@ -483,12 +483,6 @@ if (isset($user_prefs['DOB']) && preg_match('/\d{4,}-\d{2,}-\d{2,}/u', $user_pre
     $dob['BLANK_FIELDS'] = true;
 }
 
-if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
-    $aid = $_POST['aid'];
-} else {
-    $aid = md5(uniqid(mt_rand()));
-}
-
 // Check to see if we should show the set for all forums checkboxes
 if ((session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == session::get_value('UID')) && $admin_edit === false)) {
     $show_set_all = (forums_get_available_count() > 1);
@@ -496,28 +490,21 @@ if ((session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid 
     $show_set_all = false;
 }
 
-// Arrays to hold our attachments
-$attachments_array = array();
-$image_attachments_array = array();
-
 // User's attachments for profile and avatar pictures
-$user_attachments = attachments_get_users($uid, $attachments_array, $image_attachments_array);
-
-// Prepare the attachments for use in a drop down.
-$image_attachments_array = user_prefs_prep_attachments($image_attachments_array);
+$attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH);
 
 // Start Output Here
 if ($admin_edit === true) {
 
     $user = user_get($uid);
 
-    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - User Details - %s"), format_user_name($user['LOGON'], $user['NICKNAME']))), 'attachments.js', 'class=window_title');
+    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - User Details - %s"), format_user_name($user['LOGON'], $user['NICKNAME']))), 'class=window_title', 'prefs.js');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("User Details"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
 
 } else {
 
-    html_draw_top(sprintf('title=%s', gettext("My Controls - User Details")), 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("My Controls - User Details")), 'class=window_title', 'prefs.js');
 
     echo "<h1>", gettext("User Details"), "</h1>\n";
 }
@@ -536,7 +523,6 @@ if ($admin_edit === true) echo "<div align=\"center\">\n";
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"edit_prefs.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-echo "  ", form_input_hidden('aid', htmlentities_array($aid)), "\n";
 
 if ($admin_edit === true) echo "  ", form_input_hidden('profile_uid', htmlentities_array($uid)), "\n";
 
@@ -667,7 +653,7 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"150\" style=\"white-space: nowrap\">", gettext("Select Attachment"), ":</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array("pic_aid", $image_attachments_array, (isset($user_prefs['PIC_AID']) ? htmlentities_array($user_prefs['PIC_AID']) : ''), "", "user_pref_dropdown"), "</td>\n";
+    echo "                  <td align=\"left\">", form_dropdown_array("pic_aid", user_prefs_filter_attachments($attachments_array, 95, 95), (isset($user_prefs['PIC_AID']) ? htmlentities_array($user_prefs['PIC_AID']) : ''), "", "user_pref_dropdown"), "&nbsp;<span class=\"upload\"></span></td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -706,7 +692,7 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"150\" style=\"white-space: nowrap\">", gettext("Select Attachment"), ":</td>\n";
-    echo "                  <td align=\"left\">", form_dropdown_array("avatar_aid", $image_attachments_array, (isset($user_prefs['AVATAR_AID']) ? htmlentities_array($user_prefs['AVATAR_AID']) : ''), "", "user_pref_dropdown"), "</td>\n";
+    echo "                  <td align=\"left\">", form_dropdown_array("avatar_aid", user_prefs_filter_attachments($attachments_array, 16, 16), (isset($user_prefs['AVATAR_AID']) ? htmlentities_array($user_prefs['AVATAR_AID']) : ''), "", "user_pref_dropdown"), "&nbsp;<span class=\"upload\"></span></td>\n";
     echo "                </tr>\n";
 
 } else {
@@ -735,21 +721,9 @@ echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
-
-if (forum_get_setting('attachments_enabled', 'Y') && $admin_edit === false) {
-
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">";
-    echo "        ", form_submit("save", gettext("Save")), "&nbsp;<a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
-    echo "    </tr>\n";
-
-} else {
-
-    echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("save", gettext("Save")), "</td>\n";
-    echo "    </tr>\n";
-}
-
+echo "    <tr>\n";
+echo "      <td align=\"center\">", form_submit("save", gettext("Save")), "</td>\n";
+echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
 

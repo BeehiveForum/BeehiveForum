@@ -24,7 +24,7 @@ $(beehive).bind('init', function() {
     $('a.threadname').bind('click', function() {
 
         $('img.thread_bullet[src$="current_thread.png"]').attr('src', beehive.images['bullet.png']);
-        $('#' + $(this).attr('rel')).attr('src', beehive.images['current_thread.png']);
+        $('#' + $(this).data('tid')).attr('src', beehive.images['current_thread.png']);
     });
 
     $('#mark_read_submit').bind('click', function() {

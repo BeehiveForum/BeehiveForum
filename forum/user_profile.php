@@ -244,7 +244,7 @@ if (isset($user_profile['PIC_URL'])) {
     echo "                              </td>\n";
     echo "                            </tr>\n";
 
-} else if (isset($user_profile['PIC_AID']) && ($attachment = attachments_get_by_hash($user_profile['PIC_AID']))) {
+} else if (isset($user_profile['PIC_AID']) && ($attachment = attachments_get_by_aid($user_profile['PIC_AID']))) {
 
     if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
 

@@ -117,6 +117,12 @@ $allow_html = true;
 
 $allow_sig = true;
 
+if (isset($edit_message['ATTACHMENTS'])) {
+    $attachments = $edit_message['ATTACHMENTS'];
+} else {
+    $attachments = array();
+}
+
 if (isset($t_fid) && !session::check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
     $allow_html = false;
 }
@@ -124,14 +130,6 @@ if (isset($t_fid) && !session::check_perm(USER_PERM_HTML_POSTING, $t_fid)) {
 if (isset($t_fid) && !session::check_perm(USER_PERM_SIGNATURE, $t_fid)) {
     $allow_sig = false;
 }
-
-if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
-    $aid = $_POST['aid'];
-} else{
-    $aid = md5(uniqid(mt_rand()));
-}
-
-post_save_attachment_id($tid, $pid, $aid);
 
 if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
@@ -161,6 +159,12 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
             $valid = false;
         }
     }
+
+    if (isset($_POST['attachment']) && is_array($_POST['attachment'])) {
+        $attachments = array_filter($_POST['attachment'], 'is_md5');
+    } else {
+        $attachments = array();
+    }
 }
 
 if (!isset($t_content)) $t_content = "";
@@ -175,9 +179,15 @@ if ($allow_html == false) {
 
 if ($valid && isset($_POST['preview'])) {
 
-    if (attachments_get_count($aid) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+    if (sizeof($attachments) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
         $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
+        $valid = false;
+    }
+
+    if (sizeof($attachments) > 0 && !attachments_check_post_space($uid, $attachments)) {
+
+        $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
         $valid = false;
     }
 
@@ -195,16 +205,22 @@ if ($valid && isset($_POST['preview'])) {
             $edit_message['TNICK'] = gettext("ALL");
         }
 
-        $edit_message['AID'] = $aid;
+        $edit_message['ATTACHMENTS'] = $attachments;
     }
 
 } else if ($valid && isset($_POST['apply'])) {
 
     $post_edit_time = forum_get_setting('post_edit_time', null, 0);
 
-    if (attachments_get_count($aid) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+    if (sizeof($attachments) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
         $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
+        $valid = false;
+    }
+
+    if (sizeof($attachments) > 0 && !attachments_check_post_space($uid, $attachments)) {
+
+        $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
         $valid = false;
     }
 
@@ -228,7 +244,15 @@ if ($valid && isset($_POST['preview'])) {
 
             post_add_edit_text($tid, $pid);
 
-            post_save_attachment_id($tid, $pid, $aid);
+            post_remove_attachments($tid, $pid);
+
+            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($edit_message['FROM_UID'], ATTACHMENT_FILTER_BOTH, $attachments))) {
+
+                foreach ($attachments_array as $attachment) {
+
+                    post_add_attachment($tid, $pid, $attachment['aid']);
+                }
+            }
 
             if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && ($edit_message['FROM_UID'] != $uid)) {
                 admin_add_log_entry(EDIT_POST, array($t_fid, $tid, $pid));
@@ -425,10 +449,34 @@ echo form_submit("preview", gettext("Preview"), "tabindex=\"3\""), "\n";
 
 echo "<a href=\"discussion.php?webtag=$webtag&amp;msg=$msg\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 
-if (forum_get_setting('attachments_enabled', 'Y') && (session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid) || $new_thread)) {
+if (forum_get_setting('attachments_enabled', 'Y') && (session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid))) {
 
-    echo "<a href=\"attachments.php?aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
-    echo form_input_hidden("aid", htmlentities_array($aid));
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">\n";
+    echo "                          <table class=\"messagefoot\" width=\"722\" cellspacing=\"0\">\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" class=\"subhead\">", gettext("Attachments"), "</td>\n";
+
+    if (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) {
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'attachment_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+    } else {
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'attachment_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+    }
+
+    echo "                            </tr>\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" colspan=\"2\">\n";
+    echo "                                <div class=\"attachments attachment_toggle\" style=\"display: ", (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) ? "block" : "none", "\">\n";
+    echo "                                  ", attachments_form($edit_message['FROM_UID'], $attachments, ATTACHMENT_FILTER_BOTH), "\n";
+    echo "                                </div>\n";
+    echo "                              </td>\n";
+    echo "                            </tr>\n";
+    echo "                          </table>\n";
 }
 
 if ($allow_sig == true) {

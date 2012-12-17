@@ -56,18 +56,17 @@ if (!$attachment_dir = attachments_check_dir()) {
     exit;
 }
 
-if (isset($_GET['aid']) && is_md5($_GET['aid'])) {
-    $aid = $_GET['aid'];
-} else if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
-    $aid = $_POST['aid'];
-} else {
-    header_status(500, 'Internal Server Error');
-    exit;
-}
+$error = null;
 
-$max_attachment_space = attachments_get_max_space();
+$attachment_details = null;
 
-$users_free_space = attachments_get_free_space($uid, $aid);
+$valid = true;
+
+$file_hash = md5(uniqid(mt_rand()));
+
+$max_user_attachment_space = forum_get_setting('attachments_max_user_space', null, 1048576);
+
+$free_upload_space = attachments_get_free_user_space($uid);
 
 $attachment_mime_types = attachments_get_mime_types();
 
@@ -75,195 +74,140 @@ $total_attachment_size = 0;
 
 $attachment_dir = rtrim($attachment_dir, '/');
 
-if (isset($_FILES['file']) && is_array($_FILES['file'])) {
+header('Content-Type: application/json');
 
-    for ($i = 0; $i < sizeof($_FILES['file']['name']); $i++) {
+if (isset($_POST['summary'])) {
 
-        if (isset($_FILES['file']['name'][$i]) && strlen(trim($_FILES['file']['name'][$i])) > 0) {
-
-            $filename = trim($_FILES['file']['name'][$i]);
-
-            if (isset($_FILES['file']['error'][$i]) && $_FILES['file']['error'][$i] != UPLOAD_ERR_OK) {
-
-                $content = json_encode(array(
-                    'success' => false,
-                    'error' => gettext('Upload Failed'),
-                    'preventRetry' => true,
-                ));
-
-            } else {
-
-                $file_size = $_FILES['file']['size'][$i];
-                $temp_file = $_FILES['file']['tmp_name'][$i];
-                $file_type = $_FILES['file']['type'][$i];
-
-                if (function_exists('mime_content_type') && ($magic_mime_type = mime_content_type($temp_file))) {
-                    $file_type = $magic_mime_type;
-                }
-
-                if (sizeof($attachment_mime_types) > 0 && !in_array($file_type, $attachment_mime_types)) {
-
-                    if (@file_exists($temp_file)) {
-                        unlink($temp_file);
-                    }
-
-                    $content = json_encode(array(
-                        'success' => false,
-                        'error' => gettext('File type is not allowed'),
-                        'preventRetry' => true
-                    ));
-
-                } else if (($max_attachment_space > 0) && ($users_free_space < $file_size)) {
-
-                    if (@file_exists($temp_file)) {
-                        unlink($temp_file);
-                    }
-
-                    $content = json_encode(array(
-                        'success' => false,
-                        'error' => gettext('Check free attachment space'),
-                        'preventRetry' => true
-                    ));
-
-                } else {
-
-                    $unique_file_id = md5(uniqid(mt_rand()));
-
-                    $file_hash = md5("{$aid}{$unique_file_id}{$filename}");
-
-                    $file_path = "$attachment_dir/$file_hash";
-
-                    if (@move_uploaded_file($temp_file, $file_path)) {
-
-                        attachments_add($uid, $aid, $unique_file_id, $filename, $file_type);
-
-                        image_resize($file_path, $file_path. '.thumb');
-
-                        if (($users_free_space > 0)) {
-                            $users_free_space -= $file_size;
-                        }
-
-                        $content = json_encode(array(
-                            'success' => true,
-                            'hash' => $file_hash
-                        ));
-
-                    } else {
-
-                        if (@file_exists($temp_file)) {
-                            unlink($temp_file);
-                        }
-
-                        $content = json_encode(array(
-                            'success' => false,
-                            'error' => gettext('Upload failed'),
-                            'preventRetry' => true
-                        ));
-                    }
-                }
-            }
-        }
-    }
-
-} else if (isset($_GET['file']) && is_array($_GET['file'])) {
-
-    $filename = trim(array_shift($_GET['file']));
-
-    $temp_file = tempnam(attachments_get_upload_tmp_dir(), 'file');
-
-    $file_type = 'application/octet-stream';
-
-    file_put_contents($temp_file, fopen('php://input', 'r'));
-
-    $file_size = filesize($temp_file);
-
-    if (function_exists('mime_content_type') && ($magic_mime_type = mime_content_type($temp_file))) {
-        $file_type = $magic_mime_type;
-    }
-
-    if (sizeof($attachment_mime_types) > 0 && !in_array($file_type, $attachment_mime_types)) {
-
-        if (@file_exists($temp_file)) {
-            unlink($temp_file);
-        }
-
-        $content = json_encode(array(
-            'success' => false,
-            'error' => gettext('File type is not allowed'),
-            'preventRetry' => true
-        ));
-
-    } else if (($max_attachment_space > 0) && ($users_free_space < $file_size)) {
-
-        if (@file_exists($temp_file)) {
-            unlink($temp_file);
-        }
-
-        $content = json_encode(array(
-            'success' => false,
-            'error' => gettext('Check free attachment space'),
-            'preventRetry' => true
-        ));
-
+    if (isset($_POST['hashes']) && is_array($_POST['hashes'])) {
+        $hash_array = array_filter($_POST['hashes'], 'is_md5');
     } else {
-
-        $unique_file_id = md5(uniqid(mt_rand()));
-
-        $file_hash = md5("{$aid}{$unique_file_id}{$filename}");
-
-        $file_path = "$attachment_dir/$file_hash";
-
-        if (@rename($temp_file, $file_path)) {
-
-            attachments_add($uid, $aid, $unique_file_id, $filename, $file_type);
-
-            image_resize($file_path, $file_path. '.thumb');
-
-            if (($users_free_space > 0)) {
-                $users_free_space -= $file_size;
-            }
-
-            $content = json_encode(array(
-                'success' => true,
-                'hash' => $file_hash
-            ));
-
-        } else {
-
-            if (@file_exists($temp_file)) {
-                unlink($temp_file);
-            }
-
-            $content = json_encode(array(
-                'success' => false,
-                'error' => gettext('Upload failed'),
-                'preventRetry' => true
-            ));
-        }
+        $hash_array = array();
     }
 
-} else if (isset($_POST['delete'])) {
+    $used_post_space = format_file_size(attachments_get_post_used_space($uid, $hash_array));
+
+    $free_post_space = attachments_get_free_post_space($uid, $hash_array);
+
+    echo json_encode(
+        array(
+            'used_post_space' => $used_post_space,
+            'free_post_space' => ($free_post_space > -1) ? format_file_size($free_post_space) : gettext("Unlimited"),
+            'free_upload_space' => ($free_upload_space > -1) ? format_file_size($free_upload_space) : gettext("Unlimited"),
+        )
+    );
+
+    exit;
+}
+
+if (isset($_POST['delete'])) {
 
     $valid = true;
 
-    if (isset($_POST['attachments_delete']) && is_array($_POST['attachments_delete'])) {
+    if (isset($_POST['hashes']) && is_array($_POST['hashes'])) {
 
-        foreach ($_POST['attachments_delete'] as $hash => $del_attachment) {
+        foreach ($_POST['hashes'] as $hash) {
 
-            if (($del_attachment == 'Y') && attachments_get_by_hash($hash)) {
+            if (!attachments_delete($hash)) {
 
-                if (!attachments_delete($hash)) {
+                $valid = false;
+            }
+        }
+    }
+
+    echo json_encode($valid);
+
+} else {
+
+    if (isset($_FILES['upload']) && is_array($_FILES['upload'])) {
+
+        for ($i = 0; $i < sizeof($_FILES['upload']['name']); $i++) {
+
+            if (isset($_FILES['upload']['name'][$i]) && strlen(trim($_FILES['upload']['name'][$i])) > 0) {
+
+                $file_name = trim($_FILES['upload']['name'][$i]);
+
+                if (isset($_FILES['upload']['error'][$i]) && $_FILES['upload']['error'][$i] != UPLOAD_ERR_OK) {
+
                     $valid = false;
+                    $error = gettext('Upload failed1');
+
+                } else {
+
+                    $file_size = $_FILES['upload']['size'][$i];
+
+                    $temp_file = $_FILES['upload']['tmp_name'][$i];
+
+                    $file_type = $_FILES['upload']['type'][$i];
+
+                    $file_path = "$attachment_dir/$file_hash";
+
+                    if (!@move_uploaded_file($temp_file, $file_path)) {
+
+                        @unlink($temp_file);
+
+                        $valid = false;
+
+                        $error = gettext('Upload failed2');
+                    }
                 }
             }
         }
 
-        $content = json_encode($valid);
+    } else if (isset($_GET['upload']) && is_array($_GET['upload'])) {
+
+        $file_name = trim(array_shift($_GET['upload']));
+
+        $file_type = 'application/octet-stream';
+
+        $file_path = "$attachment_dir/$file_hash";
+
+        file_put_contents($file_path, fopen('php://input', 'r'));
+
+        $file_size = filesize($file_path);
     }
+
+    if ($valid) {
+
+        if (function_exists('mime_content_type') && ($magic_mime_type = mime_content_type($file_path))) {
+            $file_type = $magic_mime_type;
+        }
+
+        if (sizeof($attachment_mime_types) > 0 && !in_array($file_type, $attachment_mime_types)) {
+
+            @unlink($file_path);
+
+            @unlink($temp_file);
+
+            $valid = false;
+
+            $error = gettext('Attachment mimetype is not allowed');
+
+        } else if (($max_user_attachment_space > 0) && ($free_upload_space > -1) && ($free_upload_space < $file_size)) {
+
+            @unlink($file_path);
+
+            @unlink($temp_file);
+
+            $valid = false;
+
+            $error = gettext('You do not have enough free attachment space');
+
+        } else {
+
+            $thumbnail = image_resize($file_path, $file_path. '.thumb');
+
+            $attachment_aid = attachments_add($uid, $file_name, $file_hash, $file_type, $file_size, $thumbnail);
+
+            $attachment_details = attachments_get_by_aid($attachment_aid, $uid);
+        }
+    }
+
+    echo json_encode(array(
+        'error' => $error,
+        'attachment' => $attachment_details,
+        'preventRetry' => true,
+        'success' => $valid,
+    ));
 }
-
-header('Content-Type: application/json');
-
-echo $content;
 
 ?>

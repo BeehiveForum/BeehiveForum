@@ -39,7 +39,6 @@ require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'styles.inc.php';
 require_once BH_INCLUDE_PATH. 'timezone.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'zip_lib.inc.php';
 
 // Check we're logged in correctly
 if (!session::logged_in()) {

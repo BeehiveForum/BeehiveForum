@@ -516,6 +516,37 @@ switch ($_GET['action']) {
 
         break;
 
+    case 'pref_attachment':
+
+        if (!session::logged_in()) break;
+
+        cache_disable();
+
+        if (!isset($_GET['type']) || !in_array($_GET['type'], array('pic_aid', 'avatar_aid'))) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
+        $attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH);
+
+        header('Content-Type: application/json');
+
+        switch ($_GET['type']) {
+
+            case 'pic_aid':
+
+                $content = json_encode(user_prefs_filter_attachments($attachments_array, 95, 95));
+                break;
+
+            case 'avatar_aid':
+
+                $content = json_encode(user_prefs_filter_attachments($attachments_array, 16, 16));
+                break;
+        }
+
+        break;
+
     default:
 
         header_status(500, 'Internal Server Error');

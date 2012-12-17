@@ -70,6 +70,8 @@ function light_html_draw_top()
 
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     $link_array = array();
 
     $func_matches = array();
@@ -105,9 +107,8 @@ function light_html_draw_top()
     $meta_keywords = html_get_forum_keywords();
     $meta_description = html_get_forum_description();
 
-    echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"", gettext("ltr"), "\">\n";
+    echo "<!DOCTYPE html>\n";
+    echo "<html lang=\"en\" dir=\"", gettext("ltr"), "\">\n";
     echo "<head>\n";
 
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
@@ -194,9 +195,11 @@ function light_html_draw_top()
     }
 
     echo "<script type=\"text/javascript\" src=\"js/jquery-1.7.1.min.js\"></script>\n";
+    html_include_javascript(html_get_forum_file_path('js/jquery.fineuploader-3.0.min.js'));
     echo "<script type=\"text/javascript\" src=\"js/jquery.sprintf.js\"></script>\n";
     echo "<script type=\"text/javascript\" src=\"js/general.js\"></script>\n";
     echo "<script type=\"text/javascript\" src=\"js/light.js\"></script>\n";
+    echo "<script type=\"text/javascript\" src=\"js/attachments.js\"></script>\n";
 
     $message_display_pages = array(
         'admin_post_approve.php',
@@ -222,7 +225,6 @@ function light_html_draw_top()
     }
 
     echo "<script type=\"text/javascript\" src=\"ckeditor/ckeditor.js\"></script>\n";
-    echo "<script type=\"text/javascript\" src=\"ckeditor/adapters/jquery.js\"></script>\n";
     echo "<script type=\"text/javascript\" src=\"json.php?webtag=$webtag\"></script>\n";
 
     echo "</head>\n";
@@ -809,7 +811,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
                             if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) echo "<span class=\"thread_friend\" title=\"", gettext("Friend"), "\">[F]</span>";
                             if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_SPLIT) echo "<span class=\"thread_split\" title=\"", gettext("Thread has been split"), "\">[TS]</span>";
                             if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_MERGE) echo "<span class=\"thread_merge\" title=\"", gettext("Thread has been merged"), "\">[TM]</span>";
-                            if (isset($thread['AID']) && is_md5($thread['AID'])) echo "<span class=\"thread_attachment\" title=\"", gettext("Attachment"), "\">[A]</span>";
+                            if (isset($thread['ATTACHMENT_COUNT']) && $thread['ATTACHMENT_COUNT'] > 0) echo "<span class=\"thread_attachment\" title=\"", gettext("Attachment"), "\">[A]</span>";
 
                             echo "<span class=\"thread_length\">$number</span>";
                             echo "</span>";
@@ -1710,47 +1712,23 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     echo "</div>\n";
 
-    if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
+    if (isset($message['ATTACHMENTS']) && sizeof($message['ATTACHMENTS']) > 0) {
 
-        $aid = isset($message['AID']) ? $message['AID'] : attachments_get_id($tid, $message['PID']);
+        if (($attachments_array = attachments_get($message['FROM_UID'], ATTACHMENT_FILTER_ASSIGNED, $message['ATTACHMENTS']))) {
 
-        if (attachments_get($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
+            echo "<div class=\"message_attachments\">\n";
+            echo "  <span>", gettext("Attachments"), ":</span>\n";
+            echo "  <ul>\n";
 
-            if (sizeof($attachments_array) > 0) {
+            foreach ($attachments_array as $attachment) {
 
-                echo "<div class=\"message_attachments\">\n";
-                echo "  <span>", gettext("Attachments"), ":</span>\n";
-                echo "  <ul>\n";
-
-                foreach ($attachments_array as $attachment) {
-
-                    if (($attachment_link = light_attachments_make_link($attachment))) {
-
-                        echo "<li>", $attachment_link, "</li>\n";
-                    }
+                if (($attachment_link = light_attachments_make_link($attachment))) {
+                    echo "<li>", $attachment_link, "</li>\n";
                 }
-
-                echo "  </ul>\n";
-                echo "</div>\n";
             }
 
-            if (sizeof($image_attachments_array) > 0) {
-
-                echo "<div class=\"message_attachments\">\n";
-                echo "  <span>", gettext("Image Attachments"), ":</span>\n";
-                echo "  <ul>\n";
-
-                foreach ($image_attachments_array as $attachment) {
-
-                    if (($attachment_link = light_attachments_make_link($attachment))) {
-
-                        echo "<li>", $attachment_link, "</li>\n";
-                    }
-                }
-
-                echo "  </ul>\n";
-                echo "</div>\n";
-            }
+            echo "  </ul>\n";
+            echo "</div>\n";
         }
     }
 
@@ -2308,50 +2286,23 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
     echo "<div class=\"message_body\">", $pm_message_array['CONTENT'], "</div>\n";
 
-    if (isset($pm_message_array['AID'])) {
+    if (isset($pm_message_array['ATTACHMENTS']) && sizeof($pm_message_array['ATTACHMENTS']) > 0) {
 
-        $aid = $pm_message_array['AID'];
+        if (($attachments_array = attachments_get($pm_message_array['FROM_UID'], ATTACHMENT_FILTER_ASSIGNED, $pm_message_array['ATTACHMENTS']))) {
 
-        $attachments_array = array();
-        $image_attachments_array = array();
+            echo "<div class=\"message_attachments\">\n";
+            echo "  <span>", gettext("Attachments"), ":</span>\n";
+            echo "  <ul>\n";
 
-        if (attachments_get($pm_message_array['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
+            foreach ($attachments_array as $attachment) {
 
-            if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
-
-                echo "<div class=\"message_attachments\">\n";
-                echo "  <span>", gettext("Attachments"), ":</span>\n";
-                echo "  <ul>\n";
-
-                foreach ($attachments_array as $attachment) {
-
-                    if (($attachment_link = light_attachments_make_link($attachment))) {
-
-                        echo "<li>", $attachment_link, "</li>\n";
-                    }
+                if (($attachment_link = light_attachments_make_link($attachment))) {
+                    echo "<li>", $attachment_link, "</li>\n";
                 }
-
-                echo "  </ul>\n";
-                echo "</div>\n";
             }
 
-            if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
-
-                echo "<div class=\"message_attachments\">\n";
-                echo "  <span>", gettext("Image Attachments"), ":</span>\n";
-                echo "  <ul>\n";
-
-                foreach ($image_attachments_array as $attachment) {
-
-                    if (($attachment_link = light_attachments_make_link($attachment))) {
-
-                        echo "<li>", $attachment_link, "</li>\n";
-                    }
-                }
-
-                echo "  </ul>\n";
-                echo "</div>\n";
-            }
+            echo "  </ul>\n";
+            echo "</div>\n";
         }
     }
 

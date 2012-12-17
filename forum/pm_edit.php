@@ -73,16 +73,16 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
     html_draw_error(gettext("No message specified for editing"));
 }
 
-if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
-
-    $aid = $_POST['aid'];
-
-} else if (!$aid = attachments_get_pm_id($mid)) {
-
-    $aid = md5(uniqid(mt_rand()));
+// Get the message.
+if (!($pm_message_array = pm_message_get($mid))) {
+    pm_edit_refuse();
 }
 
-pm_save_attachment_id($mid, $aid);
+if (isset($pm_message_array['ATTACHMENTS'])) {
+    $attachments = $pm_message_array['ATTACHMENTS'];
+} else {
+    $attachments = array();
+}
 
 $valid = true;
 
@@ -117,44 +117,45 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
         $error_msg_array[] = gettext("Enter some content for the message");
         $valid = false;
     }
+
+    if (isset($_POST['attachment']) && is_array($_POST['attachment'])) {
+        $attachments = array_filter($_POST['attachment'], 'is_md5');
+    } else {
+        $attachments = array();
+    }
 }
 
 if (!isset($t_content)) $t_content = "";
 
 if ($valid && isset($_POST['preview'])) {
 
-    if (($pm_message_array = pm_message_get($mid))) {
+    $pm_message_array['CONTENT'] = $t_content;
 
-        $pm_message_array['CONTENT'] = $t_content;
+    $pm_message_array['SUBJECT'] = $t_subject;
 
-        $pm_message_array['SUBJECT'] = $t_subject;
-        $pm_message_array['FOLDER'] = PM_FOLDER_OUTBOX;
+    $pm_message_array['FOLDER'] = PM_FOLDER_OUTBOX;
 
-    } else {
-
-        pm_edit_refuse();
-    }
+    $pm_message_array['ATTACHMENTS'] = $attachments;
 
 } else if ($valid && isset($_POST['apply'])) {
 
-    if (($pm_message_array = pm_message_get($mid))) {
+    if (pm_edit_message($mid, $t_subject, $t_content)) {
 
-        pm_save_attachment_id($mid, $aid);
+        if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
 
-        if (pm_edit_message($mid, $t_subject, $t_content)) {
+            foreach ($attachments_array as $attachment) {
 
-            header_redirect("pm.php?webtag=$webtag&mid=$mid");
-            exit;
-
-        } else {
-
-            $error_msg_array[] = gettext("Error creating PM! Please try again in a few minutes");
-            $valid = false;
+                pm_add_attachment($mid, $attachment['aid']);
+            }
         }
+
+        header_redirect("pm.php?webtag=$webtag&mid=$mid");
+        exit;
 
     } else {
 
-        pm_edit_refuse();
+        $error_msg_array[] = gettext("Error creating PM! Please try again in a few minutes");
+        $valid = false;
     }
 
 } else if (isset($_POST['emots_toggle'])) {
@@ -193,25 +194,18 @@ if ($valid && isset($_POST['preview'])) {
 
 } else {
 
-    if (($pm_message_array = pm_message_get($mid))) {
-
-        if ($pm_message_array['TYPE'] != PM_OUTBOX) {
-            pm_edit_refuse();
-        }
-
-        $parsed_message = new MessageTextParse(pm_get_content($mid));
-
-        $t_content = $parsed_message->getMessage();
-
-        $t_subject = $pm_message_array['SUBJECT'];
-
-    } else {
-
+    if ($pm_message_array['TYPE'] != PM_OUTBOX) {
         pm_edit_refuse();
     }
+
+    $parsed_message = new MessageTextParse(pm_get_content($mid));
+
+    $t_content = $parsed_message->getMessage();
+
+    $t_subject = $pm_message_array['SUBJECT'];
 }
 
-html_draw_top(sprintf("title=%s", gettext("Private Messages")), "resize_width=960", "edit.js", "pm.js", "emoticons.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Private Messages")), "resize_width=960", "attachments.js", "edit.js", "pm.js", "emoticons.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
 
 echo "<h1>", gettext("Private Messages"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Message"), "</h1>\n";
 
@@ -322,10 +316,35 @@ echo form_submit('preview', gettext("Preview"), "tabindex=\"3\""), "\r\n";
 
 echo "<a href=\"pm.php?webtag=$webtag&mid=$mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\r\n";
 
-if (forum_get_setting('attachments_enabled', 'Y') && forum_get_setting('pm_allow_attachments', 'Y')) {
+if (forum_get_setting('attachments_enabled', 'Y')) {
 
-    echo "<a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
-    echo form_input_hidden('aid', htmlentities_array($aid));
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">\n";
+    echo "                          <table class=\"messagefoot\" width=\"722\" cellspacing=\"0\">\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" class=\"subhead\">", gettext("Attachments"), "</td>\n";
+
+    if (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) {
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'attachment_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+    } else {
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'attachment_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+    }
+
+    echo "                            </tr>\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" colspan=\"2\">\n";
+    echo "                                <div class=\"attachments attachment_toggle\" style=\"display: ", (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) ? "block" : "none", "\">\n";
+    echo "                                  <ul>\n";
+    echo "                                  ", attachments_form($uid, $attachments, ATTACHMENT_FILTER_BOTH), "\n";
+    echo "                                </div>\n";
+    echo "                              </td>\n";
+    echo "                            </tr>\n";
+    echo "                          </table>\n";
 }
 
 echo "                        </td>\n";

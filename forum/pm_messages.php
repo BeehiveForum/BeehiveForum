@@ -39,7 +39,6 @@ require_once BH_INCLUDE_PATH. 'search.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
 require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
-require_once BH_INCLUDE_PATH. 'zip_lib.inc.php';
 
 // Check we're logged in correctly
 if (!session::logged_in()) {
@@ -226,7 +225,7 @@ if (isset($_POST['pm_delete_messages'])) {
 
     } else {
 
-        $error_msg_array[] = gettext("You must select some messages to process");
+        $error_msg_array[] = gettext("You must select some messages to delete");
         $valid = false;
     }
 
@@ -255,7 +254,7 @@ if (isset($_POST['pm_delete_messages'])) {
 
     } else {
 
-        $error_msg_array[] = gettext("You must select some messages to process");
+        $error_msg_array[] = gettext("You must select some messages to archive");
         $valid = false;
     }
 }
@@ -476,8 +475,8 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
             echo "            <a href=\"pm_messages.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}&amp;page=$page#message\" target=\"_self\"><i>", gettext("No Subject"), "</i></a>";
         }
 
-        if (isset($message['AID']) && pm_has_attachments($message['MID'])) {
-            echo "            &nbsp;&nbsp;<img src=\"".html_style_image('attach.png')."\" border=\"0\" alt=\"", gettext("Attachment"), " - {$message['AID']}\" title=\"", gettext("Attachment"), "\" />";
+        if (isset($message['ATTACHMENT_COUNT']) && $message['ATTACHMENT_COUNT'] > 0) {
+            echo "            &nbsp;&nbsp;<img src=\"".html_style_image('attach.png')."\" border=\"0\" alt=\"", gettext("Attachment"), "\" title=\"", gettext("Attachment"), "\" />";
         }
 
         echo "            </td>\n";
@@ -607,7 +606,7 @@ if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['mes
 
     echo "      <td align=\"right\" width=\"33%\" valign=\"top\" style=\"white-space: nowrap\">";
 
-    if (($current_folder <> PM_FOLDER_SAVED) && ($current_folder <> PM_FOLDER_OUTBOX)) {
+    if (($current_folder == PM_FOLDER_INBOX) || ($current_folder == PM_FOLDER_SENT)) {
         echo form_submit('pm_save_messages', gettext("Save"), sprintf('title="%s"', gettext("Save Selected Messages"))), "&nbsp;";
     }
 

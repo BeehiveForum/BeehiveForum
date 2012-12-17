@@ -137,6 +137,12 @@ $valid = true;
 // Array to hold error messages
 $error_msg_array = array();
 
+if (isset($_POST['attachment']) && is_array($_POST['attachment'])) {
+    $attachments = array_filter($_POST['attachment'], 'is_md5');
+} else {
+    $attachments = array();
+}
+
 if (isset($_POST['emots_toggle'])) {
 
     if (isset($_POST['t_subject']) && strlen(trim($_POST['t_subject'])) > 0) {
@@ -338,12 +344,6 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $t_to_uid = 0;
     }
 
-    if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
-        $aid = $_POST['aid'];
-    } else{
-        $aid = md5(uniqid(mt_rand()));
-    }
-
     if (isset($_POST['t_to_uid_others']) && strlen(trim($_POST['t_to_uid_others'])) > 0) {
 
         $t_recipient_array = preg_split("/[;|,]/u", trim($_POST['t_to_uid_others']));
@@ -410,6 +410,8 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
             fix_html($pm_data['CONTENT'])
         );
 
+        $attachments = $pm_data['ATTACHMENTS'];
+
     } else {
 
         html_draw_top(sprintf("title=%s", gettext("Error")));
@@ -442,7 +444,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
             $to_radio = 'friends';
         }
 
-        $aid = $pm_data['AID'];
+        $attachments = $pm_data['ATTACHMENTS'];
 
     } else {
 
@@ -462,13 +464,6 @@ if (mb_strlen($t_content) >= 65535) {
     $valid = false;
 }
 
-// Attachment Unique ID
-if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
-    $aid = $_POST['aid'];
-} else if (!isset($aid)) {
-    $aid = md5(uniqid(mt_rand()));
-}
-
 // De-dupe key
 if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
     $t_dedupe = $_POST['t_dedupe'];
@@ -483,9 +478,17 @@ if ($valid && isset($_POST['send'])) {
 
         if (isset($to_radio) && $to_radio == 'friends') {
 
-            if (($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid))) {
+            if (($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content))) {
 
                 email_send_pm_notification($t_to_uid, $new_mid, $uid);
+
+                if (($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+
+                    foreach ($attachments_array as $attachment) {
+
+                        pm_add_attachment($new_mid, $attachment['aid']);
+                    }
+                }
 
             } else {
 
@@ -501,9 +504,17 @@ if ($valid && isset($_POST['send'])) {
 
             foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
 
-                if (($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content, $aid))) {
+                if (($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content))) {
 
                     email_send_pm_notification($t_to_uid, $new_mid, $uid);
+
+                    if (($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+
+                        foreach ($attachments_array as $attachment) {
+
+                            pm_add_attachment($new_mid, $attachment['aid']);
+                        }
+                    }
 
                 } else {
 
@@ -543,7 +554,13 @@ if ($valid && isset($_POST['send'])) {
 
         if (($saved_mid = pm_save_message($t_subject, $t_content, $t_to_uid, $t_to_uid_others))) {
 
-            pm_save_attachment_id($saved_mid, $aid);
+            if (($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+
+                foreach ($attachments_array as $attachment) {
+
+                    pm_add_attachment($saved_mid, $attachment['aid']);
+                }
+            }
 
             header_redirect("pm.php?webtag=$webtag&mid=$saved_mid&message_saved=true");
             exit;
@@ -607,9 +624,9 @@ if ($valid && isset($_POST['preview'])) {
 
     $pm_preview_array['SUBJECT'] = $t_subject;
     $pm_preview_array['CREATED'] = time();
-    $pm_preview_array['AID'] = $aid;
 
     $pm_preview_array['CONTENT'] = $t_content;
+    $pm_preview_array['ATTACHMENTS'] = $attachments;
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"100%\"><br />", pm_display($pm_preview_array, PM_FOLDER_OUTBOX, true), "</td>\n";
@@ -768,10 +785,34 @@ if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
     echo "<a href=\"pm.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\r\n";
 }
 
-if (forum_get_setting('attachments_enabled', 'Y') && forum_get_setting('pm_allow_attachments', 'Y')) {
+if (forum_get_setting('attachments_enabled', 'Y')) {
 
-    echo "<a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
-    echo form_input_hidden("aid", htmlentities_array($aid));
+    echo "                        </td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">\n";
+    echo "                          <table class=\"messagefoot\" width=\"722\" cellspacing=\"0\">\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" class=\"subhead\">", gettext("Attachments"), "</td>\n";
+
+    if (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) {
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'attachment_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+    } else {
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'attachment_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+    }
+
+    echo "                            </tr>\n";
+    echo "                            <tr>\n";
+    echo "                              <td align=\"left\" colspan=\"2\">\n";
+    echo "                                <div class=\"attachments attachment_toggle\" style=\"display: ", (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) ? "block" : "none", "\">\n";
+    echo "                                  ", attachments_form($uid, $attachments, ATTACHMENT_FILTER_UNASSIGNED), "\n";
+    echo "                                </div>\n";
+    echo "                              </td>\n";
+    echo "                            </tr>\n";
+    echo "                          </table>\n";
 }
 
 echo "                        </td>\n";

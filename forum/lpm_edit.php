@@ -73,17 +73,16 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
     light_html_draw_error(gettext("No message specified for editing"));
 }
 
-if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
-
-    $aid = $_POST['aid'];
-
-} else if (!$aid = attachments_get_pm_id($mid)) {
-
-    $aid = md5(uniqid(mt_rand()));
+// Get the message.
+if (!($pm_message_array = pm_message_get($mid))) {
+    pm_edit_refuse();
 }
 
-pm_save_attachment_id($mid, $aid);
-
+if (isset($pm_message_array['ATTACHMENTS'])) {
+    $attachments = $pm_message_array['ATTACHMENTS'];
+} else {
+    $attachments = array();
+}
 $valid = true;
 
 if (isset($_POST['apply']) || isset($_POST['preview'])) {
@@ -113,44 +112,45 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
         $error_msg_array[] = gettext("Enter some content for the message");
         $valid = false;
     }
+
+    if (isset($_POST['attachment']) && is_array($_POST['attachment'])) {
+        $attachments = array_filter($_POST['attachment'], 'is_md5');
+    } else {
+        $attachments = array();
+    }
 }
 
 if (!isset($t_content)) $t_content = "";
 
 if ($valid && isset($_POST['preview'])) {
 
-    if (($pm_message_array = pm_message_get($mid))) {
+    $pm_message_array['CONTENT'] = $t_content;
 
-        $pm_message_array['CONTENT'] = $t_content;
+    $pm_message_array['SUBJECT'] = $t_subject;
 
-        $pm_message_array['SUBJECT'] = $t_subject;
-        $pm_message_array['FOLDER'] = PM_FOLDER_OUTBOX;
+    $pm_message_array['FOLDER'] = PM_FOLDER_OUTBOX;
 
-    } else {
-
-        pm_edit_refuse();
-    }
+	$pm_message_array['ATTACHMENTS'] = $attachments;
 
 } else if ($valid && isset($_POST['apply'])) {
 
-    if (($pm_message_array = pm_message_get($mid))) {
+    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
 
-        pm_save_attachment_id($mid, $aid);
+        foreach ($attachments_array as $attachment) {
 
-        if (pm_edit_message($mid, $t_subject, $t_content)) {
-
-            header_redirect("lpm.php?webtag=$webtag&mid=$mid");
-            exit;
-
-        } else {
-
-            $error_msg_array[] = gettext("Error creating PM! Please try again in a few minutes");
-            $valid = false;
+            pm_add_attachment($mid, $attachment['aid']);
         }
+    }
+
+    if (pm_edit_message($mid, $t_subject, $t_content)) {
+
+        header_redirect("lpm.php?webtag=$webtag&mid=$mid");
+        exit;
 
     } else {
 
-        pm_edit_refuse();
+        $error_msg_array[] = gettext("Error creating PM! Please try again in a few minutes");
+        $valid = false;
     }
 
 } else if (isset($_POST['emots_toggle'])) {
@@ -189,22 +189,15 @@ if ($valid && isset($_POST['preview'])) {
 
 } else {
 
-    if (($pm_message_array = pm_message_get($mid))) {
-
-        if ($pm_message_array['TYPE'] != PM_OUTBOX) {
-            pm_edit_refuse();
-        }
-
-        $parsed_message = new MessageTextParse(pm_get_content($mid));
-
-        $t_content = $parsed_message->getMessage();
-
-        $t_subject = $pm_message_array['SUBJECT'];
-
-    } else {
-
+    if ($pm_message_array['TYPE'] != PM_OUTBOX) {
         pm_edit_refuse();
     }
+
+    $parsed_message = new MessageTextParse(pm_get_content($mid));
+
+    $t_content = $parsed_message->getMessage();
+
+    $t_subject = $pm_message_array['SUBJECT'];
 }
 
 light_html_draw_top(sprintf("title=%s", gettext("Edit Message")));
@@ -236,6 +229,13 @@ echo light_form_submit("apply", gettext("Apply"));
 echo light_form_submit("preview", gettext("Preview"));
 echo light_form_submit("cancel", gettext("Cancel"));
 echo "</div>";
+
+if (forum_get_setting('attachments_enabled', 'Y')) {
+
+    echo "<div class=\"attachments post_attachments\">", gettext('Attachments'), ":\n";
+    echo "  ", attachments_form($uid, $attachments, ATTACHMENT_FILTER_BOTH), "\n";
+    echo "</div>\n";
+}
 
 echo "</div>";
 echo "</div>";

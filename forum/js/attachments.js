@@ -22,38 +22,233 @@ USA
 $(beehive).bind('init', function() {
 
     $('input#toggle_main').bind('click', function() {
-        $(this).closest('table.posthead').find('input:checkbox').attr('checked', $(this).attr('checked'));
+        var $checkboxes = $(this).closest('table.posthead').find('input:checkbox');
+        $(this).attr('checked') ? $checkboxes.attr('checked', 'checked') : $checkboxes.removeAttr('checked');
     });
 
-    $('input#toggle_other').bind('click', function() {
-        $(this).closest('table.posthead').find('input:checkbox').attr('checked', $(this).attr('checked'));
-    });
+    var format_file_size = function(filesize) {
 
-    $('.upload_fields').css('display', 'block');
+        var b = -1;
 
-    $('input#upload').bind('click', function() {
-        $(this).val(beehive.lang.waitdotdotdot);
-    });
+        do filesize /= 1024, b++; while(99 < filesize);
 
-    $('input#complete').bind('click', function() {
+        return (Math.floor(filesize * 100) / 100).toFixed(2) + "kB MB GB TB PB EB".split(" ")[b];
+    };
 
-        try {
+    var format_file_name = function(filename) {
 
-            if (/edit_attachments\.php|edit_prefs\.php/.test(window.opener.location)) {
-                window.opener.location.reload();
+        33 < filename.length && (filename = filename.slice(0, 19) + "&hellip;" + filename.slice(-13));
+        return filename
+    };
+
+    $('.attachments').each(function() {
+
+        var $attachments = $(this);
+
+        var $attachment_list = $attachments.find('ul');
+
+        var $upload_button = $('<a class="button upload">').text(beehive.lang['upload']);
+
+        var $delete_button = $('<a class="button delete" style="display: none">').text(beehive.lang['delete']);
+
+        var $used_post_space = $attachments.find('span.used_post_space');
+
+        var $free_post_space = $attachments.find('span.free_post_space');
+
+        var $free_upload_space = $attachments.find('span.free_upload_space');
+
+        var refresh_summary = function() {
+
+            var $selected = $attachments.find('li.attachment').has('input:checkbox:checked');
+
+            $.ajax({
+                data: {
+                    'webtag': beehive.webtag,
+                    'ajax': true,
+                    'summary': true,
+                    'hashes': $.map($selected, function(selected) {
+                        return $(selected).data('hash');
+                    })
+                },
+                type: 'POST',
+                url: 'attachments.php',
+                success: function(response) {
+
+                    $used_post_space.text(response.used_post_space);
+                    $free_post_space.text(response.free_post_space);
+                    $free_upload_space.text(response.free_upload_space);
+                }
+            });
+        };
+
+        $attachments.append($upload_button).append('&nbsp;').append($delete_button);
+
+        if ($attachments.find('li.attachment input:checkbox:checked').length > 0) {
+            $delete_button.show();
+        }
+
+        var uploader = new qq.FineUploaderBasic({
+
+            button: $upload_button[0],
+
+            debug: false,
+
+            request: {
+                endpoint: 'attachments.php',
+                params: {
+                    webtag: beehive.webtag
+                },
+                forceMultipart: false,
+                inputName: 'upload[]'
+            },
+
+            callbacks: {
+
+                onSubmit: function(id, filename) {
+
+                    $attachment_list.append($.vsprintf(
+                        '<li class="attachment" data-hash="%(0)s">\
+                           <label>\
+                             <input checked="checked" class="bhinputcheckbox" name="attachment[]" type="checkbox" value="%(0)s" />\
+                             <span class="filename">%(1)s</span>\
+                             <span class="progress"></span>\
+                             <span class="retry" title="%(2)s">%(2)s</span>\
+                             <span class="cancel" title="%(3)s">%(3)s</span>\
+                             <span class="filesize"></span>\
+                           </label>\
+                         </li>',
+                        [[
+                            id,
+                            format_file_name(filename),
+                            beehive.lang.retry,
+                            beehive.lang.cancel
+                        ]]
+                    ));
+                },
+
+                onUpload: function(id, filename) {
+
+                    $attachment_list.find('li.attachment[data-hash="' + id + '"]')
+                        .removeClass('error')
+                        .addClass('uploading');
+                },
+
+                onCancel: function(id, filename) {
+
+                    $attachment_list.find('li.attachment[data-hash="' + id + '"]')
+                        .removeClass('error')
+                        .removeClass('uploading')
+                        .addClass('cancelled');
+                },
+
+                onProgress: function(id, filename, loaded, total) {
+
+                    $attachment_list.find('li.attachment[data-hash="' + id + '"]')
+                        .find('span.progress')
+                        .html(Math.round(loaded / total * 100) + '%');
+
+                    $attachment_list.find('li.attachment[data-hash="' + id + '"]')
+                        .find('span.filesize')
+                        .html(format_file_size(total));
+                },
+
+                onComplete: function(id, filename, responseJSON) {
+
+                    var $attachment = $attachment_list.find('li.attachment[data-hash="' + id + '"]')
+
+                    var $input = $attachment.find('input:checkbox');
+
+                    var $filename = $attachment.find('span.filename');
+
+                    var $selected;
+
+                    $attachment.data('hash', responseJSON.attachment.hash)
+                        .removeClass('uploading')
+                        .addClass(responseJSON.success ? 'complete' : 'error');
+
+                    $input.val(responseJSON.attachment.hash);
+
+                    $filename.html(
+                        '<a href="'
+                        + beehive.forum_path
+                        + '/get_attachment.php?webtag='
+                        + encodeURIComponent(beehive.webtag)
+                        + '&amp;hash='
+                        + encodeURIComponent(responseJSON.attachment.hash)
+                        + '&amp;filename='
+                        + encodeURIComponent(filename)
+                        + '">'
+                        + filename
+                        + '</a>'
+                    );
+
+                    if ($attachments.find('li.attachment input:checkbox:checked').length > 0) {
+
+                        $delete_button.show();
+                        refresh_summary();
+                    }
+                },
+
+                onError: function(id, filename, errorReason) {
+
+                    $attachment_list.find('li.' + id + '.attachment')
+                        .removeClass('uploading')
+                        .addClass('error');
+                }
+            }
+        });
+
+        $attachments.on('click', 'span.retry', function() {
+            uploader.retry($(this).closest('li.attachment').data('hash'));
+        });
+
+        $attachments.on('click', 'span.cancel', function() {
+
+            uploader.cancel($(this).closest('li.attachment').data('hash'));
+            $(this).closest('li.attachment').remove();
+        });
+
+        $attachments.on('change', 'input:checkbox', function() {
+
+            if ($attachments.find('li.attachment input:checkbox:checked').length > 0) {
+                $delete_button.show();
+            } else {
+                $delete_button.hide();
             }
 
-        } catch(e) { }
+            refresh_summary();
+        });
 
-        window.close();
-    });
+        $delete_button.on('click', function() {
 
-    $('.add_upload_field').bind('click', function() {
+            var $selected = $attachments.find('li.attachment').has('input:checkbox:checked');
 
-        $('#userfile').clone().prependTo($('.upload_fields'));
+            if ($selected.length == 0) {
+                return;
+            }
 
-        if ($('.upload_fields #userfile').length > 8) {
-            $('.upload_fields *:not(#userfile)').css('display', 'none');
-        }
+            $.ajax({
+                data: {
+                    'webtag': beehive.webtag,
+                    'ajax': true,
+                    'delete': true,
+                    'hashes': $.map($selected, function(selected) {
+                        return $(selected).data('hash');
+                    })
+                },
+                type: 'POST',
+                url: 'attachments.php',
+                success: function(response) {
+
+                    $selected.remove();
+
+                    if ($attachments.find('li.attachment.complete').length == 0) {
+                        $delete_button.hide();
+                    }
+
+                    refresh_summary();
+                }
+            });
+        });
     });
 });

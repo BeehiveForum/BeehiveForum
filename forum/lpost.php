@@ -116,12 +116,11 @@ if (isset($_POST['t_newthread']) && (isset($_POST['post']) || isset($_POST['prev
     $valid = false;
 }
 
-if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
-    $aid = $_POST['aid'];
-} else{
-    $aid = md5(uniqid(mt_rand()));
+if (isset($_POST['attachment']) && is_array($_POST['attachment'])) {
+	$attachments = array_filter($_POST['attachment'], 'is_md5');
+} else {
+	$attachments = array();
 }
-
 if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
     $t_dedupe = $_POST['t_dedupe'];
 } else{
@@ -247,9 +246,15 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         light_html_draw_error(gettext("You cannot reply to posts in this folder"));
     }
 
-    if (attachments_get_count($aid) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+    if (sizeof($attachments) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
         $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
+        $valid = false;
+    }
+
+    if (sizeof($attachments) > 0 && !attachments_check_post_space($uid, $attachments)) {
+
+        $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
         $valid = false;
     }
 
@@ -283,9 +288,15 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         $valid = false;
     }
 
-    if (attachments_get_count($aid) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
+    if (isset($t_fid) && sizeof($attachments) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
         $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
+        $valid = false;
+    }
+
+    if (sizeof($attachments) > 0 && !attachments_check_post_space($uid, $attachments)) {
+
+        $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
         $valid = false;
     }
 }
@@ -393,7 +404,13 @@ if ($valid && isset($_POST['post'])) {
                         email_send_thread_subscription($uid, $t_tid, $new_pid, $thread_modified, $exclude_user_array);
                     }
 
-                    post_save_attachment_id($t_tid, $new_pid, $aid);
+                    if (($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+
+                        foreach ($attachments_array as $attachment) {
+
+                            post_add_attachment($t_tid, $new_pid, $attachment['aid']);
+                        }
+                    }
                 }
             }
 
@@ -488,6 +505,7 @@ if ($valid && isset($_POST['preview'])) {
     }
 
     $preview_message['CREATED'] = time();
+	$preview_message['ATTACHMENTS'] = $attachments;
 
     light_message_display(0, $preview_message, 0, 0, 0, false, false, false, false, true);
 }
@@ -579,6 +597,13 @@ if (isset($_POST['t_tid']) && is_numeric($_POST['t_tid']) && isset($_POST['t_rpi
 }
 
 echo "</div>";
+
+if (forum_get_setting('attachments_enabled', 'Y') && (session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid) || $new_thread)) {
+
+    echo "<div class=\"attachments post_attachments\">", gettext('Attachments'), ":\n";
+    echo "  ", attachments_form($uid, $attachments, ATTACHMENT_FILTER_UNASSIGNED), "\n";
+    echo "</div>\n";
+}
 
 echo "</div>";
 echo "</div>";

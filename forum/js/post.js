@@ -131,7 +131,7 @@ $(beehive).bind('init', function() {
 
         $('.post_options_container').find('*').css('margin-left', -9999);
 
-        var quick_reply_data = /^([0-9]+)\.([0-9]+)$/.exec($(this).attr('rel'));
+        var quick_reply_data = /^([0-9]+)\.([0-9]+)$/.exec($(this).data('msg'));
 
         if (CKEDITOR.instances.t_content) {
             CKEDITOR.instances.t_content.destroy();
@@ -158,7 +158,7 @@ $(beehive).bind('init', function() {
 
     $('a[id^="quote_"]').bind('click', function() {
 
-        var pid = $(this).attr('rel');
+        var pid = $(this).data('pid');
 
         if ($.inArray(pid, beehive.quote_list) < 0) {
 
@@ -192,185 +192,5 @@ $(beehive).bind('init', function() {
         });
 
         return false;
-    });
-
-    var $attachments = $('div#attachments');
-
-    var $attachment_list = $attachments.find('ul');
-
-    var $upload_button = $('<a class="button upload">Upload</a>');
-
-    var $delete_button = $('<a class="button delete" style="display: none">Delete</a>');
-
-    var format_file_size = function(filesize) {
-
-        var b = -1;
-
-        do filesize /= 1024, b++; while(99 < filesize);
-
-        return Math.max(filesize, 0.1).toFixed(1) + "kB MB GB TB PB EB".split(" ")[b];
-    };
-
-    var format_file_name = function(filename) {
-
-        33 < filename.length && (filename = filename.slice(0, 19) + "&hellip;" + filename.slice(-13));
-        return filename
-    };
-
-    $attachments.append($upload_button).append('&nbsp;').append($delete_button);
-
-    if ($attachments.find('li.file.complete').length > 0) {
-        $delete_button.show();
-    }
-
-    var uploader = new qq.FineUploaderBasic({
-
-        button: $upload_button[0],
-
-        debug: false,
-
-        request: {
-            endpoint: 'attachments.php',
-            params: {
-                webtag: beehive.webtag,
-                aid: $('input#aid').val(),
-                ajax: true
-            },
-            forceMultipart: false,
-            inputName: 'file[]'
-        },
-
-        callbacks: {
-
-            onSubmit: function(id, filename) {
-
-                $attachment_list.append($.vsprintf(
-                    '<li class="file" id="%(0)s">\
-                       <label for="file-%(0)s">\
-                         <input type="checkbox" id="file-%(0)s">\
-                         <span class="filename">%(1)s</span>\
-                         <span class="filesize"></span>\
-                         <span class="progress"></span>\
-                       </label>\
-                       <span class="retry" title="%(2)s">%(2)s</span>\
-                       <span class="cancel" title="%(3)s">%(3)s</span>\
-                     </li>',
-                    [[
-                        id,
-                        format_file_name(filename),
-                        beehive.lang.retry,
-                        beehive.lang.cancel
-                    ]]
-                ));
-            },
-
-            onUpload: function(id, filename) {
-
-                $attachment_list.find('li#' + id + '.file')
-                    .removeClass('error')
-                    .addClass('uploading');
-            },
-
-            onCancel: function(id, filename) {
-
-                $attachment_list.find('li#' + id + '.file')
-                    .removeClass('error')
-                    .removeClass('uploading')
-                    .addClass('cancelled');
-            },
-
-            onProgress: function(id, filename, loaded, total) {
-
-                $attachment_list.find('li#' + id + '.file')
-                    .find('span.progress')
-                    .html(Math.round(loaded / total * 100) + '%');
-
-                $attachment_list.find('li#' + id + '.file')
-                    .find('span.filesize')
-                    .html(format_file_size(total));
-            },
-
-            onComplete: function(id, filename, responseJSON) {
-
-                var $file = $attachment_list.find('li#' + id + '.file');
-
-                var $label = $file.find('label');
-
-                var $input = $file.find('input:checkbox');
-
-                var $filename = $file.find('span.filename');
-
-                $file.attr('id', responseJSON.hash)
-                    .removeClass('uploading')
-                    .addClass(responseJSON.success ? 'complete' : 'error');
-
-                $label.attr('for', 'file-' + responseJSON.hash);
-
-                $input.attr('id', 'file-' + responseJSON.hash);
-
-                $filename.html(
-                    '<a href="'
-                    + beehive.forum_path
-                    + '/get_attachment.php?webtag='
-                    + encodeURIComponent(beehive.webtag)
-                    + '&amp;hash='
-                    + encodeURIComponent(responseJSON.hash)
-                    + '&amp;filename='
-                    + encodeURIComponent(filename)
-                    + '">'
-                    + filename
-                    + '</a>'
-                );
-
-                $delete_button.show();
-            },
-
-            onError: function(id, filename, errorReason) {
-
-                $attachment_list.find('li#' + id + '.file')
-                    .removeClass('uploading')
-                    .addClass('error');
-            }
-        }
-    });
-
-    $attachments.on('click', 'span.retry', function() {
-        uploader.retry($(this).closest('li.file').attr('id'));
-    });
-
-    $attachments.on('click', 'span.cancel', function() {
-
-        uploader.cancel($(this).closest('li.file').attr('id'));
-
-        $(this).closest('li.file').remove();
-    });
-
-    $delete_button.on('click', function() {
-
-        var hashes = [];
-
-        var $files = $attachments.find('li.file').has('input:checked').each(function() {
-            hashes.push($(this).attr('id'));
-        });
-
-        $.ajax({
-            data: {
-                webtag: beehive.webtag,
-                aid: $('input#aid').val(),
-                ajax: true,
-                delete_confirm: true,
-                attachments_delete_confirm: hashes
-            },
-            type: 'POST',
-            url: 'attachments.php',
-            success: function(response) {
-
-                $files.remove();
-
-                if ($attachments.find('li.file.complete').length == 0) {
-                    $delete_button.hide();
-                }
-            }
-        });
     });
 });

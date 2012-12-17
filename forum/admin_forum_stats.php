@@ -338,7 +338,7 @@ if ((($most_downloaded_attachment = stats_get_most_downloaded_attachment()) !== 
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"40%\">", gettext("Most downloaded attachment"), ":&nbsp;</td>\n";
-    echo "                  <td align=\"left\">$attachment_href (Msg: <a href=\"index.php?webtag=$webtag&amp;msg={$most_downloaded_attachment['msg']}\">{$most_downloaded_attachment['msg']}</a>)</td>\n";
+    echo "                  <td align=\"left\">$attachment_href <a href=\"index.php?webtag=$webtag&amp;msg={$most_downloaded_attachment['msg']}\" target=\"_blank\">", gettext('View Message'), "</a></td>\n";
     echo "                </tr>\n";
 
 } else {

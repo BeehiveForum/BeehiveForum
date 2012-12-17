@@ -169,7 +169,7 @@ function user_get_profile($uid)
         $user_profile['PIC_URL'] = $user_prefs['PIC_URL'];
     }
 
-    if (isset($user_prefs['PIC_AID']) && is_md5($user_prefs['PIC_AID'])) {
+    if (isset($user_prefs['PIC_AID']) && is_numeric($user_prefs['PIC_AID'])) {
         $user_profile['PIC_AID'] = $user_prefs['PIC_AID'];
     }
 
@@ -177,7 +177,7 @@ function user_get_profile($uid)
         $user_profile['AVATAR_URL'] = $user_prefs['AVATAR_URL'];
     }
 
-    if (isset($user_prefs['AVATAR_AID']) && is_md5($user_prefs['AVATAR_AID'])) {
+    if (isset($user_prefs['AVATAR_AID']) && is_numeric($user_prefs['AVATAR_AID'])) {
         $user_profile['AVATAR_AID'] = $user_prefs['AVATAR_AID'];
     }
 

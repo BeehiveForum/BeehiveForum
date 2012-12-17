@@ -647,45 +647,45 @@ foreach ($folder_order as $folder_number) {
 
                             echo "</td>\n";
                             echo "                      <td align=\"left\" valign=\"top\">";
-                            echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"", html_get_frame_name('right'), "\" class=\"threadname\" rel=\"t{$thread['TID']}\"";
+                            echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.{$latest_post}\" target=\"", html_get_frame_name('right'), "\" class=\"threadname\" data-tid=\"t{$thread['TID']}\"";
                             echo "title=\"", sprintf(gettext("Thread #%s Started by %s. Viewed %s"), $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME']), true), ($thread['VIEWCOUNT'] == 1) ? gettext("1 time") : sprintf(gettext("%d times"), $thread['VIEWCOUNT'])), "\">";
                             echo word_filter_add_ob_tags($thread['TITLE'], true), "</a> ";
-                            
+
                             if (session::logged_in()) {
 
                                 if (isset($thread['INTEREST']) && ($thread['INTEREST'] == THREAD_INTERESTED)) {
                                     echo "<img src=\"", html_style_image('high_interest.png'), "\" alt=\"", gettext("High Interest"), "\" title=\"", gettext("High Interest"), "\" /> ";
                                 }
-                                
+
                                 if (isset($thread['INTEREST']) && ($thread['INTEREST'] == THREAD_SUBSCRIBED)) {
                                     echo "<img src=\"", html_style_image('subscribe.png'), "\" alt=\"", gettext("Subscribed"), "\" title=\"", gettext("Subscribed"), "\" /> ";
                                 }
-                                
+
                                 if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) {
                                     echo "<img src=\"", html_style_image('friend.png'), "\" alt=\"", gettext("Friend"), "\" title=\"", gettext("Friend"), "\" /> ";
                                 }
-                            }                            
-                            
+                            }
+
                             if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') {
                                 echo "<a href=\"poll_results.php?webtag=$webtag&amp;tid={$thread['TID']}\" target=\"_blank\" class=\"popup 800x600\"><img src=\"", html_style_image('poll.png'), "\" border=\"0\" alt=\"", gettext("This is a poll. Click to view results."), "\" title=\"", gettext("This is a poll. Click to view results."), "\" /></a> ";
                             }
-                            
+
                             if (isset($thread['STICKY']) && $thread['STICKY'] == "Y") {
                                 echo "<img src=\"", html_style_image('sticky.png'), "\" alt=\"", gettext("Sticky"), "\" title=\"", gettext("Sticky"), "\" /> ";
                             }
 
                             if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_SPLIT) {
-                                
+
                                 echo "<img src=\"", html_style_image('split_thread.png'), "\" alt=\"", gettext("Thread has been split"), "\" title=\"", gettext("Thread has been split"), "\" /> ";
-                            
+
                             } else if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_MERGE) {
-                                
+
                                 echo "<img src=\"", html_style_image('merge_thread.png'), "\" alt=\"", gettext("Thread has been merged"), "\" title=\"", gettext("Thread has been merged"), "\" /> ";
                             }
 
-                            if (isset($thread['AID']) && is_md5($thread['AID'])) {
+                            if (isset($thread['ATTACHMENT_COUNT']) && $thread['ATTACHMENT_COUNT'] > 0) {
                                 echo "<img src=\"", html_style_image('attach.png'), "\" alt=\"", gettext("Attachment"), "\" title=\"", gettext("Attachment"), "\" /> ";
-                            }                            
+                            }
 
                             echo "<span class=\"threadxnewofy\">{$number}</span></td>\n";
                             echo "                      <td valign=\"top\" style=\"white-space: nowrap\" align=\"right\"><span class=\"threadtime\">{$thread_time}&nbsp;</span></td>\n";
@@ -817,10 +817,10 @@ if (session::logged_in()) {
     echo "        ", form_input_hidden('mark_read_confirm', 'N'), "\n";
 
     $labels = array(
-        gettext("All Discussions"), 
+        gettext("All Discussions"),
         gettext("Next 50 discussions")
     );
-    
+
     $selected_option = THREAD_MARK_READ_ALL;
 
     if (sizeof($visible_threads_array) > 0) {

@@ -25,7 +25,6 @@ USA
 require_once 'boot.php';
 
 // Includes required by this page.
-require_once BH_INCLUDE_PATH. 'attachments.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
 require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
@@ -359,12 +358,6 @@ if (isset($fid) && !session::check_perm(USER_PERM_HTML_POSTING, $fid)) {
     $allow_html = false;
 }
 
-if (isset($_POST['aid']) && is_md5($_POST['aid'])) {
-    $aid = $_POST['aid'];
-} else if (!$aid = attachments_get_id($tid, $pid)) {
-    $aid = md5(uniqid(mt_rand()));
-}
-
 if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['apply'])) {
 
     $valid = true;
@@ -384,12 +377,6 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
     if (!session::check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $fid)) {
 
         $error_msg_array[] = gettext("You cannot create new threads in this folder");
-        $valid = false;
-    }
-
-    if (attachments_get_count($aid) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid)) {
-
-        $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
         $valid = false;
     }
 
@@ -517,12 +504,6 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
                         } else {
                             $poll_questions_array[$question_id]['OPTIONS_ARRAY'][$option_id]['OPTION_NAME'] = htmlentities_array($option['OPTION_NAME']);
                         }
-
-                        if (attachments_embed_check($option['OPTION_NAME']) && ($allow_html == true)) {
-
-                            $error_msg_array[] = gettext("You are not allowed to embed attachments in your posts.");
-                            $valid = false;
-                        }
                     }
                 }
             }
@@ -636,8 +617,6 @@ if ($valid && isset($_POST['apply'])) {
         thread_change_title($tid, $thread_title);
 
         post_add_edit_text($tid, 1);
-
-        post_save_attachment_id($tid, $pid, $aid);
     }
 
     header_redirect("discussion.php?webtag=$webtag&msg=$tid.1&edit_success=$tid.1");
@@ -647,7 +626,7 @@ if (!$folder_dropdown = folder_draw_dropdown($fid, "fid", "", FOLDER_ALLOW_POLL_
     html_draw_error(gettext("You cannot create new threads."));
 }
 
-html_draw_top(sprintf("title=%s", gettext("Edit Poll")), "basetarget=_blank", "resize_width=960", "post.js", "poll.js", "attachments.js", "emoticons.js", 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Edit Poll")), "basetarget=_blank", "resize_width=960", "post.js", "poll.js", "emoticons.js", 'class=window_title');
 
 echo "<h1>", gettext("Edit Poll"), "</h1>\n";
 
@@ -778,8 +757,6 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $poll_display.= "<p class=\"postbody\" align=\"center\">". gettext("Note: Poll votes are randomly generated for preview only."). "</p>\n";
 
     $poll_data['CONTENT'] = $poll_display;
-
-    $poll_data['AID'] = $aid;
 
     echo "                <tr>\n";
     echo "                  <td align=\"center\"><br />\n";
@@ -1097,12 +1074,6 @@ echo "                              <td align=\"left\">\n";
 echo "                                ", form_submit("apply", gettext("Apply")), "&nbsp;", form_submit("preview_poll", gettext("Preview")), "&nbsp;", form_submit("preview_form", gettext("Preview Voting Form"));
 
 echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&msg=$tid.1\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
-
-if (forum_get_setting('attachments_enabled', 'Y')) {
-
-    echo "&nbsp;<a href=\"attachments.php?webtag=$webtag&amp;aid=$aid\" class=\"button popup 660x500\" id=\"attachments\"><span>", gettext("Attachments"), "</span></a>\n";
-    echo "                                        ", form_input_hidden("aid", htmlentities_array($aid)), "\n";
-}
 
 echo "                              </td>\n";
 echo "                            </tr>\n";

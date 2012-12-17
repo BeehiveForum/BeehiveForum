@@ -326,9 +326,9 @@ function thread_set_interest($tid, $interest)
     if (!is_numeric($interest)) return false;
 
     $thread_interest_array = array(
-        THREAD_IGNORED, 
-        THREAD_NOINTEREST, 
-        THREAD_INTERESTED, 
+        THREAD_IGNORED,
+        THREAD_NOINTEREST,
+        THREAD_INTERESTED,
         THREAD_SUBSCRIBED
     );
 
@@ -585,9 +585,9 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
     if (!is_numeric($tida)) return false;
     if (!is_numeric($tidb)) return false;
-    
+
     if (!in_array($merge_type, array(THREAD_MERGE_BY_CREATED, THREAD_MERGE_START, THREAD_MERGE_END))) return false;
-    
+
     if (!($table_prefix = get_table_prefix())) {
         return thread_merge_error(THREAD_MERGE_FORUM_ERROR, $error_str);
     }
@@ -614,7 +614,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     // Check thread A permissions
     if (!session::check_perm(USER_PERM_FOLDER_MODERATE, $threada['FID'])) {
         return thread_merge_error(THREAD_MERGE_PERMS_ERROR, $error_str);
-    }                            
+    }
 
     // Check thread B permissions
     if (!session::check_perm(USER_PERM_FOLDER_MODERATE, $threada['FID'])) {
@@ -702,12 +702,12 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
         // Return error message.
         return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);
     }
-    
+
     // Insert the new Sphinx Search IDs.
     $sql = "INSERT INTO `{$table_prefix}POST_SEARCH_ID` (TID, PID) ";
     $sql.= "SELECT $new_tid, POST.PID FROM `{$table_prefix}POST` POST ";
     $sql.= "WHERE POST.TID = '$new_tid'";
-    
+
     if (!$db->query($sql)) {
 
         // Unlock the threads if they weren't originally locked.
@@ -716,7 +716,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
         // Return error message.
         return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);
-    }    
+    }
 
     // Update the REPLY_TO_PIDs in the new thread
     $sql = "INSERT INTO `{$table_prefix}POST` (TID, PID, REPLY_TO_PID) ";
@@ -793,11 +793,11 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
     // Return the admin log data.
     return array(
-        $tida, 
-        $threada['TITLE'], 
-        $tidb, 
-        $threadb['TITLE'], 
-        $new_tid, 
+        $tida,
+        $threada['TITLE'],
+        $tidb,
+        $threadb['TITLE'],
+        $new_tid,
         $threada['TITLE']
     );
 }
@@ -853,10 +853,10 @@ function thread_merge_error($error_code, &$error_str)
 function thread_split($tid, $spid, $split_type, &$error_str)
 {
     if (!$db = db::get()) return false;
-    
+
     if (!is_numeric($tid)) return false;
     if (!is_numeric($spid)) return false;
-    
+
     if (!in_array($split_type, array(THREAD_SPLIT_REPLIES, THREAD_SPLIT_FOLLOWING))) return false;
 
     if (!($table_prefix = get_table_prefix())) {
@@ -951,12 +951,12 @@ function thread_split($tid, $spid, $split_type, &$error_str)
         // Return error message.
         return thread_split_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
     }
-    
+
     // Insert the new Sphinx Search IDs.
     $sql = "INSERT INTO `{$table_prefix}POST_SEARCH_ID` (TID, PID) ";
     $sql.= "SELECT $new_tid, POST.PID FROM `{$table_prefix}POST` POST ";
     $sql.= "WHERE POST.TID = '$new_tid'";
-    
+
     if (!$db->query($sql)) {
 
         // Unlock the original thread if it wasn't originally locked.
@@ -964,7 +964,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
         // Return error message.
         return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);
-    }     
+    }
 
     // Update the REPLY_TO_PIDs in the new thread
     $sql = "INSERT INTO `{$table_prefix}POST` (TID, PID, REPLY_TO_PID) ";
@@ -1058,9 +1058,9 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     thread_set_closed($new_tid, ($thread_data['CLOSED'] > 0));
 
     return array(
-        $tid, 
-        $spid, 
-        $new_tid, 
+        $tid,
+        $spid,
+        $new_tid,
         $thread_new['TITLE']
     );
 }
@@ -1273,25 +1273,26 @@ function thread_get_last_page_pid($length, $posts_per_page)
 
 function thread_has_attachments(&$thread_data)
 {
-    if (!isset($thread_data['TID'])) return false;
-
-    if (!is_numeric($thread_data['TID'])) return false;
-
     if (!($table_prefix = get_table_prefix())) return false;
 
     if (!($forum_fid = get_forum_fid())) return false;
 
+    if (!isset($thread_data['TID'])) return false;
+
+    if (!is_numeric($thread_data['TID'])) return false;
+
     if (!$db = db::get()) return false;
 
-    $sql = "SELECT PAI.TID, PAF.AID FROM POST_ATTACHMENT_IDS PAI ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
-    $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.TID = '{$thread_data['TID']}'";
+    $sql = "SELECT PAI.TID, COUNT(PAF.HASH) AS ATTACHMENT_COUNT ";
+    $sql.= "FROM POST_ATTACHMENT_IDS PAI INNER JOIN POST_ATTACHMENT_FILES PAF ";
+    $sql.= "ON (PAF.AID = PAI.AID) WHERE PAI.FID = '$forum_fid' ";
+    $sql.= "AND PAI.TID = '{$thread_data['TID']}' GROUP BY PAI.TID";
 
     if (!$result = $db->query($sql)) return false;
 
-    while (($attachment_data = $result->fetch_assoc())) {
-        $thread_data['AID'] = $attachment_data['AID'];
-    }
+    $attachment_data = $result->fetch_assoc();
+
+    $thread_data['ATTACHMENT_COUNT'] = $attachment_data['ATTACHMENT_COUNT'];
 
     return true;
 }

@@ -87,13 +87,17 @@ function sfs_check_banned($user_data, &$cached_response = false)
 
         if (!($response = sfs_cache_get($sfs_api_url_md5, $cached_response))) {
 
-            $context = stream_context_create(array(
-                'http' => array(
-                    'timeout' => 1
-                ),
-            ));
+            $curl = curl_init($sfs_api_url);
 
-            $response = json_decode(file_get_contents($sfs_api_url, null, $context), true);
+            curl_setopt($curl, CURLOPT_CONNECTTIMEOUT_MS, 500);
+            curl_setopt($curl, CURLOPT_TIMEOUT_MS, 500);
+
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+
+            $response = json_decode(curl_exec($curl), true);
         }
 
         if (!isset($response['success']) || $response['success'] <> 1) {

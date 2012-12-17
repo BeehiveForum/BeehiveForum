@@ -127,11 +127,10 @@ function post_approve($tid, $pid)
     return true;
 }
 
-function post_save_attachment_id($tid, $pid, $aid)
+function post_remove_attachments($tid, $pid)
 {
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
-    if (!is_md5($aid)) return false;
 
     if (!$db = db::get()) return false;
 
@@ -139,9 +138,29 @@ function post_save_attachment_id($tid, $pid, $aid)
 
     if (!($forum_fid = get_forum_fid())) return false;
 
-    $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
-    $sql.= "VALUES ($forum_fid, $tid, $pid, '$aid') ON DUPLICATE KEY ";
-    $sql.= "UPDATE AID = VALUES(AID)";
+    $sql = "DELETE QUICK FROM POST_ATTACHMENT_IDS ";
+    $sql.= "WHERE FID = '$forum_fid' AND TID = '$tid' ";
+    $sql.= "AND PID = '$pid'";
+
+    if (!$db->query($sql)) return false;
+
+    return true;
+}
+
+function post_add_attachment($tid, $pid, $aid)
+{
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+    if (!is_numeric($aid)) return false;
+
+    if (!$db = db::get()) return false;
+
+    if (!($table_prefix = get_table_prefix())) return false;
+
+    if (!($forum_fid = get_forum_fid())) return false;
+
+    $sql = "INSERT IGNORE INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
+    $sql.= "VALUES ($forum_fid, $tid, $pid, $aid)";
 
     if (!$db->query($sql)) return false;
 

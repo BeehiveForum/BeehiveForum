@@ -215,9 +215,9 @@ function stats_get_html()
                                                          <img src="%s" title="%s" alt="" border="0" width="16" height="16" />
                                                        </a>', $webtag, $user['UID'], $user['AVATAR_URL'], htmlentities_array($active_user_title));
 
-                    } else if (isset($user['AVATAR_AID']) && is_md5($user['AVATAR_AID'])) {
+                    } else if (isset($user['AVATAR_AID']) && is_numeric($user['AVATAR_AID'])) {
 
-                        $attachment = attachments_get_by_hash($user['AVATAR_AID']);
+                        $attachment = attachments_get_by_aid($user['AVATAR_AID']);
 
                         if (!($user_avatar_picture = attachments_make_link($attachment, false, false, false, false))) {
 
@@ -496,13 +496,13 @@ function stats_get_active_guest_count()
 function stats_get_active_user_list()
 {
     $stats = array(
-        'ANON_USERS' => 0, 
-        'BOTS' => 0, 
+        'ANON_USERS' => 0,
+        'BOTS' => 0,
         'GUESTS' => 0,
-        'USER_COUNT' => 0, 
+        'USER_COUNT' => 0,
         'USERS' => array()
     );
-    
+
     $search_engine_bots = array();
 
     $user_sort = array();
@@ -576,9 +576,9 @@ function stats_get_active_user_list()
             $user_data['AVATAR_URL'] = null;
         }
 
-        if (isset($user_data['AVATAR_AID_FORUM']) && is_md5($user_data['AVATAR_AID_FORUM'])) {
+        if (isset($user_data['AVATAR_AID_FORUM']) && is_numeric($user_data['AVATAR_AID_FORUM'])) {
             $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_FORUM'];
-        } else if (isset($user_data['AVATAR_AID_GLOBAL']) && is_md5($user_data['AVATAR_AID_GLOBAL'])) {
+        } else if (isset($user_data['AVATAR_AID_GLOBAL']) && is_numeric($user_data['AVATAR_AID_GLOBAL'])) {
             $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_GLOBAL'];
         } else {
             $user_data['AVATAR_AID'] = null;
@@ -586,7 +586,7 @@ function stats_get_active_user_list()
 
         if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
         if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
-        
+
         if (($user_data['USER_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) > 0) {
 
             unset($user_data);
@@ -608,9 +608,9 @@ function stats_get_active_user_list()
 
                $stats['GUESTS']++;
             }
-        
+
         } else {
-        
+
             if (($anon_logon == USER_ANON_DISABLED) || ($user_data['UID'] == $uid) || (($user_data['PEER_RELATIONSHIP'] & USER_FRIEND) > 0 && ($anon_logon == USER_ANON_FRIENDS_ONLY))) {
 
                 $stats['USER_COUNT']++;
@@ -812,7 +812,7 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $post_tallys = array(
-        'user_stats' => array(), 
+        'user_stats' => array(),
         'post_count' => 0
     );
 
@@ -988,7 +988,7 @@ function stats_get_most_subscribed_thread()
     if (!$result = $db->query($sql)) return false;
 
     if ($result->num_rows == 0) return false;
-    
+
     return $result->fetch_assoc();
 }
 
@@ -1086,7 +1086,6 @@ function stats_get_most_downloaded_attachment()
                 return array(
                     "msg" => sprintf("%s.%s", $attachment_data['TID'], $attachment_data['PID']),
                     "filename" => rawurldecode($attachment_data['FILENAME']),
-                    "filedate" => filemtime("$attachment_dir/{$attachment_data['HASH']}"),
                     "filesize" => $filesize,
                     "aid" => $attachment_data['AID'],
                     "hash" => $attachment_data['HASH'],
@@ -1099,7 +1098,6 @@ function stats_get_most_downloaded_attachment()
                 return array(
                     "msg" => sprintf("%s.%s", $attachment_data['TID'], $attachment_data['PID']),
                     "filename" => rawurldecode($attachment_data['FILENAME']),
-                    "filedate" => filemtime("$attachment_dir/{$attachment_data['HASH']}"),
                     "filesize" => filesize("$attachment_dir/{$attachment_data['HASH']}"),
                     "aid" => $attachment_data['AID'],
                     "hash" => $attachment_data['HASH'],
@@ -1118,7 +1116,7 @@ function stats_get_most_popular_forum_style()
     if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
-    
+
     $sql = "SELECT USER_PREFS.STYLE, USERS.USER_COUNT FROM `{$table_prefix}USER_PREFS` USER_PREFS ";
     $sql.= "INNER JOIN (SELECT STYLE, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY STYLE LIMIT 1) AS USERS ";
     $sql.= "ON (USERS.STYLE = USER_PREFS.STYLE)";
@@ -1128,7 +1126,7 @@ function stats_get_most_popular_forum_style()
     if ($result->num_rows == 0) return false;
 
     if (!($style_data = $result->fetch_assoc())) return false;
-        
+
     return $style_data;
 }
 
@@ -1137,7 +1135,7 @@ function stats_get_most_popular_emoticon_pack()
     if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
-    
+
     $sql = "SELECT USER_PREFS.EMOTICONS, USERS.USER_COUNT FROM `{$table_prefix}USER_PREFS` USER_PREFS ";
     $sql.= "INNER JOIN (SELECT EMOTICONS, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY EMOTICONS LIMIT 1) AS USERS ";
     $sql.= "ON (USERS.EMOTICONS = USER_PREFS.EMOTICONS)";
@@ -1147,7 +1145,7 @@ function stats_get_most_popular_emoticon_pack()
     if ($result->num_rows == 0) return false;
 
     if (!($emoticon_data = $result->fetch_assoc())) return false;
-            
+
     return $emoticon_data;
 }
 
@@ -1166,7 +1164,7 @@ function stats_get_most_popular_language()
     if ($result->num_rows == 0) return false;
 
     if (!($language_data = $result->fetch_assoc())) return false;
-    
+
     return $language_data;
 }
 

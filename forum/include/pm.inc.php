@@ -874,9 +874,7 @@ function pm_message_get($mid)
         pm_mark_as_read($mid);
     }
 
-    if (($aid = pm_has_attachments($mid))) {
-        $pm_message_array['AID'] = $aid;
-    }
+    pm_has_attachments($pm_message_array);
 
     return $pm_message_array;
 }
@@ -1012,45 +1010,21 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
     echo "                        <td class=\"postbody\" align=\"left\">{$pm_message_array['CONTENT']}</td>\n";
     echo "                      </tr>\n";
 
-    if (isset($pm_message_array['AID'])) {
+    if (isset($pm_message_array['ATTACHMENTS']) && sizeof($pm_message_array['ATTACHMENTS']) > 0) {
 
-        $aid = $pm_message_array['AID'];
+        if (($attachments_array = attachments_get($pm_message_array['FROM_UID'], ATTACHMENT_FILTER_BOTH, $pm_message_array['ATTACHMENTS']))) {
 
-        $attachments_array = array();
-        $image_attachments_array = array();
+            echo "              <tr>\n";
+            echo "                <td class=\"postbody\" align=\"left\">\n";
+            echo "                  <p><b>", gettext("Attachments"), ":</b><br />\n";
 
-        if (attachments_get($pm_message_array['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
-
-            // Draw the attachment header at the bottom of the post
-            echo "                      <tr>\n";
-            echo "                        <td class=\"postbody\" align=\"left\">\n";
-
-            if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
-
-                echo "                              <p><b>", gettext("Attachments"), ":</b><br />\n";
-
-                foreach ($attachments_array as $attachment) {
-
-                    echo "                              ", attachments_make_link($attachment, true, false, $export_html), "<br />\n";
-                }
-
-                echo "                              </p>\n";
+            foreach ($attachments_array as $attachment) {
+                echo attachments_make_link($attachment), ($attachment['thumbnail'] == 'N') ? "<br />\n" : "\n";
             }
 
-            if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
-
-                echo "                              <p><b>", gettext("Image Attachments"), ":</b><br />\n";
-
-                foreach ($image_attachments_array as $attachment) {
-
-                    echo "                              ", attachments_make_link($attachment, true, false, $export_html), "\n";
-                }
-
-                echo "                              </p>\n";
-            }
-
-            echo "                        </td>\n";
-            echo "                      </tr>\n";
+            echo "                  </p>\n";
+            echo "                </td>\n";
+            echo "              </tr>\n";
         }
     }
 
@@ -1159,43 +1133,27 @@ function pm_message_get_folder($mid, $type = 0)
     return false;
 }
 
-function pm_save_attachment_id($mid, $aid)
+function pm_add_attachment($mid, $aid)
 {
     if (!is_numeric($mid)) return false;
-    if (!is_md5($aid)) return false;
+    if (!is_numeric($aid)) return false;
 
     if (!$db = db::get()) return false;
 
-    $sql = "SELECT AID FROM PM_ATTACHMENT_IDS WHERE MID = '$mid'";
+    $sql = "INSERT IGNORE INTO PM_ATTACHMENT_IDS (MID, AID) ";
+    $sql.= "VALUES ($mid, $aid)";
 
     if (!$result = $db->query($sql)) return false;
-
-    if ($result->num_rows < 1) {
-
-        $sql = "INSERT INTO PM_ATTACHMENT_IDS (MID, AID) ";
-        $sql.= "VALUES ('$mid', '$aid')";
-
-        if (!$result = $db->query($sql)) return false;
-
-    } else {
-
-        $sql = "UPDATE LOW_PRIORITY PM_ATTACHMENT_IDS SET AID = '$aid' ";
-        $sql.= "WHERE MID = '$mid'";
-
-        if (!$result = $db->query($sql)) return false;
-    }
 
     return true;
 }
 
-function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
+function pm_send_message($to_uid, $from_uid, $subject, $content)
 {
     if (!$db = db::get()) return false;
 
     if (!is_numeric($to_uid)) return false;
     if (!is_numeric($from_uid)) return false;
-
-    if (!is_md5($aid)) return false;
 
     // Escape the subject and content for insertion into database.
     $subject_escaped = $db->escape($subject);
@@ -1226,11 +1184,8 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
 
         if (isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
 
-            if (!pm_add_sent_item($new_mid, $to_uid, $from_uid, $subject, $content, $aid)) return false;
+            if (!pm_add_sent_item($new_mid, $to_uid, $from_uid, $subject, $content)) return false;
         }
-
-        // Save the attachment ID.
-        pm_save_attachment_id($new_mid, $aid);
 
         return $new_mid;
     }
@@ -1238,15 +1193,13 @@ function pm_send_message($to_uid, $from_uid, $subject, $content, $aid)
     return false;
 }
 
-function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content, $aid)
+function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content)
 {
     if (!$db = db::get()) return false;
 
     if (!is_numeric($sent_item_mid)) return false;
     if (!is_numeric($to_uid)) return false;
     if (!is_numeric($from_uid)) return false;
-
-    if (!is_md5($aid)) return false;
 
     // Escape the subject and content for insertion into database.
     $subject_escaped = $db->escape($subject);
@@ -1273,9 +1226,6 @@ function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content
         $sql.= "VALUES ('$new_mid', '$content_escaped')";
 
         if (!$db->query($sql)) return false;
-
-        // Save the attachment ID.
-        pm_save_attachment_id($new_mid, $aid);
 
         return  $new_mid;
     }
@@ -1411,9 +1361,9 @@ function pm_delete_message($mid)
     if (($uid = session::get_value('UID')) === false) return false;
 
     $sql = "SELECT PM.TYPE, PM.TO_UID, PM.FROM_UID, ";
-    $sql.= "PAF.FILENAME, AT.AID FROM PM PM ";
-    $sql.= "LEFT JOIN PM_ATTACHMENT_IDS AT ON (AT.MID = PM.MID) ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = AT.AID) ";
+    $sql.= "PAF.FILENAME, PAF.HASH FROM PM PM ";
+    $sql.= "LEFT JOIN PM_ATTACHMENT_IDS PAI ON (PAI.MID = PM.MID) ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
     $sql.= "WHERE (((PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid') OR ";
     $sql.= "((PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid') OR ";
     $sql.= "((PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid') OR ";
@@ -1429,7 +1379,7 @@ function pm_delete_message($mid)
     $result_row = $result->fetch_assoc();
 
     if ($result_row['TYPE'] == PM_SENT && isset($result_row['AID'])) {
-        attachments_delete_by_aid($result_row['AID']);
+        attachments_delete($result_row['HASH']);
     }
 
     $sql = "DELETE QUICK FROM PM WHERE MID = '$mid'";
@@ -1447,12 +1397,10 @@ function pm_delete_messages($messages_array)
 {
     if (!is_array($messages_array)) return false;
 
-    $messages_array = array_filter($messages_array, 'is_numeric');
-
     if (sizeof($messages_array) < 1) return false;
 
-    foreach ($messages_array as $mid) {
-        if (!pm_delete_message($mid)) return false;
+    foreach ($messages_array as $message) {
+        if (!pm_delete_message($message)) return false;
     }
 
     return true;
@@ -1493,12 +1441,10 @@ function pm_archive_messages($messages_array)
 {
     if (!is_array($messages_array)) return false;
 
-    $messages_array = array_filter($messages_array, 'is_numeric');
-
     if (sizeof($messages_array) < 1) return false;
 
-    foreach ($messages_array as $mid) {
-        if (!pm_archive_message($mid)) return false;
+    foreach ($messages_array as $message) {
+        if (!pm_archive_message($message)) return false;
     }
 
     return true;
@@ -1741,44 +1687,49 @@ function pm_auto_prune_enabled()
     return ($pm_prune_length > 0);
 }
 
-function pms_have_attachments(&$message_array)
+function pms_have_attachments(&$messages_array)
 {
-    if (!is_array($message_array)) return false;
+    if (!is_array($messages_array)) return false;
 
-    if (sizeof($message_array) < 1) return false;
+    if (sizeof($messages_array) < 1) return false;
 
-    $mid_list = implode(',', array_filter(array_keys($message_array), 'is_numeric'));
+    $mid_list = implode(',', array_filter(array_keys($messages_array), 'is_numeric'));
 
     if (!$db = db::get()) return false;
 
-    $sql = "SELECT PMI.MID, PAF.AID FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "LEFT JOIN PM_ATTACHMENT_IDS PMI ON (PMI.AID = PAF.AID) ";
-    $sql.= "WHERE PMI.MID IN ($mid_list) ";
+    $sql = "SELECT PMI.MID, COUNT(PAF.HASH) AS ATTACHMENT_COUNT ";
+    $sql.= "FROM POST_ATTACHMENT_FILES PAF INNER JOIN PM_ATTACHMENT_IDS PMI ";
+    $sql.= "ON (PMI.AID = PAF.AID) WHERE PMI.MID IN ($mid_list) ";
+    $sql.= "GROUP BY PMI.MID";
 
     if (!$result = $db->query($sql)) return false;
 
     while (($pm_attachment_data = $result->fetch_assoc())) {
-        $message_array[$pm_attachment_data['MID']]['AID'] = $pm_attachment_data['AID'];
+        $messages_array[$pm_attachment_data['MID']]['ATTACHMENT_COUNT'] = $pm_attachment_data['ATTACHMENT_COUNT'];
     }
 
     return true;
 }
 
-function pm_has_attachments($mid)
+function pm_has_attachments(&$message_data)
 {
-    if (!is_numeric($mid)) return false;
+    if (!isset($message_data['MID'])) return false;
+
+    if (!is_numeric($message_data['MID'])) return false;
 
     if (!$db = db::get()) return false;
 
-    $sql = "SELECT AID FROM PM_ATTACHMENT_IDS WHERE MID = '$mid'";
+    $sql = "SELECT PAF.HASH FROM PM_ATTACHMENT_IDS PAI ";
+    $sql.= "INNER JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
+    $sql.= "WHERE PAI.MID = '{$message_data['MID']}'";
 
     if (!$result = $db->query($sql)) return false;
 
-    if ($result->num_rows == 0) return false;
+    while (($attachment_data = $result->fetch_assoc())) {
+        $message_data['ATTACHMENTS'][] = $attachment_data['HASH'];
+    }
 
-    list($aid) = $result->fetch_row();
-
-    return $aid;
+    return true;
 }
 
 function pm_export_folders($pm_folders_array, $options_array)
@@ -1788,6 +1739,8 @@ function pm_export_folders($pm_folders_array, $options_array)
 
     $messages_array = array();
 
+    $pm_message_count_array = pm_get_folder_message_counts();
+
     foreach ($pm_folders_array as $folder) {
 
         $folder_messages_array = array();
@@ -1796,32 +1749,32 @@ function pm_export_folders($pm_folders_array, $options_array)
 
             case PM_FOLDER_INBOX:
 
-                $folder_messages_array = pm_get_inbox();
+                $folder_messages_array = pm_get_inbox('CREATED', 'ASC', 1, $pm_message_count_array[PM_FOLDER_INBOX]);
                 break;
 
             case PM_FOLDER_SENT:
 
-                $folder_messages_array = pm_get_sent();
+                $folder_messages_array = pm_get_sent('CREATED', 'ASC', 1, $pm_message_count_array[PM_FOLDER_SENT]);
                 break;
 
             case PM_FOLDER_OUTBOX:
 
-                $folder_messages_array = pm_get_outbox();
+                $folder_messages_array = pm_get_outbox('CREATED', 'ASC', 1, $pm_message_count_array[PM_FOLDER_OUTBOX]);
                 break;
 
             case PM_FOLDER_SAVED:
 
-                $folder_messages_array = pm_get_saved_items();
+                $folder_messages_array = pm_get_saved_items('CREATED', 'ASC', 1, $pm_message_count_array[PM_FOLDER_SAVED]);
                 break;
 
             case PM_FOLDER_DRAFTS:
 
-                $folder_messages_array = pm_get_drafts();
+                $folder_messages_array = pm_get_drafts('CREATED', 'ASC', 1, $pm_message_count_array[PM_FOLDER_DRAFTS]);
                 break;
         }
 
         if (sizeof($folder_messages_array) > 0) {
-            $messages_array = array_merge($messages_array, array_keys($folder_messages_array['message_array']));
+            $messages_array+= $folder_messages_array['message_array'];
         }
     }
 
@@ -1865,8 +1818,6 @@ function pm_export_messages($messages_array, $options_array = array())
 {
     if (!is_array($messages_array)) return false;
 
-    $messages_array = array_filter($messages_array, 'is_numeric');
-
     if (sizeof($messages_array) < 1) return false;
 
     if (!is_array($options_array)) $options_array = array();
@@ -1881,54 +1832,68 @@ function pm_export_messages($messages_array, $options_array = array())
         $options_array['PM_EXPORT_STYLE'] = session::get_value('PM_EXPORT_STYLE');
     }
 
-    $zip_file = new zip_file();
+    if (!isset($options_array['PM_EXPORT_ATTACHMENTS'])) {
+        $options_array['PM_EXPORT_ATTACHMENTS'] = session::get_value('PM_EXPORT_ATTACHMENTS');
+    }
+
+    $zip = new ZipArchive();
+
+    $zip_filename = tempnam(sys_get_temp_dir(), 'bhpe');
+
+    if (!($zip->open($zip_filename, ZipArchive::CREATE))) {
+        return false;
+    }
 
     if (($options_array['PM_EXPORT_STYLE'] == "Y") && (@file_exists("styles/style.css"))) {
-        $zip_file->add_file(file_get_contents("styles/style.css"), "styles/style.css");
+
+        $zip->addEmptyDir("styles");
+        $zip->addFile("styles/style.css", "styles/style.css");
     }
 
     switch ($options_array['PM_EXPORT_TYPE']) {
 
         case PM_EXPORT_HTML:
 
-            if (!pm_export_html($messages_array, $zip_file, $options_array)) return false;
+            if (!pm_export_html($messages_array, $zip, $options_array)) return false;
             break;
 
         case PM_EXPORT_XML:
 
-            if (!pm_export_xml($messages_array, $zip_file, $options_array)) return false;
+            if (!pm_export_xml($messages_array, $zip, $options_array)) return false;
             break;
 
         case PM_EXPORT_CSV:
 
-            if (!pm_export_csv($messages_array, $zip_file, $options_array)) return false;
+            if (!pm_export_csv($messages_array, $zip, $options_array)) return false;
             break;
     }
 
+    if ($options_array['PM_EXPORT_ATTACHMENTS'] == "Y") {
+        pm_export_attachments($messages_array, $zip);
+    }
+
+    $zip->close();
+
+    $file_size = filesize($zip_filename);
+
+    while(@ob_end_clean());
+
+    header("Content-Length: $file_size");
     header("Content-Type: application/zip");
-    header("Expires: ". gmdate('D, d M Y H:i:s'). " GMT");
     header("Content-Disposition: attachment; filename=\"pm_backup_{$logon}.zip\"");
-    header("Pragma: no-cache");
 
-    echo $zip_file->output_zip();
-
+    readfile($zip_filename);
     exit;
 }
 
-function pm_export_html($messages_array, &$zip_file, $options_array = array())
+function pm_export_html($messages_array, ZipArchive $zip, $options_array = array())
 {
     if (!is_array($messages_array)) return false;
-
-    if (!is_object($zip_file)) return false;
 
     if (!is_array($options_array)) $options_array = array();
 
     if (!isset($options_array['PM_EXPORT_FILE'])) {
         $options_array['PM_EXPORT_FILE'] = session::get_value('PM_EXPORT_FILE');
-    }
-
-    if (!isset($options_array['PM_EXPORT_ATTACHMENTS'])) {
-        $options_array['PM_EXPORT_ATTACHMENTS'] = session::get_value('PM_EXPORT_ATTACHMENTS');
     }
 
     if (!isset($options_array['PM_EXPORT_WORDFILTER'])) {
@@ -1941,13 +1906,7 @@ function pm_export_html($messages_array, &$zip_file, $options_array = array())
 
     if (sizeof($messages_array) == 0) return false;
 
-    foreach ($messages_array as $mid) {
-
-        if (!($message = pm_message_get($mid))) return false;
-
-        if (isset($message['AID']) && ($options_array['PM_EXPORT_ATTACHMENTS'] == 'Y')) {
-            pm_export_attachments($message['AID'], $message['FROM_UID'], $zip_file);
-        }
+    foreach ($messages_array as $message) {
 
         $message['FOLDER'] = pm_message_get_folder($message['MID']);
         $message['CONTENT'] = pm_get_content($message['MID']);
@@ -1970,7 +1929,7 @@ function pm_export_html($messages_array, &$zip_file, $options_array = array())
 
             $pm_display.= pm_export_html_bottom();
 
-            $zip_file->add_file($pm_display, sprintf("message_%s.html", $message['MID']));
+            $zip->addFromString(sprintf("message_%s.html", $message['MID']), $pm_display);
         }
     }
 
@@ -1978,26 +1937,20 @@ function pm_export_html($messages_array, &$zip_file, $options_array = array())
 
         $pm_display.= pm_export_html_bottom();
 
-        $zip_file->add_file($pm_display, "messages.html");
+        $zip->addFromString("messages.html", $pm_display);
     }
 
     return true;
 }
 
-function pm_export_xml($messages_array, &$zip_file, $options_array = array())
+function pm_export_xml($messages_array, ZipArchive $zip, $options_array = array())
 {
     if (!is_array($messages_array)) return false;
-
-    if (!is_object($zip_file)) return false;
 
     if (!is_array($options_array)) $options_array = array();
 
     if (!isset($options_array['PM_EXPORT_FILE'])) {
         $options_array['PM_EXPORT_FILE'] = session::get_value('PM_EXPORT_FILE');
-    }
-
-    if (!isset($options_array['PM_EXPORT_ATTACHMENTS'])) {
-        $options_array['PM_EXPORT_ATTACHMENTS'] = session::get_value('PM_EXPORT_ATTACHMENTS');
     }
 
     if (!isset($options_array['PM_EXPORT_WORDFILTER'])) {
@@ -2010,13 +1963,7 @@ function pm_export_xml($messages_array, &$zip_file, $options_array = array())
     $pm_display.= "  <beehiveforum>\n";
     $pm_display.= "    <messages>\n";
 
-    foreach ($messages_array as $mid) {
-
-        if (!($message = pm_message_get($mid))) return false;
-
-        if (isset($message['AID']) && ($options_array['PM_EXPORT_ATTACHMENTS'] == 'Y')) {
-            pm_export_attachments($message['AID'], $message['FROM_UID'], $zip_file);
-        }
+    foreach ($messages_array as $message) {
 
         $message['FOLDER'] = pm_message_get_folder($message['MID']);
         $message['CONTENT'] = pm_get_content($message['MID']);
@@ -2024,8 +1971,6 @@ function pm_export_xml($messages_array, &$zip_file, $options_array = array())
         if ($options_array['PM_EXPORT_WORDFILTER'] == 'Y') {
             $message = array_map('pm_export_word_filter_apply', $message);
         }
-
-        unset($message['AID']);
 
         $pm_display.= "      <message>\n";
 
@@ -2040,7 +1985,7 @@ function pm_export_xml($messages_array, &$zip_file, $options_array = array())
             $pm_display.= "    </messages>\n";
             $pm_display.= "  </beehiveforum>\n";
 
-            $zip_file->add_file($pm_display, sprintf("message_%s.xml", $message['MID']));
+            $zip->addFromString(sprintf("message_%s.xml", $message['MID']), $pm_display);
 
             $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
             $pm_display.= "  <beehiveforum>\n";
@@ -2053,26 +1998,20 @@ function pm_export_xml($messages_array, &$zip_file, $options_array = array())
         $pm_display.= "    </messages>\n";
         $pm_display.= "  </beehiveforum>\n";
 
-        $zip_file->add_file($pm_display, "messages.xml");
+        $zip->addFromString("messages.xml", $pm_display);
     }
 
     return true;
 }
 
-function pm_export_csv($messages_array, &$zip_file, $options_array = array())
+function pm_export_csv($messages_array, ZipArchive $zip, $options_array = array())
 {
     if (!is_array($messages_array)) return false;
-
-    if (!is_object($zip_file)) return false;
 
     if (!is_array($options_array)) $options_array = array();
 
     if (!isset($options_array['PM_EXPORT_FILE'])) {
         $options_array['PM_EXPORT_FILE'] = session::get_value('PM_EXPORT_FILE');
-    }
-
-    if (!isset($options_array['PM_EXPORT_ATTACHMENTS'])) {
-        $options_array['PM_EXPORT_ATTACHMENTS'] = session::get_value('PM_EXPORT_ATTACHMENTS');
     }
 
     if (!isset($options_array['PM_EXPORT_WORDFILTER'])) {
@@ -2101,13 +2040,7 @@ function pm_export_csv($messages_array, &$zip_file, $options_array = array())
 
     if (!fputcsv($pm_csv_export, $pm_csv_header)) return false;
 
-    foreach ($messages_array as $mid) {
-
-        if (!($message = pm_message_get($mid))) return false;
-
-        if (isset($message['AID']) && ($options_array['PM_EXPORT_ATTACHMENTS'] == 'Y')) {
-            pm_export_attachments($message['AID'], $message['FROM_UID'], $zip_file);
-        }
+    foreach ($messages_array as $message) {
 
         $message['FOLDER'] = pm_message_get_folder($message['MID']);
 
@@ -2118,8 +2051,6 @@ function pm_export_csv($messages_array, &$zip_file, $options_array = array())
         if ($options_array['PM_EXPORT_WORDFILTER'] == 'Y') {
             $message = array_map('pm_export_word_filter_apply', $message);
         }
-
-        unset($message['AID']);
 
         if (!fputcsv($pm_csv_export, $message)) return false;
 
@@ -2133,7 +2064,7 @@ function pm_export_csv($messages_array, &$zip_file, $options_array = array())
                 $pm_csv_contents.= fgets($pm_csv_export);
             }
 
-            $zip_file->add_file($pm_csv_contents, sprintf("message_%s.csv", $message['MID']));
+            $zip->addFromString(sprintf("message_%s.csv", $message['MID']), $pm_csv_contents);
 
             fclose($pm_csv_export);
 
@@ -2153,7 +2084,7 @@ function pm_export_csv($messages_array, &$zip_file, $options_array = array())
             $pm_csv_contents.= fgets($pm_csv_export);
         }
 
-        $zip_file->add_file($pm_csv_contents, 'messages.csv');
+        $zip->addFromString('messages.csv', $pm_csv_contents);
     }
 
     fclose($pm_csv_export);
@@ -2167,58 +2098,32 @@ function pm_export_word_filter_apply($content)
     return word_filter_apply($content, $uid);
 }
 
-function pm_export_attachments($aid, $from_uid, &$zip_file)
+function pm_export_attachments($messages_array, ZipArchive $zip)
 {
-    if (!md5($aid)) return false;
-    if (!is_numeric($from_uid)) return false;
-    if (!is_object($zip_file)) return false;
+    if (!is_array($messages_array)) return false;
 
     $attachments_added_success = false;
 
-    if (!($attachment_dir = attachments_check_dir())) return false;
+    $zip->addEmptyDir("attachments");
 
-    $attachments_array = array();
+    foreach ($messages_array as $message) {
 
-    $image_attachments_array = array();
+        if (($attachments_array = attachments_get($message['FROM_UID'], ATTACHMENT_FILTER_ASSIGNED, $message['ATTACHMENTS']))) {
 
-    if (!attachments_get($from_uid, $aid, $attachments_array, $image_attachments_array)) return false;
+            foreach ($attachments_array as $attachment) {
 
-    if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
+                if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
 
-        foreach ($attachments_array as $attachment) {
+                    $attachments_added_success = true;
 
-            if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
-
-                $attachments_added_success = true;
-                $attachment_content = implode("", file("$attachment_dir/{$attachment['hash']}"));
-                $zip_file->add_file($attachment_content, "attachments/{$attachment['filename']}");
-            }
-        }
-    }
-
-    if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
-
-        foreach ($image_attachments_array as $attachment) {
-
-            if (@file_exists("$attachment_dir/{$attachment['hash']}")) {
-
-                $attachments_added_success = true;
-                $attachment_content = implode("", file("$attachment_dir/{$attachment['hash']}"));
-                $zip_file->add_file($attachment_content, "attachments/{$attachment['filename']}");
-
-                if (@file_exists("$attachment_dir/{$attachment['hash']}.thumb")) {
-
-                    $attachment_content = implode("", file("$attachment_dir/{$attachment['hash']}.thumb"));
-                    $zip_file->add_file($attachment_content, "attachments/{$attachment['filename']}.thumb");
+                    $zip->addFile("$attachment_dir/{$attachment['hash']}", "attachments/{$attachment['filename']}");
                 }
             }
         }
     }
 
     if ($attachments_added_success == true && $attach_img = html_style_image('attach.png', true)) {
-
-        $attach_img_contents = implode("", file($attach_img));
-        $zip_file->add_file($attach_img_contents, $attach_img);
+        $zip->addFile($attach_img, $attach_img);
     }
 
     return true;

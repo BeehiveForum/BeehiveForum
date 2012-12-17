@@ -350,8 +350,6 @@ echo "</div>\n";
 
 if ($msg_count > 0) {
 
-    $first_msg = $messages[0]['PID'];
-
     foreach ($messages as $message_number => $message) {
 
         if (isset($message['RELATIONSHIP'])) {
@@ -364,26 +362,25 @@ if ($msg_count > 0) {
 
         } else {
 
-          $message['CONTENT'] = message_get_content($tid, $message['PID']);
-
+            $message['CONTENT'] = message_get_content($tid, $message['PID']);
         }
 
         if ($thread_data['POLL_FLAG'] == 'Y') {
 
             if ($message['PID'] == 1) {
 
-                poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, $show_sigs, false, $highlight_array);
+                poll_display($tid, $thread_data['LENGTH'], $pid, $thread_data['FID'], true, $thread_data['CLOSED'], false, $show_sigs, false, $highlight_array);
                 $last_pid = $message['PID'];
 
             } else {
 
-                message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, true, $show_sigs, false, $highlight_array);
+                message_display($tid, $message, $thread_data['LENGTH'], $pid, $thread_data['FID'], true, $thread_data['CLOSED'], true, true, $show_sigs, false, $highlight_array);
                 $last_pid = $message['PID'];
             }
 
         } else {
 
-            message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, false, $show_sigs, false, $highlight_array);
+            message_display($tid, $message, $thread_data['LENGTH'], $pid, $thread_data['FID'], true, $thread_data['CLOSED'], true, false, $show_sigs, false, $highlight_array);
             $last_pid = $message['PID'];
         }
 
@@ -447,7 +444,7 @@ echo "  </tr>\n";
 if (session::logged_in()) {
 
     echo "  <tr>\n";
-    echo "    <td colspan=\"3\" align=\"center\" class=\"postbody\"><img src=\"". html_style_image('quickreplyall.png') ."\" alt=\"", gettext("Quick Reply to All"), "\" title=\"", gettext("Quick Reply to All"), "\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" rel=\"$tid.0\" class=\"quick_reply_link\"><b>", gettext("Quick Reply to All"), "</b></a></td>\n";
+    echo "    <td colspan=\"3\" align=\"center\" class=\"postbody\"><img src=\"". html_style_image('quickreplyall.png') ."\" alt=\"", gettext("Quick Reply to All"), "\" title=\"", gettext("Quick Reply to All"), "\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" data-msg=\"$tid.0\" class=\"quick_reply_link\"><b>", gettext("Quick Reply to All"), "</b></a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td colspan=\"3\">\n";

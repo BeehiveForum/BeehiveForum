@@ -61,11 +61,17 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     if (!($forum_fid = get_forum_fid())) return false;
 
+    if (!is_numeric($tid)) return false;
+
+    if (!is_numeric($pid)) return false;
+
+    if (!is_numeric($limit)) return false;
+
     $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
 
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
 
-    $sql = "SELECT POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
+    $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
     $sql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, UNIX_TIMESTAMP(POST.VIEWED) AS VIEWED, ";
     $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY, POST.IPADDRESS, ";
     $sql.= "POST.MOVED_TID, POST.MOVED_PID, UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, ";
@@ -93,11 +99,13 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     if ($result->num_rows == 0) return false;
 
-    $messages = array();
+    $messages_array = array();
 
     while (($message = $result->fetch_assoc())) {
 
         $message['CONTENT'] = "";
+
+        $message['ATTACHMENTS'] = array();
 
         if (!isset($message['VIEWED'])) $message['VIEWED'] = 0;
 
@@ -134,12 +142,12 @@ function messages_get($tid, $pid = 1, $limit = 1)
         if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
         if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
 
-        if (!is_array($messages)) $messages = array();
-
-        $messages[] = $message;
+        $messages_array[$message['PID']] = $message;
     }
 
-    return ($limit > 1) ? $messages : array_shift($messages);
+    messages_have_attachments($tid, $messages_array);
+
+    return ($limit > 1) ? $messages_array : array_shift($messages_array);
 }
 
 function message_get_content($tid, $pid)
@@ -166,6 +174,34 @@ function message_get_content($tid, $pid)
     }
 
     return $message_content["$tid.$pid"];
+}
+
+function messages_have_attachments($tid, &$messages_array)
+{
+    if (!($table_prefix = get_table_prefix())) return false;
+
+    if (!($forum_fid = get_forum_fid())) return false;
+
+    if (!$db = db::get()) return false;
+
+    if (!is_numeric($tid)) return false;
+
+    if (sizeof($messages_array) < 1) return false;
+
+    $pid_list = implode("','", array_keys($messages_array));
+
+    $sql = "SELECT PAI.PID, PAF.HASH FROM POST_ATTACHMENT_IDS PAI ";
+    $sql.= "INNER JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
+    $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.TID = '$tid' ";
+    $sql.= "AND PAI.PID IN ('$pid_list')";
+
+    if (!$result = $db->query($sql)) return false;
+
+    while (($attachment_data = $result->fetch_assoc())) {
+        $messages_array[$attachment_data['PID']]['ATTACHMENTS'][] = $attachment_data['HASH'];
+    }
+
+    return true;
 }
 
 function message_get_meta_content($msg, &$meta_keywords, &$meta_description)
@@ -335,7 +371,7 @@ function messages_social_links($tid)
 {
     $webtag = get_webtag();
 
-    if ((forum_get_setting('show_share_links', 'Y')) && (session::get_value('SHOW_SHARE_LINKS') == 'Y')) {
+    if (!defined('BEEHIVE_DEVELOPER_MODE') && (forum_get_setting('show_share_links', 'Y')) && (session::get_value('SHOW_SHARE_LINKS') == 'Y')) {
 
         echo "      <div style=\"display: inline-block; vertical-align: middle; margin-top: 1px\">\n";
         echo "        <g:plusone size=\"small\" count=\"false\" href=\"",  htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.1")), "\"></g:plusone>\n";
@@ -532,9 +568,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "&nbsp;<img src=\"{$message['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK']), true), "\" border=\"0\" width=\"16\" height=\"16\" />";
 
-        } else if (isset($message['AVATAR_AID']) && is_md5($message['AVATAR_AID'])) {
+        } else if (isset($message['AVATAR_AID']) && is_numeric($message['AVATAR_AID'])) {
 
-            $attachment = attachments_get_by_hash($message['AVATAR_AID']);
+            $attachment = attachments_get_by_aid($message['AVATAR_AID']);
 
             if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
 
@@ -721,42 +757,19 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             }
         }
 
-        if (($tid <> 0 && isset($message['PID'])) || isset($message['AID'])) {
+        if (isset($message['ATTACHMENTS']) && sizeof($message['ATTACHMENTS']) > 0) {
 
-            $aid = isset($message['AID']) ? $message['AID'] : attachments_get_id($tid, $message['PID']);
-
-            $attachments_array = array();
-            $image_attachments_array = array();
-
-            if (attachments_get($message['FROM_UID'], $aid, $attachments_array, $image_attachments_array)) {
+            if (($attachments_array = attachments_get($message['FROM_UID'], ATTACHMENT_FILTER_BOTH, $message['ATTACHMENTS']))) {
 
                 echo "              <tr>\n";
                 echo "                <td class=\"postbody\" align=\"left\">\n";
+                echo "                  <p><b>", gettext("Attachments"), ":</b><br />\n";
 
-                if (is_array($attachments_array) && sizeof($attachments_array) > 0) {
-
-                    echo "                  <p><b>", gettext("Attachments"), ":</b><br />\n";
-
-                    foreach ($attachments_array as $attachment) {
-
-                        echo "                  ", attachments_make_link($attachment), "<br />\n";
-                    }
-
-                    echo "                  </p>\n";
+                foreach ($attachments_array as $attachment) {
+                    echo attachments_make_link($attachment), ($attachment['thumbnail'] == 'N') ? "<br />\n" : "\n";
                 }
 
-                if (is_array($image_attachments_array) && sizeof($image_attachments_array) > 0) {
-
-                    echo "                  <p><b>", gettext("Image Attachments"), ":</b><br />\n";
-
-                    foreach ($image_attachments_array as $key => $attachment) {
-
-                        echo "                  ", attachments_make_link($attachment), "\n";
-                    }
-
-                    echo "                  </p>\n";
-                }
-
+                echo "                  </p>\n";
                 echo "                </td>\n";
                 echo "              </tr>\n";
             }
@@ -791,7 +804,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                     if ($quick_reply =='Y') {
 
                         echo "<img src=\"", html_style_image('quickreply.png'), "\" border=\"0\" alt=\"", gettext("Quick Reply"), "\" title=\"", gettext("Quick Reply"), "\" />\n";
-                        echo "<a href=\"Javascript:void(0)\" rel=\"$tid.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\">", gettext("Quick Reply"), "</a>\n";
+                        echo "<a href=\"Javascript:void(0)\" data-msg=\"$tid.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\">", gettext("Quick Reply"), "</a>\n";
 
                     } else {
 
@@ -800,7 +813,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                     }
 
                     echo "&nbsp;&nbsp;<img src=\"", html_style_image('quote_disabled.png'), "\" border=\"0\" alt=\"", gettext("Quote"), "\" title=\"", gettext("Quote"), "\" id=\"quote_img_{$message['PID']}\" />";
-                    echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}&amp;quote_list={$message['PID']}\" target=\"_parent\" title=\"", gettext("Quote"), "\" id=\"quote_{$message['PID']}\" rel=\"{$message['PID']}\">", gettext("Quote"), "</a>";
+                    echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}&amp;quote_list={$message['PID']}\" target=\"_parent\" title=\"", gettext("Quote"), "\" id=\"quote_{$message['PID']}\" data-pid=\"{$message['PID']}\">", gettext("Quote"), "</a>";
 
                     if ((!(session::check_perm(USER_PERM_PILLORIED, 0)) && ((($uid != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($uid == $message['FROM_UID'])) && session::check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
@@ -893,8 +906,8 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
 
     if ($quick_reply=='N') {
 
-        $html.= "                        <td align=\"left\"><a href=\"Javascript:void(0)\" rel=\"$tid.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\"><img src=\"". html_style_image('quickreply.png'). "\" border=\"0\" alt=\"". gettext("Quick Reply"). "\" title=\"". gettext("Quick Reply"). "\" /></a></td>\n";
-        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"Javascript:void(0)\" rel=\"$tid.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\">". gettext("Quick Reply"). "</a></td>\n";
+        $html.= "                        <td align=\"left\"><a href=\"Javascript:void(0)\" data-msg=\"$tid.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\"><img src=\"". html_style_image('quickreply.png'). "\" border=\"0\" alt=\"". gettext("Quick Reply"). "\" title=\"". gettext("Quick Reply"). "\" /></a></td>\n";
+        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"Javascript:void(0)\" data-msg=\"$tid.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\">". gettext("Quick Reply"). "</a></td>\n";
 
     } else {
 
@@ -1608,7 +1621,7 @@ function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
 
     // Check font size is greater than 4
     if ($font_size > 5) {
-        $font_size_html[] = "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=smaller\" target=\"_self\" class=\"font_size_smaller\" rel=\"$tid.$pid\">". gettext("Smaller"). "</a>";
+        $font_size_html[] = "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=smaller\" target=\"_self\" class=\"font_size_smaller\" data-msg=\"$tid.$pid\">". gettext("Smaller"). "</a>";
     }
 
     // Add the current font size.
@@ -1616,7 +1629,7 @@ function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
 
     // Check the font size is lower than 16
     if ($font_size < 15) {
-        $font_size_html[] = "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=larger\" target=\"_self\" class=\"font_size_larger\" rel=\"$tid.$pid\">". gettext("Larger"). "</a>\n";
+        $font_size_html[] = "<a href=\"user_font.php?webtag=$webtag&amp;msg=$tid.$pid&amp;fontsize=larger\" target=\"_self\" class=\"font_size_larger\" data-msg=\"$tid.$pid\">". gettext("Larger"). "</a>\n";
     }
 
     // Check if we should return just the inner HTML

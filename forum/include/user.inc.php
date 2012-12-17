@@ -937,7 +937,7 @@ function user_update_prefs_callback_insert($column)
 
 function user_update_prefs_callback_update($column)
 {
-    return sprintf("%s = ''", $column);
+    return sprintf("%s = NULL", $column);
 }
 
 function user_check_pref($name, $value)
@@ -1006,10 +1006,6 @@ function user_check_pref($name, $value)
 
         case "PIC_AID":
         case "AVATAR_AID":
-
-            return (is_md5($value) || $value == "");
-            break;
-
         case "ANON_LOGON":
         case "TIMEZONE":
         case "POSTS_PER_PAGE":
@@ -1648,22 +1644,26 @@ function user_allow_email($uid)
     return ($allow_email_count > 0);
 }
 
-function user_prefs_prep_attachments($image_attachments_array)
+function user_prefs_filter_attachments($image_attachments_array, $max_width, $max_height)
 {
-    $attachments_array_prepared = array('' => '&nbsp;');
+    $attachments_array_filtered = array('' => '&nbsp;');
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return array();
 
     foreach ($image_attachments_array as $hash => $attachment_details) {
 
-        if (($image_info = getimagesize("$attachment_dir/$hash"))) {
-
-            $dimensions_text = gettext("Dimensions"). ": {$image_info[0]}x{$image_info[1]}px";
-            $attachments_array_prepared[$hash] = "{$attachment_details['filename']}, $dimensions_text";
+        if (!($image_info = @getimagesize("$attachment_dir/$hash"))) {
+            continue;
         }
+
+        if (($image_info[0] > $max_width) || ($image_info[1] > $max_height)) {
+            continue;
+        }
+
+        $attachments_array_filtered[$attachment_details['aid']] = $attachment_details['filename'];
     }
 
-    return $attachments_array_prepared;
+    return $attachments_array_filtered;
 }
 
 function user_get_local_time()

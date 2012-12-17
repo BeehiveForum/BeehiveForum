@@ -283,7 +283,9 @@ $(beehive).bind('init', function() {
     });
 
     $('input#toggle_all').bind('click', function() {
-        $(this).closest('form').find('input:checkbox').attr('checked', $(this).attr('checked'));
+
+        var $checkboxes = $(this).closest('form').find('input:checkbox');
+        $(this).attr('checked') ? $checkboxes.attr('checked', 'checked') : $checkboxes.removeAttr('checked');
     });
 
     $('a.font_size_larger, a.font_size_smaller').live('click', function() {
@@ -302,7 +304,7 @@ $(beehive).bind('init', function() {
                 'webtag' : beehive.webtag,
                 'ajax'   : 'true',
                 'action' : $this.attr('class'),
-                'msg'    : $this.attr('rel')
+                'msg'    : $this.data('msg')
             },
             'dataType' : 'json',
             'url' : beehive.forum_path + '/ajax.php',

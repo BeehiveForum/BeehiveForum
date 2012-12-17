@@ -612,7 +612,6 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
 
                 $user_image_attachments[] = array(
                     "filename" => rawurldecode($attachment['FILENAME']),
-                    "filedate" => filemtime("$attachment_dir/{$attachment['HASH']}"),
                     "filesize" => $filesize,
                     "aid" => $attachment['AID'],
                     "hash" => $attachment['HASH'],
@@ -626,7 +625,6 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
 
                 $user_attachments[] = array(
                     "filename" => rawurldecode($attachment['FILENAME']),
-                    "filedate" => filemtime("$attachment_dir/{$attachment['HASH']}"),
                     "filesize" => filesize("$attachment_dir/{$attachment['HASH']}"),
                     "aid" => $attachment['AID'],
                     "hash" => $attachment['HASH'],

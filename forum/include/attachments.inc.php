@@ -65,261 +65,165 @@ function attachments_check_dir()
     @mkdir($attachment_dir, 0755, true);
 
     if (!@is_writable($attachment_dir)) return false;
-    
+
     return $attachment_dir;
 }
 
-function attachments_get($uid, $aid, &$user_attachments, &$user_image_attachments, $hash_array = array())
+function attachments_get($uid, $filter = ATTACHMENT_FILTER_BOTH, $hash_array = array())
 {
-    $user_attachments = array();
-    $user_image_attachments = array();
+    if (!($forum_fid = get_forum_fid())) return false;
 
     if (!$db = db::get()) return false;
 
     if (!is_numeric($uid)) return false;
-    if (!is_md5($aid)) return false;
-    if (!is_array($hash_array)) return false;
 
-    if (!is_array($hash_array)) $hash_array = false;
+    if (!is_array($hash_array)) $hash_array = array();
 
-    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+    if (!in_array($filter, array(ATTACHMENT_FILTER_ASSIGNED, ATTACHMENT_FILTER_UNASSIGNED, ATTACHMENT_FILTER_BOTH))) {
+        $filter = ATTACHMENT_FILTER_BOTH;
+    }
 
     $hash_array = array_filter($hash_array, 'is_md5');
+
+    $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.FILESIZE, ";
+    $sql.= "PAF.THUMBNAIL, PAF.DOWNLOADS FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID ";
+    $sql.= "AND PAI.FID = '$forum_fid') LEFT JOIN PM_ATTACHMENT_IDS PMAI ";
+    $sql.= "ON (PMAI.AID = PAF.AID) WHERE PAF.UID = '$uid' ";
+
+    switch ($filter) {
+
+        case ATTACHMENT_FILTER_ASSIGNED:
+
+            $sql.= "AND (PAI.AID IS NOT NULL OR PMAI.AID IS NOT NULL) ";
+            break;
+
+        case ATTACHMENT_FILTER_UNASSIGNED:
+
+            $sql.= "AND PAI.AID IS NULL AND PMAI.AID IS NULL ";
+            break;
+    }
 
     if (is_array($hash_array) && sizeof($hash_array) > 0) {
 
         $hash_list = implode("', '", $hash_array);
-
-        $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
-        $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
-        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-        $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
-        $sql.= "WHERE PAF.UID = '$uid' ";
         $sql.= "AND PAF.HASH IN ('$hash_list') ";
-        $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
-
-    } else {
-
-        $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
-        $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
-        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-        $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
-        $sql.= "WHERE PAF.UID = '$uid' AND PAF.AID = '$aid' ";
-        $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
     }
+
+    $sql.= "ORDER BY PAF.FILENAME";
 
     if (!$result = $db->query($sql)) return false;
 
+    if ($result->num_rows == 0) return false;
+
+    $attachments = array();
+
     while (($attachment = $result->fetch_assoc())) {
 
-        if (@file_exists("$attachment_dir/{$attachment['HASH']}")) {
-
-            if (@file_exists("$attachment_dir/{$attachment['HASH']}.thumb")) {
-
-                $filesize = filesize("$attachment_dir/{$attachment['HASH']}");
-                $filesize+= filesize("$attachment_dir/{$attachment['HASH']}.thumb");
-
-                $user_image_attachments[$attachment['HASH']] = array(
-                    "filename" => rawurldecode($attachment['FILENAME']),
-                    "filedate" => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                    "filesize" => $filesize,
-                    "aid" => $attachment['AID'],
-                    "hash" => $attachment['HASH'],
-                    "mimetype" => $attachment['MIMETYPE'],
-                    "downloads" => $attachment['DOWNLOADS']
-                );
-
-            } else {
-
-                $user_attachments[$attachment['HASH']] = array(
-                    "filename" => rawurldecode($attachment['FILENAME']),
-                    "filedate" => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                    "filesize" => filesize("$attachment_dir/{$attachment['HASH']}"),
-                    "aid" => $attachment['AID'],
-                    "hash" => $attachment['HASH'],
-                    "mimetype" => $attachment['MIMETYPE'],
-                    "downloads" => $attachment['DOWNLOADS']
-                );
-            }
-        }
+        $attachments[$attachment['HASH']] = array(
+            "aid" => $attachment['AID'],
+            "downloads" => $attachment['DOWNLOADS'],
+            "filename" => rawurldecode($attachment['FILENAME']),
+            "filesize" => $attachment['FILESIZE'],
+            "hash" => $attachment['HASH'],
+            "mimetype" => $attachment['MIMETYPE'],
+            "thumbnail" => $attachment['THUMBNAIL'],
+        );
     }
 
-    return (sizeof($user_attachments) > 0 || sizeof($user_image_attachments) > 0);
+    return $attachments;
 }
 
-function attachments_get_all($uid, $aid, &$user_attachments, &$user_image_attachments)
+function attachments_get_by_aid($aid, $uid = null)
 {
-    $user_attachments = array();
-    $user_image_attachments = array();
-
     if (!$db = db::get()) return false;
 
-    if (!is_numeric($uid)) return false;
-    if (!is_md5($aid)) return false;
+    if (!is_numeric($aid)) return false;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
-    $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-    $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
-    $sql.= "WHERE PAF.UID = '$uid' AND PAF.AID <> '$aid'";
-    $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
+    $sql = "SELECT AID, UID, FILENAME, MIMETYPE, FILESIZE, ";
+    $sql.= "THUMBNAIL, HASH, DOWNLOADS FROM POST_ATTACHMENT_FILES ";
+    $sql.= "WHERE AID = '$aid' ";
+
+    if (isset($uid) && is_numeric($uid)) {
+        $sql.= "AND UID = '$uid'";
+    }
 
     if (!$result = $db->query($sql)) return false;
 
-    while (($attachment = $result->fetch_assoc())) {
+    if ($result->num_rows == 0) return false;
 
-        if (@file_exists("$attachment_dir/{$attachment['HASH']}")) {
+    $attachment_data = $result->fetch_assoc();
 
-            if (@file_exists("$attachment_dir/{$attachment['HASH']}.thumb")) {
-
-                $filesize = filesize("$attachment_dir/{$attachment['HASH']}");
-                $filesize+= filesize("$attachment_dir/{$attachment['HASH']}.thumb");
-
-                $user_image_attachments[$attachment['HASH']] = array(
-                    "filename" => rawurldecode($attachment['FILENAME']),
-                    "filedate" => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                    "filesize" => $filesize,
-                    "aid" => $attachment['AID'],
-                    "hash" => $attachment['HASH'],
-                    "mimetype" => $attachment['MIMETYPE'],
-                    "downloads" => $attachment['DOWNLOADS']
-                );
-
-            } else {
-
-                $user_attachments[$attachment['HASH']] = array(
-                    "filename" => rawurldecode($attachment['FILENAME']),
-                    "filedate" => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                    "filesize" => filesize("$attachment_dir/{$attachment['HASH']}"),
-                    "aid" => $attachment['AID'],
-                    "hash" => $attachment['HASH'],
-                    "mimetype" => $attachment['MIMETYPE'],
-                    "downloads" => $attachment['DOWNLOADS']
-                );
-            }
-        }
-    }
-
-    return (sizeof($user_attachments) > 0 || sizeof($user_image_attachments) > 0);
+    return array(
+        "aid" => $attachment_data['AID'],
+        "downloads" => $attachment_data['DOWNLOADS'],
+        "filename" => rawurldecode($attachment_data['FILENAME']),
+        "filesize" => $attachment_data['FILESIZE'],
+        "hash" => $attachment_data['HASH'],
+        "mimetype" => $attachment_data['MIMETYPE'],
+        "thumbnail" => $attachment_data['THUMBNAIL'],
+    );
 }
-
-function attachments_get_users($uid, &$user_attachments, &$user_image_attachments, $hash_array = array())
+function attachments_get_by_hash($hash, $uid = null)
 {
-    $user_attachments = array();
-    $user_image_attachments = array();
-
     if (!$db = db::get()) return false;
 
-    if (!is_numeric($uid)) return false;
-    if (!is_array($hash_array)) return false;
+    if (!is_md5($hash)) return false;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    $hash_array = array_filter($hash_array, 'is_md5');
+    $sql = "SELECT AID, UID, FILENAME, MIMETYPE, FILESIZE, ";
+    $sql.= "THUMBNAIL, HASH, DOWNLOADS FROM POST_ATTACHMENT_FILES ";
+    $sql.= "WHERE HASH = '$hash' ";
 
-    if (is_array($hash_array) && sizeof($hash_array) > 0) {
-
-        $hash_list = implode("', '", $hash_array);
-
-        $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
-        $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
-        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-        $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
-        $sql.= "WHERE PAF.UID = '$uid' AND PAF.HASH IN ('$hash_list') ";
-        $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
-
-    } else {
-
-        $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
-        $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
-        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-        $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
-        $sql.= "WHERE PAF.UID = '$uid' ORDER BY FORUMS.FID DESC, PAF.FILENAME";
+    if (isset($uid) && is_numeric($uid)) {
+        $sql.= "AND UID = '$uid'";
     }
 
     if (!$result = $db->query($sql)) return false;
 
-    while (($attachment = $result->fetch_assoc())) {
+    if ($result->num_rows == 0) return false;
 
-        if (@file_exists("$attachment_dir/{$attachment['HASH']}")) {
+    $attachment_data = $result->fetch_assoc();
 
-            if (@file_exists("$attachment_dir/{$attachment['HASH']}.thumb")) {
-
-                $filesize = filesize("$attachment_dir/{$attachment['HASH']}");
-                $filesize+= filesize("$attachment_dir/{$attachment['HASH']}.thumb");
-
-                $user_image_attachments[$attachment['HASH']] = array(
-                    "filename" => rawurldecode($attachment['FILENAME']),
-                    "filedate" => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                    "filesize" => $filesize,
-                    "aid" => $attachment['AID'],
-                    "hash" => $attachment['HASH'],
-                    "mimetype" => $attachment['MIMETYPE'],
-                    "downloads" => $attachment['DOWNLOADS']
-                );
-
-            } else {
-
-                $user_attachments[$attachment['HASH']] = array(
-                    "filename" => rawurldecode($attachment['FILENAME']),
-                    "filedate" => filemtime("$attachment_dir/{$attachment['HASH']}"),
-                    "filesize" => filesize("$attachment_dir/{$attachment['HASH']}"),
-                    "aid" => $attachment['AID'],
-                    "hash" => $attachment['HASH'],
-                    "mimetype" => $attachment['MIMETYPE'],
-                    "downloads" => $attachment['DOWNLOADS']
-                );
-            }
-        }
-    }
-
-    return (sizeof($user_attachments) > 0 || sizeof($user_image_attachments) > 0);
+    return array(
+        "aid" => $attachment_data['AID'],
+        "downloads" => $attachment_data['DOWNLOADS'],
+        "filename" => rawurldecode($attachment_data['FILENAME']),
+        "filesize" => $attachment_data['FILESIZE'],
+        "hash" => $attachment_data['HASH'],
+        "mimetype" => $attachment_data['MIMETYPE'],
+        "thumbnail" => $attachment_data['THUMBNAIL'],
+    );
 }
 
-function attachments_add($uid, $aid, $fileid, $filename, $mimetype)
+function attachments_add($uid, $filename, $hash, $mimetype, $filesize, $thumbnail = false)
 {
     if (!$db = db::get()) return false;
 
     if (!is_numeric($uid)) return false;
-    if (!is_md5($aid)) return false;
 
-    $hash = md5("$aid$fileid$filename");
     $filename = rawurlencode($filename);
 
     $filename = $db->escape($filename);
+
     $mimetype = $db->escape($mimetype);
 
-    $sql = "INSERT INTO POST_ATTACHMENT_FILES (AID, UID, FILENAME, MIMETYPE, HASH) ";
-    $sql.= "VALUES ('$aid', '$uid', '$filename', '$mimetype', '$hash')";
+    $filesize = $db->escape($filesize);
+
+    $thumbnail = ($thumbnail) ? 'Y' : 'N';
+
+    $hash = $db->escape($hash);
+
+    $sql = "INSERT INTO POST_ATTACHMENT_FILES (UID, FILENAME, MIMETYPE, ";
+    $sql.= "FILESIZE, THUMBNAIL, HASH) VALUES ('$uid', '$filename', ";
+    $sql.= "'$mimetype', '$filesize', '$thumbnail', '$hash')";
 
     if (!$db->query($sql)) return false;
 
-    return true;
-}
-
-function attachments_delete_by_aid($aid)
-{
-    if (!is_md5($aid)) return false;
-
-    if (!$db = db::get()) return false;
-
-    if (($uid = session::get_value('UID')) === false) return false;
-
-    // Fetch the attachment to make sure the user
-    // is able to delete it, i.e. it belongs to them.
-    $sql = "SELECT PAF.HASH FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "WHERE PAF.AID = '$aid' AND PAF.UID = '$uid'";
-
-    if (!$result = $db->query($sql)) return false;
-
-    while (($attachment_data = $result->fetch_assoc())) {
-
-        if (!attachments_delete($attachment_data['HASH'])) return false;
-    }
-
-    return true;
+    return $db->insert_id;
 }
 
 function attachments_delete($hash)
@@ -332,23 +236,10 @@ function attachments_delete($hash)
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    // Fetch the attachment to make sure the user
-    // is able to delete it, i.e. it belongs to them.
-    if (($table_prefix = get_table_prefix())) {
-
-        $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
-        $sql.= "PAI.PID, THREAD.FID FROM POST_ATTACHMENT_FILES PAF ";
-        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-        $sql.= "LEFT JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = PAI.TID) ";
-        $sql.= "WHERE PAF.HASH = '$hash'";
-
-    } else {
-
-        $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
-        $sql.= "PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
-        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-        $sql.= "WHERE PAF.HASH = '$hash'";
-    }
+    $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
+    $sql.= "PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql.= "WHERE PAF.HASH = '$hash'";
 
     if (!$result = $db->query($sql)) return false;
 
@@ -367,8 +258,8 @@ function attachments_delete($hash)
         if (session::check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
 
             $log_data = array(
-                $attachment_data['TID'], 
-                $attachment_data['PID'], 
+                $attachment_data['TID'],
+                $attachment_data['PID'],
                 $attachment_data['FILENAME']
             );
 
@@ -378,11 +269,6 @@ function attachments_delete($hash)
 
     $sql = "DELETE QUICK FROM POST_ATTACHMENT_FILES ";
     $sql.= "WHERE HASH = '$hash'";
-
-    if (!$db->query($sql)) return false;
-
-    $sql = "SELECT AID FROM POST_ATTACHMENT_FILES ";
-    $sql.= "WHERE AID = '{$attachment_data['AID']}'";
 
     if (!$db->query($sql)) return false;
 
@@ -403,23 +289,10 @@ function attachments_delete_thumbnail($hash)
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    // Fetch the attachment to make sure the user
-    // is able to delete it, i.e. it belongs to them.
-    if (($table_prefix = get_table_prefix())) {
-
-        $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
-        $sql.= "PAI.PID, THREAD.FID FROM POST_ATTACHMENT_FILES PAF ";
-        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-        $sql.= "LEFT JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = PAI.TID) ";
-        $sql.= "WHERE PAF.HASH = '$hash'";
-
-    } else {
-
-        $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
-        $sql.= "PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
-        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-        $sql.= "WHERE PAF.HASH = '$hash'";
-    }
+    $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
+    $sql.= "PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql.= "WHERE PAF.HASH = '$hash'";
 
     if (!$result = $db->query($sql)) return false;
 
@@ -438,11 +311,11 @@ function attachments_delete_thumbnail($hash)
         if (session::check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
 
             $log_data = array(
-                $attachment_data['TID'], 
-                $attachment_data['PID'], 
+                $attachment_data['TID'],
+                $attachment_data['PID'],
                 $attachment_data['FILENAME']
             );
-            
+
             admin_add_log_entry(ATTACHMENTS_DELETE, $log_data);
         }
     }
@@ -452,198 +325,195 @@ function attachments_delete_thumbnail($hash)
     return true;
 }
 
-function attachments_get_free_space($uid, $aid)
-{
-    // Get max settings for attachment space (default: 1MB)
-    $max_user_attachment_space = forum_get_setting('attachments_max_user_space', null, 1048576);
-    $max_post_attachment_space = forum_get_setting('attachments_max_post_space', null, 1048576);
-
-    // Get the user's used attachment space (global and per-post)
-    $user_attachment_space = attachments_get_user_space($uid);
-    $post_attachment_space = attachments_get_post_space($aid);
-
-    // If Max user attachment space > 0 use that to check the free space.
-    // Checking that Max post attachment space > 0 and lower than max user space.
-    if ($max_user_attachment_space > 0) {
-
-        if (($max_post_attachment_space > 0) && ($max_post_attachment_space < $max_user_attachment_space)) {
-
-            return (($max_post_attachment_space - $post_attachment_space) < 0) ? 0 : ($max_post_attachment_space - $post_attachment_space);
-
-        } else {
-
-            return (($max_user_attachment_space - $user_attachment_space) < 0) ? 0 : ($max_user_attachment_space - $user_attachment_space);
-        }
-    }
-
-    // If Max post attachment space > 0 use that to check against the used post attachment space.
-    if ($max_post_attachment_space > 0) {
-        return (($max_post_attachment_space - $post_attachment_space) < 0) ? 0 : ($max_post_attachment_space - $post_attachment_space);
-    }
-
-    // All out of space?
-    return 0;
-}
-
 function attachments_get_free_user_space($uid)
 {
     $max_user_attachment_space = forum_get_setting('attachments_max_user_space', null, 1048576);
 
-    $user_attachment_space = attachments_get_user_space($uid);
-
-    return (($max_user_attachment_space - $user_attachment_space) < 0) ? 0 : ($max_user_attachment_space - $user_attachment_space);
-}
-
-function attachments_get_free_post_space($aid)
-{
-    $max_post_attachment_space = forum_get_setting('attachments_max_post_space', null, 1048576);
-
-    $post_attachment_space = attachments_get_post_space($aid);
-
-    return (($max_post_attachment_space - $post_attachment_space) < 0) ? 0 : ($max_post_attachment_space - $post_attachment_space);
-}
-
-function attachments_get_max_space()
-{
-    // Get max settings for attachment space (default: 1MB)
-    $max_user_attachment_space = forum_get_setting('attachments_max_user_space', null, 1048576);
-    $max_post_attachment_space = forum_get_setting('attachments_max_post_space', null, 1048576);
+    $user_attachment_space = attachments_get_user_used_space($uid);
 
     if ($max_user_attachment_space > 0) {
-        return $max_user_attachment_space;
-    } else if ($max_post_attachment_space > 0) {
-        return $max_post_attachment_space;
+        return (($max_user_attachment_space - $user_attachment_space) < 0) ? 0 : ($max_user_attachment_space - $user_attachment_space);
     }
 
-    return 0;
+    return -1;
 }
 
-function attachments_get_user_space($uid)
+function attachments_get_free_post_space($uid, $hash_array)
 {
-    $used_attachment_space = 0;
+    $max_post_attachment_space = forum_get_setting('attachments_max_post_space', null, 1048576);
+
+    $post_attachment_space = attachments_get_post_used_space($uid, $hash_array);
+
+    if ($max_post_attachment_space > 0) {
+        return (($max_post_attachment_space - $post_attachment_space) < 0) ? 0 : ($max_post_attachment_space - $post_attachment_space);
+    }
+
+    return -1;
+}
+
+function attachments_check_post_space($uid, $hash_array)
+{
+    $max_post_attachment_space = forum_get_setting('attachments_max_post_space', null, 1048576);
+
+    $post_attachment_space = attachments_get_post_used_space($uid, $hash_array);
+
+    return $post_attachment_space < $max_post_attachment_space;
+}
+
+function attachments_get_post_used_space($uid, $hash_array)
+{
+    $post_attachment_space = 0;
 
     if (!$db = db::get()) return 0;
 
     if (!is_numeric($uid)) return 0;
 
-    if (!$attachment_dir = forum_get_setting('attachment_dir')) return 0;
+    if (!is_array($hash_array)) return 0;
 
-    $sql = "SELECT HASH FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
+    $hash_array = array_filter($hash_array, 'is_md5');
+
+    if (sizeof($hash_array) == 0) return 0;
+
+    $hash_list = implode("', '", $hash_array);
+
+    $sql = "SELECT PAF.HASH, PAF.FILESIZE FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "WHERE PAF.UID = '$uid' AND PAF.HASH IN ('$hash_list')";
 
     if (!$result = $db->query($sql)) return 0;
 
     while (($attachment_data = $result->fetch_assoc())) {
-
-        if (@file_exists("$attachment_dir/{$attachment_data['HASH']}")) {
-
-            $used_attachment_space += filesize("$attachment_dir/{$attachment_data['HASH']}");
-        }
+        $post_attachment_space+= $attachment_data['FILESIZE'];
     }
 
-    return $used_attachment_space;
+    return $post_attachment_space;
 }
 
-function attachments_get_post_space($aid)
+function attachments_get_user_used_space($uid)
 {
-    $used_attachment_space = 0;
+    $user_attachment_space = 0;
 
     if (!$db = db::get()) return 0;
 
-    if (!is_md5($aid)) return 0;
+    if (!is_numeric($uid)) return 0;
 
-    if (!$attachment_dir = forum_get_setting('attachment_dir')) return 0;
-
-    $sql = "SELECT HASH FROM POST_ATTACHMENT_FILES WHERE AID = '$aid'";
+    $sql = "SELECT PAF.HASH, PAF.FILESIZE FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "WHERE PAF.UID = '$uid'";
 
     if (!$result = $db->query($sql)) return 0;
 
     while (($attachment_data = $result->fetch_assoc())) {
-
-        if (@file_exists("$attachment_dir/{$attachment_data['HASH']}")) {
-
-            $used_attachment_space += filesize("$attachment_dir/{$attachment_data['HASH']}");
-        }
+        $user_attachment_space+= $attachment_data['FILESIZE'];
     }
 
-    return $used_attachment_space;
+    return $user_attachment_space;
 }
 
-function attachments_get_id($tid, $pid)
+function attachments_form($uid, $hash_array, $view = ATTACHMENT_FILTER_UNASSIGNED)
 {
-    if (!$db = db::get()) return false;
+    if (!is_numeric($uid)) return '';
 
-    if (!is_numeric($tid)) return false;
-    if (!is_numeric($pid)) return false;
+    if (!is_array($hash_array)) $hash_array = array();
 
-    if (!($table_prefix = get_table_prefix())) return false;
+    $html = "<ul>\n";
 
-    if (!($forum_fid = get_forum_fid())) return false;
+    $selected_total_size = attachments_get_post_used_space($uid, $hash_array);
 
-    $sql = "SELECT AID FROM POST_ATTACHMENT_IDS WHERE ";
-    $sql.= "FID = '$forum_fid' AND TID = '$tid' AND PID = '$pid'";
+    $attachment_free_post_space = attachments_get_free_post_space($uid, $hash_array);
 
-    if (!$result = $db->query($sql)) return false;
+    $attachment_free_user_space = attachments_get_free_user_space($uid);
 
-    if ($result->num_rows == 0) return false;
+    if (($view & ATTACHMENT_FILTER_ASSIGNED) && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_ASSIGNED))) {
+        $html.= attachments_form_list($attachments_array, $hash_array);
+    }
 
-    list($attachment_id) = $result->fetch_row();
+    if (($view & ATTACHMENT_FILTER_UNASSIGNED) && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_UNASSIGNED))) {
+        $html.= attachments_form_list($attachments_array, $hash_array);
+    }
 
-    return $attachment_id;
+    $html.= sprintf(
+        '</ul>
+         <div class="summary">
+           <div>
+             <span>%s:</span>
+             <span class="used_post_space">%s</span>
+           </div>
+           <div>
+             <span>%s:</span>
+             <span class="free_post_space">%s</span>
+           </div>
+           <div>
+             <span>%s:</span>
+             <span class="free_upload_space">%s</span>
+           </div>
+         </div>',
+        gettext("Total Size"),
+        format_file_size($selected_total_size),
+        gettext("Free Post Space"),
+        $attachment_free_post_space >= 0
+            ? format_file_size($attachment_free_post_space)
+            : gettext("Unlimited"),
+        gettext("Free Upload Space"),
+        $attachment_free_user_space >= 0
+            ? format_file_size($attachment_free_user_space)
+            : gettext("Unlimited")
+    );
+
+    return $html;
 }
 
-function attachments_get_folder_fid($aid)
+function attachments_form_list($attachments_array, $hash_array)
 {
-    if (!$db = db::get()) return false;
+    if (!is_array($attachments_array)) $attachments_array = array();
 
-    if (!is_md5($aid)) return false;
-
-    if (!($table_prefix = get_table_prefix())) return false;
-
-    if (!($forum_fid = get_forum_fid())) return false;
-
-    $sql = "SELECT FOLDER.FID FROM POST_ATTACHMENT_IDS PAI ";
-    $sql.= "LEFT JOIN `{$table_prefix}POST` POST ON (POST.TID = PAI.TID AND POST.PID = PAI.PID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.AID = '$aid'";
-
-    if (!$result = $db->query($sql)) return false;
-
-    if ($result->num_rows == 0) return false;
-
-    list($folder_fid) = $result->fetch_row();
-
-    return $folder_fid;
-}
-
-function attachments_get_pm_id($mid)
-{
-    if (!$db = db::get()) return false;
-
-    if (!is_numeric($mid)) return false;
-
-    $sql = "SELECT AID FROM PM_ATTACHMENT_IDS WHERE MID = '$mid'";
-
-    if (!$result = $db->query($sql)) return false;
-
-    if ($result->num_rows == 0) return false;
-
-    list($attachment_id) = $result->fetch_row();
-
-    return $attachment_id;
-}
-
-function attachments_get_message_link($aid)
-{
-    if (!$db = db::get()) return false;
-
-    if (!is_md5($aid)) return false;
+    if (!is_array($hash_array)) $hash_array = array();
 
     $webtag = get_webtag();
 
-    $sql = "SELECT FORUMS.WEBTAG, PAI.TID, PAI.PID FROM POST_ATTACHMENT_IDS PAI ";
-    $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
-    $sql.= "WHERE PAI.AID = '$aid'";
+    $html = '';
+
+    foreach ($attachments_array as $attachment) {
+
+        $html.= sprintf(
+            '<li class="attachment complete" data-hash="%1$s">
+               <label>
+                 <input %2$s class="bhinputcheckbox" name="attachment[]" type="checkbox" value="%1$s" />
+                 <span class="filename">
+                   <a href="get_attachment.php?webtag=%3$s&amp;hash=%1$s&amp;filename=%4$s">%5$s</a>
+                 </span>
+                 <span class="progress"></span>
+                 <span class="retry" title="%6$s">%7$s</span>
+                 <span class="cancel" title="%8$s">%9$s</span>
+                 <span class="filesize">%10$s</span>
+               </label>
+             </li>',
+             $attachment['hash'],
+             in_array($attachment['hash'], $hash_array) ? 'checked="checked"' : '',
+             $webtag,
+             urlencode($attachment['filename']),
+             format_file_name($attachment['filename']),
+             htmlentities_array(gettext('Retry')),
+             gettext('Retry'),
+             htmlentities_array(gettext('Cancel')),
+             gettext('Cancel'),
+             format_file_size($attachment['filesize'])
+        );
+    }
+
+    return $html;
+}
+
+function attachments_get_message_link($hash)
+{
+    if (!$db = db::get()) return false;
+
+    $webtag = get_webtag();
+
+    $hash = $db->escape($hash);
+
+    $sql = "SELECT FORUMS.WEBTAG, PAI.TID, PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "INNER JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql.= "INNER JOIN FORUMS ON (FORUMS.FID = PAI.FID) ";
+    $sql.= "WHERE PAF.HASH = '$hash'";
 
     if (!$result = $db->query($sql)) return false;
 
@@ -654,15 +524,17 @@ function attachments_get_message_link($aid)
     return "messages.php?webtag=$forum_webtag&amp;msg=$tid.$pid";
 }
 
-function attachments_get_pm_link($aid)
+function attachments_get_pm_link($hash)
 {
     if (!$db = db::get()) return false;
 
-    if (!is_md5($aid)) return false;
-
     $webtag = get_webtag();
 
-    $sql = "SELECT MID FROM PM_ATTACHMENT_IDS WHERE AID = '$aid'";
+    $hash = $db->escape($hash);
+
+    $sql = "SELECT PAI.MID FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "INNER JOIN PM_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql.= "WHERE PAF.HASH = '$hash'";
 
     if (!$result = $db->query($sql)) return false;
 
@@ -671,54 +543,6 @@ function attachments_get_pm_link($aid)
     list($mid) = $result->fetch_row();
 
     return "pm.php?webtag=$webtag&amp;mid=$mid";
-}
-
-function attachments_get_count($aid)
-{
-    if (!$db = db::get()) return false;
-
-    if (!is_md5($aid)) return false;
-
-    $aid = $db->escape($aid);
-
-    $sql = "SELECT COUNT(AID) FROM POST_ATTACHMENT_FILES ";
-    $sql.= "WHERE AID = '$aid'";
-
-    if (!$result = $db->query($sql)) return false;
-
-    list($num_attachments) = $result->fetch_row();
-
-    return $num_attachments;
-}
-
-function attachments_get_by_hash($hash)
-{
-    if (!$db = db::get()) return false;
-
-    if (!is_md5($hash)) return false;
-
-    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
-
-    $sql = "SELECT AID, UID, FILENAME, MIMETYPE, HASH, DOWNLOADS ";
-    $sql.= "FROM POST_ATTACHMENT_FILES WHERE HASH = '$hash' LIMIT 0, 1";
-
-    if (!$result = $db->query($sql)) return false;
-
-    if ($result->num_rows == 0) return false;
-
-    $attachment_data = $result->fetch_assoc();
-
-    if (@!file_exists("$attachment_dir/{$attachment_data['HASH']}")) return false;
-
-    return array(
-        "filename" => rawurldecode($attachment_data['FILENAME']),
-        "filedate" => filemtime("$attachment_dir/{$attachment_data['HASH']}"),
-        "filesize" => filesize("$attachment_dir/{$attachment_data['HASH']}"),
-        "aid" => $attachment_data['AID'],
-        "hash" => $attachment_data['HASH'],
-        "mimetype" => $attachment_data['MIMETYPE'],
-        "downloads" => $attachment_data['DOWNLOADS']
-    );
 }
 
 function attachments_inc_download_count($hash)
@@ -755,24 +579,21 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    if (!isset($attachment['aid'])) return false;
     if (!isset($attachment['hash'])) return false;
     if (!isset($attachment['filename'])) return false;
     if (!isset($attachment['downloads'])) return false;
-
-    if (!is_md5($attachment['aid'])) return false;
     if (!is_md5($attachment['hash'])) return false;
 
     $webtag = get_webtag();
 
-    if (forum_get_setting('attachment_thumbnails', 'Y') && ((($user_show_thumbs = session::get_value('SHOW_THUMBS')) > 0) || !session::logged_in())) {
+    if ($show_thumbs && forum_get_setting('attachment_thumbnails', 'Y') && ((($user_show_thumbs = session::get_value('SHOW_THUMBS')) > 0) || !session::logged_in())) {
 
         $thumbnail_size = array(
-            1 => 50, 
-            2 => 100, 
+            1 => 50,
+            2 => 100,
             3 => 150
         );
-        
+
         $thumbnail_max_size = isset($thumbnail_size[$user_show_thumbs]) ? $thumbnail_size[$user_show_thumbs] : 100;
 
     } else {
@@ -791,20 +612,17 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
         $attachment_href.= "&amp;filename={$attachment['filename']}";
     }
 
-    if ($img_tag === true) {
+    if ($img_tag) {
 
         $title_array = array();
 
         if (mb_strlen($attachment['filename']) > 16 && $limit_filename) {
 
             $title_array[] = gettext("Filename"). ": {$attachment['filename']}";
-
-            $attachment['filename'] = mb_substr($attachment['filename'], 0, 16);
-            $attachment['filename'].= "&hellip;";
+            $attachment['filename'] = format_file_name($attachment['filename']);
         }
 
-        if (isset($attachment['filesize']) && is_numeric($attachment['filesize'])) {
-
+        if (isset($attachment['filesize']) && is_numeric($attachment['filesize']) && $attachment['filesize'] > 0) {
             $title_array[] = gettext("Size"). ": ". format_file_size($attachment['filesize']);
         }
 
@@ -817,9 +635,9 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
             $title_array[] = sprintf(gettext("Downloaded: %d times"), $attachment['downloads']);
         }
 
-        if (@file_exists("$attachment_dir/{$attachment['hash']}.thumb") && $show_thumbs) {
+        if ($show_thumbs && isset($attachment['thumbnail']) && ($attachment['thumbnail'] == 'Y')) {
 
-            if ((@$image_info = getimagesize("$attachment_dir/{$attachment['hash']}"))) {
+            if (($image_info = @getimagesize("$attachment_dir/{$attachment['hash']}"))) {
 
                 $title_array[] = gettext("Dimensions"). ": {$image_info[0]}x{$image_info[1]}px";
 
@@ -845,13 +663,12 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
 
         $title = implode(", ", $title_array);
 
-        $attachment_link = "<img src=\"";
-        $attachment_link.= html_style_image('attach.png');
+        $attachment_link = "<img src=\"". html_style_image('attach.png');
         $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\" ";
         $attachment_link.= "alt=\"". gettext("Attachment"). "\" ";
         $attachment_link.= "title=\"". gettext("Attachment"). "\" />";
         $attachment_link.= "<a href=\"$attachment_href\" title=\"$title\" ";
-        $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a>\n";
+        $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a>";
 
         return $attachment_link;
     }

@@ -109,11 +109,11 @@ function threads_get_all($uid, $folder, $page = 1) // get "all" threads (i.e. mo
 {
     // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0, 0);
-    
+
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
     $offset = calculate_page_offset($page, 50);
-    
+
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
@@ -196,7 +196,7 @@ function threads_get_started_by_me($uid, $folder, $page = 1) // get threads star
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
     $offset = calculate_page_offset($page, 50);
-        
+
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
@@ -317,7 +317,7 @@ function threads_get_unread_to_me($uid, $folder, $page = 1) // get unread messag
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
     $offset = calculate_page_offset($page, 50);
-        
+
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
@@ -380,7 +380,7 @@ function threads_get_by_days($uid, $folder, $page = 1, $days = 1) // get threads
     if (!is_numeric($days)) return array(0, 0, 0);
 
     $offset = calculate_page_offset($page, 50);
-    
+
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
@@ -727,7 +727,7 @@ function threads_get_unread_by_relationship($uid, $folder, $page = 1, $relations
 
     if (!is_numeric($relationship)) return array(0, 0, 0);
 
-    $offset = calculate_page_offset($page, 50);    
+    $offset = calculate_page_offset($page, 50);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
@@ -787,7 +787,7 @@ function threads_get_polls($uid, $folder, $page = 1)
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
-    $offset = calculate_page_offset($page, 50);    
+    $offset = calculate_page_offset($page, 50);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
@@ -851,7 +851,7 @@ function threads_get_sticky($uid, $folder, $page = 1)
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
-    $offset = calculate_page_offset($page, 50);    
+    $offset = calculate_page_offset($page, 50);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
@@ -915,8 +915,8 @@ function threads_get_longest_unread($uid, $folder, $page = 1) // get unread mess
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
-    $offset = calculate_page_offset($page, 50);    
-    
+    $offset = calculate_page_offset($page, 50);
+
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
@@ -984,7 +984,7 @@ function threads_get_folder($uid, $folder, $page = 1)
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
-    $offset = calculate_page_offset($page, 50);    
+    $offset = calculate_page_offset($page, 50);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
@@ -1039,7 +1039,7 @@ function threads_get_deleted($uid, $folder, $page = 1)
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
-    $offset = calculate_page_offset($page, 50);    
+    $offset = calculate_page_offset($page, 50);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
@@ -1104,7 +1104,7 @@ function threads_get_unread_by_days($uid, $folder, $page = 1, $days = 0) // get 
 
     if (!is_numeric($days)) return array(0, 0, 0);
 
-    $offset = calculate_page_offset($page, 50);    
+    $offset = calculate_page_offset($page, 50);
 
     // If there are problems with fetching the webtag / table prefix we need to bail out as well.
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
@@ -1183,7 +1183,7 @@ function threads_get_most_recent($limit = 10, $fid = false, $creation_order = fa
 
     // If we have aa folder specified we should only use the ones the user can see.
     if (is_numeric($fid) && in_array($fid, $available_folders_array)) {
-        
+
         $available_folders_array = array(
             $fid
         );
@@ -1354,8 +1354,8 @@ function threads_process_list($sql)
     threads_have_attachments($threads_array);
 
     return array(
-        $threads_array, 
-        $folder_order, 
+        $threads_array,
+        $folder_order,
         $thread_count
     );
 }
@@ -1667,18 +1667,19 @@ function threads_have_attachments(&$threads_array)
 
     if (!($forum_fid = get_forum_fid())) return false;
 
-    $tid_list = implode(",", array_filter(array_keys($threads_array), 'is_numeric'));
+    $tid_list = implode(',', array_filter(array_keys($threads_array), 'is_numeric'));
 
     if (!$db = db::get()) return false;
 
-    $sql = "SELECT PAI.TID, PAF.AID FROM POST_ATTACHMENT_IDS PAI ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
-    $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.TID IN ($tid_list) ";
+    $sql = "SELECT PAI.TID, COUNT(PAF.HASH) AS ATTACHMENT_COUNT ";
+    $sql.= "FROM POST_ATTACHMENT_IDS PAI INNER JOIN POST_ATTACHMENT_FILES PAF ";
+    $sql.= "ON (PAF.AID = PAI.AID) WHERE PAI.FID = '$forum_fid' ";
+    $sql.= "AND PAI.TID IN ($tid_list) GROUP BY PAI.TID";
 
     if (!$result = $db->query($sql)) return false;
 
     while (($attachment_data = $result->fetch_assoc())) {
-        $threads_array[$attachment_data['TID']]['AID'] = $attachment_data['AID'];
+        $threads_array[$attachment_data['TID']]['ATTACHMENT_COUNT'] = $attachment_data['ATTACHMENT_COUNT'];
     }
 
     return true;
@@ -1772,7 +1773,7 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
     if (!is_numeric($interest_type)) $interest_type = THREAD_NOINTEREST;
 
     if (!is_numeric($page)) $page = 1;
-    
+
     if (!($table_prefix = get_table_prefix())) return false;
 
     $offset = calculate_page_offset($page, 20);

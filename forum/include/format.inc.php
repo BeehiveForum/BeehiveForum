@@ -57,19 +57,6 @@ function format_user_name($logon, $nickname)
     return mb_strtoupper(strip_tags($logon));
 }
 
-/*function format_file_size($size)
-{
-    if ($size >= 1000000) {
-        $resized = round($size / 1048576, 2). " MiB";
-    } else if ($size >= 1000) {
-        $resized = round($size / 1024, 2). " KiB";
-    } else{
-        $resized = $size. " bytes";
-    }
-
-    return $resized;
-}*/
-
 function format_file_name($filename)
 {
     if (strlen($filename) > 33) {
@@ -99,7 +86,7 @@ function format_file_size($size)
 
     } while ($size > 99);
 
-    return round(max($size, 0.1), 1). $units[$b];
+    return number_format(floor($size * 100) / 100, 2). $units[$b];
 }
 
 function format_version_number($version, $glue = '.')

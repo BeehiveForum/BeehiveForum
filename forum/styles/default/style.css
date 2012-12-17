@@ -46,6 +46,12 @@ a.button {
     text-decoration: none;
 }
 
+a.button.upload,
+a.button.delete {
+    display: inline-block;
+    vertical-align: middle;
+}
+
 input::-moz-focus-inner {
     border: 0px;
 }
@@ -192,7 +198,7 @@ ul.ui-autocomplete li a:hover {
 
 .attachment_thumb {
     border: 1px solid #777777;
-    float: left;
+    display: inline-block;
     margin: 5px;
     padding: 5px;
 }
@@ -1643,18 +1649,26 @@ div.spoiler_reveal * {
     text-decoration: none;
 }
 
+#attachments {
+    margin-top: 5px;
+}
+
 #attachments ul {
     list-style: none;
-    margin: 5px 0 15px;
+    margin: 0;
     padding: 0;
 }
 
 #attachments ul li {
-    margin: 6px 0;
+    margin: 5px 0;
 }
 
 #attachments ul li + li {
     margin-top: 0;
+}
+
+#attachments ul li:last-child {
+    margin-bottom: 10px;
 }
 
 #attachments ul li label span {
@@ -1682,19 +1696,19 @@ div.spoiler_reveal * {
     float: right;
 }
 
-#attachments ul li.file span.cancel,
-#attachments ul li.file span.retry {
+#attachments ul li.attachment span.cancel,
+#attachments ul li.attachment span.retry {
     display: inline-block;
     height: 16px;
     text-indent: -9999px;
     width: 16px;
 }
 
-#attachments ul li.file span.cancel {
+#attachments ul li.attachment span.cancel {
     background: transparent url('images/stop.png') no-repeat 0 50%;
 }
 
-#attachments ul li.file span.retry {
+#attachments ul li.attachment span.retry {
     background: transparent url('images/reload.png') no-repeat 0 50%;
 }
 

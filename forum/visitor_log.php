@@ -163,7 +163,7 @@ array_unshift($sort_by_array, 'LOGON');
 
 // Permitted sort directions.
 $sort_dir_array = array(
-    'ASC', 
+    'ASC',
     'DESC'
 );
 
@@ -310,9 +310,9 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
                 echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"{$user_array['AVATAR_URL']}\" alt=\"", word_filter_add_ob_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME']), true), "\" title=\"", word_filter_add_ob_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME']), true), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
 
-            } else if (isset($user_array['AVATAR_AID']) && is_md5($user_array['AVATAR_AID'])) {
+            } else if (isset($user_array['AVATAR_AID']) && is_numeric($user_array['AVATAR_AID'])) {
 
-                $attachment = attachments_get_by_hash($user_array['AVATAR_AID']);
+                $attachment = attachments_get_by_aid($user_array['AVATAR_AID'], $user_array['UID']);
 
                 if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
 

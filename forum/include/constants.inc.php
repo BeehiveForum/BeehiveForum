@@ -161,6 +161,7 @@ define('POST_SIGNATURE_DISPLAY', 2);
 define('POLL_ADVANCED_DISPLAY', 4);
 define('POLL_ADDITIONAL_MESSAGE_DISPLAY', 8);
 define('POLL_EDIT_SOFT_DISPLAY', 16);
+define('POST_ATTACHMENT_DISPLAY', 32);
 
 // Constants for recipient type
 define('POST_RADIO_FRIENDS', 0);

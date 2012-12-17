@@ -76,6 +76,7 @@ $json_data = array(
         'retry' => gettext('Retry'),
         'cancel' => gettext('Cancel'),
         'delete' => gettext('Delete'),
+        'upload' => gettext('Upload'),
     ),
     'images' => array(),
     'font_size' => $font_size,

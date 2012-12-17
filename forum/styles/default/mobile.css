@@ -670,6 +670,7 @@ a.folder_list_link {
 .post_thread_title,
 .post_to,
 .post_content,
+.post_attachments,
 .post_html,
 .post_buttons {
     margin: 0 0 10px;
@@ -877,4 +878,78 @@ span.user_enemy {
 .message_warning h3 {
     background: url('images/warning.png') transparent no-repeat scroll 0 50%;
     font-size: 13px;
+}
+
+#attachments {
+    margin-top: 5px;
+}
+
+#attachments ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#attachments ul li {
+    margin: 5px 0;
+}
+
+#attachments ul li + li {
+    margin-top: 0;
+}
+
+#attachments ul li:last-child {
+    margin-bottom: 10px;
+}
+
+#attachments ul li label span {
+    margin-right: 5px;
+}
+
+#attachments ul li span.filename {
+    display:inline-block;
+    padding-left: 20px;
+}
+
+#attachments ul li.complete span.filename {
+    background: transparent url('images/attach.png') no-repeat 0 50%;
+}
+
+#attachments ul li.error span.filename {
+    background: transparent url('images/error.png') no-repeat 0 50%;
+}
+
+#attachments ul li.uploading span.filename {
+    background: transparent url('images/loading.gif') no-repeat 0 50%;
+}
+
+#attachments ul li button {
+    float: right;
+}
+
+#attachments ul li.attachment span.cancel,
+#attachments ul li.attachment span.retry {
+    display: inline-block;
+    height: 16px;
+    text-indent: -9999px;
+    width: 16px;
+}
+
+#attachments ul li.attachment span.cancel {
+    background: transparent url('images/stop.png') no-repeat 0 50%;
+}
+
+#attachments ul li.attachment span.retry {
+    background: transparent url('images/reload.png') no-repeat 0 50%;
+}
+
+#attachments ul li.error span.progress,
+#attachments ul li.cancelled span.progress,
+#attachments ul li.complete span.progress,
+#attachments ul li.complete span.cancel,
+#attachments ul li.complete span.retry,
+#attachments ul li.uploading span.delete,
+#attachments ul li.uploading span.retry,
+#attachments ul li.error span.delete {
+    display: none;
 }

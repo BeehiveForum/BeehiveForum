@@ -156,22 +156,11 @@ define('STYLE_ALREADY_EXISTS', 1);
 define('STYLE_WRITE_ERROR', 2);
 
 // Constants for post page preferences
-define('POST_EMOTICONS_DISPLAY', 2);
-define('POST_SIGNATURE_DISPLAY', 128);
-define('POLL_ADVANCED_DISPLAY', 1024);
-define('POLL_ADDITIONAL_MESSAGE_DISPLAY', 2048);
-define('POLL_EDIT_SOFT_DISPLAY', 4096);
-define('POST_ATTACHMENT_DISPLAY', 8128);
-
-// Constants for post page HTML in message
-define('POST_HTML_DISABLED', 0);
-define('POST_HTML_AUTO', 1);
-define('POST_HTML_ENABLED', 2);
-
-// Constants for post toolbar display
-define('POST_TOOLBAR_DISABLED', 0);
-define('POST_TOOLBAR_SIMPLE', 1);
-define('POST_TOOLBAR_TINYMCE', 2);
+define('POST_EMOTICONS_DISPLAY', 1);
+define('POST_SIGNATURE_DISPLAY', 2);
+define('POLL_ADVANCED_DISPLAY', 4);
+define('POLL_ADDITIONAL_MESSAGE_DISPLAY', 8);
+define('POLL_EDIT_SOFT_DISPLAY', 16);
 
 // Constants for recipient type
 define('POST_RADIO_FRIENDS', 0);
@@ -262,6 +251,11 @@ define('ATTACHMENT_THUMB_LARGE', 3);
 // Attachment thumbnail methods.
 define('ATTACHMENT_THUMBNAIL_PHPGD', 0);
 define('ATTACHMENT_THUMBNAIL_IMAGEMAGICK', 1);
+
+// Filter for get_attachment methods
+define('ATTACHMENT_FILTER_ASSIGNED', 0);
+define('ATTACHMENT_FILTER_UNASSIGNED', 1);
+define('ATTACHMENT_FILTER_BOTH', 2);
 
 // PM Constants
 define('PM_OUTBOX', 1);

@@ -810,9 +810,9 @@ function html_draw_top()
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 
     html_include_javascript(html_get_forum_file_path("ckeditor/ckeditor.js"));
-    html_include_javascript(html_get_forum_file_path('js/jquery-1.7.1.min.js'));
-    html_include_javascript(html_get_forum_file_path('js/jquery-ui-1.8.22.autocomplete.min.js'));
-    html_include_javascript(html_get_forum_file_path('js/jquery.fineuploader-3.0.min.js'));
+    html_include_javascript(html_get_forum_file_path('js/fineuploader.min.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.min.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.ui.autocomplete.min.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.parsequery.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.url.js'));
@@ -937,17 +937,6 @@ function html_draw_top()
         echo "    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);\n";
         echo "  })();\n\n";
         echo "</script>\n";
-    }
-
-    if (($frame_set_html === false) && (forum_get_setting('show_share_links', 'Y')) && (session::get_value('SHOW_SHARE_LINKS') == 'Y')) {
-
-        echo "<script type=\"text/javascript\" src=\"https://apis.google.com/js/plusone.js\">\n";
-        echo "{lang: 'en-GB'}\n";
-        echo "</script>\n";
-
-        echo "<script type=\"text/javascript\" src=\"http://platform.twitter.com/widgets.js\"></script>\n";
-
-        echo "<script type=\"text/javascript\" src=\"http://connect.facebook.net/en_US/all.js#xfbml=1\"></script>\n";
     }
 
     echo "</head>\n\n";

@@ -219,7 +219,7 @@ function stats_get_html()
 
                         $attachment = attachments_get_by_aid($user['AVATAR_AID']);
 
-                        if (!($user_avatar_picture = attachments_make_link($attachment, false, false, false, false))) {
+                        if (($user_avatar_picture = attachments_make_link($attachment, false, false, false, false))) {
 
                             $active_user_avatar = sprintf('<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
                                                              <img src="%s&amp;avatar_picture" title="%s" alt="" border="0" width="16" height="16" />

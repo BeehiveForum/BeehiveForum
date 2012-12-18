@@ -476,4 +476,13 @@ $(beehive).bind('init', function() {
     });
 
     $('textarea.editor:visible').each(beehive.editor);
+
+    if (beehive.show_share_links == 'Y') {
+
+        $.getScript(document.location.protocol + '//apis.google.com/js/plusone.js');
+
+        $.getScript(document.location.protocol + '//platform.twitter.com/widgets.js');
+
+        $.getScript(document.location.protocol + '//connect.facebook.net/en_US/all.js');
+    }
 });

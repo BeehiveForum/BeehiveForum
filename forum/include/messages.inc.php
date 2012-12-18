@@ -371,12 +371,12 @@ function messages_social_links($tid)
 {
     $webtag = get_webtag();
 
-    if (!defined('BEEHIVE_DEVELOPER_MODE') && (forum_get_setting('show_share_links', 'Y')) && (session::get_value('SHOW_SHARE_LINKS') == 'Y')) {
+    if (forum_get_setting('show_share_links', 'Y') && session::get_value('SHOW_SHARE_LINKS') == 'Y') {
 
         echo "      <div style=\"display: inline-block; vertical-align: middle; margin-top: 1px\">\n";
         echo "        <g:plusone size=\"small\" count=\"false\" href=\"",  htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.1")), "\"></g:plusone>\n";
         echo "      </div>\n";
-        echo "      <div style=\"display: inline-block; width: 48px; vertical-align: middle; margin-top: 2px; overflow: hidden\">\n";
+        echo "      <div style=\"display: inline-block; width: 47px; vertical-align: middle; margin-top: 2px; overflow: hidden\">\n";
         echo "        <iframe src=\"http://www.facebook.com/plugins/like.php?href=", urlencode(html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.1")), "&amp;send=false&amp;layout=button_count&amp;width=450&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:450px; height:21px;\" allowTransparency=\"true\"></iframe>\n";
         echo "      </div>\n";
         echo "      <div style=\"display: inline-block; width: 58px; vertical-align: middle; overflow: hidden\">\n";

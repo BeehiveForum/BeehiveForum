@@ -86,6 +86,7 @@ $json_data = array(
     'left_frame_width' => max(100, $left_frame_width),
     'forum_path' => server_get_forum_path(),
     'use_mover_spoiler' => session::get_value('USE_MOVER_SPOILER'),
+    'show_share_links' => session::get_value('SHOW_SHARE_LINKS'),
     'frames' => array(
         'index' => html_get_frame_name('index'),
         'admin' => html_get_frame_name('admin'),

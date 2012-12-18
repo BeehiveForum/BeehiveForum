@@ -560,7 +560,7 @@ echo "<head>\n";
 echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
 echo "<link rel=\"stylesheet\" href=\"../styles/default/style.css\" type=\"text/css\" />\n";
-echo "<script language=\"javascript\" type=\"text/javascript\" src=\"../js/jquery-1.7.1.min.js\"></script>\n";
+echo "<script language=\"javascript\" type=\"text/javascript\" src=\"../js/jquery.min.js\"></script>\n";
 echo "<script language=\"javascript\" type=\"text/javascript\" src=\"../js/general.js\"></script>\n";
 echo "<script language=\"javascript\" type=\"text/javascript\" src=\"../js/install.js\"></script>\n";
 echo "</head>\n";

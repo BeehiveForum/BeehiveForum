@@ -602,7 +602,7 @@ if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !session::che
     html_draw_error(gettext("This thread is closed, you cannot post in it!"));
 }
 
-html_draw_top(sprintf("title=%s", gettext("Post message")), "resize_width=960", "basetarget=_blank", "post.js", "attachments.js", "emoticons.js", 'search.js', 'search_popup.js', 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Post message")), "resize_width=960", "basetarget=_blank", "post.js", "poll.js", "attachments.js", "emoticons.js", 'search.js', 'search_popup.js', 'class=window_title');
 
 echo "<h1>", gettext("Post message"), "</h1>\n";
 

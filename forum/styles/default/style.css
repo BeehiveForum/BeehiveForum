@@ -132,6 +132,10 @@ h2 {
     text-decoration: none;
 }
 
+span.ui-helper-hidden-accessible {
+    display: none;
+}
+
 ul.ui-autocomplete {
     background-color: white;
     border-color: #82827E #F9F9F6 #F9F9F6 #82827E;
@@ -156,7 +160,8 @@ ul.ui-autocomplete li a {
     text-decoration: none;
 }
 
-ul.ui-autocomplete li a:hover {
+ul.ui-autocomplete li a:hover,
+ul.ui-autocomplete li a.ui-state-focus {
     background-color: #A6BED7;
     color: #FFFFFF;
 }

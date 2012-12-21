@@ -167,11 +167,10 @@ if (!$result = $db->query($sql)) {
 }
 
 $sql = "CREATE TABLE PM_ATTACHMENT_IDS (";
-$sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  AID CHAR(32) NOT NULL DEFAULT '', ";
-$sql.= "  PRIMARY KEY (MID), ";
-$sql.= "  KEY AID (AID)";
-$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+$sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  AID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  PRIMARY KEY (MID,AID)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 if (!$result = $db->query($sql)) {
 
@@ -224,17 +223,18 @@ if (!$result = $db->query($sql)) {
 }
 
 $sql = "CREATE TABLE POST_ATTACHMENT_FILES (";
-$sql.= "  AID VARCHAR(32) NOT NULL DEFAULT '', ";
-$sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
-$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  FILENAME VARCHAR(255) NOT NULL DEFAULT '', ";
-$sql.= "  MIMETYPE VARCHAR(255) NOT NULL DEFAULT '', ";
-$sql.= "  HASH VARCHAR(32) NOT NULL DEFAULT '', ";
-$sql.= "  DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  PRIMARY KEY (AID, ID), ";
-$sql.= "  KEY UID (UID), ";
+$sql.= "  AID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  FILENAME varchar(255) NOT NULL,";
+$sql.= "  MIMETYPE varchar(255) NOT NULL,";
+$sql.= "  FILESIZE bigint(8) UNSIGNED NOT NULL,";
+$sql.= "  THUMBNAIL char(1) NOT NULL DEFAULT 'N',";
+$sql.= "  HASH varchar(32) NOT NULL,";
+$sql.= "  DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+$sql.= "  PRIMARY KEY (AID),";
+$sql.= "  KEY UID (UID),";
 $sql.= "  KEY HASH (HASH)";
-$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+$sql.= ") ENGINE=MyISAM  DEFAULT CHARSET=utf8";
 
 if (!$result = $db->query($sql)) {
 
@@ -243,14 +243,12 @@ if (!$result = $db->query($sql)) {
 }
 
 $sql = "CREATE TABLE POST_ATTACHMENT_IDS (";
-$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
-$sql.= "  AID CHAR(32) NOT NULL DEFAULT '', ";
-$sql.= "  PRIMARY KEY (FID, TID, PID), ";
-$sql.= "  KEY AID (AID), ";
-$sql.= "  KEY TID (TID)";
-$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  AID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  PRIMARY KEY (FID,TID,PID,AID)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 if (!$result = $db->query($sql)) {
 
@@ -369,11 +367,11 @@ if (!$result = $db->query($sql)) {
 }
 
 $sql = "CREATE TABLE USER_TOKEN (";
-$sql.= "  UID mediumint(8) unsigned NOT NULL,";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
 $sql.= "  TOKEN varchar(255) NOT NULL,";
 $sql.= "  EXPIRES datetime NOT NULL,";
 $sql.= "  PRIMARY KEY (UID, TOKEN)";
-$sql.= ") ENGINE=MyISAM DEFAULT CHARSET=UTF8";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 if (!$result = $db->query($sql)) {
 
@@ -455,9 +453,9 @@ $sql.= "  ENABLE_WIKI_WORDS CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  USE_MOVER_SPOILER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  USE_LIGHT_MODE_SPOILER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) NOT NULL DEFAULT 'Y',";
-$sql.= "  PIC_AID VARCHAR(32) NOT NULL,";
+$sql.= "  PIC_AID MEDIUMINT(11) DEFAULT NULL,";
 $sql.= "  AVATAR_URL VARCHAR(255) NOT NULL,";
-$sql.= "  AVATAR_AID VARCHAR(32) NOT NULL,";
+$sql.= "  AVATAR_AID MEDIUMINT(11) DEFAULT NULL,";
 $sql.= "  REPLY_QUICK CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  THREADS_BY_FOLDER CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  THREAD_LAST_PAGE CHAR(1) NOT NULL DEFAULT 'N',";
@@ -467,7 +465,7 @@ $sql.= "  SHOW_SHARE_LINKS CHAR(1) NOT NULL DEFAULT 'Y',";
 $sql.= "  PRIMARY KEY (UID),";
 $sql.= "  KEY DOB (DOB),";
 $sql.= "  KEY DOB_DISPLAY (DOB_DISPLAY)";
-$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=utf8";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 if (!$result = $db->query($sql)) {
 

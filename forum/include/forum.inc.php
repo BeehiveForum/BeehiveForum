@@ -1303,9 +1303,9 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  USE_MOVER_SPOILER CHAR(1) DEFAULT NULL,";
         $sql.= "  USE_LIGHT_MODE_SPOILER CHAR(1) DEFAULT NULL,";
         $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) DEFAULT NULL,";
-        $sql.= "  PIC_AID VARCHAR(32) DEFAULT NULL,";
+        $sql.= "  PIC_AID MEDIUMINT(11) DEFAULT NULL,";
         $sql.= "  AVATAR_URL VARCHAR(255) DEFAULT NULL,";
-        $sql.= "  AVATAR_AID VARCHAR(32) DEFAULT NULL,";
+        $sql.= "  AVATAR_AID MEDIUMINT(11) DEFAULT NULL,";
         $sql.= "  REPLY_QUICK CHAR(1) DEFAULT NULL,";
         $sql.= "  THREADS_BY_FOLDER CHAR(1) DEFAULT NULL,";
         $sql.= "  THREAD_LAST_PAGE CHAR(1) DEFAULT NULL,";

@@ -432,6 +432,7 @@ function attachments_form($uid, $hash_array, $view = ATTACHMENT_FILTER_UNASSIGNE
 
     $html.= sprintf(
         '</ul>
+         <div class="buttons"></div>
          <div class="summary">
            <div>
              <span>%s:</span>
@@ -445,7 +446,8 @@ function attachments_form($uid, $hash_array, $view = ATTACHMENT_FILTER_UNASSIGNE
              <span>%s:</span>
              <span class="free_upload_space">%s</span>
            </div>
-         </div>',
+         </div>
+         <div class="clearer"></div>',
         gettext("Total Size"),
         format_file_size($selected_total_size),
         gettext("Free Post Space"),

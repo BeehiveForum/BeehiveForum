@@ -81,7 +81,7 @@ $(beehive).bind('init', function() {
             });
         };
 
-        $attachments.append($upload_button).append('&nbsp;').append($delete_button);
+        $attachments.find('.buttons').append($upload_button).append('&nbsp;').append($delete_button);
 
         if ($attachments.find('li.attachment input:checkbox:checked').length > 0) {
             $delete_button.show();

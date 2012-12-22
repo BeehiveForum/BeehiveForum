@@ -300,6 +300,7 @@ echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('t_tid', htmlentities_array($tid)), "\n";
 echo "  ", form_input_hidden('t_rpid', '0'), "\n";
 echo "  ", form_input_hidden('t_post_interest', $high_interest), "\n";
+echo "  ", form_input_hidden('attachment[]', ""), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

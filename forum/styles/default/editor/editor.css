@@ -610,6 +610,7 @@ a:active.cke_colormore {
     display: inline-block;
     border: 1px inset threedface;
     border-left: none;
+    height: 20px;
 }
 
 .cke_skin_beehive .cke_rcombo .cke_openbutton .cke_icon {

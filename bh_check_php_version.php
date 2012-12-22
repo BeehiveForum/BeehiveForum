@@ -21,8 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-require 'Bartlett/PHP/CompatInfo.php';
 require 'Bartlett/PHP/CompatInfo/Autoload.php';
+require 'Bartlett/PHP/CompatInfo.php';
 
 set_time_limit(0);
 
@@ -73,53 +73,25 @@ if (isset($_SERVER['argc']) && ($_SERVER['argc'] > 1)) {
     $pci->parse('forum');
 }
 
-$results = $pci->toArray();    
+$results = $pci->toArray();
 
-foreach ($results as $script_filename => $version_info) {
+foreach ($results['extensions'] as $extension_name => $extension_info) {
 
-    if (!isset($versions_array[$version_info['versions'][0]])) {
-        $versions_array[$version_info['versions'][0]] = array();
+    if (in_array($extension_name, array('Core', 'standard'))) {
+        continue;
     }
 
-    $versions_array[$version_info['versions'][0]][] = $script_filename;
-
-    if (version_compare($version_info['versions'][0], $minimum_version, '>')) {
-        $minimum_version = $version_info['versions'][0];
-    }
-
-    foreach ($version_info['extensions'] as $extension_name => $extension_info) {
-
-        if (in_array($extension_name, array('Core', 'standard'))) {
-            continue;
-        }
-
-        if (!isset($extensions_array[$extension_name][$extension_info['versions'][0]])) {
-            $extensions_array[$extension_name][$extension_info['versions'][0]] = array();
-        }
-
-        $extensions_array[$extension_name][$extension_info['versions'][0]][] = $script_filename;
-    }
+    $extensions_array[] = $extension_name;
 }
 
-ksort($versions_array);
+$minimum_version = $results['versions'][0];
+
+sort($extensions_array);
 
 printf(
-    "PHP Minimum Version = %s\nExtensions required : %s", 
-    $minimum_version, 
-    implode(", ", array_keys($extensions_array))
+    "PHP Minimum Version = %s\nExtensions required : %s\n\n",
+    $minimum_version,
+    implode(", ", $extensions_array)
 );
-
-foreach ($versions_array as $version => $script_filenames) {
-
-    if (sizeof($script_filename) > 0) {
-
-        printf(
-            "%s\n%s\n%s\n\n", 
-            $version, 
-            str_repeat('=', strlen($version)), 
-            implode("\n", $script_filenames)
-        );
-    }
-}
 
 ?>

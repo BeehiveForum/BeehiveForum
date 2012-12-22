@@ -543,7 +543,7 @@ if ($valid && isset($_POST['post'])) {
                         email_send_thread_subscription($uid, $t_tid, $new_pid, $thread_modified, $exclude_user_array);
                     }
 
-                    if (($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+                    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
 
                         foreach ($attachments_array as $attachment) {
 

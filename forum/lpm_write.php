@@ -440,7 +440,7 @@ if ($valid && isset($_POST['send'])) {
 
             if (($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content))) {
 
-                if (($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+                if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
 
                     foreach ($attachments_array as $attachment) {
 
@@ -468,7 +468,7 @@ if ($valid && isset($_POST['send'])) {
 
                     email_send_pm_notification($t_to_uid, $new_mid, $uid);
 
-                    if (($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+                    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
 
                         foreach ($attachments_array as $attachment) {
 
@@ -514,7 +514,7 @@ if ($valid && isset($_POST['send'])) {
 
         if (($saved_mid = pm_save_message($t_subject, $t_content, $t_to_uid, $t_to_uid_others))) {
 
-            if (($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
 
                 foreach ($attachments_array as $attachment) {
 

@@ -594,7 +594,7 @@ if ($valid && isset($_POST['post'])) {
 
             poll_create($tid, $poll_questions_array, $poll_closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests);
 
-            if (($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
 
                 foreach ($attachments_array as $attachment) {
 

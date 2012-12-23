@@ -1650,6 +1650,10 @@ function user_prefs_filter_attachments($image_attachments_array, $max_width, $ma
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return array();
 
+    if (!is_array($image_attachments_array) || sizeof($image_attachments_array) == 0) {
+        return $attachments_array_filtered;
+    }
+
     foreach ($image_attachments_array as $hash => $attachment_details) {
 
         if (!($image_info = @getimagesize("$attachment_dir/$hash"))) {

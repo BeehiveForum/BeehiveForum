@@ -53,6 +53,11 @@ if (($left_frame_width = session::get_value('LEFT_FRAME_WIDTH')) === false) {
     $left_frame_width = 280;
 }
 
+// Get the attachment max file size (default: 2MB)
+if (($attachment_size_limit = forum_get_setting('attachment_size_limit', null, false)) === false) {
+    $attachment_size_limit = convert_shorthand_filesize(ini_get('upload_max_filesize'));
+}
+
 // Construct the Javascript / JSON array
 $json_data = array(
     'webtag' => $webtag,
@@ -87,6 +92,7 @@ $json_data = array(
     'forum_path' => server_get_forum_path(),
     'use_mover_spoiler' => session::get_value('USE_MOVER_SPOILER'),
     'show_share_links' => session::get_value('SHOW_SHARE_LINKS'),
+    'attachment_size_limit' => $attachment_size_limit,
     'frames' => array(
         'index' => html_get_frame_name('index'),
         'admin' => html_get_frame_name('admin'),

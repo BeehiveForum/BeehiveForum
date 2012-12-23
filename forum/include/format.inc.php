@@ -89,6 +89,29 @@ function format_file_size($size)
     return number_format(floor($size * 100) / 100, 2). $units[$b];
 }
 
+function convert_shorthand_filesize($size)
+{
+    $unit = substr($size, -1);
+
+    $result = substr($size, 0, -1);
+
+    switch (strtoupper($unit)) {
+
+        case 'P':
+            $result*= 1024;
+        case 'T':
+            $result*= 1024;
+        case 'G':
+            $result*= 1024;
+        case 'M':
+            $result*= 1024;
+        case 'K':
+            $result*= 1024;
+    }
+
+    return $result;
+}
+
 function format_version_number($version, $glue = '.')
 {
     $version_array = array();
@@ -879,7 +902,7 @@ function get_request_uri($include_webtag = true, $encode_uri_query = true)
 
     unset($_GET['webtag']);
 
-    if ($include_webtag) {
+    if ($include_webtag && $webtag) {
         $query_string_array['webtag'] = $webtag;
     }
 
@@ -887,7 +910,7 @@ function get_request_uri($include_webtag = true, $encode_uri_query = true)
 
     $query_string = http_build_query($query_string_array, null, (($encode_uri_query) ? '&amp;' : '&'));
 
-    return sprintf('%s?%s', $request_uri, $query_string);
+    return (strlen($query_string) > 0) ? sprintf('%s?%s', $request_uri, $query_string) : $request_uri;
 }
 
 function calculate_page_offset($page, $limit)

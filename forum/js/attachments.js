@@ -102,6 +102,10 @@ $(beehive).bind('init', function() {
                 inputName: 'upload[]'
             },
 
+            validation: {
+                sizeLimit: beehive.attachment_size_limit
+            },
+
             callbacks: {
 
                 onSubmit: function(id, filename) {
@@ -194,6 +198,8 @@ $(beehive).bind('init', function() {
                     $attachment_list.find('li.' + id + '.attachment')
                         .removeClass('uploading')
                         .addClass('error');
+
+                    alert(errorReason);
                 }
             }
         });

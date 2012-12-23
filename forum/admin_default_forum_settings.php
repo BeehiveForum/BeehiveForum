@@ -500,6 +500,12 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['attachments_max_post_space'] = 1048576; // 1MB in bytes
     }
 
+    if (isset($_POST['attachment_size_limit']) && is_numeric($_POST['attachment_size_limit'])) {
+        $new_forum_settings['attachment_size_limit'] = ($_POST['attachment_size_limit'] * 1024) * 1024;
+    } else {
+        $new_forum_settings['attachment_size_limit'] = "";
+    }
+
     if (isset($_POST['attachments_allow_embed']) && $_POST['attachments_allow_embed'] == "Y") {
         $new_forum_settings['attachments_allow_embed'] = "Y";
     } else {
@@ -707,11 +713,11 @@ echo "                        <td align=\"left\">", form_input_text("smtp_port",
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">", gettext("SMTP Server Username"), ":</td>\n";
-echo "                        <td align=\"left\">", form_input_text("smtp_username", (isset($forum_global_settings['smtp_username']) ? htmlentities_array($forum_global_settings['smtp_username']) : ''), 25), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("smtp_username", (isset($forum_global_settings['smtp_username']) ? htmlentities_array($forum_global_settings['smtp_username']) : ''), 25, false, 'autocomplete="off"'), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">", gettext("SMTP Server Password"), ":</td>\n";
-echo "                        <td align=\"left\">", form_input_password("smtp_password", (isset($forum_global_settings['smtp_password']) ? htmlentities_array($forum_global_settings['smtp_password']) : ''), 25), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_password("smtp_password", (isset($forum_global_settings['smtp_password']) ? htmlentities_array($forum_global_settings['smtp_password']) : ''), 25, false, 'autocomplete="off"'), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -1518,12 +1524,16 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"270\">", gettext("Max attachment space per user"), ":</td>\n";
-echo "                        <td align=\"left\">", form_input_text("attachments_max_user_space", (isset($forum_global_settings['attachments_max_user_space'])) ? htmlentities_array(($forum_global_settings['attachments_max_user_space'] / 1024) / 1024) : "1", 10, 32), "&nbsp;(MB)</td>\n";
+echo "                        <td align=\"left\" width=\"270\">", gettext("Maximum attachment space per user"), ":</td>\n";
+echo "                        <td align=\"left\">", form_input_text("attachments_max_user_space", (isset($forum_global_settings['attachments_max_user_space'])) ? htmlentities_array(($forum_global_settings['attachments_max_user_space'] / 1024) / 1024) : "1", 10, 32), "&nbsp;MB</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"270\">", gettext("Max attachment space per post"), ":</td>\n";
-echo "                        <td align=\"left\">", form_input_text("attachments_max_post_space", (isset($forum_global_settings['attachments_max_post_space'])) ? htmlentities_array(($forum_global_settings['attachments_max_post_space'] / 1024) / 1024) : "1", 10, 32), "&nbsp;(MB)</td>\n";
+echo "                        <td align=\"left\" width=\"270\">", gettext("Maximum attachment space per post"), ":</td>\n";
+echo "                        <td align=\"left\">", form_input_text("attachments_max_post_space", (isset($forum_global_settings['attachments_max_post_space'])) ? htmlentities_array(($forum_global_settings['attachments_max_post_space'] / 1024) / 1024) : "1", 10, 32), "&nbsp;MB</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"270\">", gettext("Maximum attachment file size"), ":</td>\n";
+echo "                        <td align=\"left\">", form_input_text("attachment_size_limit", (isset($forum_global_settings['attachment_size_limit'])) ? htmlentities_array(($forum_global_settings['attachment_size_limit'] / 1024) / 1024) : '', 10, 32), "&nbsp;MB</td>\n";
 echo "                      </tr>\n";
 
 if (isset($forum_global_settings['attachments_enabled']) && $forum_global_settings['attachments_enabled'] == "Y") {
@@ -1550,7 +1560,8 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p class=\"smalltext\">", gettext("Beehive allows attachments to be uploaded to messages when posted. If you have limited web space you may which to disable attachments by clearing the box above."), "</p>\n";
 echo "                          <p class=\"smalltext\">", gettext("<b>Attachment Dir</b> is the location Beehive should store attachments in. This directory must exist on your web space and must be writable by the web server / PHP process otherwise uploads will fail."), "</p>\n";
-echo "                          <p class=\"smalltext\">", gettext("<b>Max Attachment Space Per User / Post</b> is the maximum amount of disk space a user has for attachments. Once this space is used up the user cannot upload any more attachments. Maximum user space is the amount of space the user has for all uploaded files, whether they are attached to a post, a private message or left unassigned. Max post space is the maximum size per individual post or PM. Set to zero (0) to allow unlimited space."), "</p>\n";
+echo "                          <p class=\"smalltext\">", gettext("<b>Maximum attachment space per user / post</b> is the maximum amount of disk space a user has for attachments. Once this space is used up the user cannot upload any more attachments. Maximum user space is the amount of space the user has for all uploaded files, whether they are attached to a post, a private message or left unassigned. Max post space is the maximum size per individual post or PM. Set to zero (0) to allow unlimited space."), "</p>\n";
+echo "                          <p class=\"smalltext\">", gettext("<b>Maximum attachment file size</b> is the maximum size of a single uploaded file. This is the limit of your webserver and/or PHP. Only set this value if you are having problems with attachments not uploading. Leave it blank to have your Beehive Forum determine the amount from PHP's upload_max_filesize configuration setting."), "</p>\n";
 echo "                          <p class=\"smalltext\">", gettext("<b>Allow embedding of attachments in messages / signatures</b> allows users to embed attachments in posts. Enabling this option while useful can increase your bandwidth usage drastically under certain configurations of PHP. If you have limited bandwidth it is recommended that you disable this option."), "</p>\n";
 echo "                          <p class=\"smalltext\">", gettext("<b>Use Alternative attachment method</b> Forces Beehive to use an alternative retrieval method for attachments. If you receive 404 error messages when trying to download attachments from messages try enabling this option."), "</p>\n";
 echo "                          <p class=\"smalltext\">", gettext("<b>Allowed attachment mime-types</b> allows you to restrict the mime-types of files that can be uploaded. To specify multiple mime-types, separate them using semi-colons. <b>Note:</b> Beehive doesn't perform strict analysis of the uploaded files uploaded and renamed files may be able to circumvent this restriction."), "</p>\n";

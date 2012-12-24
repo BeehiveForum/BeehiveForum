@@ -52,7 +52,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
     $logon = trim($_GET['logon']);
 
-    if (($user_array = user_get_by_logon($logon))) {
+    if (($user_array = user_get_by_logon($logon)) !== false) {
         $uid = $user_array['UID'];
     }
 }
@@ -68,7 +68,7 @@ $profile_sections = profile_sections_get();
 $user_profile = user_get_profile($uid);
 
 // User relationship.
-$peer_relationship = user_get_relationship($uid, session::get_value('UID'));
+$peer_relationship = user_get_relationship($uid, $_SESSION['UID']);
 
 // Popup title.
 $page_title = format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']);
@@ -120,7 +120,7 @@ echo "                                                  <td align=\"left\"><a hr
 echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"email.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" title=\"", gettext("Send email"), "\">", gettext("Send email"), "</a></td>\n";
 echo "                                                </tr>\n";
 
-if ($uid <> session::get_value('UID')) {
+if ($uid <> $_SESSION['UID']) {
 
     echo "                                                <tr>\n";
     echo "                                                  <td align=\"left\"><a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=user_profile.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\" title=\"", gettext("Relationship"), "\"><img src=\"", html_style_image('enemy.png'), "\" border=\"0\" alt=\"", gettext("Relationship"), "\" title=\"", gettext("Relationship"), "\" /></a></td>\n";
@@ -246,7 +246,7 @@ if (isset($user_profile['PIC_URL'])) {
 
 } else if (isset($user_profile['PIC_AID']) && ($attachment = attachments_get_by_aid($user_profile['PIC_AID']))) {
 
-    if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
+    if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false)) !== false) {
 
         echo "                            <tr>\n";
         echo "                              <td align=\"right\" class=\"subhead\">\n";
@@ -282,7 +282,7 @@ echo "                  </td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 
-if (($user_profile_array = user_get_profile_entries($uid))) {
+if (($user_profile_array = user_get_profile_entries($uid)) !== false) {
 
     foreach ($user_profile_array as $psid => $user_profile_item_array) {
 

@@ -48,9 +48,6 @@ if (!session::logged_in()) {
     html_guest_error();
 }
 
-// Get the user's UID
-$uid = session::get_value('UID');
-
 // Check that PM system is enabled
 pm_enabled();
 
@@ -93,7 +90,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (is_numeric($tid) && is_numeric($pid)) {
 
-        if (($thread_data = thread_get($tid))) {
+        if (($thread_data = thread_get($tid)) !== false) {
 
             $thread_title = trim($thread_data['TITLE']);
             $thread_index = "[$tid.$pid]";
@@ -175,7 +172,7 @@ if (isset($_POST['emots_toggle'])) {
         'POST_PAGE' => $page_prefs
     );
 
-    if (!user_update_prefs($uid, $user_prefs)) {
+    if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
         $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
@@ -226,7 +223,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
 
-        if (($pm_data = pm_message_get($t_reply_mid))) {
+        if (($pm_data = pm_message_get($t_reply_mid)) !== false) {
 
             $pm_data['CONTENT'] = pm_get_content($t_reply_mid);
 
@@ -251,9 +248,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
             $to_logon = trim($t_recipient);
 
-            if (($to_user = user_get_by_logon($to_logon))) {
+            if (($to_user = user_get_by_logon($to_logon)) !== false) {
 
-                $peer_relationship = user_get_peer_relationship($to_user['UID'], $uid);
+                $peer_relationship = user_get_peer_relationship($to_user['UID'], $_SESSION['UID']);
 
                 if (!in_array($to_user['UID'], $t_new_recipient_array['TO_UID'])) {
 
@@ -268,7 +265,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
                         pm_user_prune_folders();
 
-                        if (pm_get_free_space($uid) < sizeof($t_new_recipient_array['TO_UID'])) {
+                        if (pm_get_free_space($_SESSION['UID']) < sizeof($t_new_recipient_array['TO_UID'])) {
 
                             $error_msg_array[] = gettext("You do not have enough free space to send this message.");
                             $valid = false;
@@ -365,13 +362,13 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
     if (!$t_to_uid_others = pm_get_user($t_reply_mid)) $t_to_uid_others = "";
 
-    if (($pm_data = pm_message_get($t_reply_mid))) {
+    if (($pm_data = pm_message_get($t_reply_mid)) !== false) {
 
         $pm_data['CONTENT'] = pm_get_content($t_reply_mid);
 
         $t_subject = preg_replace('/^(RE:)?/iu', 'RE:', $pm_data['SUBJECT']);
 
-        if (session::get_value('PM_INCLUDE_REPLY') == 'Y') {
+        if (isset($_SESSION['PM_INCLUDE_REPLY']) && ($_SESSION['PM_INCLUDE_REPLY'] == 'Y')) {
 
             $message_author = htmlentities_array(format_user_name($pm_data['FLOGON'], $pm_data['FNICK']));
 
@@ -394,7 +391,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
 } else if (isset($t_forward_mid) && is_numeric($t_forward_mid) && $t_forward_mid > 0) {
 
-    if (($pm_data = pm_message_get($t_forward_mid))) {
+    if (($pm_data = pm_message_get($t_forward_mid)) !== false) {
 
         $pm_data['CONTENT'] = pm_get_content($t_forward_mid);
 
@@ -422,7 +419,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
 } else if (isset($t_edit_mid) && is_numeric($t_edit_mid) && $t_edit_mid > 0) {
 
-    if (($pm_data = pm_message_get($t_edit_mid))) {
+    if (($pm_data = pm_message_get($t_edit_mid)) !== false) {
 
         $pm_data['CONTENT'] = pm_get_content($t_edit_mid);
 
@@ -478,11 +475,11 @@ if ($valid && isset($_POST['send'])) {
 
         if (isset($to_radio) && $to_radio == 'friends') {
 
-            if (($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content))) {
+            if (($new_mid = pm_send_message($t_to_uid, $_SESSION['UID'], $t_subject, $t_content)) !== false) {
 
-                email_send_pm_notification($t_to_uid, $new_mid, $uid);
+                email_send_pm_notification($t_to_uid, $new_mid, $_SESSION['UID']);
 
-                if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+                if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments))) {
 
                     foreach ($attachments_array as $attachment) {
 
@@ -504,11 +501,11 @@ if ($valid && isset($_POST['send'])) {
 
             foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
 
-                if (($new_mid = pm_send_message($t_to_uid, $uid, $t_subject, $t_content))) {
+                if (($new_mid = pm_send_message($t_to_uid, $_SESSION['UID'], $t_subject, $t_content)) !== false) {
 
-                    email_send_pm_notification($t_to_uid, $new_mid, $uid);
+                    email_send_pm_notification($t_to_uid, $new_mid, $_SESSION['UID']);
 
-                    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+                    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments))) {
 
                         foreach ($attachments_array as $attachment) {
 
@@ -552,9 +549,9 @@ if ($valid && isset($_POST['send'])) {
 
     } else {
 
-        if (($saved_mid = pm_save_message($t_subject, $t_content, $t_to_uid, $t_to_uid_others))) {
+        if (($saved_mid = pm_save_message($t_subject, $t_content, $t_to_uid, $t_to_uid_others)) !== false) {
 
-            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments)) !== false) {
 
                 foreach ($attachments_array as $attachment) {
 
@@ -616,7 +613,7 @@ if ($valid && isset($_POST['preview'])) {
         $pm_preview_array['TO_UID'] = $t_new_recipient_array['TO_UID'];
     }
 
-    $preview_fuser = user_get($uid);
+    $preview_fuser = user_get($_SESSION['UID']);
 
     $pm_preview_array['FLOGON'] = $preview_fuser['LOGON'];
     $pm_preview_array['FNICK']  = $preview_fuser['NICKNAME'];
@@ -654,7 +651,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>", gettext("To"), "</h2></td>\n";
 echo "                      </tr>\n";
 
-if (($friends_array = pm_user_get_friends())) {
+if (($friends_array = pm_user_get_friends()) !== false) {
 
     if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
@@ -711,11 +708,13 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 
-if (($user_emoticon_pack = session::get_value('EMOTICONS')) === false) {
-    $user_emoticon_pack = forum_get_setting('default_emoticons', null, 'default');
+if (isset($_SESSION['EMOTICONS']) && strlen(trim($_SESSION['EMOTICONS'])) > 0) {
+    $user_emoticon_pack = $_SESSION['EMOTICONS'];
+} else {
+    $user_emoticon_pack = forum_get_setting('default_emoticons', 'strlen', 'default');
 }
 
-if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
+if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack)) !== false) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -808,7 +807,7 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" colspan=\"2\">\n";
     echo "                                <div class=\"attachments attachment_toggle\" style=\"display: ", (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) ? "block" : "none", "\">\n";
-    echo "                                  ", attachments_form($uid, $attachments, ATTACHMENT_FILTER_UNASSIGNED), "\n";
+    echo "                                  ", attachments_form($_SESSION['UID'], $attachments, ATTACHMENT_FILTER_UNASSIGNED), "\n";
     echo "                                </div>\n";
     echo "                              </td>\n";
     echo "                            </tr>\n";

@@ -129,10 +129,8 @@ if (isset($_POST['export'])) {
     }
 }
 
-$uid = session::get_value('UID');
-
 // Get User Prefs
-$user_prefs = user_get_prefs($uid);
+$user_prefs = user_get_prefs($_SESSION['UID']);
 
 // Start output here
 html_draw_top(sprintf("title=%s", gettext("Export Private Messages")), "emoticons.js", 'class=window_title');

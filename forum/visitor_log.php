@@ -304,7 +304,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
         echo "                 <tr>\n";
 
-        if (session::get_value('SHOW_AVATARS') == 'Y') {
+        if (isset($_SESSION['SHOW_AVATARS']) && ($_SESSION['SHOW_AVATARS'] == 'Y')) {
 
             if (isset($user_array['AVATAR_URL']) && strlen($user_array['AVATAR_URL']) > 0) {
 
@@ -314,7 +314,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
                 $attachment = attachments_get_by_aid($user_array['AVATAR_AID'], $user_array['UID']);
 
-                if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
+                if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false)) !== false) {
 
                     echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"", word_filter_add_ob_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME']), true), "\" title=\"", word_filter_add_ob_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME']), true), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
 

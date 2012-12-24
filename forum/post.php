@@ -57,15 +57,11 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
     html_message_type_error();
 }
 
-$show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
-
-$uid = session::get_value('UID');
+$show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
 
 $page_prefs = session::get_post_page_prefs();
 
-if (($high_interest = session::get_value('MARK_AS_OF_INT')) === false) {
-    $high_interest = "N";
-}
+$high_interest = (isset($_SESSION['MARK_AS_OF_INT']) && $_SESSION['MARK_AS_OF_INT'] == 'Y') ? 'Y' : 'N';
 
 $valid = true;
 
@@ -75,9 +71,7 @@ $t_to_uid = 0;
 
 $t_to_user = '';
 
-$max_post_attachment_space = forum_get_setting('attachments_max_post_space', null, 1048576);
-
-if (($t_sig = user_get_sig($uid))) {
+if (($t_sig = user_get_sig($_SESSION['UID'])) !== false) {
     $t_sig = fix_html($t_sig);
 }
 
@@ -252,7 +246,7 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
         'POST_PAGE' => $page_prefs
     );
 
-    if (!user_update_prefs($uid, $user_prefs)) {
+    if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
         $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
@@ -303,7 +297,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
         foreach ($quote_list as $quote_pid) {
 
-            if (($message_array = messages_get($reply_to_tid, $quote_pid))) {
+            if (($message_array = messages_get($reply_to_tid, $quote_pid)) !== false) {
 
                 $message_author = htmlentities_array(format_user_name($message_array['FLOGON'], $message_array['FNICK']));
 
@@ -357,9 +351,10 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         $valid = false;
     }
 
-    if (sizeof($attachments) > 0 && !attachments_check_post_space($uid, $attachments)) {
+    if (sizeof($attachments) > 0 && !attachments_check_post_space($_SESSION['UID'], $attachments)) {
 
-        $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
+    	$max_post_attachment_space = forum_get_setting('attachments_max_post_space', null, 1048576);
+    	$error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
         $valid = false;
     }
 
@@ -399,9 +394,10 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
         $valid = false;
     }
 
-    if (sizeof($attachments) > 0 && !attachments_check_post_space($uid, $attachments)) {
+    if (sizeof($attachments) > 0 && !attachments_check_post_space($_SESSION['UID'], $attachments)) {
 
-        $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
+    	$max_post_attachment_space = forum_get_setting('attachments_max_post_space', null, 1048576);
+    	$error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
         $valid = false;
     }
 }
@@ -410,7 +406,7 @@ if (isset($_POST['t_to_user']) && strlen(trim($_POST['t_to_user'])) > 0) {
 
     $t_to_user = trim($_POST['t_to_user']);
 
-    if (($to_user = user_get_by_logon($t_to_user))) {
+    if (($to_user = user_get_by_logon($t_to_user)) !== false) {
 
         $t_to_uid = $to_user['UID'];
 
@@ -422,7 +418,7 @@ if (isset($_POST['t_to_user']) && strlen(trim($_POST['t_to_user'])) > 0) {
 
 } else if (isset($reply_to_tid) && isset($reply_to_pid)) {
 
-    if (($message_user = message_get_user($reply_to_tid, $reply_to_pid))) {
+    if (($message_user = message_get_user($reply_to_tid, $reply_to_pid)) !== false) {
 
         $t_to_uid = $message_user['UID'];
         $t_to_user = $message_user['LOGON'];
@@ -482,7 +478,7 @@ if ($valid && isset($_POST['post'])) {
                     $t_sticky = "N";
                 }
 
-                $t_tid = post_create_thread($t_fid, $uid, $t_threadtitle, "N", $t_sticky, $t_closed);
+                $t_tid = post_create_thread($t_fid, $_SESSION['UID'], $t_threadtitle, "N", $t_sticky, $t_closed);
                 $t_rpid = 0;
 
             } else{
@@ -519,11 +515,11 @@ if ($valid && isset($_POST['post'])) {
                     $t_content.= "<div class=\"sig\">$t_sig</div>";
                 }
 
-                $new_pid = post_create($t_fid, $t_tid, $t_rpid, $uid, $t_to_uid, $t_content);
+                $new_pid = post_create($t_fid, $t_tid, $t_rpid, $_SESSION['UID'], $t_to_uid, $t_content);
 
                 if ($new_pid > -1) {
 
-                    $user_rel = user_get_relationship($t_to_uid, $uid);
+                    $user_rel = user_get_relationship($t_to_uid, $_SESSION['UID']);
 
                     if ($high_interest == "Y") thread_set_high_interest($t_tid);
 
@@ -531,19 +527,19 @@ if ($valid && isset($_POST['post'])) {
 
                         $exclude_user_array = array(
                             $t_to_uid,
-                            $uid
+                            $_SESSION['UID']
                         );
 
                         $thread_modified = (isset($thread_data['MODIFIED']) && is_numeric($thread_data['MODIFIED'])) ? $thread_data['MODIFIED'] : 0;
 
-                        email_sendnotification($t_to_uid, $uid, $t_tid, $new_pid);
+                        email_sendnotification($t_to_uid, $_SESSION['UID'], $t_tid, $new_pid);
 
-                        email_send_folder_subscription($uid, $t_fid, $t_tid, $new_pid, $thread_modified, $exclude_user_array);
+                        email_send_folder_subscription($_SESSION['UID'], $t_fid, $t_tid, $new_pid, $thread_modified, $exclude_user_array);
 
-                        email_send_thread_subscription($uid, $t_tid, $new_pid, $thread_modified, $exclude_user_array);
+                        email_send_thread_subscription($_SESSION['UID'], $t_tid, $new_pid, $thread_modified, $exclude_user_array);
                     }
 
-                    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+                    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments)) !== false) {
 
                         foreach ($attachments_array as $attachment) {
 
@@ -644,7 +640,7 @@ if ($valid && isset($_POST['preview'])) {
         $preview_message['TO_UID'] = $preview_tuser['UID'];
     }
 
-    $preview_tuser = user_get($uid);
+    $preview_tuser = user_get($_SESSION['UID']);
     $preview_message['FLOGON'] = $preview_tuser['LOGON'];
     $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
     $preview_message['FROM_UID'] = $preview_tuser['UID'];
@@ -751,11 +747,13 @@ if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
     echo "                      </tr>\n";
 }
 
-if (($user_emoticon_pack = session::get_value('EMOTICONS')) === false) {
-    $user_emoticon_pack = forum_get_setting('default_emoticons', null, 'default');
+if (isset($_SESSION['EMOTICONS']) && strlen(trim($_SESSION['EMOTICONS'])) > 0) {
+    $user_emoticon_pack = $_SESSION['EMOTICONS'];
+} else {
+    $user_emoticon_pack = forum_get_setting('default_emoticons', 'strlen', 'default');
 }
 
-if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
+if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack)) !== false) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -842,7 +840,7 @@ if (forum_get_setting('attachments_enabled', 'Y') && (session::check_perm(USER_P
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" colspan=\"2\">\n";
     echo "                                <div class=\"attachments attachment_toggle\" style=\"display: ", (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) ? "block" : "none", "\">\n";
-    echo "                                  ", attachments_form($uid, $attachments), "\n";
+    echo "                                  ", attachments_form($_SESSION['UID'], $attachments), "\n";
     echo "                                </div>\n";
     echo "                              </td>\n";
     echo "                            </tr>\n";

@@ -36,10 +36,10 @@ require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 // Get the start page
-if (($start_page = forum_get_setting('start_page'))) {
+if (($start_page = forum_get_setting('start_page', 'strlen', false)) !== false) {
 
     // Get the start page CSS
-    if (($start_page_css = forum_get_setting('start_page_css'))) {
+    if (($start_page_css = forum_get_setting('start_page_css', 'strlen', false)) !== false) {
 
         // Check for cached page.
         cache_check_etag(md5($start_page. $start_page_css));

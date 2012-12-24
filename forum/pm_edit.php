@@ -50,9 +50,6 @@ if (!session::logged_in()) {
 // Check that PM system is enabled
 pm_enabled();
 
-// Get the user's UID
-$uid = session::get_value('UID');
-
 // Get the user's post page preferences.
 $page_prefs = session::get_post_page_prefs();
 
@@ -141,7 +138,7 @@ if ($valid && isset($_POST['preview'])) {
 
     if (pm_edit_message($mid, $t_subject, $t_content)) {
 
-        if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+        if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments))) {
 
             foreach ($attachments_array as $attachment) {
 
@@ -186,7 +183,7 @@ if ($valid && isset($_POST['preview'])) {
         'POST_PAGE' => $page_prefs
     );
 
-    if (!user_update_prefs($uid, $user_prefs)) {
+    if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
         $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
@@ -259,11 +256,13 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), true), "</a></td>\n";
 echo "                      </tr>\n";
 
-if (($user_emoticon_pack = session::get_value('EMOTICONS')) === false) {
-    $user_emoticon_pack = forum_get_setting('default_emoticons', null, 'default');
+if (isset($_SESSION['EMOTICONS']) && strlen(trim($_SESSION['EMOTICONS'])) > 0) {
+    $user_emoticon_pack = $_SESSION['EMOTICONS'];
+} else {
+    $user_emoticon_pack = forum_get_setting('default_emoticons', 'strlen', 'default');
 }
 
-if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
+if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack)) !== false) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -340,7 +339,7 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
     echo "                              <td align=\"left\" colspan=\"2\">\n";
     echo "                                <div class=\"attachments attachment_toggle\" style=\"display: ", (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) ? "block" : "none", "\">\n";
     echo "                                  <ul>\n";
-    echo "                                  ", attachments_form($uid, $attachments, ATTACHMENT_FILTER_BOTH), "\n";
+    echo "                                  ", attachments_form($_SESSION['UID'], $attachments, ATTACHMENT_FILTER_BOTH), "\n";
     echo "                                </div>\n";
     echo "                              </td>\n";
     echo "                            </tr>\n";

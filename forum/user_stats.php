@@ -41,9 +41,6 @@ if (!session::logged_in()) {
     html_guest_error();
 }
 
-// User's UID
-$uid = session::get_value('UID');
-
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $msg = $_GET['msg'];
@@ -54,7 +51,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
         $user_prefs['SHOW_STATS'] = "N";
     }
 
-    if (user_update_prefs($uid, $user_prefs)) {
+    if (user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
         header_redirect("messages.php?webtag=$webtag&msg=$msg&setstats=1", gettext("Stats Display Changed"));
         exit;

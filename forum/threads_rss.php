@@ -115,7 +115,7 @@ if (!session::logged_in()) {
 // or the default to show all folders.
 if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
-    if (($available_folders_array = folder_get_available_array())) {
+    if (($available_folders_array = folder_get_available_array()) !== false) {
 
         if (in_array($_GET['fid'], $available_folders_array) && ($folder_title = folder_get_title($fid))) {
 
@@ -153,7 +153,7 @@ echo "<link>{$forum_location}/</link>\n";
 echo "</image>\n";
 
 // Get the 20 most recent threads
-if (($threads_array = threads_get_most_recent($limit, $fid, ($sort_created == 'Y')))) {
+if (($threads_array = threads_get_most_recent($limit, $fid, ($sort_created == 'Y'))) !== false) {
 
     foreach ($threads_array as $thread) {
 

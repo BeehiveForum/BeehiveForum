@@ -208,7 +208,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
     $error = SEARCH_NO_ERROR;
 
-    if (($search_success = search_execute($search_arguments, $error))) {
+    if (($search_success = search_execute($search_arguments, $error)) !== false) {
 
         if (isset($_GET['search_string']) || isset($_GET['logon'])) {
 
@@ -268,7 +268,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
     $page = $_GET['page'];
 
-    if (($search_results_array = search_fetch_results($page, $sort_by, $sort_dir))) {
+    if (($search_results_array = search_fetch_results($page, $sort_by, $sort_dir)) !== false) {
 
         html_draw_top('search.js', 'search_popup.js');
 
@@ -286,11 +286,11 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
         foreach ($search_results_array['result_array'] as $search_result) {
 
-            if (($message = messages_get($search_result['TID'], $search_result['PID'], 1))) {
+            if (($message = messages_get($search_result['TID'], $search_result['PID'], 1)) !== false) {
 
                 $message['CONTENT'] = message_get_content($search_result['TID'], $search_result['PID']);
 
-                if (($thread_data = thread_get($search_result['TID']))) {
+                if (($thread_data = thread_get($search_result['TID'])) !== false) {
 
                     $message['TITLE']   = trim($thread_data['TITLE']);
                     $message['CONTENT'] = trim(strip_tags(message_get_content($search_result['TID'], $search_result['PID'])));

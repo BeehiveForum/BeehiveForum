@@ -45,9 +45,6 @@ if (!session::logged_in()) {
     html_guest_error();
 }
 
-// User's UID
-$uid = session::get_value('UID');
-
 // Are we returning somewhere?
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
@@ -63,11 +60,11 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
     $available_pages = array(
-        'edit_relations.php', 
-        'messages.php', 
+        'edit_relations.php',
+        'messages.php',
         'user_profile.php'
     );
-    
+
     $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
 
     if (preg_match("/^$available_pages_preg/u", basename($ret)) < 1) {
@@ -103,7 +100,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 }
 
 // Cannot modify relationship settings for the current account
-if (($peer_uid == session::get_value('UID'))) {
+if (($peer_uid == $_SESSION['UID'])) {
     html_draw_error(gettext("You cannot change user relationship for your own user account"));
 }
 
@@ -135,7 +132,7 @@ if (isset($_POST['save'])) {
         $peer_relationship = ($peer_relationship & USER_IGNORED) ? USER_NORMAL : $peer_relationship;
     }
 
-    if (user_rel_update($uid, $peer_uid, $peer_relationship, $peer_nickname)) {
+    if (user_rel_update($_SESSION['UID'], $peer_uid, $peer_relationship, $peer_nickname)) {
 
         header_redirect("$ret&relupdated=true");
         exit;
@@ -150,18 +147,18 @@ if (isset($_POST['save'])) {
 if (isset($_POST['reset_nickname_x']) || isset($_POST['reset_nickname_y'])) {
 
     $peer_nickname = user_get_nickname($peer_uid);
-    $peer_relationship = user_get_peer_relationship($uid, $peer_uid);
+    $peer_relationship = user_get_peer_relationship($_SESSION['UID'], $peer_uid);
 
-    user_rel_update($uid, $peer_uid, $peer_relationship, $peer_nickname);
+    user_rel_update($_SESSION['UID'], $peer_uid, $peer_relationship, $peer_nickname);
 }
 
 $peer_user_display = format_user_name($user_peer['LOGON'], $user_peer['NICKNAME']);
 
 html_draw_top(sprintf('title=%s', sprintf(gettext("User Relationship - %s"), $peer_user_display)), 'class=window_title');
 
-$peer_relationship = user_get_relationship($uid, $peer_uid);
+$peer_relationship = user_get_relationship($_SESSION['UID'], $peer_uid);
 
-$peer_nickname = user_get_peer_nickname($uid, $peer_uid);
+$peer_nickname = user_get_peer_nickname($_SESSION['UID'], $peer_uid);
 
 echo "<h1>", gettext("User Relationship"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags($peer_user_display, true), "</a></h1>\n";
 
@@ -176,7 +173,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 if (isset($_POST['preview_signature'])) {
 
-    if (($t_sig_content = user_get_sig($peer_uid)) {
+    if (($t_sig_content = user_get_sig($peer_uid)) !== false) {
 
         $preview_message['TLOGON'] = gettext("ALL");
         $preview_message['TNICK'] = gettext("ALL");

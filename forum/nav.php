@@ -46,10 +46,10 @@ if (forum_check_webtag_available($webtag)) {
 
     echo "<a href=\"start.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Start"), "</a>&nbsp;|&nbsp;\n";
     echo "<a href=\"discussion.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Messages"), "</a>&nbsp;|&nbsp;\n";
-    
+
     if (forum_get_setting('ajax_chat_enabled', 'Y')) {
         echo "<a href=\"chat/index.php\" target=\"", html_get_frame_name('main'), "\">", gettext("Chat"), "</a>&nbsp;|&nbsp;\n";
-    } 
+    }
 
     if (forum_get_setting('show_links', 'Y')) {
         echo "<a href=\"links.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Links"), "</a>&nbsp;|&nbsp;\n";
@@ -79,7 +79,7 @@ if (!session::logged_in()) {
 
 } else {
 
-    echo "<a href=\"logout.php?webtag=$webtag\" target=\"", html_get_top_frame_name(), "\">", gettext("Logout"), " : ", session::get_value('LOGON'), "</a>\n";
+    echo "<a href=\"logout.php?webtag=$webtag\" target=\"", html_get_top_frame_name(), "\">", gettext("Logout"), " : ", $_SESSION['LOGON'], "</a>\n";
 }
 
 echo "</div>\n";

@@ -117,7 +117,7 @@ if (isset($_GET['search_query']) && strlen(trim($_GET['search_query']))) {
 
     list($selected_tid) = $selected_array;
 
-    if (($thread_data = thread_get($selected_tid))) {
+    if (($thread_data = thread_get($selected_tid)) !== false) {
         $search_query = $thread_data['TITLE'];
     }
 }
@@ -209,7 +209,7 @@ if (sizeof($selected_array) > 0) {
                 echo "                      </tr>\n";
             }
 
-        } else if (($thread_data = thread_get($selected_option))) {
+        } else if (($thread_data = thread_get($selected_option)) !== false) {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">", form_radio("selected", $thread_data['TID'], '', true), "&nbsp;<a href=\"messages.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags($thread_data['TITLE'], true), "</a></td>\n";

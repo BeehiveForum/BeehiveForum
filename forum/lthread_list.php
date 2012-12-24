@@ -83,11 +83,15 @@ if (!session::logged_in()) {
 
     if (isset($mode) && is_numeric($mode)) {
 
-        session::set_value('THREAD_MODE', $mode);
+        $_SESSION['THREAD_MODE'] = $mode;
 
     } else {
 
-        if (!($mode = session::get_value('THREAD_MODE'))) $mode = UNREAD_DISCUSSIONS;
+        if (isset($_SESSION['THREAD_MODE']) && is_numeric($_SESSION['THREAD_MODE'])) {
+            $mode = $_SESSION['THREAD_MODE'];
+        } else {
+            $mode = UNREAD_DISCUSSIONS;
+        }
 
         if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
             $mode = ALL_DISCUSSIONS;

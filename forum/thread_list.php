@@ -81,13 +81,9 @@ if (isset($_REQUEST['mode']) && is_numeric($_REQUEST['mode'])) {
 }
 
 // Number of posts per page
-if (($posts_per_page = session::get_value('POSTS_PER_PAGE'))) {
-
-    if ($posts_per_page < 10) $posts_per_page = 10;
-    if ($posts_per_page > 30) $posts_per_page = 30;
-
+if (isset($_SESSION['POSTS_PER_PAGE']) && is_numeric($_SESSION['POSTS_PER_PAGE'])) {
+    $posts_per_page = max(min($_SESSION['POSTS_PER_PAGE'], 30), 10);
 } else {
-
     $posts_per_page = 20;
 }
 
@@ -107,7 +103,7 @@ if (!session::logged_in()) {
 
     if (isset($mode) && is_numeric($mode)) {
 
-        session::set_value('THREAD_MODE', $mode);
+        $_SESSION['THREAD_MODE'] = $mode;
 
         if ($mode == SEARCH_RESULTS) {
 
@@ -117,7 +113,11 @@ if (!session::logged_in()) {
 
     } else {
 
-        if (!($mode = session::get_value('THREAD_MODE'))) $mode = UNREAD_DISCUSSIONS;
+        if (isset($_SESSION['THREAD_MODE']) && is_numeric($_SESSION['THREAD_MODE'])) {
+            $mode = $_SESSION['THREAD_MODE'];
+        } else {
+            $mode = UNREAD_DISCUSSIONS;
+        }
 
         if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
             $mode = ALL_DISCUSSIONS;
@@ -207,110 +207,107 @@ if (!session::logged_in()) {
 // Output XHTML header
 html_draw_top('thread_list.js');
 
-// Fetch the UID for the thread type functions below.
-$uid = session::get_value('UID');
-
 // Fetch the right threads for whichever mode is selected
 switch ($mode) {
 
     case UNREAD_DISCUSSIONS:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_unread($uid, $folder, $page);
+        list($thread_info, $folder_order, $thread_count) = threads_get_unread($_SESSION['UID'], $folder, $page);
         break;
 
     case UNREAD_DISCUSSIONS_TO_ME:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_unread_to_me($uid, $folder, $page);
+        list($thread_info, $folder_order, $thread_count) = threads_get_unread_to_me($_SESSION['UID'], $folder, $page);
         break;
 
     case TODAYS_DISCUSSIONS:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_by_days($uid, $folder, $page, 1);
+        list($thread_info, $folder_order, $thread_count) = threads_get_by_days($_SESSION['UID'], $folder, $page, 1);
         break;
 
     case UNREAD_TODAY:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_days($uid, $folder, $page);
+        list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_days($_SESSION['UID'], $folder, $page);
         break;
 
     case TWO_DAYS_BACK:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_by_days($uid, $folder, $page, 2);
+        list($thread_info, $folder_order, $thread_count) = threads_get_by_days($_SESSION['UID'], $folder, $page, 2);
         break;
 
     case SEVEN_DAYS_BACK:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_by_days($uid, $folder, $page, 7);
+        list($thread_info, $folder_order, $thread_count) = threads_get_by_days($_SESSION['UID'], $folder, $page, 7);
         break;
 
     case HIGH_INTEREST:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($uid, $folder, $page, THREAD_INTERESTED);
+        list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($_SESSION['UID'], $folder, $page, THREAD_INTERESTED);
         break;
 
     case UNREAD_HIGH_INTEREST:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_interest($uid, $folder, $page, THREAD_INTERESTED);
+        list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_interest($_SESSION['UID'], $folder, $page, THREAD_INTERESTED);
         break;
 
     case RECENTLY_SEEN:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_recently_viewed($uid, $folder, $page);
+        list($thread_info, $folder_order, $thread_count) = threads_get_recently_viewed($_SESSION['UID'], $folder, $page);
         break;
 
     case IGNORED_THREADS:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($uid, $folder, $page, THREAD_IGNORED);
+        list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($_SESSION['UID'], $folder, $page, THREAD_IGNORED);
         break;
 
     case BY_IGNORED_USERS:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_by_relationship($uid, $folder, $page, USER_IGNORED_COMPLETELY);
+        list($thread_info, $folder_order, $thread_count) = threads_get_by_relationship($_SESSION['UID'], $folder, $page, USER_IGNORED_COMPLETELY);
         break;
 
     case SUBSCRIBED_TO:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($uid, $folder, $page, THREAD_SUBSCRIBED);
+        list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($_SESSION['UID'], $folder, $page, THREAD_SUBSCRIBED);
         break;
 
     case STARTED_BY_FRIEND:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_by_relationship($uid, $folder, $page, USER_FRIEND);
+        list($thread_info, $folder_order, $thread_count) = threads_get_by_relationship($_SESSION['UID'], $folder, $page, USER_FRIEND);
         break;
 
     case UNREAD_STARTED_BY_FRIEND:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_relationship($uid, $folder, $page, USER_FRIEND);
+        list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_relationship($_SESSION['UID'], $folder, $page, USER_FRIEND);
         break;
 
     case STARTED_BY_ME:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_started_by_me($uid, $folder, $page);
+        list($thread_info, $folder_order, $thread_count) = threads_get_started_by_me($_SESSION['UID'], $folder, $page);
         break;
 
     case POLL_THREADS:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_polls($uid, $folder, $page);
+        list($thread_info, $folder_order, $thread_count) = threads_get_polls($_SESSION['UID'], $folder, $page);
         break;
 
     case STICKY_THREADS:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_sticky($uid, $folder, $page);
+        list($thread_info, $folder_order, $thread_count) = threads_get_sticky($_SESSION['UID'], $folder, $page);
         break;
 
     case MOST_UNREAD_POSTS:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_longest_unread($uid, $folder, $page);
+        list($thread_info, $folder_order, $thread_count) = threads_get_longest_unread($_SESSION['UID'], $folder, $page);
         break;
 
     case DELETED_THREADS:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_deleted($uid, $folder, $page);
+        list($thread_info, $folder_order, $thread_count) = threads_get_deleted($_SESSION['UID'], $folder, $page);
         break;
 
     default:
 
-        list($thread_info, $folder_order, $thread_count) = threads_get_all($uid, $folder, $page);
+        list($thread_info, $folder_order, $thread_count) = threads_get_all($_SESSION['UID'], $folder, $page);
         break;
 }
 
@@ -327,7 +324,7 @@ $folder_msgs = threads_get_folder_msgs();
 if (!is_array($folder_order)) $folder_order = array();
 
 // Check the folder display order.
-if (session::get_value('THREADS_BY_FOLDER') == 'Y') {
+if (isset($_SESSION['THREADS_BY_FOLDER']) && ($_SESSION['THREADS_BY_FOLDER'] == 'Y')) {
     $folder_order = array_keys($folder_info);
 }
 
@@ -336,12 +333,12 @@ if (isset($_REQUEST['msg']) && validate_msg($_REQUEST['msg'])) {
 
     list($selected_tid) = explode('.', $_REQUEST['msg']);
 
-    if (($thread = thread_get($selected_tid))) {
+    if (($thread = thread_get($selected_tid)) !== false) {
 
         if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
         // Check the folder display order / user is a guest.
-        if ((session::get_value('THREADS_BY_FOLDER') != 'Y') || !session::logged_in()) {
+        if (!isset($_SESSION['THREADS_BY_FOLDER']) || $_SESSION['THREADS_BY_FOLDER'] != 'Y' || !session::logged_in()) {
 
             // Remove the folder from the list of folders.
             if (in_array($thread['FID'], $folder_order)) {
@@ -379,7 +376,7 @@ if (isset($folder) && is_numeric($folder)) {
     array_unshift($folder_order, $folder);
 }
 
-if (session::get_value('UID') > 0) {
+if ($_SESSION['UID'] > 0) {
 
     // Array to hold our ignored folders in.
     $ignored_folders = array();
@@ -388,7 +385,7 @@ if (session::get_value('UID') > 0) {
     // If they're ignored and not already set to be on display
     // they need to be added to $ignored_folders so that they
     // appear at the bottom of the thread list.
-    while (list($fid, $folder_data) = each($folder_info)) {
+    foreach ($folder_info as $fid => $folder_data) {
 
         if (!in_array($fid, $folder_order) && !in_array($fid, $ignored_folders)) {
 
@@ -406,7 +403,7 @@ if (session::get_value('UID') > 0) {
 
 } else {
 
-    while (list($fid, $folder_data) = each($folder_info)) {
+    foreach ($folder_info as $fid => $folder_data) {
         if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
     }
 }
@@ -487,7 +484,7 @@ foreach ($folder_order as $folder_number) {
         echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder_number\" title=\"", word_filter_add_ob_tags($folder_info[$folder_number]['DESCRIPTION'], true), "\">", word_filter_add_ob_tags($folder_info[$folder_number]['TITLE'], true), "</a>\n";
         echo "          </td>\n";
 
-        if (session::get_value('UID') > 0) {
+        if ($_SESSION['UID'] > 0) {
             echo "          <td align=\"left\" class=\"folderpostnew\" style=\"white-space: nowrap\"><a href=\"mods_list.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 580x450\" id=\"mods_list_$folder_number\"><img src=\"". html_style_image('mods_list.png'). "\" border=\"0\" alt=\"", gettext("View moderators"), "\" title=\"", gettext("View moderators"), "\" /></a></td>";
         }
 

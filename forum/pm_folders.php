@@ -55,9 +55,6 @@ $pm_unread_count = 0;
 // Check for new PMs
 pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
 
-// Get the user's UID
-$uid = session::get_value('UID');
-
 // Get custom folder names array.
 if (!$pm_folder_names_array = pm_get_folder_names()) {
 

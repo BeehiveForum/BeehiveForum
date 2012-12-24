@@ -40,9 +40,6 @@ if (!session::logged_in()) {
     html_guest_error();
 }
 
-// User's UID
-$uid = session::get_value('UID');
-
 // Check for message ID
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $msg = $_GET['msg'];
@@ -51,7 +48,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 }
 
 // Load the user prefs
-$user_prefs = user_get_prefs($uid);
+$user_prefs = user_get_prefs($_SESSION['UID']);
 
 // Get the fontsize parameter
 $fontsize = isset($_GET['fontsize']) ? $_GET['fontsize'] : null;
@@ -91,7 +88,7 @@ if ($user_prefs['FONT_SIZE'] < 5) $user_prefs['FONT_SIZE'] = 5;
 if ($user_prefs['FONT_SIZE'] > 15) $user_prefs['FONT_SIZE'] = 15;
 
 // Update the user prefs.
-if (!user_update_prefs($uid, $user_prefs)) {
+if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
     html_draw_error(gettext("Your user preferences could not be updated. Please try again later."));
 }
 

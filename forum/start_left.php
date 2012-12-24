@@ -48,13 +48,9 @@ require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 cache_check_start_page();
 
 // Number of posts per page
-if (($posts_per_page = session::get_value('POSTS_PER_PAGE'))) {
-
-    if ($posts_per_page < 10) $posts_per_page = 10;
-    if ($posts_per_page > 30) $posts_per_page = 30;
-
+if (isset($_SESSION['POSTS_PER_PAGE']) && is_numeric($_SESSION['POSTS_PER_PAGE'])) {
+    $posts_per_page = max(min($_SESSION['POSTS_PER_PAGE'], 30), 10);
 } else {
-
     $posts_per_page = 20;
 }
 
@@ -82,7 +78,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";
 
-    if (($thread_array = threads_get_most_recent())) {
+    if (($thread_array = threads_get_most_recent()) !== false) {
 
         foreach ($thread_array as $thread) {
 
@@ -290,7 +286,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"100%\">\n";
 
 // Get recent visitors
-if (($recent_visitors_array = visitor_log_get_recent())) {
+if (($recent_visitors_array = visitor_log_get_recent()) !== false) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"center\">\n";
@@ -302,7 +298,7 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
 
             echo "                            <tr>\n";
 
-            if (session::get_value('SHOW_AVATARS') == 'Y') {
+            if (isset($_SESSION['SHOW_AVATARS']) && ($_SESSION['SHOW_AVATARS'] == 'Y')) {
 
                 if (isset($recent_visitor['AVATAR_URL']) && strlen($recent_visitor['AVATAR_URL']) > 0) {
 
@@ -312,7 +308,7 @@ if (($recent_visitors_array = visitor_log_get_recent())) {
 
                     $attachment = attachments_get_by_aid($recent_visitor['AVATAR_AID']);
 
-                    if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
+                    if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false)) !== false) {
 
                         echo "                   <td valign=\"top\"  class=\"postbody\" align=\"left\" width=\"25\"><img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
 
@@ -382,7 +378,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 
-if (($user_birthdays_array = user_get_forthcoming_birthdays())) {
+if (($user_birthdays_array = user_get_forthcoming_birthdays()) !== false) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "    <tr>\n";

@@ -54,8 +54,6 @@ $pm_unread_count = 0;
 
 pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
 
-$uid = session::get_value('UID');
-
 $error_msg_array = array();
 
 if (!$pm_folder_names_array = pm_get_folder_names()) {

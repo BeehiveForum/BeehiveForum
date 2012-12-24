@@ -278,7 +278,6 @@ if (isset($_POST['register'])) {
         $sig_content = fix_html($sig_content);
         $sig_html = "Y";
     } else {
-        $sig_content = $sig_content;
         $sig_html = "N";
     }
 
@@ -408,7 +407,7 @@ if (isset($_POST['register'])) {
 
     if ($valid) {
 
-        if (($new_uid = user_create($logon, $password, $nickname, $email))) {
+        if (($new_uid = user_create($logon, $password, $nickname, $email)) !== false) {
 
             // Save the new user preferences
             user_update_prefs($new_uid, $new_user_prefs);
@@ -680,7 +679,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
 
-    if (($available_styles = styles_get_available())) {
+    if (($available_styles = styles_get_available()) !== false) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" class=\"posthead\">", gettext("Style"), ":</td>\n";
@@ -717,7 +716,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo form_input_hidden("private_key", htmlentities_array($text_captcha_private_key));
             echo form_input_hidden("public_key", htmlentities_array($text_captcha->get_public_key()));
 
-        } else if (($text_captcha_image = $text_captcha->make_image())) {
+        } else if (($text_captcha_image = $text_captcha->make_image()) !== false) {
 
             $forum_owner_email = forum_get_setting('forum_email', null, 'admin@beehiveforum.co.uk');
             $forum_owner_link  = sprintf("<a href=\"mailto:%s\">%s</a>", $forum_owner_email, gettext("forum owner"));
@@ -777,7 +776,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
     $forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
 
-    if (!$forum_rules = forum_get_setting('forum_rules_message')) {
+    if (($forum_rules = forum_get_setting('forum_rules_message', 'strlen', false)) !== false) {
         $forum_rules = sprintf(gettext("<p><b>Forum Rules</b></p><p>Registration to %1\$s is free! We do insist that you abide by the rules and policies detailed below. If you agree to the terms, please check the 'I agree' checkbox and press the 'Register' button below. If you would like to cancel the registration, click <a href=\"index.php?webtag=%2\$s\">here</a> to return to the forums index.</p><p>Although the administrators and moderators of %1\$s will attempt to keep all objectionable messages off this forum, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of %1\$s, nor Project Beehive Forum and its affiliates will be held responsible for the content of any message.</p><p>By agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-orientated, hateful, threatening, or otherwise in violation of any laws.</p><p>The owners of %1\$s reserve the right to remove, edit, move or close any thread for any reason.</p>"), $forum_name, $webtag);
     }
 

@@ -48,9 +48,6 @@ require_once BH_INCLUDE_PATH. 'user.inc.php';
 // Message pane caching
 cache_check_messages();
 
-// User UID for fetching recent message
-$uid = session::get_value('UID');
-
 // Check that required variables are set
 // default to display most recent discussion for user
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
@@ -58,7 +55,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $msg = $_GET['msg'];
     list($tid, $pid) = explode('.', $msg);
 
-} else if (($msg = messages_get_most_recent($uid))) {
+} else if (($msg = messages_get_most_recent($uid)) !== false) {
 
     list($tid, $pid) = explode('.', $msg);
 
@@ -93,25 +90,6 @@ if (isset($_POST['pollsubmit'])) {
         }
     }
 
-} else if (isset($_POST['pollclose'])) {
-
-    if (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
-
-        $tid = $_POST['tid'];
-
-        if (isset($_POST['confirm_pollclose'])) {
-
-            poll_close($tid);
-
-        } else {
-
-            html_draw_top(sprintf("title=%s", gettext("Error")));
-            poll_confirm_close($tid);
-            html_draw_bottom();
-            exit;
-        }
-    }
-
 } else if (isset($_POST['pollchangevote'])) {
 
     if (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
@@ -124,19 +102,14 @@ if (isset($_POST['pollsubmit'])) {
     }
 }
 
-if (($posts_per_page = session::get_value('POSTS_PER_PAGE'))) {
-
-    if ($posts_per_page < 10) $posts_per_page = 10;
-    if ($posts_per_page > 30) $posts_per_page = 30;
-
+// Number of posts per page
+if (isset($_SESSION['POSTS_PER_PAGE']) && is_numeric($_SESSION['POSTS_PER_PAGE'])) {
+    $posts_per_page = max(min($_SESSION['POSTS_PER_PAGE'], 30), 10);
 } else {
-
     $posts_per_page = 20;
 }
 
-if (($high_interest = session::get_value('MARK_AS_OF_INT')) === false) {
-    $high_interest = "N";
-}
+$high_interest = (isset($_SESSION['MARK_AS_OF_INT']) && $_SESSION['MARK_AS_OF_INT'] == 'Y') ? 'Y' : 'N';
 
 // Check the thread exists.
 if (!$thread_data = thread_get($tid, session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
@@ -164,7 +137,7 @@ if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
     }
 }
 
-$show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
+$show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
 
 $page_prefs = session::get_post_page_prefs();
 
@@ -232,7 +205,7 @@ if (isset($_GET['font_resize'])) {
     echo "</div>\n";
 }
 
-if (($tracking_data_array = thread_get_tracking_data($tid))) {
+if (($tracking_data_array = thread_get_tracking_data($tid)) !== false) {
 
     echo "<table class=\"thread_track_notice\" width=\"96%\">\n";
 

@@ -36,7 +36,7 @@ function get_file_list(&$file_list_array, $path, $extension)
 
     if (!is_array($file_list_array)) $file_list_array = array();
 
-    if (($dir_handle = opendir($path))) {
+    if (($dir_handle = opendir($path)) !== false) {
 
         while (($file_name = readdir($dir_handle)) !== false) {
 

@@ -43,7 +43,7 @@ echo "Getting list of functions...\n";
 
 foreach ($source_files_dir_array as $include_file_dir) {
 
-    if (($dir = opendir($include_file_dir))) {
+    if (($dir = opendir($include_file_dir)) !== false) {
 
         while (($file = readdir($dir)) !== false) {
 
@@ -55,7 +55,7 @@ foreach ($source_files_dir_array as $include_file_dir) {
 
                 $source_file_contents = file_get_contents("$include_file_dir\\$file");
 
-                if (preg_match_all("/function ([a-z_-]+)\s?\(([^\)]*)\)/", $source_file_contents, $function_matches_array, PREG_SET_ORDER) > 0) {
+                if (preg_match_all('/function ([a-z_-]+)\s?\(([^\)]*)\)/', $source_file_contents, $function_matches_array, PREG_SET_ORDER) > 0) {
 
                     foreach ($function_matches_array as $function_match) {
 

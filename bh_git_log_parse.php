@@ -111,7 +111,7 @@ function git_mysql_output_log($log_filename = null)
 
     $git_log_comments_array = array();
 
-    while (($git_log_entry_array = $result->fetch_assoc())) {
+    while (($git_log_entry_array = $result->fetch_assoc()) !== null) {
 
         if (preg_match_all('/^((Fixed|Changed|Added):)\s*(.+)/im', $git_log_entry_array['COMMENTS'], $git_log_entry_matches_array, PREG_SET_ORDER) > 0) {
 

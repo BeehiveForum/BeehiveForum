@@ -49,7 +49,7 @@ echo "Getting list of functions...\n";
 
 foreach ($source_files_dir_array as $include_file_dir) {
 
-    if (($dir = opendir($include_file_dir))) {
+    if (($dir = opendir($include_file_dir)) !== false) {
 
         while (($file = readdir($dir)) !== false) {
 

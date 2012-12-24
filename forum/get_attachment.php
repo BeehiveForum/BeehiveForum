@@ -70,15 +70,15 @@ if (!($attachment_details = attachments_get_by_hash($hash))) {
 // we need to append .thumb to the filepath. If we're getting
 // the full image we increase the view count by one.
 if (isset($_GET['thumb'])) {
-    
+
     // Check the forum has attachment thumbnails enabled.
     // If it doesn't simply send a 404 error and stop here.
     if (!forum_get_setting('attachment_thumbnails', 'Y')) {
-        
+
         header_status('404', 'File Not Found');
         exit;
     }
-    
+
     $file_path = "{$attachment_dir}/{$attachment_details['hash']}.thumb";
 
 } else {
@@ -105,7 +105,7 @@ $file_name = rawurldecode(basename($attachment_details['filename']));
 if (!isset($file_path) || !@file_exists($file_path)) {
 
     header_status('404', 'File Not Found');
-    exit;    
+    exit;
 }
 
 // Turn off all output buffers

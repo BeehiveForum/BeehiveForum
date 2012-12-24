@@ -46,9 +46,6 @@ if (!forum_get_setting('show_links', 'Y')) {
     html_draw_error(gettext("You may not access this section."));
 }
 
-// User's UID for later.
-$uid = session::get_value('UID');
-
 // Array to hold error messages
 $error_msg_array = array();
 
@@ -149,7 +146,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
     if ($valid) {
 
-        if (links_add($uri, $name, $description, $fid, $uid)) {
+        if (links_add($uri, $name, $description, $fid, $_SESSION['UID'])) {
 
             header_redirect("links.php?webtag=$webtag&fid=$fid&link_added=$name");
             exit;
@@ -189,7 +186,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
     if ($valid) {
 
-        if (links_add_folder($fid, $name, $uid, true)) {
+        if (links_add_folder($fid, $name, $_SESSION['UID'], true)) {
 
             header_redirect("links.php?webtag=$webtag&fid=$fid&folder_added=$name");
             exit;

@@ -47,16 +47,13 @@ require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 // Message pane caching
 cache_check_messages();
 
-// User UID for fetching recent message
-$uid = session::get_value('UID');
-
 // Check that required variables are set
 // default to display most recent discussion for user
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     list($tid, $pid) = explode('.', $_GET['msg']);
 
-} else if (($msg = messages_get_most_recent($uid))) {
+} else if (($msg = messages_get_most_recent($_SESSION['UID'])) !== false) {
 
     list($tid, $pid) = explode('.', $msg);
 

@@ -93,8 +93,11 @@ if (!browser_mobile() && !session::is_search_engine()) {
 
     html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
 
-    $navsize = session::get_value('FONT_SIZE');
-    $navsize = max((is_numeric($navsize) ? $navsize * 2 : 22), 22);
+    if (isset($_SESSION['FONT_SIZE']) && is_numeric($_SESSION['FONT_SIZE'])) {
+        $navsize = max(max(min($_SESSION['FONT_SIZE'], 15), 5) * 2, 22);
+    } else {
+        $navsize = 22;
+    }
 
     if (forum_check_webtag_available($webtag)) {
 
@@ -114,7 +117,7 @@ if (!browser_mobile() && !session::is_search_engine()) {
 
             } else {
 
-                if (($start_page = session::get_value('START_PAGE'))) {
+                if (isset($_SESSION['START_PAGE']) && is_numeric($_SESSION['START_PAGE'])) {
 
                     if ($start_page == START_PAGE_MESSAGES) {
                         $final_uri = "discussion.php?webtag=$webtag";
@@ -184,7 +187,7 @@ if (!browser_mobile() && !session::is_search_engine()) {
     echo "<body>\n";
 
 } else {
-    
+
     light_html_draw_top();
 }
 
@@ -238,17 +241,19 @@ if (forum_check_webtag_available($webtag)) {
 
         } else {
 
-            $uid = session::get_value('UID');
-
             $threads_any_unread = threads_any_unread();
 
             if (isset($mode) && is_numeric($mode)) {
 
-                session::set_value('THREAD_MODE', $mode);
+                $_SESSION['THREAD_MODE'] = $mode;
 
             } else {
 
-                if (!($mode = session::get_value('THREAD_MODE'))) $mode = UNREAD_DISCUSSIONS;
+                if (isset($_SESSION['THREAD_MODE']) && is_numeric($_SESSION['THREAD_MODE'])) {
+                    $mode = $_SESSION['THREAD_MODE'];
+                } else {
+                    $mode = UNREAD_DISCUSSIONS;
+                }
 
                 if ($mode == UNREAD_DISCUSSIONS && !$threads_any_unread) {
                     $mode = ALL_DISCUSSIONS;

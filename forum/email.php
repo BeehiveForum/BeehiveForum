@@ -62,11 +62,9 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     html_draw_error(gettext("No user specified for emailing."));
 }
 
-$uid = session::get_value('UID');
-
 $to_user = user_get($to_uid);
 
-$from_user = user_get($uid);
+$from_user = user_get($_SESSION['UID']);
 
 if (isset($_POST['send'])) {
 
@@ -112,7 +110,7 @@ if (isset($_POST['send'])) {
 
     if ($valid) {
 
-        if (email_send_message_to_user($to_uid, $uid, $subject, $message, $use_email_addr)) {
+        if (email_send_message_to_user($to_uid, $_SESSION['UID'], $subject, $message, $use_email_addr)) {
 
             html_draw_top(sprintf('title=%s', gettext("Email result")), 'pm_popup_disabled', 'class=window_title');
             html_display_msg(gettext("Message sent"), gettext("Message sent successfully."), 'email.php', 'post', array('close' => gettext("Close")), array('to_uid' => $to_uid), false, 'center');
@@ -167,7 +165,7 @@ echo "                        <td align=\"left\">", form_textarea("t_message", (
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_checkbox('t_use_email_addr', 'Y', gettext("Use my real email address to send this message"), (isset($use_email_addr) ? $use_email_addr : session::get_value('USE_EMAIL_ADDR') == 'Y')), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox('t_use_email_addr', 'Y', gettext("Use my real email address to send this message"), (isset($use_email_addr) ? $use_email_addr : (isset($_SESSION['USE_EMAIL_ADDR']) && $_SESSION['USE_EMAIL_ADDR'] == 'Y'))), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

@@ -56,11 +56,8 @@ $available_langs = lang_get_available();
 // Get an array of available timezones.
 $available_timezones = get_available_timezones();
 
-// User UID
-$uid = session::get_value('UID');
-
 // Get User Prefs
-$user_prefs = user_get_prefs($uid);
+$user_prefs = user_get_prefs($_SESSION['UID']);
 
 // Submit code starts here.
 if (isset($_POST['save'])) {
@@ -343,7 +340,7 @@ if (isset($_POST['save'])) {
     }
 
     // Update USER_PREFS
-    if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+    if (user_update_prefs($_SESSION['UID'], $user_prefs, $user_prefs_global)) {
 
         html_set_cookie("forum_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
         header_redirect("forum_options.php?webtag=$webtag&updated=true", gettext("Preferences were successfully updated."));
@@ -563,7 +560,7 @@ echo "                  <td align=\"left\">", form_dropdown_array("font_size", a
 echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("font_size_global", "Y", '', (isset($user_prefs['FONT_SIZE_GLOBAL']) ? $user_prefs['FONT_SIZE_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("font_size_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 
-if (($available_styles = styles_get_available())) {
+if (($available_styles = styles_get_available()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\">", gettext("Forum style"), ":</td>\n";

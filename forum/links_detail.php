@@ -69,8 +69,6 @@ if (isset($_POST['parent_fid']) && is_numeric($_POST['parent_fid'])) {
     $parent_fid = 1;
 }
 
-$uid = session::get_value('UID');
-
 $creator_uid = links_get_creator_uid($lid);
 
 $user_perm_links_moderate = session::check_perm(USER_PERM_LINKS_MODERATE, 0);
@@ -96,7 +94,7 @@ if (session::logged_in()) {
 
         if (isset($_POST['vote']) && is_numeric($_POST['vote'])) {
 
-            links_vote($lid, $_POST['vote'], $uid);
+            links_vote($lid, $_POST['vote'], $_SESSION['UID']);
             $success_msg = gettext("Your vote has been recorded");
 
         } else {
@@ -107,7 +105,7 @@ if (session::logged_in()) {
 
     } else if (isset($_POST['clearvote'])) {
 
-        links_clear_vote($lid, $uid);
+        links_clear_vote($lid, $_SESSION['UID']);
         $success_msg = gettext("Your vote has been cleared");
     }
 
@@ -117,7 +115,7 @@ if (session::logged_in()) {
 
             $comment = trim($_POST['comment']);
 
-            links_add_comment($lid, $uid, $comment);
+            links_add_comment($lid, $_SESSION['UID'], $comment);
             $success_msg = gettext("Your comment was added.");
 
         } else {
@@ -127,13 +125,13 @@ if (session::logged_in()) {
         }
     }
 
-    if (isset($_POST['update']) && ($user_perm_links_moderate || $creator_uid == $uid)) {
-        
+    if (isset($_POST['update']) && ($user_perm_links_moderate || $creator_uid == $_SESSION['UID'])) {
+
         if (isset($_POST['delete']) && $_POST['delete'] == "confirm") {
 
             links_delete($lid);
 
-            if (session::check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != session::get_value('UID'))) {
+            if (session::check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != $_SESSION['UID'])) {
                 admin_add_log_entry(DELETE_LINK, array($link['LID'], $link['TITLE'], $link['URI']));
             }
 
@@ -179,18 +177,18 @@ if (session::logged_in()) {
             }
 
             if ($valid) {
-                
-                links_update($lid, $fid, $uid, $title, $uri, $description);
-                
-                if (session::check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != session::get_value('UID'))) {
+
+                links_update($lid, $fid, $_SESSION['UID'], $title, $uri, $description);
+
+                if (session::check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != $_SESSION['UID'])) {
                     admin_add_log_entry(DELETE_LINK, array($lid));
                 }
-                
+
                 header_redirect("links_detail.php?webtag=$webtag&lid=$lid&fid=$fid");
             }
         }
-        
-        if ($user_perm_links_moderate || $link['UID'] == $uid) {
+
+        if ($user_perm_links_moderate || $link['UID'] == $_SESSION['UID']) {
 
             if (isset($_POST['hide']) && $_POST['hide'] == "confirm") {
 
@@ -200,7 +198,7 @@ if (session::logged_in()) {
 
                 links_change_visibility($lid, true);
             }
-            
+
             header_redirect("links_detail.php?webtag=$webtag&lid=$lid&fid=$fid");
         }
     }
@@ -211,7 +209,7 @@ if (isset($_GET['delete_comment']) && is_numeric($_GET['delete_comment'])) {
     $comment_id = $_GET['delete_comment'];
     $comment_uid = links_get_comment_uid($comment_id);
 
-    if ($user_perm_links_moderate || $comment_uid == $uid) {
+    if ($user_perm_links_moderate || $comment_uid == $_SESSION['UID']) {
 
         if (links_delete_comment($comment_id)) {
 
@@ -320,7 +318,7 @@ echo "<br />\n";
 
 if (session::logged_in()) {
 
-    $vote = links_get_vote($lid, $uid);
+    $vote = links_get_vote($lid, $_SESSION['UID']);
     $vote = $vote ? $vote : -1;
 
     echo "<form accept-charset=\"utf-8\" name=\"link_vote\" action=\"links_detail.php\" method=\"post\">\n";
@@ -369,7 +367,7 @@ if (session::logged_in()) {
     echo "<br />\n";
 }
 
-if (($comments_array = links_get_comments($lid))) {
+if (($comments_array = links_get_comments($lid)) !== false) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";
@@ -384,7 +382,7 @@ if (($comments_array = links_get_comments($lid))) {
         $profile_link = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$comment['UID']}\" target=\"_blank\" class=\"popup 650x500\">";
         $profile_link.= word_filter_add_ob_tags(format_user_name($comment['LOGON'], $comment['NICKNAME']), true). "</a>";
 
-        if ($user_perm_links_moderate || $comment['UID'] == $uid) {
+        if ($user_perm_links_moderate || $comment['UID'] == $_SESSION['UID']) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"left\" class=\"subhead\">", sprintf(gettext("Comment by %s"), $profile_link), " <a href=\"links_detail.php?webtag=$webtag&amp;delete_comment={$comment['CID']}&amp;lid=$lid\" class=\"threadtime\">[", gettext("Delete"), "]</a></td>\n";
@@ -467,7 +465,7 @@ if (session::logged_in()) {
     echo "</form>\n";
 }
 
-if ($user_perm_links_moderate || $link['UID'] == $uid) {
+if ($user_perm_links_moderate || $link['UID'] == $_SESSION['UID']) {
 
     echo "<form accept-charset=\"utf-8\" name=\"link_moderation\" action=\"links_detail.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";

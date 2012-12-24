@@ -50,9 +50,6 @@ if (!session::logged_in()) {
 // Check that PM system is enabled
 pm_enabled();
 
-// Get the user's UID
-$uid = session::get_value('UID');
-
 // Get the user's post page preferences.
 $page_prefs = session::get_post_page_prefs();
 
@@ -134,7 +131,7 @@ if ($valid && isset($_POST['preview'])) {
 
 } else if ($valid && isset($_POST['apply'])) {
 
-    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments)) !== false) {
 
         foreach ($attachments_array as $attachment) {
 
@@ -181,7 +178,7 @@ if ($valid && isset($_POST['preview'])) {
         'POST_PAGE' => $page_prefs
     );
 
-    if (!user_update_prefs($uid, $user_prefs)) {
+    if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
         $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
@@ -233,7 +230,7 @@ echo "</div>";
 if (forum_get_setting('attachments_enabled', 'Y')) {
 
     echo "<div class=\"attachments post_attachments\">", gettext('Attachments'), ":\n";
-    echo "  ", attachments_form($uid, $attachments, ATTACHMENT_FILTER_BOTH), "\n";
+    echo "  ", attachments_form($_SESSION['UID'], $attachments, ATTACHMENT_FILTER_BOTH), "\n";
     echo "</div>\n";
 }
 

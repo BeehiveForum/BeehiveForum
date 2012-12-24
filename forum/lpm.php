@@ -48,9 +48,6 @@ if (!session::logged_in()) {
 // Check that PM system is enabled
 light_pm_enabled();
 
-// Get the user's UID
-$uid = session::get_value('UID');
-
 // Prune old messages for the current user
 pm_user_prune_folders();
 

@@ -91,7 +91,7 @@ if (isset($_GET['view']) && is_numeric($_GET['view'])) {
 }
 
 if (isset($_POST['search_keyword']) && strlen(trim($_POST['search_keyword'])) > 0) {
-    
+
     $page = 1;
 
     $search_keyword = trim($_POST['search_keyword']);
@@ -101,7 +101,7 @@ if (isset($_POST['search_keyword']) && strlen(trim($_POST['search_keyword'])) > 
     $search_keyword = trim($_GET['search_keyword']);
 
 } else {
-    
+
     $search_keyword = '';
 }
 
@@ -109,15 +109,13 @@ if (isset($_POST['clear'])) {
     $search_keyword = '';
 }
 
-$uid = session::get_value('UID');
-
 $header_text_array = array(
-    FOLDER_IGNORED => gettext("Ignored Folders"), 
+    FOLDER_IGNORED => gettext("Ignored Folders"),
     FOLDER_SUBSCRIBED => gettext("Subscribed Folders")
 );
 
 $interest_level_array = array(
-    FOLDER_IGNORED => gettext("Ignored"), 
+    FOLDER_IGNORED => gettext("Ignored"),
     FOLDER_SUBSCRIBED => gettext("Subscribed")
 );
 

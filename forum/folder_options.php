@@ -69,9 +69,6 @@ if (!$folder_data = folder_get($fid)) {
     html_draw_error(gettext("The requested folder could not be found or access was denied."));
 }
 
-// UID of the current user.
-$uid = session::get_value('UID');
-
 // Get the existing thread data.
 if (!folder_is_accessible($fid)) {
     html_draw_error(gettext("The requested folder could not be found or access was denied."));

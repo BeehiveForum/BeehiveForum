@@ -46,8 +46,6 @@ if (!forum_get_setting('show_links', 'Y')) {
     html_draw_error(gettext("You may not access this section."));
 }
 
-$uid = session::get_value('UID');
-
 $folders = links_folders_get(!session::check_perm(USER_PERM_LINKS_MODERATE, 0));
 
 $error_msg_array = array();
@@ -86,7 +84,7 @@ if (isset($_POST['update'])) {
 
     if ($valid) {
 
-        links_update_folder($fid, $uid, $name);
+        links_update_folder($fid, $_SESSION['UID'], $name);
         header_redirect("links.php?webtag=$webtag&fid=$fid");
     }
 

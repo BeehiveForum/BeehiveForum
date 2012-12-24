@@ -176,28 +176,28 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
         echo "                      <div class=\"links_folder_list\">\n";
         echo "                        <table>\n";
 
-        while (list($key, $val) = each($subfolders)) {
+        foreach ($subfolders as $key => $folder) {
 
             echo "                          <tr>\n";
             echo "                            <td class=\"postbody\"><img src=\"" . html_style_image("folder.png") . "\" alt=\"", gettext("Folder"), "\" title=\"", gettext("Folder"), "\" /></td>\n";
-            echo "                            <td align=\"left\" class=\"postbody\"><a href=\"links.php?webtag=$webtag&amp;fid=$val\" class=\"", ($folders[$val]['VISIBLE'] == "N") ? "link_hidden" : "", "\">", word_filter_add_ob_tags($folders[$val]['NAME'], true), "</a>";
+            echo "                            <td align=\"left\" class=\"postbody\"><a href=\"links.php?webtag=$webtag&amp;fid=$folder\" class=\"", ($folders[$folder]['VISIBLE'] == "N") ? "link_hidden" : "", "\">", word_filter_add_ob_tags($folders[$folder]['NAME'], true), "</a>";
 
-            if (session::check_perm(USER_PERM_LINKS_MODERATE, 0) && $folders[$val]['VISIBLE'] == "Y") {
+            if (session::check_perm(USER_PERM_LINKS_MODERATE, 0) && $folders[$folder]['VISIBLE'] == "Y") {
 
-                echo "&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=folderhide&amp;new_fid=$fid\" class=\"threadtime\">[", gettext("hide"), "]</a>\n";
+                echo "&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$folder&amp;action=folderhide&amp;new_fid=$fid\" class=\"threadtime\">[", gettext("hide"), "]</a>\n";
 
-            } else if (session::check_perm(USER_PERM_LINKS_MODERATE, 0) && $folders[$val]['VISIBLE'] == "N") {
+            } else if (session::check_perm(USER_PERM_LINKS_MODERATE, 0) && $folders[$folder]['VISIBLE'] == "N") {
 
-                echo "&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=foldershow&amp;new_fid=$fid\" class=\"threadtime\">[", gettext("unhide"), "]</a>\n";
+                echo "&nbsp;<a href=\"links.php?webtag=$webtag&amp;fid=$folder&amp;action=foldershow&amp;new_fid=$fid\" class=\"threadtime\">[", gettext("unhide"), "]</a>\n";
             }
 
             if (session::check_perm(USER_PERM_LINKS_MODERATE, 0)) {
 
-                echo "<a href=\"links_folder_edit.php?webtag=$webtag&amp;fid=$val\" class=\"threadtime\">[", gettext("Edit"), "]</a>\n";
+                echo "<a href=\"links_folder_edit.php?webtag=$webtag&amp;fid=$folder\" class=\"threadtime\">[", gettext("Edit"), "]</a>\n";
 
-                if (count(links_get_subfolders($val, $folders)) == 0) {
+                if (count(links_get_subfolders($folder, $folders)) == 0) {
 
-                    echo "<a href=\"links.php?webtag=$webtag&amp;fid=$val&amp;action=folderdel&amp;new_fid=$fid\" class=\"threadtime\">[", gettext("Delete"), "]</a>\n";
+                    echo "<a href=\"links.php?webtag=$webtag&amp;fid=$folder&amp;action=folderdel&amp;new_fid=$fid\" class=\"threadtime\">[", gettext("Delete"), "]</a>\n";
                 }
             }
 

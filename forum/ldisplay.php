@@ -41,9 +41,6 @@ require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'thread.inc.php';
 require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
-// User UID for fetching recent message
-$uid = session::get_value('UID');
-
 // Check that required variables are set
 // default to display most recent discussion for user
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {

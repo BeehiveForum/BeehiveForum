@@ -50,7 +50,7 @@ if (!session::logged_in()) {
 }
 
 // Check if the user is viewing signatures.
-$show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
+$show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
 
 // Array to hold error messages
 $error_msg_array = array();
@@ -127,7 +127,7 @@ if (!$thread_data = thread_get($tid)) {
     exit;
 }
 
-if (($preview_message = messages_get($tid, $pid, 1))) {
+if (($preview_message = messages_get($tid, $pid, 1)) !== false) {
 
     $preview_message['CONTENT'] = message_get_content($tid, $pid);
 
@@ -139,7 +139,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
         exit;
     }
 
-    if ((session::get_value('UID') != $preview_message['FROM_UID'] || session::check_perm(USER_PERM_PILLORIED, 0)) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+    if (($_SESSION['UID'] != $preview_message['FROM_UID'] || session::check_perm(USER_PERM_PILLORIED, 0)) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
         light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
         light_post_edit_refuse();
@@ -169,7 +169,7 @@ if (isset($_POST['delete'])) {
 
         post_add_edit_text($tid, $pid);
 
-        if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != session::get_value('UID')) {
+        if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != $_SESSION['UID']) {
             admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
         }
 

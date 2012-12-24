@@ -36,11 +36,10 @@ require_once BH_INCLUDE_PATH. 'session.inc.php';
 // Guests can't do different font sizes.
 if (!session::logged_in()) exit;
 
-// User's UID
-$uid = session::get_value('UID');
-
 // User's font size.
-if (($font_size = session::get_value('FONT_SIZE')) === false) {
+if (isset($_SESSION['FONT_SIZE']) && is_numeric($_SESSION['FONT_SIZE'])) {
+    $font_size = max(min($_SESSION['FONT_SIZE'], 15), 5);
+} else {
     $font_size = 10;
 }
 
@@ -51,7 +50,7 @@ $font_size = floor(abs($font_size));
 header("Content-Type: text/css");
 
 // Check the cache
-cache_check_etag(md5(sprintf("%s-%s-%s", session_id(), $font_size, $uid)));
+cache_check_etag(md5(sprintf("%s-%s-%s", session_id(), $font_size, $_SESSION['UID'])));
 
 // Check the user's font size.
 if ($font_size < 5) $font_size = 5;
@@ -59,7 +58,7 @@ if ($font_size > 15) $font_size = 15;
 
 // Array of different font sizes
 $css_selectors = array(
-    'body' => 0.8, 
+    'body' => 0.8,
     '.navpage' => 0.65
 );
 

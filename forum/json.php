@@ -34,34 +34,42 @@ require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 // User font size
-if (($font_size = session::get_value('FONT_SIZE')) === false) {
+if (isset($_SESSION['FONT_SIZE']) && is_numeric($_SESSION['FONT_SIZE'])) {
+    $font_size = max(min($_SESSION['FONT_SIZE'], 15), 5);
+} else {
     $font_size = 10;
 }
 
 // User style
-if (($user_style = session::get_value('STYLE')) === false) {
-    $user_style = html_get_cookie("forum_style", null, forum_get_setting('default_style', null, 'default'));
+if (isset($_SESSION['STYLE']) && strlen(trim($_SESSION['STYLE'])) > 0) {
+    $user_style = $_SESSION['STYLE'];
+} else {
+    $user_style = html_get_cookie("forum_style", 'strlen', forum_get_setting('default_style', 'strlen', 'default'));
 }
 
 // User emoticons
-if (($user_emoticons = session::get_value('EMOTICONS')) === false) {
-    $user_emoticons = forum_get_setting('default_emoticons');
+if (isset($_SESSION['EMOTICONS']) && strlen(trim($_SESSION['EMOTICONS'])) > 0) {
+    $user_emoticons = $_SESSION['EMOTICONS'];
+} else {
+    $user_emoticons = forum_get_setting('default_emoticons', 'strlen', 'default');
 }
 
 // Get the user's saved left frame width.
-if (($left_frame_width = session::get_value('LEFT_FRAME_WIDTH')) === false) {
+if (isset($_SESSION['LEFT_FRAME_WIDTH']) && is_numeric($_SESSION['LEFT_FRAME_WIDTH'])) {
+    $left_frame_width = max(100, $_SESSION['LEFT_FRAME_WIDTH']);
+} else {
     $left_frame_width = 280;
 }
 
 // Get the attachment max file size (default: 2MB)
-if (($attachment_size_limit = forum_get_setting('attachment_size_limit', null, false)) === false) {
+if (($attachment_size_limit = forum_get_setting('attachment_size_limit', 'is_numeric', false)) === false) {
     $attachment_size_limit = convert_shorthand_filesize(ini_get('upload_max_filesize'));
 }
 
 // Construct the Javascript / JSON array
 $json_data = array(
     'webtag' => $webtag,
-    'uid' => session::get_value('UID'),
+    'uid' => $_SESSION['UID'],
     'lang' => array(
         'imageresized' => gettext("This image has been resized (original size %dx%d). To view the full-size image click here."),
         'deletemessagesconfirmation' => gettext("Are you sure you want to delete all of the selected messages?"),
@@ -90,8 +98,8 @@ $json_data = array(
     'top_frame' => html_get_top_page(),
     'left_frame_width' => max(100, $left_frame_width),
     'forum_path' => server_get_forum_path(),
-    'use_mover_spoiler' => session::get_value('USE_MOVER_SPOILER'),
-    'show_share_links' => session::get_value('SHOW_SHARE_LINKS'),
+    'use_mover_spoiler' => (isset($_SESSION['USE_MOVER_SPOILER']) && $_SESSION['USE_MOVER_SPOILER'] == 'Y') ? 'Y' : 'N',
+    'show_share_links' => (isset($_SESSION['SHOW_SHARE_LINKS']) && $_SESSION['SHOW_SHARE_LINKS'] == 'Y') ? 'Y' : 'N',
     'attachment_size_limit' => $attachment_size_limit,
     'frames' => array(
         'index' => html_get_frame_name('index'),
@@ -110,7 +118,7 @@ $json_data = array(
     )
 );
 
-if (($images_array = glob("styles/$user_style/images/*.png"))) {
+if (($images_array = glob("styles/$user_style/images/*.png")) !== false) {
 
     foreach ($images_array as $image_filename) {
 

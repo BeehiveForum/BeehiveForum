@@ -181,7 +181,7 @@ if (isset($_POST['action_submit'])) {
 
             if (forum_get_setting('require_user_approval', 'Y')) {
 
-                if (($user_logon = user_get_logon($uid))) {
+                if (($user_logon = user_get_logon($uid)) !== false) {
 
                     if (admin_approve_user($uid)) {
 
@@ -272,11 +272,11 @@ if (isset($_POST['action_submit'])) {
 
         $t_new_password = trim($_POST['t_new_password']);
 
-        if (($user_logon = user_get_logon($uid) && $fuid = session::get_value('UID'))) {
+        if (($user_logon = user_get_logon($uid)) !== false) {
 
             if (admin_reset_user_password($uid, $t_new_password)) {
 
-                email_send_new_pw_notification($uid, $fuid, $t_new_password);
+                email_send_new_pw_notification($uid, $_SESSION['UID'], $t_new_password);
 
                 html_draw_top("title=$page_title", 'class=window_title');
                 html_display_msg(gettext("Change Password"), gettext("Successfully Changed Password"), 'admin_user.php', 'get', array('back' => gettext("Back")), false, '_self', 'center');
@@ -309,7 +309,7 @@ if (isset($_POST['action_submit'])) {
 
 } else if (isset($_POST['delete_posts_confirm'])) {
 
-    if (($user_logon = user_get_logon($uid))) {
+    if (($user_logon = user_get_logon($uid)) !== false) {
 
         if (admin_delete_users_posts($uid)) {
 
@@ -1499,7 +1499,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
 if (forum_check_webtag_available($webtag)) {
 
-    if (($folder_array = perm_user_get_folders($uid))) {
+    if (($folder_array = perm_user_get_folders($uid)) !== false) {
 
         echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
         echo "    <tr>\n";
@@ -1596,7 +1596,7 @@ if (forum_check_webtag_available($webtag)) {
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">", gettext("User Groups"), "</td>\n";
     echo "                </tr>\n";
 
-    if (($user_groups_array = perm_user_get_groups($uid))) {
+    if (($user_groups_array = perm_user_get_groups($uid)) !== false) {
 
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";

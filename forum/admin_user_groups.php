@@ -104,7 +104,7 @@ if (isset($_POST['delete'])) {
 
         foreach ($_POST['delete_group'] as $gid) {
 
-            if (($group_name = perm_get_group_name($gid))) {
+            if (($group_name = perm_get_group_name($gid)) !== false) {
 
                 if (perm_remove_group($gid)) {
 

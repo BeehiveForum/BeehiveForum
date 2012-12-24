@@ -121,7 +121,7 @@ if (isset($_POST['delete'])) {
 
             if ($valid && $delete_item == "Y" && $profile_item_name = profile_item_get_name($piid)) {
 
-                if (($section_name = profile_section_get_name($_POST['psid']))) {
+                if (($section_name = profile_section_get_name($_POST['psid'])) !== false) {
 
                     if (profile_item_delete($piid)) {
 
@@ -235,7 +235,7 @@ if (isset($_POST['additemsubmit'])) {
 
     if ($valid) {
 
-        if (($new_piid = profile_item_create($psid, $t_new_name, $t_type_new, $t_options_new))) {
+        if (($new_piid = profile_item_create($psid, $t_new_name, $t_type_new, $t_options_new)) !== false) {
 
             $t_section_name = profile_section_get_name($psid);
 

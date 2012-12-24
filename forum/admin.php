@@ -51,12 +51,11 @@ if ((!session::check_perm(USER_PERM_ADMIN_TOOLS, 0) && !session::check_perm(USER
 admin_check_credentials();
 
 // Get the user's saved left frame width.
-if (($left_frame_width = session::get_value('LEFT_FRAME_WIDTH')) === false) {
+if (isset($_SESSION['LEFT_FRAME_WIDTH']) && is_numeric($_SESSION['LEFT_FRAME_WIDTH'])) {
+    $left_frame_width = max(100, $_SESSION['LEFT_FRAME_WIDTH']);
+} else {
     $left_frame_width = 280;
 }
-
-// Prevent the frame width from being less than 100px
-$left_frame_width = max(100, $left_frame_width);
 
 // Output starts here
 html_draw_top('frame_set_html', 'pm_popup_disabled');

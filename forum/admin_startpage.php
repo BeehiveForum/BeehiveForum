@@ -108,7 +108,7 @@ if (isset($_POST['save'])) {
             if ((isset($path_parts['extension']) && $path_parts['extension'] == 'css')) {
 
                 // Read the contents of the file.
-                if (($start_page_css = @file_get_contents($_FILES['cssfile']['tmp_name']))) {
+                if (($start_page_css = @file_get_contents($_FILES['cssfile']['tmp_name'])) !== false) {
 
                     // New array of forum settings.
                     $new_forum_settings = array(

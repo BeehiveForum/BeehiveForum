@@ -447,7 +447,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 
-if (($available_styles = styles_get_available())) {
+if (($available_styles = styles_get_available()) !== false) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"220\">", gettext("Default Style"), ":</td>\n";

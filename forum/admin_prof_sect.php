@@ -112,7 +112,7 @@ if (isset($_POST['delete_sections'])) {
 
     if ($valid) {
 
-        if (($new_psid = profile_section_create($t_name_new))) {
+        if (($new_psid = profile_section_create($t_name_new)) !== false) {
 
             header_redirect("admin_prof_sect.php?webtag=$webtag&added=true");
             exit;

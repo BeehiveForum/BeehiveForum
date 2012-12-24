@@ -82,11 +82,11 @@ if (isset($_GET['ret']) && strlen(trim($_GET['ret'])) > 0) {
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
     $available_files = array(
-        'admin_link_approve.php', 
-        'links_detail.php', 
+        'admin_link_approve.php',
+        'links_detail.php',
         'links.php'
     );
-    
+
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
     if (!preg_match("/^$available_files_preg/u", $ret)) {
@@ -127,13 +127,13 @@ if (isset($lid) && is_numeric($lid)) {
     if (!session::check_perm(USER_PERM_LINKS_MODERATE, 0)) {
         html_draw_error(gettext("Cannot edit links"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
     }
-    
-    if (($link = links_get_single($lid, false))) {
-        
+
+    if (($link = links_get_single($lid, false)) !== false) {
+
         if (isset($link['APPROVED']) && ($link['APPROVED'] > 0)) {
             html_draw_error(gettext("Link does not require approval"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
         }
-        
+
         if (isset($_POST['approve'])) {
 
             if (links_approve($lid)) {
@@ -162,7 +162,7 @@ if (isset($lid) && is_numeric($lid)) {
 
             if (links_delete($lid)) {
 
-                if (session::check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != session::get_value('UID'))) {
+                if (session::check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != $_SESSION['UID'])) {
                     admin_add_log_entry(DELETE_LINK, array($lid));
                 }
 
@@ -183,16 +183,16 @@ if (isset($lid) && is_numeric($lid)) {
 
                 $error_msg_array[] = gettext("Error deleting link");
             }
-        }        
-        
+        }
+
         html_draw_top(sprintf('title=%s', gettext("Admin - Approve Link")), 'class=window_title', "post.js", "resize_width=86%");
-        
+
         echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Approve Link"), "</h1>\n";
-        
+
         if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
             html_display_error_array($error_msg_array, '86%', 'left');
-        }        
-        
+        }
+
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"admin_link_approve.php\" method=\"post\" target=\"_self\">\n";
@@ -242,19 +242,19 @@ if (isset($lid) && is_numeric($lid)) {
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td>&nbsp;</td>\n";
-        echo "    </tr>\n";        
+        echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td align=\"center\">", form_submit("approve", gettext("Approve")), "&nbsp;", form_submit("delete", gettext("Delete")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
-        echo "    </tr>\n";        
+        echo "    </tr>\n";
         echo "  </table>\n";
         echo "</form>\n";
-        echo "</div>\n";    
-        
+        echo "</div>\n";
+
         html_draw_bottom();
-    
-    } else {        
+
+    } else {
         html_draw_error(gettext("Invalid link ID!"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
-    }    
+    }
 
 } else {
 

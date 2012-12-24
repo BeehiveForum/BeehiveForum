@@ -82,10 +82,10 @@ if (isset($_GET['ret']) && strlen(trim($_GET['ret'])) > 0) {
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
     $available_files = array(
-        'admin_post_approve.php', 
+        'admin_post_approve.php',
         'messages.php'
     );
-    
+
     $available_files_preg = implode("|^", array_map('preg_quote_callback', $available_files));
 
     if (!preg_match("/^$available_files_preg/u", $ret)) {
@@ -143,7 +143,7 @@ if (isset($msg) && validate_msg($msg)) {
         html_draw_error(gettext("The requested thread could not be found or access was denied."), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
     }
 
-    if (($preview_message = messages_get($tid, $pid, 1))) {
+    if (($preview_message = messages_get($tid, $pid, 1)) !== false) {
 
         if (isset($preview_message['APPROVED']) && ($preview_message['APPROVED'] > 0)) {
             html_draw_error(gettext("Post does not require approval"), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
@@ -181,7 +181,7 @@ if (isset($msg) && validate_msg($msg)) {
 
                 post_add_edit_text($tid, $pid);
 
-                if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != session::get_value('UID')) {
+                if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != $_SESSION['UID']) {
                     admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
                 }
 
@@ -225,7 +225,7 @@ if (isset($msg) && validate_msg($msg)) {
         $preview_message['FLOGON'] = $preview_tuser['LOGON'];
         $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
 
-        $show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
+        $show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
 
         if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
             html_display_error_array($error_msg_array, '86%', 'left');

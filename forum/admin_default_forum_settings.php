@@ -1025,7 +1025,7 @@ if (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_setti
 
     if (!$text_captcha->generate_keys() || !$text_captcha->make_image()) {
 
-        if (($errno = $text_captcha->get_error())) {
+        if (($errno = $text_captcha->get_error()) !== false) {
 
             switch ($errno) {
 

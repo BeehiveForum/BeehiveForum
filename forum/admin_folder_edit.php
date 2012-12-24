@@ -297,7 +297,7 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "        <br />\n";
 
-if (($folder_dropdown = folder_draw_dropdown_all($folder_data['FID'], 'fid_move', "", "", "post_folder_dropdown"))) {
+if (($folder_dropdown = folder_draw_dropdown_all($folder_data['FID'], 'fid_move', "", "", "post_folder_dropdown")) !== false) {
 
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";

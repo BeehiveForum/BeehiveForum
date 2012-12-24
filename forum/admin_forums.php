@@ -224,7 +224,7 @@ if (isset($_POST['delete'])) {
 
         $t_owner = trim($_POST['t_owner']);
 
-        if (($t_user_array = user_get_by_logon($t_owner))) {
+        if (($t_user_array = user_get_by_logon($t_owner)) !== false) {
 
             $t_owner_uid = $t_user_array['UID'];
 
@@ -273,7 +273,7 @@ if (isset($_POST['delete'])) {
 
         $error_str = '';
 
-        if (($new_fid = forum_create($t_webtag, $t_name, $t_owner_uid, $t_database, $t_access, $error_str))) {
+        if (($new_fid = forum_create($t_webtag, $t_name, $t_owner_uid, $t_database, $t_access, $error_str)) !== false) {
 
             if ($t_default == 1) forum_update_default($new_fid);
             header_redirect("admin_forums.php?webtag=$webtag&page=$page&added=true");
@@ -309,7 +309,7 @@ if (isset($_POST['delete'])) {
 
             $t_owner = trim($_POST['t_owner']);
 
-            if (($t_user_array = user_get_by_logon($t_owner))) {
+            if (($t_user_array = user_get_by_logon($t_owner)) !== false) {
 
                 $t_owner_uid = $t_user_array['UID'];
 

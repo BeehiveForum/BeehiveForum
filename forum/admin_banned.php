@@ -239,7 +239,7 @@ if (isset($_GET['ban_referer']) && strlen(trim($_GET['ban_referer'])) > 0) {
 
     $unban_referer = trim($_GET['unban_referer']);
 
-    if (($remove_ban_id = check_ban_data(BAN_TYPE_REF, $unban_referer))) {
+    if (($remove_ban_id = check_ban_data(BAN_TYPE_REF, $unban_referer)) !== false) {
         unset($remove_ban_id);
     }
 }
@@ -529,7 +529,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
             } else {
 
-                if (($affected_sessions_array = check_affected_sessions($add_new_ban_type, $add_new_ban_data, $add_new_ban_expires))) {
+                if (($affected_sessions_array = check_affected_sessions($add_new_ban_type, $add_new_ban_data, $add_new_ban_expires)) !== false) {
 
                     $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
                     $affected_sessions_text = sprintf("%s<ul><li>%s</li></ul>", gettext("This ban may affect the following active user sessions"), $affected_sessions_text);
@@ -695,7 +695,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
             } else {
 
-                if (($affected_sessions_array = check_affected_sessions($ban_data_array['BANTYPE'], $ban_data_array['BANDATA'], $ban_data_array['EXPIRES']))) {
+                if (($affected_sessions_array = check_affected_sessions($ban_data_array['BANTYPE'], $ban_data_array['BANDATA'], $ban_data_array['EXPIRES'])) !== false) {
 
                     $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
                     $affected_sessions_text = sprintf("%s<ul><li>%s</li></ul>", gettext("This ban may affect the following active user sessions"), $affected_sessions_text);

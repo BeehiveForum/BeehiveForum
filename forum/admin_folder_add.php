@@ -114,7 +114,7 @@ if (isset($_POST['add'])) {
 
     if ($valid) {
 
-        if (($new_fid = folder_create($t_name, $t_description, $t_prefix, $t_allowed_types, $t_permissions))) {
+        if (($new_fid = folder_create($t_name, $t_description, $t_prefix, $t_allowed_types, $t_permissions)) !== false) {
 
             admin_add_log_entry(CREATE_FOLDER, array($t_name));
             header_redirect("admin_folders.php?webtag=$webtag&added=true&page=$page");

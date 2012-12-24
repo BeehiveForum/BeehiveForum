@@ -100,7 +100,7 @@ if (isset($_POST['save'])) {
 
     $valid = true;
 
-    if (($forum_passhash = forum_get_password($forum_settings['fid']))) {
+    if (($forum_passhash = forum_get_password($forum_settings['fid'])) !== false) {
 
         if (isset($_POST['current_passwd']) && strlen(trim($_POST['current_passwd'])) > 0) {
             $t_current_passhash = md5(trim($_POST['current_passwd']));

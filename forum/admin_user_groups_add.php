@@ -104,7 +104,7 @@ if (isset($_POST['add_group']) || isset($_POST['add_users'])) {
 
     if ($valid) {
 
-        if (($new_gid = perm_add_group($t_name, $t_description, $new_group_perms))) {
+        if (($new_gid = perm_add_group($t_name, $t_description, $new_group_perms)) !== false) {
 
             if (isset($_POST['t_new_perms_array']) && is_array($_POST['t_new_perms_array'])) {
 
@@ -235,7 +235,7 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "        <br />\n";
 
-if (($folder_array = folder_get_all())) {
+if (($folder_array = folder_get_all()) !== false) {
 
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";

@@ -127,7 +127,7 @@ if (isset($_POST['add'])) {
 
         foreach ($_POST['add_user'] as $add_user_uid) {
 
-            if (($user_logon = user_get_logon($add_user_uid))) {
+            if (($user_logon = user_get_logon($add_user_uid)) !== false) {
 
                 if (user_update_forums($add_user_uid, $forum_fid, FORUM_USER_ALLOWED)) {
 
@@ -160,7 +160,7 @@ if (isset($_POST['add'])) {
 
         foreach ($_POST['remove_user'] as $remove_user_uid) {
 
-            if (($user_logon = user_get_logon($remove_user_uid))) {
+            if (($user_logon = user_get_logon($remove_user_uid)) !== false) {
 
                 if (user_update_forums($remove_user_uid, $forum_fid, FORUM_USER_DISALLOWED)) {
 

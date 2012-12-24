@@ -298,7 +298,7 @@ echo "          </tr>\n";
 echo "        </table>\n";
 echo "        <br />\n";
 
-if (($folder_array = perm_group_get_folders($gid))) {
+if (($folder_array = perm_group_get_folders($gid)) !== false) {
 
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";

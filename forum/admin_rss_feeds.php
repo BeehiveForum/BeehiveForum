@@ -132,7 +132,7 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if (($rss_feed_items = rss_feed_read_database($t_url))) {
+        if (($rss_feed_items = rss_feed_read_database($t_url)) !== false) {
 
             if (is_array($rss_feed_items) && sizeof($rss_feed_items) > 0) {
 
@@ -166,7 +166,7 @@ if (isset($_POST['delete'])) {
 
         $t_user_new = trim($_POST['t_user_new']);
 
-        if (($t_user_array = user_get_by_logon($t_user_new))) {
+        if (($t_user_array = user_get_by_logon($t_user_new)) !== false) {
 
             $t_user_uid = $t_user_array['UID'];
 
@@ -377,7 +377,7 @@ if (isset($_POST['delete'])) {
 
         if ($valid && (($t_new_name != $t_old_name) || ($t_new_user != $t_old_user) || ($t_new_fid != $t_old_fid) || ($t_new_url != $t_old_url) || ($t_new_prefix != $t_old_prefix) || ($t_new_frequency != $t_old_frequency) || ($t_max_item_count != $t_old_max_item_count))) {
 
-            if (($t_user_array = user_get_by_logon($t_new_user))) {
+            if (($t_user_array = user_get_by_logon($t_new_user)) !== false) {
 
                 $t_new_uid = $t_user_array['UID'];
 

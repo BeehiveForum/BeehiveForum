@@ -164,7 +164,7 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        if (($t_new_lid = forum_links_add_link($t_title, $t_uri))) {
+        if (($t_new_lid = forum_links_add_link($t_title, $t_uri)) !== false) {
 
             admin_add_log_entry(ADD_FORUM_LINKS, array($t_new_lid, $t_title));
             header_redirect("admin_forum_links.php?webtag=$webtag&page=$page&added=true");

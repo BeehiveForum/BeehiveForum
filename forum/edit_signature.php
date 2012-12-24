@@ -47,13 +47,15 @@ if (!session::logged_in()) {
 
 $admin_edit = false;
 
+$sig_uid = $_SESSION['UID'];
+
 if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     if (isset($_GET['sig_uid'])) {
 
         if (is_numeric($_GET['sig_uid'])) {
 
-            $uid = $_GET['sig_uid'];
+            $sig_uid = $_GET['sig_uid'];
             $admin_edit = true;
 
         } else {
@@ -65,31 +67,23 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         if (is_numeric($_POST['sig_uid'])) {
 
-            $uid = $_POST['sig_uid'];
+            $sig_uid = $_POST['sig_uid'];
             $admin_edit = true;
 
         } else {
 
             html_draw_error(gettext("No user specified."));
         }
-
-    } else {
-
-        $uid = session::get_value('UID');
     }
 
     if (isset($_POST['cancel'])) {
 
-        header_redirect("admin_user.php?webtag=$webtag&uid=$uid");
+        header_redirect("admin_user.php?webtag=$webtag&uid=$sig_uid");
         exit;
     }
-
-} else {
-
-    $uid = session::get_value('UID');
 }
 
-if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != session::get_value('UID'))) {
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($sig_uid != $_SESSION['UID'])) {
     html_draw_error(gettext("You do not have permission to use this section."));
 }
 
@@ -97,7 +91,7 @@ $valid = true;
 
 $error_msg_array = array();
 
-if (($sig_text = user_get_sig($uid))) {
+if (($sig_text = user_get_sig($sig_uid)) !== false) {
     $sig_text = fix_html($sig_text);
 }
 
@@ -131,11 +125,11 @@ if (isset($_POST['save'])) {
     if ($valid) {
 
         // Update USER_SIG
-        if (user_update_sig($uid, $sig_text, ($t_sig_global == 'Y'))) {
+        if (user_update_sig($sig_uid, $sig_text, ($t_sig_global == 'Y'))) {
 
             if ($admin_edit === true) {
 
-                $redirect_uri = "admin_user.php?webtag=$webtag&signature_updated=true&uid=$uid";
+                $redirect_uri = "admin_user.php?webtag=$webtag&signature_updated=true&uid=$sig_uid";
                 header_redirect($redirect_uri, gettext("Signature Updated"));
 
             } else {
@@ -158,7 +152,7 @@ if (isset($_POST['save'])) {
 // Start Output Here
 if ($admin_edit === true) {
 
-    $user = user_get($uid);
+    $user = user_get($sig_uid);
 
     html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage User - %s "), format_user_name($user['LOGON'], $user['NICKNAME']))), "basetarget=_blank", "resize_width=600", "post.js", 'class=window_title');
 
@@ -188,7 +182,7 @@ echo "<br />\n";
 
 if ($admin_edit === true) echo "<div align=\"center\">\n";
 
-if ((session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == session::get_value('UID')) && $admin_edit === false)) {
+if ((session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($sig_uid == $_SESSION['UID']) && $admin_edit === false)) {
     $show_set_all = (forums_get_available_count() > 1);
 } else {
     $show_set_all = false;
@@ -198,7 +192,7 @@ echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"edit_signature.php\
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
 if ($admin_edit === true) {
-    echo "  ", form_input_hidden('sig_uid', htmlentities_array($uid)), "\n";
+    echo "  ", form_input_hidden('sig_uid', htmlentities_array($sig_uid)), "\n";
 }
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -215,7 +209,7 @@ if (isset($_POST['preview'])) {
         $preview_message['TLOGON'] = gettext("ALL");
         $preview_message['TNICK'] = gettext("ALL");
 
-        $preview_tuser = user_get($uid);
+        $preview_tuser = user_get($sig_uid);
 
         $preview_message['FLOGON'] = $preview_tuser['LOGON'];
         $preview_message['FNICK'] = $preview_tuser['NICKNAME'];

@@ -113,14 +113,8 @@ if (isset($_POST['save'])) {
 
         if ($valid) {
 
-            // User's UID for updating with.
-            $uid = session::get_value('UID');
-
-            // Fetch current logon.
-            $logon = session::get_value('LOGON');
-
             // Update the password and cookie
-            if (user_change_password($uid, $t_new_pass, $t_old_pass)) {
+            if (user_change_password($_SESSION['UID'], $t_new_pass, $t_old_pass)) {
 
                 // Force redirect to prevent refreshing the page
                 // prompting to user to resubmit form data.

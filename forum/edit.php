@@ -105,9 +105,7 @@ if (!$thread_data = thread_get($tid)) {
 
 $error_msg_array = array();
 
-$show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
-
-$uid = session::get_value('UID');
+$show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
 
 $page_prefs = session::get_post_page_prefs();
 
@@ -185,8 +183,9 @@ if ($valid && isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (sizeof($attachments) > 0 && !attachments_check_post_space($uid, $attachments)) {
+    if (sizeof($attachments) > 0 && !attachments_check_post_space($_SESSION['UID'], $attachments)) {
 
+        $max_post_attachment_space = forum_get_setting('attachments_max_post_space', null, 1048576);
         $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
         $valid = false;
     }
@@ -218,13 +217,14 @@ if ($valid && isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (sizeof($attachments) > 0 && !attachments_check_post_space($uid, $attachments)) {
+    if (sizeof($attachments) > 0 && !attachments_check_post_space($_SESSION['UID'], $attachments)) {
 
-        $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
+    	$max_post_attachment_space = forum_get_setting('attachments_max_post_space', null, 1048576);
+    	$error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
         $valid = false;
     }
 
-    if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+    if ((forum_get_setting('allow_post_editing', 'N') || (($_SESSION['UID'] != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
         html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
     }
 
@@ -254,7 +254,7 @@ if ($valid && isset($_POST['preview'])) {
                 }
             }
 
-            if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && ($edit_message['FROM_UID'] != $uid)) {
+            if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && ($edit_message['FROM_UID'] != $_SESSION['UID'])) {
                 admin_add_log_entry(EDIT_POST, array($t_fid, $tid, $pid));
             }
 
@@ -282,7 +282,7 @@ if ($valid && isset($_POST['preview'])) {
         'POST_PAGE' => $page_prefs
     );
 
-    if (!user_update_prefs($uid, $user_prefs)) {
+    if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
         $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
@@ -294,9 +294,9 @@ if ($valid && isset($_POST['preview'])) {
 
     if (count($edit_message) > 0) {
 
-        if (($edit_message['CONTENT'] = message_get_content($tid, $pid))) {
+        if (($edit_message['CONTENT'] = message_get_content($tid, $pid)) !== false) {
 
-            if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+            if ((forum_get_setting('allow_post_editing', 'N') || (($_SESSION['UID'] != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
                 html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
             }
 
@@ -392,11 +392,13 @@ if ($edit_message['TO_UID'] > 0) {
 echo "                        </td>\n";
 echo "                      </tr>\n";
 
-if (($user_emoticon_pack = session::get_value('EMOTICONS')) === false) {
-    $user_emoticon_pack = forum_get_setting('default_emoticons', null, 'default');
+if (isset($_SESSION['EMOTICONS']) && strlen(trim($_SESSION['EMOTICONS'])) > 0) {
+    $user_emoticon_pack = $_SESSION['EMOTICONS'];
+} else {
+    $user_emoticon_pack = forum_get_setting('default_emoticons', 'strlen', 'default');
 }
 
-if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
+if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack)) !== false) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

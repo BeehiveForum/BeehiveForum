@@ -58,33 +58,11 @@ if (!$attachment_dir = attachments_check_dir()) {
     html_draw_error(gettext("Attachments have been disabled by the forum owner."));
 }
 
-// Get any UID from the GET or POST request
-// or default to the current user if not specified.
-if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
-
-    $uid = $_GET['uid'];
-
-} else if (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
-
-    $uid = $_POST['uid'];
-
-} else {
-
-    $uid = session::get_value('UID');
-}
-
-// Check that the UID we have belongs to the current user
-// or that it is an admin if we're viewing another user's
-// attachments.
-if (($uid != session::get_value('UID')) && !(session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid))) {
-    html_draw_error(gettext("You do not have permission to use this section."));
-}
-
 // Total attachment space used
-$total_attachment_size = attachments_get_user_used_space($uid);
+$total_attachment_size = attachments_get_user_used_space($_SESSION['UID']);
 
 // Free space
-$attachment_free_user_space = attachments_get_free_user_space($uid);
+$attachment_free_user_space = attachments_get_free_user_space($_SESSION['UID']);
 
 // Check for attachment deletion.
 if (isset($_POST['delete_confirm'])) {
@@ -147,7 +125,7 @@ if (isset($_POST['delete_confirm'])) {
 
     if (is_array($hash_array) && sizeof($hash_array) > 0) {
 
-        if (($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $hash_array))) {
+        if (($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $hash_array)) !== false) {
 
             if (isset($_POST['delete_thumbs'])) {
 
@@ -163,7 +141,6 @@ if (isset($_POST['delete_confirm'])) {
             echo "<br />\n";
             echo "<form accept-charset=\"utf-8\" id=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"edit_attachments.php\">\n";
             echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-            echo "  ". form_input_hidden('uid', htmlentities_array($uid)), "\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
             echo "    <tr>\n";
             echo "      <td align=\"left\">\n";
@@ -266,7 +243,6 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"attachments\" method=\"post\" action=\"edit_attachments.php\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-echo "  ". form_input_hidden('uid', htmlentities_array($uid)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -275,7 +251,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 
-if (($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH))) {
+if (($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH)) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_main", "toggle_main"), "</td>\n";
@@ -284,18 +260,18 @@ if (($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH))) {
 
     foreach ($attachments_array as $key => $attachment) {
 
-        if (($attachment_link = attachments_make_link($attachment, false, true))) {
+        if (($attachment_link = attachments_make_link($attachment, false, true)) !== false) {
 
             echo "                <tr>\n";
             echo "                  <td align=\"center\" width=\"1%\">", form_checkbox("attachments_delete[{$attachment['hash']}]", "Y"), "</td>\n";
             echo "                  <td align=\"left\" valign=\"middle\" style=\"white-space: nowrap\" class=\"postbody\">$attachment_link</td>\n";
             echo "                  <td align=\"left\" valign=\"middle\" style=\"white-space: nowrap\" class=\"postbody\">";
 
-            if (($message_link = attachments_get_message_link($attachment['hash']))) {
+            if (($message_link = attachments_get_message_link($attachment['hash'])) !== false) {
 
                 echo "<a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a>";
 
-            } else if (($message_link = attachments_get_pm_link($attachment['hash']))) {
+            } else if (($message_link = attachments_get_pm_link($attachment['hash'])) !== false) {
 
                 echo "<a href=\"$message_link\" target=\"_blank\">", gettext("View Message"), "</a>";
 

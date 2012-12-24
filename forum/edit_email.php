@@ -45,11 +45,8 @@ if (!session::logged_in()) {
 // Array to hold error messages
 $error_msg_array = array();
 
-// User UID
-$uid = session::get_value('UID');
-
 // Get User Prefs
-$user_prefs = user_get_prefs($uid);
+$user_prefs = user_get_prefs($_SESSION['UID']);
 
 // Submit code
 if (isset($_POST['save'])) {
@@ -105,7 +102,7 @@ if (isset($_POST['save'])) {
     }
 
     // Update USER_PREFS
-    if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+    if (user_update_prefs($_SESSION['UID'], $user_prefs, $user_prefs_global)) {
 
         header_redirect("edit_email.php?webtag=$webtag&updated=true", gettext("Preferences were successfully updated."));
         exit;

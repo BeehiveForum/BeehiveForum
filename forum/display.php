@@ -40,9 +40,6 @@ require_once BH_INCLUDE_PATH. 'poll.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'thread.inc.php';
 
-// User UID for fetching recent message
-$uid = session::get_value('UID');
-
 // Check that required variables are set
 // default to display most recent discussion for user
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
@@ -83,7 +80,7 @@ if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
     }
 }
 
-$show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
+$show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
 
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";

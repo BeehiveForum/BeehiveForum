@@ -36,10 +36,6 @@ require_once BH_INCLUDE_PATH. 'logon.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
 
-$uid = session::get_value('UID');
-
-$content = '';
-
 if (!session::logged_in()) {
     exit;
 }
@@ -50,7 +46,7 @@ if (forum_get_setting('attachments_enabled', 'N')) {
     exit;
 }
 
-if (!$attachment_dir = attachments_check_dir()) {
+if (!($attachment_dir = attachments_check_dir())) {
 
     header_status(500, 'Internal Server Error');
     exit;

@@ -49,13 +49,15 @@ if (!session::logged_in()) {
 
 $admin_edit = false;
 
+$profile_uid = $_SESSION['UID'];
+
 if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     if (isset($_GET['profile_uid'])) {
 
         if (is_numeric($_GET['profile_uid'])) {
 
-            $uid = $_GET['profile_uid'];
+            $profile_uid = $_GET['profile_uid'];
             $admin_edit = true;
 
         } else {
@@ -67,33 +69,25 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         if (is_numeric($_POST['profile_uid'])) {
 
-            $uid = $_POST['profile_uid'];
+            $profile_uid = $_POST['profile_uid'];
             $admin_edit = true;
 
         } else {
 
             html_draw_error(gettext("No user specified."));
         }
-
-    } else {
-
-        $uid = session::get_value('UID');
     }
-
-} else {
-
-    $uid = session::get_value('UID');
 }
 
-if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != session::get_value('UID'))) {
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($profile_uid != $_SESSION['UID'])) {
     html_draw_error(gettext("You do not have permission to use this section."));
 }
 
 // Get User Prefs
-$user_prefs = user_get_prefs($uid);
+$user_prefs = user_get_prefs($profile_uid);
 
 // Get user information
-$user_info = user_get($uid);
+$user_info = user_get($profile_uid);
 
 // Array to hold error messages
 $error_msg_array = array();
@@ -119,7 +113,7 @@ if (isset($_POST['save'])) {
     $user_info_new = $user_info;
 
     // Required Fields
-    if ((session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == session::get_value('UID')) && $admin_edit === false)) {
+    if ((session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($profile_uid == $_SESSION['UID']) && $admin_edit === false)) {
 
         if (forum_get_setting('allow_username_changes', 'Y') || (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit)) {
 
@@ -145,7 +139,7 @@ if (isset($_POST['save'])) {
                     $valid = false;
                 }
 
-                if (user_exists($user_info_new['LOGON'], $uid)) {
+                if (user_exists($user_info_new['LOGON'], $profile_uid)) {
 
                     $error_msg_array[] = gettext("Sorry, a user with that name already exists");
                     $valid = false;
@@ -191,7 +185,7 @@ if (isset($_POST['save'])) {
                     $valid = false;
                 }
 
-                if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($user_info_new['EMAIL'], $uid)) {
+                if (forum_get_setting('require_unique_email', 'Y') && !email_is_unique($user_info_new['EMAIL'], $profile_uid)) {
 
                     $error_msg_array[] = gettext("Email Address already in use. Choose another!");
                     $valid = false;
@@ -298,7 +292,7 @@ if (isset($_POST['save'])) {
                 $error_msg_array[] = gettext("Attachments have been disabled by the forum owner.");
                 $valid = false;
 
-            } else if (!($attachment_details = attachments_get_by_aid($user_prefs['PIC_AID'], $uid))) {
+            } else if (!($attachment_details = attachments_get_by_aid($user_prefs['PIC_AID'], $profile_uid))) {
 
                 $error_msg_array[] = gettext("Invalid Attachment. Check that is hasn't been deleted.");
                 $valid = false;
@@ -370,7 +364,7 @@ if (isset($_POST['save'])) {
                 $error_msg_array[] = gettext("Attachments have been disabled by the forum owner.");
                 $valid = false;
 
-            } else if (!($attachment_details = attachments_get_by_aid($user_prefs['AVATAR_AID'], $uid))) {
+            } else if (!($attachment_details = attachments_get_by_aid($user_prefs['AVATAR_AID'], $profile_uid))) {
 
                 $error_msg_array[] = gettext("Invalid Attachment. Check that is hasn't been deleted.");
                 $valid = false;
@@ -408,21 +402,21 @@ if (isset($_POST['save'])) {
     if ($valid) {
 
         // Update User Preferences
-        if (user_update_prefs($uid, $user_prefs, $user_prefs_global)) {
+        if (user_update_prefs($profile_uid, $user_prefs, $user_prefs_global)) {
 
             // Update basic settings in USER table
-            if (user_update($uid, $user_info_new['LOGON'], $user_info_new['NICKNAME'], $user_info_new['EMAIL'])) {
+            if (user_update($profile_uid, $user_info_new['LOGON'], $user_info_new['NICKNAME'], $user_info_new['EMAIL'])) {
 
                 // If email confirmation is requied and the user has changed
                 // their email address we need to get them to confirm the
                 // change by sending them another email.
-                if (($uid == session::get_value('UID')) && $admin_edit === false) {
+                if (($profile_uid == $_SESSION['UID']) && $admin_edit === false) {
 
                     if (forum_get_setting('require_email_confirmation', 'Y') && ($user_info_new['EMAIL'] != $user_info['EMAIL'])) {
 
-                        if (email_send_changed_email_confirmation($uid)) {
+                        if (email_send_changed_email_confirmation($profile_uid)) {
 
-                            perm_user_apply_email_confirmation($uid);
+                            perm_user_apply_email_confirmation($profile_uid);
 
                             html_draw_top(sprintf('title=%s', gettext("My Controls - User Details - Email address has been changed")), 'class=window_title');
                             html_display_msg(gettext("Email address has been changed"), gettext("Your email address has been changed and a new confirmation email has been sent. Please check and read the email for further instructions."), 'index.php', 'get', array('continue' => gettext("Continue")), false, '_top');
@@ -442,7 +436,7 @@ if (isset($_POST['save'])) {
                 // Force redirect to prevent refreshing the page prompting to user to resubmit form data.
                 if ($admin_edit === true) {
 
-                    header_redirect("admin_user.php?webtag=$webtag&uid=$uid&profile_updated=true", gettext("Profile updated."));
+                    header_redirect("admin_user.php?webtag=$webtag&uid=$profile_uid&profile_updated=true", gettext("Profile updated."));
                     exit;
 
                 } else {
@@ -484,19 +478,19 @@ if (isset($user_prefs['DOB']) && preg_match('/\d{4,}-\d{2,}-\d{2,}/u', $user_pre
 }
 
 // Check to see if we should show the set for all forums checkboxes
-if ((session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == session::get_value('UID')) && $admin_edit === false)) {
+if ((session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($profile_uid == $_SESSION['UID']) && $admin_edit === false)) {
     $show_set_all = (forums_get_available_count() > 1);
 } else {
     $show_set_all = false;
 }
 
 // User's attachments for profile and avatar pictures
-$attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH);
+$attachments_array = attachments_get($profile_uid, ATTACHMENT_FILTER_BOTH);
 
 // Start Output Here
 if ($admin_edit === true) {
 
-    $user = user_get($uid);
+    $user = user_get($profile_uid);
 
     html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - User Details - %s"), format_user_name($user['LOGON'], $user['NICKNAME']))), 'class=window_title', 'prefs.js');
 
@@ -524,7 +518,7 @@ echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"edit_prefs.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
-if ($admin_edit === true) echo "  ", form_input_hidden('profile_uid', htmlentities_array($uid)), "\n";
+if ($admin_edit === true) echo "  ", form_input_hidden('profile_uid', htmlentities_array($profile_uid)), "\n";
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
 echo "    <tr>\n";
@@ -556,7 +550,7 @@ echo "                  <td align=\"left\" style=\"white-space: nowrap\">", gett
 echo "                  <td align=\"left\">#{$user_info['UID']}&nbsp;</td>\n";
 echo "                </tr>\n";
 
-if ((session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($uid == session::get_value('UID')) && $admin_edit === false)) {
+if ((session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($profile_uid == $_SESSION['UID']) && $admin_edit === false)) {
 
     if (forum_get_setting('allow_username_changes', 'Y') || (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit)) {
 

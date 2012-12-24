@@ -109,9 +109,7 @@ if (isset($_POST['delete'])) {
         $user_prefs['USE_WORD_FILTER'] = "N";
     }
 
-    $uid = session::get_value('UID');
-
-    if (user_update_prefs($uid, $user_prefs)) {
+    if (user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
         header_redirect("edit_wordfilter.php?webtag=$webtag&updated=true", gettext("Preferences were successfully updated."));
         exit;
@@ -507,13 +505,13 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("use_word_filter", "Y", gettext("Enable word filter."), session::get_value('USE_WORD_FILTER') == 'Y'), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("use_word_filter", "Y", gettext("Enable word filter."), (isset($_SESSION['USE_WORD_FILTER']) && $_SESSION['USE_WORD_FILTER'] == 'Y')), "</td>\n";
     echo "                      </tr>\n";
 
     if (!forum_get_setting('force_word_filter', 'Y')) {
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", form_checkbox("use_admin_filter", "Y", gettext("Include admin word filter in my list."), session::get_value('USE_ADMIN_FILTER') == 'Y'), "</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox("use_admin_filter", "Y", gettext("Include admin word filter in my list."), (isset($_SESSION['USE_ADMIN_FILTER']) && $_SESSION['USE_ADMIN_FILTER'] == 'Y')), "</td>\n";
         echo "                      </tr>\n";
     }
 

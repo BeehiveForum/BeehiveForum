@@ -53,7 +53,11 @@ if (isset($_GET['pack']) && emoticons_set_exists($_GET['pack'])) {
     // Get the emoticon pack from the URL.
     $emoticon_set = basename($_GET['pack']);
 
-} else if (($emoticon_set = session::get_value('EMOTICONS')) === false) {
+} else if (isset($_SESSION['EMOTICONS']) && strlen(trim($_SESSION['EMOTICONS'])) > 0) {
+
+    $emoticon_set = $_SESSION['EMOTICONS'];
+
+} else {
 
     // Get the user's emoticon pack.
     $emoticon_set = basename(forum_get_setting('default_emoticons', null, 'default'));

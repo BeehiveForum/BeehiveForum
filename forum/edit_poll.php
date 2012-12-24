@@ -126,13 +126,11 @@ if (!$edit_message = messages_get($tid, 1, 1)) {
 
 $post_edit_time = forum_get_setting('post_edit_time', null, 0);
 
-$show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
+$show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
 
 $page_prefs = session::get_post_page_prefs();
 
-$uid = session::get_value('UID');
-
-if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+if ((forum_get_setting('allow_post_editing', 'N') || (($_SESSION['UID'] != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
     html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
 }
 
@@ -572,7 +570,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
         'POST_PAGE' => $page_prefs
     );
 
-    if (!user_update_prefs($uid, $user_prefs)) {
+    if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
         $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
@@ -660,7 +658,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $poll_data['TLOGON'] = gettext("ALL");
     $poll_data['TNICK'] = gettext("ALL");
 
-    $preview_tuser = user_get($uid);
+    $preview_tuser = user_get($_SESSION['UID']);
 
     $poll_data['FLOGON']   = $preview_tuser['LOGON'];
     $poll_data['FNICK']    = $preview_tuser['NICKNAME'];
@@ -689,9 +687,9 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
         $total_vote_count = 0;
 
-        if (($random_users_array = poll_get_random_users(mt_rand(10, 20)))) {
+        if (($random_users_array = poll_get_random_users(mt_rand(10, 20))) !== false) {
 
-            while (($random_user = array_pop($random_users_array))) {
+            while (($random_user = array_pop($random_users_array)) !== null) {
 
                 $total_vote_count++;
 
@@ -792,11 +790,13 @@ echo "                        <td align=\"left\">", form_input_text("thread_titl
 echo "                      </tr>\n";
 echo "                    </table>\n";
 
-if (($user_emoticon_pack = session::get_value('EMOTICONS')) === false) {
-    $user_emoticon_pack = forum_get_setting('default_emoticons', null, 'default');
+if (isset($_SESSION['EMOTICONS']) && strlen(trim($_SESSION['EMOTICONS'])) > 0) {
+    $user_emoticon_pack = $_SESSION['EMOTICONS'];
+} else {
+    $user_emoticon_pack = forum_get_setting('default_emoticons', 'strlen', 'default');
 }
 
-if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
+if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack)) !== false) {
 
     echo "                    <br />\n";
     echo "                    <table width=\"196\" class=\"messagefoot\" cellspacing=\"0\">\n";

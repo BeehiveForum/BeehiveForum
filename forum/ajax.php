@@ -36,8 +36,6 @@ require_once BH_INCLUDE_PATH. 'stats.inc.php';
 require_once BH_INCLUDE_PATH. 'thread.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
 
-$uid = session::get_value('UID');
-
 if (!isset($_GET['ajax']) || !isset($_GET['action'])) {
 
     header_status(500, 'Internal Server Error');
@@ -98,7 +96,7 @@ switch ($_GET['action']) {
             'POST_PAGE' => $page_prefs
         );
 
-        if (!user_update_prefs($uid, $user_prefs)) {
+        if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
             header_status(500, 'Internal Server Error');
             exit;
@@ -130,7 +128,7 @@ switch ($_GET['action']) {
             'POST_PAGE' => $page_prefs
         );
 
-        if (!user_update_prefs($uid, $user_prefs)) {
+        if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
             header_status(500, 'Internal Server Error');
             exit;
@@ -162,7 +160,7 @@ switch ($_GET['action']) {
             'POST_PAGE' => $page_prefs
         );
 
-        if (!user_update_prefs($uid, $user_prefs)) {
+        if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
             header_status(500, 'Internal Server Error');
             exit;
@@ -194,7 +192,7 @@ switch ($_GET['action']) {
             'POST_PAGE' => $page_prefs
         );
 
-        if (!user_update_prefs($uid, $user_prefs)) {
+        if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
             header_status(500, 'Internal Server Error');
             exit;
@@ -226,7 +224,7 @@ switch ($_GET['action']) {
             'POST_PAGE' => $page_prefs
         );
 
-        if (!user_update_prefs($uid, $user_prefs)) {
+        if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
             header_status(500, 'Internal Server Error');
             exit;
@@ -258,7 +256,7 @@ switch ($_GET['action']) {
             'POST_PAGE' => $page_prefs
         );
 
-        if (!user_update_prefs($uid, $user_prefs)) {
+        if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
             header_status(500, 'Internal Server Error');
             exit;
@@ -291,7 +289,7 @@ switch ($_GET['action']) {
             );
         }
 
-        if (!user_update_prefs($uid, $user_prefs)) {
+        if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
             header_status(500, 'Internal Server Error');
             exit;
@@ -317,7 +315,7 @@ switch ($_GET['action']) {
             'LEFT_FRAME_WIDTH' => $left_frame_width,
         );
 
-        if (!user_update_prefs($uid, $user_prefs)) {
+        if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
             header_status(500, 'Internal Server Error');
             exit;
@@ -401,7 +399,7 @@ switch ($_GET['action']) {
 
         list($tid, $pid) = explode('.', $_GET['msg']);
 
-        $user_prefs = user_get_prefs($uid);
+        $user_prefs = user_get_prefs($_SESSION['UID']);
 
         switch ($_GET['action']) {
 
@@ -426,7 +424,7 @@ switch ($_GET['action']) {
 
         if ($user_prefs['FONT_SIZE'] > 15) $user_prefs['FONT_SIZE'] = 15;
 
-        if (!user_update_prefs($uid, $user_prefs)) {
+        if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
             header_status(500, 'Internal Server Error');
             exit;
@@ -528,7 +526,7 @@ switch ($_GET['action']) {
             exit;
         }
 
-        $attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH);
+        $attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH);
 
         header('Content-Type: application/json');
 

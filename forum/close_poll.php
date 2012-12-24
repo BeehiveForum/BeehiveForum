@@ -52,7 +52,7 @@ if (!session::logged_in()) {
 $error_msg_array = array();
 
 // Check if the user is viewing signatures.
-$show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
+$show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
 
 // Form validation
 $valid = true;
@@ -126,9 +126,7 @@ if (!$edit_message = messages_get($tid, 1, 1)) {
 
 $post_edit_time = forum_get_setting('post_edit_time', null, 0);
 
-$uid = session::get_value('UID');
-
-if ((forum_get_setting('allow_post_editing', 'N') || (($uid != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+if ((forum_get_setting('allow_post_editing', 'N') || (($_SESSION['UID'] != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
     html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_message));
 }
 
@@ -136,7 +134,7 @@ if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPR
     html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_message));
 }
 
-if (($preview_message = messages_get($tid, $pid, 1))) {
+if (($preview_message = messages_get($tid, $pid, 1)) !== false) {
 
     $preview_message['CONTENT'] = message_get_content($tid, $pid);
 
@@ -148,7 +146,7 @@ if (($preview_message = messages_get($tid, $pid, 1))) {
         exit;
     }
 
-    if ((session::get_value('UID') != $preview_message['FROM_UID'] || session::check_perm(USER_PERM_PILLORIED, 0)) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+    if (($_SESSION['UID'] != $preview_message['FROM_UID'] || session::check_perm(USER_PERM_PILLORIED, 0)) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
         html_draw_top(sprintf("title=%s", gettext("Error")));
         post_edit_refuse($tid, $pid);
@@ -171,7 +169,7 @@ if (isset($_POST['endpoll'])) {
 
         post_add_edit_text($tid, 1);
 
-        if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != session::get_value('UID')) {
+        if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != $_SESSION['UID']) {
             admin_add_log_entry(EDIT_POST, array($t_fid, $tid, $pid));
         }
     }

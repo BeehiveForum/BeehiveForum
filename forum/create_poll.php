@@ -59,17 +59,13 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_POLL_THREAD)) {
 
 $error_msg_array = array();
 
-$show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
+$show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
 
 $page_prefs = session::get_post_page_prefs();
 
-$uid = session::get_value('UID');
-
 $valid = true;
 
-if (($high_interest = session::get_value('MARK_AS_OF_INT')) === false) {
-    $high_interest = "N";
-}
+$high_interest = (isset($_SESSION['MARK_AS_OF_INT']) && $_SESSION['MARK_AS_OF_INT'] == 'Y') ? 'Y' : 'N';
 
 if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_POST['post'])) {
 
@@ -105,7 +101,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
     }
 }
 
-if (($sig_text = user_get_sig($uid))) {
+if (($sig_text = user_get_sig($_SESSION['UID'])) !== false) {
     $sig_text = fix_html($sig_text);
 }
 
@@ -313,8 +309,9 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
         $valid = false;
     }
 
-    if (sizeof($attachments) > 0 && !attachments_check_post_space($uid, $attachments)) {
+    if (sizeof($attachments) > 0 && !attachments_check_post_space($_SESSION['UID'], $attachments)) {
 
+    	$max_post_attachment_space = forum_get_setting('attachments_max_post_space', null, 1048576);
         $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
         $valid = false;
     }
@@ -532,7 +529,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
         'POST_PAGE' => $page_prefs
     );
 
-    if (!user_update_prefs($uid, $user_prefs)) {
+    if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
         $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
         $valid = false;
@@ -588,13 +585,13 @@ if ($valid && isset($_POST['post'])) {
                 $poll_closes = false;
             }
 
-            $tid = post_create_thread($fid, $uid, $thread_title, 'Y', 'N');
+            $tid = post_create_thread($fid, $_SESSION['UID'], $thread_title, 'Y', 'N');
 
-            $pid = post_create($fid, $tid, 0, $uid, 0, '');
+            $pid = post_create($fid, $tid, 0, $_SESSION['UID'], 0, '');
 
             poll_create($tid, $poll_questions_array, $poll_closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests);
 
-            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_BOTH, $attachments))) {
+            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments)) !== false) {
 
                 foreach ($attachments_array as $attachment) {
 
@@ -608,7 +605,7 @@ if ($valid && isset($_POST['post'])) {
                     $message_text.= "<div class=\"sig\">$sig_text</div>";
                 }
 
-                post_create($fid, $tid, 1, $uid, $uid, $message_text);
+                post_create($fid, $tid, 1, $_SESSION['UID'], $_SESSION['UID'], $message_text);
             }
 
             if ($high_interest == "Y") thread_set_high_interest($tid);
@@ -665,7 +662,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $poll_data['TLOGON'] = gettext("ALL");
     $poll_data['TNICK'] = gettext("ALL");
 
-    $preview_tuser = user_get($uid);
+    $preview_tuser = user_get($_SESSION['UID']);
 
     $poll_data['FLOGON']   = $preview_tuser['LOGON'];
     $poll_data['FNICK']    = $preview_tuser['NICKNAME'];
@@ -694,9 +691,9 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
         $total_vote_count = 0;
 
-        if (($random_users_array = poll_get_random_users(mt_rand(10, 20)))) {
+        if (($random_users_array = poll_get_random_users(mt_rand(10, 20))) !== false) {
 
-            while (($random_user = array_pop($random_users_array))) {
+            while (($random_user = array_pop($random_users_array)) !== null) {
 
                 $total_vote_count++;
 
@@ -838,11 +835,13 @@ if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
 echo "                    </table>\n";
 
-if (($user_emoticon_pack = session::get_value('EMOTICONS')) === false) {
-    $user_emoticon_pack = forum_get_setting('default_emoticons', null, 'default');
+if (isset($_SESSION['EMOTICONS']) && strlen(trim($_SESSION['EMOTICONS'])) > 0) {
+    $user_emoticon_pack = $_SESSION['EMOTICONS'];
+} else {
+    $user_emoticon_pack = forum_get_setting('default_emoticons', 'strlen', 'default');
 }
 
-if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack))) {
+if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack)) !== false) {
 
     echo "                    <br />\n";
     echo "                    <table width=\"196\" class=\"messagefoot\" cellspacing=\"0\">\n";
@@ -1164,7 +1163,7 @@ if (forum_get_setting('attachments_enabled', 'Y') && (session::check_perm(USER_P
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" colspan=\"2\">\n";
     echo "                                <div class=\"attachments attachment_toggle\" style=\"display: ", (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) ? "block" : "none", "\">\n";
-    echo "                                  ", attachments_form($uid, $attachments, ATTACHMENT_FILTER_UNASSIGNED), "\n";
+    echo "                                  ", attachments_form($_SESSION['UID'], $attachments, ATTACHMENT_FILTER_UNASSIGNED), "\n";
     echo "                                </div>\n";
     echo "                              </td>\n";
     echo "                            </tr>\n";

@@ -25,10 +25,6 @@ USA
 require_once 'boot.php';
 
 // Includes required by this page.
-
-// Check we have a webtag
-$webtag = get_webtag();
-
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'db.inc.php';
 require_once BH_INCLUDE_PATH. 'email.inc.php';
@@ -68,7 +64,7 @@ if (!isset($uid) || !isset($key)) {
 
 $frame_top_target = html_get_top_frame_name();
 
-if (($user = user_get_by_passhash($uid, $key))) {
+if (($user = user_get_by_passhash($uid, $key)) !== false) {
 
     if (perm_user_cancel_email_confirmation($uid)) {
 

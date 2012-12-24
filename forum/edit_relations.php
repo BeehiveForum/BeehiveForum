@@ -52,8 +52,6 @@ html_draw_top(sprintf('title=%s', gettext("My Controls - User Relationships")), 
 
 echo "<h1>", gettext("User Relationships"), "</h1>\n";
 
-$uid = session::get_value('UID');
-
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = $_GET['page'];
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
@@ -63,7 +61,7 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 }
 
 if (isset($_POST['search_keyword']) && strlen(trim($_POST['search_keyword'])) > 0) {
-    
+
     $page = 1;
 
     $search_keyword = trim($_POST['search_keyword']);
@@ -73,7 +71,7 @@ if (isset($_POST['search_keyword']) && strlen(trim($_POST['search_keyword'])) > 
     $search_keyword = trim($_GET['search_keyword']);
 
 } else {
-    
+
     $search_keyword = '';
 }
 
@@ -91,7 +89,7 @@ if (isset($_POST['delete'])) {
 
             if (($delete_relationship == "Y")) {
 
-                if (!user_rel_update($uid, $peer_uid, 0)) {
+                if (!user_rel_update($_SESSION['UID'], $peer_uid, 0)) {
 
                     $valid = false;
                     $error_msg_array[] = gettext("Failed to remove selected relationship");
@@ -110,9 +108,9 @@ if (isset($_POST['delete'])) {
 
 // Check if we're searching for a user or simply listing the existing relationships.
 if (isset($search_keyword) && strlen(trim($search_keyword)) > 0) {
-    $user_peers_array = user_search_relationships($search_keyword, $page, $uid);
+    $user_peers_array = user_search_relationships($search_keyword, $page, $_SESSION['UID']);
 } else {
-    $user_peers_array = user_get_relationships($uid, $page);
+    $user_peers_array = user_get_relationships($_SESSION['UID'], $page);
 }
 
 // Output any messages.

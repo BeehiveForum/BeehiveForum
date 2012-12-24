@@ -47,13 +47,15 @@ if (!session::logged_in()) {
 
 $admin_edit = false;
 
+$profile_uid = $_SESSION['UID'];
+
 if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
     if (isset($_GET['profile_uid'])) {
 
         if (is_numeric($_GET['profile_uid'])) {
 
-            $uid = $_GET['profile_uid'];
+            $profile_uid = $_GET['profile_uid'];
             $admin_edit = true;
 
         } else {
@@ -65,36 +67,28 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         if (is_numeric($_POST['profile_uid'])) {
 
-            $uid = $_POST['profile_uid'];
+            $profile_uid = $_POST['profile_uid'];
             $admin_edit = true;
 
         } else {
 
             html_draw_error(gettext("No user specified."));
         }
-
-    } else {
-
-        $uid = session::get_value('UID');
     }
 
     if (isset($_POST['cancel'])) {
 
-        header_redirect("admin_user.php?webtag=$webtag&uid=$uid");
+        header_redirect("admin_user.php?webtag=$webtag&uid=$profile_uid");
         exit;
     }
-
-} else {
-
-    $uid = session::get_value('UID');
 }
 
-if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($uid != session::get_value('UID'))) {
+if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) && ($profile_uid != $_SESSION['UID'])) {
     html_draw_error(gettext("You do not have permission to use this section."));
 }
 
 // Fetch array of profile items.
-$profile_items_array = profile_get_user_values($uid);
+$profile_items_array = profile_get_user_values($profile_uid);
 
 // Array to hold error messages
 $error_msg_array = array();
@@ -135,7 +129,7 @@ if (isset($_POST['save'])) {
                     $privacy = PROFILE_ITEM_PUBLIC;
                 }
 
-                if (!user_profile_update($uid, $piid, $profile_entry, $privacy)) {
+                if (!user_profile_update($profile_uid, $piid, $profile_entry, $privacy)) {
 
                     $error_msg_array[] = gettext("Failed to update user profile");
                     $valid = false;
@@ -146,12 +140,12 @@ if (isset($_POST['save'])) {
 
                 if ($admin_edit === true) {
 
-                    header_redirect("admin_user.php?webtag=$webtag&uid=$uid&profile_updated=true", gettext("Profile updated."));
+                    header_redirect("admin_user.php?webtag=$webtag&uid=$profile_uid&profile_updated=true", gettext("Profile updated."));
                     exit;
 
                 } else {
 
-                    header_redirect("edit_profile.php?webtag=$webtag&uid=$uid&profile_updated=true", gettext("Profile updated."));
+                    header_redirect("edit_profile.php?webtag=$webtag&uid=$profile_uid&profile_updated=true", gettext("Profile updated."));
                     exit;
                 }
             }
@@ -163,7 +157,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
     if ($admin_edit === true) {
 
-        $user = user_get($uid);
+        $user = user_get($profile_uid);
 
         html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Edit Profile - %s"), format_user_name($user['LOGON'], $user['NICKNAME']))), 'class=window_title');
 
@@ -191,7 +185,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
     echo "<form accept-charset=\"utf-8\" name=\"f_profile\" action=\"edit_profile.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
-    if ($admin_edit === true) echo "  ", form_input_hidden('profile_uid', htmlentities_array($uid)), "\n";
+    if ($admin_edit === true) echo "  ", form_input_hidden('profile_uid', htmlentities_array($profile_uid)), "\n";
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
     echo "    <tr>\n";

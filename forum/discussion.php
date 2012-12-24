@@ -40,11 +40,10 @@ require_once BH_INCLUDE_PATH. 'threads.inc.php';
 // Message pane caching
 cache_check_messages();
 
-// User's UID
-$uid = session::get_value('UID');
-
 // Get the user's saved left frame width.
-if (($left_frame_width = session::get_value('LEFT_FRAME_WIDTH')) === false) {
+if (isset($_SESSION['LEFT_FRAME_WIDTH']) && is_numeric($_SESSION['LEFT_FRAME_WIDTH'])) {
+    $left_frame_width = max(100, $_SESSION['LEFT_FRAME_WIDTH']);
+} else {
     $left_frame_width = 280;
 }
 
@@ -71,7 +70,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     $fid = $_GET['folder'];
 
-    if (($msg = messages_get_most_recent($uid, $fid))) {
+    if (($msg = messages_get_most_recent($_SESSION['UID'], $fid)) !== false) {
 
         html_draw_top('frame_set_html', 'pm_popup_disabled');
 
@@ -147,7 +146,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
         exit;
     }
 
-    if (($search_msg = search_get_first_result_msg())) {
+    if (($search_msg = search_get_first_result_msg()) !== false) {
 
         html_draw_top('frame_set_html', 'pm_popup_disabled');
 
@@ -176,7 +175,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
 } else {
 
-    if (($msg = messages_get_most_recent($uid))) {
+    if (($msg = messages_get_most_recent($_SESSION['UID'])) !== false) {
 
         html_draw_top('frame_set_html', 'pm_popup_disabled');
 

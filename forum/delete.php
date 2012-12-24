@@ -52,7 +52,7 @@ if (!session::logged_in()) {
 $error_msg_array = array();
 
 // Check if the user is viewing signatures.
-$show_sigs = (session::get_value('VIEW_SIGS') == 'N') ? false : true;
+$show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
 
 // Form validation
 $valid = true;
@@ -105,7 +105,7 @@ if (!$thread_data = thread_get($tid)) {
 
 if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
 
-    if (($preview_message = messages_get($tid, $pid, 1))) {
+    if (($preview_message = messages_get($tid, $pid, 1)) !== false) {
 
         $preview_message['CONTENT'] = message_get_content($tid, $pid);
 
@@ -113,7 +113,7 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
             post_edit_refuse($tid, $pid);
         }
 
-        if ((session::get_value('UID') != $preview_message['FROM_UID'] || session::check_perm(USER_PERM_PILLORIED, 0)) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+        if (($_SESSION['UID'] != $preview_message['FROM_UID'] || session::check_perm(USER_PERM_PILLORIED, 0)) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
             post_edit_refuse($tid, $pid);
         }
 
@@ -133,7 +133,7 @@ if (isset($_POST['delete']) && is_numeric($tid) && is_numeric($pid)) {
 
         post_add_edit_text($tid, $pid);
 
-        if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != session::get_value('UID')) {
+        if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != $_SESSION['UID']) {
             admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
         }
 

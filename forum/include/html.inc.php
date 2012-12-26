@@ -486,64 +486,6 @@ function html_include_css($script_filepath, $media = 'screen')
     printf("<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\" media=\"%s\" />\n", $script_filepath, $media);
 }
 
-// Draws the top of the HTML page including DOCTYPE, head and body tags
-//
-// Usage:
-//
-//      html_draw_top() supports an unlimited argument count, which
-//      allows you to load .js support files from Beehive's /js/
-//      folder. For example:
-//
-//      html_draw_top("user_profile.js")
-//
-//      This will include openprofile.js as a
-//      <script src="user_profile.js"> tag within the HTML output.
-//
-//      To retain the old functionality as well as offer all this
-//      html_draw_top also supports 6 named arguments, which
-//      you can use to alter the default page title, body class,
-//      base target, meta 'robots' tag, and also specify functions to be
-//      called by the browser in the body tag's onload and onunload
-//      events. These have to be called in a specific manner.
-//      For example:
-//
-//      html_draw_top("title=Navigation", "class=nav", "basetarget=_top");
-//
-//      This will set the title of the page to "Navigation" with the
-//      body class set to "nav", and base target set to "_top".
-//
-//      You can also mix and match all of these arguments in any order
-//      for example:
-//
-//      html_draw_top("openprofile.js", "class=nav");
-//
-//      or
-//
-//      html_draw_top("class=nav", "openprofile.js");
-//
-// ====================================================================*/
-//
-// Notes:
-//
-//      html_draw_top will only use the first of each named argument
-//      it encounters for title and class. Any subsequent named
-//      arguments for these two values will be ignored.
-//
-//      For example:
-//
-//      html_draw_top("title=Beehive Forum", "title=Yo Mama");
-//
-//      This will result in the title being set to Beehive Forum and
-//      the value Yo Mama being discarded by the function.
-//
-//      This functionality does not apply to the onload named argument
-//      as that can accept more than one value to be included in the
-//      body tag.
-//
-// ====================================================================*/
-//
-//      Stuck? Any questions? Ask Matt.
-
 function html_draw_top()
 {
     $arg_array = func_get_args();
@@ -815,8 +757,6 @@ function html_draw_top()
 
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 
-    html_include_javascript(html_get_forum_file_path("ckeditor/ckeditor.js"));
-    html_include_javascript(html_get_forum_file_path('js/fineuploader.min.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.min.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.ui.autocomplete.min.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.parsequery.js'));
@@ -926,7 +866,23 @@ function html_draw_top()
     reset($arg_array);
 
     foreach ($arg_array as $func_args) {
-        html_include_javascript(html_get_forum_file_path("js/$func_args"));
+
+        if (!($extension = pathinfo($func_args, PATHINFO_EXTENSION))) {
+            continue;
+        }
+
+        switch ($extension) {
+
+            case 'js':
+
+                html_include_javascript(html_get_forum_file_path($func_args));
+                break;
+
+            case 'css':
+
+                html_include_css(html_get_forum_file_path($func_args));
+                break;
+        }
     }
 
     html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag"));

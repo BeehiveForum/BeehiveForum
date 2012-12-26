@@ -464,7 +464,7 @@ if (isset($_POST['save'])) {
 
 if ($thread_data['DELETED'] == 'N') {
 
-    html_draw_top(sprintf('title=%s', sprintf(gettext("Thread Options - %s"), $thread_data['TITLE'])), "basetarget=_blank", 'search_popup.js', 'class=window_title');
+    html_draw_top(sprintf('title=%s', sprintf(gettext("Thread Options - %s"), $thread_data['TITLE'])), "basetarget=_blank", 'js/search_popup.js', 'class=window_title');
 
     echo "<h1>", gettext("Thread Options"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">", word_filter_add_ob_tags($thread_data['TITLE'], true), "</a></h1>\n";
 

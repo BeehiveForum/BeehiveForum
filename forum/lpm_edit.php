@@ -197,7 +197,7 @@ if ($valid && isset($_POST['preview'])) {
     $t_subject = $pm_message_array['SUBJECT'];
 }
 
-light_html_draw_top(sprintf("title=%s", gettext("Edit Message")));
+light_html_draw_top(sprintf("title=%s", gettext("Edit Message")), 'js/fineuploader.min.js');
 
 if ($valid && isset($_POST['preview'])) {
 

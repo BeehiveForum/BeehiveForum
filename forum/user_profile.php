@@ -73,7 +73,7 @@ $peer_relationship = user_get_relationship($uid, $_SESSION['UID']);
 // Popup title.
 $page_title = format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']);
 
-html_draw_top("title=$page_title", "user_profile.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
+html_draw_top("title=$page_title", "js/user_profile.js", "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
 
 echo "<div align=\"center\">\n";
 echo "  <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\">\n";

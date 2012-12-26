@@ -96,7 +96,7 @@ if (isset($_POST['delete'])) {
             }
         }
 
-        html_draw_top(sprintf('title=%s', gettext("Admin - Manage Forums")), 'class=window_title', 'admin.js');
+        html_draw_top(sprintf('title=%s', gettext("Admin - Manage Forums")), 'class=window_title', "js/admin.js");
 
         echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Forums"), "</h1>\n";
         echo "<br />\n";
@@ -402,7 +402,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
-    html_draw_top(sprintf('title=%s', gettext("Admin - Manage Forums - Add Forum")), 'class=window_title', 'admin.js', 'search_popup.js');
+    html_draw_top(sprintf('title=%s', gettext("Admin - Manage Forums - Add Forum")), 'class=window_title', "js/admin.js", "js/search_popup.js");
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Forums"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> ", gettext("Add Forum"), "</h1>\n";
 
@@ -512,7 +512,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
         html_draw_error(gettext("Invalid forum or forum is not available"), 'admin_forums.php', 'get', array('back' => gettext("Back")));
     }
 
-    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage Forums - Edit Forum - %s"), $forum_data['WEBTAG'])), 'class=window_title', 'admin.js', 'search_popup.js');
+    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage Forums - Edit Forum - %s"), $forum_data['WEBTAG'])), 'class=window_title', "js/admin.js", "js/search_popup.js");
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Forums"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Forum"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$forum_data['WEBTAG']}</h1>\n";
 
@@ -614,7 +614,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
 } else {
 
-    html_draw_top(sprintf('title=%s', gettext("Admin - Manage Forums")), 'class=window_title', 'admin.js');
+    html_draw_top(sprintf('title=%s', gettext("Admin - Manage Forums")), 'class=window_title', "js/admin.js");
 
     $forums_array = admin_get_forum_list($page);
 

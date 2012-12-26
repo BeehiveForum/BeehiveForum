@@ -205,7 +205,7 @@ if (!session::logged_in()) {
 }
 
 // Output XHTML header
-html_draw_top('thread_list.js');
+html_draw_top('js/thread_list.js');
 
 // Fetch the right threads for whichever mode is selected
 switch ($mode) {

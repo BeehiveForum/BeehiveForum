@@ -204,7 +204,7 @@ if (isset($msg) && validate_msg($msg)) {
             }
         }
 
-        html_draw_top(sprintf('title=%s', gettext("Admin - Approve Post")), 'class=window_title', "post.js", "resize_width=720");
+        html_draw_top(sprintf('title=%s', gettext("Admin - Approve Post")), 'class=window_title', "js/post.js", "resize_width=720");
 
         echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Approve Post"), "</h1>\n";
 

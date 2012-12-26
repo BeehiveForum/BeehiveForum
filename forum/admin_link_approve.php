@@ -185,7 +185,7 @@ if (isset($lid) && is_numeric($lid)) {
             }
         }
 
-        html_draw_top(sprintf('title=%s', gettext("Admin - Approve Link")), 'class=window_title', "post.js", "resize_width=86%");
+        html_draw_top(sprintf('title=%s', gettext("Admin - Approve Link")), 'class=window_title', "js/post.js", "resize_width=86%");
 
         echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Approve Link"), "</h1>\n";
 

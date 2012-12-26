@@ -322,7 +322,7 @@ if ($valid && isset($_POST['preview'])) {
 
 $page_title = sprintf(gettext("Edit message %s"), $msg);
 
-html_draw_top("title=$page_title", "resize_width=960", "basetarget=_blank", "attachments.js", "emoticons.js", "post.js", 'class=window_title');
+html_draw_top("title=$page_title", "resize_width=960", "basetarget=_blank", "js/attachments.js", "js/emoticons.js", "js/post.js", 'ckeditor/ckeditor.js', 'js/fineuploader.min.js', 'class=window_title');
 
 echo "<h1>$page_title</h1>\n";
 

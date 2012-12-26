@@ -148,7 +148,7 @@ if (isset($search_query) && strlen(trim($search_query)) > 0) {
     }
 }
 
-html_draw_top(sprintf('title=%s', gettext("Search")), 'pm_popup_disabled', 'search_popup.js', 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Search")), 'pm_popup_disabled', 'js/search_popup.js', 'class=window_title');
 
 echo "<h1>", gettext("Search"), "</h1>\n";
 

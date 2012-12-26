@@ -38,7 +38,7 @@ require_once BH_INCLUDE_PATH. 'session.inc.php';
 
 cache_disable();
 
-html_draw_top("class=navpage", "forumlinks.js");
+html_draw_top("class=navpage", "js/forumlinks.js");
 
 echo "<div class=\"navleft\">\n";
 

@@ -286,7 +286,7 @@ if (isset($_POST['search'])) {
 
 pm_user_prune_folders($_SESSION['UID']);
 
-html_draw_top(sprintf('title=%s', sprintf(gettext("Private Messages = %s"), $pm_folder_names_array[$current_folder])), "basetarget=_blank", "search.js", "pm.js", 'pm_popup_disabled', 'class=window_title');
+html_draw_top(sprintf('title=%s', sprintf(gettext("Private Messages = %s"), $pm_folder_names_array[$current_folder])), "basetarget=_blank", "js/search.js", "js/pm.js", 'pm_popup_disabled', 'class=window_title');
 
 if ($current_folder == PM_FOLDER_INBOX) {
 

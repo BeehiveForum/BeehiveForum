@@ -160,7 +160,7 @@ pm_user_prune_folders($_SESSION['UID']);
 $pm_messages_frame = html_get_frame_name('pm_messages');
 
 // Draw the header.
-html_draw_top(sprintf("title=%s", gettext("Private Messages")), "basetarget=$pm_messages_frame", "pm.js", 'pm_popup_disabled');
+html_draw_top(sprintf("title=%s", gettext("Private Messages")), "basetarget=$pm_messages_frame", "js/pm.js", 'pm_popup_disabled');
 
 if (isset($manage_folder) && is_numeric($manage_folder)) {
 

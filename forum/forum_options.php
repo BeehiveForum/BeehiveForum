@@ -342,7 +342,6 @@ if (isset($_POST['save'])) {
     // Update USER_PREFS
     if (user_update_prefs($_SESSION['UID'], $user_prefs, $user_prefs_global)) {
 
-        html_set_cookie("forum_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
         header_redirect("forum_options.php?webtag=$webtag&updated=true", gettext("Preferences were successfully updated."));
         exit;
 
@@ -357,7 +356,7 @@ if (isset($_POST['save'])) {
 $show_set_all = (forums_get_available_count() > 1) ? true : false;
 
 // Start output here
-html_draw_top(sprintf('title=%s', gettext("My Controls - Forum Options")), "emoticons.js", 'forum_options.js', 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("My Controls - Forum Options")), "js/emoticons.js", "js/forum_options.js", 'class=window_title');
 
 echo "<h1>", gettext("Forum Options"), "</h1>\n";
 

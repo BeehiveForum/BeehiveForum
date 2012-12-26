@@ -119,7 +119,7 @@ if (isset($_GET['deletecookie']) && ($_GET['deletecookie'] == 'yes')) {
     }
 }
 
-html_draw_top('logon.js');
+html_draw_top("js/logon.js");
 
 echo "<div align=\"center\">\n";
 

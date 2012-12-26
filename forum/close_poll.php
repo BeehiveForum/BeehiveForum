@@ -186,7 +186,7 @@ if (isset($_POST['endpoll'])) {
     }
 }
 
-html_draw_top(sprintf("title=%s", gettext("Close Poll")), "post.js", "resize_width=720", "basetarget=_blank", 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Close Poll")), "js/post.js", "resize_width=720", "basetarget=_blank", 'class=window_title');
 
 echo "<h1>", gettext("Close Poll"), " {$tid}.{$pid}</h1>\n";
 

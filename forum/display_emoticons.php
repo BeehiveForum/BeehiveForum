@@ -74,7 +74,7 @@ if (!emoticons_set_exists($emoticon_set)) {
 $emoticon_set = basename($emoticon_set);
 
 // Output starts here
-html_draw_top(sprintf("title=%s", gettext("Emoticons")), "emoticons.js", 'pm_popup_disabled', 'class=window_title', "emoticons=$emoticon_set");
+html_draw_top(sprintf("title=%s", gettext("Emoticons")), "js/emoticons.js", 'pm_popup_disabled', 'class=window_title', "emoticons=$emoticon_set");
 
 echo "<h1>", gettext("Emoticons"), "</h1>\n";
 echo "<br />\n";

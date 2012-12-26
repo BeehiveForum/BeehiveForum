@@ -1681,7 +1681,7 @@ div.spoiler_reveal * {
 }
 
 .attachments ul li span.filename {
-    display:inline-block;
+    display: inline-block;
     padding-left: 20px;
 }
 
@@ -1697,8 +1697,8 @@ div.spoiler_reveal * {
     background: transparent url('images/loading.gif') no-repeat 0 50%;
 }
 
-.attachments ul li button {
-    float: right;
+.attachments ul li label {
+    display: block;
 }
 
 .attachments ul li.attachment span.cancel,
@@ -1730,6 +1730,7 @@ div.spoiler_reveal * {
 
 .attachments ul li.attachment span.filesize {
     float: right;
+    padding-top: 3px;
 }
 
 .attachments .buttons {

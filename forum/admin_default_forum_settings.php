@@ -615,7 +615,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 }
 
 // Start Output Here
-html_draw_top(sprintf('title=%s', gettext("Admin - Global Forum Settings")), 'class=window_title', "admin.js", "emoticons.js");
+html_draw_top(sprintf('title=%s', gettext("Admin - Global Forum Settings")), 'class=window_title', "js/admin.js", "js/emoticons.js", 'ckeditor/ckeditor.js');
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Global Forum Settings"), "</h1>\n";
 

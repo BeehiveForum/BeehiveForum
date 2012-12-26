@@ -133,7 +133,7 @@ if (isset($_POST['export'])) {
 $user_prefs = user_get_prefs($_SESSION['UID']);
 
 // Start output here
-html_draw_top(sprintf("title=%s", gettext("Export Private Messages")), "emoticons.js", 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Export Private Messages")), "js/emoticons.js", 'class=window_title');
 
 echo "<h1>", gettext("Export Private Messages"), "</h1>\n";
 

@@ -104,6 +104,46 @@ var beehive = $.extend({}, beehive, {
 
     active_editor : null,
 
+    init_editor : function() {
+
+        CKEDITOR.on('dialogDefinition', function(event) {
+
+            var dialogName = event.data.name;
+            var dialogDefinition = event.data.definition;
+
+            switch (dialogName) {
+
+                case 'link':
+
+                    dialogDefinition.removeContents('target');
+                    dialogDefinition.removeContents('advanced');
+                    dialogDefinition.minHeight = 150;
+                    break;
+
+                case 'image':
+
+                    dialogDefinition.removeContents('Link');
+                    dialogDefinition.removeContents('advanced');
+                    break;
+
+                case 'flash':
+
+                    dialogDefinition.removeContents('advanced');
+                    dialogDefinition.getContents('properties').remove('menu');
+                    dialogDefinition.getContents('properties').remove('scale');
+                    dialogDefinition.getContents('properties').remove('align');
+                    dialogDefinition.getContents('properties').remove('bgcolor');
+                    dialogDefinition.getContents('properties').remove('base');
+                    dialogDefinition.getContents('properties').remove('flashvars');
+                    dialogDefinition.getContents('properties').remove('allowScriptAccess');
+                    dialogDefinition.getContents('properties').remove('allowFullScreen');
+                    break;
+            }
+        });
+
+        beehive.init_editor = function() {};
+    },
+
     editor : function() {
 
         var $editor = $(this);
@@ -118,6 +158,8 @@ var beehive = $.extend({}, beehive, {
 
         var toolbar = $editor.hasClass('mobile') ? 'mobile' : 'full';
 
+        beehive.init_editor();
+
         $('<div id="toolbar">').insertBefore($editor);
 
         var editor = CKEDITOR.replace(editor_id, {
@@ -129,7 +171,7 @@ var beehive = $.extend({}, beehive, {
             customConfig: '',
             disableNativeSpellChecker: false,
             enterMode: CKEDITOR.ENTER_BR,
-            extraPlugins: 'beehive',
+            extraPlugins: 'beehive,youtube',
             font_defaultLabel: 'Verdana',
             fontSize_defaultLabel: '12',
             height: $editor.height() - 35,
@@ -438,41 +480,6 @@ $(beehive).bind('init', function() {
         }
 
         return false;
-    });
-
-    CKEDITOR.on('dialogDefinition', function(event) {
-
-        var dialogName = event.data.name;
-        var dialogDefinition = event.data.definition;
-
-        switch (dialogName) {
-
-            case 'link':
-
-                dialogDefinition.removeContents('target');
-                dialogDefinition.removeContents('advanced');
-                dialogDefinition.minHeight = 150;
-                break;
-
-            case 'image':
-
-                dialogDefinition.removeContents('Link');
-                dialogDefinition.removeContents('advanced');
-                break;
-
-            case 'flash':
-
-                dialogDefinition.removeContents('advanced');
-                dialogDefinition.getContents('properties').remove('menu');
-                dialogDefinition.getContents('properties').remove('scale');
-                dialogDefinition.getContents('properties').remove('align');
-                dialogDefinition.getContents('properties').remove('bgcolor');
-                dialogDefinition.getContents('properties').remove('base');
-                dialogDefinition.getContents('properties').remove('flashvars');
-                dialogDefinition.getContents('properties').remove('allowScriptAccess');
-                dialogDefinition.getContents('properties').remove('allowFullScreen');
-                break;
-        }
     });
 
     $('textarea.editor:visible').each(beehive.editor);

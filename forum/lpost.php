@@ -460,7 +460,7 @@ if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !session::che
     light_html_draw_error(gettext("This thread is closed, you cannot post in it!"));
 }
 
-light_html_draw_top(sprintf("title=%s", gettext("Post message")));
+light_html_draw_top(sprintf("title=%s", gettext("Post message")), 'js/fineuploader.min.js');
 
 echo "<h1>", gettext("Post message"), "</h1>\n";
 

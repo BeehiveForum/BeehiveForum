@@ -139,7 +139,7 @@ if (isset($_POST['save'])) {
 }
 
 // Start output here
-html_draw_top(sprintf("title=%s", gettext("Private Message Options")), "emoticons.js", 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Private Message Options")), "js/emoticons.js", 'class=window_title');
 
 echo "<h1>", gettext("Private Message Options"), "</h1>\n";
 

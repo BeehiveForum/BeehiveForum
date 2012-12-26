@@ -126,7 +126,7 @@ if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
     html_draw_error(gettext("That post does not exist in this thread!"));
 }
 
-html_draw_top("title={$thread_data['TITLE']}", "class=window_title", "post.js", "poll.js", "basetarget=_blank");
+html_draw_top("title={$thread_data['TITLE']}", "class=window_title", "js/post.js", "js/poll.js", 'ckeditor/ckeditor.js', "basetarget=_blank");
 
 if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 

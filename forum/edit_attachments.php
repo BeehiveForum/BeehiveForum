@@ -232,7 +232,7 @@ if (isset($_POST['delete_confirm'])) {
     }
 }
 
-html_draw_top(sprintf('title=%s', gettext("Attachments")), 'attachments.js', 'pm_popup_disabled', 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Attachments")), "js/attachments.js", 'pm_popup_disabled', 'class=window_title');
 
 echo "<h1>", gettext("Attachments"), "</h1>\n";
 

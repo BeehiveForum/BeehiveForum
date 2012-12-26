@@ -164,11 +164,11 @@ function light_html_draw_top()
     }
 
     if (($stylesheet = html_get_style_sheet('mobile.css')) !== false) {
-        echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen\" />\n";
+        html_include_css($stylesheet);
     }
 
     if (($emoticon_stylesheet = html_get_emoticon_style_sheet(true)) !== false) {
-        echo "<link rel=\"stylesheet\" href=\"$emoticon_stylesheet\" type=\"text/css\" media=\"screen\" />\n";
+        html_include_css($emoticon_stylesheet, 'print, screen');
     }
 
     $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag");
@@ -194,12 +194,10 @@ function light_html_draw_top()
         printf("<link rel=\"shortcut icon\" type=\"image/ico\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
     }
 
-    echo "<script type=\"text/javascript\" src=\"js/fineuploader.min.js\"></script>\n";
-    echo "<script type=\"text/javascript\" src=\"js/jquery.min.js\"></script>\n";
-    echo "<script type=\"text/javascript\" src=\"js/jquery.sprintf.js\"></script>\n";
-    echo "<script type=\"text/javascript\" src=\"js/general.js\"></script>\n";
-    echo "<script type=\"text/javascript\" src=\"js/light.js\"></script>\n";
-    echo "<script type=\"text/javascript\" src=\"js/attachments.js\"></script>\n";
+    html_include_javascript(html_get_forum_file_path('js/jquery.min.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.js'));
+    html_include_javascript(html_get_forum_file_path('js/general.js'));
+    html_include_javascript(html_get_forum_file_path('js/light.js'));
 
     $message_display_pages = array(
         'admin_post_approve.php',
@@ -220,15 +218,39 @@ function light_html_draw_top()
 
         if (isset($_SESSION['USE_MOVER_SPOILER']) && ($_SESSION['USE_MOVER_SPOILER'] == 'Y')) {
 
-            echo "<script type=\"text/javascript\" src=\"js/spoiler.js\"></script>\n";
+            html_include_javascript(html_get_forum_file_path('js/spoiler.js'));
         }
     }
 
-    echo "<script type=\"text/javascript\" src=\"ckeditor/ckeditor.js\"></script>\n";
-    echo "<script type=\"text/javascript\" src=\"json.php?webtag=$webtag\"></script>\n";
+    foreach ($arg_array as $func_args) {
+
+        if (!($extension = pathinfo($func_args, PATHINFO_EXTENSION))) {
+            continue;
+        }
+
+        switch ($extension) {
+
+            case 'js':
+
+                html_include_javascript(html_get_forum_file_path($func_args));
+                break;
+
+            case 'css':
+
+                html_include_css(html_get_forum_file_path($func_args));
+                break;
+        }
+    }
+
+    html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag"));
 
     echo "</head>\n";
     echo "<body id=\"mobile\">\n";
+
+    if ((forum_get_setting('show_share_links', 'Y')) && isset($_SESSION['SHOW_SHARE_LINKS']) && ($_SESSION['SHOW_SHARE_LINKS'] == 'Y')) {
+        echo '<div id="fb-root"></div>';
+    }
+
     echo "<a name=\"top\"></a>\n";
     echo "<div id=\"header\">\n";
     echo "  <img src=\"", html_style_image('mobile_logo.png'), "\" alt=\"", gettext("Beehive Forum Logo"), "\" />\n";
@@ -675,7 +697,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
         foreach ($folder_info as $fid => $folder_data) {
 
 	        if (!in_array($fid, $folder_order) && !in_array($fid, $ignored_folders)) {
-	
+
 	            if ($folder_data['INTEREST'] != FOLDER_IGNORED || (isset($folder) && $folder == $fid)) {
 	                array_push($folder_order, $fid);
 	            } else {

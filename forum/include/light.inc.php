@@ -1902,7 +1902,7 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
     $sql.= "OR FOLDER.ALLOWED_TYPES IS NULL ";
     $sql.= "ORDER BY FOLDER.FID ";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 

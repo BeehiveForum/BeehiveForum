@@ -51,7 +51,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
     $sql.= "WHERE ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL ";
     $sql.= "ORDER BY POSITION ";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -89,7 +89,7 @@ function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="",
     $sql = "SELECT FID, TITLE, DESCRIPTION FROM `{$table_prefix}FOLDER` ";
     $sql.= "ORDER BY POSITION";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -112,7 +112,7 @@ function folder_get_title($fid)
 
     $sql = "SELECT TITLE FROM `{$table_prefix}FOLDER` WHERE FID = '$fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -131,7 +131,7 @@ function folder_get_prefix($fid)
 
     $sql = "SELECT PREFIX FROM `{$table_prefix}FOLDER` WHERE FID = '$fid'";
 
-    if (!$result = $db->query($sql)) return '';
+    if (!($result = $db->query($sql))) return '';
 
     if ($result->num_rows == 0) return '';
 
@@ -155,14 +155,14 @@ function folder_create($title, $description = "", $prefix = "", $allowed_types =
 
     $sql = "SELECT MAX(POSITION) + 1 AS NEW_POS FROM `{$table_prefix}FOLDER`";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($new_pos) = $result->fetch_row();
 
     $sql = "INSERT INTO `{$table_prefix}FOLDER` (TITLE, DESCRIPTION, CREATED, PREFIX, ALLOWED_TYPES, POSITION, PERM) ";
     $sql.= "VALUES ('$title', '$description', NOW(), '$prefix', '$allowed_types', '$new_pos', '$permissions')";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     return $db->insert_id;
 }
@@ -177,7 +177,7 @@ function folder_delete($fid)
 
     $sql = "DELETE QUICK FROM `{$table_prefix}FOLDER` WHERE FID = '$fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     return $result;
 }
@@ -230,7 +230,7 @@ function folder_move_threads($from, $to)
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET FID = '$to', ";
     $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE FID = '$from'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     return $result;
 }
@@ -321,7 +321,7 @@ function folder_get_all()
     $sql.= "FROM `{$table_prefix}FOLDER` FOLDER ";
     $sql.= "ORDER BY FOLDER.POSITION";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -354,11 +354,11 @@ function folder_get_all_by_page($page = 1)
     $sql.= "ORDER BY FOLDER.POSITION ";
     $sql.= "LIMIT $offset, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
    
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($folder_count) = $result_count->fetch_row();
 
@@ -394,7 +394,7 @@ function folders_get_thread_counts(&$folder_array, $fid_array)
     $sql = "SELECT FID, COUNT(*) AS THREAD_COUNT FROM `{$table_prefix}THREAD` ";
     $sql.= "WHERE FID IN ($fid_list) GROUP BY FID";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($folder_data = $result->fetch_assoc())) {
         $folder_array[$folder_data['FID']]['THREAD_COUNT'] = $folder_data['THREAD_COUNT'];
@@ -414,7 +414,7 @@ function folder_get_thread_count($fid)
     $sql = "SELECT COUNT(TID) AS THREAD_COUNT FROM `{$table_prefix}THREAD` ";
     $sql.= "WHERE FID = '$fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($thread_count) = $result->fetch_row();
 
@@ -438,7 +438,7 @@ function folder_get($fid)
     $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "WHERE FOLDER.FID = '$fid' GROUP BY FOLDER.FID, FOLDER.TITLE";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -466,7 +466,7 @@ function folder_get_available_details()
     $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "WHERE FOLDER.FID IN ($fid_list) GROUP BY FOLDER.FID";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -489,7 +489,7 @@ function folder_is_valid($fid)
 
     $sql = "SELECT COUNT(FID) FROM `{$table_prefix}FOLDER` WHERE FID = '$fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($folder_count) = $result->fetch_row();
 
@@ -534,7 +534,7 @@ function folder_thread_type_allowed($fid, $type) // for types see constants.inc.
 
     $sql = "SELECT ALLOWED_TYPES FROM `{$table_prefix}FOLDER` WHERE FID = '$fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -559,7 +559,7 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
     $sql = "SELECT DISTINCT FOLDER.FID FROM `{$table_prefix}FOLDER` FOLDER ";
     $sql.= "WHERE (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -585,7 +585,7 @@ function folder_move_up($fid)
     $sql = "SELECT FID, POSITION FROM `{$table_prefix}FOLDER` ";
     $sql.= "ORDER BY POSITION";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($folder_data = $result->fetch_assoc())) {
 
@@ -606,14 +606,14 @@ function folder_move_up($fid)
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FOLDER` SET POSITION = '$new_position' ";
     $sql.= "WHERE FID = '{$folder_order[$folder_order_key]}'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $new_position = $folder_position[$folder_order[$folder_order_key]];
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FOLDER` SET POSITION = '$new_position' ";
     $sql.= "WHERE FID = '$fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     return true;
 }
@@ -631,7 +631,7 @@ function folder_move_down($fid)
     $sql = "SELECT FID, POSITION FROM `{$table_prefix}FOLDER` ";
     $sql.= "ORDER BY POSITION";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($folder_data = $result->fetch_assoc())) {
 
@@ -652,14 +652,14 @@ function folder_move_down($fid)
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FOLDER` SET POSITION = '$new_position' ";
     $sql.= "WHERE FID = '{$folder_order[$folder_order_key]}'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $new_position = $folder_position[$folder_order[$folder_order_key]];
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FOLDER` SET POSITION = '$new_position' ";
     $sql.= "WHERE FID = '$fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     return true;
 }
@@ -675,7 +675,7 @@ function folder_positions_update()
     $sql = "SELECT FID FROM `{$table_prefix}FOLDER` ";
     $sql.= "ORDER BY POSITION";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (list($fid) = $result->fetch_row()) {
 
@@ -733,11 +733,11 @@ function folders_get_user_subscriptions($interest_type = FOLDER_NOINTEREST, $pag
         $sql.= "LIMIT $offset, 20";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($folder_subscriptions_count) = $result_count->fetch_row();
 
@@ -799,11 +799,11 @@ function folders_search_user_subscriptions($folder_search, $interest_type = FOLD
         $sql.= "LIMIT $offset, 20";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($folder_subscriptions_count) = $result_count->fetch_row();
 

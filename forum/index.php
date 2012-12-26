@@ -119,11 +119,11 @@ if (!browser_mobile() && !session::is_search_engine()) {
 
                 if (isset($_SESSION['START_PAGE']) && is_numeric($_SESSION['START_PAGE'])) {
 
-                    if ($start_page == START_PAGE_MESSAGES) {
+                    if ($_SESSION['START_PAGE'] == START_PAGE_MESSAGES) {
                         $final_uri = "discussion.php?webtag=$webtag";
-                    } else if ($start_page == START_PAGE_INBOX) {
+                    } else if ($_SESSION['START_PAGE'] == START_PAGE_INBOX) {
                         $final_uri = "pm.php?webtag=$webtag";
-                    } else if ($start_page == START_PAGE_THREAD_LIST) {
+                    } else if ($_SESSION['START_PAGE'] == START_PAGE_THREAD_LIST) {
                         $final_uri = "start.php?webtag=$webtag&amp;left=threadlist";
                     } else {
                         $final_uri = "start.php?webtag=$webtag";

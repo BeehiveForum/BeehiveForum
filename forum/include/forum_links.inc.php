@@ -48,7 +48,7 @@ function forum_links_get_links()
     $sql = "SELECT LID, TITLE, URI FROM `{$table_prefix}FORUM_LINKS` ";
     $sql.= "ORDER BY POS ASC";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -90,11 +90,11 @@ function forum_links_get_links_by_page($page = 1)
     $sql.= "FROM `{$table_prefix}FORUM_LINKS` ";
     $sql.= "ORDER BY POS ASC LIMIT $offset, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($forum_links_count) = $result_count->fetch_row();
 
@@ -214,14 +214,14 @@ function forum_links_add_link($title, $uri = "")
     $sql = "SELECT MAX(POS) + 1 FROM `{$table_prefix}FORUM_LINKS` ";
     $sql.= "LIMIT 0, 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($new_position) = $result->fetch_row();
 
     $sql = "INSERT INTO `{$table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
     $sql.= "VALUES ('$new_position', '$title', '$uri')";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $new_lid = $db->insert_id;
 
@@ -240,7 +240,7 @@ function forum_links_get_link($lid)
     $sql.= "FROM `{$table_prefix}FORUM_LINKS` ";
     $sql.= "WHERE LID = '$lid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -262,7 +262,7 @@ function forum_links_move_up($lid)
     $sql = "SELECT LID, POS FROM `{$table_prefix}FORUM_LINKS` ";
     $sql.= "ORDER BY POS";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($forum_links_data = $result->fetch_assoc())) {
 
@@ -283,14 +283,14 @@ function forum_links_move_up($lid)
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FORUM_LINKS` SET POS = '$new_position' ";
         $sql.= "WHERE LID = '{$forum_links_order[$forum_links_order_key]}'";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
         $new_position = $forum_links_position[$forum_links_order[$forum_links_order_key]];
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FORUM_LINKS` SET POS = '$new_position' ";
         $sql.= "WHERE LID = '$lid'";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
         return true;
     }
@@ -311,7 +311,7 @@ function forum_links_move_down($lid)
     $sql = "SELECT LID, POS FROM `{$table_prefix}FORUM_LINKS` ";
     $sql.= "ORDER BY POS";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($forum_links_data = $result->fetch_assoc())) {
 
@@ -332,14 +332,14 @@ function forum_links_move_down($lid)
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FORUM_LINKS` SET POS = '$new_position' ";
         $sql.= "WHERE LID = '{$forum_links_order[$forum_links_order_key]}'";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
         $new_position = $forum_links_position[$forum_links_order[$forum_links_order_key]];
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FORUM_LINKS` SET POS = '$new_position' ";
         $sql.= "WHERE LID = '$lid'";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
         return true;
     }
@@ -358,7 +358,7 @@ function forum_links_positions_update()
     $sql = "SELECT LID FROM `{$table_prefix}FORUM_LINKS` ";
     $sql.= "ORDER BY POS";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (list($lid) = $result->fetch_row()) {
 

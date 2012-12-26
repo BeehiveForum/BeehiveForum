@@ -112,7 +112,7 @@ function user_get_profile($uid)
     $sql.= "WHERE USER.UID = '$uid' ";
     $sql.= "GROUP BY USER.UID";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -305,7 +305,7 @@ function user_get_profile_entries($uid)
     $sql.= "WHERE USER_PROFILE.ENTRY IS NOT NULL ORDER BY PROFILE_SECTION.POSITION, ";
     $sql.= "PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -344,7 +344,7 @@ function user_get_profile_image($uid)
     $sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ";
     $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) WHERE USER.UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -366,7 +366,7 @@ function user_get_post_count($uid)
     $sql = "SELECT POST_COUNT FROM `{$table_prefix}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid' AND POST_COUNT IS NOT NULL";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows > 0) {
 
@@ -378,7 +378,7 @@ function user_get_post_count($uid)
     $sql.= "SELECT '$uid', COUNT(POST.PID) AS POST_COUNT FROM `{$table_prefix}POST` POST ";
     $sql.= "WHERE FROM_UID = '$uid' ON DUPLICATE KEY UPDATE POST_COUNT = VALUES(POST_COUNT)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     return user_get_post_count($uid);
 }

@@ -55,11 +55,11 @@ function get_forum_list($page = 1)
     $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_DESC ON (FORUM_SETTINGS_DESC.FID = FORUMS.FID AND FORUM_SETTINGS_DESC.SNAME = 'forum_desc') ";
     $sql.= "WHERE FORUMS.ACCESS_LEVEL > -1 AND FORUMS.ACCESS_LEVEL < 3 ORDER BY FORUMS.FID LIMIT $offset, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($forums_count) = $result_count->fetch_row();
 
@@ -79,7 +79,7 @@ function get_forum_list($page = 1)
 
         $sql = "SELECT COUNT(PID) AS POST_COUNT FROM `{$forum_data['PREFIX']}POST` POST ";
 
-        if (!$result_post_count = $db->query($sql)) return false;
+        if (!($result_post_count = $db->query($sql))) return false;
 
         $forum_post_data = $result_post_count->fetch_assoc();
 
@@ -161,11 +161,11 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
         $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($forums_count) = $result_count->fetch_row();
 
@@ -202,7 +202,7 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
             $sql.= "AND (USER_THREAD.INTEREST > -1 OR USER_THREAD.INTEREST IS NULL) ";
             $sql.= "AND (THREAD.MODIFIED > CAST('$unread_cutoff_datetime' AS DATETIME)) ";
 
-            if (!$result_unread_count = $db->query($sql)) return false;
+            if (!($result_unread_count = $db->query($sql))) return false;
 
             list($unread_messages) = $result_unread_count->fetch_row();
 
@@ -219,7 +219,7 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
         $sql.= "WHERE THREAD.FID IN ($folders) AND (USER_FOLDER.INTEREST > -1 OR USER_FOLDER.INTEREST IS NULL) ";
         $sql.= "AND (USER_THREAD.INTEREST > -1 OR USER_THREAD.INTEREST IS NULL) ";
 
-        if (!$result_messages_count = $db->query($sql)) return false;
+        if (!($result_messages_count = $db->query($sql))) return false;
 
         list($num_messages) = $result_messages_count->fetch_row();
 
@@ -231,7 +231,7 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
         $sql.= "ON (POST.TID = THREAD.TID) WHERE THREAD.FID IN ($folders) ";
         $sql.= "AND POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
 
-        if (!$result_unread_to_me = $db->query($sql)) return false;
+        if (!($result_unread_to_me = $db->query($sql))) return false;
 
         list($unread_to_me) = $result_unread_to_me->fetch_row();
 
@@ -282,7 +282,7 @@ function forums_any_favourites()
     $sql = "SELECT COUNT(FID) AS FAV_COUNT FROM USER_FORUM ";
     $sql.= "WHERE INTEREST = 1 AND UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($fav_count) = $result->fetch_row();
 

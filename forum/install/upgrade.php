@@ -47,7 +47,7 @@ if (!($forum_prefix_array = install_get_table_data())) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_FILES CHANGE AID AID_OLD VARCHAR(32) NOT NULL, CHANGE ID ID MEDIUMINT(8) UNSIGNED NOT NULL, DROP PRIMARY KEY";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -55,7 +55,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_FILES ADD COLUMN AID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY(AID)";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -63,7 +63,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_FILES ADD COLUMN FILESIZE BIGINT(8) UNSIGNED NOT NULL AFTER MIMETYPE";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -71,7 +71,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_FILES ADD COLUMN THUMBNAIL CHAR(1) DEFAULT 'N' NOT NULL AFTER FILESIZE";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -79,7 +79,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_FILES CHANGE UID UID MEDIUMINT(8) UNSIGNED NOT NULL";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -87,7 +87,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_FILES CHANGE FILENAME FILENAME VARCHAR(255) NOT NULL";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -95,7 +95,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_FILES CHANGE MIMETYPE MIMETYPE VARCHAR(255) NOT NULL";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -103,7 +103,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_FILES CHANGE HASH HASH VARCHAR(32) NOT NULL";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -111,7 +111,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_IDS CHANGE AID AID_OLD CHAR(32) NOT NULL";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -119,7 +119,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_IDS ADD COLUMN AID MEDIUMINT(8) UNSIGNED NOT NULL AFTER PID";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -127,7 +127,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_IDS CHANGE FID FID MEDIUMINT(8) UNSIGNED NOT NULL";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -135,7 +135,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_IDS CHANGE TID TID MEDIUMINT(8) UNSIGNED NOT NULL";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -143,7 +143,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_IDS CHANGE PID PID MEDIUMINT(8) UNSIGNED NOT NULL";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -151,7 +151,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_IDS DROP PRIMARY KEY";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -159,7 +159,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_IDS ADD PRIMARY KEY(FID, TID, PID, AID)";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -167,7 +167,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE PM_ATTACHMENT_IDS CHANGE AID AID_OLD CHAR(32) NOT NULL";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -175,7 +175,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE PM_ATTACHMENT_IDS ADD COLUMN AID MEDIUMINT(8) UNSIGNED NOT NULL AFTER MID";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -183,7 +183,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE PM_ATTACHMENT_IDS CHANGE MID MID MEDIUMINT(8) UNSIGNED NOT NULL";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -191,7 +191,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE PM_ATTACHMENT_IDS DROP PRIMARY KEY";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -199,7 +199,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE PM_ATTACHMENT_IDS ADD PRIMARY KEY(MID, AID)";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -211,7 +211,7 @@ $sql.= "POST_ATTACHMENT_IDS.PID, POST_ATTACHMENT_FILES.AID ";
 $sql.= "FROM POST_ATTACHMENT_FILES INNER JOIN POST_ATTACHMENT_IDS ";
 $sql.= "ON (POST_ATTACHMENT_IDS.AID_OLD = POST_ATTACHMENT_FILES.AID_OLD)";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -219,7 +219,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_IDS DROP COLUMN AID_OLD";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -227,7 +227,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "DELETE FROM POST_ATTACHMENT_IDS WHERE AID = 0";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -238,7 +238,7 @@ $sql.= "SELECT PM_ATTACHMENT_IDS.MID, POST_ATTACHMENT_FILES.AID ";
 $sql.= "FROM POST_ATTACHMENT_FILES INNER JOIN PM_ATTACHMENT_IDS ";
 $sql.= "ON (PM_ATTACHMENT_IDS.AID_OLD = POST_ATTACHMENT_FILES.AID_OLD)";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -246,7 +246,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE PM_ATTACHMENT_IDS DROP COLUMN AID_OLD";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -254,7 +254,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "DELETE FROM PM_ATTACHMENT_IDS WHERE AID = 0";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -262,7 +262,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_FILES DROP COLUMN AID_OLD";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -270,7 +270,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE POST_ATTACHMENT_FILES DROP COLUMN ID";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -282,7 +282,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     $sql.= "ON (POST_ATTACHMENT_FILES.HASH = `{$table_data['PREFIX']}USER_PREFS`.AVATAR_AID) ";
     $sql.= "SET `{$table_data['PREFIX']}USER_PREFS`.AVATAR_AID = POST_ATTACHMENT_FILES.AID";
 
-    if (!$result = $db->query($sql)) {
+    if (!($result = $db->query($sql))) {
 
         $valid = false;
         return;
@@ -292,7 +292,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     $sql.= "ON (POST_ATTACHMENT_FILES.HASH = `{$table_data['PREFIX']}USER_PREFS`.PIC_AID) ";
     $sql.= "SET `{$table_data['PREFIX']}USER_PREFS`.PIC_AID = POST_ATTACHMENT_FILES.AID";
 
-    if (!$result = $db->query($sql)) {
+    if (!($result = $db->query($sql))) {
 
         $valid = false;
         return;
@@ -300,7 +300,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE PIC_AID PIC_AID MEDIUMINT(11) NULL";
 
-    if (!$result = $db->query($sql)) {
+    if (!($result = $db->query($sql))) {
 
         $valid = false;
         return;
@@ -308,7 +308,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` CHANGE AVATAR_AID AVATAR_AID MEDIUMINT(11) NULL";
 
-    if (!$result = $db->query($sql)) {
+    if (!($result = $db->query($sql))) {
 
         $valid = false;
         return;
@@ -316,7 +316,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "UPDATE `{$table_data['PREFIX']}USER_PREFS` SET AVATAR_AID = NULL WHERE AVATAR_AID = 0";
 
-    if (!$result = $db->query($sql)) {
+    if (!($result = $db->query($sql))) {
 
         $valid = false;
         return;
@@ -324,7 +324,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "UPDATE `{$table_data['PREFIX']}USER_PREFS` SET PIC_AID = NULL WHERE PIC_AID = 0";
 
-    if (!$result = $db->query($sql)) {
+    if (!($result = $db->query($sql))) {
 
         $valid = false;
         return;
@@ -335,7 +335,7 @@ $sql = "UPDATE USER_PREFS INNER JOIN POST_ATTACHMENT_FILES ";
 $sql.= "ON (POST_ATTACHMENT_FILES.HASH = USER_PREFS.AVATAR_AID) ";
 $sql.= "SET USER_PREFS.AVATAR_AID = POST_ATTACHMENT_FILES.AID";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -345,7 +345,7 @@ $sql = "UPDATE USER_PREFS INNER JOIN POST_ATTACHMENT_FILES ";
 $sql.= "ON (POST_ATTACHMENT_FILES.HASH = USER_PREFS.PIC_AID) ";
 $sql.= "SET USER_PREFS.PIC_AID = POST_ATTACHMENT_FILES.AID";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -353,7 +353,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE USER_PREFS CHANGE PIC_AID PIC_AID MEDIUMINT(11) NULL";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -361,7 +361,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "ALTER TABLE USER_PREFS CHANGE AVATAR_AID AVATAR_AID MEDIUMINT(11) NULL";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -369,7 +369,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "UPDATE USER_PREFS SET AVATAR_AID = NULL WHERE AVATAR_AID = 0";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -377,7 +377,7 @@ if (!$result = $db->query($sql)) {
 
 $sql = "UPDATE USER_PREFS SET PIC_AID = NULL WHERE PIC_AID = 0";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
@@ -385,14 +385,14 @@ if (!$result = $db->query($sql)) {
 
 $sql = "UPDATE USER_PREFS SET POST_PAGE = 63";
 
-if (!$result = $db->query($sql)) {
+if (!($result = $db->query($sql))) {
 
     $valid = false;
     return;
 }
 
 
-if (($attachment_dir = forum_get_global_setting('attachment_dir'))) {
+if (($attachment_dir = forum_get_global_setting('attachment_dir', null, false)) !== false) {
 
     $attachment_dir = rtrim($attachment_dir, '/');
 
@@ -422,7 +422,7 @@ if (($attachment_dir = forum_get_global_setting('attachment_dir'))) {
 
         $sql = "UPDATE POST_ATTACHMENT_FILES SET FILESIZE='$filesize' WHERE HASH='$hash'";
 
-        if (!$result = $db->query($sql)) {
+        if (!($result = $db->query($sql))) {
 
             $valid = false;
             return;
@@ -431,7 +431,7 @@ if (($attachment_dir = forum_get_global_setting('attachment_dir'))) {
 
     $sql = "DELETE FROM POST_ATTACHMENT_FILES WHERE FILESIZE = 0";
 
-    if (!$result = $db->query($sql)) {
+    if (!($result = $db->query($sql))) {
 
         $valid = false;
         return;
@@ -439,7 +439,7 @@ if (($attachment_dir = forum_get_global_setting('attachment_dir'))) {
 
     $sql = "DELETE FROM POST_ATTACHMENT_IDS WHERE AID NOT IN (SELECT AID FROM POST_ATTACHMENT_FILES)";
 
-    if (!$result = $db->query($sql)) {
+    if (!($result = $db->query($sql))) {
 
         $valid = false;
         return;
@@ -447,7 +447,7 @@ if (($attachment_dir = forum_get_global_setting('attachment_dir'))) {
 
     $sql = "DELETE FROM PM_ATTACHMENT_IDS WHERE AID NOT IN (SELECT AID FROM POST_ATTACHMENT_FILES)";
 
-    if (!$result = $db->query($sql)) {
+    if (!($result = $db->query($sql))) {
 
         $valid = false;
         return;

@@ -112,7 +112,7 @@ function attachments_get($uid, $filter = ATTACHMENT_FILTER_BOTH, $hash_array = a
 
     $sql.= "ORDER BY PAF.FILENAME";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -150,7 +150,7 @@ function attachments_get_by_aid($aid, $uid = null)
         $sql.= "AND UID = '$uid'";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -182,7 +182,7 @@ function attachments_get_by_hash($hash, $uid = null)
         $sql.= "AND UID = '$uid'";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -241,7 +241,7 @@ function attachments_delete($hash)
     $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
     $sql.= "WHERE PAF.HASH = '$hash'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -294,7 +294,7 @@ function attachments_delete_thumbnail($hash)
     $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
     $sql.= "WHERE PAF.HASH = '$hash'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -379,7 +379,7 @@ function attachments_get_post_used_space($uid, $hash_array)
     $sql = "SELECT PAF.HASH, PAF.FILESIZE FROM POST_ATTACHMENT_FILES PAF ";
     $sql.= "WHERE PAF.UID = '$uid' AND PAF.HASH IN ('$hash_list')";
 
-    if (!$result = $db->query($sql)) return 0;
+    if (!($result = $db->query($sql))) return 0;
 
     while (($attachment_data = $result->fetch_assoc())) {
         $post_attachment_space+= $attachment_data['FILESIZE'];
@@ -399,7 +399,7 @@ function attachments_get_user_used_space($uid)
     $sql = "SELECT PAF.HASH, PAF.FILESIZE FROM POST_ATTACHMENT_FILES PAF ";
     $sql.= "WHERE PAF.UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return 0;
+    if (!($result = $db->query($sql))) return 0;
 
     while (($attachment_data = $result->fetch_assoc())) {
         $user_attachment_space+= $attachment_data['FILESIZE'];
@@ -517,7 +517,7 @@ function attachments_get_message_link($hash)
     $sql.= "INNER JOIN FORUMS ON (FORUMS.FID = PAI.FID) ";
     $sql.= "WHERE PAF.HASH = '$hash'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -538,7 +538,7 @@ function attachments_get_pm_link($hash)
     $sql.= "INNER JOIN PM_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
     $sql.= "WHERE PAF.HASH = '$hash'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 

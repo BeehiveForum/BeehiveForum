@@ -94,11 +94,11 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
         $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($links_count) = $result_count->fetch_row();
 
@@ -391,7 +391,7 @@ function links_click($lid)
     $sql = "SELECT URI FROM `{$table_prefix}LINKS` ";
     $sql.= "WHERE LID = '$lid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -419,7 +419,7 @@ function links_get_single($lid, $approved = true)
     $sql.= "LEFT JOIN `{$table_prefix}LINKS_VOTE` LINKS_VOTE ON (LINKS.LID = LINKS_VOTE.LID) ";
     $sql.= "WHERE LINKS.LID = '$lid' $approved GROUP BY LINKS_VOTE.LID";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -487,11 +487,11 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
         $sql.= "GROUP BY LINKS.LID ORDER BY $sort_by $sort_dir LIMIT $offset, 20";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($links_count) = $result_count->fetch_row();
 
@@ -549,7 +549,7 @@ function links_folder_delete($fid)
 
     $sql = "SELECT MIN(FID) AS FID FROM `{$table_prefix}LINKS`";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $link_array = $result->fetch_assoc();
 
@@ -558,12 +558,12 @@ function links_folder_delete($fid)
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}LINKS` ";
     $sql.= "SET FID = '{$folders[$fid]['PARENT_FID']}' WHERE FID = '$fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "DELETE QUICK FROM `{$table_prefix}LINKS_FOLDERS` ";
     $sql.= "WHERE FID = '$fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     return $result;
 }
@@ -580,7 +580,7 @@ function links_get_vote($lid, $uid)
     $sql = "SELECT RATING FROM `{$table_prefix}LINKS_VOTE` ";
     $sql.= "WHERE LID = '$lid' AND UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -664,7 +664,7 @@ function links_get_comments($lid)
     $sql .= "LEFT JOIN USER USER ON (LINKS_COMMENT.UID = USER.UID) ";
     $sql .= "WHERE LINKS_COMMENT.LID = '$lid' ORDER BY CREATED ASC";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -708,7 +708,7 @@ function links_delete_comment($cid)
 
     $sql = "DELETE QUICK FROM `{$table_prefix}LINKS_COMMENT` WHERE CID = '$cid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     return $result;
 }
@@ -806,7 +806,7 @@ function links_get_creator_uid($lid)
 
     $sql = "SELECT UID FROM `{$table_prefix}LINKS` WHERE LID = '$lid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -825,7 +825,7 @@ function links_get_comment_uid($cid)
 
     $sql = "SELECT UID FROM `{$table_prefix}LINKS_COMMENT` WHERE CID = '$cid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 

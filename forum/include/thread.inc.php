@@ -52,7 +52,7 @@ function thread_get_title($tid)
 
     $sql = "SELECT TITLE FROM `{$table_prefix}THREAD` WHERE TID = '$tid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -100,7 +100,7 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false)
 
     if ($inc_empty === false)  $sql.= "AND THREAD.LENGTH > 0 ";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -164,7 +164,7 @@ function thread_get_by_uid($tid)
     $sql = "SELECT BY_UID FROM `{$table_prefix}THREAD` ";
     $sql.= "WHERE TID = '$tid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($by_uid) = $result->fetch_row();
 
@@ -182,7 +182,7 @@ function thread_get_folder($tid)
     $sql = "SELECT FID FROM `{$table_prefix}THREAD` THREAD ";
     $sql.= "WHERE TID = '$tid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -201,7 +201,7 @@ function thread_get_length($tid)
 
     $sql = "SELECT LENGTH FROM `{$table_prefix}THREAD` WHERE TID = '$tid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -224,7 +224,7 @@ function thread_get_tracking_data($tid)
     $sql.= "NEW_TID, TRACK_TYPE FROM `{$table_prefix}THREAD_TRACK` ";
     $sql.= "WHERE NEW_TID = '$tid') AS TRACK_TO";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -307,7 +307,7 @@ function thread_get_interest($tid)
     $sql = "SELECT INTEREST FROM `{$table_prefix}USER_THREAD` ";
     $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -363,7 +363,7 @@ function thread_set_high_interest($tid)
     $sql.= "VALUES ('$uid', '$tid', '$thread_interested') ON DUPLICATE KEY ";
     $sql.= "UPDATE INTEREST = VALUES(INTEREST)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     return $result;
 }
@@ -1128,7 +1128,7 @@ function thread_split_get_replies($tid, $pid)
         $pid
     );
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1160,7 +1160,7 @@ function thread_split_get_following($tid, $pid)
 
     $pid_array = array();
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1183,7 +1183,7 @@ function thread_get_unmoved_posts($tid)
     $sql.= "WHERE TID = '$tid' AND MOVED_TID IS NULL ";
     $sql.= "AND MOVED_PID IS NULL AND PID > 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1207,7 +1207,7 @@ function thread_can_be_undeleted($tid)
     $sql = "SELECT MAX(PID) AS LENGTH FROM ";
     $sql.= "`{$table_prefix}POST` WHERE TID = '$tid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($length) = $result->fetch_row();
 
@@ -1241,11 +1241,11 @@ function thread_search($thread_search, $selected_array = array())
 
     $sql.= "LIMIT 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($results_count) = $result_count->fetch_row();
 
@@ -1288,7 +1288,7 @@ function thread_has_attachments(&$thread_data)
     $sql.= "ON (PAF.AID = PAI.AID) WHERE PAI.FID = '$forum_fid' ";
     $sql.= "AND PAI.TID = '{$thread_data['TID']}' GROUP BY PAI.TID";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $attachment_data = $result->fetch_assoc();
 

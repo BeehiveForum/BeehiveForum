@@ -121,11 +121,11 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limi
     $sql.= "WHERE (PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($message_count) = $result_count->fetch_row();
 
@@ -205,11 +205,11 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
     $sql.= "WHERE (PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($message_count) = $result_count->fetch_row();
 
@@ -289,11 +289,11 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit
     $sql.= "WHERE (PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "AND SMID = 0 ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($message_count) = $result_count->fetch_row();
 
@@ -375,11 +375,11 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1,
     $sql.= "((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($message_count) = $result_count->fetch_row();
 
@@ -459,11 +459,11 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
     $sql.= "WHERE (PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid' ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($message_count) = $result_count->fetch_row();
 
@@ -605,11 +605,11 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $pag
     $sql.= "WHERE PM_SEARCH_RESULTS.UID = '$uid' AND PM.MID IS NOT NULL ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($message_count) = $result_count->fetch_row();
 
@@ -678,7 +678,7 @@ function pm_get_folder_message_counts()
     $sql.= "OR ((TYPE & $pm_draft_items > 0) AND FROM_UID = '$uid') ";
     $sql.= "GROUP BY TYPE";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($pm_data_array = $result->fetch_assoc())) {
 
@@ -709,7 +709,7 @@ function pm_get_folder_message_counts()
     $sql.= "ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
     $sql.= "WHERE UID = '$uid' AND PM.MID IS NOT NULL";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($search_results_count) = $result->fetch_row();
 
@@ -743,7 +743,7 @@ function pm_get_free_space($uid = false)
     $sql.= "OR ((TYPE & $pm_saved_in > 0) AND TO_UID = '$uid') ";
     $sql.= "OR ((TYPE & $pm_draft_items > 0) AND FROM_UID = '$uid')";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($pm_user_message_count) = $result->fetch_row();
 
@@ -762,7 +762,7 @@ function pm_get_user($mid)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = PM.FROM_UID) ";
     $sql.= "WHERE PM.MID = '$mid' AND USER.UID IS NOT NULL";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -787,7 +787,7 @@ function pm_user_get_friends()
     $sql.= "WHERE USER_PEER.UID = '$uid' AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
     $sql.= "LIMIT 0, 20";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $user_get_peers_array = array();
 
@@ -824,7 +824,7 @@ function pm_get_subject($mid, $to_uid)
 
     $sql = "SELECT SUBJECT FROM PM WHERE MID = '$mid' AND TO_UID = '$to_uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -862,7 +862,7 @@ function pm_message_get($mid)
     $sql.= "OR ((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid')) ";
     $sql.= "AND PM.MID = '$mid' LIMIT 0, 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -887,7 +887,7 @@ function pm_get_content($mid)
 
     $sql = "SELECT CONTENT FROM PM_CONTENT WHERE MID = '$mid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1122,7 +1122,7 @@ function pm_message_get_folder($mid, $type = 0)
     $sql.= "OR ((TYPE & $pm_saved_in > 0) AND TO_UID = '$uid') ";
     $sql.= "OR ((TYPE & $pm_draft_items > 0) AND FROM_UID = '$uid')) ";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($pm_message_type) = $result->fetch_row();
 
@@ -1143,7 +1143,7 @@ function pm_add_attachment($mid, $aid)
     $sql = "INSERT IGNORE INTO PM_ATTACHMENT_IDS (MID, AID) ";
     $sql.= "VALUES ($mid, $aid)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     return true;
 }
@@ -1329,7 +1329,7 @@ function pm_update_sent_item($mid, $subject, $content)
 
     // Query the database for the sent item's MID
     $sql = "SELECT MID FROM PM WHERE SMID = '$mid'";
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     // Fetch the SMID.
     list($sent_item_mid) = $result->fetch_row();
@@ -1372,7 +1372,7 @@ function pm_delete_message($mid)
     $sql.= "((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid')) ";
     $sql.= "AND PM.MID = '$mid' GROUP BY PM.MID LIMIT 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1384,11 +1384,11 @@ function pm_delete_message($mid)
 
     $sql = "DELETE QUICK FROM PM WHERE MID = '$mid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "DELETE QUICK FROM PM_CONTENT WHERE MID = '$mid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     return true;
 }
@@ -1467,7 +1467,7 @@ function pm_get_new_messages($limit)
     $sql.= "AND TO_UID = '$uid' ORDER BY CREATED ASC ";
     $sql.= "LIMIT $limit";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1512,12 +1512,12 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
         $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_unread' WHERE MID in ($mid_list) ";
         $sql.= "AND TO_UID = '$uid'";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
         $sql = "UPDATE LOW_PRIORITY PM SET SMID = 0 WHERE SMID IN ($mid_list) ";
         $sql.= "AND TYPE = '$pm_sent_item' AND TO_UID = '$uid'";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
         // Number of new messages we've received for popup.
         $pm_new_count = sizeof($messages_array);
@@ -1527,7 +1527,7 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
     $sql = "SELECT COUNT(MID) FROM PM WHERE (TYPE & $pm_unread > 0) ";
     $sql.= "AND TO_UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($pm_unread_count) = $result->fetch_row();
 
@@ -1535,7 +1535,7 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
     $sql = "SELECT COUNT(MID) AS OUTBOX_COUNT FROM PM ";
     $sql.= "WHERE TYPE = '$pm_outbox' AND TO_UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($pm_outbox_count) = $result->fetch_row();
 
@@ -1618,7 +1618,7 @@ function pm_get_unread_count()
     $sql = "SELECT COUNT(MID) FROM PM WHERE (TYPE & $pm_unread > 0) ";
     $sql.= "AND TO_UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($pm_unread_count) = $result->fetch_row();
 
@@ -1702,7 +1702,7 @@ function pms_have_attachments(&$messages_array)
     $sql.= "ON (PMI.AID = PAF.AID) WHERE PMI.MID IN ($mid_list) ";
     $sql.= "GROUP BY PMI.MID";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($pm_attachment_data = $result->fetch_assoc())) {
         $messages_array[$pm_attachment_data['MID']]['ATTACHMENT_COUNT'] = $pm_attachment_data['ATTACHMENT_COUNT'];
@@ -1723,7 +1723,7 @@ function pm_has_attachments(&$message_data)
     $sql.= "INNER JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
     $sql.= "WHERE PAI.MID = '{$message_data['MID']}'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($attachment_data = $result->fetch_assoc())) {
         $message_data['ATTACHMENTS'][] = $attachment_data['HASH'];
@@ -2162,7 +2162,7 @@ function pm_get_folder_names($include_search_results = true)
 
     $sql = "SELECT FID, TITLE FROM PM_FOLDERS WHERE UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return $pm_folder_names_array;
+    if (!($result = $db->query($sql))) return $pm_folder_names_array;
 
     if ($result->num_rows == 0) return $pm_folder_names_array;
 

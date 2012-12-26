@@ -91,7 +91,7 @@ function visitor_log_get_recent()
         $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT 10";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -155,7 +155,7 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
     $sql.= "WHERE PROFILE_SECTION.PSID IS NOT NULL ";
     $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_ITEM.POSITION";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -348,12 +348,12 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
     $sql = implode(",", $query_array_merge). "$from_sql $join_sql ";
     $sql.= "$where_sql $having_sql $order_sql $limit_sql";
     
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($user_count) = $result_count->fetch_row();
 

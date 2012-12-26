@@ -126,7 +126,7 @@ function cache_check_thread_list()
         $sql.= "FROM `{$table_prefix}FOLDER` FOLDER) AS FOLDER_DATA";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     // Can't send cache headers without any rows.
     if ($result->num_rows == 0) return true;
@@ -194,7 +194,7 @@ function cache_check_start_page()
     $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
     $sql.= "FROM `{$table_prefix}FOLDER` FOLDER) AS FOLDER_DATA";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return true;
 
@@ -276,7 +276,7 @@ function cache_check_messages()
         $sql.= "FROM `{$table_prefix}POST`";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return true;
 

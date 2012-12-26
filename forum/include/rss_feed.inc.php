@@ -193,7 +193,7 @@ function rss_feed_fetch()
     $sql.= "HAVING CAST('$current_datetime' AS DATETIME) > NEXT_RUN ";
     $sql.= "LIMIT 0, 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -203,7 +203,7 @@ function rss_feed_fetch()
     $sql.= "SET LAST_RUN = CAST('$current_datetime' AS DATETIME) ";
     $sql.= "WHERE RSSID = {$rss_feed['RSSID']}";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($db->affected_rows == 0) return false;
 
@@ -224,7 +224,7 @@ function rss_feed_thread_exist($rss_id, $link)
     $sql.= "FROM `{$table_prefix}RSS_HISTORY` ";
     $sql.= "WHERE RSSID = '$rss_id' AND LINK = '$link'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($rss_thread_count) = $result->fetch_row();
 
@@ -346,11 +346,11 @@ function rss_feed_get_feeds($page = 1)
     $sql.= "AND USER_PEER.UID = '$uid') ";
     $sql.= "LIMIT $offset, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($rss_feed_count) = $result_count->fetch_row();
 
@@ -449,7 +449,7 @@ function rss_feed_get($feed_id)
     $sql.= "AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE RSS_FEEDS.RSSID = '$feed_id'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 

@@ -77,7 +77,7 @@ function user_get_relationship($uid, $peer_uid)
     $sql = "SELECT RELATIONSHIP FROM `{$table_prefix}USER_PEER` ";
     $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
-    if (!$result = $db->query($sql)) return 0;
+    if (!($result = $db->query($sql))) return 0;
 
     if ($result->num_rows == 0 ) return 0;
 

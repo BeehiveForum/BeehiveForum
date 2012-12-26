@@ -454,7 +454,7 @@ function install_get_table_data()
     $sql = "SELECT FID, CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX, ";
     $sql.= "DATABASE_NAME, WEBTAG FROM FORUMS";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -485,7 +485,7 @@ function install_table_exists($database_name, $table_name)
 
     $sql = "SHOW TABLES FROM `$database_name` LIKE '$table_name'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     return ($result->num_rows > 0);
 }
@@ -498,7 +498,7 @@ function install_column_exists($database_name, $table_name, $column_name)
 
     $sql = "SHOW COLUMNS FROM `$database_name`.`$table_name` LIKE '$column_name'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     return ($result->num_rows > 0);
 }
@@ -509,7 +509,7 @@ function install_index_exists($database_name, $table_name, $index_name)
 
     $sql = "SHOW INDEXES FROM `$database_name`.`$table_name`";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($table_data = $result->fetch_assoc())) {
         if ($table_data['Key_name'] == $index_name) return true;
@@ -526,7 +526,7 @@ function install_check_column_type($database_name, $table_name, $column_name, $c
 
     $sql = "SHOW COLUMNS FROM `$database_name`.`$table_name` LIKE '$column_name'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if (!$column_data = $result->fetch_assoc()) return false;
 
@@ -624,7 +624,7 @@ function install_check_table_conflicts($database_name, $webtag, $check_forum_tab
     $sql = "SHOW TABLES FROM `$database_name`";
 
     // Execute query.
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     // Check there are some existing tables in the database.
     if ($result->num_rows < 1) return false;

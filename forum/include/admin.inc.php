@@ -137,11 +137,11 @@ function admin_get_log_entries($page = 1, $group_by = 'DAY', $sort_by = 'CREATED
     $sql.= "ORDER BY $sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($admin_log_count) = $result_count->fetch_row();
 
@@ -188,11 +188,11 @@ function admin_get_word_filter_list($page = 1)
     $sql.= "WHERE UID = 0 ORDER BY FID ";
     $sql.= "LIMIT $offset, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($word_filter_count) = $result_count->fetch_row();
 
@@ -222,7 +222,7 @@ function admin_get_word_filter($filter_id)
     $sql.= "FILTER_ENABLED FROM `{$table_prefix}WORD_FILTER` ";
     $sql.= "WHERE UID = 0 AND FID = '$filter_id' ORDER BY FID";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -398,11 +398,11 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
     $sql.= "$user_fetch_sql GROUP BY USER.UID ORDER BY $sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($user_get_all_count) = $result_count->fetch_row();
 
@@ -499,11 +499,11 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     $sql.= "$user_fetch_sql GROUP BY USER.UID ORDER BY $sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($user_get_all_count) = $result_count->fetch_row();
 
@@ -539,7 +539,7 @@ function admin_user_get($uid)
     $sql.= "LEFT JOIN USER_FORUM  ON (USER.UID = USER_FORUM.UID ";
     $sql.= "AND USER_FORUM.FID = '$forum_fid') WHERE USER.UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -599,7 +599,7 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
         $sql.= "WHERE PAF.UID = '$uid' ORDER BY FORUMS.FID DESC, PAF.FILENAME";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($attachment = $result->fetch_assoc())) {
 
@@ -654,11 +654,11 @@ function admin_get_forum_list($page = 1)
     $sql.= "AND FORUM_SETTINGS.SNAME = 'forum_name') ";
     $sql.= "LIMIT $offset, 10 ";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($forums_count) = $result_count->fetch_row();
 
@@ -695,7 +695,7 @@ function admin_forum_get_post_count($fid)
 
     $sql = "SELECT COUNT(PID) FROM `{$table_prefix}POST`";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($post_count) = $result->fetch_row();
 
@@ -736,11 +736,11 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $page = 1)
     $sql.= "ORDER BY $sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($ban_data_count) = $result_count->fetch_row();
 
@@ -771,7 +771,7 @@ function admin_get_ban($ban_id)
     $sql.= "YEAR(EXPIRES) AS EXPIRESYEAR FROM `{$table_prefix}BANNED` ";
     $sql.= "WHERE ID = '$ban_id'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -788,7 +788,7 @@ function admin_user_approved($uid)
 
     $sql = "SELECT COUNT(UID) FROM USER WHERE APPROVED IS NOT NULL AND UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($user_approved_count) = $result->fetch_row();
 
@@ -821,12 +821,12 @@ function admin_get_post_approval_queue($page = 1)
     $sql.= "WHERE POST.APPROVED IS NULL AND THREAD.FID IN ($fidlist) ";
     $sql.= "LIMIT $offset, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($post_count) = $result_count->fetch_row();
 
@@ -866,11 +866,11 @@ function admin_get_link_approval_queue($page = 1)
     $sql.= "WHERE LINKS.APPROVED IS NULL ";
     $sql.= "LIMIT $offset, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($link_count) = $result_count->fetch_row();
 
@@ -918,11 +918,11 @@ function admin_get_visitor_log($page = 1)
     $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid' ";
     $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT $offset, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($users_get_recent_count) = $result_count->fetch_row();
 
@@ -1006,7 +1006,7 @@ function admin_get_user_ip_matches($uid)
     $sql = "SELECT DISTINCT IPADDRESS FROM `{$table_prefix}POST` ";
     $sql.= "WHERE FROM_UID = '$uid' AND IPADDRESS IS NOT NULL LIMIT 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1038,7 +1038,7 @@ function admin_get_user_ip_matches($uid)
     $sql.= "AND RSS_FEEDS.UID IS NOT NULL ";
     $sql.= "LIMIT 0, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1085,7 +1085,7 @@ function admin_get_user_email_matches($uid)
     $sql.= "WHERE (USER.EMAIL = '$user_email_address') ";
     $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1127,7 +1127,7 @@ function admin_get_user_referer_matches($uid)
     $sql.= "WHERE USER.REFERER = '$user_http_referer' ";
     $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1172,7 +1172,7 @@ function admin_get_user_passwd_matches($uid)
     $sql.= "WHERE (USER.PASSWD = '$user_passwd') ";
     $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1203,7 +1203,7 @@ function admin_get_user_history($uid)
 
     $sql = "SELECT LOGON, NICKNAME, EMAIL FROM USER WHERE UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1213,7 +1213,7 @@ function admin_get_user_history($uid)
     $sql.= "FROM USER_HISTORY WHERE UID = '$uid' ";
     $sql.= "ORDER BY MODIFIED DESC LIMIT 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1557,7 +1557,7 @@ function admin_send_user_approval_notification()
     $sql.= "WHERE GROUP_PERMS.FORUM = 0 GROUP BY GROUP_USERS.UID ";
     $sql.= "HAVING PERM & $user_perm_admin_tools > 0";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (list($admin_uid) = $result->fetch_row()) {
 
@@ -1587,7 +1587,7 @@ function admin_send_new_user_notification($new_user_uid)
     $sql.= "WHERE GROUP_PERMS.FORUM = 0 GROUP BY GROUP_USERS.UID ";
     $sql.= "HAVING PERM & $user_perm_admin_tools > 0";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (list($admin_uid) = $result->fetch_row()) {
 
@@ -1620,7 +1620,7 @@ function admin_send_post_approval_notification($fid)
     $sql.= "WHERE GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID IN (0, $fid) ";
     $sql.= "GROUP BY GROUP_USERS.UID HAVING PERM & $user_perm_folder_moderate > 0";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (list($admin_uid) = $result->fetch_row()) {
 
@@ -1652,7 +1652,7 @@ function admin_send_link_approval_notification()
     $sql.= "WHERE GROUP_PERMS.FORUM IN (0, $forum_fid) AND GROUP_PERMS.FID = 0 ";
     $sql.= "GROUP BY GROUP_USERS.UID HAVING PERM & $user_perm_links_moderate > 0";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (list($admin_uid) = $result->fetch_row()) {
 

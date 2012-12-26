@@ -166,7 +166,7 @@ function message_get_content($tid, $pid)
         $sql = "SELECT CONTENT FROM `{$table_prefix}POST_CONTENT` ";
         $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
-        if (!$result = $db->query($sql)) return '';
+        if (!($result = $db->query($sql))) return '';
 
         if ($result->num_rows < 1) return '';
 
@@ -195,7 +195,7 @@ function messages_have_attachments($tid, &$messages_array)
     $sql.= "WHERE PAI.FID = '$forum_fid' AND PAI.TID = '$tid' ";
     $sql.= "AND PAI.PID IN ('$pid_list')";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($attachment_data = $result->fetch_assoc())) {
         $messages_array[$attachment_data['PID']]['ATTACHMENTS'][] = $attachment_data['HASH'];
@@ -1291,7 +1291,7 @@ function message_get_user($tid, $pid)
     $sql.= "INNER JOIN `{$table_prefix}POST` POST ON (POST.FROM_UID = USER.UID) ";
     $sql.= "WHERE POST.TID = '$tid' AND POST.PID = '$pid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1318,7 +1318,7 @@ function message_get_user_array($tid, $pid)
     $sql.= "ON (USER_PEER.PEER_UID = POST.FROM_UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE POST.TID = '$tid' AND POST.PID = '$pid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1370,7 +1370,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
             $sql.= "WHERE POST.CREATED < CAST('$unread_cutoff_datetime' AS DATETIME) ";
             $sql.= "AND POST.TID = '$tid'";
 
-            if (!$result = $db->query($sql)) return false;
+            if (!($result = $db->query($sql))) return false;
 
             list($unread_pid) = $result->fetch_row();
 
@@ -1382,7 +1382,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
             $sql.= "VALUES ('$uid', '$tid', '$pid', CAST('$current_datetime' AS DATETIME)) ON DUPLICATE KEY UPDATE ";
             $sql.= "LAST_READ = VALUES(LAST_READ), LAST_READ_AT = CAST('$current_datetime' AS DATETIME)";
 
-            if (!$result = $db->query($sql)) return false;
+            if (!($result = $db->query($sql))) return false;
         }
     }
 
@@ -1390,14 +1390,14 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST` SET VIEWED = CAST('$current_datetime' AS DATETIME) ";
     $sql.= "WHERE TID = '$tid' AND PID BETWEEN 1 AND '$pid' AND TO_UID = '$uid' AND VIEWED IS NULL";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     // Update thread viewed counter
     $sql = "INSERT INTO `{$table_prefix}THREAD_STATS` ";
     $sql.= "(TID, VIEWCOUNT) VALUES ('$tid', 1) ON DUPLICATE KEY ";
     $sql.= "UPDATE VIEWCOUNT = VIEWCOUNT + 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     return true;
 }
@@ -1491,7 +1491,7 @@ function messages_get_most_recent($uid, $fid = false)
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1564,7 +1564,7 @@ function messages_get_most_recent_unread($uid, $fid = false)
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 

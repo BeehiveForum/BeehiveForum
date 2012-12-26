@@ -254,7 +254,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
         $sql.= "WHERE USER.UID = '$default_uid' ";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
         if ($result->num_rows > 0) {
 
@@ -285,7 +285,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     $sql.= "AND VISITOR_LOG.UID > 0 ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($user_data = $result->fetch_assoc())) {
 
@@ -329,7 +329,7 @@ function post_draw_to_dropdown_recent($default_uid)
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
         $sql.= "WHERE USER.UID = '$default_uid' ";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
         if ($result->num_rows > 0) {
 
@@ -358,7 +358,7 @@ function post_draw_to_dropdown_recent($default_uid)
     $sql.= "AND VISITOR_LOG.UID > 0 ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
     $sql.= "LIMIT 0, 20";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($user_data = $result->fetch_assoc())) {
 
@@ -399,7 +399,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
         $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
         $sql.= "WHERE USER.UID = '$default_uid' ";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
         if ($result->num_rows > 0) {
 
@@ -438,7 +438,7 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
     $sql.= "WHERE POST.TID = '$tid' AND POST.FROM_UID <> '$default_uid' ";
     $sql.= "GROUP BY POST.FROM_UID LIMIT 0, 20";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($user_data = $result->fetch_assoc())) {
 
@@ -474,7 +474,7 @@ function post_check_ddkey($ddkey)
     $sql = "SELECT DDKEY FROM `{$table_prefix}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows) {
 
@@ -483,7 +483,7 @@ function post_check_ddkey($ddkey)
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
         $sql.= "SET DDKEY = CAST('$ddkey_datetime' AS DATETIME) WHERE UID = '$uid'";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
     } else{
 
@@ -492,7 +492,7 @@ function post_check_ddkey($ddkey)
         $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, DDKEY) ";
         $sql.= "VALUES ('$uid', CAST('$ddkey_datetime' AS DATETIME))";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
     }
 
     return !($ddkey_datetime == $ddkey_datetime_check);
@@ -516,7 +516,7 @@ function post_check_frequency()
     $sql.= "UNIX_TIMESTAMP('$current_datetime') FROM `{$table_prefix}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows > 0) {
 
@@ -528,7 +528,7 @@ function post_check_frequency()
             $sql.= "SET LAST_POST = CAST('$current_datetime' AS DATETIME) ";
             $sql.= "WHERE UID = '$uid'";
 
-            if (!$result = $db->query($sql)) return false;
+            if (!($result = $db->query($sql))) return false;
 
             return true;
         }
@@ -538,7 +538,7 @@ function post_check_frequency()
         $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, LAST_POST) ";
         $sql.= "VALUES ('$uid', CAST('$current_datetime' AS DATETIME))";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
         return true;
     }

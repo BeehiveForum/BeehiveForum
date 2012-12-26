@@ -177,7 +177,7 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
     $sql.= "AND USER_THREAD.UID NOT IN ($exclude_user_list) ";
     $sql.= "AND USER_THREAD.INTEREST = 2";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows < 1) return false;
 
@@ -280,7 +280,7 @@ function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$ex
     $sql.= "AND USER_FORUM.LAST_VISIT > CAST('$last_visit_datetime' AS DATETIME) ";
     $sql.= "AND USER_FOLDER.INTEREST = 1 AND USER_FOLDER.UID NOT IN ($exclude_user_list)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows < 1) return false;
 
@@ -911,7 +911,7 @@ function email_is_unique($email_address, $user_uid = 0)
         $sql.= "AND EMAIL = '$email_address' ";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($user_count) = $result->fetch_row();
 

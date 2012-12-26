@@ -51,7 +51,7 @@ function word_filter_get($uid, &$word_filter_array)
 
     if ($uid <> 0) $sql.= "LIMIT 0, 20";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 

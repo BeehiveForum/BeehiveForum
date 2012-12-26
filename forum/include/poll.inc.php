@@ -259,7 +259,7 @@ function poll_get_random_users($limit)
     $sql.= "OR VISITOR_LOG.LAST_LOGON > DATE_SUB(NOW(), INTERVAL 14 DAY) ";
     $sql.= "ORDER BY RAND() LIMIT $limit) AS RANDOM_USERS";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $poll_get_random_votes = array();
 
@@ -319,7 +319,7 @@ function poll_get($tid)
     $sql.= "LEFT JOIN `{$table_prefix}POLL` POLL ON (POST.TID = POLL.TID) ";
     $sql.= "WHERE POST.TID = '$tid' AND POST.PID = 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -395,7 +395,7 @@ function poll_get_votes($tid, $include_votes = true)
     $sql.= "AS USER_POLL_VOTES ON (USER_POLL_VOTES.TID = POLL.TID AND USER_POLL_VOTES.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID ";
     $sql.= "AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) WHERE POLL.TID = '$tid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $poll_votes_array = array();
     $poll_votes_sort = array();
@@ -474,7 +474,7 @@ function poll_get_total_votes($tid, &$total_votes, &$user_votes, &$guest_votes)
     $sql.= "FROM `{$table_prefix}USER_POLL_VOTES` ";
     $sql.= "WHERE TID = '$tid' AND UID > 0";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($user_votes) = $result->fetch_row();
 
@@ -482,7 +482,7 @@ function poll_get_total_votes($tid, &$total_votes, &$user_votes, &$guest_votes)
     $sql.= "FROM `{$table_prefix}USER_POLL_VOTES` ";
     $sql.= "WHERE TID = '$tid' AND UID = 0";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($guest_votes) = $result->fetch_row();
 
@@ -490,7 +490,7 @@ function poll_get_total_votes($tid, &$total_votes, &$user_votes, &$guest_votes)
     $sql.= "FROM `{$table_prefix}USER_POLL_VOTES` ";
     $sql.= "WHERE TID = '$tid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($total_votes) = $result->fetch_row();
 
@@ -518,7 +518,7 @@ function poll_get_user_votes($tid)
     $sql.= "AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) WHERE POLL.TID = '$tid' AND USER_POLL_VOTES.UID = '$uid'  ";
     $sql.= "ORDER BY USER_POLL_VOTES.VOTED";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1196,7 +1196,7 @@ function poll_check_tabular_votes($tid, $votes_array)
     $sql.= "POLL_QUESTIONS ON (POLL_QUESTIONS.TID = POLL.TID) WHERE POLL.TID = '$tid' ";
     $sql.= "GROUP BY POLL.TID";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1279,7 +1279,7 @@ function poll_close($tid)
 
     $sql = "SELECT FROM_UID FROM `{$table_prefix}POST` WHERE TID = '$tid' AND PID = 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if (($t_fid = thread_get_folder($tid, 1)) && ($result->num_rows > 0)) {
 
@@ -1310,7 +1310,7 @@ function poll_is_closed($tid)
 
     $sql = "SELECT CLOSES FROM `{$table_prefix}POLL` WHERE TID = '$tid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1399,7 +1399,7 @@ function thread_is_poll($tid)
 
     $sql = "SELECT TID FROM `{$table_prefix}POLL` WHERE TID = '$tid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     return ($result->num_rows > 0);
 }

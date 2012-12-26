@@ -57,7 +57,7 @@ function stats_update($session_count, $recent_post_count)
     $sql = "SELECT ID FROM `{$table_prefix}STATS` ";
     $sql.= "ORDER BY ID DESC LIMIT 0, 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
@@ -67,13 +67,13 @@ function stats_update($session_count, $recent_post_count)
         $sql.= "MOST_USERS_DATE = CAST('$current_datetime' AS DATETIME), ";
         $sql.= "MOST_USERS_COUNT = '$session_count' WHERE MOST_USERS_COUNT < $session_count";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}STATS` SET ";
         $sql.= "MOST_POSTS_DATE = CAST('$current_datetime' AS DATETIME), ";
         $sql.= "MOST_POSTS_COUNT = '$recent_post_count' WHERE MOST_POSTS_COUNT < $recent_post_count";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
     } else {
 
@@ -82,7 +82,7 @@ function stats_update($session_count, $recent_post_count)
         $sql.= "VALUES (CAST('$current_datetime' AS DATETIME), '$session_count', ";
         $sql.= "CAST('$current_datetime' AS DATETIME), '$recent_post_count')";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
     }
 
     return true;
@@ -440,7 +440,7 @@ function stats_get_active_session_count()
     $sql.= "WHERE TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND FID = '$forum_fid'";
 
-    if (!$result = $db->query($sql)) return 0;
+    if (!($result = $db->query($sql))) return 0;
 
     list($user_count) = $result->fetch_row();
 
@@ -463,7 +463,7 @@ function stats_get_active_registered_user_count()
     $sql.= "WHERE TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND FID = '$forum_fid' AND UID > 0";
 
-    if (!$result = $db->query($sql)) return 0;
+    if (!($result = $db->query($sql))) return 0;
 
     list($registered_user_count) = $result->fetch_row();
 
@@ -486,7 +486,7 @@ function stats_get_active_guest_count()
     $sql.= "WHERE TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND FID = '$forum_fid' AND UID = 0";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($guest_count) = $result->fetch_row();
 
@@ -523,7 +523,7 @@ function stats_get_active_user_list()
     $sql.= "AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND SESSIONS.FID = '$forum_fid'";
 
-    if (!$result = $db->query($sql)) return $stats;
+    if (!($result = $db->query($sql))) return $stats;
 
     list($stats['GUESTS']) = $result->fetch_row();
 
@@ -544,7 +544,7 @@ function stats_get_active_user_list()
     $sql.= "WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND SESSIONS.FID = '$forum_fid' AND (SESSIONS.UID > 0 OR SESSIONS.SID IS NOT NULL)";
 
-    if (!$result = $db->query($sql)) return $stats;
+    if (!($result = $db->query($sql))) return $stats;
 
     while (($user_data = $result->fetch_assoc())) {
 
@@ -650,7 +650,7 @@ function stats_get_thread_count()
     $sql = "SELECT COUNT(THREAD.TID) AS THREAD_COUNT ";
     $sql.= "FROM `{$table_prefix}THREAD` THREAD";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($thread_count) = $result->fetch_row();
 
@@ -665,7 +665,7 @@ function stats_get_post_count()
 
     $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM `{$table_prefix}POST` POST";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($post_count) = $result->fetch_row();
 
@@ -683,7 +683,7 @@ function stats_get_recent_post_count()
     $sql = "SELECT COUNT(POST.PID) AS POSTS FROM `{$table_prefix}POST` POST ";
     $sql.= "WHERE CREATED >= CAST('$recent_post_datetime' AS DATETIME)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($post_count) = $result->fetch_row();
 
@@ -703,7 +703,7 @@ function stats_get_longest_thread()
     $sql = "SELECT MAX(LENGTH) FROM `{$table_prefix}THREAD` ";
     $sql.= "WHERE FID IN ($folders)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($highest_thread_count) = $result->fetch_row();
 
@@ -713,7 +713,7 @@ function stats_get_longest_thread()
     $sql.= "ON (FOLDER.FID = THREAD.FID) WHERE THREAD.LENGTH = '$highest_thread_count' ";
     $sql.= "AND THREAD.DELETED = 'N' LIMIT 0, 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -726,7 +726,7 @@ function stats_get_user_count()
 
    $sql = "SELECT COUNT(UID) AS COUNT FROM USER";
 
-   if (!$result = $db->query($sql)) return false;
+   if (!($result = $db->query($sql))) return false;
 
    list($user_count) = $result->fetch_row();
 
@@ -742,7 +742,7 @@ function stats_get_most_users()
     $sql = "SELECT MOST_USERS_COUNT, UNIX_TIMESTAMP(MOST_USERS_DATE) AS MOST_USERS_DATE ";
     $sql.= "FROM `{$table_prefix}STATS`";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -758,7 +758,7 @@ function stats_get_most_posts()
     $sql = "SELECT MOST_POSTS_COUNT, UNIX_TIMESTAMP(MOST_POSTS_DATE) AS MOST_POSTS_DATE ";
     $sql.= "FROM `{$table_prefix}STATS`";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -775,7 +775,7 @@ function stats_get_newest_user()
 
     $sql = "SELECT MAX(UID) FROM USER";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($newest_user_uid) = $result->fetch_row();
 
@@ -784,7 +784,7 @@ function stats_get_newest_user()
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE USER.UID = '$newest_user_uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -826,7 +826,7 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
     $sql.= "WHERE POST.CREATED > CAST('$post_start_datetime' AS DATETIME) ";
     $sql.= "AND POST.CREATED < CAST('$post_end_datetime' AS DATETIME)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($post_tallys['post_count']) = $result->fetch_row();
 
@@ -841,7 +841,7 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
     $sql.= "GROUP BY POST.FROM_UID ORDER BY POST_COUNT DESC ";
     $sql.= "LIMIT 0, 20";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows > 0) {
 
@@ -875,7 +875,7 @@ function stats_get_top_poster()
     $sql.= "GROUP BY POST.FROM_UID ORDER BY POST_COUNT DESC ";
     $sql.= "LIMIT 0, 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -890,7 +890,7 @@ function stats_get_folder_count()
 
     $sql = "SELECT COUNT(FID) AS FOLDER_COUNT FROM `{$table_prefix}FOLDER`";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($folder_count) = $result->fetch_row();
 
@@ -909,7 +909,7 @@ function stats_get_folder_with_most_threads()
     $sql.= "GROUP BY THREAD.FID ORDER BY THREAD_COUNT DESC ";
     $sql.= "LIMIT 0, 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -929,7 +929,7 @@ function stats_get_folder_with_most_posts()
     $sql.= "GROUP BY FOLDER.FID ORDER BY POST_COUNT DESC ";
     $sql.= "LIMIT 0, 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -949,7 +949,7 @@ function stats_get_most_read_thread()
     $sql.= "ON (FOLDER.FID = THREAD.FID) ORDER BY THREAD_STATS.VIEWCOUNT DESC ";
     $sql.= "LIMIT 0, 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -964,7 +964,7 @@ function stats_get_thread_subscription_count()
 
     $sql = "SELECT COUNT(TID) AS SUBSCRIPTION_COUNT FROM `{$table_prefix}USER_THREAD` WHERE INTEREST = 2";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($subscription_count) = $result->fetch_row();
 
@@ -985,7 +985,7 @@ function stats_get_most_subscribed_thread()
     $sql.= "WHERE USER_THREAD.INTEREST = 2 GROUP BY USER_THREAD.TID ";
     $sql.= "ORDER BY SUBSCRIBERS DESC LIMIT 0, 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1000,7 +1000,7 @@ function stats_get_poll_count()
 
     $sql = "SELECT COUNT(TID) AS POLL_COUNT FROM `{$table_prefix}POLL`";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($poll_count) = $result->fetch_row();
 
@@ -1015,7 +1015,7 @@ function stats_get_poll_option_count()
 
     $sql = "SELECT COUNT(*) AS POLL_OPTION_COUNT FROM `{$table_prefix}POLL_VOTES`";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($poll_option_count) = $result->fetch_row();
 
@@ -1030,7 +1030,7 @@ function stats_get_poll_vote_count()
 
     $sql = "SELECT COUNT(*) AS POLL_VOTE_COUNT FROM `{$table_prefix}USER_POLL_VOTES`";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($poll_vote_count) = $result->fetch_row();
 
@@ -1049,7 +1049,7 @@ function stats_get_attachment_count()
     $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
     $sql.= "WHERE PAI.FID = '$forum_fid' AND PAF.FILENAME IS NOT NULL";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($attachment_count) = $result->fetch_row();
 
@@ -1121,7 +1121,7 @@ function stats_get_most_popular_forum_style()
     $sql.= "INNER JOIN (SELECT STYLE, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY STYLE LIMIT 1) AS USERS ";
     $sql.= "ON (USERS.STYLE = USER_PREFS.STYLE)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1140,7 +1140,7 @@ function stats_get_most_popular_emoticon_pack()
     $sql.= "INNER JOIN (SELECT EMOTICONS, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY EMOTICONS LIMIT 1) AS USERS ";
     $sql.= "ON (USERS.EMOTICONS = USER_PREFS.EMOTICONS)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1159,7 +1159,7 @@ function stats_get_most_popular_language()
     $sql.= "INNER JOIN (SELECT LANGUAGE, COUNT(*) AS USER_COUNT FROM USER_PREFS GROUP BY EMOTICONS LIMIT 1) AS USERS ";
     $sql.= "ON (USERS.LANGUAGE = USER_PREFS.LANGUAGE)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1175,7 +1175,7 @@ function stats_get_most_popular_timezone()
     $sql = "SELECT TIMEZONE, COUNT(*) AS USER_COUNT FROM USER_PREFS ";
     $sql.= "GROUP BY TIMEZONE ORDER BY USER_COUNT DESC LIMIT 0,1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1198,7 +1198,7 @@ function stats_get_most_active_user()
     $sql.= "ORDER BY TOTAL_TIME DESC ";
     $sql.= "LIMIT 0, 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1217,7 +1217,7 @@ function stats_get_inactive_user_count()
     $sql.= "LEFT JOIN `{$table_prefix}POST` POST ON (POST.FROM_UID = USER.UID) ";
     $sql.= "WHERE POST.TID IS NULL ";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($user_count) = $result->fetch_row();
 
@@ -1232,7 +1232,7 @@ function stats_get_active_user_count()
 
     $sql = "SELECT COUNT(DISTINCT FROM_UID) AS USER_COUNT FROM `{$table_prefix}POST` ";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($user_count) = $result->fetch_row();
 
@@ -1267,7 +1267,7 @@ function stats_get_visitor_counts()
     $sql.= "WHERE LAST_LOGON >= CAST('$day_start_datetime' AS DATETIME) ";
     $sql.= "AND FORUM = '$forum_fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($visitors_today) = $result->fetch_row();
 
@@ -1275,7 +1275,7 @@ function stats_get_visitor_counts()
     $sql.= "WHERE LAST_LOGON >= CAST('$week_start_datetime' AS DATETIME) ";
     $sql.= "AND FORUM = '$forum_fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($visitors_this_week) = $result->fetch_row();
 
@@ -1283,7 +1283,7 @@ function stats_get_visitor_counts()
     $sql.= "WHERE LAST_LOGON >= CAST('$month_start_datetime' AS DATETIME) ";
     $sql.= "AND FORUM = '$forum_fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($visitors_this_month) = $result->fetch_row();
 
@@ -1291,7 +1291,7 @@ function stats_get_visitor_counts()
     $sql.= "WHERE LAST_LOGON >= CAST('$year_start_datetime' AS DATETIME) ";
     $sql.= "AND FORUM = '$forum_fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($visitors_this_year) = $result->fetch_row();
 
@@ -1314,7 +1314,7 @@ function stats_get_average_age()
     $sql.= "(CAST('00-$month-$day' AS DATE) < DATE_FORMAT(DOB, '00-%m-%d'))) AS AVERAGE_AGE ";
     $sql.= "FROM USER_PREFS WHERE DOB > 0";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($average_age) = $result->fetch_row();
 
@@ -1329,7 +1329,7 @@ function stats_get_most_popular_birthday()
     $sql.= "COUNT(*) AS DOB_COUNT FROM USER_PREFS WHERE DOB > 0 ";
     $sql.= "GROUP BY DOB ORDER BY DOB_COUNT DESC LIMIT 0, 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $dob_data = $result->fetch_assoc();
 
@@ -1347,7 +1347,7 @@ function stats_get_users_without_profile_count()
     $sql.= "ON (USER_PROFILE.UID = USER.UID) ";
     $sql.= "WHERE USER_PROFILE.ENTRY IS NULL";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($user_count) = $result->fetch_row();
 
@@ -1362,7 +1362,7 @@ function stats_get_users_with_profile_count()
 
     $sql = "SELECT COUNT(DISTINCT UID) AS USER_COUNT FROM `{$table_prefix}USER_PROFILE`";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($user_count) = $result->fetch_row();
 
@@ -1379,7 +1379,7 @@ function stats_get_users_without_signature_count()
     $sql.= "LEFT JOIN `{$table_prefix}USER_SIG` USER_SIG ON (USER_SIG.UID = USER.UID) ";
     $sql.= "WHERE USER_SIG.CONTENT IS NULL";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($user_count) = $result->fetch_row();
 
@@ -1394,7 +1394,7 @@ function stats_get_users_with_signature_count()
 
     $sql = "SELECT COUNT(DISTINCT UID) AS USER_COUNT FROM `{$table_prefix}USER_SIG`";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($user_count) = $result->fetch_row();
 
@@ -1409,7 +1409,7 @@ function stats_get_relationships_count()
 
     $sql = "SELECT COUNT(*) AS RELATIONSHIP_COUNT FROM `{$table_prefix}USER_PEER`";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($relationship_count) = $result->fetch_row();
 
@@ -1426,7 +1426,7 @@ function stats_get_users_without_word_filter_count()
     $sql.= "LEFT JOIN `{$table_prefix}WORD_FILTER` WORD_FILTER ON (WORD_FILTER.UID = USER.UID) ";
     $sql.= "WHERE WORD_FILTER.MATCH_TEXT IS NULL";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($user_count) = $result->fetch_row();
 
@@ -1443,7 +1443,7 @@ function stats_get_users_with_word_filter_count()
     $sql.= "FROM `{$table_prefix}WORD_FILTER` ";
     $sql.= "WHERE UID > 0";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($user_count) = $result->fetch_row();
 
@@ -1457,7 +1457,7 @@ function stats_get_mysql_week(&$week_start, &$week_end)
     $sql = "SELECT UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL(DAYOFWEEK(CURDATE()) - 1) DAY)) AS WEEK_START, ";
     $sql.= "UNIX_TIMESTAMP(DATE_ADD(CURDATE(), INTERVAL(7 - DAYOFWEEK(CURDATE())) DAY)) AS WEEK_END";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($week_start, $week_end) = $result->fetch_row();
 

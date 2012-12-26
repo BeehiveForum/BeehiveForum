@@ -121,7 +121,7 @@ function ban_check($user_data, $send_error = true)
         $sql.= "FROM `{$table_prefix}BANNED` WHERE ($ban_check_where_query) ";
         $sql.= "AND (EXPIRES > CAST('$current_datetime' AS DATETIME) OR EXPIRES = 0)";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
         if ($result->num_rows > 0) {
 
@@ -231,7 +231,7 @@ function ip_is_banned($ipaddress)
     $sql.= "WHERE '$ipaddress' LIKE BANDATA  AND BANTYPE = '$ban_type_ip' ";
     $sql.= "AND (EXPIRES > CAST('$current_datetime' AS DATETIME) OR EXPIRES = 0)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($ban_count) = $result->fetch_row();
 
@@ -254,7 +254,7 @@ function logon_is_banned($logon)
     $sql.= "WHERE '$logon' LIKE BANDATA AND BANTYPE = '$ban_type_logon' ";
     $sql.= "AND (EXPIRES > CAST('$current_datetime' AS DATETIME) OR EXPIRES = 0)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($ban_count) = $result->fetch_row();
 
@@ -277,7 +277,7 @@ function nickname_is_banned($nickname)
     $sql.= "WHERE '$nickname' LIKE BANDATA AND BANTYPE = '$ban_type_nick' ";
     $sql.= "AND (EXPIRES > CAST('$current_datetime' AS DATETIME) OR EXPIRES = 0)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($ban_count) = $result->fetch_row();
 
@@ -300,7 +300,7 @@ function email_is_banned($email)
     $sql.= "WHERE '$email' LIKE BANDATA AND BANTYPE = '$ban_type_email' ";
     $sql.= "AND (EXPIRES > CAST('$current_datetime' AS DATETIME) OR EXPIRES = 0)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($ban_count) = $result->fetch_row();
 
@@ -323,7 +323,7 @@ function referer_is_banned($referer)
     $sql.= "WHERE '$referer' LIKE BANDATA AND BANTYPE = '$ban_type_ref' ";
     $sql.= "AND (EXPIRES > CAST('$current_datetime' AS DATETIME) OR EXPIRES = 0)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($ban_count) = $result->fetch_row();
 
@@ -443,7 +443,7 @@ function check_ban_data($ban_type, $ban_data, $ban_expires = 0)
     $sql.= "AND ($ban_expires > $current_datetime OR $ban_expires = 0) ";
     $sql.= "LIMIT 0, 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -489,7 +489,7 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
     $sql.= "AND '$ban_type' = '$ban_type_nick') OR (USER.EMAIL LIKE '$ban_data' ";
     $sql.= "AND '$ban_type' = '$ban_type_email'))";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows > 0) {
 
@@ -513,7 +513,7 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
     $sql.= "OR (SESSIONS.REFERER LIKE '$ban_data' AND '$ban_type' = '$ban_type_ref')) ";
     $sql.= "AND ($ban_expires > CAST('$current_datetime' AS DATETIME) OR $ban_expires = 0)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($affected_guest_count) = $result->fetch_row();
 
@@ -557,7 +557,7 @@ function user_is_banned($uid)
     $sql.= "AND (EXPIRES > CAST('$current_datetime' AS DATETIME) OR EXPIRES = 0) ";
     $sql.= "AND USER.UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($ban_count) = $result->fetch_row();
 

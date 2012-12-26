@@ -60,7 +60,7 @@ function threads_get_folders()
     $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
     $sql.= "ORDER BY USER_FOLDER.INTEREST DESC, FOLDER.POSITION";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1240,7 +1240,7 @@ function threads_get_most_recent($limit = 10, $fid = false, $creation_order = fa
     $sql.= "ORDER BY $order_by ";
     $sql.= "LIMIT 0, $limit";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1370,7 +1370,7 @@ function threads_get_folder_msgs()
 
     $sql = "SELECT FID, COUNT(*) AS TOTAL FROM `{$table_prefix}THREAD` GROUP BY FID";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($folder = $result->fetch_assoc())) {
         $folder_msgs[$folder['FID']] = $folder['TOTAL'];
@@ -1413,7 +1413,7 @@ function threads_any_unread()
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($unread_thread_count) = $result->fetch_row();
 
@@ -1538,7 +1538,7 @@ function threads_get_unread_data(&$threads_array, $tid_array)
     $sql = "SELECT TID, LENGTH, LENGTH AS LAST_READ, UNIX_TIMESTAMP(MODIFIED) AS MODIFIED ";
     $sql.= "FROM `{$table_prefix}THREAD` WHERE TID IN ($tid_list)";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1676,7 +1676,7 @@ function threads_have_attachments(&$threads_array)
     $sql.= "ON (PAF.AID = PAI.AID) WHERE PAI.FID = '$forum_fid' ";
     $sql.= "AND PAI.TID IN ($tid_list) GROUP BY PAI.TID";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($attachment_data = $result->fetch_assoc())) {
         $threads_array[$attachment_data['TID']]['ATTACHMENT_COUNT'] = $attachment_data['ATTACHMENT_COUNT'];
@@ -1744,11 +1744,11 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $pag
         $sql.= "LIMIT $offset, 20";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($thread_subscriptions_count) = $result_count->fetch_row();
 
@@ -1807,11 +1807,11 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
         $sql.= "LIMIT $offset, 20";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($thread_subscriptions_count) = $result_count->fetch_row();
 

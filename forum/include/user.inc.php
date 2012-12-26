@@ -43,7 +43,7 @@ function user_count()
 
    $sql = "SELECT COUNT(UID) AS COUNT FROM USER";
 
-   if (!$result = $db->query($sql)) return false;
+   if (!($result = $db->query($sql))) return false;
 
    list($user_count) = $result->fetch_row();
 
@@ -67,7 +67,7 @@ function user_exists($logon, $check_uid = false)
         $sql.= "WHERE LOGON = '$logon'";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($user_count) = $result->fetch_row();
 
@@ -129,7 +129,7 @@ function user_update($uid, $logon, $nickname, $email)
     $sql.= "WHERE UID = '$uid' ORDER BY MODIFIED DESC ";
     $sql.= "LIMIT 0, 1";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     // If there is some existing data we need to retrieve the
     // data and compare it to the new details.
@@ -485,7 +485,7 @@ function user_get($uid)
         $sql.= "WHERE USER.UID = '$uid'";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -513,7 +513,7 @@ function user_get_by_passhash($uid, $passhash)
     $sql.= "IPADDRESS, REFERER, APPROVED FROM USER WHERE UID = '$uid' ";
     $sql.= "AND PASSWD = '$passhash'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -530,7 +530,7 @@ function user_get_logon($uid)
 
     $sql = "SELECT LOGON FROM USER WHERE UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -547,7 +547,7 @@ function user_get_nickname($uid)
 
     $sql = "SELECT NICKNAME FROM USER WHERE UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -564,7 +564,7 @@ function user_get_email($uid)
 
     $sql = "SELECT EMAIL FROM USER WHERE UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -581,7 +581,7 @@ function user_get_referer($uid)
 
     $sql = "SELECT REFERER FROM USER WHERE UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -598,7 +598,7 @@ function user_get_passwd($uid)
 
     $sql = "SELECT PASSWD FROM USER WHERE UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -617,7 +617,7 @@ function user_get_by_logon($logon)
     $sql.= "REGISTERED, IPADDRESS, REFERER, APPROVED ";
     $sql.= "FROM USER WHERE LOGON LIKE '$logon'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -636,7 +636,7 @@ function user_get_sig($uid)
 
     $sql = "SELECT CONTENT FROM `{$table_prefix}USER_SIG` WHERE UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return '';
+    if (!($result = $db->query($sql))) return '';
 
     if ($result->num_rows == 0) return '';
 
@@ -653,7 +653,7 @@ function user_get_last_ip_address($uid)
 
     $sql = "SELECT IPADDRESS FROM USER WHERE UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -694,7 +694,7 @@ function user_get_prefs($uid)
     $sql.= "FROM USER_PREFS LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS.TIMEZONE) ";
     $sql.= "WHERE USER_PREFS.UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows > 0) {
         $global_prefs_array = $result->fetch_assoc();
@@ -711,7 +711,7 @@ function user_get_prefs($uid)
         $sql.= "SHOW_AVATARS, SHOW_SHARE_LINKS FROM `{$table_prefix}USER_PREFS` ";
         $sql.= "WHERE UID = '$uid'";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
         if ($result->num_rows > 0) {
             $forum_prefs_array = $result->fetch_assoc();
@@ -1095,7 +1095,7 @@ function user_get_forthcoming_birthdays()
     $sql.= "ORDER BY DAY_COUNT ";
     $sql.= "LIMIT 0, 5";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1156,12 +1156,12 @@ function user_search($user_search)
         $sql.= "LIMIT 10";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($user_count) = $result_count->fetch_row();
 
@@ -1202,7 +1202,7 @@ function user_get_ip_addresses($uid)
     $sql = "SELECT DISTINCT IPADDRESS FROM `{$table_prefix}POST` ";
     $sql.= "WHERE FROM_UID = '$uid' ORDER BY TID DESC LIMIT 0, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1237,7 +1237,7 @@ function user_get_friends($uid)
     $sql.= "AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
     $sql.= "LIMIT 0, 20";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1281,11 +1281,11 @@ function user_get_relationships($uid, $page = 1)
     $sql.= "WHERE USER_PEER.UID = '$uid' AND USER.UID IS NOT NULL ";
     $sql.= "LIMIT $offset, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($user_get_peers_count) = $result_count->fetch_row();
 
@@ -1325,7 +1325,7 @@ function user_get_peer_relationship($uid, $peer_uid)
     $sql = "SELECT RELATIONSHIP FROM `{$table_prefix}USER_PEER` ";
     $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows > 0) {
 
@@ -1350,7 +1350,7 @@ function user_get_peer_nickname($uid, $peer_uid)
     $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
     $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = '$peer_uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows > 0) {
 
@@ -1391,11 +1391,11 @@ function user_search_relationships($user_search, $page = 1, $exclude_uid = 0)
     $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
     $sql.= "AND USER.UID <> $exclude_uid LIMIT $offset, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($user_search_peers_count) = $result_count->fetch_row();
 
@@ -1443,11 +1443,11 @@ function user_get_word_filter_list($page)
     $sql.= "WHERE UID = '$uid' ORDER BY FID ";
     $sql.= "LIMIT $offset, 10";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($word_filter_count) = $result_count->fetch_row();
 
@@ -1480,7 +1480,7 @@ function user_get_word_filter($filter_id)
     $sql.= "WHERE FID = '$filter_id' AND UID = '$uid' ";
     $sql.= "ORDER BY FID";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1501,7 +1501,7 @@ function user_get_word_filter_count()
     $sql.= "FROM `{$table_prefix}WORD_FILTER` ";
     $sql.= "WHERE UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($word_filter_count) =  $result->fetch_row();
 
@@ -1605,7 +1605,7 @@ function user_is_active($uid)
     $sql = "SELECT COUNT(*) FROM SESSIONS WHERE UID = '$uid' ";
     $sql.= "AND FID = '$forum_fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($user_active_count) = $result->fetch_row();
 
@@ -1621,7 +1621,7 @@ function user_allow_pm($uid)
     $sql = "SELECT COUNT(UID) FROM USER_PREFS ";
     $sql.= "WHERE UID = '$uid' AND ALLOW_PM = 'Y'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($allow_pm_count) = $result->fetch_row();
 
@@ -1637,7 +1637,7 @@ function user_allow_email($uid)
     $sql = "SELECT COUNT(UID) FROM USER_PREFS ";
     $sql.= "WHERE UID = '$uid' AND ALLOW_EMAIL = 'Y'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($allow_email_count) = $result->fetch_row();
 
@@ -1707,7 +1707,7 @@ function user_get_posts($uid)
 
     $sql = "SELECT TID, PID FROM `{$table_prefix}POST` WHERE FROM_UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows) {
 

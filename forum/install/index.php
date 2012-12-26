@@ -234,7 +234,7 @@ if (isset($_POST['install_method'])) {
 
                 $config_file = "";
 
-                if (($config_file = @file_get_contents('config.inc.php'))) {
+                if (($config_file = @file_get_contents('config.inc.php')) !== false) {
 
                     // Database details
                     $config_file = str_replace('{db_server}',   $config['db_server'],   $config_file);
@@ -398,7 +398,7 @@ if (isset($_POST['install_method'])) {
 
     $config_file = "";
 
-    if (($config_file = @file_get_contents('config.inc.php'))) {
+    if (($config_file = @file_get_contents('config.inc.php')) !== false) {
 
         if (isset($_POST['db_server']) && strlen(trim($_POST['db_server'])) > 0) {
             $config['db_server'] = trim($_POST['db_server']);

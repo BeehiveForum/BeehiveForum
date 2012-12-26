@@ -379,7 +379,7 @@ function search_get_word_lengths(&$min_length, &$max_length)
 
     $sql = "SHOW VARIABLES LIKE 'ft_%'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $min_length = 4;
     $max_length = 84;
@@ -447,7 +447,7 @@ function search_get_keywords($remove_non_matches = true)
     $sql = "SELECT LAST_SEARCH_KEYWORDS FROM `{$table_prefix}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
     
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -470,7 +470,7 @@ function search_get_sort(&$sort_by, &$sort_dir)
     $sql.= "FROM `{$table_prefix}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -543,11 +543,11 @@ function search_fetch_results($page, $sort_by, $sort_dir)
             break;
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($result_count) = $result_count->fetch_row();
 
@@ -623,7 +623,7 @@ function search_get_first_result_msg()
             break;
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -805,7 +805,7 @@ function folder_search_dropdown($selected_folder)
     $sql = "SELECT FID, TITLE FROM `{$table_prefix}FOLDER` ";
     $sql.= "ORDER BY FID ";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -854,7 +854,7 @@ function check_search_frequency()
     $sql.= "UNIX_TIMESTAMP('$current_datetime') FROM `{$table_prefix}USER_TRACK` ";
     $sql.= "WHERE UID = '$uid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows > 0) {
 
@@ -866,7 +866,7 @@ function check_search_frequency()
             $sql.= "SET LAST_SEARCH = CAST('$current_datetime' AS DATETIME) ";
             $sql.= "WHERE UID = '$uid'";
 
-            if (!$result = $db->query($sql)) return false;
+            if (!($result = $db->query($sql))) return false;
 
             return true;
         }
@@ -876,7 +876,7 @@ function check_search_frequency()
         $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, LAST_SEARCH) ";
         $sql.= "VALUES ('$uid', CAST('$current_datetime' AS DATETIME))";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
         return true;
     }

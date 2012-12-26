@@ -61,7 +61,7 @@ function mods_list_get_mods($fid)
         $sql.= "OR (GROUP_PERMS.PERM & $user_perm_folder_moderate) > 0) ";
     }
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 

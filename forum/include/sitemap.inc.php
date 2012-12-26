@@ -44,7 +44,7 @@ function sitemap_get_available_forums()
     // Query the database to get list of available forums.
     $sql = "SELECT FID, WEBTAG FROM FORUMS WHERE ACCESS_LEVEL = '0'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
     

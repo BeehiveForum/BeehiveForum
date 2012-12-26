@@ -200,7 +200,7 @@ function forum_check_access_level()
     $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.FID = '$forum_fid' ";
     $sql.= "AND FORUMS.ACCESS_LEVEL < 3";
 
-    if (!$result = $db->query($sql)) return $result;
+    if (!($result = $db->query($sql))) return $result;
 
     if ($result->num_rows == 0) return $result;
 
@@ -305,7 +305,7 @@ function forum_get_password($forum_fid)
 
     $sql = "SELECT FORUM_PASSWD FROM FORUMS WHERE FID = '$forum_fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -440,7 +440,7 @@ function forum_get_settings_by_fid($forum_fid, $callback = null)
 
     $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$forum_fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -464,7 +464,7 @@ function forum_get_settings_by_fid($forum_fid, $callback = null)
         $sql = "SELECT GMT_OFFSET, DST_OFFSET FROM TIMEZONES ";
         $sql.= "WHERE TZID = '$timezone'";
 
-        if (!$result = $db->query($sql)) return false;
+        if (!($result = $db->query($sql))) return false;
 
         if ($result->num_rows > 0) {
 
@@ -477,7 +477,7 @@ function forum_get_settings_by_fid($forum_fid, $callback = null)
 
     $sql = "SELECT WEBTAG, ACCESS_LEVEL, OWNER_UID FROM FORUMS WHERE FID = '$forum_fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows > 0) {
 
@@ -687,7 +687,7 @@ function forum_get_name($fid)
     $sql = "SELECT SVALUE AS FORUM_NAME FROM FORUM_SETTINGS ";
     $sql.= "WHERE SNAME = 'forum_name' AND FID = '$fid'";
 
-    if (!$result = $db->query($sql)) return gettext("A Beehive Forum");
+    if (!($result = $db->query($sql))) return gettext("A Beehive Forum");
 
     if ($result->num_rows == 0) return gettext("A Beehive Forum");
 
@@ -704,7 +704,7 @@ function forum_get_webtag($fid)
 
     $sql = "SELECT WEBTAG FROM FORUMS WHERE FID = '$fid' AND ACCESS_LEVEL < 3";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -722,7 +722,7 @@ function forum_get_table_prefix($fid)
     $sql = "SELECT CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX, ";
     $sql.= "FID, WEBTAG FROM FORUMS WHERE FID = '$fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1589,7 +1589,7 @@ function forum_delete($fid)
 
     $sql = "SELECT WEBTAG, DATABASE_NAME FROM FORUMS WHERE FID = '$fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1745,7 +1745,7 @@ function forum_get($fid)
     $sql = "SELECT FID, WEBTAG, OWNER_UID, DATABASE_NAME, DEFAULT_FORUM, ";
     $sql.= "ACCESS_LEVEL, FORUM_PASSWD FROM FORUMS WHERE FID = '$fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -1762,7 +1762,7 @@ function forum_get($fid)
 
     $sql = "SELECT SNAME, SVALUE FROM FORUM_SETTINGS WHERE FID = '$fid'";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     while (($forum_data = $result->fetch_assoc())) {
         $forum_get_array['FORUM_SETTINGS'][$forum_data['SNAME']] = $forum_data['SVALUE'];
@@ -1788,11 +1788,11 @@ function forum_get_permissions($fid, $page = 1)
     $sql.= "WHERE USER_FORUM.FID = '$fid' AND USER_FORUM.ALLOWED = 1 ";
     $sql.= "LIMIT $offset, 20";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($perms_user_count) = $result_count->fetch_row();
 
@@ -1891,12 +1891,12 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
     $sql.= "'%$forum_search_svalue%') GROUP BY FORUMS.FID ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
 
-    if (!$result_forums = $db->query($sql)) return false;
+    if (!($result_forums = $db->query($sql))) return false;
 
     // Fetch the number of total results
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
-    if (!$result_count = $db->query($sql)) return false;
+    if (!($result_count = $db->query($sql))) return false;
 
     list($forums_count) = $result_count->fetch_row();
 
@@ -1937,7 +1937,7 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
             $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.FID IN ($folders) ";
             $sql.= "AND (THREAD.MODIFIED > CAST('$unread_cutoff_datetime' AS DATETIME)) ";
 
-            if (!$result_unread_count = $db->query($sql)) return false;
+            if (!($result_unread_count = $db->query($sql))) return false;
 
             list($unread_messages) = $result_unread_count->fetch_row();
 
@@ -1952,7 +1952,7 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
         $sql = "SELECT SUM(THREAD.LENGTH) AS NUM_MESSAGES FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
         $sql.= "WHERE THREAD.FID IN ($folders) ";
 
-        if (!$result_messages_count = $db->query($sql)) return false;
+        if (!($result_messages_count = $db->query($sql))) return false;
 
         $num_messages_data = $result_messages_count->fetch_assoc();
 
@@ -1969,7 +1969,7 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
         $sql.= "ON (POST.TID = THREAD.TID) WHERE THREAD.FID IN ($folders) ";
         $sql.= "AND POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
 
-        if (!$result_unread_to_me = $db->query($sql)) return false;
+        if (!($result_unread_to_me = $db->query($sql))) return false;
 
         $forum_unread_post_data = $result_unread_to_me->fetch_assoc();
 
@@ -2002,7 +2002,7 @@ function forum_get_all_prefixes()
     $sql = "SELECT CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX, ";
     $sql.= "FID FROM FORUMS ";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -2021,7 +2021,7 @@ function forum_get_all_webtags()
 
     $sql = "SELECT FID, WEBTAG FROM FORUMS ";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -2040,7 +2040,7 @@ function forum_get_all_fids()
 
     $sql = "SELECT FID FROM FORUMS";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -2082,7 +2082,7 @@ function forums_get_available_dbs()
 
     $sql = "SHOW DATABASES";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
@@ -2110,7 +2110,7 @@ function forums_get_available_count()
     $sql.= "OR FORUMS.ACCESS_LEVEL = 2 OR (FORUMS.ACCESS_LEVEL = 1 ";
     $sql.= "AND USER_FORUM.ALLOWED = 1) ";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
 
     list($forum_available_count) = $result->fetch_row();
 

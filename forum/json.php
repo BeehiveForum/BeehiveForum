@@ -44,7 +44,7 @@ if (isset($_SESSION['FONT_SIZE']) && is_numeric($_SESSION['FONT_SIZE'])) {
 if (isset($_SESSION['STYLE']) && strlen(trim($_SESSION['STYLE'])) > 0) {
     $user_style = $_SESSION['STYLE'];
 } else {
-    $user_style = html_get_cookie("forum_style", 'strlen', forum_get_setting('default_style', 'strlen', 'default'));
+    $user_style = forum_get_setting('default_style', 'strlen', 'default');
 }
 
 // User emoticons

@@ -324,7 +324,7 @@ function html_get_user_style_path()
         if (isset($_SESSION['STYLE']) && strlen(trim($_SESSION['STYLE'])) > 0) {
             $user_style = $_SESSION['STYLE'];
         } else {
-            $user_style = html_get_cookie('forum_style', 'strlen', forum_get_setting('default_style', 'strlen', 'default'));
+            $user_style = forum_get_setting('default_style', 'strlen', 'default');
         }
 
         if (!style_exists($user_style)) {

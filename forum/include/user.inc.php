@@ -662,6 +662,31 @@ function user_get_last_ip_address($uid)
     return $ipaddress;
 }
 
+function user_get_pref_names($exclude = array())
+{
+    if (!$db = db::get()) return false;
+
+    if (!($table_prefix = get_table_prefix())) return false;
+
+    $pref_names = array();
+
+    $sql = "SHOW COLUMNS FROM USER_PREFS WHERE Field <> 'UID' ";
+
+    if (is_array($exclude) && sizeof($exclude) > 0) {
+
+        $exclude_list = implode("', '", array_filter($exclude, array($db, 'escape')));
+        $sql.= "AND Field NOT IN ('$exclude_list')";
+    }
+
+    if (!($result = $db->query($sql))) return false;
+
+    while (($column_data = $result->fetch_assoc()) !== null) {
+        $pref_names[$column_data['Field']] = null;
+    }
+
+    return $pref_names;
+}
+
 function user_get_prefs($uid)
 {
     if (!$db = db::get()) return false;

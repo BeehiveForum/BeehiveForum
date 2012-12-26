@@ -75,13 +75,9 @@ abstract class session
 
         session_start();
 
-        session::refresh($_SESSION['UID']);
+        if (!isset($_SESSION['UID'])) $_SESSION['UID'] = 0;
 
-        if (session::logged_in()) {
-            html_set_cookie('sess_uid', $_SESSION['UID']);
-        } else {
-            html_set_cookie('sess_uid', '', time() - YEAR_IN_SECONDS);
-        }
+        session::refresh($_SESSION['UID']);
     }
 
     public static function open()
@@ -567,6 +563,8 @@ abstract class session
 
         if (session::logged_in() && ($user_prefs = user_get_prefs($uid))) {
             $_SESSION = array_merge($_SESSION, $user_prefs);
+        } else {
+            $_SESSION = array_merge($_SESSION, user_get_pref_names(array('STYLE')));
         }
 
         if (($user_perms = session::get_perm_array($uid, $forum_fid)) !== false) {
@@ -580,17 +578,11 @@ abstract class session
         if (!isset($_SESSION['RAND_HASH'])) {
             $_SESSION['RAND_HASH'] = md5(uniqid(mt_rand()));
         }
-
-        if (isset($user_prefs['STYLE'])) {
-            html_set_cookie("forum_style", $user_prefs['STYLE'], time() + YEAR_IN_SECONDS);
-        }
     }
 
     public static function end()
     {
-        session_destroy();
-
-        html_set_cookie('sess_uid', '', time() - YEAR_IN_SECONDS);
+        session::refresh(0);
     }
 
     public static function logged_in()

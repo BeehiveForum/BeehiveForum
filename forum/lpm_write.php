@@ -55,7 +55,7 @@ pm_enabled();
 $page_prefs = session::get_post_page_prefs();
 
 // Prune old messages for the current user
-pm_user_prune_folders();
+pm_user_prune_folders($_SESSION['UID']);
 
 // Get the Message ID (MID) if any.
 if (isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
@@ -254,7 +254,7 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
 
                     if ((($peer_relationship ^ USER_BLOCK_PM) && user_allow_pm($to_user['UID'])) || session::check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
 
-                        pm_user_prune_folders();
+                        pm_user_prune_folders($_SESSION['UID']);
 
                         if (pm_get_free_space($_SESSION['UID']) < sizeof($t_new_recipient_array['TO_UID'])) {
 

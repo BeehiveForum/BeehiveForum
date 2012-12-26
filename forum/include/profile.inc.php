@@ -73,13 +73,11 @@ function profile_section_create($name)
     $sql = "INSERT INTO `{$table_prefix}PROFILE_SECTION` (NAME, POSITION) ";
     $sql.= "VALUES ('$name', '$new_position')";
 
-    if (($result = $db->query($sql))) {
+    if (!($result = $db->query($sql))) return false;
 
-        $new_psid = $db->insert_id;
-        return $new_psid;
-    }
+    $new_psid = $db->insert_id;
 
-    return false;
+    return $new_psid;
 }
 
 function profile_section_update($psid, $name)
@@ -120,7 +118,7 @@ function profile_sections_get()
 
     $profile_sections_get = array();
 
-    while (($profile_data = $result->fetch_assoc())) {
+    while (($profile_data = $result->fetch_assoc()) !== null) {
         $profile_sections_get[$profile_data['PSID']] = $profile_data;
     }
 
@@ -161,7 +159,7 @@ function profile_sections_get_by_page($page = 1)
         return profile_sections_get_by_page($page - 1);
     }
         
-    while (($profile_data = $result->fetch_assoc())) {
+    while (($profile_data = $result->fetch_assoc()) !== null) {
         $profile_sections_array[] = $profile_data;
     }
 
@@ -189,7 +187,7 @@ function profile_items_get($psid)
 
     $profile_items_get = array();
 
-    while (($profile_data = $result->fetch_assoc())) {
+    while (($profile_data = $result->fetch_assoc()) !== null) {
         $profile_items_get[] = $profile_data;
     }
 
@@ -226,7 +224,7 @@ function profile_items_get_by_page($psid, $page = 1)
         return profile_items_get_by_page($psid, $page - 1);
     }
     
-    while (($profile_item = $result->fetch_assoc())) {
+    while (($profile_item = $result->fetch_assoc()) !== null) {
         $profile_items_array[] = $profile_item;
     }
 
@@ -361,7 +359,7 @@ function profile_section_dropdown($default_psid, $field_name = 't_psid')
 
     if ($result->num_rows == 0) return '';
 
-    while (($profile_section_data = $result->fetch_assoc())) {
+    while (($profile_section_data = $result->fetch_assoc()) !== null) {
         $profile_sections_array[$profile_section_data['PSID']] = htmlentities_array($profile_section_data['NAME']);
     }
 
@@ -395,7 +393,7 @@ function profile_get_user_values($uid)
 
     $profile_values_array = array();
 
-    while (($profile_data = $result->fetch_assoc())) {
+    while (($profile_data = $result->fetch_assoc()) !== null) {
         $profile_values_array[$profile_data['PIID']] = $profile_data;
     }
 
@@ -419,7 +417,7 @@ function profile_section_move_up($psid)
 
     $profile_section_order = array();
 
-    while (($profile_data = $result->fetch_assoc())) {
+    while (($profile_data = $result->fetch_assoc()) !== null) {
 
         $profile_section_order[] = $profile_data['PSID'];
         $profile_section_position[$profile_data['PSID']] = $profile_data['POSITION'];
@@ -470,7 +468,7 @@ function profile_section_move_down($psid)
 
     $profile_section_order = array();
 
-    while (($profile_data = $result->fetch_assoc())) {
+    while (($profile_data = $result->fetch_assoc()) !== null) {
 
         $profile_section_order[] = $profile_data['PSID'];
         $profile_section_position[$profile_data['PSID']] = $profile_data['POSITION'];
@@ -525,7 +523,7 @@ function profile_item_move_up($psid, $piid)
 
     $profile_item_order = array();
 
-    while (($profile_data = $result->fetch_assoc())) {
+    while (($profile_data = $result->fetch_assoc()) !== null) {
 
         $profile_item_order[] = $profile_data['PIID'];
         $profile_item_position[$profile_data['PIID']] = $profile_data['POSITION'];
@@ -578,7 +576,7 @@ function profile_item_move_down($psid, $piid)
 
     $profile_item_order = array();
 
-    while (($profile_data = $result->fetch_assoc())) {
+    while (($profile_data = $result->fetch_assoc()) !== null) {
 
         $profile_item_order[] = $profile_data['PIID'];
         $profile_item_position[$profile_data['PIID']] = $profile_data['POSITION'];
@@ -626,17 +624,14 @@ function profile_sections_positions_update()
 
     if (!($result = $db->query($sql))) return false;
 
-    while (list($psid) = $result->fetch_row()) {
+    while (($profile_data = $result->fetch_row()) !== null) {
 
-        if (isset($psid) && is_numeric($psid)) {
+        $new_position++;
 
-            $new_position++;
+        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}PROFILE_SECTION` ";
+        $sql.= "SET POSITION = '$new_position' WHERE PSID = '{$profile_data['PSID']}'";
 
-            $sql = "UPDATE LOW_PRIORITY `{$table_prefix}PROFILE_SECTION` ";
-            $sql.= "SET POSITION = '$new_position' WHERE PSID = '$psid'";
-
-            if (!$db->query($sql)) return false;
-        }
+        if (!$db->query($sql)) return false;
     }
 
     return true;
@@ -656,23 +651,20 @@ function profile_items_positions_update()
 
     if (!($result = $db->query($sql))) return false;
 
-    while (list($piid, $psid) = $result->fetch_row()) {
+    while (($profile_data = $result->fetch_row()) !== null) {
 
-        if (($current_section == false) || ($current_section <> $psid)) {
+        if (($current_section == false) || ($current_section <> $profile_data['PSID'])) {
 
             $new_position = 0;
-            $current_section = $psid;
+            $current_section = $profile_data['PSID'];
         }
 
-        if (isset($piid) && is_numeric($piid)) {
+        $new_position++;
 
-            $new_position++;
+        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}PROFILE_ITEM` ";
+        $sql.= "SET POSITION = '$new_position' WHERE PIID = '{$profile_data['PIID']}'";
 
-            $sql = "UPDATE LOW_PRIORITY `{$table_prefix}PROFILE_ITEM` ";
-            $sql.= "SET POSITION = '$new_position' WHERE PIID = '$piid'";
-
-            if (!$db->query($sql)) return false;
-        }
+        if (!$db->query($sql)) return false;
     }
 
     return true;

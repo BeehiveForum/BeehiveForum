@@ -284,7 +284,7 @@ if (isset($_POST['search'])) {
     }
 }
 
-pm_user_prune_folders();
+pm_user_prune_folders($_SESSION['UID']);
 
 html_draw_top(sprintf('title=%s', sprintf(gettext("Private Messages = %s"), $pm_folder_names_array[$current_folder])), "basetarget=_blank", "search.js", "pm.js", 'pm_popup_disabled', 'class=window_title');
 
@@ -341,7 +341,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 } else if (isset($_GET['search_frequency_error'])) {
 
-    $search_frequency = forum_get_setting('search_min_frequency', null, 0);
+    $search_frequency = forum_get_setting('search_min_frequency', 'strlen', 0);
     html_display_warning_msg(sprintf(gettext("You can only search once every %s seconds. Please try again later."), $search_frequency), '96%', 'center');
 
 } else if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) < 1) {

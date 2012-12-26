@@ -55,7 +55,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $msg = $_GET['msg'];
     list($tid, $pid) = explode('.', $msg);
 
-} else if (($msg = messages_get_most_recent($uid)) !== false) {
+} else if (($msg = messages_get_most_recent($_SESSION['UID'])) !== false) {
 
     list($tid, $pid) = explode('.', $msg);
 

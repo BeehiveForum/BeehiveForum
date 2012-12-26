@@ -6,13 +6,7 @@
 /forum/sitemaps/
 /forum/styles/tehforum/
 /forum/text_captcha/
-/forum/tiny_mce/*
-!/forum/tiny_mce/plugins/
-/forum/tiny_mce/plugins/*
-!/forum/tiny_mce/plugins/beehive/
-!/forum/tiny_mce/plugins/beehive/*
-!/forum/tiny_mce/plugins/flash/
-!/forum/tiny_mce/plugins/flash/*
-!/forum/tiny_mce/plugins/youtube/
-!/forum/tiny_mce/plugins/youtube/*
 /website/
+/.buildpath
+/.project
+/.settings/org.eclipse.php.core.prefs

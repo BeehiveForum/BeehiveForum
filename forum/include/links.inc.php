@@ -106,7 +106,7 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
         return links_get_in_folder($fid, $invisible, $sort_by, $sort_dir, $page - 1);
     }
 
-    while (($links_data = $result->fetch_assoc())) {
+    while (($links_data = $result->fetch_assoc()) !== null) {
 
         if (isset($links_data['LOGON']) && isset($links_data['PEER_NICKNAME'])) {
             if (!is_null($links_data['PEER_NICKNAME']) && strlen($links_data['PEER_NICKNAME']) > 0) {
@@ -154,7 +154,7 @@ function links_folders_get($visible = true)
 
     if ($result->num_rows > 0) {
 
-        while (($links_data = $result->fetch_assoc())) {
+        while (($links_data = $result->fetch_assoc()) !== null) {
             $folders[$links_data['FID']] =  $links_data;
         }
     }
@@ -168,13 +168,13 @@ function links_add($uri, $title, $description, $fid, $uid, $visible = true)
 
     if (!is_numeric($uid)) return false;
 
+    if (!$db = db::get()) return false;
+
     $uri = $db->escape($uri);
 
     $title = $db->escape($title);
 
     $description = $db->escape($description);
-
-    if (!$db = db::get()) return false;
 
     $visible = $visible ? "Y" : "N";
 
@@ -227,9 +227,9 @@ function links_add_folder($fid, $name, $uid, $visible = false)
 
     if (!is_numeric($uid)) return false;
 
-    $name = $db->escape($name);
-
     if (!$db = db::get()) return false;
+
+    $name = $db->escape($name);
 
     $visible = $visible ? "Y" : "N";
 
@@ -292,7 +292,7 @@ function links_get_folder_path_links($fid, $folders, $html = true, $link_last_to
 
     if (is_array($tree_array) && sizeof($tree_array) > 0) {
 
-        while (($val = array_pop($tree_array))) {
+        while (($val = array_pop($tree_array)) !== null) {
 
             if (($val != $fid && $html) || $link_last_too) {
                 $result.= $html ? "<img src=". html_style_image('separator.png'). " alt=\"\" border=\"0\" /><a href=\"$link_base&amp;fid=$val\">". word_filter_add_ob_tags($folders[$val]['NAME'], true). "</a>" : " &gt; ". word_filter_add_ob_tags($folders[$val]['NAME'], true);
@@ -329,7 +329,7 @@ function links_get_folder_page_title($fid, $folders, $link_title = false)
 
     if (is_array($tree_array) && sizeof($tree_array) > 0) {
 
-        while (($val = array_pop($tree_array))) {
+        while (($val = array_pop($tree_array)) !== null) {
 
             $path.= " - ". $folders[$val]['NAME'];
         }
@@ -348,7 +348,7 @@ function links_get_subfolders($fid, $folders)
 
     if (is_array($folders)) {
 
-        while (list($key, $val) = each($folders)) {
+        foreach ($folders as $key => $val) {
 
             if (isset($val['PARENT_FID']) && $val['PARENT_FID'] == $fid && $key != 1) $subfolders[] = $key;
         }
@@ -499,7 +499,7 @@ function links_get_all($invisible = false, $sort_by = "TITLE", $sort_dir = "ASC"
         return links_get_all($invisible, $sort_by, $sort_dir, $page - 1);
     }
 
-    while (($links_data = $result->fetch_assoc())) {
+    while (($links_data = $result->fetch_assoc()) !== null) {
 
         if (isset($links_data['LOGON']) && isset($links_data['PEER_NICKNAME'])) {
             if (!is_null($links_data['PEER_NICKNAME']) && strlen($links_data['PEER_NICKNAME']) > 0) {
@@ -668,7 +668,7 @@ function links_get_comments($lid)
 
     if ($result->num_rows == 0) return false;
 
-    while (($link_comment_data = $result->fetch_assoc())) {
+    while (($link_comment_data = $result->fetch_assoc()) !== null) {
 
         if (isset($link_comment_data['LOGON']) && isset($link_comment_data['PEER_NICKNAME'])) {
             if (!is_null($link_comment_data['PEER_NICKNAME']) && strlen($link_comment_data['PEER_NICKNAME']) > 0) {
@@ -689,7 +689,7 @@ function links_folder_dropdown($default_fid, $folders)
 {
     $default_value = 0;
 
-    while (list($key) = each($folders)) {
+    foreach (array_keys($folders) as $key) {
 
         $labels[$key] = links_get_folder_path_links($key, $folders, false);
         if ($key == $default_fid) $default_value = $key;
@@ -781,7 +781,7 @@ function links_approve($lid)
 
     if (!$db = db::get()) return false;
 
-    $approve_uid = session::get_value('UID');
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -789,7 +789,7 @@ function links_approve($lid)
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}LINKS` ";
     $sql.= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
-    $sql.= "APPROVED_BY = '$approve_uid' WHERE LID = '$lid'";
+    $sql.= "APPROVED_BY = '{$_SESSION['UID']}' WHERE LID = '$lid'";
 
     if (!$db->query($sql)) return false;
 

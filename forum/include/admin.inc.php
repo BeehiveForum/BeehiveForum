@@ -45,7 +45,7 @@ function admin_add_log_entry($action, array $data = array())
 {
     if (!$db = db::get()) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!is_numeric($action)) return false;
 
@@ -56,7 +56,7 @@ function admin_add_log_entry($action, array $data = array())
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "INSERT INTO `{$table_prefix}ADMIN_LOG` (CREATED, UID, ACTION, ENTRY) ";
-    $sql.= "VALUES (CAST('$current_datetime' AS DATETIME), '$uid', '$action', '$data')";
+    $sql.= "VALUES (CAST('$current_datetime' AS DATETIME), '{$_SESSION['UID']}', '$action', '$data')";
 
     if (!$db->query($sql)) return false;
 
@@ -123,7 +123,7 @@ function admin_get_log_entries($page = 1, $group_by = 'DAY', $sort_by = 'CREATED
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS ADMIN_LOG.ID, ADMIN_LOG.UID, ADMIN_LOG.ACTION, ";
     $sql.= "ADMIN_LOG.ENTRY, UNIX_TIMESTAMP(MAX(ADMIN_LOG.CREATED)) AS CREATED, ";
@@ -132,7 +132,7 @@ function admin_get_log_entries($page = 1, $group_by = 'DAY', $sort_by = 'CREATED
     $sql.= "FROM `{$table_prefix}ADMIN_LOG` ADMIN_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = ADMIN_LOG.UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = ADMIN_LOG.UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "ON (USER_PEER.PEER_UID = ADMIN_LOG.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "GROUP BY GROUP_BY, ADMIN_LOG.UID, ADMIN_LOG.ACTION, ADMIN_LOG.ENTRY ";
     $sql.= "ORDER BY $sort_by $sort_dir ";
     $sql.= "LIMIT $offset, 10";
@@ -149,7 +149,7 @@ function admin_get_log_entries($page = 1, $group_by = 'DAY', $sort_by = 'CREATED
         return admin_get_log_entries($page - 1, $sort_by, $sort_dir);
     }
 
-    while (($admin_log_data = $result->fetch_assoc())) {
+    while (($admin_log_data = $result->fetch_assoc()) !== null) {
 
         if (isset($admin_log_data['LOGON']) && isset($admin_log_data['PEER_NICKNAME'])) {
             if (!is_null($admin_log_data['PEER_NICKNAME']) && strlen($admin_log_data['PEER_NICKNAME']) > 0) {
@@ -200,7 +200,7 @@ function admin_get_word_filter_list($page = 1)
         return admin_get_word_filter_list($page - 1);
     }
 
-    while (($word_filter_data = $result->fetch_assoc())) {
+    while (($word_filter_data = $result->fetch_assoc()) !== null) {
         $word_filter_array[$word_filter_data['FID']] = $word_filter_data;
     }
 
@@ -410,7 +410,7 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
         return admin_user_get_all($sort_by, $sort_dir, $filter, $page - 1);
     }
 
-    while (($user_data = $result->fetch_assoc())) {
+    while (($user_data = $result->fetch_assoc()) !== null) {
         $user_get_all_array[$user_data['UID']] = $user_data;
     }
 
@@ -511,7 +511,7 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
         return admin_user_get_all($sort_by, $sort_dir, $filter, $page - 1);
     }
 
-    while (($user_data = $result->fetch_assoc())) {
+    while (($user_data = $result->fetch_assoc()) !== null) {
         $user_get_all_array[$user_data['UID']] = $user_data;
     }
 
@@ -601,7 +601,7 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($attachment = $result->fetch_assoc())) {
+    while (($attachment = $result->fetch_assoc()) !== null) {
 
         if (@file_exists("$attachment_dir/{$attachment['HASH']}")) {
 
@@ -668,11 +668,11 @@ function admin_get_forum_list($page = 1)
 
     $forums_array = array();
 
-    while (($forum_data = $result->fetch_assoc())) {
+    while (($forum_data = $result->fetch_assoc()) !== null) {
 
         if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
 
-        if (($post_count = admin_forum_get_post_count($forum_data['FID']))) {
+        if (($post_count = admin_forum_get_post_count($forum_data['FID'])) !== false) {
             $forum_data['MESSAGES'] = $post_count;
         }
 
@@ -748,7 +748,7 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $page = 1)
         return admin_get_ban_data($sort_by, $sort_dir, $page - 1);
     }
 
-    while (($ban_data = $result->fetch_assoc())) {
+    while (($ban_data = $result->fetch_assoc()) !== null) {
         $ban_data_array[$ban_data['ID']] = $ban_data;
     }
 
@@ -805,7 +805,7 @@ function admin_get_post_approval_queue($page = 1)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($folder_list = session::get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
+    if (($folder_list = session::get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) !== false) {
         $fidlist = implode(',', $folder_list);
     }
 
@@ -834,7 +834,7 @@ function admin_get_post_approval_queue($page = 1)
         return admin_get_post_approval_queue($page - 1);
     }
 
-    while (($post_array = $result->fetch_assoc())) {
+    while (($post_array = $result->fetch_assoc()) !== null) {
         $post_approval_array[] = $post_array;
     }
 
@@ -878,7 +878,7 @@ function admin_get_link_approval_queue($page = 1)
         return admin_get_link_approval_queue($page - 1);
     }
 
-    while (($link_array = $result->fetch_assoc())) {
+    while (($link_array = $result->fetch_assoc()) !== null) {
         $link_approval_array[] = $link_array;
     }
 
@@ -902,7 +902,7 @@ function admin_get_visitor_log($page = 1)
 
     $users_get_recent_array = array();
 
-    $uid = session::get_value('UID');
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS VISITOR_LOG.UID, USER.LOGON, ";
     $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
@@ -911,7 +911,7 @@ function admin_get_visitor_log($page = 1)
     $sql.= "SEB.SID, SEB.NAME, SEB.URL FROM VISITOR_LOG VISITOR_LOG ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS SEB ";
     $sql.= "ON (SEB.SID = VISITOR_LOG.SID) ";
     $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
@@ -930,7 +930,7 @@ function admin_get_visitor_log($page = 1)
         return admin_get_visitor_log($page - 1);
     }
 
-    while (($visitor_array = $result->fetch_assoc())) {
+    while (($visitor_array = $result->fetch_assoc()) !== null) {
 
         if (isset($visitor_array['LOGON']) && isset($visitor_array['PEER_NICKNAME'])) {
             if (!is_null($visitor_array['PEER_NICKNAME']) && strlen($visitor_array['PEER_NICKNAME']) > 0) {
@@ -1001,7 +1001,7 @@ function admin_get_user_ip_matches($uid)
 
     $user_ip_address_array = array();
 
-    $sess_uid = session::get_value('UID');
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT DISTINCT IPADDRESS FROM `{$table_prefix}POST` ";
     $sql.= "WHERE FROM_UID = '$uid' AND IPADDRESS IS NOT NULL LIMIT 10";
@@ -1010,14 +1010,14 @@ function admin_get_user_ip_matches($uid)
 
     if ($result->num_rows == 0) return false;
 
-    while (($user_get_aliases_row = $result->fetch_assoc())) {
+    while (($user_get_aliases_row = $result->fetch_assoc()) !== null) {
 
         if (strlen(trim($user_get_aliases_row['IPADDRESS'])) > 0) {
             $user_ip_address_array[] = $user_get_aliases_row['IPADDRESS'];
         }
     }
 
-    if (($ipaddress = user_get_last_ip_address($uid))) {
+    if (($ipaddress = user_get_last_ip_address($uid)) !== false) {
         $user_ip_address_array[] = $ipaddress;
     }
 
@@ -1030,7 +1030,7 @@ function admin_get_user_ip_matches($uid)
     $sql.= "FROM `{$table_prefix}POST` POST ";
     $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN `{$table_prefix}RSS_FEEDS` RSS_FEEDS ";
     $sql.= "ON (RSS_FEEDS.UID = USER.UID) WHERE POST.FROM_UID <> $uid ";
     $sql.= "AND ((POST.IPADDRESS IN ('$user_ip_address_list')) ";
@@ -1044,7 +1044,7 @@ function admin_get_user_ip_matches($uid)
 
     $user_aliases_array = array();
 
-    while (($user_aliases = $result->fetch_assoc())) {
+    while (($user_aliases = $result->fetch_assoc()) !== null) {
 
         if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
             if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
@@ -1073,7 +1073,7 @@ function admin_get_user_email_matches($uid)
     $user_email_aliases_array = array();
 
     // Session UID
-    $sess_uid = session::get_value('UID');
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     // Get the user's email address
     $user_email_address = user_get_email($uid);
@@ -1081,7 +1081,7 @@ function admin_get_user_email_matches($uid)
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER.EMAIL FROM USER ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "WHERE (USER.EMAIL = '$user_email_address') ";
     $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
 
@@ -1089,7 +1089,7 @@ function admin_get_user_email_matches($uid)
 
     if ($result->num_rows == 0) return false;
 
-    while (($user_aliases = $result->fetch_assoc())) {
+    while (($user_aliases = $result->fetch_assoc()) !== null) {
 
         if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
             if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
@@ -1116,14 +1116,14 @@ function admin_get_user_referer_matches($uid)
 
     $user_referer_aliases_array = array();
 
-    $sess_uid = session::get_value('UID');
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $user_http_referer = user_get_referer($uid);
 
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER.REFERER FROM USER ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "WHERE USER.REFERER = '$user_http_referer' ";
     $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
 
@@ -1131,7 +1131,7 @@ function admin_get_user_referer_matches($uid)
 
     if ($result->num_rows == 0) return false;
 
-    while (($user_aliases = $result->fetch_assoc())) {
+    while (($user_aliases = $result->fetch_assoc()) !== null) {
 
         if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
             if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
@@ -1160,7 +1160,7 @@ function admin_get_user_passwd_matches($uid)
     $user_passwd_aliases_array = array();
 
     // Session UID
-    $sess_uid = session::get_value('UID');
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     // Get the user's email address
     $user_passwd = user_get_passwd($uid);
@@ -1168,7 +1168,7 @@ function admin_get_user_passwd_matches($uid)
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, USER.PASSWD FROM USER ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$sess_uid') ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "WHERE (USER.PASSWD = '$user_passwd') ";
     $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
 
@@ -1176,7 +1176,7 @@ function admin_get_user_passwd_matches($uid)
 
     if ($result->num_rows == 0) return false;
 
-    while (($user_aliases = $result->fetch_assoc())) {
+    while (($user_aliases = $result->fetch_assoc()) !== null) {
 
         if (isset($user_aliases['LOGON']) && isset($user_aliases['PEER_NICKNAME'])) {
             if (!is_null($user_aliases['PEER_NICKNAME']) && strlen($user_aliases['PEER_NICKNAME']) > 0) {
@@ -1221,7 +1221,7 @@ function admin_get_user_history($uid)
 
     $user_history_data = '';
 
-    while (($user_history_row = $result->fetch_row())) {
+    while (($user_history_row = $result->fetch_row()) !== null) {
 
         $user_history_data_array = array();
 
@@ -1307,17 +1307,17 @@ function admin_delete_user($uid, $delete_content = false)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     // UID of current user
-    $admin_uid = session::get_value('UID');
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     // Before we delete we verify the user account exists and that
     // the user is not the current user account.
-    if (($user_logon = user_get_logon($uid)) && ($admin_uid != $uid)) {
+    if (($user_logon = user_get_logon($uid)) && ($_SESSION['UID'] != $uid)) {
 
         // Check to see if we're also deleting the user's content.
         if ($delete_content === true) {
 
             // Get a list of available forums
-            if (($forum_table_prefix_array = forum_get_all_prefixes())) {
+            if (($forum_table_prefix_array = forum_get_all_prefixes()) !== false) {
 
                 // Loop through all forums and delete all the user data from every forum.
                 foreach ($forum_table_prefix_array as $forum_table_prefix) {
@@ -1414,7 +1414,7 @@ function admin_delete_user($uid, $delete_content = false)
                     // approval queue.
                     $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}POST` ";
                     $sql.= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
-                    $sql.= "APPROVED_BY = '$admin_uid' WHERE FROM_UID = '$uid'";
+                    $sql.= "APPROVED_BY = '{$_SESSION['UID']}' WHERE FROM_UID = '$uid'";
 
                     if (!$db->query($sql)) return false;
                 }
@@ -1559,9 +1559,9 @@ function admin_send_user_approval_notification()
 
     if (!($result = $db->query($sql))) return false;
 
-    while (list($admin_uid) = $result->fetch_row()) {
+    while (($admin_data = $result->fetch_row()) !== null) {
 
-        if (!email_send_user_approval_notification($admin_uid)) {
+        if (!email_send_user_approval_notification($admin_data['UID'])) {
 
             $notification_success = false;
         }
@@ -1589,9 +1589,9 @@ function admin_send_new_user_notification($new_user_uid)
 
     if (!($result = $db->query($sql))) return false;
 
-    while (list($admin_uid) = $result->fetch_row()) {
+    while (($admin_data = $result->fetch_row()) !== null) {
 
-        if (!email_send_new_user_notification($admin_uid, $new_user_uid)) {
+        if (!email_send_new_user_notification($admin_data['UID'], $new_user_uid)) {
             $notification_success = false;
         }
     }
@@ -1622,9 +1622,9 @@ function admin_send_post_approval_notification($fid)
 
     if (!($result = $db->query($sql))) return false;
 
-    while (list($admin_uid) = $result->fetch_row()) {
+    while (($admin_data = $result->fetch_row()) !== null) {
 
-        if (!email_send_post_approval_notification($admin_uid)) {
+        if (!email_send_post_approval_notification($admin_data['UID'])) {
 
             $notification_success = false;
         }
@@ -1654,9 +1654,9 @@ function admin_send_link_approval_notification()
 
     if (!($result = $db->query($sql))) return false;
 
-    while (list($admin_uid) = $result->fetch_row()) {
+    while (($admin_data = $result->fetch_row()) !== null) {
 
-        if (!email_send_link_approval_notification($admin_uid)) {
+        if (!email_send_link_approval_notification($admin_data['UID'])) {
 
             $notification_success = false;
         }
@@ -1691,9 +1691,9 @@ function admin_check_credentials()
 {
     $webtag = get_webtag();
 
-    if (($admin_timeout = session::get_value('ADMIN_TIMEOUT')) && ($admin_timeout > time())) {
+    if (isset($_SESSION['ADMIN_TIMEOUT']) && is_numeric($_SESSION['ADMIN_TIMEOUT']) && ($_SESSION['ADMIN_TIMEOUT'] > time())) {
 
-        session::set_value('ADMIN_TIMEOUT', time() + HOUR_IN_SECONDS);
+        $_SESSION['ADMIN_TIMEOUT'] = time() + HOUR_IN_SECONDS;
         return true;
     }
 
@@ -1703,9 +1703,9 @@ function admin_check_credentials()
 
         $admin_password = $_POST['admin_password'];
 
-        if (($admin_uid = user_logon($admin_logon, $admin_password)) && ($admin_uid == session::get_value('UID'))) {
+        if (($admin_uid = user_logon($admin_logon, $admin_password)) && ($admin_uid == $_SESSION['UID'])) {
 
-            session::set_value('ADMIN_TIMEOUT', time() + HOUR_IN_SECONDS);
+            $_SESSION['ADMIN_TIMEOUT'] = time() + HOUR_IN_SECONDS;
             return true;
 
         } else {
@@ -1715,10 +1715,6 @@ function admin_check_credentials()
     }
 
     html_draw_top();
-
-    if (isset($error_message) && strlen(trim($error_message)) > 0) {
-        html_display_error_msg($error_message, '500', 'center');
-    }
 
     if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
         html_display_warning_msg(gettext('To save any changes you must re-authenticate yourself'), '500', 'center');

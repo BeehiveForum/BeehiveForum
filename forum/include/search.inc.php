@@ -43,14 +43,14 @@ require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 function search_execute($search_arguments, &$error)
 {
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     // If the user has performed a search within the last x minutes bail out
     if (!check_search_frequency()) {
 
         $error = SEARCH_FREQUENCY_TOO_GREAT;
         return false;
-    }       
+    }
 
     // Database connection.
     if (!$db = db::get()) return false;
@@ -114,7 +114,7 @@ function search_execute($search_arguments, &$error)
 
     // Each user can only store one search result so we should
     // clean up their previous search if applicable.
-    $sql = "DELETE QUICK FROM SEARCH_RESULTS WHERE UID = '$uid'";
+    $sql = "DELETE QUICK FROM SEARCH_RESULTS WHERE UID = '{$_SESSION['UID']}'";
 
     if (!$db->query($sql)) return false;
 
@@ -129,7 +129,7 @@ function search_execute($search_arguments, &$error)
 
 function search_mysql_execute($search_arguments, &$error)
 {
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -156,7 +156,7 @@ function search_mysql_execute($search_arguments, &$error)
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
             $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) SELECT SQL_NO_CACHE ";
-            $select_sql.= "SQL_BUFFER_RESULT $uid, $forum_fid, THREAD.FID, POST.TID, MIN(POST.PID), ";
+            $select_sql.= "SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, THREAD.FID, POST.TID, MIN(POST.PID), ";
             $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, MIN(POST.CREATED) AS DATE_CREATED, ";
             $select_sql.= "THREAD.LENGTH, 1.0 AS RELEVANCE ";
 
@@ -164,7 +164,7 @@ function search_mysql_execute($search_arguments, &$error)
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
             $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) SELECT SQL_NO_CACHE ";
-            $select_sql.= "SQL_BUFFER_RESULT $uid, $forum_fid, THREAD.FID, POST.TID, POST.PID, ";
+            $select_sql.= "SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, THREAD.FID, POST.TID, POST.PID, ";
             $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED AS DATE_CREATED, ";
             $select_sql.= "THREAD.LENGTH, 1.0 AS RELEVANCE ";
         }
@@ -216,7 +216,7 @@ function search_mysql_execute($search_arguments, &$error)
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
             $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) ";
-            $select_sql.= "SELECT SQL_NO_CACHE SQL_BUFFER_RESULT $uid, $forum_fid, ";
+            $select_sql.= "SELECT SQL_NO_CACHE SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, ";
             $select_sql.= "THREAD.FID, POST_CONTENT.TID, MIN(POST_CONTENT.PID), THREAD.BY_UID, ";
             $select_sql.= "POST.FROM_UID, POST.TO_UID, MIN(POST.CREATED) AS DATE_CREATED, THREAD.LENGTH, ";
             $select_sql.= "MATCH(POST_CONTENT.CONTENT, THREAD.TITLE) AGAINST('$search_string' IN BOOLEAN MODE) ";
@@ -226,7 +226,7 @@ function search_mysql_execute($search_arguments, &$error)
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
             $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) ";
-            $select_sql.= "SELECT SQL_NO_CACHE SQL_BUFFER_RESULT $uid, $forum_fid, ";
+            $select_sql.= "SELECT SQL_NO_CACHE SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, ";
             $select_sql.= "THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, THREAD.BY_UID, ";
             $select_sql.= "POST.FROM_UID, POST.TO_UID, POST.CREATED AS DATE_CREATED, THREAD.LENGTH, ";
             $select_sql.= "MATCH(POST_CONTENT.CONTENT, THREAD.TITLE) AGAINST('$search_string' IN BOOLEAN MODE) ";
@@ -321,7 +321,7 @@ function search_extract_keywords($search_string, $strip_valid = false)
 
     // Take a count of the words before we remove the stop words.
     $unfiltered_count = sizeof($keywords_array);
-    
+
     // Filter the boolean parts through the MySQL Full-Text stop word list
     // and by checking individual words lengths.
     if ($strip_valid === true) {
@@ -329,10 +329,10 @@ function search_extract_keywords($search_string, $strip_valid = false)
         $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?[\pL\pN\pP\pZ]{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array, PREG_GREP_INVERT);
 
     } else {
-        
+
         $keywords_array = preg_grep(sprintf('/^[\+|-]?["]?[\pL\pN\pP\pZ]{%d,%d}["]?$/Diu', $min_length, $max_length), $keywords_array);
     }
-    
+
     // Remove any duplicate words, reindex the array.
     $keywords_array = array_values(array_unique($keywords_array));
 
@@ -384,7 +384,7 @@ function search_get_word_lengths(&$min_length, &$max_length)
     $min_length = 4;
     $max_length = 84;
 
-    while (($mysql_variable_data = $result->fetch_assoc())) {
+    while (($mysql_variable_data = $result->fetch_assoc()) !== null) {
 
         if (isset($mysql_variable_data['Variable_name']) && isset($mysql_variable_data['Value'])) {
 
@@ -407,7 +407,7 @@ function search_save_arguments($search_arguments)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (isset($search_arguments['search_string'])) {
         $keywords = $db->escape($search_arguments['search_string']);
@@ -429,7 +429,7 @@ function search_save_arguments($search_arguments)
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
     $sql.= "SET LAST_SEARCH_KEYWORDS = '$keywords', LAST_SEARCH_SORT_BY = '$sort_by', ";
-    $sql.= "LAST_SEARCH_SORT_DIR = '$sort_dir' WHERE UID = '$uid'";
+    $sql.= "LAST_SEARCH_SORT_DIR = '$sort_dir' WHERE UID = '{$_SESSION['UID']}'";
 
     if (!$db->query($sql)) return false;
 
@@ -442,11 +442,11 @@ function search_get_keywords($remove_non_matches = true)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT LAST_SEARCH_KEYWORDS FROM `{$table_prefix}USER_TRACK` ";
-    $sql.= "WHERE UID = '$uid'";
-    
+    $sql.= "WHERE UID = '{$_SESSION['UID']}'";
+
     if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
@@ -464,11 +464,11 @@ function search_get_sort(&$sort_by, &$sort_dir)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT LAST_SEARCH_SORT_BY, LAST_SEARCH_SORT_DIR ";
     $sql.= "FROM `{$table_prefix}USER_TRACK` ";
-    $sql.= "WHERE UID = '$uid'";
+    $sql.= "WHERE UID = '{$_SESSION['UID']}'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -489,7 +489,7 @@ function search_fetch_results($page, $sort_by, $sort_dir)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $search_keywords = search_get_keywords();
 
@@ -506,10 +506,10 @@ function search_fetch_results($page, $sort_by, $sort_dir)
     $sql.= "USER_PEER.PEER_NICKNAME FROM SEARCH_RESULTS ";
     $sql.= "INNER JOIN USER ON (USER.UID = SEARCH_RESULTS.FROM_UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = SEARCH_RESULTS.FROM_UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "ON (USER_PEER.PEER_UID = SEARCH_RESULTS.FROM_UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_TRACK` USER_TRACK ";
     $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) ";
-    $sql.= "WHERE SEARCH_RESULTS.UID = '$uid' ";
+    $sql.= "WHERE SEARCH_RESULTS.UID = '{$_SESSION['UID']}' ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
@@ -553,11 +553,11 @@ function search_fetch_results($page, $sort_by, $sort_dir)
 
     if (($result->num_rows == 0) && ($result_count > 0) && ($page > 1)) {
         return search_fetch_results($page - 1, $sort_by, $sort_dir);
-    }        
+    }
 
     $search_results_array = array();
 
-    while (($search_result = $result->fetch_assoc())) {
+    while (($search_result = $result->fetch_assoc()) !== null) {
 
         $search_result['KEYWORDS'] = $search_keywords;
 
@@ -583,11 +583,11 @@ function search_get_first_result_msg()
 {
     if (!$db = db::get()) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     search_get_sort($sort_by, $sort_dir);
 
-    $sql = "SELECT TID, PID FROM SEARCH_RESULTS WHERE UID = '$uid' ";
+    $sql = "SELECT TID, PID FROM SEARCH_RESULTS WHERE UID = '{$_SESSION['UID']}' ";
 
     if (!in_array($sort_dir, array(SEARCH_SORT_ASC, SEARCH_SORT_DESC))) {
         $sort_dir = SEARCH_SORT_DESC;
@@ -809,7 +809,7 @@ function folder_search_dropdown($selected_folder)
 
     if ($result->num_rows == 0) return false;
 
-    while (($folder_data = $result->fetch_assoc())) {
+    while (($folder_data = $result->fetch_assoc()) !== null) {
 
         if (!session::logged_in()) {
 
@@ -840,7 +840,7 @@ function check_search_frequency()
 {
     if (!$db = db::get()) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -852,7 +852,7 @@ function check_search_frequency()
 
     $sql = "SELECT UNIX_TIMESTAMP(LAST_SEARCH) + $search_min_frequency, ";
     $sql.= "UNIX_TIMESTAMP('$current_datetime') FROM `{$table_prefix}USER_TRACK` ";
-    $sql.= "WHERE UID = '$uid'";
+    $sql.= "WHERE UID = '{$_SESSION['UID']}'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -864,7 +864,7 @@ function check_search_frequency()
 
             $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
             $sql.= "SET LAST_SEARCH = CAST('$current_datetime' AS DATETIME) ";
-            $sql.= "WHERE UID = '$uid'";
+            $sql.= "WHERE UID = '{$_SESSION['UID']}'";
 
             if (!($result = $db->query($sql))) return false;
 
@@ -874,7 +874,7 @@ function check_search_frequency()
     } else{
 
         $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, LAST_SEARCH) ";
-        $sql.= "VALUES ('$uid', CAST('$current_datetime' AS DATETIME))";
+        $sql.= "VALUES ('{$_SESSION['UID']}', CAST('$current_datetime' AS DATETIME))";
 
         if (!($result = $db->query($sql))) return false;
 
@@ -900,10 +900,10 @@ function search_output_opensearch_xml()
     echo "<Description>$title</Description>\n";
     echo "<InputEncoding>UTF-8</InputEncoding>\n";
 
-    if (($user_style_path = html_get_user_style_path())) {
+    if (($user_style_path = html_get_user_style_path()) !== false) {
         printf("<Image height=\"16\" width=\"16\" type=\"image/x-icon\">%s</Image>\n", html_get_forum_uri(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
-    }    
-    
+    }
+
     echo "<Url type=\"text/html\" method=\"get\" template=\"$forum_opensearch_uri\"/>\n";
     echo "</OpenSearchDescription>\n";
     exit;

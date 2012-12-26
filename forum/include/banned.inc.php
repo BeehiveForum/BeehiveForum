@@ -127,13 +127,13 @@ function ban_check($user_data, $send_error = true)
 
             $user_banned = true;
 
-            while (($ban_check_result_array = $result->fetch_assoc())) {
+            while (($ban_check_result_array = $result->fetch_assoc()) !== null) {
 
                 if (isset($ban_check_result_array['BANTYPE']) && is_numeric($ban_check_result_array['BANTYPE'])) {
 
                     $ban_check_type = $ban_check_result_array['BANTYPE'];
 
-                    if (($ban_check_data = ban_check_process_data($ban_check_result_array))) {
+                    if (($ban_check_data = ban_check_process_data($ban_check_result_array)) !== false) {
 
                         if (isset($user_data['UID']) && ($user_data['UID'] > 0)) {
                             array_push($ban_check_data, $user_data['UID'], $user_data['LOGON']);
@@ -150,7 +150,7 @@ function ban_check($user_data, $send_error = true)
 
         $cached_response = false;
 
-        if (($user_banned = sfs_check_banned($user_data, $cached_response))) {
+        if (($user_banned = sfs_check_banned($user_data, $cached_response)) !== false) {
 
             if ($cached_response === false) {
 
@@ -471,7 +471,7 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $current_datetime = time();
 
@@ -479,7 +479,7 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
     $sql.= "USER_PEER.PEER_NICKNAME, USER.NICKNAME FROM SESSIONS ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = SESSIONS.UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "ON (USER_PEER.PEER_UID = SESSIONS.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "WHERE ($ban_expires > $current_datetime OR $ban_expires = 0) ";
     $sql.= "AND SESSIONS.UID > 0 AND (((SESSIONS.IPADDRESS LIKE '$ban_data' ";
     $sql.= "OR USER.IPADDRESS LIKE '$ban_data') AND '$ban_type' = '$ban_type_ip') ";
@@ -493,7 +493,7 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
 
     if ($result->num_rows > 0) {
 
-        while (($ban_result = $result->fetch_assoc())) {
+        while (($ban_result = $result->fetch_assoc()) !== null) {
 
             if (isset($ban_result['LOGON']) && isset($ban_result['PEER_NICKNAME'])) {
                 if (!is_null($ban_result['PEER_NICKNAME']) && strlen($ban_result['PEER_NICKNAME']) > 0) {

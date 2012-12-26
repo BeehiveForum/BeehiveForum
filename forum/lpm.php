@@ -49,7 +49,7 @@ if (!session::logged_in()) {
 light_pm_enabled();
 
 // Prune old messages for the current user
-pm_user_prune_folders();
+pm_user_prune_folders($_SESSION['UID']);
 
 light_html_draw_top();
 

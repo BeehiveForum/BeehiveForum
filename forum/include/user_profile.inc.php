@@ -78,7 +78,7 @@ function user_get_profile($uid)
 
     if (!is_numeric($uid)) return false;
 
-    $peer_uid = session::get_value('UID');
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -102,7 +102,7 @@ function user_get_profile($uid)
     $sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ";
     $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$peer_uid') ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID ";
     $sql.= "AND USER_FORUM.FID = '$forum_fid') ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_TRACK` USER_TRACK ";
@@ -214,13 +214,13 @@ function user_get_profile($uid)
         $user_profile['STATUS'] = gettext("Unknown");
     }
 
-    if (($user_post_count = user_get_post_count($uid))) {
+    if (($user_post_count = user_get_post_count($uid)) !== false) {
         $user_profile['POST_COUNT'] = $user_post_count;
     } else {
         $user_profile['POST_COUNT'] = 0;
     }
 
-    if (($user_local_time = user_format_local_time($user_prefs))) {
+    if (($user_local_time = user_format_local_time($user_prefs)) !== false) {
         $user_profile['LOCAL_TIME'] = $user_local_time;
     }
 
@@ -287,9 +287,9 @@ function user_get_profile_entries($uid)
 
     $user_profile_array = array();
 
-    $session_uid = session::get_value('UID');
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    $peer_relationship = user_get_relationship($uid, $session_uid);
+    $peer_relationship = user_get_relationship($uid, $_SESSION['UID']);
 
     $user_friend = USER_FRIEND;
 
@@ -300,7 +300,7 @@ function user_get_profile_entries($uid)
     $sql.= "ON (PROFILE_ITEM.PSID = PROFILE_SECTION.PSID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PROFILE` USER_PROFILE ";
     $sql.= "ON (USER_PROFILE.PIID = PROFILE_ITEM.PIID AND USER_PROFILE.UID = '$uid' ";
-    $sql.= "AND (USER_PROFILE.PRIVACY = 0 OR USER_PROFILE.UID = '$session_uid' ";
+    $sql.= "AND (USER_PROFILE.PRIVACY = 0 OR USER_PROFILE.UID = '{$_SESSION['UID']}' ";
     $sql.= "OR (USER_PROFILE.PRIVACY = 1 AND ($peer_relationship & $user_friend > 0)))) ";
     $sql.= "WHERE USER_PROFILE.ENTRY IS NOT NULL ORDER BY PROFILE_SECTION.POSITION, ";
     $sql.= "PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
@@ -309,7 +309,7 @@ function user_get_profile_entries($uid)
 
     if ($result->num_rows == 0) return false;
 
-    while (($user_profile_data = $result->fetch_assoc())) {
+    while (($user_profile_data = $result->fetch_assoc()) !== null) {
 
         if (strlen(trim($user_profile_data['ENTRY'])) > 0) {
 

@@ -53,7 +53,7 @@ require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
 function messages_get($tid, $pid = 1, $limit = 1)
 {
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!$db = db::get()) return false;
 
@@ -85,9 +85,9 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql.= "AND SESSIONS.FID = $forum_fid AND SESSIONS.UID = POST.FROM_UID) AS USER_ACTIVE ";
     $sql.= "FROM `{$table_prefix}POST` POST LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER_TO ";
-    $sql.= "ON (USER_PEER_TO.UID = '$uid' AND USER_PEER_TO.PEER_UID = POST.TO_UID) ";
+    $sql.= "ON (USER_PEER_TO.UID = '{$_SESSION['UID']}' AND USER_PEER_TO.PEER_UID = POST.TO_UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER_FROM ";
-    $sql.= "ON (USER_PEER_FROM.UID = '$uid' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
+    $sql.= "ON (USER_PEER_FROM.UID = '{$_SESSION['UID']}' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = POST.FROM_UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = POST.FROM_UID) ";
     $sql.= "WHERE POST.TID = '$tid' ";
@@ -101,7 +101,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     $messages_array = array();
 
-    while (($message = $result->fetch_assoc())) {
+    while (($message = $result->fetch_assoc()) !== null) {
 
         $message['CONTENT'] = "";
 
@@ -197,7 +197,7 @@ function messages_have_attachments($tid, &$messages_array)
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($attachment_data = $result->fetch_assoc())) {
+    while (($attachment_data = $result->fetch_assoc()) !== null) {
         $messages_array[$attachment_data['PID']]['ATTACHMENTS'][] = $attachment_data['HASH'];
     }
 
@@ -241,11 +241,11 @@ function message_apply_formatting($message, $ignore_sig = false)
 
     $message = implode('', $message_parts);
 
-    $enable_wiki_words = forum_get_setting('enable_wiki_integration', 'Y') && session::get_value('ENABLE_WIKI_WORDS') == 'Y';
+    $enable_wiki_words = forum_get_setting('enable_wiki_integration', 'Y') && isset($_SESSION['ENABLE_WIKI_WORDS']) && ($_SESSION['ENABLE_WIKI_WORDS'] == 'Y');
 
     $enable_wiki_links = forum_get_setting('enable_wiki_quick_links', 'Y');
 
-    if (($wiki_location = forum_get_setting('wiki_integration_uri'))) {
+    if (($wiki_location = forum_get_setting('wiki_integration_uri')) !== false) {
         $wiki_location = str_replace("[WikiWord]", "\\1", $wiki_location);
     }
 
@@ -371,7 +371,7 @@ function messages_social_links($tid)
 {
     $webtag = get_webtag();
 
-    if (forum_get_setting('show_share_links', 'Y') && session::get_value('SHOW_SHARE_LINKS') == 'Y') {
+    if (forum_get_setting('show_share_links', 'Y') && isset($_SESSION['SHOW_SHARE_LINKS']) && ($_SESSION['SHOW_SHARE_LINKS'] == 'Y')) {
 
         echo "      <div style=\"display: inline-block; vertical-align: middle; margin-top: 1px\">\n";
         echo "        <g:plusone size=\"small\" count=\"false\" href=\"",  htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.1")), "\"></g:plusone>\n";
@@ -403,19 +403,17 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     $webtag = get_webtag();
 
-    if (($uid = session::get_value('UID')) === false) return;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    if (($posts_per_page = session::get_value('POSTS_PER_PAGE'))) {
-
-        if ($posts_per_page < 10) $posts_per_page = 10;
-        if ($posts_per_page > 30) $posts_per_page = 30;
-
+    if (isset($_SESSION['POSTS_PER_PAGE']) && is_numeric($_SESSION['POSTS_PER_PAGE'])) {
+        $posts_per_page = max(min($_SESSION['POSTS_PER_PAGE'], 30), 10);
     } else {
-
         $posts_per_page = 20;
     }
 
-    if (($quick_reply = session::get_value('REPLY_QUICK')) === false) {
+    if (isset($_SESSION['REPLY_QUICK']) && ($_SESSION['REPLY_QUICK'] == 'Y')) {
+        $quick_reply = 'Y';
+    } else {
         $quick_reply = 'N';
     }
 
@@ -427,7 +425,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     $from_user_permissions = perm_get_user_permissions($message['FROM_UID']);
 
-    if ($uid != $message['FROM_UID']) {
+    if ($_SESSION['UID'] != $message['FROM_UID']) {
 
         if (($from_user_permissions & USER_PERM_WORMED) && !$perm_is_moderator) {
 
@@ -453,7 +451,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     // Add emoticons/WikiLinks and ignore signature ----------------------------
-    if (session::get_value('IMAGES_TO_LINKS') == 'Y') {
+    if (isset($_SESSION['IMAGES_TO_LINKS']) && ($_SESSION['IMAGES_TO_LINKS'] == 'Y')) {
 
         $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/iu', '[href: <a\1href="\2"\3>\2</a>][img: <a\1href="\4"\3>\4</a>]', $message['CONTENT']);
         $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/iu', '[img: <a href="\1">\1</a>]', $message['CONTENT']);
@@ -511,7 +509,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     // Little up/down arrows to the left of each message -----------------------
-    if (forum_get_setting('require_post_approval', 'Y') && $message['FROM_UID'] != $uid) {
+    if (forum_get_setting('require_post_approval', 'Y') && $message['FROM_UID'] != $_SESSION['UID']) {
 
         if (isset($message['APPROVED']) && $message['APPROVED'] == 0 && !$perm_is_moderator) {
 
@@ -562,7 +560,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         echo word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK']), true), "</span>";
     }
 
-    if (session::get_value('SHOW_AVATARS') == 'Y') {
+    if (isset($_SESSION['SHOW_AVATARS']) && ($_SESSION['SHOW_AVATARS'] == 'Y')) {
 
         if (isset($message['AVATAR_URL']) && strlen($message['AVATAR_URL']) > 0) {
 
@@ -572,7 +570,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             $attachment = attachments_get_by_aid($message['AVATAR_AID']);
 
-            if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false))) {
+            if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false)) !== false) {
 
                 echo "&nbsp;<img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK']), true), "\" border=\"0\" width=\"16\" height=\"16\" />\n";
             }
@@ -600,7 +598,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "</td>\n";
     echo "                <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\">";
 
-    if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $uid != 0) {
+    if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $_SESSION['UID'] != 0) {
 
         echo "<b>", gettext("Ignored message"), "</b>";
 
@@ -656,7 +654,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "</td>\n";
     echo "                <td align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\">";
 
-    if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && $uid != 0) {
+    if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && $_SESSION['UID'] != 0) {
 
         echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">", gettext("Stop ignoring this user"), "</a>&nbsp;&nbsp;&nbsp;";
         echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">", gettext("View Message"), "</a>";
@@ -735,7 +733,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
 
-                if (($edit_user = user_get_logon($message['EDITED_BY']))) {
+                if (($edit_user = user_get_logon($message['EDITED_BY'])) !== false) {
 
                     echo "              <tr>\n";
                     echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">", sprintf(gettext("EDITED: %s by %s"), format_time($message['EDITED']), $edit_user), "</p></td>\n";
@@ -748,7 +746,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (isset($message['APPROVED_BY']) && $message['APPROVED_BY'] > 0 && $message['APPROVED_BY'] != $message['FROM_UID']) {
 
-                if (($approved_user = user_get_logon($message['APPROVED_BY']))) {
+                if (($approved_user = user_get_logon($message['APPROVED_BY'])) !== false) {
 
                     echo "              <tr>\n";
                     echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">", sprintf(gettext("APPROVED: %s by %s"), format_time($message['APPROVED']), $approved_user), "</p></td>\n";
@@ -759,7 +757,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
         if (isset($message['ATTACHMENTS']) && sizeof($message['ATTACHMENTS']) > 0) {
 
-            if (($attachments_array = attachments_get($message['FROM_UID'], ATTACHMENT_FILTER_BOTH, $message['ATTACHMENTS']))) {
+            if (($attachments_array = attachments_get($message['FROM_UID'], ATTACHMENT_FILTER_BOTH, $message['ATTACHMENTS'])) !== false) {
 
                 echo "              <tr>\n";
                 echo "                <td class=\"postbody\" align=\"left\">\n";
@@ -815,7 +813,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                     echo "&nbsp;&nbsp;<img src=\"", html_style_image('quote_disabled.png'), "\" border=\"0\" alt=\"", gettext("Quote"), "\" title=\"", gettext("Quote"), "\" id=\"quote_img_{$message['PID']}\" />";
                     echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}&amp;quote_list={$message['PID']}\" target=\"_parent\" title=\"", gettext("Quote"), "\" id=\"quote_{$message['PID']}\" data-pid=\"{$message['PID']}\">", gettext("Quote"), "</a>";
 
-                    if ((!(session::check_perm(USER_PERM_PILLORIED, 0)) && ((($uid != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($uid == $message['FROM_UID'])) && session::check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
+                    if ((!(session::check_perm(USER_PERM_PILLORIED, 0)) && ((($_SESSION['UID'] != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($_SESSION['UID'] == $message['FROM_UID'])) && session::check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
                         if ($is_poll && $message['PID'] == 1) {
 
@@ -879,12 +877,14 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
 
     if (($message = messages_get($tid, $pid, 1)) === false) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $perm_is_moderator = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
     $perm_has_admin_access = session::check_perm(USER_PERM_ADMIN_TOOLS, 0);
 
-    if (($quick_reply = session::get_value('REPLY_QUICK')) === false) {
+    if (isset($_SESSION['REPLY_QUICK']) && ($_SESSION['REPLY_QUICK'] == 'Y')) {
+        $quick_reply = 'Y';
+    } else {
         $quick_reply = 'N';
     }
 
@@ -917,7 +917,7 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
 
     $html.= "                      </tr>\n";
 
-    if (($uid == $message['FROM_UID'] && session::check_perm(USER_PERM_POST_DELETE, $folder_fid) && !session::check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
+    if (($_SESSION['UID'] == $message['FROM_UID'] && session::check_perm(USER_PERM_POST_DELETE, $folder_fid) && !session::check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
 
         $html.= "                      <tr>\n";
         $html.= "                        <td align=\"left\"><a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\"><img src=\"". html_style_image('delete.png'). "\" border=\"0\" alt=\"". gettext("Delete"). "\" title=\"". gettext("Delete"). "\" /></a></td>\n";
@@ -938,7 +938,7 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
     $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;markasread=". ($message['PID'] - 1). "\" target=\"_self\" title=\"". gettext("Mark as unread"). "\">". gettext("Mark as unread"). "</a></td>\n";
     $html.= "                      </tr>\n";
 
-    if ($uid != $message['FROM_UID']) {
+    if ($_SESSION['UID'] != $message['FROM_UID']) {
 
         $html.= "                      <tr>\n";
         $html.= "                        <td align=\"left\"><a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"". gettext("Relationship"). "\"><img src=\"". html_style_image('enemy.png'). "\" border=\"0\" alt=\"". gettext("Relationship"). "\" title=\"". gettext("Relationship"). "\" /></a></td>\n";
@@ -1063,7 +1063,7 @@ function message_display_deleted($tid, $pid, $message, $in_list, $is_preview, $f
 
     if (isset($message['EDITED']) && $message['EDITED'] > 0) {
 
-        if (($edit_user = user_get_logon($message['EDITED_BY']))) {
+        if (($edit_user = user_get_logon($message['EDITED_BY'])) !== false) {
 
             $message_delete_time = format_time($message['EDITED']);
             echo "                <td align=\"left\">", sprintf(gettext("Message %s.%s deleted %s by %s"), $tid, $pid, $message_delete_time, $edit_user), "</td>\n";
@@ -1309,13 +1309,13 @@ function message_get_user_array($tid, $pid)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME FROM `{$table_prefix}POST` POST ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = POST.FROM_UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "ON (USER_PEER.PEER_UID = POST.FROM_UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "WHERE POST.TID = '$tid' AND POST.PID = '$pid'";
 
     if (!($result = $db->query($sql))) return false;
@@ -1350,7 +1350,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
     if (!($table_prefix = get_table_prefix())) return false;
 
     // User UID
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
@@ -1379,7 +1379,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
             // Update the unread data.
             $sql = "INSERT INTO `{$table_prefix}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT) ";
-            $sql.= "VALUES ('$uid', '$tid', '$pid', CAST('$current_datetime' AS DATETIME)) ON DUPLICATE KEY UPDATE ";
+            $sql.= "VALUES ('{$_SESSION['UID']}', '$tid', '$pid', CAST('$current_datetime' AS DATETIME)) ON DUPLICATE KEY UPDATE ";
             $sql.= "LAST_READ = VALUES(LAST_READ), LAST_READ_AT = CAST('$current_datetime' AS DATETIME)";
 
             if (!($result = $db->query($sql))) return false;
@@ -1388,7 +1388,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
 
     // Mark posts as Viewed
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST` SET VIEWED = CAST('$current_datetime' AS DATETIME) ";
-    $sql.= "WHERE TID = '$tid' AND PID BETWEEN 1 AND '$pid' AND TO_UID = '$uid' AND VIEWED IS NULL";
+    $sql.= "WHERE TID = '$tid' AND PID BETWEEN 1 AND '$pid' AND TO_UID = '{$_SESSION['UID']}' AND VIEWED IS NULL";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1414,7 +1414,7 @@ function messages_set_read($tid, $pid, $modified)
     if (!($table_prefix = get_table_prefix())) return false;
 
     // User UID
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     // Mark as read cut off
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
@@ -1426,7 +1426,7 @@ function messages_set_read($tid, $pid, $modified)
 
             $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_THREAD` ";
             $sql.= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";
-            $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+            $sql.= "WHERE UID = '{$_SESSION['UID']}' AND TID = '$tid'";
 
             if (!$db->query($sql)) return false;
 
@@ -1434,7 +1434,7 @@ function messages_set_read($tid, $pid, $modified)
 
                 $sql = "INSERT IGNORE INTO `{$table_prefix}USER_THREAD` ";
                 $sql.= "(UID, TID, LAST_READ, LAST_READ_AT) ";
-                $sql.= "VALUES ($uid, $tid, $pid, NULL)";
+                $sql.= "VALUES ({$_SESSION['UID']}, $tid, $pid, NULL)";
 
                 if (!$db->query($sql)) return false;
             }
@@ -1443,7 +1443,7 @@ function messages_set_read($tid, $pid, $modified)
 
     // Mark posts as Viewed...
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST` SET VIEWED = NULL ";
-    $sql.= "WHERE TID = '$tid' AND PID >= '$pid' AND TO_UID = '$uid'";
+    $sql.= "WHERE TID = '$tid' AND PID >= '$pid' AND TO_UID = '{$_SESSION['UID']}'";
 
     if (!$db->query($sql)) return false;
 
@@ -1464,7 +1464,7 @@ function messages_get_most_recent($uid, $fid = false)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($unread_message = messages_get_most_recent_unread($uid, $fid))) {
+    if (($unread_message = messages_get_most_recent_unread($uid, $fid)) !== false) {
         return $unread_message;
     }
 
@@ -1607,7 +1607,9 @@ function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
     // Check to see if we've been passed a font size
     if (!is_numeric($font_size)) {
 
-        if (($font_size = session::get_value('FONT_SIZE')) === false) {
+        if (isset($_SESSION['FONT_SIZE']) && is_numeric($_SESSION['FONT_SIZE'])) {
+            $font_size = max(min($_SESSION['FONT_SIZE'], 15), 5);
+        } else {
             $font_size = 10;
         }
     }
@@ -1682,7 +1684,7 @@ function messages_forum_stats($tid, $pid)
 
             echo "                            &nbsp;";
 
-        } else if (session::get_value("SHOW_STATS") == "Y") {
+        } else if (isset($_SESSION['SHOW_STATS']) && ($_SESSION['SHOW_STATS'] == 'Y')) {
 
             echo "                            ", form_submit_image('hide.png', 'forum_stats_toggle', 'hide', '', 'button_image toggle_button'), "\n";
 
@@ -1699,7 +1701,7 @@ function messages_forum_stats($tid, $pid)
         echo "                  <tr>\n";
         echo "                    <td>\n";
 
-        if (!session::logged_in() || (session::get_value("SHOW_STATS") == "Y")) {
+        if (!session::logged_in() || (isset($_SESSION['SHOW_STATS']) && ($_SESSION['SHOW_STATS'] == 'Y'))) {
             echo "                      <div id=\"forum_stats\" class=\"forum_stats_toggle\">\n";
         } else {
             echo "                      <div id=\"forum_stats\" class=\"forum_stats_toggle\" style=\"display: none\">\n";

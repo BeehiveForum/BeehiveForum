@@ -42,11 +42,11 @@ function sphinx_search_connect()
     if (!($sphinx_search_port = forum_get_setting('sphinx_search_port', 'is_numeric', false))) return false;
 
     if (!($sphinx = mysqli_init())) return false;
-    
+
     if (!$sphinx->options(MYSQLI_OPT_CONNECT_TIMEOUT, 2)) return false;
-    
+
     if (!$sphinx->real_connect($sphinx_search_host, null, null, null, $sphinx_search_port)) return false;
-    
+
     if (mysqli_connect_error()) return false;
 
     return $sphinx;
@@ -54,7 +54,7 @@ function sphinx_search_connect()
 
 function sphinx_search_execute($search_arguments, &$error)
 {
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -73,7 +73,7 @@ function sphinx_search_execute($search_arguments, &$error)
         $error = SEARCH_SPHINX_UNAVAILABLE;
         return false;
     }
-    
+
     // Regular Database connection.
     if (!$db = db::get()) return false;
 
@@ -111,7 +111,7 @@ function sphinx_search_execute($search_arguments, &$error)
     if (isset($search_arguments['search_string']) && strlen(trim($search_arguments['search_string'])) > 0) {
 
         // Sphinx doesn't like -- in MATCH. Don't know if it's because it
-        // thinks it is a MySQL-style comment or a bug. We have no choice 
+        // thinks it is a MySQL-style comment or a bug. We have no choice
         // but to strip it out.
         $search_string = $sphinx->real_escape_string(str_replace('--', '', $search_arguments['search_string']));
 
@@ -161,10 +161,10 @@ function sphinx_search_execute($search_arguments, &$error)
             $order_sql = "ORDER BY created $sort_dir";
             break;
     }
-    
+
     // Prepend _DELTA to the end of the index name.
     $sphinx_search_index_delta = sprintf('%s_DELTA', $sphinx_search_index);
-    
+
     // Build query including main and delta indexes.
     $sql = "SELECT * FROM $sphinx_search_index, $sphinx_search_index_delta ";
     $sql.= "$where_sql $group_sql $order_sql LIMIT 1000";
@@ -184,10 +184,10 @@ function sphinx_search_execute($search_arguments, &$error)
     // Iterate over the results returned by Swift and save them
     // into the SEARCH_RESULTS table in the MySQL database along
     // with the Sphinx weight as our relevance.
-    while (($search_result = $result->fetch_assoc())) {
+    while (($search_result = $result->fetch_assoc()) !== null) {
 
         $sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, ";
-        $sql.= "RELEVANCE) SELECT '$uid' AS UID, '$forum_fid' AS FORUM, FOLDER.FID, THREAD.TID, POST.PID, THREAD.BY_UID, ";
+        $sql.= "RELEVANCE) SELECT '{$_SESSION['UID']}' AS UID, '$forum_fid' AS FORUM, FOLDER.FID, THREAD.TID, POST.PID, THREAD.BY_UID, ";
         $sql.= "POST.FROM_UID, POST.TO_UID, POST.CREATED, THREAD.LENGTH, {$search_result['weight']} AS RELEVANCE ";
         $sql.= "FROM `{$table_prefix}POST` POST INNER JOIN `{$table_prefix}THREAD` ";
         $sql.= "THREAD ON (THREAD.TID = POST.TID) INNER JOIN `{$table_prefix}FOLDER` FOLDER ";

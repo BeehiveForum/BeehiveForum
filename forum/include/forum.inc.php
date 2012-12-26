@@ -60,7 +60,7 @@ function get_forum_data()
 
     if (!is_array($forum_data) || !isset($forum_data['WEBTAG']) || !isset($forum_data['PREFIX'])) {
 
-        if (($webtag = get_webtag())) {
+        if (($webtag = get_webtag()) !== false) {
 
             // Check #1: See if the webtag specified in GET/POST
             // actually exists.
@@ -70,7 +70,7 @@ function get_forum_data()
             $sql.= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX ";
             $sql.= "FROM FORUMS WHERE WEBTAG = '$webtag'";
 
-            if (($result = $db->query($sql))) {
+            if (($result = $db->query($sql)) !== false) {
 
                 if ($result->num_rows == 0) return false;
 
@@ -87,7 +87,7 @@ function get_forum_data()
             $sql.= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX ";
             $sql.= "FROM FORUMS WHERE DEFAULT_FORUM = 1";
 
-            if (($result = $db->query($sql))) {
+            if (($result = $db->query($sql)) !== false) {
 
                 if ($result->num_rows == 0) return false;
 
@@ -143,7 +143,7 @@ function get_all_table_prefixes()
 
     $forum_data_array = array();
 
-    while (($forum_data = $result->fetch_assoc())) {
+    while (($forum_data = $result->fetch_assoc()) !== null) {
 
         if (!isset($forum_data['ACCESS_LEVEL'])) $forum_data['ACCESS_LEVEL'] = 0;
 
@@ -193,11 +193,11 @@ function forum_check_access_level()
 
     if (!($forum_fid = get_forum_fid())) return $result;
 
-    $uid = session::get_value('UID');
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED FROM FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-    $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.FID = '$forum_fid' ";
+    $sql.= "AND USER_FORUM.UID = '{$_SESSION['UID']}') WHERE FORUMS.FID = '$forum_fid' ";
     $sql.= "AND FORUMS.ACCESS_LEVEL < 3";
 
     if (!($result = $db->query($sql))) return $result;
@@ -243,7 +243,7 @@ function forum_closed_message()
 
     echo "<h1>", gettext("Closed"), "</h1>\n";
 
-    if (($closed_message = forum_get_setting('closed_message'))) {
+    if (($closed_message = forum_get_setting('closed_message')) !== false) {
 
         html_display_error_msg(fix_html($closed_message), '600', 'center');
 
@@ -265,15 +265,15 @@ function forum_restricted_message()
 {
     $final_uri = basename(get_request_uri());
 
-    $popup_files_preg = get_available_js_popup_files_preg();
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_popup_files()));
 
-    if (preg_match("/^$popup_files_preg/", $final_uri) > 0) {
+    if (preg_match("/^$available_files_preg/", $final_uri) > 0) {
         $forum_owner_link_target = "_blank";
     } else {
         $forum_owner_link_target = html_get_top_frame_name();
     }
 
-    if (($restricted_message = forum_get_setting('restricted_message'))) {
+    if (($restricted_message = forum_get_setting('restricted_message')) !== false) {
 
         html_draw_error(fix_html($restricted_message), '600', 'center');
 
@@ -322,7 +322,11 @@ function forum_check_password($forum_fid)
 
     if (!($forum_passhash = forum_get_password($forum_fid))) return true;
 
-    $forum_passhash_check = session::get_value("{$webtag}_PASSWORD");
+    if (isset($_SESSION["{$webtag}_PASSWORD"]) && is_md5($_SESSION["{$webtag}_PASSWORD"])) {
+        $forum_passhash_check = $_SESSION["{$webtag}_PASSWORD"];
+    } else {
+        $forum_passhash_check = null;
+    }
 
     if (isset($_POST['forum_password']) && strlen($_POST['forum_password']) > 0) {
         $forum_passhash_check = md5($_POST['forum_password']);
@@ -330,7 +334,7 @@ function forum_check_password($forum_fid)
 
     if ($forum_passhash == $forum_passhash_check) {
 
-        session::set_value("{$webtag}_PASSWORD", $forum_passhash_check);
+        $_SESSION["{$webtag}_PASSWORD"] = $forum_passhash_check;
         return true;
     }
 
@@ -338,11 +342,11 @@ function forum_check_password($forum_fid)
 
     echo "<h1>", gettext("Password Protected Forum"), "</h1>\n";
 
-    if (session::get_value("{$webtag}_PASSWORD")) {
+    if (isset($_SESSION["{$webtag}_PASSWORD"]) && is_md5($_SESSION["{$webtag}_PASSWORD"])) {
         html_display_error_msg(gettext("The username or password you supplied is not valid."), '550', 'center');
     }
 
-    if (($password_protected_message = forum_get_setting('password_protected_message'))) {
+    if (($password_protected_message = forum_get_setting('password_protected_message')) !== false) {
 
         echo fix_html($password_protected_message);
 
@@ -450,7 +454,7 @@ function forum_get_settings_by_fid($forum_fid, $callback = null)
         'forum_dst_offset' => 1
     );
 
-    while (($forum_data = $result->fetch_assoc())) {
+    while (($forum_data = $result->fetch_assoc()) !== null) {
 
         if (!is_callable($callback) || $callback($forum_data['SNAME'])) {
             $forum_settings[$forum_data['SNAME']] = $forum_data['SVALUE'];
@@ -861,7 +865,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         return false;
     }
 
-    if (($conflicting_tables_array = install_check_table_conflicts($database_name, $webtag, true, false, false))) {
+    if (($conflicting_tables_array = install_check_table_conflicts($database_name, $webtag, true, false, false)) !== false) {
 
         $error_str = gettext("The selected database contains conflicting tables. Conflicting table names are:");
         $error_str.= sprintf("<p>%s</p>\n", implode(", ", $conflicting_tables_array));
@@ -1697,7 +1701,7 @@ function forum_update_access($fid, $access)
     if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0) ||
         session::check_perm(USER_PERM_FORUM_TOOLS, 0))) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!$db = db::get()) return false;
 
@@ -1707,7 +1711,7 @@ function forum_update_access($fid, $access)
     if (!$db->query($sql)) return false;
 
     $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
-    $sql.= "VALUES ('$uid', '$fid', 1) ON DUPLICATE KEY ";
+    $sql.= "VALUES ('{$_SESSION['UID']}', '$fid', 1) ON DUPLICATE KEY ";
     $sql.= "UPDATE ALLOWED = VALUES(ALLOWED)";
 
     if (!$db->query($sql)) return false;
@@ -1755,7 +1759,7 @@ function forum_get($fid)
 
     if (isset($forum_get_array['OWNER_UID']) && $forum_get_array['OWNER_UID'] > 0) {
 
-        if (($forum_leader = user_get_logon($forum_get_array['OWNER_UID']))) {
+        if (($forum_leader = user_get_logon($forum_get_array['OWNER_UID'])) !== false) {
             $forum_get_array['FORUM_SETTINGS']['forum_leader'] = $forum_leader;
         }
     }
@@ -1764,7 +1768,7 @@ function forum_get($fid)
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($forum_data = $result->fetch_assoc())) {
+    while (($forum_data = $result->fetch_assoc()) !== null) {
         $forum_get_array['FORUM_SETTINGS'][$forum_data['SNAME']] = $forum_data['SVALUE'];
     }
 
@@ -1800,7 +1804,7 @@ function forum_get_permissions($fid, $page = 1)
         return forum_get_permissions($fid, $page - 1);
     }
 
-    while (($user_data = $result->fetch_assoc())) {
+    while (($user_data = $result->fetch_assoc()) !== null) {
 
         if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
             if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
@@ -1841,7 +1845,7 @@ function forum_update_default($fid)
 
 function forum_search_array_clean($forum_search)
 {
-    return $db->escape(trim(str_replace("%", "", $forum_search)));
+    return db::get()->escape(trim(str_replace("%", "", $forum_search)));
 }
 
 function forum_search($forum_search, $page, $sort_by, $sort_dir)
@@ -1867,7 +1871,7 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
 
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (strlen(trim($forum_search)) == 0) return false;
 
@@ -1885,7 +1889,7 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
     $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ON (FORUM_SETTINGS.FID = FORUMS.FID) ";
     $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_NAME ON (FORUM_SETTINGS_NAME.FID = FORUMS.FID AND FORUM_SETTINGS_NAME.SNAME = 'forum_name') ";
     $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_DESC ON (FORUM_SETTINGS_DESC.FID = FORUMS.FID AND FORUM_SETTINGS_DESC.SNAME = 'forum_desc') ";
-    $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '$uid') ";
+    $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '{$_SESSION['UID']}') ";
     $sql.= "WHERE FORUMS.ACCESS_LEVEL > -1 AND (FORUMS.WEBTAG LIKE ";
     $sql.= "'%$forum_search_webtag%' OR FORUM_SETTINGS.SVALUE LIKE ";
     $sql.= "'%$forum_search_svalue%') GROUP BY FORUMS.FID ";
@@ -1904,7 +1908,7 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
         return forum_search($forum_search, $page - 1, $sort_by, $sort_dir);
     }
 
-    while (($forum_data = $result_forums->fetch_assoc())) {
+    while (($forum_data = $result_forums->fetch_assoc()) !== null) {
 
         $forum_fid = $forum_data['FID'];
 
@@ -1934,7 +1938,7 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
 
             $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) AS UNREAD_MESSAGES ";
             $sql.= "FROM `{$forum_data['PREFIX']}THREAD` THREAD LEFT JOIN `{$forum_data['PREFIX']}USER_THREAD` USER_THREAD ";
-            $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.FID IN ($folders) ";
+            $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE THREAD.FID IN ($folders) ";
             $sql.= "AND (THREAD.MODIFIED > CAST('$unread_cutoff_datetime' AS DATETIME)) ";
 
             if (!($result_unread_count = $db->query($sql))) return false;
@@ -1967,7 +1971,7 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
         $sql.= "FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
         $sql.= "LEFT JOIN `{$forum_data['PREFIX']}POST` POST ";
         $sql.= "ON (POST.TID = THREAD.TID) WHERE THREAD.FID IN ($folders) ";
-        $sql.= "AND POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
+        $sql.= "AND POST.TO_UID = '{$_SESSION['UID']}' AND POST.VIEWED IS NULL ";
 
         if (!($result_unread_to_me = $db->query($sql))) return false;
 
@@ -2008,7 +2012,7 @@ function forum_get_all_prefixes()
 
     $prefix_array = array();
 
-    while (($forum_data = $result->fetch_assoc())) {
+    while (($forum_data = $result->fetch_assoc()) !== null) {
         $prefix_array[$forum_data['FID']] = $forum_data['PREFIX'];
     }
 
@@ -2027,7 +2031,7 @@ function forum_get_all_webtags()
 
     $webtag_array = array();
 
-    while (($forum_data = $result->fetch_assoc())) {
+    while (($forum_data = $result->fetch_assoc()) !== null) {
         $webtag_array[$forum_data['FID']] = $forum_data['WEBTAG'];
     }
 
@@ -2046,7 +2050,7 @@ function forum_get_all_fids()
 
     $fids_array = array();
 
-    while (($forum_data = $result->fetch_assoc())) {
+    while (($forum_data = $result->fetch_assoc()) !== null) {
         $fids_array[] = $forum_data['FID'];
     }
 
@@ -2088,7 +2092,7 @@ function forums_get_available_dbs()
 
     $database_array = array();
 
-    while (($database = $result->fetch_assoc())) {
+    while (($database = $result->fetch_assoc()) !== null) {
 
         if (!stristr('information_schema', $database['Database'])) {
             $database_array[$database['Database']] = $database['Database'];
@@ -2102,11 +2106,11 @@ function forums_get_available_count()
 {
     if (!$db = db::get()) return false;
 
-    if (($uid = session::get_value('UID')) === false) return 0;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT COUNT(FORUMS.FID) FROM FORUMS FORUMS ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-    $sql.= "AND USER_FORUM.UID = '$uid') WHERE FORUMS.ACCESS_LEVEL = 0 ";
+    $sql.= "AND USER_FORUM.UID = '{$_SESSION['UID']}') WHERE FORUMS.ACCESS_LEVEL = 0 ";
     $sql.= "OR FORUMS.ACCESS_LEVEL = 2 OR (FORUMS.ACCESS_LEVEL = 1 ";
     $sql.= "AND USER_FORUM.ALLOWED = 1) ";
 

@@ -127,20 +127,28 @@ function format_version_number($version, $glue = '.')
 
 function format_time($time)
 {
-    if (($timezone_id = session::get_value('TIMEZONE')) === false) {
-        $timezone_id = forum_get_setting('forum_timezone', null, 27);
+    if (isset($_SESSION['TIMEZONE']) && is_numeric($_SESSION['TIMEZONE'])) {
+        $timezone_id = $_SESSION['TIMEZONE'];
+    } else {
+        $timezone_id = forum_get_setting('forum_timezone', 'is_numeric', 27);
     }
 
-    if (($gmt_offset = session::get_value('GMT_OFFSET')) === false) {
-        $gmt_offset = forum_get_setting('forum_gmt_offset', null, 0);
+    if (isset($_SESSION['GMT_OFFSET']) && is_numeric($_SESSION['GMT_OFFSET'])) {
+        $gmt_offset = $_SESSION['GMT_OFFSET'];
+    } else {
+        $gmt_offset = forum_get_setting('forum_gmt_offset', 'is_numeric', 0);
     }
 
-    if (($dst_offset = session::get_value('DST_OFFSET')) === false) {
-        $dst_offset = forum_get_setting('forum_dst_offset', null, 0);
+    if (isset($_SESSION['DST_OFFSET']) && is_numeric($_SESSION['DST_OFFSET'])) {
+        $dst_offset = $_SESSION['DST_OFFSET'];
+    } else {
+        $dst_offset = forum_get_setting('forum_dst_offset', 'is_numeric', 0);
     }
 
-    if (($dl_saving = session::get_value('DL_SAVING')) === false) {
-        $dl_saving = forum_get_setting('forum_dl_saving', null, 'N');
+    if (isset($_SESSION['DL_SAVING']) && in_array($_SESSION['DL_SAVING'], array('Y', 'N'))) {
+        $dl_saving = $_SESSION['DL_SAVING'];
+    } else {
+        $dl_saving = forum_get_setting('forum_dl_saving', 'strlen', 'N');
     }
 
     // Calculate $time in user's timezone.
@@ -201,20 +209,28 @@ function format_time($time)
 
 function format_date($time)
 {
-    if (($timezone_id = session::get_value('TIMEZONE')) === false) {
-        $timezone_id = forum_get_setting('forum_timezone', null, 27);
+    if (isset($_SESSION['TIMEZONE']) && is_numeric($_SESSION['TIMEZONE'])) {
+        $timezone_id = $_SESSION['TIMEZONE'];
+    } else {
+        $timezone_id = forum_get_setting('forum_timezone', 'is_numeric', 27);
     }
 
-    if (($gmt_offset = session::get_value('GMT_OFFSET')) === false) {
-        $gmt_offset = forum_get_setting('forum_gmt_offset', null, 0);
+    if (isset($_SESSION['GMT_OFFSET']) && is_numeric($_SESSION['GMT_OFFSET'])) {
+        $gmt_offset = $_SESSION['GMT_OFFSET'];
+    } else {
+        $gmt_offset = forum_get_setting('forum_gmt_offset', 'is_numeric', 0);
     }
 
-    if (($dst_offset = session::get_value('DST_OFFSET')) === false) {
-        $dst_offset = forum_get_setting('forum_dst_offset', null, 0);
+    if (isset($_SESSION['DST_OFFSET']) && is_numeric($_SESSION['DST_OFFSET'])) {
+        $dst_offset = $_SESSION['DST_OFFSET'];
+    } else {
+        $dst_offset = forum_get_setting('forum_dst_offset', 'is_numeric', 0);
     }
 
-    if (($dl_saving = session::get_value('DL_SAVING')) === false) {
-        $dl_saving = forum_get_setting('forum_dl_saving', null, 'N');
+    if (isset($_SESSION['DL_SAVING']) && in_array($_SESSION['DL_SAVING'], array('Y', 'N'))) {
+        $dl_saving = $_SESSION['DL_SAVING'];
+    } else {
+        $dl_saving = forum_get_setting('forum_dl_saving', 'strlen', 'N');
     }
 
     // Calculate $time in user's timezone.
@@ -781,7 +797,7 @@ function format_birthday($date)
 
 function split_url($url, $inc_path = false, $inc_query = false, $inc_fragment = false)
 {
-    if (($url_parts = @parse_url($url))) {
+    if (($url_parts = @parse_url($url)) !== false) {
 
         if (!isset($url_parts['scheme'])) return false;
         if (!isset($url_parts['host'])) return false;

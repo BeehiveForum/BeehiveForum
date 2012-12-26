@@ -65,7 +65,7 @@ function mods_list_get_mods($fid)
 
     if ($result->num_rows == 0) return false;
 
-    while (($mod_list_data = $result->fetch_assoc())) {
+    while (($mod_list_data = $result->fetch_assoc()) !== null) {
         $mod_list_array[$mod_list_data['UID']] = $mod_list_data;
     }
 

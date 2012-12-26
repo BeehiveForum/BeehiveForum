@@ -207,7 +207,7 @@ if (forum_check_webtag_available($webtag)) {
 
         light_pm_enabled();
 
-        pm_user_prune_folders();
+        pm_user_prune_folders($_SESSION['UID']);
 
         light_draw_pm_inbox();
 

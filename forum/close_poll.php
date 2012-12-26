@@ -124,7 +124,7 @@ if (!$edit_message = messages_get($tid, 1, 1)) {
     exit;
 }
 
-$post_edit_time = forum_get_setting('post_edit_time', null, 0);
+$post_edit_time = forum_get_setting('post_edit_time', 'is_numeric', 0);
 
 if ((forum_get_setting('allow_post_editing', 'N') || (($_SESSION['UID'] != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
     html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_message));

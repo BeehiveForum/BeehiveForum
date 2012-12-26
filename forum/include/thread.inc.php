@@ -69,7 +69,7 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -89,9 +89,9 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false)
     $sql.= "LEFT JOIN `{$table_prefix}THREAD_STATS` THREAD_STATS ";
     $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '$uid') ";
+    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE THREAD.TID = '$tid' AND THREAD.FID IN ($fidlist) ";
@@ -230,7 +230,7 @@ function thread_get_tracking_data($tid)
 
     $tracking_data_array = array();
 
-    while (($tracking_data = $result->fetch_assoc())) {
+    while (($tracking_data = $result->fetch_assoc()) !== null) {
         $tracking_data_array[] = $tracking_data;
     }
 
@@ -296,16 +296,16 @@ function thread_set_split($old_tid, $new_tid)
 
 function thread_get_interest($tid)
 {
-    if (($uid = session::get_value('UID')) === false) return false;
-
     if (!$db = db::get()) return false;
+
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     if (!is_numeric($tid)) return false;
 
     $sql = "SELECT INTEREST FROM `{$table_prefix}USER_THREAD` ";
-    $sql.= "WHERE UID = '$uid' AND TID = '$tid'";
+    $sql.= "WHERE UID = '{$_SESSION['UID']}' AND TID = '$tid'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -320,9 +320,10 @@ function thread_set_interest($tid, $interest)
 {
     if (!$db = db::get()) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!is_numeric($tid)) return false;
+
     if (!is_numeric($interest)) return false;
 
     $thread_interest_array = array(
@@ -337,7 +338,7 @@ function thread_set_interest($tid, $interest)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "INSERT INTO `{$table_prefix}USER_THREAD` (UID, TID, INTEREST) ";
-    $sql.= "VALUES ('$uid', '$tid', '$interest') ON DUPLICATE KEY ";
+    $sql.= "VALUES ('{$_SESSION['UID']}', '$tid', '$interest') ON DUPLICATE KEY ";
     $sql.= "UPDATE INTEREST = VALUES(INTEREST)";
 
     if (!$db->query($sql)) return false;
@@ -351,7 +352,7 @@ function thread_set_high_interest($tid)
 {
     if (!$db = db::get()) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!is_numeric($tid)) return false;
 
@@ -360,7 +361,7 @@ function thread_set_high_interest($tid)
     $thread_interested = THREAD_INTERESTED;
 
     $sql = "INSERT INTO `{$table_prefix}USER_THREAD` (UID, TID, INTEREST) ";
-    $sql.= "VALUES ('$uid', '$tid', '$thread_interested') ON DUPLICATE KEY ";
+    $sql.= "VALUES ('{$_SESSION['UID']}', '$tid', '$thread_interested') ON DUPLICATE KEY ";
     $sql.= "UPDATE INTEREST = VALUES(INTEREST)";
 
     if (!($result = $db->query($sql))) return false;
@@ -1132,7 +1133,7 @@ function thread_split_get_replies($tid, $pid)
 
     if ($result->num_rows == 0) return false;
 
-    while (($post_data = $result->fetch_assoc())) {
+    while (($post_data = $result->fetch_assoc()) !== null) {
 
         if (in_array($post_data['REPLY_TO_PID'], $pid_array)) {
             $pid_array[] = $post_data['PID'];
@@ -1164,7 +1165,7 @@ function thread_split_get_following($tid, $pid)
 
     if ($result->num_rows == 0) return false;
 
-    while (($post_data = $result->fetch_assoc())) {
+    while (($post_data = $result->fetch_assoc()) !== null) {
         $pid_array[] = $post_data['PID'];
     }
 
@@ -1189,7 +1190,7 @@ function thread_get_unmoved_posts($tid)
 
     $thread_unmoved_posts_array = array();
 
-    while (($thread_data = $result->fetch_assoc())) {
+    while (($thread_data = $result->fetch_assoc()) !== null) {
         $thread_unmoved_posts_array[$thread_data['PID']] = $thread_data['PID'];
     }
 
@@ -1251,7 +1252,7 @@ function thread_search($thread_search, $selected_array = array())
 
     if ($result->num_rows == 0) return false;
 
-    while (($thread_data = $result->fetch_assoc())) {
+    while (($thread_data = $result->fetch_assoc()) !== null) {
         $results_array[$thread_data['TID']] = $thread_data;
     }
 
@@ -1263,7 +1264,7 @@ function thread_search($thread_search, $selected_array = array())
 
 function thread_get_last_page_pid($length, $posts_per_page)
 {
-    if (session::get_value('THREAD_LAST_PAGE') == 'N') {
+    if (!isset($_SESSION['THREAD_LAST_PAGE']) || ($_SESSION['THREAD_LAST_PAGE'] == 'N')) {
         return $length;
     }
 

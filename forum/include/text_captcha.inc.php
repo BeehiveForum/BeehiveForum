@@ -89,7 +89,7 @@ class captcha {
         $this->image_x = ($num_chars + 1) * (int)(($this->max_char_size + $this->min_char_size) / 1.5);
         $this->image_y = (int)(2.4 * $this->max_char_size);
         
-        if (($text_captcha_dir = forum_get_setting('text_captcha_dir'))) {
+        if (($text_captcha_dir = forum_get_setting('text_captcha_dir', 'strlen', false)) !== false) {
             $this->text_captcha_dir = rtrim($text_captcha_dir, '/');
         }
 

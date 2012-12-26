@@ -60,9 +60,9 @@ $valid = true;
 
 $file_hash = md5(uniqid(mt_rand()));
 
-$max_user_attachment_space = forum_get_setting('attachments_max_user_space', null, 1048576);
+$max_user_attachment_space = forum_get_setting('attachments_max_user_space', 'is_numeric', 1048576);
 
-$free_upload_space = attachments_get_free_user_space($uid);
+$free_upload_space = attachments_get_free_user_space($_SESSION['UID']);
 
 $attachment_mime_types = attachments_get_mime_types();
 
@@ -80,9 +80,9 @@ if (isset($_POST['summary'])) {
         $hash_array = array();
     }
 
-    $used_post_space = format_file_size(attachments_get_post_used_space($uid, $hash_array));
+    $used_post_space = format_file_size(attachments_get_post_used_space($_SESSION['UID'], $hash_array));
 
-    $free_post_space = attachments_get_free_post_space($uid, $hash_array);
+    $free_post_space = attachments_get_free_post_space($_SESSION['UID'], $hash_array);
 
     echo json_encode(
         array(
@@ -192,9 +192,9 @@ if (isset($_POST['delete'])) {
 
             $thumbnail = image_resize($file_path, $file_path. '.thumb');
 
-            $attachment_aid = attachments_add($uid, $file_name, $file_hash, $file_type, $file_size, $thumbnail);
+            $attachment_aid = attachments_add($_SESSION['UID'], $file_name, $file_hash, $file_type, $file_size, $thumbnail);
 
-            $attachment_details = attachments_get_by_aid($attachment_aid, $uid);
+            $attachment_details = attachments_get_by_aid($attachment_aid, $_SESSION['UID']);
         }
     }
 

@@ -43,7 +43,7 @@ if (!session::logged_in()) {
 }
 
 // Forum name
-$forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
+$forum_name = forum_get_setting('forum_name', 'strlen', 'A Beehive Forum');
 
 // Array to hold error messages
 $error_msg_array = array();

@@ -54,7 +54,7 @@ pm_enabled();
 $page_prefs = session::get_post_page_prefs();
 
 // Prune old messages for the current user
-pm_user_prune_folders();
+pm_user_prune_folders($_SESSION['UID']);
 
 // Get the Message ID (MID)
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {

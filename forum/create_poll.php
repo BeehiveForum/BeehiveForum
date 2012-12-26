@@ -311,7 +311,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
     if (sizeof($attachments) > 0 && !attachments_check_post_space($_SESSION['UID'], $attachments)) {
 
-    	$max_post_attachment_space = forum_get_setting('attachments_max_post_space', null, 1048576);
+    	$max_post_attachment_space = forum_get_setting('attachments_max_post_space', 'is_numeric', 1048576);
         $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
         $valid = false;
     }
@@ -621,7 +621,7 @@ if ($valid && isset($_POST['post'])) {
 
     } else {
 
-        $error_msg_array[] = sprintf(gettext("You can only post once every %s seconds. Please try again later."), forum_get_setting('minimum_post_frequency', null, 0));
+        $error_msg_array[] = sprintf(gettext("You can only post once every %s seconds. Please try again later."), forum_get_setting('minimum_post_frequency', 'is_numeric', 0));
     }
 }
 

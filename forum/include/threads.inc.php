@@ -46,7 +46,7 @@ require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 function threads_get_folders()
 {
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!$db = db::get()) return false;
 
@@ -57,7 +57,7 @@ function threads_get_folders()
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, USER_FOLDER.INTEREST ";
     $sql.= "FROM `{$table_prefix}FOLDER` FOLDER ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-    $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
+    $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
     $sql.= "ORDER BY USER_FOLDER.INTEREST DESC, FOLDER.POSITION";
 
     if (!($result = $db->query($sql))) return false;
@@ -66,7 +66,7 @@ function threads_get_folders()
 
     $folder_info = array();
 
-    while (($folder_data = $result->fetch_assoc())) {
+    while (($folder_data = $result->fetch_assoc()) !== null) {
 
         if (!session::logged_in()) {
 
@@ -1204,7 +1204,7 @@ function threads_get_most_recent($limit = 10, $fid = false, $creation_order = fa
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     // User UID
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     // Unread cutoff
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
@@ -1221,12 +1221,12 @@ function threads_get_most_recent($limit = 10, $fid = false, $creation_order = fa
     $sql.= "LEFT JOIN `{$table_prefix}THREAD_STATS` THREAD_STATS ";
     $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '$uid') ";
+    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-    $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
+    $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
     $sql.= "ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE THREAD.FID IN ($folders) ";
@@ -1246,7 +1246,7 @@ function threads_get_most_recent($limit = 10, $fid = false, $creation_order = fa
 
     $threads_get_array = array();
 
-    while (($thread = $result->fetch_assoc())) {
+    while (($thread = $result->fetch_assoc()) !== null) {
 
         if (isset($thread['LOGON']) && isset($thread['PEER_NICKNAME'])) {
             if (!is_null($thread['PEER_NICKNAME']) && strlen($thread['PEER_NICKNAME']) > 0) {
@@ -1311,7 +1311,7 @@ function threads_process_list($sql)
 
     $folder_order = array();
 
-    while (($thread = $result->fetch_assoc())) {
+    while (($thread = $result->fetch_assoc()) !== null) {
 
         if (isset($thread['LOGON']) && isset($thread['PEER_NICKNAME'])) {
             if (!is_null($thread['PEER_NICKNAME']) && strlen($thread['PEER_NICKNAME']) > 0) {
@@ -1372,7 +1372,7 @@ function threads_get_folder_msgs()
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($folder = $result->fetch_assoc())) {
+    while (($folder = $result->fetch_assoc()) !== null) {
         $folder_msgs[$folder['FID']] = $folder['TOTAL'];
     }
 
@@ -1383,7 +1383,7 @@ function threads_any_unread()
 {
     if (!$db = db::get()) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -1398,11 +1398,11 @@ function threads_any_unread()
     $sql = "SELECT COUNT(THREAD.TID) AS UNREAD_THREAD_COUNT ";
     $sql.= "FROM `{$table_prefix}THREAD` THREAD ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '$uid') ";
+    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
-    $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
+    $sql.= "(USER_PEER.UID = '{$_SESSION['UID']}' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON ";
-    $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
+    $sql.= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
     $sql.= "WHERE THREAD.FID in ($fidlist) AND THREAD.DELETED = 'N' ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
@@ -1422,7 +1422,7 @@ function threads_any_unread()
 
 function threads_mark_all_read()
 {
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!$db = db::get()) return false;
 
@@ -1433,9 +1433,9 @@ function threads_mark_all_read()
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_prefix}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-    $sql.= "SELECT $uid, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
+    $sql.= "SELECT {$_SESSION['UID']}, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
     $sql.= "FROM `{$table_prefix}THREAD` THREAD LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE (THREAD.LENGTH > USER_THREAD.LAST_READ ";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE (THREAD.LENGTH > USER_THREAD.LAST_READ ";
     $sql.= "OR USER_THREAD.LAST_READ IS NULL) AND (THREAD.MODIFIED >= CAST('$unread_cutoff_datetime' AS DATETIME)) ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
@@ -1446,7 +1446,7 @@ function threads_mark_all_read()
 
 function threads_mark_50_read()
 {
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!$db = db::get()) return false;
 
@@ -1457,9 +1457,9 @@ function threads_mark_50_read()
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_prefix}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-    $sql.= "SELECT $uid, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
+    $sql.= "SELECT {$_SESSION['UID']}, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
     $sql.= "FROM `{$table_prefix}THREAD` THREAD LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE (THREAD.LENGTH > USER_THREAD.LAST_READ ";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE (THREAD.LENGTH > USER_THREAD.LAST_READ ";
     $sql.= "OR USER_THREAD.LAST_READ IS NULL) AND (THREAD.MODIFIED >= CAST('$unread_cutoff_datetime' AS DATETIME)) ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 50 ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
@@ -1478,14 +1478,14 @@ function threads_mark_folder_read($fid)
 
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_prefix}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-    $sql.= "SELECT $uid, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
+    $sql.= "SELECT {$_SESSION['UID']}, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
     $sql.= "FROM `{$table_prefix}THREAD` THREAD LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.FID = '$fid' ";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE THREAD.FID = '$fid' ";
     $sql.= "AND (THREAD.MODIFIED >= CAST('$unread_cutoff_datetime' AS DATETIME)) ";
     $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
@@ -1503,7 +1503,7 @@ function threads_mark_read($tid_array)
 
     if (!is_array($tid_array)) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return false;
 
@@ -1512,9 +1512,9 @@ function threads_mark_read($tid_array)
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_prefix}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-    $sql.= "SELECT $uid, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
+    $sql.= "SELECT {$_SESSION['UID']}, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
     $sql.= "FROM `{$table_prefix}THREAD` THREAD LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.TID IN ($tid_list) ";
+    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE THREAD.TID IN ($tid_list) ";
     $sql.= "AND (THREAD.MODIFIED >= CAST('$unread_cutoff_datetime' AS DATETIME)) ";
     $sql.= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
@@ -1542,7 +1542,7 @@ function threads_get_unread_data(&$threads_array, $tid_array)
 
     if ($result->num_rows == 0) return false;
 
-    while (($thread_data = $result->fetch_assoc())) {
+    while (($thread_data = $result->fetch_assoc()) !== null) {
         $threads_array[$thread_data['TID']] = $thread_data;
     }
 
@@ -1678,7 +1678,7 @@ function threads_have_attachments(&$threads_array)
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($attachment_data = $result->fetch_assoc())) {
+    while (($attachment_data = $result->fetch_assoc()) !== null) {
         $threads_array[$attachment_data['TID']]['ATTACHMENT_COUNT'] = $attachment_data['ATTACHMENT_COUNT'];
     }
 
@@ -1711,6 +1711,8 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $pag
 {
     if (!$db = db::get()) return false;
 
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+
     if (!is_numeric($interest_type)) $interest_type = THREAD_NOINTEREST;
 
     if (!is_numeric($page)) $page = 1;
@@ -1721,8 +1723,6 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $pag
 
     $thread_subscriptions_array = array();
 
-    $uid = session::get_value('UID');
-
     if ($interest_type <> THREAD_NOINTEREST) {
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, ";
@@ -1730,7 +1730,7 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $pag
         $sql.= "USER_THREAD.INTEREST FROM `{$table_prefix}THREAD` THREAD ";
         $sql.= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
         $sql.= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID ";
-        $sql.= "AND USER_THREAD.UID = '$uid') WHERE USER_THREAD.INTEREST = '$interest_type' ";
+        $sql.= "AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE USER_THREAD.INTEREST = '$interest_type' ";
         $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT $offset, 20";
 
     } else {
@@ -1740,7 +1740,7 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $pag
         $sql.= "USER_THREAD.INTEREST FROM `{$table_prefix}THREAD` THREAD ";
         $sql.= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
         $sql.= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID ";
-        $sql.= "AND USER_THREAD.UID = '$uid') ORDER BY THREAD.MODIFIED DESC ";
+        $sql.= "AND USER_THREAD.UID = '{$_SESSION['UID']}') ORDER BY THREAD.MODIFIED DESC ";
         $sql.= "LIMIT $offset, 20";
     }
 
@@ -1756,7 +1756,7 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $pag
         return threads_get_user_subscriptions($interest_type, $page - 1);
     }
 
-    while (($thread_data_array = $result->fetch_assoc())) {
+    while (($thread_data_array = $result->fetch_assoc()) !== null) {
         $thread_subscriptions_array[] = $thread_data_array;
     }
 
@@ -1770,6 +1770,8 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
 {
     if (!$db = db::get()) return false;
 
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+
     if (!is_numeric($interest_type)) $interest_type = THREAD_NOINTEREST;
 
     if (!is_numeric($page)) $page = 1;
@@ -1782,8 +1784,6 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
 
     $thread_subscriptions_array = array();
 
-    $uid = session::get_value('UID');
-
     if ($interest_type <> THREAD_NOINTEREST) {
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.TID, ";
@@ -1791,7 +1791,7 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
         $sql.= "USER_THREAD.INTEREST FROM `{$table_prefix}THREAD` THREAD ";
         $sql.= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
         $sql.= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID ";
-        $sql.= "AND USER_THREAD.UID = '$uid') WHERE USER_THREAD.INTEREST = '$interest_type' ";
+        $sql.= "AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE USER_THREAD.INTEREST = '$interest_type' ";
         $sql.= "AND THREAD.TITLE LIKE '$thread_search%' ORDER BY THREAD.MODIFIED DESC ";
         $sql.= "LIMIT $offset, 20";
 
@@ -1802,7 +1802,7 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
         $sql.= "USER_THREAD.INTEREST FROM `{$table_prefix}THREAD` THREAD ";
         $sql.= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
         $sql.= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID ";
-        $sql.= "AND USER_THREAD.UID = '$uid') WHERE USER_THREAD.INTEREST <> 0 ";
+        $sql.= "AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE USER_THREAD.INTEREST <> 0 ";
         $sql.= "AND THREAD.TITLE LIKE '$thread_search%' ORDER BY THREAD.MODIFIED DESC ";
         $sql.= "LIMIT $offset, 20";
     }
@@ -1819,7 +1819,7 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
         return threads_search_user_subscriptions($thread_search, $interest_type, $page - 1);
     }
 
-    while (($thread_data_array = $result->fetch_assoc())) {
+    while (($thread_data_array = $result->fetch_assoc()) !== null) {
         $thread_subscriptions_array[] = $thread_data_array;
     }
 

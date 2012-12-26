@@ -75,10 +75,10 @@ abstract class session
 
         session_start();
 
-        session::refresh(session::get_value('UID'));
+        session::refresh($_SESSION['UID']);
 
         if (session::logged_in()) {
-            html_set_cookie('sess_uid', session::get_value('UID'));
+            html_set_cookie('sess_uid', $_SESSION['UID']);
         } else {
             html_set_cookie('sess_uid', '', time() - YEAR_IN_SECONDS);
         }
@@ -126,7 +126,7 @@ abstract class session
 
         $time = date(MYSQL_DATETIME, time());
 
-        $uid = session::$db->escape(session::get_value('UID'));
+        $uid = session::$db->escape($_SESSION['UID']);
 
         $ip_address = session::$db->escape(get_ip_address());
 
@@ -243,7 +243,7 @@ abstract class session
 
             $_SESSION['PERMS'][$forum_fid] = array();
 
-            if (($user_perms = session::get_perm_array($_SESSION['UID'], $forum_fid))) {
+            if (($user_perms = session::get_perm_array($_SESSION['UID'], $forum_fid)) !== false) {
                 $_SESSION['PERMS'][$forum_fid] = $user_perms[$forum_fid];
             }
         }
@@ -453,7 +453,7 @@ abstract class session
 
         if ($result->num_rows == 0) return $user_perm_array;
 
-        while (($permission_data = $result->fetch_assoc())) {
+        while (($permission_data = $result->fetch_assoc()) !== null) {
 
             if ($permission_data['FOLDER_PERM_COUNT'] > 0) {
 
@@ -471,7 +471,7 @@ abstract class session
 
         if ($result->num_rows == 0) return $user_perm_array;
 
-        while (($permission_data = $result->fetch_assoc())) {
+        while (($permission_data = $result->fetch_assoc()) !== null) {
 
             if ($permission_data['USER_PERM_COUNT'] > 0) {
 
@@ -569,7 +569,7 @@ abstract class session
             $_SESSION = array_merge($_SESSION, $user_prefs);
         }
 
-        if (($user_perms = session::get_perm_array($uid, $forum_fid))) {
+        if (($user_perms = session::get_perm_array($uid, $forum_fid)) !== false) {
             $_SESSION['PERMS'] = $user_perms;
         }
 

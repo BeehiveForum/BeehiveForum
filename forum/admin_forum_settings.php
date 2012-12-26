@@ -219,8 +219,8 @@ if (isset($_POST['changepermissions'])) {
 
     } else {
 
-        $new_forum_settings['adsense_display_users'] = forum_get_global_setting('adsense_display_users', false, ADSENSE_DISPLAY_NONE);
-        $new_forum_settings['adsense_display_pages'] = forum_get_global_setting('adsense_display_pages', false, ADSENSE_DISPLAY_TOP_OF_ALL_PAGES);
+        $new_forum_settings['adsense_display_users'] = forum_get_global_setting('adsense_display_users', 'is_numeric', ADSENSE_DISPLAY_NONE);
+        $new_forum_settings['adsense_display_pages'] = forum_get_global_setting('adsense_display_pages', 'is_numeric', ADSENSE_DISPLAY_TOP_OF_ALL_PAGES);
     }
 
     if (isset($_POST['forum_timezone']) && is_numeric($_POST['forum_timezone'])) {

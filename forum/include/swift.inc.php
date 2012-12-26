@@ -50,11 +50,11 @@ abstract class Swift_TransportFactory
 
             $transport = Swift_SmtpTransportSingleton::getInstance($smtp_server, $smtp_port);
 
-            if (($smtp_username = forum_get_global_setting('smtp_username', 'strlen', ''))) {
+            if (($smtp_username = forum_get_global_setting('smtp_username', 'strlen', false)) !== false) {
                 $transport->setUsername($smtp_username);
             }
 
-            if (($smtp_password = forum_get_global_setting('smtp_password', 'strlen', ''))) {
+            if (($smtp_password = forum_get_global_setting('smtp_password', 'strlen', false)) !== false) {
                 $transport->setPassword($smtp_password);
             }
 

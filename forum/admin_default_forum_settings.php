@@ -142,7 +142,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     if (isset($_POST['mail_function']) && in_array($_POST['mail_function'], array_keys($mail_functions_array))) {
         $new_forum_settings['mail_function'] = $_POST['mail_function'];
     } else {
-        $new_forum_settings['mail_function'] = forum_get_setting('mail_function', null, MAIL_FUNCTION_PHP);
+        $new_forum_settings['mail_function'] = forum_get_setting('mail_function', 'is_numeric', MAIL_FUNCTION_PHP);
     }
 
     if (isset($_POST['smtp_server']) && strlen(trim($_POST['smtp_server'])) > 0) {
@@ -196,7 +196,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     if (isset($_POST['messages_unread_cutoff']) && in_array($_POST['messages_unread_cutoff'], array_keys($unread_cutoff_periods))) {
         $new_forum_settings['messages_unread_cutoff'] = $_POST['messages_unread_cutoff'];
     } else {
-        $new_forum_settings['messages_unread_cutoff'] = forum_get_setting('messages_unread_cutoff', null, YEAR_IN_SECONDS);
+        $new_forum_settings['messages_unread_cutoff'] = forum_get_setting('messages_unread_cutoff', 'is_numeric', YEAR_IN_SECONDS);
     }
 
     if (isset($_POST['search_min_frequency']) && is_numeric($_POST['search_min_frequency'])) {
@@ -1246,7 +1246,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 
-$forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
+$forum_name = forum_get_setting('forum_name', 'strlen', 'A Beehive Forum');
 
 $frame_top_target = html_get_top_frame_name();
 

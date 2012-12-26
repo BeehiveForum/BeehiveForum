@@ -255,7 +255,7 @@ function perm_get_user_groups($page = 1, $sort_by = 'GROUP_NAME', $sort_dir = 'A
         return perm_get_user_groups($page - 1, $sort_by, $sort_dir);
     }
     
-    while (($permissions_data = $result->fetch_assoc())) {
+    while (($permissions_data = $result->fetch_assoc()) !== null) {
         $user_groups_array[] = $permissions_data;
     }
 
@@ -286,7 +286,7 @@ function perm_user_get_groups($uid)
 
     $user_groups_array = array();
 
-    while (($permissions_data = $result->fetch_assoc())) {
+    while (($permissions_data = $result->fetch_assoc()) !== null) {
         $user_groups_array[] = $permissions_data;
     }
 
@@ -314,7 +314,7 @@ function perm_user_get_group_names($uid, &$user_groups_array)
 
     if ($result->num_rows > 0) {
 
-        while (($perm_data = $result->fetch_assoc())) {
+        while (($perm_data = $result->fetch_assoc()) !== null) {
             $user_groups_array[$perm_data['GID']] = $perm_data['GROUP_NAME'];
         }
     }
@@ -546,7 +546,7 @@ function perm_update_global_perms($uid, $perm)
     if (!is_numeric($uid)) return false;
     if (!is_numeric($perm)) return false;
 
-    if (($gid = perm_get_user_gid($uid))) {
+    if (($gid = perm_get_user_gid($uid)) !== false) {
 
         $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
         $sql.= "VALUES ('$gid', '0', '0', '$perm') ON DUPLICATE KEY ";
@@ -622,7 +622,7 @@ function perm_group_get_folders($gid)
 
     if ($result->num_rows == 0) return false;
 
-    while (($permissions_data = $result->fetch_assoc())) {
+    while (($permissions_data = $result->fetch_assoc()) !== null) {
 
         if ($permissions_data['GROUP_PERM_COUNT'] > 0) {
 
@@ -758,7 +758,7 @@ function perm_get_user_gid($uid)
 
     $user_gids_array = array();
 
-    while ((list($user_gid) = $result->fetch_row())) {
+    while ((list($user_gid) = $result->fetch_row()) !== null) {
         $user_gids_array[] = $user_gid;
     }
 
@@ -809,7 +809,7 @@ function perm_user_get_folders($uid)
 
     if ($result->num_rows == 0) return false;
 
-    while (($permissions_data = $result->fetch_assoc())) {
+    while (($permissions_data = $result->fetch_assoc()) !== null) {
 
         if ($permissions_data['USER_PERM_COUNT'] > 0) {
 
@@ -855,7 +855,7 @@ function perm_update_user_folder_perms($uid, $fid, $perm)
 
     if (!($forum_fid = get_forum_fid())) return false;
 
-    if (($gid = perm_get_user_gid($uid))) {
+    if (($gid = perm_get_user_gid($uid)) !== false) {
 
         $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
         $sql.= "VALUES ('$gid', '$forum_fid', '$fid', '$perm') ";
@@ -914,7 +914,7 @@ function perm_update_user_permissions($uid, $perm)
 
     if (!($forum_fid = get_forum_fid())) return false;
 
-    if (($gid = perm_get_user_gid($uid))) {
+    if (($gid = perm_get_user_gid($uid)) !== false) {
 
         $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
         $sql.= "VALUES ('$gid', '$forum_fid', '0', '$perm') ";
@@ -947,7 +947,7 @@ function perm_update_user_forum_permissions($forum_fid, $uid, $perm)
     if (!is_numeric($forum_fid)) return false;
     if (!is_numeric($uid)) return false;
 
-    if (($gid = perm_get_user_gid($uid))) {
+    if (($gid = perm_get_user_gid($uid)) !== false) {
 
         $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
         $sql.= "VALUES ('$gid', '$forum_fid', '0', '$perm') ";
@@ -1053,7 +1053,7 @@ function perm_group_get_users($gid, $page = 1)
         return perm_group_get_users($gid, $page - 1);
     }
     
-    while (($user_data = $result->fetch_assoc())) {
+    while (($user_data = $result->fetch_assoc()) !== null) {
 
         if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
             if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
@@ -1081,7 +1081,7 @@ function perm_user_apply_email_confirmation($uid)
 
     $perm = USER_PERM_EMAIL_CONFIRM;
 
-    if (($gid = perm_get_user_gid($uid))) {
+    if (($gid = perm_get_user_gid($uid)) !== false) {
 
         $sql = "INSERT INTO GROUP_PERMS (GID, FORUM, FID, PERM) ";
         $sql.= "VALUES ('$gid', '0', '0', '$perm') ON DUPLICATE KEY ";

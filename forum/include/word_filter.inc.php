@@ -55,7 +55,7 @@ function word_filter_get($uid, &$word_filter_array)
 
     if ($result->num_rows == 0) return false;
 
-    while (($word_filter_data = $result->fetch_assoc())) {
+    while (($word_filter_data = $result->fetch_assoc()) !== null) {
         $word_filter_array[] = $word_filter_data;
     }
 
@@ -66,12 +66,12 @@ function word_filter_get_from_session()
 {
     $word_filter_array = array();
 
-    if (session::get_value('USE_ADMIN_FILTER') == 'Y' || forum_get_setting('force_word_filter', 'Y')) {
+    if (isset($_SESSION['USE_ADMIN_FILTER']) && ($_SESSION['USE_ADMIN_FILTER'] == 'Y') || forum_get_setting('force_word_filter', 'Y')) {
         word_filter_get(0, $word_filter_array);
     }
 
-    if (($uid = session::get_value('UID')) > 0 && session::get_value('USE_WORD_FILTER') == 'Y') {
-        word_filter_get($uid, $word_filter_array);
+    if (isset($_SESSION['USE_WORD_FILTER']) && ($_SESSION['USE_WORD_FILTER'] == 'Y')) {
+        word_filter_get($_SESSION['UID'], $word_filter_array);
     }
 
     return word_filter_prepare($word_filter_array);
@@ -88,7 +88,7 @@ function word_filter_get_by_uid($uid)
     if (!isset($word_filter_array[$uid])) {
 
         $word_filter_array[$uid] = array();
-        
+
         if ((isset($user_prefs['USE_ADMIN_FILTER']) && $user_prefs['USE_ADMIN_FILTER'] == 'Y') || forum_get_setting('force_word_filter', 'Y')) {
             word_filter_get(0, $word_filter_array[$uid]);
         }
@@ -152,44 +152,25 @@ function word_filter_prepare($word_filter_array)
 
 function word_filter_add_ob_tags($content, $strip_html = false)
 {
-    if (($rand_hash = session::get_value('RAND_HASH')) === false) {
-        return $content;
-    }
-
-    $rand_hash = preg_replace("/[^a-z]/iu", "", $rand_hash);
-    
     $strip_html = ($strip_html) ? 'strip' : 'nostrip';
-
-    return sprintf('<%1$s_%3$s>%2$s</%1$s_%3$s>', $strip_html, $content, $rand_hash);
+    return sprintf('<%1$s_%3$s>%2$s</%1$s_%3$s>', $strip_html, $content, $_SESSION['RAND_HASH']);
 }
 
 function word_filter_remove_ob_tags($content)
 {
-    if (($rand_hash = session::get_value('RAND_HASH')) === false) {
-        return $content;
-    }
-
-    $rand_hash = preg_replace("/[^a-z]/iu", "", $rand_hash);
-
-    return preg_replace(sprintf('/<\/?(strip|nostrip)_%s>/uU', $rand_hash), "", $content);
+    return preg_replace(sprintf('/<\/?(strip|nostrip)_%s>/uU', $_SESSION['RAND_HASH']), "", $content);
 }
 
 function word_filter_ob_callback($content)
 {
-    if (($rand_hash = session::get_value('RAND_HASH')) === false) {
-        return word_filter_remove_ob_tags($content);
-    }
-
-    $rand_hash = preg_replace("/[^a-z]/iu", "", $rand_hash);
-
     if (!($user_wordfilter = word_filter_get_from_session())) {
         return word_filter_remove_ob_tags($content);
     }
-    
+
     $pattern_array = $user_wordfilter['pattern_array'];
     $replace_array = $user_wordfilter['replace_array'];
-    
-    $pattern_match = sprintf('/<\/?strip_%1$s>/u', $rand_hash);
+
+    $pattern_match = sprintf('/<\/?strip_%1$s>/u', $_SESSION['RAND_HASH']);
     $content_array = preg_split($pattern_match, $content);
 
     foreach ($content_array as $key => $content_match) {
@@ -198,10 +179,10 @@ function word_filter_ob_callback($content)
             $content_array[$key] = strip_tags($new_content);
         }
     }
-    
+
     $content = implode('', $content_array);
-        
-    $pattern_match = sprintf('/<\/?nostrip_%1$s>/u', $rand_hash);
+
+    $pattern_match = sprintf('/<\/?nostrip_%1$s>/u', $_SESSION['RAND_HASH']);
     $content_array = preg_split($pattern_match, $content);
 
     foreach ($content_array as $key => $content_match) {
@@ -210,7 +191,7 @@ function word_filter_ob_callback($content)
             $content_array[$key] = $new_content;
         }
     }
-    
+
     $content = implode('', $content_array);
 
     return word_filter_remove_ob_tags($content);
@@ -220,7 +201,7 @@ function word_filter_apply($content, $uid, $strip_html = false)
 {
     if (!is_numeric($uid)) return $content;
 
-    if (($user_wordfilter = word_filter_get_by_uid($uid))) {
+    if (($user_wordfilter = word_filter_get_by_uid($uid)) !== false) {
 
         $pattern_array = $user_wordfilter['pattern_array'];
         $replace_array = $user_wordfilter['replace_array'];

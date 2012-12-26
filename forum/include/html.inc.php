@@ -303,9 +303,9 @@ function html_user_require_approval()
 
 function html_email_confirmation_error()
 {
-    if (($uid = session::get_value('UID')) === false) return;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    $user_array = user_get($uid);
+    $user_array = user_get($_SESSION['UID']);
 
     html_draw_error(gettext("Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details"), 'confirm_email.php', 'get', array('resend' => gettext("Resend Confirmation")), array('uid' => $user_array['UID'], 'resend' => 'Y'), sprintf("title=%s", gettext("Email confirmation required")), "robots=noindex,nofollow");
 }
@@ -321,12 +321,14 @@ function html_get_user_style_path()
 
     if ($user_style === false) {
 
-        if (!($user_style = session::get_value('STYLE'))) {
-            $user_style = html_get_cookie('forum_style', null, forum_get_setting('default_style', null, 'default'));
+        if (isset($_SESSION['STYLE']) && strlen(trim($_SESSION['STYLE'])) > 0) {
+            $user_style = $_SESSION['STYLE'];
+        } else {
+            $user_style = html_get_cookie('forum_style', 'strlen', forum_get_setting('default_style', 'strlen', 'default'));
         }
 
         if (!style_exists($user_style)) {
-            $user_style = forum_get_setting('default_style', null, 'default');
+            $user_style = forum_get_setting('default_style', 'strlen', 'default');
         }
     }
 
@@ -366,15 +368,19 @@ function html_get_emoticon_style_sheet($emoticon_set = false)
 {
     if (($emoticon_set) && emoticons_set_exists($emoticon_set)) {
 
-        $user_emoticons = basename($emoticon_set);
+        $user_emoticon_pack = basename($emoticon_set);
 
-    } else if (($user_emoticons = session::get_value('EMOTICONS')) === false) {
+    } else if (isset($_SESSION['EMOTICONS']) && strlen(trim($_SESSION['EMOTICONS'])) > 0) {
 
-        $user_emoticons = forum_get_setting('default_emoticons');
+        $user_emoticon_pack = $_SESSION['EMOTICONS'];
+
+    } else {
+
+        $user_emoticon_pack = forum_get_setting('default_emoticons', 'strlen', 'default');
     }
 
-    if (emoticons_set_exists($user_emoticons)) {
-        return html_get_forum_file_path(sprintf('emoticons/%s/style.css', basename($user_emoticons)));
+    if (emoticons_set_exists($user_emoticon_pack)) {
+        return html_get_forum_file_path(sprintf('emoticons/%s/style.css', basename($user_emoticon_pack)));
     }
 
     return false;
@@ -664,7 +670,7 @@ function html_draw_top()
 
         list($tid, $pid) = explode('.', $_GET['msg']);
 
-        if (($thread_data = thread_get($tid))) {
+        if (($thread_data = thread_get($tid)) !== false) {
 
             $prev_page = ($pid - 10 > 0) ? $pid - 10 : 1;
             $next_page = ($pid + 10 < $thread_data['LENGTH']) ? $pid + 10 : $thread_data['LENGTH'];
@@ -744,7 +750,7 @@ function html_draw_top()
 
     printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array(gettext('RSS Feed')), $rss_feed_path);
 
-    if (($folders_array = folder_get_available_details())) {
+    if (($folders_array = folder_get_available_details()) !== false) {
 
         foreach ($folders_array as $folder) {
 
@@ -753,7 +759,7 @@ function html_draw_top()
         }
     }
 
-    if (($user_style_path = html_get_user_style_path())) {
+    if (($user_style_path = html_get_user_style_path()) !== false) {
 
         printf("<link rel=\"apple-touch-icon\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-57x57.png', $user_style_path)));
         printf("<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-72x72.png', $user_style_path)));
@@ -766,15 +772,15 @@ function html_draw_top()
 
     printf("<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"%s\" href=\"%s\" />\n", $forum_name, $opensearch_path);
 
-    if (($style_sheet = html_get_style_sheet())) {
+    if (($style_sheet = html_get_style_sheet()) !== false) {
         html_include_css($style_sheet);
     }
 
-    if (($script_style_sheet = html_get_script_style_sheet())) {
+    if (($script_style_sheet = html_get_script_style_sheet()) !== false) {
         html_include_css($script_style_sheet);
     }
 
-    if (($emoticon_style_sheet = html_get_emoticon_style_sheet($emoticons))) {
+    if (($emoticon_style_sheet = html_get_emoticon_style_sheet($emoticons)) !== false) {
         html_include_css($emoticon_style_sheet, 'print, screen');
     }
 
@@ -788,7 +794,7 @@ function html_draw_top()
         }
     }
 
-    if (($style_path_ie6 = html_get_style_sheet('style_ie6.css'))) {
+    if (($style_path_ie6 = html_get_style_sheet('style_ie6.css')) !== false) {
 
         echo "<!--[if IE 6]>\n";
         html_include_css($style_path_ie6);
@@ -881,7 +887,7 @@ function html_draw_top()
 
             if (in_array(basename($_SERVER['PHP_SELF']), $resize_images_page)) {
 
-                if (session::get_value('USE_OVERFLOW_RESIZE') == 'Y') {
+                if (isset($_SESSION['USE_OVERFLOW_RESIZE']) && ($_SESSION['USE_OVERFLOW_RESIZE'] == 'Y')) {
                     html_include_javascript(html_get_forum_file_path('js/overflow.js'));
                 }
             }
@@ -951,7 +957,7 @@ function html_draw_top()
             echo "<br />\n";
         }
 
-        if ((forum_get_setting('show_share_links', 'Y')) && (session::get_value('SHOW_SHARE_LINKS') == 'Y')) {
+        if ((forum_get_setting('show_share_links', 'Y')) && isset($_SESSION['SHOW_SHARE_LINKS']) && ($_SESSION['SHOW_SHARE_LINKS'] == 'Y')) {
             echo '<div id="fb-root"></div>';
         }
     }
@@ -963,7 +969,7 @@ function html_draw_bottom($frame_set_html = false)
 
     if ($frame_set_html === false) {
 
-        if (($page_footer = html_get_page_footer())) {
+        if (($page_footer = html_get_page_footer()) !== false) {
             echo fix_html($page_footer);
         }
 
@@ -971,7 +977,7 @@ function html_draw_bottom($frame_set_html = false)
             echo '<br>'; adsense_output_html();
         }
 
-        if (($google_analytics_code = html_get_google_analytics_code())) {
+        if (($google_analytics_code = html_get_google_analytics_code()) !== false) {
 
             echo "<script type=\"text/javascript\">\n\n";
             echo "  var _gaq = _gaq || [];\n";
@@ -1126,7 +1132,7 @@ class html_frame
 
 function html_get_page_footer()
 {
-    if (($page_footer = forum_get_setting('forum_page_footer'))) {
+    if (($page_footer = forum_get_setting('forum_page_footer')) !== false) {
         return (strlen(trim($page_footer)) > 0) ? $page_footer : false;
     }
 
@@ -1139,7 +1145,7 @@ function html_get_google_analytics_code()
 
         if (forum_get_setting('enable_google_analytics', 'Y')) {
 
-            if (($google_analytics_code = forum_get_setting('google_analytics_code'))) {
+            if (($google_analytics_code = forum_get_setting('google_analytics_code')) !== false) {
                 return (strlen(trim($google_analytics_code)) > 0) ? $google_analytics_code : false;
             }
         }
@@ -1148,7 +1154,7 @@ function html_get_google_analytics_code()
 
         if (forum_get_global_setting('enable_google_analytics', 'Y')) {
 
-            if (($google_analytics_code = forum_get_global_setting('google_analytics_code'))) {
+            if (($google_analytics_code = forum_get_global_setting('google_analytics_code')) !== false) {
                 return (strlen(trim($google_analytics_code)) > 0) ? $google_analytics_code : false;
             }
         }
@@ -1160,7 +1166,7 @@ function html_get_google_analytics_code()
 function html_output_adsense_settings()
 {
     // Check the required settings!
-    if (($adsense_publisher_id = adsense_publisher_id())) {
+    if (($adsense_publisher_id = adsense_publisher_id()) !== false) {
 
         // Default banner size and type
         $ad_type = 'medium'; $ad_width = 468; $ad_height = 60;
@@ -1441,7 +1447,7 @@ function html_get_forum_file_path($file_path, $allow_cdn = true)
         $http_scheme = (isset($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
 
         // Disable CDN for everything but CSS, icons, images and Javascript
-        if (($url_file_path = @parse_url($file_path, PHP_URL_PATH))) {
+        if (($url_file_path = @parse_url($file_path, PHP_URL_PATH)) !== false) {
             $allow_cdn = (preg_match('/\.png$|\.css$|\.ico$|\.js$/Diu', $url_file_path) > 0) ? $allow_cdn : false;
         }
 

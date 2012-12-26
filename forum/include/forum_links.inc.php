@@ -54,7 +54,7 @@ function forum_links_get_links()
 
     $links_array = array($forum_links_top_link);
 
-    while (($forum_links_data = $result->fetch_assoc())) {
+    while (($forum_links_data = $result->fetch_assoc()) !== null) {
 
         if (!isset($forum_links_data['TITLE']) || strlen(trim($forum_links_data['TITLE'])) < 1) {
             $forum_links_data['TITLE'] = '-';
@@ -102,7 +102,7 @@ function forum_links_get_links_by_page($page = 1)
         return forum_links_get_links_by_page($page - 1);
     }        
 
-    while (($forum_links_data = $result->fetch_assoc())) {
+    while (($forum_links_data = $result->fetch_assoc()) !== null) {
 
         if (!isset($forum_links_data['URI'])) $forum_links_data['URI'] = "";
         if (!isset($forum_links_data['TITLE'])) $forum_links_data['TITLE'] = "-";
@@ -159,7 +159,7 @@ function forum_links_fix_url($uri)
 
 function forum_links_draw_dropdown()
 {
-    if (($forum_links_array = forum_links_get_links(false))) {
+    if (($forum_links_array = forum_links_get_links(false)) !== false) {
 
         $html = form_dropdown_array('forum_links', $forum_links_array, false, false, "forumlinks");
         return $html;
@@ -264,7 +264,7 @@ function forum_links_move_up($lid)
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($forum_links_data = $result->fetch_assoc())) {
+    while (($forum_links_data = $result->fetch_assoc()) !== null) {
 
         $forum_links_order[] = $forum_links_data['LID'];
         $forum_links_position[$forum_links_data['LID']] = $forum_links_data['POS'];
@@ -313,7 +313,7 @@ function forum_links_move_down($lid)
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($forum_links_data = $result->fetch_assoc())) {
+    while (($forum_links_data = $result->fetch_assoc()) !== null) {
 
         $forum_links_order[] = $forum_links_data['LID'];
         $forum_links_position[$forum_links_data['LID']] = $forum_links_data['POS'];
@@ -360,17 +360,14 @@ function forum_links_positions_update()
 
     if (!($result = $db->query($sql))) return false;
 
-    while (list($lid) = $result->fetch_row()) {
+    while (($link_data = $result->fetch_row()) !== null) {
 
-        if (isset($lid) && is_numeric($lid)) {
+        $new_position++;
 
-            $new_position++;
+        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FORUM_LINKS` ";
+        $sql.= "SET POS = '$new_position' WHERE LID = '{$link_data['LID']}'";
 
-            $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FORUM_LINKS` ";
-            $sql.= "SET POS = '$new_position' WHERE LID = '$lid'";
-
-            if (!$db->query($sql)) return false;
-        }
+        if (!$db->query($sql)) return false;
     }
 
     return true;

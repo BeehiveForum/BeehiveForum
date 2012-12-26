@@ -65,7 +65,7 @@ function logon_perform()
         $user_password = $_POST['user_password'];
 
         // Try and login the user.
-        if (($uid = user_logon($user_logon, $user_password))) {
+        if (($uid = user_logon($user_logon, $user_password)) !== false) {
 
             // Initialise a user session.
             session::create($uid);

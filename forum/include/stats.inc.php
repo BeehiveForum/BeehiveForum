@@ -93,9 +93,6 @@ function stats_get_html()
     // Get webtag
     $webtag = get_webtag();
 
-    // Current active user UID
-    $uid = session::get_value('UID');
-
     // Number of active users
     $session_count = stats_get_active_session_count();
 
@@ -115,7 +112,7 @@ function stats_get_html()
     $search_engine_bot_link = '<a href="%s" target="_blank"><span class="user_stats_normal">%s</span></a>';
 
     // Output the HTML.
-    if (($user_stats = stats_get_active_user_list())) {
+    if (($user_stats = stats_get_active_user_list()) !== false) {
 
         $active_user_list_array = array();
 
@@ -186,7 +183,7 @@ function stats_get_html()
 
                     $active_user_display = str_replace(" ", "&nbsp;", word_filter_add_ob_tags($active_user_logon, true));
 
-                    if ($user['UID'] == $uid) {
+                    if ($user['UID'] == $_SESSION['UID']) {
 
                         if (isset($user['ANON_LOGON']) && $user['ANON_LOGON'] > USER_ANON_DISABLED) {
 
@@ -219,7 +216,7 @@ function stats_get_html()
 
                         $attachment = attachments_get_by_aid($user['AVATAR_AID']);
 
-                        if (($user_avatar_picture = attachments_make_link($attachment, false, false, false, false))) {
+                        if (($user_avatar_picture = attachments_make_link($attachment, false, false, false, false)) !== false) {
 
                             $active_user_avatar = sprintf('<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
                                                              <img src="%s&amp;avatar_picture" title="%s" alt="" border="0" width="16" height="16" />
@@ -279,7 +276,7 @@ function stats_get_html()
     $html.= "  </tr>\n";
     $html.= "</table>\n";
 
-    if (($longest_thread = stats_get_longest_thread())) {
+    if (($longest_thread = stats_get_longest_thread()) !== false) {
 
         $html.= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
         $html.= "  <tr>\n";
@@ -326,7 +323,7 @@ function stats_get_html()
     $html.= "  </tr>\n";
     $html.= "</table>\n";
 
-    if (($most_posts = stats_get_most_posts())) {
+    if (($most_posts = stats_get_most_posts()) !== false) {
 
         if (($most_posts['MOST_POSTS_COUNT'] > 0) && ($most_posts['MOST_POSTS_DATE'] > 0)) {
 
@@ -346,7 +343,7 @@ function stats_get_html()
         }
     }
 
-    if (($user_count = user_count())) {
+    if (($user_count = user_count()) !== false) {
 
         $html.= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
         $html.= "  <tr>\n";
@@ -360,7 +357,7 @@ function stats_get_html()
 
         if ($user_count <> 1) {
 
-            if (($newest_member = stats_get_newest_user())) {
+            if (($newest_member = stats_get_newest_user()) !== false) {
 
                 $user_newest_display = word_filter_add_ob_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']), true);
                 $user_newest_profile_link = sprintf($new_user_profile_link, $webtag, $newest_member['UID'], $user_newest_display);
@@ -384,7 +381,7 @@ function stats_get_html()
         $html.= "</table>\n";
     }
 
-    if (($most_users = stats_get_most_users())) {
+    if (($most_users = stats_get_most_users()) !== false) {
 
         if (($most_users['MOST_USERS_COUNT'] > 0) && ($most_users['MOST_USERS_DATE'] > 0)) {
 
@@ -517,7 +514,7 @@ function stats_get_active_user_list()
 
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
 
-    if (($uid = session::get_value('UID')) === false) return $stats;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT COUNT(UID) FROM SESSIONS WHERE UID = 0 AND SID IS NULL ";
     $sql.= "AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
@@ -535,9 +532,9 @@ function stats_get_active_user_list()
     $sql.= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL ";
     $sql.= "FROM SESSIONS SESSIONS LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.UID = SESSIONS.UID AND USER_PEER.PEER_UID = '$uid') ";
+    $sql.= "ON (USER_PEER.UID = SESSIONS.UID AND USER_PEER.PEER_UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER2 ";
-    $sql.= "ON (USER_PEER2.PEER_UID = SESSIONS.UID AND USER_PEER2.UID = '$uid') ";
+    $sql.= "ON (USER_PEER2.PEER_UID = SESSIONS.UID AND USER_PEER2.UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = SESSIONS.UID) ";
     $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = SESSIONS.SID) ";
@@ -546,7 +543,7 @@ function stats_get_active_user_list()
 
     if (!($result = $db->query($sql))) return $stats;
 
-    while (($user_data = $result->fetch_assoc())) {
+    while (($user_data = $result->fetch_assoc()) !== null) {
 
         if (isset($user_data['ANON_LOGON']) && $user_data['ANON_LOGON'] > USER_ANON_DISABLED) {
             $anon_logon = $user_data['ANON_LOGON'];
@@ -611,7 +608,7 @@ function stats_get_active_user_list()
 
         } else {
 
-            if (($anon_logon == USER_ANON_DISABLED) || ($user_data['UID'] == $uid) || (($user_data['PEER_RELATIONSHIP'] & USER_FRIEND) > 0 && ($anon_logon == USER_ANON_FRIENDS_ONLY))) {
+            if (($anon_logon == USER_ANON_DISABLED) || ($user_data['UID'] == $_SESSION['UID']) || (($user_data['PEER_RELATIONSHIP'] & USER_FRIEND) > 0 && ($anon_logon == USER_ANON_FRIENDS_ONLY))) {
 
                 $stats['USER_COUNT']++;
 
@@ -771,7 +768,7 @@ function stats_get_newest_user()
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    $uid = session::get_value('UID');
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT MAX(UID) FROM USER";
 
@@ -781,7 +778,7 @@ function stats_get_newest_user()
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
     $sql.= "FROM USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "WHERE USER.UID = '$newest_user_uid'";
 
     if (!($result = $db->query($sql))) return false;
@@ -816,7 +813,7 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
         'post_count' => 0
     );
 
-    $uid = session::get_value('UID');
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $post_start_datetime = date(MYSQL_DATETIME, $start_timestamp);
     $post_end_datetime = date(MYSQL_DATETIME, $end_timestamp);
@@ -835,7 +832,7 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
     $sql.= "FROM `{$table_prefix}POST` POST ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "WHERE POST.CREATED > CAST('$post_start_datetime' AS DATETIME) ";
     $sql.= "AND POST.CREATED < CAST('$post_end_datetime' AS DATETIME) ";
     $sql.= "GROUP BY POST.FROM_UID ORDER BY POST_COUNT DESC ";
@@ -845,7 +842,7 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
 
     if ($result->num_rows > 0) {
 
-        while (($user_stats = $result->fetch_assoc())) {
+        while (($user_stats = $result->fetch_assoc()) !== null) {
 
             if (isset($user_stats['LOGON']) && isset($user_stats['PEER_NICKNAME'])) {
                 if (!is_null($user_stats['PEER_NICKNAME']) && strlen($user_stats['PEER_NICKNAME']) > 0) {
@@ -1074,7 +1071,7 @@ function stats_get_most_downloaded_attachment()
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($attachment_data = $result->fetch_assoc())) {
+    while (($attachment_data = $result->fetch_assoc()) !== null) {
 
         if (@file_exists("$attachment_dir/{$attachment_data['HASH']}")) {
 
@@ -1452,7 +1449,7 @@ function stats_get_users_with_word_filter_count()
 
 function stats_get_mysql_week(&$week_start, &$week_end)
 {
-    if (!$stats_get_mysql_week = db::get()) return false;
+    if (!$db = db::get()) return false;
 
     $sql = "SELECT UNIX_TIMESTAMP(DATE_SUB(CURDATE(), INTERVAL(DAYOFWEEK(CURDATE()) - 1) DAY)) AS WEEK_START, ";
     $sql.= "UNIX_TIMESTAMP(DATE_ADD(CURDATE(), INTERVAL(7 - DAYOFWEEK(CURDATE())) DAY)) AS WEEK_END";

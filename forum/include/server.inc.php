@@ -320,7 +320,7 @@ function disable_magic_quotes()
         &$_REQUEST
     );
 
-    while (list($index, $array) = each($process)) {
+    foreach ($process as $index => $array) {
 
         foreach ($array as $key => $value) {
 

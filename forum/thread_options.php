@@ -159,7 +159,7 @@ if (isset($_POST['save'])) {
     }
 
     // Admin Options
-    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['BY_UID'] == $_SESSION['UID']) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', null, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', null, 0) * MINUTE_IN_SECONDS)))))) {
+    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['BY_UID'] == $_SESSION['UID']) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', 'is_numeric', 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', 'is_numeric', 0) * MINUTE_IN_SECONDS)))))) {
 
         if (isset($_POST['rename']) && strlen(trim($_POST['rename'])) > 0) {
 
@@ -190,7 +190,7 @@ if (isset($_POST['save'])) {
 
             if (folder_is_valid($t_move) && ($t_move !== $thread_data['FID'])) {
 
-                if ((session::check_perm(USER_PERM_FOLDER_MODERATE, $t_move) || (session::check_perm(USER_PERM_THREAD_MOVE, $t_move) && ($thread_data['BY_UID'] == $_SESSION['UID']) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', null, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', null, 0) * MINUTE_IN_SECONDS)))))) && thread_change_folder($tid, $t_move)) {
+                if ((session::check_perm(USER_PERM_FOLDER_MODERATE, $t_move) || (session::check_perm(USER_PERM_THREAD_MOVE, $t_move) && ($thread_data['BY_UID'] == $_SESSION['UID']) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', 'is_numeric', 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', 'is_numeric', 0) * MINUTE_IN_SECONDS)))))) && thread_change_folder($tid, $t_move)) {
 
                     $new_folder_title = folder_get_title($t_move);
                     $old_folder_title = folder_get_title($thread_data['FID']);
@@ -531,7 +531,7 @@ if ($thread_data['DELETED'] == 'N') {
     echo "          </tr>\n";
     echo "        </table>\n";
 
-    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['BY_UID'] == $_SESSION['UID']) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', null, 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', null, 0) * MINUTE_IN_SECONDS)))))) {
+    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['BY_UID'] == $_SESSION['UID']) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', 'is_numeric', 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', 'is_numeric', 0) * MINUTE_IN_SECONDS)))))) {
 
         if (!thread_is_poll($tid)) {
 

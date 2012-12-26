@@ -117,7 +117,7 @@ function light_html_draw_top()
 
         list($tid, $pid) = explode('.', $_GET['msg']);
 
-        if (($thread_data = thread_get($tid))) {
+        if (($thread_data = thread_get($tid)) !== false) {
 
             $prev_page = ($pid - 10 > 0) ? $pid - 10 : 1;
             $next_page = ($pid + 10 < $thread_data['LENGTH']) ? $pid + 10 : $thread_data['LENGTH'];
@@ -163,11 +163,11 @@ function light_html_draw_top()
         echo "<meta name=\"robots\" content=\"$robots\" />\n";
     }
 
-    if (($stylesheet = html_get_style_sheet('mobile.css'))) {
+    if (($stylesheet = html_get_style_sheet('mobile.css')) !== false) {
         echo "<link rel=\"stylesheet\" href=\"$stylesheet\" type=\"text/css\" media=\"screen\" />\n";
     }
 
-    if (($emoticon_stylesheet = html_get_emoticon_style_sheet(true))) {
+    if (($emoticon_stylesheet = html_get_emoticon_style_sheet(true)) !== false) {
         echo "<link rel=\"stylesheet\" href=\"$emoticon_stylesheet\" type=\"text/css\" media=\"screen\" />\n";
     }
 
@@ -175,7 +175,7 @@ function light_html_draw_top()
 
     printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array(gettext("RSS Feed")), $rss_feed_path);
 
-    if (($folders_array = folder_get_available_details())) {
+    if (($folders_array = folder_get_available_details()) !== false) {
 
         foreach ($folders_array as $folder) {
 
@@ -185,7 +185,7 @@ function light_html_draw_top()
         }
     }
 
-    if (($user_style_path = html_get_user_style_path())) {
+    if (($user_style_path = html_get_user_style_path()) !== false) {
 
         printf("<link rel=\"apple-touch-icon\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-57x57.png', $user_style_path)));
         printf("<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-72x72.png', $user_style_path)));
@@ -218,7 +218,7 @@ function light_html_draw_top()
 
     if (in_array(basename($_SERVER['PHP_SELF']), $message_display_pages)) {
 
-        if (session::get_value('USE_MOVER_SPOILER') == "Y") {
+        if (isset($_SESSION['USE_MOVER_SPOILER']) && ($_SESSION['USE_MOVER_SPOILER'] == 'Y')) {
 
             echo "<script type=\"text/javascript\" src=\"js/spoiler.js\"></script>\n";
         }
@@ -354,7 +354,7 @@ function light_draw_messages($tid, $pid)
 
     light_messages_top($tid, $pid, $thread_data['TITLE'], $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'));
 
-    if (($tracking_data_array = thread_get_tracking_data($tid))) {
+    if (($tracking_data_array = thread_get_tracking_data($tid)) !== false) {
 
         foreach ($tracking_data_array as $tracking_data) {
 
@@ -478,7 +478,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
     $visible_threads_array = array();
 
-    if (($uid = session::get_value('UID')) === false) return;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     echo "<div id=\"thread_view\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
@@ -502,102 +502,102 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
         case UNREAD_DISCUSSIONS:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_unread($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_unread($_SESSION['UID'], $folder, $page);
             break;
 
         case UNREAD_DISCUSSIONS_TO_ME:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_unread_to_me($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_unread_to_me($_SESSION['UID'], $folder, $page);
             break;
 
         case TODAYS_DISCUSSIONS:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_by_days($uid, $folder, $page, 1);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_days($_SESSION['UID'], $folder, $page, 1);
             break;
 
         case UNREAD_TODAY:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_days($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_days($_SESSION['UID'], $folder, $page);
             break;
 
         case TWO_DAYS_BACK:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_by_days($uid, $folder, $page, 2);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_days($_SESSION['UID'], $folder, $page, 2);
             break;
 
         case SEVEN_DAYS_BACK:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_by_days($uid, $folder, $page, 7);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_days($_SESSION['UID'], $folder, $page, 7);
             break;
 
         case HIGH_INTEREST:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($uid, $folder, $page, 1);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($_SESSION['UID'], $folder, $page, 1);
             break;
 
         case UNREAD_HIGH_INTEREST:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_interest($uid, $folder, $page, 1);
+            list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_interest($_SESSION['UID'], $folder, $page, 1);
             break;
 
         case RECENTLY_SEEN:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_recently_viewed($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_recently_viewed($_SESSION['UID'], $folder, $page);
             break;
 
         case IGNORED_THREADS:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($uid, $folder, $page, -1);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($_SESSION['UID'], $folder, $page, -1);
             break;
 
         case BY_IGNORED_USERS:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_by_relationship($uid, $folder, $page, USER_IGNORED_COMPLETELY);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_relationship($_SESSION['UID'], $folder, $page, USER_IGNORED_COMPLETELY);
             break;
 
         case SUBSCRIBED_TO:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($uid, $folder, $page, 2);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($_SESSION['UID'], $folder, $page, 2);
             break;
 
         case STARTED_BY_FRIEND:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_by_relationship($uid, $folder, $page, USER_FRIEND);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_relationship($_SESSION['UID'], $folder, $page, USER_FRIEND);
             break;
 
         case UNREAD_STARTED_BY_FRIEND:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_relationship($uid, $folder, $page, USER_FRIEND);
+            list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_relationship($_SESSION['UID'], $folder, $page, USER_FRIEND);
             break;
 
         case STARTED_BY_ME:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_started_by_me($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_started_by_me($_SESSION['UID'], $folder, $page);
             break;
 
         case POLL_THREADS:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_polls($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_polls($_SESSION['UID'], $folder, $page);
             break;
 
         case STICKY_THREADS:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_sticky($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_sticky($_SESSION['UID'], $folder, $page);
             break;
 
         case MOST_UNREAD_POSTS:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_longest_unread($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_longest_unread($_SESSION['UID'], $folder, $page);
             break;
 
         case DELETED_THREADS:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_deleted($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_deleted($_SESSION['UID'], $folder, $page);
             break;
 
         default:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_all($uid, $folder, $page);
+            list($thread_info, $folder_order, $thread_count) = threads_get_all($_SESSION['UID'], $folder, $page);
             break;
     }
 
@@ -615,7 +615,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
     // Check that the folder order is a valid array.
     // While we're here we can also check to see how the user
     // has decided to display the thread list.
-    if (!is_array($folder_order) || (session::get_value('THREADS_BY_FOLDER') == 'Y')) {
+    if (isset($_SESSION['THREADS_BY_FOLDER']) && ($_SESSION['THREADS_BY_FOLDER'] == 'Y')) {
         $folder_order = array_keys($folder_info);
     }
 
@@ -624,11 +624,11 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
         list($tid) = explode('.', $_GET['msg']);
 
-        if (($thread = thread_get($tid))) {
+        if (($thread = thread_get($tid)) !== false) {
 
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
-            if ((session::get_value('THREADS_BY_FOLDER') == 'N') || !session::logged_in()) {
+            if (!isset($_SESSION['THREADS_BY_FOLDER']) || $_SESSION['THREADS_BY_FOLDER'] != 'Y' || !session::logged_in()) {
 
                 if (in_array($thread['FID'], $folder_order)) {
                     array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
@@ -651,13 +651,13 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
     // Work out if any folders have no messages and add them.
     // Seperate them by INTEREST level
-    if (session::get_value('UID') > 0) {
+    if ($_SESSION['UID'] > 0) {
 
         if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
             list($tid) = explode('.', $_GET['msg']);
 
-            if (($thread = thread_get($tid))) {
+            if (($thread = thread_get($tid)) !== false) {
                 $selected_folder = $thread['FID'];
             }
 
@@ -672,13 +672,17 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
         $ignored_folders = array();
 
-        while (list($fid, $folder_data) = each($folder_info)) {
-            if ($folder_data['INTEREST'] == FOLDER_NOINTEREST || (isset($selected_folder) && $selected_folder == $fid)) {
-                if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $folder_order[] = $fid;
-            } else {
-                if ((!in_array($fid, $folder_order)) && (!in_array($fid, $ignored_folders))) $ignored_folders[] = $fid;
-            }
-        }
+        foreach ($folder_info as $fid => $folder_data) {
+
+	        if (!in_array($fid, $folder_order) && !in_array($fid, $ignored_folders)) {
+	
+	            if ($folder_data['INTEREST'] != FOLDER_IGNORED || (isset($folder) && $folder == $fid)) {
+	                array_push($folder_order, $fid);
+	            } else {
+	                array_push($ignored_folders, $fid);
+	            }
+	        }
+	    }
 
         // Append ignored folders onto the end of the folder list.
         // This will make them appear at the bottom of the thread list.
@@ -686,9 +690,9 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
     } else {
 
-        while (list($fid, $folder_data) = each($folder_info)) {
-            if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
-        }
+        foreach ($folder_info as $fid => $folder_data) {
+	        if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
+	    }
     }
 
     // If no threads are returned, say something to that effect
@@ -1126,7 +1130,7 @@ function light_draw_pm_inbox()
         echo "<a href=\"lpm_write.php?webtag=$webtag\" class=\"pm_send_new\">", gettext("Send New PM"), "</a>\n";
 
         // Fetch the free PM space and calculate it as a percentage.
-        $pm_free_space = pm_get_free_space();
+        $pm_free_space = pm_get_free_space($_SESSION['UID']);
         $pm_max_user_messages = forum_get_setting('pm_max_user_messages', null, 100);
 
         $pm_used_percent = (100 / $pm_max_user_messages) * ($pm_max_user_messages - $pm_free_space);
@@ -1363,7 +1367,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
     $poll_display.= form_input_hidden('webtag', htmlentities_array($webtag));
     $poll_display.= form_input_hidden('tid', htmlentities_array($tid));
 
-    if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && (session::get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y')))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
+    if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && ($_SESSION['UID'] > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y')))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
 
         foreach ($poll_results as $question_id => $poll_question) {
 
@@ -1453,7 +1457,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
                     $poll_display.= "<div class=\"poll_type_warning\">". gettext("<b>Warning</b>: This is a public ballot. Your name will be visible next to the option you vote for."). "</div>\n";
                 }
 
-            } else if (session::get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y'))) {
+            } else if ($_SESSION['UID'] > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y'))) {
 
                 $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('pollsubmit', gettext("Vote")). "</div>";
 
@@ -1469,7 +1473,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
     $poll_data['CONTENT'] = $poll_display;
 
-    $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(session::get_value('UID'), $poll_data['FROM_UID']);
+    $poll_data['FROM_RELATIONSHIP'] = user_get_relationship($_SESSION['UID'], $poll_data['FROM_UID']);
 
     light_message_display($tid, $poll_data, $msg_count, 1, $folder_fid, $in_list, $closed, $limit_text, true, $is_preview);
 }
@@ -1524,7 +1528,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     $attachments_array = array();
     $image_attachments_array = array();
 
-    if (($uid = session::get_value('UID')) === false) return;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if ((!isset($message['CONTENT']) || $message['CONTENT'] == "") && !$is_preview) {
 
@@ -1534,7 +1538,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     $from_user_permissions = perm_get_user_permissions($message['FROM_UID']);
 
-    if ($uid != $message['FROM_UID']) {
+    if ($_SESSION['UID'] != $message['FROM_UID']) {
 
         if (($from_user_permissions & USER_PERM_WORMED) && !$perm_is_moderator) {
 
@@ -1559,7 +1563,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         return;
     }
 
-    if (forum_get_setting('require_post_approval', 'Y') && $message['FROM_UID'] != $uid) {
+    if (forum_get_setting('require_post_approval', 'Y') && $message['FROM_UID'] != $_SESSION['UID']) {
 
         if (isset($message['APPROVED']) && $message['APPROVED'] == 0 && !$perm_is_moderator) {
 
@@ -1584,7 +1588,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     echo "<div class=\"message\">\n";
 
-    if (session::get_value('IMAGES_TO_LINKS') == 'Y') {
+    if (isset($_SESSION['IMAGES_TO_LINKS']) && ($_SESSION['IMAGES_TO_LINKS'] == 'Y')) {
 
         $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/iu', '[img: <a\1href="\2"\3>\4</a>]', $message['CONTENT']);
         $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/iu', '[img: <a href="\1">\1</a>]', $message['CONTENT']);
@@ -1703,7 +1707,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
         if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
 
-            if (($edit_user = user_get_logon($message['EDITED_BY']))) {
+            if (($edit_user = user_get_logon($message['EDITED_BY'])) !== false) {
 
                 echo "<div class=\"edit_text\">", sprintf(gettext("EDITED: %s by %s"), format_time($message['EDITED']), $edit_user), "</div>\n";
             }
@@ -1714,7 +1718,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if (isset($message['ATTACHMENTS']) && sizeof($message['ATTACHMENTS']) > 0) {
 
-        if (($attachments_array = attachments_get($message['FROM_UID'], ATTACHMENT_FILTER_ASSIGNED, $message['ATTACHMENTS']))) {
+        if (($attachments_array = attachments_get($message['FROM_UID'], ATTACHMENT_FILTER_ASSIGNED, $message['ATTACHMENTS'])) !== false) {
 
             echo "<div class=\"message_attachments\">\n";
             echo "  <span>", gettext("Attachments"), ":</span>\n";
@@ -1722,7 +1726,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
             foreach ($attachments_array as $attachment) {
 
-                if (($attachment_link = light_attachments_make_link($attachment))) {
+                if (($attachment_link = light_attachments_make_link($attachment)) !== false) {
                     echo "<li>", $attachment_link, "</li>\n";
                 }
             }
@@ -1741,12 +1745,12 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
             $links_array[] = "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" class=\"reply\">". gettext("Reply"). "</a>";
         }
 
-        if (($uid == $message['FROM_UID'] && session::check_perm(USER_PERM_POST_DELETE, $folder_fid) && !session::check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
+        if (($_SESSION['UID'] == $message['FROM_UID'] && session::check_perm(USER_PERM_POST_DELETE, $folder_fid) && !session::check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
 
             $links_array[] = "<a href=\"ldelete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"delete\">". gettext("Delete"). "</a>";
         }
 
-        if ((!(session::check_perm(USER_PERM_PILLORIED, 0)) && ((($uid != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($uid == $message['FROM_UID'])) && session::check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
+        if ((!(session::check_perm(USER_PERM_PILLORIED, 0)) && ((($_SESSION['UID'] != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($_SESSION['UID'] == $message['FROM_UID'])) && session::check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
             if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
 
@@ -1768,7 +1772,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
 function light_spoiler_enable($message)
 {
-    if (session::get_value('USE_LIGHT_MODE_SPOILER') == "Y") {
+    if (isset($_SESSION['USE_LIGHT_MODE_SPOILER']) && ($_SESSION['USE_LIGHT_MODE_SPOILER'] == 'Y')) {
         return preg_replace('/<(div|span) class="spoiler">/iu', '<\1 class="spoiler_light">', $message);
     }
 
@@ -1906,7 +1910,7 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
 
     if ($result->num_rows == 0) return false;
 
-    while (($folder_order = $result->fetch_assoc())) {
+    while (($folder_order = $result->fetch_assoc()) !== null) {
 
         if (!session::logged_in()) {
 
@@ -2196,9 +2200,9 @@ function light_html_user_require_approval()
 
 function light_html_email_confirmation_error()
 {
-    if (($uid = session::get_value('UID')) === false) return;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    $user_array = user_get($uid);
+    $user_array = user_get($_SESSION['UID']);
 
     light_html_draw_error(gettext("Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details"), 'confirm_email.php', 'get', array('resend' => gettext("Resend Confirmation")), array('uid' => $user_array['UID'], 'resend' => 'Y'));
 }
@@ -2288,7 +2292,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
     if (isset($pm_message_array['ATTACHMENTS']) && sizeof($pm_message_array['ATTACHMENTS']) > 0) {
 
-        if (($attachments_array = attachments_get($pm_message_array['FROM_UID'], ATTACHMENT_FILTER_ASSIGNED, $pm_message_array['ATTACHMENTS']))) {
+        if (($attachments_array = attachments_get($pm_message_array['FROM_UID'], ATTACHMENT_FILTER_ASSIGNED, $pm_message_array['ATTACHMENTS'])) !== false) {
 
             echo "<div class=\"message_attachments\">\n";
             echo "  <span>", gettext("Attachments"), ":</span>\n";
@@ -2296,7 +2300,7 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
             foreach ($attachments_array as $attachment) {
 
-                if (($attachment_link = light_attachments_make_link($attachment))) {
+                if (($attachment_link = light_attachments_make_link($attachment)) !== false) {
                     echo "<li>", $attachment_link, "</li>\n";
                 }
             }

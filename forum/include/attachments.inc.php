@@ -118,7 +118,7 @@ function attachments_get($uid, $filter = ATTACHMENT_FILTER_BOTH, $hash_array = a
 
     $attachments = array();
 
-    while (($attachment = $result->fetch_assoc())) {
+    while (($attachment = $result->fetch_assoc()) !== null) {
 
         $attachments[$attachment['HASH']] = array(
             "aid" => $attachment['AID'],
@@ -232,7 +232,7 @@ function attachments_delete($hash)
 
     if (!$db = db::get()) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
@@ -249,13 +249,13 @@ function attachments_delete($hash)
 
     if (!isset($attachment_data['FID'])) $attachment_data['FID'] = 0;
 
-    if (!(($attachment_data['UID'] == $uid) || session::check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']))) return false;
+    if (!(($attachment_data['UID'] == $_SESSION['UID']) || session::check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']))) return false;
 
     if (isset($attachment_data['TID']) && isset($attachment_data['PID'])) {
 
         post_add_edit_text($attachment_data['TID'], $attachment_data['PID']);
 
-        if (session::check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
+        if (session::check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $_SESSION['UID'])) {
 
             $log_data = array(
                 $attachment_data['TID'],
@@ -285,7 +285,7 @@ function attachments_delete_thumbnail($hash)
 
     if (!$db = db::get()) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
@@ -302,13 +302,13 @@ function attachments_delete_thumbnail($hash)
 
     if (!isset($attachment_data['FID'])) $attachment_data['FID'] = 0;
 
-    if (!(($attachment_data['UID'] == $uid) || session::check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']))) return false;
+    if (!(($attachment_data['UID'] == $_SESSION['UID']) || session::check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']))) return false;
 
     if (isset($attachment_data['TID']) && isset($attachment_data['PID'])) {
 
         post_add_edit_text($attachment_data['TID'], $attachment_data['PID']);
 
-        if (session::check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $uid)) {
+        if (session::check_perm(USER_PERM_FOLDER_MODERATE, $attachment_data['FID']) && ($attachment_data['UID'] != $_SESSION['UID'])) {
 
             $log_data = array(
                 $attachment_data['TID'],
@@ -381,7 +381,7 @@ function attachments_get_post_used_space($uid, $hash_array)
 
     if (!($result = $db->query($sql))) return 0;
 
-    while (($attachment_data = $result->fetch_assoc())) {
+    while (($attachment_data = $result->fetch_assoc()) !== null) {
         $post_attachment_space+= $attachment_data['FILESIZE'];
     }
 
@@ -401,7 +401,7 @@ function attachments_get_user_used_space($uid)
 
     if (!($result = $db->query($sql))) return 0;
 
-    while (($attachment_data = $result->fetch_assoc())) {
+    while (($attachment_data = $result->fetch_assoc()) !== null) {
         $user_attachment_space+= $attachment_data['FILESIZE'];
     }
 
@@ -588,7 +588,9 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
 
     $webtag = get_webtag();
 
-    if ($show_thumbs && forum_get_setting('attachment_thumbnails', 'Y') && ((($user_show_thumbs = session::get_value('SHOW_THUMBS')) > 0) || !session::logged_in())) {
+    $user_show_thumbs = isset($_SESSION['SHOW_THUMBS']) && is_numeric($_SESSION['SHOW_THUMBS']) && ($_SESSION['SHOW_THUMBS'] > 0);
+
+    if ($show_thumbs && forum_get_setting('attachment_thumbnails', 'Y') && ($user_show_thumbs || !session::logged_in())) {
 
         $thumbnail_size = array(
             1 => 50,
@@ -639,7 +641,7 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
 
         if ($show_thumbs && isset($attachment['thumbnail']) && ($attachment['thumbnail'] == 'Y')) {
 
-            if (($image_info = @getimagesize("$attachment_dir/{$attachment['hash']}"))) {
+            if (($image_info = @getimagesize("$attachment_dir/{$attachment['hash']}")) !== false) {
 
                 $title_array[] = gettext("Dimensions"). ": {$image_info[0]}x{$image_info[1]}px";
 
@@ -680,7 +682,7 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
 
 function attachments_get_mime_types()
 {
-    if (($allowed_mimetypes = forum_get_setting('attachment_mime_types'))) {
+    if (($allowed_mimetypes = forum_get_setting('attachment_mime_types', 'strlen', false)) !== false) {
         return explode(';', $allowed_mimetypes);
     }
 

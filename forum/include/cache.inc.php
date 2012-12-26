@@ -43,7 +43,7 @@ require_once BH_INCLUDE_PATH. 'session.inc.php';
 function cache_disable()
 {
     if (headers_sent()) return false;
-    
+
     header("Expires: Mon, 08 Apr 2002 12:00:00 GMT", true);               // Date in the past (Beehive birthday)
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT", true);  // always modified
     header("Content-Type: text/html; charset=UTF-8", true);               // Internet Explorer Bug
@@ -86,7 +86,7 @@ function cache_check_thread_list()
     if (!cache_check_enabled()) return false;
 
     if (browser_check(BROWSER_AOL)) return false;
-    
+
     if (headers_sent()) return false;
 
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -95,7 +95,7 @@ function cache_check_thread_list()
         return false;
     }
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     // If we're looking at a specific folder add it's ID to the query.
     if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
@@ -107,7 +107,7 @@ function cache_check_thread_list()
         $sql.= "FROM `{$table_prefix}THREAD` THREAD) AS THREAD_DATA, ";
         $sql.= "(SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
         $sql.= "FROM `{$table_prefix}USER_THREAD` USER_THREAD ";
-        $sql.= "WHERE USER_THREAD.UID = '$uid') AS USER_THREAD_DATA, ";
+        $sql.= "WHERE USER_THREAD.UID = '{$_SESSION['UID']}') AS USER_THREAD_DATA, ";
         $sql.= "(SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
         $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
         $sql.= "FROM `{$table_prefix}FOLDER` FOLDER ";
@@ -120,7 +120,7 @@ function cache_check_thread_list()
         $sql.= "FROM `{$table_prefix}THREAD` THREAD) AS THREAD_DATA, ";
         $sql.= "(SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
         $sql.= "FROM `{$table_prefix}USER_THREAD` USER_THREAD ";
-        $sql.= "WHERE USER_THREAD.UID = '$uid') AS USER_THREAD_DATA, ";
+        $sql.= "WHERE USER_THREAD.UID = '{$_SESSION['UID']}') AS USER_THREAD_DATA, ";
         $sql.= "(SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
         $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
         $sql.= "FROM `{$table_prefix}FOLDER` FOLDER) AS FOLDER_DATA";
@@ -172,7 +172,7 @@ function cache_check_start_page()
     if (!cache_check_enabled()) return false;
 
     if (browser_check(BROWSER_AOL)) return false;
-    
+
     if (headers_sent()) return false;
 
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -181,7 +181,7 @@ function cache_check_start_page()
         return false;
     }
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     // Get the thread, folder and user read last modified dates
     $sql = "SELECT * FROM (SELECT UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
@@ -189,7 +189,7 @@ function cache_check_start_page()
     $sql.= "FROM `{$table_prefix}THREAD` THREAD) AS THREAD_DATA, ";
     $sql.= "(SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
     $sql.= "FROM `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql.= "WHERE USER_THREAD.UID = '$uid') AS USER_THREAD_DATA, ";
+    $sql.= "WHERE USER_THREAD.UID = '{$_SESSION['UID']}') AS USER_THREAD_DATA, ";
     $sql.= "(SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
     $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
     $sql.= "FROM `{$table_prefix}FOLDER` FOLDER) AS FOLDER_DATA";
@@ -239,7 +239,7 @@ function cache_check_messages()
     if (!cache_check_enabled()) return false;
 
     if (browser_check(BROWSER_AOL)) return false;
-    
+
     if (headers_sent()) return false;
 
     // Disable cache on these URL queries.
@@ -315,9 +315,9 @@ function cache_check_messages()
 function cache_check_enabled()
 {
     if (defined('BEEHIVE_DEVELOPER_MODE')) return false;
-    
+
     $config = server_get_config();
-    
+
     if (isset($config['http_cache_enabled']) && $config['http_cache_enabled'] === false) {
         return false;
     }
@@ -330,7 +330,7 @@ function cache_check_last_modified($last_modified)
     if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') return false;
 
     if (browser_check(BROWSER_AOL)) return false;
-    
+
     if (headers_sent()) return false;
 
     $local_last_modified = gmdate("D, d M Y H:i:s", $last_modified). "GMT";
@@ -360,7 +360,7 @@ function cache_check_last_modified($last_modified)
 function cache_check_etag($local_etag)
 {
     if (browser_check(BROWSER_AOL)) return false;
-    
+
     if (headers_sent()) return false;
 
     $local_last_modified = gmdate("D, d M Y H:i:s", time()). "GMT";

@@ -48,7 +48,7 @@ $passhash_array = array();
 $forum_location = html_get_forum_uri();
 
 // Get the Forum Name
-$forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
+$forum_name = forum_get_setting('forum_name', 'strlen', 'A Beehive Forum');
 
 // Current date
 $build_date = gmdate("D, d M Y H:i:s O");

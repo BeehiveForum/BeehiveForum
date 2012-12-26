@@ -154,7 +154,7 @@ if (isset($_POST['save'])) {
 }
 
 // Prune old messages for the current user
-pm_user_prune_folders();
+pm_user_prune_folders($_SESSION['UID']);
 
 // Get the name of the pm_messages frame set.
 $pm_messages_frame = html_get_frame_name('pm_messages');
@@ -295,9 +295,9 @@ echo "    </tr>\n";
 echo "  </table>\n";
 
 // Fetch the free PM space and calculate it as a percentage.
-$pm_free_space = pm_get_free_space();
+$pm_free_space = pm_get_free_space($_SESSION['UID']);
 
-$pm_max_user_messages = forum_get_setting('pm_max_user_messages', null, 100);
+$pm_max_user_messages = forum_get_setting('pm_max_user_messages', 'is_numeric', 100);
 
 $pm_used_percent = (100 / $pm_max_user_messages) * ($pm_max_user_messages - $pm_free_space);
 

@@ -45,8 +45,10 @@ function emoticons_initialise()
 
         // Get the user's emoticon set from their sesion.
         // Fall back to using the forum default or Beehive default.
-        if (($user_emots = session::get_value('EMOTICONS')) === false) {
-            $user_emots = forum_get_setting('default_emoticons', null, 'default');
+        if (isset($_SESSION['EMOTICONS']) && strlen(trim($_SESSION['EMOTICONS'])) > 0) {
+            $user_emoticon_pack = $_SESSION['EMOTICONS'];
+        } else {
+            $user_emoticon_pack = forum_get_setting('default_emoticons', 'strlen', 'default');
         }
 
         // Initialize the array incase it's not been done in
@@ -58,9 +60,9 @@ function emoticons_initialise()
         // strip them out.
         //
         // If the user has a set specified we load only that set.
-        if ($user_emots == 'none') {
+        if ($user_emoticon_pack == 'none') {
 
-            if (($dir = @opendir('emoticons'))) {
+            if (($dir = @opendir('emoticons')) !== false) {
 
                 while (($file = @readdir($dir)) !== false) {
 
@@ -76,8 +78,8 @@ function emoticons_initialise()
 
         } else {
 
-            if (@file_exists("emoticons/$user_emots/definitions.php")) {
-                include ("emoticons/$user_emots/definitions.php");
+            if (@file_exists("emoticons/$user_emoticon_pack/definitions.php")) {
+                include ("emoticons/$user_emoticon_pack/definitions.php");
             }
         }
 

@@ -181,7 +181,7 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
 
     if ($result->num_rows < 1) return false;
 
-    while (($to_user = $result->fetch_assoc())) {
+    while (($to_user = $result->fetch_assoc()) !== null) {
 
         // Get the relationship between the to and from user
         $user_rel = user_get_relationship($to_user['UID'], $from_user['UID']);
@@ -284,7 +284,7 @@ function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$ex
 
     if ($result->num_rows < 1) return false;
 
-    while (($to_user = $result->fetch_assoc())) {
+    while (($to_user = $result->fetch_assoc()) !== null) {
 
         // Validate the email address before we continue.
         if (!email_address_valid($to_user['EMAIL'])) continue;

@@ -296,7 +296,7 @@ function bh_error_process(Exception $exception)
        $version_strings[] = sprintf('Beehive Forum %s', BEEHIVE_VERSION);
     }
 
-    if (($php_version = phpversion())) {
+    if (($php_version = phpversion()) !== false) {
         $version_strings[] = sprintf('on PHP/%s', $php_version);
     }
 
@@ -304,7 +304,7 @@ function bh_error_process(Exception $exception)
         $version_strings[] = PHP_OS;
     }
 
-    if (($php_sapi = php_sapi_name())) {
+    if (($php_sapi = php_sapi_name()) !== false) {
         $version_strings[] = mb_strtoupper($php_sapi);
     }
 
@@ -312,7 +312,7 @@ function bh_error_process(Exception $exception)
 
     if (!in_array($exception->getCode(), array(MYSQL_CONNECT_ERROR, MYSQL_ACCESS_DENIED, MYSQL_PERMISSION_DENIED))) {
 
-        if (($mysql_version = db::get_version())) {
+        if (($mysql_version = db::get_version()) !== false) {
             $version_strings[] = sprintf('MySQL/%s', $mysql_version);
         } else {
             $version_strings[] = sprintf('MySQL Version Unknown');

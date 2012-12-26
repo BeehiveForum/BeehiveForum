@@ -55,7 +55,7 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
     if ($result->num_rows == 0) return false;
 
-    while (($folder_order = $result->fetch_assoc())) {
+    while (($folder_order = $result->fetch_assoc()) !== null) {
 
         if (!session::logged_in()) {
 
@@ -93,7 +93,7 @@ function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="",
 
     if ($result->num_rows == 0) return false;
 
-    while (($folder_data = $result->fetch_assoc())) {
+    while (($folder_data = $result->fetch_assoc()) !== null) {
         $available_folders[$folder_data['FID']] = htmlentities_array($folder_data['TITLE']);
     }
 
@@ -239,13 +239,13 @@ function folder_get_available()
 {
     if (!session::logged_in()) {
 
-        if (($folder_list = session::get_folders_by_perm(USER_PERM_GUEST_ACCESS))) {
+        if (($folder_list = session::get_folders_by_perm(USER_PERM_GUEST_ACCESS)) !== false) {
             return implode(',', array_filter($folder_list, 'is_numeric'));
         }
 
     } else {
 
-        if (($folder_list = session::get_folders_by_perm(USER_PERM_POST_READ))) {
+        if (($folder_list = session::get_folders_by_perm(USER_PERM_POST_READ)) !== false) {
             return implode(',', array_filter($folder_list, 'is_numeric'));
         }
     }
@@ -259,13 +259,13 @@ function folder_get_available_by_forum($forum_fid)
 
     if (!session::logged_in()) {
 
-        if (($folder_list = session::get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid))) {
+        if (($folder_list = session::get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid)) !== false) {
             return implode(',', array_filter($folder_list, 'is_numeric'));
         }
 
     } else {
 
-        if (($folder_list = session::get_folders_by_perm(USER_PERM_POST_READ, $forum_fid))) {
+        if (($folder_list = session::get_folders_by_perm(USER_PERM_POST_READ, $forum_fid)) !== false) {
             return implode(',', array_filter($folder_list, 'is_numeric'));
         }
     }
@@ -277,13 +277,13 @@ function folder_get_available_array()
 {
     if (!session::logged_in()) {
 
-        if (($folder_list = session::get_folders_by_perm(USER_PERM_GUEST_ACCESS))) {
+        if (($folder_list = session::get_folders_by_perm(USER_PERM_GUEST_ACCESS)) !== false) {
             return array_filter($folder_list, 'is_numeric');
         }
 
     } else {
 
-        if (($folder_list = session::get_folders_by_perm(USER_PERM_POST_READ))) {
+        if (($folder_list = session::get_folders_by_perm(USER_PERM_POST_READ)) !== false) {
             return array_filter($folder_list, 'is_numeric');
         }
     }
@@ -295,13 +295,13 @@ function folder_get_available_array_by_forum($forum_fid)
 {
     if (!session::logged_in()) {
 
-        if (($folder_list = session::get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid))) {
+        if (($folder_list = session::get_folders_by_perm(USER_PERM_GUEST_ACCESS, $forum_fid)) !== false) {
             return array_filter($folder_list, 'is_numeric');
         }
 
     } else {
 
-        if (($folder_list = session::get_folders_by_perm(USER_PERM_POST_READ, $forum_fid))) {
+        if (($folder_list = session::get_folders_by_perm(USER_PERM_POST_READ, $forum_fid)) !== false) {
             return array_filter($folder_list, 'is_numeric');
         }
     }
@@ -327,7 +327,7 @@ function folder_get_all()
 
     $folder_list = array();
 
-    while (($folder_data = $result->fetch_assoc())) {
+    while (($folder_data = $result->fetch_assoc()) !== null) {
         $folder_list[$folder_data['FID']] = $folder_data;
     }
 
@@ -355,7 +355,7 @@ function folder_get_all_by_page($page = 1)
     $sql.= "LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
-   
+
     $sql = "SELECT FOUND_ROWS() AS ROW_COUNT";
 
     if (!($result_count = $db->query($sql))) return false;
@@ -365,8 +365,8 @@ function folder_get_all_by_page($page = 1)
     if (($result->num_rows == 0) && ($folder_count > 0) && ($page > 1)) {
         return folder_get_all_by_page($page - 1);
     }
-        
-    while (($folder_data = $result->fetch_assoc())) {
+
+    while (($folder_data = $result->fetch_assoc()) !== null) {
 
         $folder_array[$folder_data['FID']] = $folder_data;
         $fid_array[] = $folder_data['FID'];
@@ -396,7 +396,7 @@ function folders_get_thread_counts(&$folder_array, $fid_array)
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($folder_data = $result->fetch_assoc())) {
+    while (($folder_data = $result->fetch_assoc()) !== null) {
         $folder_array[$folder_data['FID']]['THREAD_COUNT'] = $folder_data['THREAD_COUNT'];
     }
 
@@ -429,13 +429,13 @@ function folder_get($fid)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.POSITION, ";
     $sql.= "FOLDER.PREFIX, FOLDER.ALLOWED_TYPES, FOLDER.PERM, USER_FOLDER.INTEREST ";
     $sql.= "FROM `{$table_prefix}FOLDER` FOLDER ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-    $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
+    $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
     $sql.= "WHERE FOLDER.FID = '$fid' GROUP BY FOLDER.FID, FOLDER.TITLE";
 
     if (!($result = $db->query($sql))) return false;
@@ -457,13 +457,13 @@ function folder_get_available_details()
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.POSITION, ";
     $sql.= "FOLDER.PREFIX, FOLDER.ALLOWED_TYPES, FOLDER.PERM, USER_FOLDER.INTEREST ";
     $sql.= "FROM `{$table_prefix}FOLDER` FOLDER ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-    $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
+    $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
     $sql.= "WHERE FOLDER.FID IN ($fid_list) GROUP BY FOLDER.FID";
 
     if (!($result = $db->query($sql))) return false;
@@ -472,7 +472,7 @@ function folder_get_available_details()
 
     $folders_array = array();
 
-    while (($folder_data = $result->fetch_assoc())) {
+    while (($folder_data = $result->fetch_assoc()) !== null) {
         $folders_array[$folder_data['FID']] = $folder_data;
     }
 
@@ -505,7 +505,7 @@ function folder_is_accessible($fid)
 
 function user_set_folder_interest($fid, $interest)
 {
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!$db = db::get()) return false;
 
@@ -515,7 +515,7 @@ function user_set_folder_interest($fid, $interest)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "INSERT INTO `{$table_prefix}USER_FOLDER` (UID, FID, INTEREST) ";
-    $sql.= "VALUES ('$uid', '$fid', '$interest') ON DUPLICATE KEY UPDATE ";
+    $sql.= "VALUES ('{$_SESSION['UID']}', '$fid', '$interest') ON DUPLICATE KEY UPDATE ";
     $sql.= "INTEREST = VALUES(INTEREST)";
 
     if (!$db->query($sql)) return false;
@@ -565,7 +565,7 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
 
     $allowed_folders = array();
 
-    while (($folder_data = $result->fetch_assoc())) {
+    while (($folder_data = $result->fetch_assoc()) !== null) {
         $allowed_folders[] = $folder_data['FID'];
     }
 
@@ -587,7 +587,7 @@ function folder_move_up($fid)
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($folder_data = $result->fetch_assoc())) {
+    while (($folder_data = $result->fetch_assoc()) !== null) {
 
         $folder_order[] = $folder_data['FID'];
         $folder_position[$folder_data['FID']] = $folder_data['POSITION'];
@@ -633,7 +633,7 @@ function folder_move_down($fid)
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($folder_data = $result->fetch_assoc())) {
+    while (($folder_data = $result->fetch_assoc()) !== null) {
 
         $folder_order[] = $folder_data['FID'];
         $folder_position[$folder_data['FID']] = $folder_data['POSITION'];
@@ -677,17 +677,14 @@ function folder_positions_update()
 
     if (!($result = $db->query($sql))) return false;
 
-    while (list($fid) = $result->fetch_row()) {
+    while (($folder_data = $result->fetch_row()) !== null) {
 
-        if (isset($fid) && is_numeric($fid)) {
+        $new_position++;
 
-            $new_position++;
+        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FOLDER` ";
+        $sql.= "SET POSITION = '$new_position' WHERE FID = '{$folder_data['FID']}'";
 
-            $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FOLDER` ";
-            $sql.= "SET POSITION = '$new_position' WHERE FID = '$fid'";
-
-            if (!$db->query($sql)) return false;
-        }
+        if (!$db->query($sql)) return false;
     }
 
     return true;
@@ -696,6 +693,8 @@ function folder_positions_update()
 function folders_get_user_subscriptions($interest_type = FOLDER_NOINTEREST, $page = 1)
 {
     if (!$db = db::get()) return false;
+
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!is_numeric($page)) $page = 1;
 
@@ -709,14 +708,12 @@ function folders_get_user_subscriptions($interest_type = FOLDER_NOINTEREST, $pag
 
     $folders = folder_get_available();
 
-    $uid = session::get_value('UID');
-
     if ($interest_type <> FOLDER_NOINTEREST) {
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.FID, FOLDER.TITLE, ";
         $sql.= "USER_FOLDER.INTEREST FROM `{$table_prefix}FOLDER` FOLDER ";
         $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-        $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
+        $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
         $sql.= "WHERE USER_FOLDER.INTEREST = '$interest_type' ";
         $sql.= "AND FOLDER.FID IN ($folders) ";
         $sql.= "ORDER BY FOLDER.POSITION DESC ";
@@ -727,7 +724,7 @@ function folders_get_user_subscriptions($interest_type = FOLDER_NOINTEREST, $pag
         $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.FID, FOLDER.TITLE, ";
         $sql.= "USER_FOLDER.INTEREST FROM `{$table_prefix}FOLDER` FOLDER ";
         $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-        $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
+        $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
         $sql.= "WHERE FOLDER.FID IN ($folders) ";
         $sql.= "ORDER BY FOLDER.POSITION DESC ";
         $sql.= "LIMIT $offset, 20";
@@ -744,8 +741,8 @@ function folders_get_user_subscriptions($interest_type = FOLDER_NOINTEREST, $pag
     if (($result->num_rows == 0) && ($folder_subscriptions_count > 0) && ($page > 1)) {
         return folders_get_user_subscriptions($interest_type, $page - 1);
     }
-    
-    while (($folder_data_array = $result->fetch_assoc())) {
+
+    while (($folder_data_array = $result->fetch_assoc()) !== null) {
         $folder_subscriptions_array[] = $folder_data_array;
     }
 
@@ -758,6 +755,8 @@ function folders_get_user_subscriptions($interest_type = FOLDER_NOINTEREST, $pag
 function folders_search_user_subscriptions($folder_search, $interest_type = FOLDER_NOINTEREST, $page = 1)
 {
     if (!$db = db::get()) return false;
+
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!is_numeric($page)) $page = 1;
 
@@ -773,14 +772,12 @@ function folders_search_user_subscriptions($folder_search, $interest_type = FOLD
 
     $folders = folder_get_available();
 
-    $uid = session::get_value('UID');
-
     if ($interest_type <> FOLDER_NOINTEREST) {
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.FID, FOLDER.TITLE, ";
         $sql.= "USER_FOLDER.INTEREST FROM `{$table_prefix}FOLDER` FOLDER ";
         $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-        $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
+        $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
         $sql.= "WHERE USER_FOLDER.INTEREST = '$interest_type' ";
         $sql.= "AND FOLDER.TITLE LIKE '$folder_search%' ";
         $sql.= "AND FOLDER.FID IN ($folders) ";
@@ -792,7 +789,7 @@ function folders_search_user_subscriptions($folder_search, $interest_type = FOLD
         $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.FID, FOLDER.TITLE, ";
         $sql.= "USER_FOLDER.INTEREST FROM `{$table_prefix}FOLDER` FOLDER ";
         $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-        $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
+        $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
         $sql.= "WHERE FOLDER.FID IN ($folders) ";
         $sql.= "AND FOLDER.TITLE LIKE '$folder_search%' ";
         $sql.= "ORDER BY FOLDER.POSITION DESC ";
@@ -811,7 +808,7 @@ function folders_search_user_subscriptions($folder_search, $interest_type = FOLD
         return folders_search_user_subscriptions($folder_search, $interest_type, $page - 1);
     }
 
-    while (($folder_data_array = $result->fetch_assoc())) {
+    while (($folder_data_array = $result->fetch_assoc()) !== null) {
         $folder_subscriptions_array[] = $folder_data_array;
     }
 

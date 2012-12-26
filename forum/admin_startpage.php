@@ -62,7 +62,7 @@ $error_msg_array = array();
 if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
     $t_content = fix_html(emoticons_strip($_POST['t_content']));
 } else {
-    $t_content = forum_get_setting('start_page', null, '');
+    $t_content = forum_get_setting('start_page', 'strlen', '');
 }
 
 // Submit code.

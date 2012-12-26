@@ -46,7 +46,7 @@ function visitor_log_get_recent()
 
     if (!($forum_fid = get_forum_fid())) return false;
 
-    $uid = session::get_value('UID');
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (forum_get_setting('guest_show_recent', 'Y') && user_guest_enabled()) {
 
@@ -59,7 +59,7 @@ function visitor_log_get_recent()
         $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
         $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
         $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
         $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
         $sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ";
         $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
@@ -80,7 +80,7 @@ function visitor_log_get_recent()
         $sql.= "FROM VISITOR_LOG VISITOR_LOG ";
         $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
         $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
         $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
         $sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ";
         $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
@@ -97,7 +97,7 @@ function visitor_log_get_recent()
 
     $users_get_recent_array = array();
 
-    while (($visitor_array = $result->fetch_assoc())) {
+    while (($visitor_array = $result->fetch_assoc()) !== null) {
 
         if ($visitor_array['UID'] == 0) {
 
@@ -159,12 +159,12 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
 
     if ($result->num_rows == 0) return false;
 
-    while (($profile_item = $result->fetch_assoc())) {
+    while (($profile_item = $result->fetch_assoc()) !== null) {
 
         $profile_header_array[$profile_item['PIID']] = htmlentities_array($profile_item['ITEM_NAME']);
         $profile_dropdown_array[$profile_item['SECTION_NAME']]['subitems'][$profile_item['PIID']] = htmlentities_array($profile_item['ITEM_NAME']);
     }
-    
+
     return true;
 }
 
@@ -189,7 +189,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
 
     // Permitted sort directions.
     $sort_dir_array = array(
-        'ASC', 
+        'ASC',
         'DESC'
     );
 
@@ -199,10 +199,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     // Get the current session's UID.
-    if (($uid = session::get_value('UID')) === false) return false;
-    
-    // Escape the UID just in case.
-    $uid = $db->escape($uid);
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     // Constant for the relationship
     $user_friend = USER_FRIEND;
@@ -259,7 +256,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
     $join_sql = "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
     $join_sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = USER.UID) ";
     $join_sql.= "LEFT JOIN `{$table_prefix}USER_TRACK` USER_TRACK ON (USER_TRACK.UID = USER.UID) ";
-    $join_sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+    $join_sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $join_sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
     $join_sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS_GLOBAL.TIMEZONE) ";
 
@@ -283,7 +280,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
     $where_query_array = array(
         "VISITOR_LOG.FORUM = '$forum_fid'"
     );
-    
+
     // Having clause for filtering NULL columns.
     $having_query_array = array();
 
@@ -347,7 +344,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
     // Construct final SQL query.
     $sql = implode(",", $query_array_merge). "$from_sql $join_sql ";
     $sql.= "$where_sql $having_sql $order_sql $limit_sql";
-    
+
     if (!($result = $db->query($sql))) return false;
 
     // Fetch the number of total results
@@ -361,8 +358,8 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
     if (($result->num_rows == 0) && ($user_count > 0) && ($page > 1)) {
         return visitor_log_browse_items($user_search, $profile_items_array, $page - 1, $sort_by, $sort_dir, $hide_empty, $hide_guests);
     }
-        
-    while (($user_data = $result->fetch_assoc())) {
+
+    while (($user_data = $result->fetch_assoc()) !== null) {
 
         if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
             if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
@@ -424,7 +421,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
         if (!isset($user_data['POST_COUNT']) || !is_numeric($user_data['POST_COUNT'])) {
             $user_data['POST_COUNT'] = 0;
         }
-        
+
         $user_array[] = $user_data;
     }
 

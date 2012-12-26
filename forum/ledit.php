@@ -187,7 +187,7 @@ if ($valid && isset($_POST['preview'])) {
 
     if (sizeof($attachments) > 0 && !attachments_check_post_space($_SESSION['UID'], $attachments)) {
 
-    	$max_post_attachment_space = forum_get_setting('attachments_max_post_space', null, 1048576);
+    	$max_post_attachment_space = forum_get_setting('attachments_max_post_space', 'is_numeric', 1048576);
     	$error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
         $valid = false;
     }
@@ -210,7 +210,7 @@ if ($valid && isset($_POST['preview'])) {
 
 } else if ($valid && isset($_POST['apply'])) {
 
-    $post_edit_time = forum_get_setting('post_edit_time', null, 0);
+    $post_edit_time = forum_get_setting('post_edit_time', 'is_numeric', 0);
 
     if (sizeof($attachments) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {
 
@@ -220,7 +220,7 @@ if ($valid && isset($_POST['preview'])) {
 
     if (sizeof($attachments) > 0 && !attachments_check_post_space($_SESSION['UID'], $attachments)) {
 
-    	$max_post_attachment_space = forum_get_setting('attachments_max_post_space', null, 1048576);
+    	$max_post_attachment_space = forum_get_setting('attachments_max_post_space', 'is_numeric', 1048576);
     	$error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
         $valid = false;
     }
@@ -291,7 +291,7 @@ if ($valid && isset($_POST['preview'])) {
 
 } else {
 
-    $post_edit_time = forum_get_setting('post_edit_time', null, 0);
+    $post_edit_time = forum_get_setting('post_edit_time', 'is_numeric', 0);
 
     if (count($edit_message) > 0) {
 

@@ -41,41 +41,41 @@ function lang_init()
     bindtextdomain('messages', BH_INCLUDE_PATH. 'locale/');
 
     textdomain('messages');
-    
+
     bind_textdomain_codeset('messages', 'UTF-8');
 }
 
 function lang_detect()
-{   
-    if (($language = session::get_value('LANGUAGE'))) {
-        
-        if (lang_set($language)) {
-            return $language;
+{
+    if (isset($_SESSION['LANGUAGE'])) {
+
+        if (lang_set($_SESSION['LANGUAGE'])) {
+            return $_SESSION['LANGUAGE'];
         }
     }
-    
+
     $languages = array();
-    
+
     if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-        
+
         $accepted = preg_split('/,\s*/', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
 
         foreach ($accepted as $accept) {
-            
+
             $matches_array = array();
-            
+
             if (!preg_match('/^([a-z]{1,8}(?:[-_][a-z]{1,8})*)(?:;\s*q=(0(?:\.[0-9]{1,3})?|1(?:\.0{1,3})?))?$/i', $accept, $matches_array)) {
                 continue;
             }
-            
+
             $quality = isset($matches_array[2]) ? (float)$matches_array[2] : 1.0;
-            
+
             $countries = explode('-', $matches_array[1]);
             $region = array_shift($countries);
-        
+
             $countries2 = explode('_', $region);
             $region = array_shift($countries2);
-            
+
             foreach ($countries as $country) {
                 $languages[$region. '_'. mb_strtoupper($country)] = $quality;
             }
@@ -89,14 +89,14 @@ function lang_detect()
             }
         }
     }
-    
+
     foreach (array_keys($languages) as $language) {
-        
+
         if (lang_set($language)) {
-            return $language;            
+            return $language;
         }
     }
-    
+
     return lang_set('en_GB');
 }
 
@@ -104,50 +104,50 @@ function lang_set($language)
 {
     putenv('LANG='. $language);
     putenv('LANGUAGE='. $language);
-    
+
     $languages = array(
         $language. '.utf8',
         $language. '.UTF8',
         $language. '.utf-8',
         $language. '.UTF-8',
-        $language    
+        $language
     );
-    
+
     if (setlocale(LC_ALL, $languages)) {
         return $language;
     }
-    
+
     return false;
 }
 
 function lang_get_month_names()
 {
     $month_names = array();
-    
+
     for ($month = 1; $month <= 12; $month++) {
         $month_names[$month] = strftime('%B', mktime(0, 0, 0, $month, 1, date('Y')));
     }
-    
+
     return $month_names;
 }
 
 function lang_get_available($inc_browser_negotiation = true)
 {
     $include_path = BH_INCLUDE_PATH. 'locale/';
-    
+
     $available_langs = ($inc_browser_negotiation) ? array('' => gettext("Browser negotiated")) : array();
-    
+
     foreach (glob($include_path. '*/messages.po') as $lang) {
-        
+
         $lang = preg_replace(
-            sprintf('/%s([^\/]+)\/messages.po/', preg_quote($include_path, '/')), 
-            '\\1', 
+            sprintf('/%s([^\/]+)\/messages.po/', preg_quote($include_path, '/')),
+            '\\1',
             $lang
         );
-        
+
         $available_langs[$lang] = $lang;
     }
-    
+
     ksort($available_langs);
 
     return $available_langs;

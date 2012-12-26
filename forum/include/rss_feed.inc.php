@@ -58,7 +58,7 @@ function rss_feed_read_stream($filename)
 {
     // Try and use PHP's own fopen wrapper to save us
     // having to do our own HTTP connection.
-    if (($rss_data = @file($filename))) {
+    if (($rss_data = @file($filename)) !== false) {
         if (is_array($rss_data)) return implode(' ', $rss_data);
     }
 
@@ -87,7 +87,7 @@ function rss_feed_read_stream($filename)
     $errno = 0;
     $errstr = '';
 
-    if (($fp = @fsockopen($url_array['host'], $url_array['port'], $errno, $errstr, 30))) {
+    if (($fp = @fsockopen($url_array['host'], $url_array['port'], $errno, $errstr, 30)) !== false) {
 
         @socket_set_timeout($fp, 2);
         @socket_set_blocking($fp, false);
@@ -107,7 +107,7 @@ function rss_feed_read_stream($filename)
         fclose($fp);
 
         // Split the header from the data (seperated by \r\n\r\n)
-        if (($data_array = preg_split("/\r\n\r\n/u", $reply_data, 2))) {
+        if (($data_array = preg_split("/\r\n\r\n/u", $reply_data, 2)) !== false) {
 
             return $data_array[1];
         }
@@ -251,9 +251,9 @@ function rss_feed_create_history($rss_id, $link)
 
 function rss_feed_check_feeds()
 {
-    if (($rss_feed = rss_feed_fetch())) {
+    if (($rss_feed = rss_feed_fetch()) !== false) {
 
-        if (($rss_data = rss_feed_read_database($rss_feed['URL']))) {
+        if (($rss_data = rss_feed_read_database($rss_feed['URL'])) !== false) {
 
             $max_item_count = min(10, $rss_feed['MAX_ITEM_COUNT']);
 
@@ -332,7 +332,7 @@ function rss_feed_get_feeds($page = 1)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $rss_feed_array = array();
 
@@ -343,7 +343,7 @@ function rss_feed_get_feeds($page = 1)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = RSS_FEEDS.UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = RSS_FEEDS.UID ";
-    $sql.= "AND USER_PEER.UID = '$uid') ";
+    $sql.= "AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
@@ -358,7 +358,7 @@ function rss_feed_get_feeds($page = 1)
         return rss_feed_get_feeds($page - 1);
     }
 
-    while (($rss_feed_data = $result->fetch_assoc())) {
+    while (($rss_feed_data = $result->fetch_assoc()) !== null) {
 
         if (isset($rss_feed_data['LOGON']) && isset($rss_feed_data['PEER_NICKNAME'])) {
             if (!is_null($rss_feed_data['PEER_NICKNAME']) && strlen($rss_feed_data['PEER_NICKNAME']) > 0) {
@@ -437,7 +437,7 @@ function rss_feed_get($feed_id)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT RSS_FEEDS.RSSID, RSS_FEEDS.NAME, USER.LOGON, USER.NICKNAME, ";
     $sql.= "USER_PEER.PEER_NICKNAME, RSS_FEEDS.FID, RSS_FEEDS.URL, ";
@@ -446,7 +446,7 @@ function rss_feed_get($feed_id)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = RSS_FEEDS.UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = RSS_FEEDS.UID ";
-    $sql.= "AND USER_PEER.UID = '$uid') ";
+    $sql.= "AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "WHERE RSS_FEEDS.RSSID = '$feed_id'";
 
     if (!($result = $db->query($sql))) return false;

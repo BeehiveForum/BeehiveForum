@@ -37,7 +37,7 @@ require_once BH_INCLUDE_PATH. 'server.inc.php';
 
 function adsense_publisher_id()
 {
-    if (($adsense_publisher_id = forum_get_global_setting('adsense_publisher_id'))) {
+    if (($adsense_publisher_id = forum_get_global_setting('adsense_publisher_id', 'strlen', false)) !== false) {
         return $adsense_publisher_id;
     }
 
@@ -46,7 +46,7 @@ function adsense_publisher_id()
 
 function adsense_medium_ad_id()
 {
-    if (($adsense_medium_ad_id = forum_get_global_setting('adsense_medium_ad_id'))) {
+    if (($adsense_medium_ad_id = forum_get_global_setting('adsense_medium_ad_id', 'strlen', false)) !== false) {
         return $adsense_medium_ad_id;
     }
 
@@ -55,7 +55,7 @@ function adsense_medium_ad_id()
 
 function adsense_small_ad_id()
 {
-    if (($adsense_small_ad_id = forum_get_global_setting('adsense_small_ad_id'))) {
+    if (($adsense_small_ad_id = forum_get_global_setting('adsense_small_ad_id', 'strlen', false)) !== false) {
         return $adsense_small_ad_id;
     }
 
@@ -64,7 +64,7 @@ function adsense_small_ad_id()
 
 function adsense_display_users()
 {
-    if (($adsense_display_users = forum_get_global_setting('adsense_display_users'))) {
+    if (($adsense_display_users = forum_get_global_setting('adsense_display_users', 'strlen', false)) !== false) {
         return $adsense_display_users;
     }
 
@@ -73,7 +73,7 @@ function adsense_display_users()
 
 function adsense_display_pages()
 {
-    if (($adsense_display_pages = forum_get_global_setting('adsense_display_pages'))) {
+    if (($adsense_display_pages = forum_get_global_setting('adsense_display_pages', 'strlen', false)) !== false) {
         return $adsense_display_pages;
     }
 
@@ -101,7 +101,7 @@ function adsense_slot_id($ad_type)
         $ad_type = 'medium';
     }
 
-    if (($adsense_slot_id = forum_get_setting($forum_setting_names_array[$ad_type]))) {
+    if (($adsense_slot_id = forum_get_setting($forum_setting_names_array[$ad_type], 'strlen', false)) !== false) {
         return $adsense_slot_id;
     }
 

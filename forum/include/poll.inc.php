@@ -247,7 +247,7 @@ function poll_get_random_users($limit)
 
     if (!($forum_fid = get_forum_fid())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT UID, LOGON, NICKNAME, PEER_NICKNAME FROM (SELECT USER.UID, ";
     $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, VISITOR_LOG.LAST_LOGON, ";
@@ -255,7 +255,7 @@ function poll_get_random_users($limit)
     $sql.= "AS VISITOR_COUNT FROM USER LEFT JOIN VISITOR_LOG VISITOR_LOG ";
     $sql.= "ON (VISITOR_LOG.UID = USER.UID AND VISITOR_LOG.FORUM = $forum_fid) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') HAVING VISITOR_COUNT = 0 ";
+    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') HAVING VISITOR_COUNT = 0 ";
     $sql.= "OR VISITOR_LOG.LAST_LOGON > DATE_SUB(NOW(), INTERVAL 14 DAY) ";
     $sql.= "ORDER BY RAND() LIMIT $limit) AS RANDOM_USERS";
 
@@ -263,7 +263,7 @@ function poll_get_random_users($limit)
 
     $poll_get_random_votes = array();
 
-    while (($poll_random_vote_data = $result->fetch_assoc())) {
+    while (($poll_random_vote_data = $result->fetch_assoc()) !== null) {
 
         if (isset($poll_random_vote_data['PEER_NICKNAME'])) {
             if (!is_null($poll_random_vote_data['PEER_NICKNAME']) && strlen(trim($poll_random_vote_data['PEER_NICKNAME'])) > 0) {
@@ -289,7 +289,7 @@ function poll_get($tid)
 
     if (!($forum_fid = get_forum_fid())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
 
@@ -311,9 +311,9 @@ function poll_get($tid)
     $sql.= "UNIX_TIMESTAMP(POLL.CLOSES) AS CLOSES, POLL.ALLOWGUESTS ";
     $sql.= "FROM `{$table_prefix}POST` POST LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
     $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER_TO ";
-    $sql.= "ON (USER_PEER_TO.UID = '$uid' AND USER_PEER_TO.PEER_UID = POST.TO_UID) ";
+    $sql.= "ON (USER_PEER_TO.UID = '{$_SESSION['UID']}' AND USER_PEER_TO.PEER_UID = POST.TO_UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER_FROM ";
-    $sql.= "ON (USER_PEER_FROM.UID = '$uid' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
+    $sql.= "ON (USER_PEER_FROM.UID = '{$_SESSION['UID']}' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = POST.FROM_UID) ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = POST.FROM_UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}POLL` POLL ON (POST.TID = POLL.TID) ";
@@ -379,7 +379,7 @@ function poll_get_votes($tid, $include_votes = true)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT POLL_QUESTIONS.QUESTION_ID, POLL_QUESTIONS.QUESTION, ";
     $sql.= "POLL_QUESTIONS.ALLOW_MULTI, POLL_VOTES.OPTION_ID, POLL_VOTES.OPTION_NAME, ";
@@ -391,7 +391,7 @@ function poll_get_votes($tid, $include_votes = true)
     $sql.= "USER_POLL_VOTES.QUESTION_ID, USER_POLL_VOTES.OPTION_ID, COALESCE(USER.UID, 0) AS UID, ";
     $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME FROM `{$table_prefix}USER_POLL_VOTES` USER_POLL_VOTES ";
     $sql.= "LEFT JOIN USER ON (USER.UID = USER_POLL_VOTES.UID) LEFT JOIN `{$table_prefix}USER_PEER` ";
-    $sql.= "USER_PEER ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') WHERE USER_POLL_VOTES.TID = '$tid') ";
+    $sql.= "USER_PEER ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') WHERE USER_POLL_VOTES.TID = '$tid') ";
     $sql.= "AS USER_POLL_VOTES ON (USER_POLL_VOTES.TID = POLL.TID AND USER_POLL_VOTES.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID ";
     $sql.= "AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) WHERE POLL.TID = '$tid'";
 
@@ -400,7 +400,7 @@ function poll_get_votes($tid, $include_votes = true)
     $poll_votes_array = array();
     $poll_votes_sort = array();
 
-    while (($poll_votes_data = $result->fetch_assoc())) {
+    while (($poll_votes_data = $result->fetch_assoc()) !== null) {
 
         if (!isset($poll_votes_array[$poll_votes_data['QUESTION_ID']])) {
 
@@ -503,7 +503,7 @@ function poll_get_user_votes($tid)
 
     if (!$db = db::get()) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
@@ -515,7 +515,7 @@ function poll_get_user_votes($tid)
     $sql.= "INNER JOIN `{$table_prefix}POLL_VOTES` POLL_VOTES ON (POLL_VOTES.TID = POLL.TID  ";
     $sql.= "AND POLL_VOTES.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID) INNER JOIN `{$table_prefix}USER_POLL_VOTES`  ";
     $sql.= "USER_POLL_VOTES ON (USER_POLL_VOTES.TID = POLL_VOTES.TID AND USER_POLL_VOTES.QUESTION_ID = POLL_QUESTIONS.QUESTION_ID  ";
-    $sql.= "AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) WHERE POLL.TID = '$tid' AND USER_POLL_VOTES.UID = '$uid'  ";
+    $sql.= "AND USER_POLL_VOTES.OPTION_ID = POLL_VOTES.OPTION_ID) WHERE POLL.TID = '$tid' AND USER_POLL_VOTES.UID = '{$_SESSION['UID']}'  ";
     $sql.= "ORDER BY USER_POLL_VOTES.VOTED";
 
     if (!($result = $db->query($sql))) return false;
@@ -524,7 +524,7 @@ function poll_get_user_votes($tid)
 
     $user_poll_votes_array = array();
 
-    while (($poll_data = $result->fetch_assoc())) {
+    while (($poll_data = $result->fetch_assoc()) !== null) {
 
         if (!isset($user_poll_votes_array['VOTED'])) {
             $user_poll_votes_array['VOTED'] = $poll_data['VOTED'];
@@ -570,7 +570,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $poll_display.= "          ". form_input_hidden('tid', htmlentities_array($tid)). "\n";
     $poll_display.= "          <table width=\"560\">\n";
 
-    if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && (session::get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y')))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
+    if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && ($_SESSION['UID'] > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y')))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
 
         foreach ($poll_results as $question_id => $poll_question) {
 
@@ -733,11 +733,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $poll_display.= "            <tr>\n";
                 $poll_display.= "              <td colspan=\"2\" align=\"center\">";
 
-                if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || session::get_value('UID') == $poll_data['FROM_UID'] || session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
+                if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || $_SESSION['UID'] == $poll_data['FROM_UID'] || session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
                     $poll_display.= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>". gettext("Results"). "</span></a>";
                 }
 
-                if (session::get_value('UID') == $poll_data['FROM_UID'] || session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
+                if ($_SESSION['UID'] == $poll_data['FROM_UID'] || session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
                     $poll_display.= "&nbsp;<a href=\"close_poll.php?webtag=$webtag&msg=$tid.1\" class=\"button\" target=\"_parent\">". gettext("End Poll"). "</a>";
                 }
 
@@ -764,7 +764,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     $poll_display.= "            </tr>\n";
                 }
 
-            } else if (session::get_value('UID') > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y'))) {
+            } else if ($_SESSION['UID'] > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y'))) {
 
                 $poll_display.= "            <tr>\n";
                 $poll_display.= "              <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', gettext("Vote")). "</td>\n";
@@ -772,11 +772,11 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $poll_display.= "            <tr>\n";
                 $poll_display.= "              <td colspan=\"2\" align=\"center\">";
 
-                if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || session::get_value('UID') == $poll_data['FROM_UID'] || session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
+                if (($poll_data['SHOWRESULTS'] == POLL_SHOW_RESULTS && $total_votes > 0) || $_SESSION['UID'] == $poll_data['FROM_UID'] || session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
                     $poll_display.= "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" class=\"button popup 800x600\"><span>". gettext("Results"). "</span></a>";
                 }
 
-                if (session::get_value('UID') == $poll_data['FROM_UID'] || session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
+                if ($_SESSION['UID'] == $poll_data['FROM_UID'] || session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
                     $poll_display.= "&nbsp;<a href=\"close_poll.php?webtag=$webtag&msg=$tid.1\" class=\"button\" target=\"_parent\">". gettext("End Poll"). "</a>";
                 }
 
@@ -830,7 +830,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
     $poll_data['CONTENT'] = $poll_display;
 
-    $poll_data['FROM_RELATIONSHIP'] = user_get_relationship(session::get_value('UID'), $poll_data['FROM_UID']);
+    $poll_data['FROM_RELATIONSHIP'] = user_get_relationship($_SESSION['UID'], $poll_data['FROM_UID']);
 
     message_display($tid, $poll_data, $msg_count, $first_msg, $folder_fid, $in_list, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight_array);
 }
@@ -1285,7 +1285,7 @@ function poll_close($tid)
 
         $poll_data = $result->fetch_assoc();
 
-        if (session::get_value('UID') == $poll_data['FROM_UID'] || session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
+        if ($_SESSION['UID'] == $poll_data['FROM_UID'] || session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
             $closes_datetime = date(MYSQL_DATETIME_MIDNIGHT, time());
 
@@ -1321,9 +1321,10 @@ function poll_is_closed($tid)
 
 function poll_vote($tid, $vote_array)
 {
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!is_numeric($tid)) return false;
+
     if (!is_array($vote_array)) return false;
 
     if (!$db = db::get()) return false;
@@ -1351,7 +1352,7 @@ function poll_vote($tid, $vote_array)
                     if (!isset($poll_results[$question_id]['OPTIONS_ARRAY'][$option_id])) continue;
 
                     $sql = "INSERT INTO `{$table_prefix}USER_POLL_VOTES` (TID, UID, QUESTION_ID, OPTION_ID, VOTED) ";
-                    $sql.= "VALUES ('$tid', '$uid', '$question_id', '$option_id', CAST('$current_datetime' AS DATETIME))";
+                    $sql.= "VALUES ('$tid', '{$_SESSION['UID']}', '$question_id', '$option_id', CAST('$current_datetime' AS DATETIME))";
 
                     if (!$db->query($sql)) return false;
                 }
@@ -1361,7 +1362,7 @@ function poll_vote($tid, $vote_array)
                 if (!isset($poll_results[$question_id]['OPTIONS_ARRAY'][$option_data])) continue;
 
                 $sql = "INSERT INTO `{$table_prefix}USER_POLL_VOTES` (TID, UID, QUESTION_ID, OPTION_ID, VOTED) ";
-                $sql.= "VALUES ('$tid', '$uid', '$question_id', '$option_data', CAST('$current_datetime' AS DATETIME))";
+                $sql.= "VALUES ('$tid', '{$_SESSION['UID']}', '$question_id', '$option_data', CAST('$current_datetime' AS DATETIME))";
 
                 if (!$db->query($sql)) return false;
             }
@@ -1377,12 +1378,12 @@ function poll_delete_vote($tid)
 
     if (!is_numeric($tid)) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "DELETE QUICK FROM `{$table_prefix}USER_POLL_VOTES` ";
-    $sql.= "WHERE TID = '$tid' AND UID = '$uid'";
+    $sql.= "WHERE TID = '$tid' AND UID = '{$_SESSION['UID']}'";
 
     if (!$db->query($sql)) return false;
 

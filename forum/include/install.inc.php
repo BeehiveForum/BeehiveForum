@@ -302,9 +302,12 @@ function install_check_php_extensions()
 
     // Get an array of extensions currently loaded by PHP
     $loaded_extensions = get_loaded_extensions();
+    
+    // Extract list of missing extensions.
+    $missing_extensions = array_diff($required_extensions, $loaded_extensions);
 
     // Compare them to the ones we require.
-    if (($missing_extensions = array_diff($required_extensions, $loaded_extensions))) {
+    if (sizeof($missing_extensions) > 0) {
 
         // Format the list of required PHP extensions we use.
         foreach ($required_extensions as $key => $extension_name) {
@@ -460,7 +463,7 @@ function install_get_table_data()
 
     $forum_table_data_array = array();
 
-    while (($forum_webtags_data = $result->fetch_assoc())) {
+    while (($forum_webtags_data = $result->fetch_assoc()) !== null) {
         $forum_table_data_array[$forum_webtags_data['FID']] = $forum_webtags_data;
     }
 
@@ -511,7 +514,7 @@ function install_index_exists($database_name, $table_name, $index_name)
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($table_data = $result->fetch_assoc())) {
+    while (($table_data = $result->fetch_assoc()) !== null) {
         if ($table_data['Key_name'] == $index_name) return true;
     }
 
@@ -630,7 +633,7 @@ function install_check_table_conflicts($database_name, $webtag, $check_forum_tab
     if ($result->num_rows < 1) return false;
 
     // Get the existing tables as an array.
-    while (($table_data = $result->fetch_row())) {
+    while (($table_data = $result->fetch_row()) !== null) {
         $existing_tables[] = $table_data[0];
     }
 
@@ -680,7 +683,7 @@ function install_remove_indexes($database_name, $table_name)
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($index_data = $result->fetch_assoc())) {
+    while (($index_data = $result->fetch_assoc()) !== null) {
         $index_names_array[] = $index_data['Key_name'];
     }
 

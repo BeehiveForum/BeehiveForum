@@ -184,13 +184,13 @@ function sitemap_create_file()
     if (!($result_forums = sitemap_get_available_forums())) return false;
     
     // Iterate over each of the forums.
-    while (($forum_data = $result_forums->fetch_assoc())) {
+    while (($forum_data = $result_forums->fetch_assoc()) !== null) {
 
         // Get the MySQL result set for the current forum's threads.
         if (!($result_threads = sitemap_forum_get_threads($forum_data['FID']))) return false;
         
         // Iterate over the threads and add them to the sitemap file.
-        while (($thread_data = $result_threads->fetch_assoc())) {
+        while (($thread_data = $result_threads->fetch_assoc()) !== null) {
 
             $thread_last_modified = date(MYSQL_DATE, $thread_data['MODIFIED']);
 

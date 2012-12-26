@@ -1358,7 +1358,7 @@ if (forum_check_webtag_available($webtag)) {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">", sprintf(gettext("User Status for %s"), forum_get_setting('forum_name', null, 'A Beehive Forum')), "</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">", sprintf(gettext("User Status for %s"), forum_get_setting('forum_name', 'strlen', 'A Beehive Forum')), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"center\">\n";

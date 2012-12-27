@@ -520,7 +520,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
     echo "</form>\n";
     echo "</div>\n";
 
-    // Get the right threads for whichever mode is selected
+    // Fetch the right threads for whichever mode is selected
     switch ($mode) {
 
         case UNREAD_DISCUSSIONS:
@@ -555,12 +555,12 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
         case HIGH_INTEREST:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($_SESSION['UID'], $folder, $page, 1);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($_SESSION['UID'], $folder, $page, THREAD_INTERESTED);
             break;
 
         case UNREAD_HIGH_INTEREST:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_interest($_SESSION['UID'], $folder, $page, 1);
+            list($thread_info, $folder_order, $thread_count) = threads_get_unread_by_interest($_SESSION['UID'], $folder, $page, THREAD_INTERESTED);
             break;
 
         case RECENTLY_SEEN:
@@ -570,7 +570,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
         case IGNORED_THREADS:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($_SESSION['UID'], $folder, $page, -1);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($_SESSION['UID'], $folder, $page, THREAD_IGNORED);
             break;
 
         case BY_IGNORED_USERS:
@@ -580,7 +580,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
         case SUBSCRIBED_TO:
 
-            list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($_SESSION['UID'], $folder, $page, 2);
+            list($thread_info, $folder_order, $thread_count) = threads_get_by_interest($_SESSION['UID'], $folder, $page, THREAD_SUBSCRIBED);
             break;
 
         case STARTED_BY_FRIEND:
@@ -636,76 +636,81 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
     $folder_msgs = threads_get_folder_msgs();
 
     // Check that the folder order is a valid array.
-    // While we're here we can also check to see how the user
-    // has decided to display the thread list.
+    if (!is_array($folder_order)) $folder_order = array();
+
+    // Check the folder display order.
     if (isset($_SESSION['THREADS_BY_FOLDER']) && ($_SESSION['THREADS_BY_FOLDER'] == 'Y')) {
         $folder_order = array_keys($folder_info);
     }
 
-    // Sort the folders and threads correctly as per the URL query for the TID
-    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+    // Check for a message to display and re-order the thread list.
+    if (isset($_REQUEST['msg']) && validate_msg($_REQUEST['msg'])) {
 
-        list($tid) = explode('.', $_GET['msg']);
+        list($selected_tid) = explode('.', $_REQUEST['msg']);
 
-        if (($thread = thread_get($tid)) !== false) {
+        if (($thread = thread_get($selected_tid)) !== false) {
 
             if (!isset($thread['RELATIONSHIP'])) $thread['RELATIONSHIP'] = 0;
 
+            // Check the folder display order / user is a guest.
             if (!isset($_SESSION['THREADS_BY_FOLDER']) || $_SESSION['THREADS_BY_FOLDER'] != 'Y' || !session::logged_in()) {
 
+                // Remove the folder from the list of folders.
                 if (in_array($thread['FID'], $folder_order)) {
                     array_splice($folder_order, array_search($thread['FID'], $folder_order), 1);
                 }
 
+                // Re-add it at the top of the list.
                 array_unshift($folder_order, $thread['FID']);
             }
 
+            // Check $thread_info is an array.
             if (!is_array($thread_info)) $thread_info = array();
 
-            if (isset($thread_info[$tid])) {
-                unset($thread_info[$tid]);
+            // Check to see if the thread is already in the list.
+            // If it is remove it, otherwise take the last thread
+            // off the list so we always only have 50 threads on display.
+            if (isset($thread_info[$selected_tid])) {
+                unset($thread_info[$selected_tid]);
             } else {
-                array_pop($thread_info);
+                $thread_info = array_slice($thread_info, 0, 50, true);
             }
 
+            // Add the requested thread to the top of the list of threads.
             array_unshift($thread_info, $thread);
         }
     }
 
-    // Work out if any folders have no messages and add them.
-    // Seperate them by INTEREST level
-    if ($_SESSION['UID'] > 0) {
+    // Check for a specified folder and move it to the top of the thread list.
+    if (isset($folder) && is_numeric($folder)) {
 
-        if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-
-            list($tid) = explode('.', $_GET['msg']);
-
-            if (($thread = thread_get($tid)) !== false) {
-                $selected_folder = $thread['FID'];
-            }
-
-        } else if (isset($_GET['folder'])) {
-
-            $selected_folder = $_GET['folder'];
-
-        } else {
-
-            $selected_folder = 0;
+        if (in_array($folder, $folder_order)) {
+            array_splice($folder_order, array_search($folder, $folder_order), 1);
         }
 
+        array_unshift($folder_order, $folder);
+    }
+
+    if ($_SESSION['UID'] > 0) {
+
+        // Array to hold our ignored folders in.
         $ignored_folders = array();
 
+        // Loop through the list of folders and check their status.
+        // If they're ignored and not already set to be on display
+        // they need to be added to $ignored_folders so that they
+        // appear at the bottom of the thread list.
         foreach ($folder_info as $fid => $folder_data) {
 
-	        if (!in_array($fid, $folder_order) && !in_array($fid, $ignored_folders)) {
+            if (!in_array($fid, $folder_order) && !in_array($fid, $ignored_folders)) {
 
-	            if ($folder_data['INTEREST'] != FOLDER_IGNORED || (isset($folder) && $folder == $fid)) {
-	                array_push($folder_order, $fid);
-	            } else {
-	                array_push($ignored_folders, $fid);
-	            }
-	        }
-	    }
+                if ($folder_data['INTEREST'] != FOLDER_IGNORED || (isset($folder) && $folder == $fid)) {
+                    array_push($folder_order, $fid);
+                } else {
+                    array_push($ignored_folders, $fid);
+                }
+            }
+        }
 
         // Append ignored folders onto the end of the folder list.
         // This will make them appear at the bottom of the thread list.
@@ -714,8 +719,8 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
     } else {
 
         foreach ($folder_info as $fid => $folder_data) {
-	        if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
-	    }
+            if (!in_array($fid, $folder_order)) $folder_order[] = $fid;
+        }
     }
 
     // If no threads are returned, say something to that effect

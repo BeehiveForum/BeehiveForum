@@ -85,8 +85,9 @@ function attachments_get($uid, $filter = ATTACHMENT_FILTER_BOTH, $hash_array = a
 
     $hash_array = array_filter($hash_array, 'is_md5');
 
-    $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.FILESIZE, ";
-    $sql.= "PAF.THUMBNAIL, PAF.DOWNLOADS FROM POST_ATTACHMENT_FILES PAF ";
+    $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, ";
+    $sql.= "PAF.FILESIZE, PAF.WIDTH, PAF.HEIGHT, PAF.THUMBNAIL, ";
+    $sql.= "PAF.DOWNLOADS FROM POST_ATTACHMENT_FILES PAF ";
     $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID ";
     $sql.= "AND PAI.FID = '$forum_fid') LEFT JOIN PM_ATTACHMENT_IDS PMAI ";
     $sql.= "ON (PMAI.AID = PAF.AID) WHERE PAF.UID = '$uid' ";
@@ -118,16 +119,18 @@ function attachments_get($uid, $filter = ATTACHMENT_FILTER_BOTH, $hash_array = a
 
     $attachments = array();
 
-    while (($attachment = $result->fetch_assoc()) !== null) {
+    while (($attachment_data = $result->fetch_assoc()) !== null) {
 
-        $attachments[$attachment['HASH']] = array(
-            "aid" => $attachment['AID'],
-            "downloads" => $attachment['DOWNLOADS'],
-            "filename" => rawurldecode($attachment['FILENAME']),
-            "filesize" => $attachment['FILESIZE'],
-            "hash" => $attachment['HASH'],
-            "mimetype" => $attachment['MIMETYPE'],
-            "thumbnail" => $attachment['THUMBNAIL'],
+        $attachments[$attachment_data['HASH']] = array(
+            "aid" => $attachment_data['AID'],
+            "downloads" => $attachment_data['DOWNLOADS'],
+            "filename" => rawurldecode($attachment_data['FILENAME']),
+            "filesize" => $attachment_data['FILESIZE'],
+            "hash" => $attachment_data['HASH'],
+            "height" => $attachment_data['HEIGHT'],
+            "mimetype" => $attachment_data['MIMETYPE'],
+            "thumbnail" => $attachment_data['THUMBNAIL'],
+            "width" => $attachment_data['WIDTH'],
         );
     }
 
@@ -142,8 +145,8 @@ function attachments_get_by_aid($aid, $uid = null)
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    $sql = "SELECT AID, UID, FILENAME, MIMETYPE, FILESIZE, ";
-    $sql.= "THUMBNAIL, HASH, DOWNLOADS FROM POST_ATTACHMENT_FILES ";
+    $sql = "SELECT AID, UID, FILENAME, MIMETYPE, FILESIZE, WIDTH, ";
+    $sql.= "HEIGHT, THUMBNAIL, HASH, DOWNLOADS FROM POST_ATTACHMENT_FILES ";
     $sql.= "WHERE AID = '$aid' ";
 
     if (isset($uid) && is_numeric($uid)) {
@@ -162,8 +165,10 @@ function attachments_get_by_aid($aid, $uid = null)
         "filename" => rawurldecode($attachment_data['FILENAME']),
         "filesize" => $attachment_data['FILESIZE'],
         "hash" => $attachment_data['HASH'],
+        "height" => $attachment_data['HEIGHT'],
         "mimetype" => $attachment_data['MIMETYPE'],
         "thumbnail" => $attachment_data['THUMBNAIL'],
+        "width" => $attachment_data['WIDTH'],
     );
 }
 function attachments_get_by_hash($hash, $uid = null)
@@ -174,8 +179,8 @@ function attachments_get_by_hash($hash, $uid = null)
 
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
-    $sql = "SELECT AID, UID, FILENAME, MIMETYPE, FILESIZE, ";
-    $sql.= "THUMBNAIL, HASH, DOWNLOADS FROM POST_ATTACHMENT_FILES ";
+    $sql = "SELECT AID, UID, FILENAME, MIMETYPE, FILESIZE, WIDTH, ";
+    $sql.= "HEIGHT, THUMBNAIL, HASH, DOWNLOADS FROM POST_ATTACHMENT_FILES ";
     $sql.= "WHERE HASH = '$hash' ";
 
     if (isset($uid) && is_numeric($uid)) {
@@ -194,32 +199,40 @@ function attachments_get_by_hash($hash, $uid = null)
         "filename" => rawurldecode($attachment_data['FILENAME']),
         "filesize" => $attachment_data['FILESIZE'],
         "hash" => $attachment_data['HASH'],
+        "height" => $attachment_data['HEIGHT'],
         "mimetype" => $attachment_data['MIMETYPE'],
         "thumbnail" => $attachment_data['THUMBNAIL'],
+        "width" => $attachment_data['WIDTH'],
     );
 }
 
-function attachments_add($uid, $filename, $hash, $mimetype, $filesize, $thumbnail = false)
+function attachments_add($uid, $filename, $hash, $mimetype, $filesize, $image_width, $image_height, $thumbnail)
 {
     if (!$db = db::get()) return false;
 
     if (!is_numeric($uid)) return false;
 
-    $filename = rawurlencode($filename);
+    if (!is_numeric($image_width) && !is_null($image_width)) return false;
 
-    $filename = $db->escape($filename);
+    if (!is_numeric($image_height) && !is_null($image_height)) return false;
+
+    $filename = $db->escape(rawurlencode($filename));
 
     $mimetype = $db->escape($mimetype);
 
     $filesize = $db->escape($filesize);
 
+    $image_width = is_null($image_width) ? 'NULL' : $db->escape($image_width);
+
+    $image_height = is_null($image_height) ? 'NULL' : $db->escape($image_height);
+
     $thumbnail = ($thumbnail) ? 'Y' : 'N';
 
     $hash = $db->escape($hash);
 
-    $sql = "INSERT INTO POST_ATTACHMENT_FILES (UID, FILENAME, MIMETYPE, ";
-    $sql.= "FILESIZE, THUMBNAIL, HASH) VALUES ('$uid', '$filename', ";
-    $sql.= "'$mimetype', '$filesize', '$thumbnail', '$hash')";
+    $sql = "INSERT INTO POST_ATTACHMENT_FILES (UID, FILENAME, MIMETYPE, FILESIZE, ";
+    $sql.= "WIDTH, HEIGHT, THUMBNAIL, HASH) VALUES ('$uid', '$filename', '$mimetype', ";
+    $sql.= "'$filesize', $image_width, $image_height, '$thumbnail', '$hash')";
 
     if (!$db->query($sql)) return false;
 
@@ -588,9 +601,13 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
 
     $webtag = get_webtag();
 
-    $user_show_thumbs = isset($_SESSION['SHOW_THUMBS']) && is_numeric($_SESSION['SHOW_THUMBS']) && ($_SESSION['SHOW_THUMBS'] > 0);
+    if (isset($_SESSION['SHOW_THUMBS']) && is_numeric($_SESSION['SHOW_THUMBS'])) {
+        $user_show_thumbs = $_SESSION['SHOW_THUMBS'];
+    } else {
+        $user_show_thumbs = 100;
+    }
 
-    if ($show_thumbs && forum_get_setting('attachment_thumbnails', 'Y') && ($user_show_thumbs || !session::logged_in())) {
+    if ($show_thumbs && forum_get_setting('attachment_thumbnails', 'Y') && ($user_show_thumbs > 0 || !session::logged_in())) {
 
         $thumbnail_size = array(
             1 => 50,
@@ -602,7 +619,6 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
 
     } else {
 
-        $thumbnail_max_size = 100;
         $show_thumbs = false;
     }
 
@@ -622,57 +638,51 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
 
         if (mb_strlen($attachment['filename']) > 16 && $limit_filename) {
 
-            $title_array[] = gettext("Filename"). ": {$attachment['filename']}";
+            $title_array[] = sprintf(gettext("Filename: %s"), $attachment['filename']);
             $attachment['filename'] = format_file_name($attachment['filename']);
         }
 
         if (isset($attachment['filesize']) && is_numeric($attachment['filesize']) && $attachment['filesize'] > 0) {
-            $title_array[] = gettext("Size"). ": ". format_file_size($attachment['filesize']);
+            $title_array[] = sprintf(gettext("Size: %s"), format_file_size($attachment['filesize']));
         }
 
         if ($attachment['downloads'] == 1) {
-
             $title_array[] = gettext("Downloaded: 1 time");
-
         } else {
-
             $title_array[] = sprintf(gettext("Downloaded: %d times"), $attachment['downloads']);
         }
 
-        if ($show_thumbs && isset($attachment['thumbnail']) && ($attachment['thumbnail'] == 'Y')) {
-
-            if (($image_info = @getimagesize("$attachment_dir/{$attachment['hash']}")) !== false) {
-
-                $title_array[] = gettext("Dimensions"). ": {$image_info[0]}x{$image_info[1]}px";
-
-                $thumbnail_width  = $image_info[0];
-                $thumbnail_height = $image_info[1];
-
-                while ($thumbnail_width > $thumbnail_max_size || $thumbnail_height > $thumbnail_max_size) {
-
-                    $thumbnail_width--;
-                    $thumbnail_height = floor($thumbnail_width * ($image_info[1] / $image_info[0]));
-                }
-
-                $title = implode(", ", $title_array);
-
-                $attachment_link = "<span class=\"attachment_thumb\"><a href=\"$attachment_href\" title=\"$title\" ";
-                $attachment_link.= "target=\"_blank\"><img src=\"$attachment_href&amp;thumb=1\"";
-                $attachment_link.= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
-                $attachment_link.= "alt=\"$title\" title=\"$title\" /></a></span>";
-
-                return $attachment_link;
-            }
+        if (isset($attachment['width'], $attachment['height'])) {
+            $title_array[] = sprintf(gettext("Dimensions %dx%dpx"), $attachment['width'], $attachment['height']);
         }
 
         $title = implode(", ", $title_array);
 
-        $attachment_link = "<img src=\"". html_style_image('attach.png');
-        $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\" ";
-        $attachment_link.= "alt=\"". gettext("Attachment"). "\" ";
-        $attachment_link.= "title=\"". gettext("Attachment"). "\" />";
-        $attachment_link.= "<a href=\"$attachment_href\" title=\"$title\" ";
-        $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a>";
+        if ($show_thumbs && isset($attachment['thumbnail']) && ($attachment['thumbnail'] == 'Y')) {
+
+            $thumbnail_width = 150;
+            $thumbnail_height = 150;
+
+            while ($thumbnail_width > $thumbnail_max_size) {
+
+                $thumbnail_width--;
+                $thumbnail_height--;
+            }
+
+            $attachment_link = "<span class=\"attachment_thumb\"><a href=\"$attachment_href\" title=\"$title\" ";
+            $attachment_link.= "target=\"_blank\"><img src=\"$attachment_href&amp;thumb=1\"";
+            $attachment_link.= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
+            $attachment_link.= "alt=\"$title\" title=\"$title\" /></a></span>";
+
+        } else {
+
+            $attachment_link = "<img src=\"". html_style_image('attach.png');
+            $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\" ";
+            $attachment_link.= "alt=\"". gettext("Attachment"). "\" ";
+            $attachment_link.= "title=\"". gettext("Attachment"). "\" />";
+            $attachment_link.= "<a href=\"$attachment_href\" title=\"$title\" ";
+            $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a>";
+        }
 
         return $attachment_link;
     }

@@ -72,6 +72,7 @@ $json_data = array(
     'uid' => $_SESSION['UID'],
     'lang' => array(
         'imageresized' => gettext("This image has been resized (original size %dx%d). To view the full-size image click here."),
+        'deleteattachmentconfirmation' => gettext("Are you sure you want to delete the selected attachments?"),
         'deletemessagesconfirmation' => gettext("Are you sure you want to delete all of the selected messages?"),
         'unquote' => gettext("Unquote"),
         'quote' => gettext("Quote"),

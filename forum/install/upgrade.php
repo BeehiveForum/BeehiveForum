@@ -69,7 +69,22 @@ if (!($result = $db->query($sql))) {
     return;
 }
 
-$sql = "ALTER TABLE POST_ATTACHMENT_FILES ADD COLUMN THUMBNAIL CHAR(1) DEFAULT 'N' NOT NULL AFTER FILESIZE";
+$sql = "ALTER TABLE POST_ATTACHMENT_FILES ADD COLUMN WIDTH SMALLINT(5) UNSIGNED DEFAULT NULL AFTER FILESIZE";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+$sql = "ALTER TABLE POST_ATTACHMENT_FILES ADD COLUMN HEIGHT SMALLINT(5) UNSIGNED DEFAULT NULL AFTER WIDTH";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE POST_ATTACHMENT_FILES ADD COLUMN THUMBNAIL CHAR(1) NOT NULL AFTER HEIGHT";
 
 if (!($result = $db->query($sql))) {
 
@@ -391,7 +406,6 @@ if (!($result = $db->query($sql))) {
     return;
 }
 
-
 if (($attachment_dir = forum_get_global_setting('attachment_dir', null, false)) !== false) {
 
     $attachment_dir = rtrim($attachment_dir, '/');
@@ -412,29 +426,38 @@ if (($attachment_dir = forum_get_global_setting('attachment_dir', null, false)) 
 
     foreach ($attachments as $attachment) {
 
-        if (!preg_match($pattern_match, $attachment, $matches_array)) {
+        if (is_dir($attachment) || !preg_match($pattern_match, $attachment, $matches_array)) {
             continue;
         }
+
+        $image_width = 'NULL';
+
+        $image_height = 'NULL';
+
+        $thumbnail = 'N';
 
         $hash = $db->escape($matches_array[1]);
 
         $filesize = $db->escape(filesize($attachment));
 
-        $sql = "UPDATE POST_ATTACHMENT_FILES SET FILESIZE='$filesize' WHERE HASH='$hash'";
+        if (($image_info = @getimagesize($attachment)) !== false) {
+
+            $image_width = $db->escape($image_info[0]);
+
+            $image_height = $db->escape($image_info[1]);
+
+            $thumbnail = @file_exists($attachment. '.thumb') ? 'Y' : 'N';
+        }
+
+        $sql = "UPDATE POST_ATTACHMENT_FILES SET FILESIZE = '$filesize', ";
+        $sql.= "WIDTH = $image_width, HEIGHT = $image_height, ";
+        $sql.= "THUMBNAIL = '$thumbnail' WHERE HASH = '$hash'";
 
         if (!($result = $db->query($sql))) {
 
             $valid = false;
             return;
         }
-    }
-
-    $sql = "DELETE FROM POST_ATTACHMENT_FILES WHERE FILESIZE = 0";
-
-    if (!($result = $db->query($sql))) {
-
-        $valid = false;
-        return;
     }
 
     $sql = "DELETE FROM POST_ATTACHMENT_IDS WHERE AID NOT IN (SELECT AID FROM POST_ATTACHMENT_FILES)";

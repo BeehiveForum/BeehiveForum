@@ -225,16 +225,18 @@ if (!($result = $db->query($sql))) {
 $sql = "CREATE TABLE POST_ATTACHMENT_FILES (";
 $sql.= "  AID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-$sql.= "  FILENAME varchar(255) NOT NULL,";
-$sql.= "  MIMETYPE varchar(255) NOT NULL,";
-$sql.= "  FILESIZE bigint(8) UNSIGNED NOT NULL,";
-$sql.= "  THUMBNAIL char(1) NOT NULL DEFAULT 'N',";
-$sql.= "  HASH varchar(32) NOT NULL,";
+$sql.= "  FILENAME VARCHAR(255) NOT NULL,";
+$sql.= "  MIMETYPE VARCHAR(255) NOT NULL,";
+$sql.= "  FILESIZE BIGINT(8) UNSIGNED NOT NULL,";
+$sql.= "  WIDTH SMALLINT(5) UNSIGNED DEFAULT NULL,";
+$sql.= "  HEIGHT SMALLINT(5) UNSIGNED DEFAULT NULL,";
+$sql.= "  THUMBNAIL CHAR(1) NOT NULL,";
+$sql.= "  HASH VARCHAR(32) NOT NULL,";
 $sql.= "  DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
 $sql.= "  PRIMARY KEY (AID),";
 $sql.= "  KEY UID (UID),";
 $sql.= "  KEY HASH (HASH)";
-$sql.= ") ENGINE=MyISAM  DEFAULT CHARSET=utf8";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 if (!($result = $db->query($sql))) {
 

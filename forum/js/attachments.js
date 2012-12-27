@@ -233,6 +233,10 @@ $(beehive).bind('init', function() {
                 return;
             }
 
+            if (!window.confirm(beehive.lang.deleteattachmentconfirmation)) {
+                return;
+            }
+
             $.ajax({
                 data: {
                     'webtag': beehive.webtag,

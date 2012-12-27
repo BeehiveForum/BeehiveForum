@@ -194,7 +194,7 @@ if (isset($modified_date)) {
 
         if (!isset($_GET['output'])) echo "Fetching GIT Log Data...\n";
 
-        if (($git_log_temp_file = get_git_log_data($modified_date))) {
+        if (($git_log_temp_file = get_git_log_data($modified_date)) !== false) {
 
             if (!isset($_GET['output'])) echo "Parsing GIT Log Data...\n";
 

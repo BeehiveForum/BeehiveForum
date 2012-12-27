@@ -190,11 +190,37 @@ if (isset($_POST['delete'])) {
 
         } else {
 
-            $thumbnail = image_resize($file_path, $file_path. '.thumb');
+            $image_width = null;
+            
+            $image_height = null;
 
-            $attachment_aid = attachments_add($_SESSION['UID'], $file_name, $file_hash, $file_type, $file_size, $thumbnail);
+            $thumbnail = false;
 
-            $attachment_details = attachments_get_by_aid($attachment_aid, $_SESSION['UID']);
+            if (($image_info = @getimagesize($file_path)) !== false) {
+
+                $image_width = $image_info[0];
+
+                $image_height = $image_info[1];
+
+                $thumbnail = image_resize($file_path, $file_path. '.thumb');
+            }
+
+            if (($attachment_aid = attachments_add($_SESSION['UID'], $file_name, $file_hash, $file_type, $file_size, $image_width, $image_height, $thumbnail)) !== false) {
+
+                $attachment_details = attachments_get_by_aid($attachment_aid, $_SESSION['UID']);
+
+            } else {
+
+                @unlink($file_path);
+
+                @unlink($file_path. '.thumb');
+
+                @unlink($temp_file);
+
+                $valid = false;
+
+                $error = gettext('Attachment failed to upload. Please try again.');
+            }
         }
     }
 

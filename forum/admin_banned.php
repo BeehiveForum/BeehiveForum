@@ -150,12 +150,12 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
     $available_pages = array(
-        'admin_user.php', 
-        'admin_users.php', 
-        'admin_visitor_log.php', 
+        'admin_user.php',
+        'admin_users.php',
+        'admin_visitor_log.php',
         'messages.php'
     );
-    
+
     $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
 
     if (preg_match("/^$available_pages_preg/u", basename($ret)) < 1) {
@@ -438,14 +438,14 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
                     if (($ban_type != $old_ban_type) || ($ban_data != $old_ban_data) || ($ban_expires != $old_ban_expires)) {
 
                         $log_data = array(
-                            $ban_id, 
-                            $ban_type, 
-                            $ban_data, 
-                            $old_ban_type, 
-                            $old_ban_data, 
+                            $ban_id,
+                            $ban_type,
+                            $ban_data,
+                            $old_ban_type,
+                            $old_ban_data,
                             $old_ban_expires
                         );
-                        
+
                         admin_add_log_entry(UPDATED_BAN, $log_data);
                     }
 
@@ -502,7 +502,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
             } else {
 
-                html_display_error_msg(gettext("Expiry date is invalid"), '420', 'center');
+                html_display_error_msg(gettext("Expiry date is invalid"), '700', 'center');
                 $valid = false;
             }
 
@@ -525,7 +525,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
             if (($add_new_ban_expires > 0) && ($add_new_ban_expires < time())) {
 
-                html_display_warning_msg(gettext("Selected date is in the past"), '420', 'center');
+                html_display_warning_msg(gettext("Selected date is in the past"), '700', 'center');
 
             } else {
 
@@ -534,22 +534,22 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
                     $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
                     $affected_sessions_text = sprintf("%s<ul><li>%s</li></ul>", gettext("This ban may affect the following active user sessions"), $affected_sessions_text);
 
-                    html_display_warning_msg($affected_sessions_text, '420', 'center');
+                    html_display_warning_msg($affected_sessions_text, '700', 'center');
 
                 } else {
 
-                    html_display_warning_msg(gettext("This ban affects no active sessions"), '420', 'center');
+                    html_display_warning_msg(gettext("This ban affects no active sessions"), '700', 'center');
                 }
             }
         }
 
     } else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '420', 'center');
+        html_display_error_array($error_msg_array, '700', 'center');
 
     } else {
 
-        html_display_warning_msg(gettext("You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254"), '420', 'center');
+        html_display_warning_msg(gettext("You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254"), '700', 'center');
     }
 
     echo "<br />\n";
@@ -559,7 +559,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "  ", form_input_hidden('addban', ''), "\n";
     echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
     echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"420\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -573,19 +573,19 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">", gettext("Ban Type"), ":</td>\n";
+    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Ban Type"), ":</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array('newbantype', $ban_types_dropdown_array, (isset($add_new_ban_type) && in_array($add_new_ban_type, array_keys($ban_types_dropdown_array)) ? htmlentities_array($add_new_ban_type) : BAN_TYPE_NONE)), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">", gettext("Ban Data"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text('newbandata', (isset($add_new_ban_data) ? htmlentities_array($add_new_ban_data) : ''), 40, 255), "</td>\n";
+    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Ban Data"), ":</td>\n";
+    echo "                        <td align=\"left\">", form_input_text('newbandata', (isset($add_new_ban_data) ? htmlentities_array($add_new_ban_data) : ''), 52, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"100\" class=\"posthead\" valign=\"top\">", gettext("Comment"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_textarea('newbancomment', (isset($add_new_ban_comment) ? htmlentities_array($add_new_ban_comment) : ''), 5, 37), "</td>\n";
+    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\" valign=\"top\">", gettext("Comment"), ":</td>\n";
+    echo "                        <td align=\"left\">", form_textarea('newbancomment', (isset($add_new_ban_comment) ? htmlentities_array($add_new_ban_comment) : ''), 6, 50), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">", gettext("Ban Expires"), ":</td>\n";
+    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Ban Expires"), ":</td>\n";
     echo "                        <td align=\"left\">", form_date_dropdowns($add_new_ban_expires_year, $add_new_ban_expires_month, $add_new_ban_expires_day, "newbanexpires", date('Y')), "&nbsp;<span class=\"small_optional_text\">", gettext("(Optional)"), "</span></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -670,7 +670,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
                 } else {
 
-                    html_display_error_msg(gettext("Expiry date is invalid"), '420', 'center');
+                    html_display_error_msg(gettext("Expiry date is invalid"), '700', 'center');
                     $valid = false;
                 }
 
@@ -691,7 +691,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
             if (($ban_data_array['EXPIRES'] > 0) && ($ban_data_array['EXPIRES'] < time())) {
 
-                html_display_warning_msg(gettext("Selected date is in the past"), '420', 'center');
+                html_display_warning_msg(gettext("Selected date is in the past"), '700', 'center');
 
             } else {
 
@@ -700,22 +700,22 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
                     $affected_sessions_text = implode('</li><li>', array_map('admin_prepare_affected_sessions', $affected_sessions_array));
                     $affected_sessions_text = sprintf("%s<ul><li>%s</li></ul>", gettext("This ban may affect the following active user sessions"), $affected_sessions_text);
 
-                    html_display_warning_msg($affected_sessions_text, '420', 'center');
+                    html_display_warning_msg($affected_sessions_text, '700', 'center');
 
                 } else {
 
-                    html_display_warning_msg(gettext("This ban affects no active sessions"), '420', 'center');
+                    html_display_warning_msg(gettext("This ban affects no active sessions"), '700', 'center');
                 }
             }
         }
 
     } else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '420', 'center');
+        html_display_error_array($error_msg_array, '700', 'center');
 
     } else {
 
-        html_display_warning_msg(gettext("You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254"), '420', 'center');
+        html_display_warning_msg(gettext("You can use the percent (%) wildcard symbol in any of your ban lists to obtain partial matches, i.e. '192.168.0.%' would ban all IP Addresses in the range 192.168.0.1 through 192.168.0.254"), '700', 'center');
     }
 
     echo "<br />\n";
@@ -726,7 +726,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "  ", form_input_hidden("delete_ban[$ban_id]", "Y"), "\n";
     echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
     echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"420\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -740,19 +740,19 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">", gettext("Ban Type"), ":</td>\n";
+    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Ban Type"), ":</td>\n";
     echo "                        <td align=\"left\">", form_dropdown_array('bantype', $ban_types_list_array, $ban_data_array['BANTYPE']), form_input_hidden('old_bantype', htmlentities_array($ban_data_array['BANTYPE'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">", gettext("Ban Data"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text('bandata', htmlentities_array($ban_data_array['BANDATA']), 40, 255), form_input_hidden('old_bandata', htmlentities_array($ban_data_array['BANDATA'])), "</td>\n";
+    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Ban Data"), ":</td>\n";
+    echo "                        <td align=\"left\">", form_input_text('bandata', htmlentities_array($ban_data_array['BANDATA']), 52, 255), form_input_hidden('old_bandata', htmlentities_array($ban_data_array['BANDATA'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"100\" class=\"posthead\" valign=\"top\">", gettext("Comment"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_textarea('bancomment', htmlentities_array($ban_data_array['COMMENT']), 5, 37), form_input_hidden('old_bancomment', htmlentities_array($ban_data_array['COMMENT'])), "</td>\n";
+    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\" valign=\"top\">", gettext("Comment"), ":</td>\n";
+    echo "                        <td align=\"left\">", form_textarea('bancomment', htmlentities_array($ban_data_array['COMMENT']), 6, 50), form_input_hidden('old_bancomment', htmlentities_array($ban_data_array['COMMENT'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"100\" class=\"posthead\">", gettext("Ban Expires"), ":</td>\n";
+    echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Ban Expires"), ":</td>\n";
     echo "                        <td align=\"left\">", form_date_dropdowns($ban_data_array['EXPIRESYEAR'], $ban_data_array['EXPIRESMONTH'], $ban_data_array['EXPIRESDAY'], "banexpires", 2002), form_input_hidden('old_banexpires', htmlentities_array($ban_data_array['EXPIRES'])), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -790,23 +790,23 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '70%', 'center');
+        html_display_error_array($error_msg_array, '86%', 'center');
 
     } else if (isset($_GET['added'])) {
 
-        html_display_success_msg(gettext("Successfully added ban"), '70%', 'center');
+        html_display_success_msg(gettext("Successfully added ban"), '86%', 'center');
 
     } else if (isset($_GET['removed'])) {
 
-        html_display_success_msg(gettext("Successfully removed selected bans"), '70%', 'center');
+        html_display_success_msg(gettext("Successfully removed selected bans"), '86%', 'center');
 
     } else if (isset($_GET['edited'])) {
 
-        html_display_success_msg(gettext("Successfully updated ban"), '70%', 'center');
+        html_display_success_msg(gettext("Successfully updated ban"), '86%', 'center');
 
     } else if (sizeof($ban_list_array['ban_array']) < 1) {
 
-        html_display_warning_msg(gettext("There is no existing ban data. To add a ban click the 'Add New' button below."), '70%', 'center');
+        html_display_warning_msg(gettext("There is no existing ban data. To add a ban click the 'Add New' button below."), '86%', 'center');
     }
 
     echo "<br />\n";
@@ -815,7 +815,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
     echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";

@@ -161,7 +161,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
         html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Edit Profile - %s"), format_user_name($user['LOGON'], $user['NICKNAME']))), 'class=window_title');
 
-        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Profile"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
     } else {
 

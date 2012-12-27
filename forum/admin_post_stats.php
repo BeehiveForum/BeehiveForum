@@ -146,16 +146,16 @@ echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'),
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '700', 'center');
+    html_display_error_array($error_msg_array, '86%', 'center');
 
 } else if (sizeof($user_stats_array['user_stats']) < 1) {
 
-    html_display_warning_msg(gettext("No post data recorded for this period."), '700', 'center');
+    html_display_warning_msg(gettext("No post data recorded for this period."), '86%', 'center');
 }
 
 echo "  <br />\n";
 echo "  <div align=\"center\">\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -209,7 +209,7 @@ echo "  </table>\n";
 echo "  <br />\n";
 echo "  <form accept-charset=\"utf-8\" action=\"admin_post_stats.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

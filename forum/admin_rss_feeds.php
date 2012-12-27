@@ -384,17 +384,17 @@ if (isset($_POST['delete'])) {
                 if (rss_feed_update($feed_id, $t_new_name, $t_new_uid, $t_new_fid, $t_new_url, $t_new_prefix, $t_new_frequency, $t_max_item_count)) {
 
                     $log_data = array(
-                        $t_new_name, 
-                        $t_old_name, 
-                        $t_new_user, 
-                        $t_old_user, 
-                        $t_new_fid, 
-                        $t_old_fid, 
-                        $t_new_url, 
-                        $t_old_url, 
-                        $t_new_prefix, 
-                        $t_old_prefix, 
-                        $t_new_frequency, 
+                        $t_new_name,
+                        $t_old_name,
+                        $t_new_user,
+                        $t_old_user,
+                        $t_new_fid,
+                        $t_old_fid,
+                        $t_new_url,
+                        $t_old_url,
+                        $t_new_prefix,
+                        $t_old_prefix,
+                        $t_new_frequency,
                         $t_old_frequency
                     );
 
@@ -429,11 +429,11 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '500', 'center');
+        html_display_error_array($error_msg_array, '700', 'center');
 
     } else if (isset($rss_stream_success)) {
 
-        html_display_success_msg($rss_stream_success, '500', 'center');
+        html_display_success_msg($rss_stream_success, '700', 'center');
     }
 
     echo "<br />\n";
@@ -442,7 +442,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('addfeed', 'true'), "\n";
     echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -555,11 +555,11 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '500', 'center');
+        html_display_error_array($error_msg_array, '700', 'center');
 
     } else if (isset($rss_stream_success)) {
 
-        html_display_success_msg($rss_stream_success, '500', 'center');
+        html_display_success_msg($rss_stream_success, '700', 'center');
     }
 
     echo "<br />\n";
@@ -569,7 +569,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "  ", form_input_hidden('feed_id', htmlentities_array($feed_id)), "\n";
     echo "  ", form_input_hidden("t_delete[$feed_id]", "Y"), "\n";
     echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -667,23 +667,23 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '70%', 'center');
+        html_display_error_array($error_msg_array, '86%', 'center');
 
     } else if (isset($_GET['added'])) {
 
-        html_display_success_msg(gettext("Successfully added new feed"), '70%', 'center');
+        html_display_success_msg(gettext("Successfully added new feed"), '86%', 'center');
 
     } else if (isset($_GET['edited'])) {
 
-        html_display_success_msg(gettext("Successfully edited feed"), '70%', 'center');
+        html_display_success_msg(gettext("Successfully edited feed"), '86%', 'center');
 
     } else if (isset($_GET['deleted'])) {
 
-        html_display_success_msg(gettext("Successfully removed selected feeds"), '70%', 'center');
+        html_display_success_msg(gettext("Successfully removed selected feeds"), '86%', 'center');
 
     } else if (sizeof($rss_feeds['rss_feed_array']) < 1) {
 
-        html_display_warning_msg(gettext("No existing RSS Feeds found. To add a feed click the 'Add New' button below"), '70%', 'center');
+        html_display_warning_msg(gettext("No existing RSS Feeds found. To add a feed click the 'Add New' button below"), '86%', 'center');
     }
 
     echo "<br />\n";
@@ -691,7 +691,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "<form accept-charset=\"utf-8\" name=\"rss\" action=\"admin_rss_feeds.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -746,7 +746,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "</form>\n";
     echo "</div>\n";
 
-    html_display_warning_msg(gettext("Here you can setup some RSS feeds for automatic propagation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. The RSS feed must be accessible via HTTP or it will not work."), '70%', 'center');
+    html_display_warning_msg(gettext("Here you can setup some RSS feeds for automatic propagation into your forum. The items from the RSS feeds you add will be created as threads which users can reply to as if they were normal posts. The RSS feed must be accessible via HTTP or it will not work."), '86%', 'center');
 
     html_draw_bottom();
 }

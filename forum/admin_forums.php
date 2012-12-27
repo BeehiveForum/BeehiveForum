@@ -110,7 +110,7 @@ if (isset($_POST['delete'])) {
             echo "  ", form_input_hidden("t_delete[$forum_fid]", "Y"), "\n";
         }
 
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
@@ -407,7 +407,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Forums"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> ", gettext("Add Forum"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-        html_display_error_array($error_msg_array, '500', 'center');
+        html_display_error_array($error_msg_array, '700', 'center');
     }
 
     echo "<br />\n";
@@ -416,7 +416,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
     echo "  ", form_input_hidden('addforum', 'true'), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -439,7 +439,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Forum Leader"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text_search("t_owner", (isset($_POST['t_owner']) ? htmlentities_array($_POST['t_owner']) : ""), 27, 15, false, ""), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text_search("t_owner", (isset($_POST['t_owner']) ? htmlentities_array($_POST['t_owner']) : ""), 35, 15, false, ""), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Access level"), ":</td>\n";
@@ -486,8 +486,8 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "  </table>\n";
     echo "  </form>\n";
 
-    html_display_warning_msg(gettext("When setting Restricted or Password Protected mode you will need to save your changes before you can change the user access privileges or password."), '500', 'center');
-    html_display_warning_msg(gettext("Please ensure you select the correct database when creating a new forum. Once created a new forum cannot be moved between available databases."), '500', 'center');
+    html_display_warning_msg(gettext("When setting Restricted or Password Protected mode you will need to save your changes before you can change the user access privileges or password."), '700', 'center');
+    html_display_warning_msg(gettext("Please ensure you select the correct database when creating a new forum. Once created a new forum cannot be moved between available databases."), '700', 'center');
 
     echo "</div>\n";
 
@@ -518,11 +518,11 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '500', 'center');
+        html_display_error_array($error_msg_array, '700', 'center');
 
     } else if (isset($_GET['edited'])) {
 
-        html_display_success_msg(gettext("Successfully updated forum"), '500', 'center', 'forum_updated');
+        html_display_success_msg(gettext("Successfully updated forum"), '700', 'center', 'forum_updated');
     }
 
     echo "<br />\n";
@@ -532,7 +532,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "  ", form_input_hidden('fid', htmlentities_array($fid)), "\n";
     echo "  ", form_input_hidden("t_delete[$fid]", "Y"), "\n";
     echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -547,11 +547,11 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Forum Name"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_name", (isset($_POST['t_name']) ? htmlentities_array($_POST['t_name']) : (isset($forum_data['FORUM_SETTINGS']['forum_name']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_name']) : "")), 35, 255), form_input_hidden("t_name_old", (isset($forum_data['FORUM_SETTINGS']['forum_name']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_name']) : "")), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name", (isset($_POST['t_name']) ? htmlentities_array($_POST['t_name']) : (isset($forum_data['FORUM_SETTINGS']['forum_name']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_name']) : "")), 52, 255), form_input_hidden("t_name_old", (isset($forum_data['FORUM_SETTINGS']['forum_name']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_name']) : "")), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" class=\"posthead\">", gettext("Forum Leader"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text_search("t_owner", (isset($_POST['t_owner']) ? htmlentities_array($_POST['t_owner']) : (isset($forum_data['FORUM_SETTINGS']['forum_leader']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_leader']) : "")), 27, 15, false, ""), form_input_hidden("t_owner_old", (isset($forum_data['FORUM_SETTINGS']['forum_leader']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_leader']) : "")), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text_search("t_owner", (isset($_POST['t_owner']) ? htmlentities_array($_POST['t_owner']) : (isset($forum_data['FORUM_SETTINGS']['forum_leader']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_leader']) : "")), 35, 15, false, ""), form_input_hidden("t_owner_old", (isset($forum_data['FORUM_SETTINGS']['forum_leader']) ? htmlentities_array($forum_data['FORUM_SETTINGS']['forum_leader']) : "")), "</td>\n";
     echo "                      </tr>\n";
 
     if ($forum_data['ACCESS_LEVEL'] == FORUM_RESTRICTED) {
@@ -605,7 +605,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
 
-    html_display_warning_msg(gettext("When setting Restricted or Password Protected mode you will need to save your changes before you can change the user access privileges or password."), '500', 'center');
+    html_display_warning_msg(gettext("When setting Restricted or Password Protected mode you will need to save your changes before you can change the user access privileges or password."), '700', 'center');
 
     echo "  </form>\n";
     echo "</div>\n";
@@ -622,23 +622,23 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '70%', 'center');
+        html_display_error_array($error_msg_array, '86%', 'center');
 
     } else if (isset($_GET['added'])) {
 
-        html_display_success_msg(gettext("Successfully created new forum"), '70%', 'center', 'forum_created');
+        html_display_success_msg(gettext("Successfully created new forum"), '86%', 'center', 'forum_created');
 
     } else if (isset($_GET['edited'])) {
 
-        html_display_success_msg(gettext("Successfully updated forum"), '70%', 'center', 'forum_updated');
+        html_display_success_msg(gettext("Successfully updated forum"), '86%', 'center', 'forum_updated');
 
     } else if (isset($_GET['deleted'])) {
 
-        html_display_success_msg(gettext("Successfully deleted selected forums"), '70%', 'center', 'forum_removed');
+        html_display_success_msg(gettext("Successfully deleted selected forums"), '86%', 'center', 'forum_removed');
 
     } else if (sizeof($forums_array['forums_array']) < 1) {
 
-        html_display_warning_msg(gettext("No existing forums found. To create a new forum click the 'Add New' button below."), '70%', 'center');
+        html_display_warning_msg(gettext("No existing forums found. To create a new forum click the 'Add New' button below."), '86%', 'center');
     }
 
     echo "<br />\n";
@@ -646,7 +646,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "<form accept-charset=\"utf-8\" name=\"forums\" action=\"admin_forums.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";

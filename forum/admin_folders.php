@@ -146,27 +146,27 @@ echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'),
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '70%', 'center');
+    html_display_error_array($error_msg_array, '86%', 'center');
 
 } else if (isset($_GET['added'])) {
 
-    html_display_success_msg(gettext("Successfully added new folder"), '70%', 'center');
+    html_display_success_msg(gettext("Successfully added new folder"), '86%', 'center');
 
 } else if (isset($_GET['edited'])) {
 
-    html_display_success_msg(gettext("Successfully edited folder"), '70%', 'center');
+    html_display_success_msg(gettext("Successfully edited folder"), '86%', 'center');
 
 } else if (isset($_GET['deleted'])) {
 
-    html_display_success_msg(gettext("Successfully removed selected folders"), '70%', 'center');
+    html_display_success_msg(gettext("Successfully removed selected folders"), '86%', 'center');
 
 } else if (sizeof($folder_array['folder_array']) < 1) {
 
-    html_display_warning_msg(gettext("No existing folders found. To add a folder click the 'Add New' button below."), '70%', 'center');
+    html_display_warning_msg(gettext("No existing folders found. To add a folder click the 'Add New' button below."), '86%', 'center');
 
 } else {
 
-    html_display_warning_msg(gettext("Folder order only applies when user has enabled 'Sort Thread List by folders' in Forum Options."), '70%', 'center');
+    html_display_warning_msg(gettext("Folder order only applies when user has enabled 'Sort Thread List by folders' in Forum Options."), '86%', 'center');
 }
 
 echo "<br />\n";
@@ -174,7 +174,7 @@ echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_folders\" action=\"admin_folders.php\" method=\"post\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -238,7 +238,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
 echo "<br />\n";
-echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
+echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\">\n";
 echo "      <table class=\"box\" width=\"100%\">\n";

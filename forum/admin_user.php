@@ -494,7 +494,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
 
-        html_display_warning_msg(gettext("If this user has forgotten their password you can reset it for them here."), '600', 'center');
+        html_display_warning_msg(gettext("If this user has forgotten their password you can reset it for them here."), '800', 'center');
 
         echo "<br />\n";
         echo "<div align=\"center\">\n";
@@ -503,7 +503,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
         echo "  ", form_input_hidden("action", htmlentities_array($action)), "\n";
         echo "  ", form_input_hidden("ret", htmlentities_array("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
@@ -516,7 +516,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "                  <td align=\"center\">\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" width=\"150\">", gettext("Reset password to"), ":</td>\n";
+        echo "                        <td align=\"left\" width=\"200\">", gettext("Reset password to"), ":</td>\n";
         echo "                        <td align=\"left\">", form_input_password("t_new_password", "", 32, false, "autocomplete=\"off\""), "</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
@@ -550,10 +550,10 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         $user_history_array = admin_get_user_history($user['UID']);
 
-        echo "<h1>$page_title</h1>\n";
+        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
 
         if (is_array($user_history_array) && sizeof($user_history_array) < 1) {
-            html_display_warning_msg(gettext("No History Records Saved"), '600', 'center');
+            html_display_warning_msg(gettext("No History Records Saved"), '800', 'center');
         }
 
         echo "<br />\n";
@@ -563,7 +563,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
         echo "  ", form_input_hidden("action", htmlentities_array($action)), "\n";
         echo "  ", form_input_hidden("ret", htmlentities_array("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
@@ -629,7 +629,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
                 echo "    </tr>\n";
                 echo "  </table>\n";
                 echo "  <br />\n";
-                echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+                echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
                 echo "    <tr>\n";
                 echo "      <td align=\"left\">\n";
                 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -736,7 +736,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
             $user_alias_array = admin_get_user_referer_matches($user['UID']);
         }
 
-        echo "<h1>$page_title</h1>\n";
+        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
 
         if (is_array($user_alias_array) && sizeof($user_alias_array) < 1) {
             html_display_warning_msg(gettext("Search Returned No Results"), '700', 'center');
@@ -773,8 +773,8 @@ if (isset($action) && strlen(trim($action)) > 0) {
             echo "                          <table class=\"posthead\" width=\"100%\">\n";
             echo "                            <tr>\n";
             echo "                              <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
-            echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">", gettext("Logon"), "</td>\n";
-            echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">", gettext("Nickname"), "</td>\n";
+            echo "                              <td align=\"left\" class=\"subhead\" width=\"200\">", gettext("Logon"), "</td>\n";
+            echo "                              <td align=\"left\" class=\"subhead\" width=\"200\">", gettext("Nickname"), "</td>\n";
             echo "                              <td align=\"left\" class=\"subhead\">{$user_alias_column_header[$user_alias_view]}</td>\n";
             echo "                            </tr>\n";
 
@@ -782,8 +782,8 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
                 echo "                            <tr>\n";
                 echo "                              <td align=\"left\" width=\"20\">&nbsp;</td>\n";
-                echo "                              <td align=\"left\" width=\"150\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">", word_filter_add_ob_tags($user_alias['LOGON'], true), "</a></td>\n";
-                echo "                              <td align=\"left\" width=\"150\">", word_filter_add_ob_tags($user_alias['NICKNAME'], true), "</td>\n";
+                echo "                              <td align=\"left\" width=\"200\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">", word_filter_add_ob_tags($user_alias['LOGON'], true), "</a></td>\n";
+                echo "                              <td align=\"left\" width=\"200\">", word_filter_add_ob_tags($user_alias['NICKNAME'], true), "</td>\n";
 
                 if ($user_alias_view == USER_ALIAS_IPADDRESS) {
 
@@ -912,7 +912,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_top("title=$page_title", 'class=window_title');
 
-        echo "<h1>$page_title</h1>\n";
+        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
@@ -920,7 +920,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
         echo "  ", form_input_hidden("action", htmlentities_array($action)), "\n";
         echo "  ", form_input_hidden("ret", htmlentities_array("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
@@ -968,7 +968,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_top("title=$page_title", 'class=window_title');
 
-        echo "<h1>$page_title</h1>\n";
+        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
@@ -976,7 +976,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
         echo "  ", form_input_hidden("action", htmlentities_array($action)), "\n";
         echo "  ", form_input_hidden("ret", htmlentities_array("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
@@ -1021,7 +1021,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         html_draw_top("title=$page_title", 'class=window_title');
 
-        echo "<h1>$page_title</h1>\n";
+        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
@@ -1029,7 +1029,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
         echo "  ", form_input_hidden("action", htmlentities_array($action)), "\n";
         echo "  ", form_input_hidden("ret", htmlentities_array("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
@@ -1043,7 +1043,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "                  <td align=\"center\">\n";
         echo "                    <table width=\"90%\" class=\"posthead\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" width=\"150\">", gettext("Post Count"), ":</td>\n";
+        echo "                        <td align=\"left\" width=\"200\">", gettext("Post Count"), ":</td>\n";
         echo "                        <td align=\"left\">", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? htmlentities_array($_POST['t_post_count']) : htmlentities_array($user['POST_COUNT']), 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", gettext("Reset Post Count"), false), "</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
@@ -1075,27 +1075,27 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
 html_draw_top("title=$page_title", 'class=window_title');
 
-echo "<h1>$page_title</h1>\n";
+echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '600', 'center');
+    html_display_error_array($error_msg_array, '800', 'center');
 
 } else if (isset($success_html) && strlen(trim($success_html)) > 0) {
 
-    html_display_success_msg($success_html, '600', 'center');
+    html_display_success_msg($success_html, '800', 'center');
 
 } else if (isset($_GET['profile_updated'])) {
 
-    html_display_success_msg(gettext("Profile updated."), '600', 'center');
+    html_display_success_msg(gettext("Profile updated."), '800', 'center');
 
 } else if (isset($_GET['signature_updated'])) {
 
-    html_display_success_msg(gettext("Signature Updated"), '600', 'center');
+    html_display_success_msg(gettext("Signature Updated"), '800', 'center');
 
 } else if (isset($_GET['approved'])) {
 
-    html_display_success_msg(gettext("Successfully approved user"), '600', 'center');
+    html_display_success_msg(gettext("Successfully approved user"), '800', 'center');
 }
 
 echo "<br />\n";
@@ -1107,7 +1107,7 @@ echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
 
 if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -1121,11 +1121,11 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table width=\"90%\" class=\"posthead\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">", gettext("Username"), ":</td>\n";
+    echo "                        <td align=\"left\" width=\"200\">", gettext("Username"), ":</td>\n";
     echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" class=\"popup 650x500\">", htmlentities_array($user['LOGON']), "</a></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" width=\"150\">", gettext("Nickname"), ":</td>\n";
+    echo "                        <td align=\"left\" width=\"200\">", gettext("Nickname"), ":</td>\n";
     echo "                        <td align=\"left\">", htmlentities_array($user['NICKNAME']), "</td>\n";
     echo "                      </tr>\n";
 
@@ -1134,14 +1134,14 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
         if (email_is_banned($user['EMAIL'])) {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"150\">", gettext("Email address"), ":</td>\n";
+            echo "                        <td align=\"left\" width=\"200\">", gettext("Email address"), ":</td>\n";
             echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a> (", gettext("Banned"), ")</td>\n";
             echo "                      </tr>\n";
 
         } else {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"150\">", gettext("Email address"), ":</td>\n";
+            echo "                        <td align=\"left\" width=\"200\">", gettext("Email address"), ":</td>\n";
             echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a></td>\n";
             echo "                      </tr>\n";
         }
@@ -1149,7 +1149,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     } else {
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" width=\"150\">", gettext("Email address"), ":</td>\n";
+        echo "                        <td align=\"left\" width=\"200\">", gettext("Email address"), ":</td>\n";
         echo "                        <td align=\"left\">{$user['EMAIL']}</td>\n";
         echo "                      </tr>\n";
     }
@@ -1172,14 +1172,14 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             if (referer_is_banned($user['REFERER'])) {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\" width=\"150\">", gettext("Sign-up Referer:"), "</td>\n";
+                echo "                        <td align=\"left\" width=\"200\">", gettext("Sign-up Referer:"), "</td>\n";
                 echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a> (", gettext("Banned"), ")</td>\n";
                 echo "                      </tr>\n";
 
             } else {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\" width=\"150\">", gettext("Sign-up Referer:"), "</td>\n";
+                echo "                        <td align=\"left\" width=\"200\">", gettext("Sign-up Referer:"), "</td>\n";
                 echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a></td>\n";
                 echo "                      </tr>\n";
             }
@@ -1187,7 +1187,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
         } else {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"150\">", gettext("Sign-up Referer:"), "</td>\n";
+            echo "                        <td align=\"left\" width=\"200\">", gettext("Sign-up Referer:"), "</td>\n";
             echo "                        <td align=\"left\">", gettext("Unknown"), "</td>\n";
             echo "                      </tr>\n";
         }
@@ -1208,14 +1208,14 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
             if (referer_is_banned($user['SESSION_REFERER'])) {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\" width=\"150\">", gettext("Session Referer"), "</td>\n";
+                echo "                        <td align=\"left\" width=\"200\">", gettext("Session Referer"), "</td>\n";
                 echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['SESSION_REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['SESSION_REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a> (", gettext("Banned"), ")</td>\n";
                 echo "                      </tr>\n";
 
             } else {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\" width=\"150\">", gettext("Session Referer"), "</td>\n";
+                echo "                        <td align=\"left\" width=\"200\">", gettext("Session Referer"), "</td>\n";
                 echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['SESSION_REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['SESSION_REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a></td>\n";
                 echo "                      </tr>\n";
             }
@@ -1223,13 +1223,13 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
         } else {
 
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\" width=\"150\">", gettext("Session Referer"), "</td>\n";
+            echo "                        <td align=\"left\" width=\"200\">", gettext("Session Referer"), "</td>\n";
             echo "                        <td align=\"left\">", gettext("Unknown"), "</td>\n";
             echo "                      </tr>\n";
         }
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" width=\"150\">", gettext("Last IP Address"), ":</td>\n";
+        echo "                        <td align=\"left\" width=\"200\">", gettext("Last IP Address"), ":</td>\n";
 
         if (ip_is_banned($user['IPADDRESS'])) {
 
@@ -1316,7 +1316,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
         $admin_options_dropdown = array_merge(array('approve_user' => gettext("Approve User")), $admin_options_dropdown);
     }
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -1350,7 +1350,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
 if (forum_check_webtag_available($webtag)) {
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -1413,7 +1413,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
     $global_user_perm = perm_get_global_user_permissions($uid);
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -1458,7 +1458,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
     if ($global_user_perm & USER_PERM_EMAIL_CONFIRM) {
 
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
@@ -1501,7 +1501,7 @@ if (forum_check_webtag_available($webtag)) {
 
     if (($folder_array = perm_user_get_folders($uid)) !== false) {
 
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
@@ -1585,7 +1585,7 @@ if (forum_check_webtag_available($webtag)) {
         echo "  <br />\n";
     }
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -1668,7 +1668,7 @@ if (forum_check_webtag_available($webtag)) {
     echo "  <br />\n";
 }
 
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">", form_submit("user_perm_submit", gettext("Save")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
 echo "    </tr>\n";

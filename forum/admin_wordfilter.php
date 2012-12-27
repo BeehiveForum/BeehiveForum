@@ -172,11 +172,11 @@ if (isset($_POST['delete'])) {
         if (admin_add_word_filter($add_new_filter_name, $add_new_match_text, $add_new_replace_text, $add_new_filter_option, $add_new_filter_enabled)) {
 
             $log_data = array(
-                $add_new_match_text, 
-                $add_new_replace_text, 
+                $add_new_match_text,
+                $add_new_replace_text,
                 $add_new_filter_option
             );
-            
+
             admin_add_log_entry(EDIT_WORD_FILTER, $log_data);
 
             $redirect = "admin_wordfilter.php?webtag=$webtag&updated=true";
@@ -236,12 +236,12 @@ if (isset($_POST['delete'])) {
         if (admin_update_word_filter($filter_id, $filter_name, $match_text, $replace_text, $filter_option, $filter_enabled)) {
 
             $log_data = array(
-                $filter_option, 
-                $match_text, 
-                $replace_text, 
+                $filter_option,
+                $match_text,
+                $replace_text,
                 $filter_option
             );
-            
+
             admin_add_log_entry(EDIT_WORD_FILTER, $log_data);
 
             $redirect = "admin_wordfilter.php?webtag=$webtag&updated=true";
@@ -268,7 +268,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Word Filter"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add word filter"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-        html_display_error_array($error_msg_array, '450', 'center');
+        html_display_error_array($error_msg_array, '700', 'center');
     }
 
     echo "<br />\n";
@@ -276,7 +276,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "<form accept-charset=\"utf-8\" name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('addfilter', 'true'), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -291,15 +291,15 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", gettext("Filter Name"), ":</td>\n";
-    echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_filter_name", (isset($_POST['add_new_filter_name']) ? htmlentities_array($_POST['add_new_filter_name']) : ""), 40, 255), "</td>\n";
+    echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_filter_name", (isset($_POST['add_new_filter_name']) ? htmlentities_array($_POST['add_new_filter_name']) : ""), 60, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", gettext("Matched Text"), ":</td>\n";
-    echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_match_text", (isset($_POST['add_new_match_text']) ? htmlentities_array($_POST['add_new_match_text']) : ""), 40), "</td>\n";
+    echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_match_text", (isset($_POST['add_new_match_text']) ? htmlentities_array($_POST['add_new_match_text']) : ""), 60), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", gettext("Replacement Text"), ":</td>\n";
-    echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_replace_text", (isset($_POST['add_new_replace_text']) ? htmlentities_array($_POST['add_new_replace_text']) : ""), 40), "</td>\n";
+    echo "                        <td align=\"left\" colspan=\"3\">", form_input_text("add_new_replace_text", (isset($_POST['add_new_replace_text']) ? htmlentities_array($_POST['add_new_replace_text']) : ""), 60), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" valign=\"top\">", gettext("Filter Type"), ":</td>\n";
@@ -330,7 +330,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "  </table>\n";
     echo "</form>\n";
 
-    html_display_warning_msg(sprintf('%s<p>%s</p>%s', gettext("<b>All</b> matches against the whole text so filtering mom to mum will also change moment to mument."), gettext("<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument."), gettext("<b>PREG</b> allows you to use Perl Regular Expressions to match text.")), '450', 'center');
+    html_display_warning_msg(sprintf('%s<p>%s</p>%s', gettext("<b>All</b> matches against the whole text so filtering mom to mum will also change moment to mument."), gettext("<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument."), gettext("<b>PREG</b> allows you to use Perl Regular Expressions to match text.")), '700', 'center');
 
     echo "</div>\n";
 
@@ -360,7 +360,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Word Filter"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Word Filter"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-        html_display_error_array($error_msg_array, '450', 'center');
+        html_display_error_array($error_msg_array, '700', 'center');
     }
 
     echo "<br />\n";
@@ -369,7 +369,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('filter_id', htmlentities_array($filter_id)), "\n";
     echo "  ", form_input_hidden("delete_filters[$filter_id]", 'Y'), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -384,15 +384,15 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", gettext("Filter Name"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("filter_name", (isset($_POST['filter_name']) ? htmlentities_array($_POST['filter_name']) : htmlentities_array($word_filter_array['FILTER_NAME'])), 40, 255), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("filter_name", (isset($_POST['filter_name']) ? htmlentities_array($_POST['filter_name']) : htmlentities_array($word_filter_array['FILTER_NAME'])), 60, 255), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", gettext("Matched Text"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("match_text", (isset($_POST['match_text']) ? htmlentities_array($_POST['match_text']) : htmlentities_array($word_filter_array['MATCH_TEXT'])), 40), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("match_text", (isset($_POST['match_text']) ? htmlentities_array($_POST['match_text']) : htmlentities_array($word_filter_array['MATCH_TEXT'])), 60), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", gettext("Replacement Text"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("replace_text", (isset($_POST['replace_text']) ? htmlentities_array($_POST['replace_text']) : htmlentities_array($word_filter_array['REPLACE_TEXT'])), 40), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("replace_text", (isset($_POST['replace_text']) ? htmlentities_array($_POST['replace_text']) : htmlentities_array($word_filter_array['REPLACE_TEXT'])), 60), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" valign=\"top\">", gettext("Filter Type"), ":</td>\n";
@@ -423,7 +423,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "  </table>\n";
     echo "</form>\n";
 
-    html_display_warning_msg(sprintf('%s<p>%s</p>%s', gettext("<b>All</b> matches against the whole text so filtering mom to mum will also change moment to mument."), gettext("<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument."), gettext("<b>PREG</b> allows you to use Perl Regular Expressions to match text.")), '450', 'center');
+    html_display_warning_msg(sprintf('%s<p>%s</p>%s', gettext("<b>All</b> matches against the whole text so filtering mom to mum will also change moment to mument."), gettext("<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument."), gettext("<b>PREG</b> allows you to use Perl Regular Expressions to match text.")), '700', 'center');
 
     echo "</div>\n";
 
@@ -439,22 +439,22 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '70%', 'center');
+        html_display_error_array($error_msg_array, '86%', 'center');
 
     } else if (isset($_GET['updated'])) {
 
-        html_display_success_msg(gettext("Word Filter updated"), '70%', 'center');
+        html_display_success_msg(gettext("Word Filter updated"), '86%', 'center');
 
     } else if (sizeof($word_filter_array['word_filter_array']) < 1) {
 
-        html_display_warning_msg(gettext("No existing word filter entries found. To add a filter click the 'Add New' button below."), '70%', 'center');
+        html_display_warning_msg(gettext("No existing word filter entries found. To add a filter click the 'Add New' button below."), '86%', 'center');
     }
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_wordfilter.php\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -504,7 +504,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";

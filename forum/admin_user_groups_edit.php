@@ -71,10 +71,10 @@ if (isset($_GET['ret']) && strlen(trim($_GET['ret'])) > 0) {
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
     $available_pages = array(
-        'admin_user_groups.php', 
+        'admin_user_groups.php',
         'admin_user.php'
     );
-    
+
     $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
 
     if (preg_match("/^$available_pages_preg/", basename($ret)) < 1) {
@@ -210,11 +210,11 @@ echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'),
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '550', 'center');
+    html_display_error_array($error_msg_array, '800', 'center');
 
 } else if (sizeof($group_users_array['user_array']) < 1) {
 
-    html_display_warning_msg(gettext("There are no users in this group. To add users click the 'Add/Remove Users' button below."), '550', 'center');
+    html_display_warning_msg(gettext("There are no users in this group. To add users click the 'Add/Remove Users' button below."), '800', 'center');
 }
 
 echo "<br />\n";
@@ -223,7 +223,7 @@ echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_use
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("gid", htmlentities_array($gid)), "\n";
 echo "  ", form_input_hidden('ret', htmlentities_array($ret)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

@@ -71,11 +71,11 @@ if (isset($_GET['ret']) && strlen(trim($_GET['ret'])) > 0) {
 if (isset($ret) && strlen(trim($ret)) > 0) {
 
     $available_pages = array(
-        'admin_user_groups_edit.php', 
-        'admin_users_groups.php', 
+        'admin_user_groups_edit.php',
+        'admin_users_groups.php',
         'admin_user.php'
     );
-    
+
     $available_pages_preg = implode("|^", array_map('preg_quote_callback', $available_pages));
 
     if (preg_match("/^$available_pages_preg/u", basename($ret)) < 1) {
@@ -181,11 +181,11 @@ echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'),
 
 if (isset($_GET['added'])) {
 
-    html_display_success_msg(gettext("Successfully added group. Add users to this group by searching for them below."), '650', 'center');
+    html_display_success_msg(gettext("Successfully added group. Add users to this group by searching for them below."), '800', 'center');
 
 } else if (sizeof($group_users_array['user_array']) < 1) {
 
-    html_display_warning_msg(gettext("There are no users in this group. Add users to this group by searching for them below."), '650', 'center');
+    html_display_warning_msg(gettext("There are no users in this group. Add users to this group by searching for them below."), '800', 'center');
 }
 
 echo "<br />\n";
@@ -196,7 +196,7 @@ echo "  ", form_input_hidden('gid', htmlentities_array($gid)), "\n";
 echo "  ", form_input_hidden("main_page", htmlentities_array($main_page)), "\n";
 echo "  ", form_input_hidden("search_page", htmlentities_array($search_page)), "\n";
 echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -259,7 +259,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     $user_search_array = admin_user_search($usersearch, 'LOGON', 'ASC', 0, $start_search);
 
     if (sizeof($user_search_array['user_array']) < 1) {
-        html_display_warning_msg(gettext("Search Returned No Results"), '650', 'center');
+        html_display_warning_msg(gettext("Search Returned No Results"), '800', 'center');
     }
 
     echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
@@ -269,7 +269,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     echo "  ", form_input_hidden("main_page", htmlentities_array($main_page)), "\n";
     echo "  ", form_input_hidden("search_page", htmlentities_array($search_page)), "\n";
     echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" class=\"posthead\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -334,7 +334,7 @@ echo "  ", form_input_hidden('gid', htmlentities_array($gid)), "\n";
 echo "  ", form_input_hidden("main_page", htmlentities_array($main_page)), "\n";
 echo "  ", form_input_hidden("search_page", htmlentities_array($search_page)), "\n";
 echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"posthead\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

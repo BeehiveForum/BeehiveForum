@@ -76,9 +76,6 @@ require_once BH_INCLUDE_PATH. 'install.inc.php';
 // Wordfilter
 require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 
-// Enable the word filter ob filter
-ob_start('word_filter_ob_callback');
-
 // Disable PHP's register_globals
 unregister_globals();
 
@@ -102,6 +99,9 @@ require_once BH_INCLUDE_PATH. 'forum.inc.php';
 
 // Initialise the session
 session::init();
+
+// Enable the word filter ob filter
+ob_start('word_filter_ob_callback');
 
 // Perform ban check
 ban_check($_SESSION);

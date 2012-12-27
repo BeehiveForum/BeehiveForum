@@ -348,13 +348,13 @@ if (isset($_POST['additemsubmit'])) {
             if (($t_name_new != $profile_item['NAME']) || ($t_type_new != $profile_item['TYPE']) || ($t_section_new != $psid) || ($t_options_new != $profile_item['OPTIONS'])) {
 
                 $log_data = array(
-                    $t_name_new, 
-                    $profile_item['NAME'], 
-                    $t_type_new, 
-                    $profile_item['TYPE'], 
+                    $t_name_new,
+                    $profile_item['NAME'],
+                    $t_type_new,
+                    $profile_item['TYPE'],
                     $t_section_new, $psid
                 );
-                
+
                 admin_add_log_entry(CHANGE_PROFILE_ITEM, $log_data);
             }
 
@@ -394,7 +394,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add new item"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-        html_display_error_array($error_msg_array, '500', 'center');
+        html_display_error_array($error_msg_array, '700', 'center');
     }
 
     echo "<br />\n";
@@ -406,7 +406,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     if (isset($viewitems)) echo "  ", form_input_hidden("viewitems", "yes"), "\n";
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -425,11 +425,11 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">", gettext("Item Name"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array($_POST['t_name_new']) : ""), 48, 64), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array($_POST['t_name_new']) : ""), 52, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" valign=\"top\">", gettext("Options"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_textarea("t_options_new", (isset($_POST['t_options_new']) ? htmlentities_array($_POST['t_options_new']) : ""), 4, 45), "</td>\n";
+    echo "                        <td align=\"left\">", form_textarea("t_options_new", (isset($_POST['t_options_new']) ? htmlentities_array($_POST['t_options_new']) : ""), 6, 50), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
@@ -451,9 +451,9 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
 
-    html_display_warning_msg(gettext("To create Radio Buttons or a Drop Down List you need to enter each individual value on a separate line in the Options field."), '500', 'center');
+    html_display_warning_msg(gettext("To create Radio Buttons or a Drop Down List you need to enter each individual value on a separate line in the Options field."), '700', 'center');
 
-    html_display_warning_msg(gettext("To create clickable links enter the URL in the Options field and use <i>[ProfileEntry]</i> where the entry from the user's profile should appear. Examples: <p>MySpace: <i>http://www.myspace.com/[ProfileEntry]</i><br />Xbox LIVE: <i>http://profile.mygamercard.net/[ProfileEntry]</i></p>"), '500', 'center');
+    html_display_warning_msg(gettext("To create clickable links enter the URL in the Options field and use <i>[ProfileEntry]</i> where the entry from the user's profile should appear. Examples: <p>MySpace: <i>http://www.myspace.com/[ProfileEntry]</i><br />Xbox LIVE: <i>http://profile.mygamercard.net/[ProfileEntry]</i></p>"), '700', 'center');
 
     echo "</form>\n";
     echo "</div>\n";
@@ -484,7 +484,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit item"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($profile_item['NAME'], true), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-        html_display_error_array($error_msg_array, '500', 'center');
+        html_display_error_array($error_msg_array, '700', 'center');
     }
 
     echo "<br />\n";
@@ -498,7 +498,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     if (isset($viewitems)) echo "  ", form_input_hidden("viewitems", "yes"), "\n";
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -521,11 +521,11 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\">", gettext("Item Name"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array($_POST['t_name_new']) : htmlentities_array($profile_item['NAME'])), 48, 64), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_name_new", (isset($_POST['t_name_new']) ? htmlentities_array($_POST['t_name_new']) : htmlentities_array($profile_item['NAME'])), 52, 64), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"150\" valign=\"top\">", gettext("Options"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_textarea("t_options_new", (isset($_POST['t_options_new']) ? htmlentities_array($_POST['t_options_new']) : htmlentities_array($profile_item['OPTIONS'])), 4, 45), "</td>\n";
+    echo "                        <td align=\"left\">", form_textarea("t_options_new", (isset($_POST['t_options_new']) ? htmlentities_array($_POST['t_options_new']) : htmlentities_array($profile_item['OPTIONS'])), 6, 50), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
@@ -547,9 +547,9 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
 
-    html_display_warning_msg(gettext("To create Radio Buttons or a Drop Down List you need to enter each individual value on a separate line in the Options field."), '500', 'center');
+    html_display_warning_msg(gettext("To create Radio Buttons or a Drop Down List you need to enter each individual value on a separate line in the Options field."), '700', 'center');
 
-    html_display_warning_msg(gettext("To create clickable links enter the URL in the Options field and use <i>[ProfileEntry]</i> where the entry from the user's profile should appear. Examples: <p>MySpace: <i>http://www.myspace.com/[ProfileEntry]</i><br />Xbox LIVE: <i>http://profile.mygamercard.net/[ProfileEntry]</i></p>"), '500', 'center');
+    html_display_warning_msg(gettext("To create clickable links enter the URL in the Options field and use <i>[ProfileEntry]</i> where the entry from the user's profile should appear. Examples: <p>MySpace: <i>http://www.myspace.com/[ProfileEntry]</i><br />Xbox LIVE: <i>http://profile.mygamercard.net/[ProfileEntry]</i></p>"), '700', 'center');
 
     echo "</form>\n";
     echo "</div>\n";
@@ -566,23 +566,23 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '75%', 'center');
+        html_display_error_array($error_msg_array, '86%', 'center');
 
     } else if (isset($_GET['added'])) {
 
-        html_display_success_msg(gettext("Successfully added new profile item"), '75%', 'center');
+        html_display_success_msg(gettext("Successfully added new profile item"), '86%', 'center');
 
     } else if (isset($_GET['edited'])) {
 
-        html_display_success_msg(gettext("Successfully edited profile item"), '75%', 'center');
+        html_display_success_msg(gettext("Successfully edited profile item"), '86%', 'center');
 
     } else if (isset($_GET['deleted'])) {
 
-        html_display_success_msg(gettext("Successfully removed selected profile items"), '75%', 'center');
+        html_display_success_msg(gettext("Successfully removed selected profile items"), '86%', 'center');
 
     } else if (sizeof($profile_items['profile_items_array']) < 1) {
 
-        html_display_warning_msg(gettext("There are no existing profile items in this section. To add an item click the 'Add New' button below."), '75%', 'center');
+        html_display_warning_msg(gettext("There are no existing profile items in this section. To add an item click the 'Add New' button below."), '86%', 'center');
     }
 
     echo "<br />\n";
@@ -594,7 +594,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     if (isset($viewitems)) echo "  ", form_input_hidden("viewitems", "yes"), "\n";
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -604,8 +604,8 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"left\" width=\"25\">&nbsp;</td>\n";
     echo "                  <td class=\"subhead\" align=\"left\">", gettext("Item Name"), "</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\" width=\"40\">&nbsp;</td>\n";
-    echo "                  <td class=\"subhead\" align=\"left\">", gettext("Type"), "</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" width=\"50\">&nbsp;</td>\n";
+    echo "                  <td class=\"subhead\" align=\"left\" width=\"150\">", gettext("Type"), "</td>\n";
     echo "                </tr>\n";
 
     if (sizeof($profile_items['profile_items_array']) > 0) {
@@ -615,7 +615,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
             echo "                <tr>\n";
             echo "                  <td valign=\"top\" align=\"center\" width=\"25\">", form_checkbox("delete_item[{$profile_item['PIID']}]", "Y", false), "</td>\n";
             echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">", word_filter_add_ob_tags($profile_item['NAME'], true), "</a></td>\n";
-            echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
+            echo "                  <td align=\"center\" width=\"50\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
 
             if (isset($item_types_array[$profile_item['TYPE']])) {
                 echo "                  <td valign=\"top\" align=\"left\" width=\"100\">{$item_types_array[$profile_item['TYPE']]}</td>\n";

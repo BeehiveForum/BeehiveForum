@@ -343,7 +343,7 @@ switch ($_GET['action']) {
 
     case 'get_forum_stats':
 
-        cache_check_last_modified(time() + 300);
+        cache_check_request_throttle(300);
 
         if (!($content = stats_get_html())) {
 

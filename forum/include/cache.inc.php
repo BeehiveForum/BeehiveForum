@@ -357,6 +357,37 @@ function cache_check_last_modified($last_modified)
     return true;
 }
 
+function cache_check_request_throttle($amount)
+{
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'POST') return false;
+
+    if (browser_check(BROWSER_AOL)) return false;
+
+    if (headers_sent()) return false;
+
+    $request = get_request_uri();
+
+    if (isset($_SESSION['throttle'][$request]) && ($_SESSION['throttle'][$request] > time())) {
+        $throttle_timestamp = $_SESSION['throttle'][$request];
+    } else {
+        $throttle_timestamp = time() + $amount;
+    }
+
+    $_SESSION['throttle'][$request] = $throttle_timestamp;
+
+    header(sprintf('Cache-Control: max-age=%s', $amount));
+    header(sprintf('Expires: %s GMT', gmdate('D, d M Y H:i:s', time() + $amount)));
+
+    if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && (strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $throttle_timestamp)) {
+
+        header(sprintf('Last-Modified: %s GMT', gmdate('D, d M Y H:i:s', $throttle_timestamp)), true, 304);
+        exit;
+    }
+
+    header(sprintf('Last-Modified: %s GMT', gmdate('D, d M Y H:i:s', $throttle_timestamp)), true);
+    return true;
+}
+
 function cache_check_etag($local_etag)
 {
     if (browser_check(BROWSER_AOL)) return false;

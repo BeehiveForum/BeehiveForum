@@ -57,6 +57,9 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 // Perform additional admin login.
 admin_check_credentials();
 
+// Cache page for 5 minutes
+cache_check_request_throttle(300);
+
 // User count is used by a few stats. Get it once here.
 $user_count = user_count();
 

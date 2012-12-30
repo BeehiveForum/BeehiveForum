@@ -52,9 +52,14 @@ USA
                     return !editor.readOnly && editor.getCommand('spoiler').setState(CKEDITOR.TRISTATE_ON);
                 }
 
+                if ((element.getName() == 'img' && element.hasClass('emoticon')) || findAscendant(element, 'img', 'emoticon')) {
+                    return !editor.readOnly && editor.getCommand('image').setState(CKEDITOR.TRISTATE_DISABLED);
+                }
+
                 !editor.readOnly && editor.getCommand('quote').setState(CKEDITOR.TRISTATE_OFF);
                 !editor.readOnly && editor.getCommand('code').setState(CKEDITOR.TRISTATE_OFF);
                 !editor.readOnly && editor.getCommand('spoiler').setState(CKEDITOR.TRISTATE_OFF);
+                !editor.readOnly && editor.getCommand('image').setState(CKEDITOR.TRISTATE_OFF);
             });
 
             editor.addCommand('code', {
@@ -229,50 +234,17 @@ USA
                                 return null;
                             }
 
-                            element.attributes.contentEditable = "false";
+                            var emoticon = editor.createFakeParserElement(element, 'cke_emoticon', 'emoticon', 'false');
 
-                            for (var key in element.children) {
+                            emoticon.attributes.src = '/forum/styles/tehforum/images/emoticon.png';
 
-                                if (element.children[key].attributes) {
-                                    if (element.children[key].attributes) {
-                                        element.children[key].attributes.contentEditable = "false";
-                                    }
-                                }
-                            }
+                            emoticon.attributes['class'] = element.attributes['class'];
 
-                            return element;
+                            return emoticon;
                         }
                     }
                 },
                 9);
-            }
-
-            if (htmlFilter) {
-
-                htmlFilter.addRules({
-                    elements: {
-                        $: function (element) {
-
-                            var test = element.attributes &&
-                                element.attributes['class'] &&
-                                element.attributes['class'].match(/emoticon/);
-
-                            if (!test || test.length == 0) {
-                                return element;
-                            }
-
-                            delete element.attributes.contenteditable;
-
-                            for (var key in element.children) {
-                                if (element.children[key].attributes) {
-                                    delete element.children[key].attributes.contenteditable;
-                                }
-                            }
-
-                            return element;
-                        }
-                    }
-                });
             }
         }
     });

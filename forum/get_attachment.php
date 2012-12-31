@@ -118,8 +118,8 @@ $file_size = filesize($file_path);
 cache_check_last_modified(filemtime($file_path));
 
 // Send remaining headers for length and filename.
-header("Content-Length: $file_size");
-header("Content-Type: {$attachment_details['mimetype']}");
+header("Content-length: $file_size");
+header("Content-type: {$attachment_details['mimetype']}");
 header("Content-disposition: inline; filename=\"$file_name\"");
 
 // Output the file directly to the browser.

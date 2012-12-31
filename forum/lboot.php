@@ -40,6 +40,9 @@ if (!defined('BH_INCLUDE_PATH')) {
 // Set the default timezone
 date_default_timezone_set('UTC');
 
+// Set default character set
+header('Content-type: text/html; charset=UTF-8');
+
 // Enable the error handler
 require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
 
@@ -129,7 +132,6 @@ $webtag = get_webtag();
 
 // Check we have a webtag and have access to the specified forum
 if (!forum_check_webtag_available($webtag) || !forum_check_access_level()) {
-    $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("lforums.php?webtag_error");
 }
 

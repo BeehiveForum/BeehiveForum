@@ -47,7 +47,7 @@ if (isset($_SESSION['FONT_SIZE']) && is_numeric($_SESSION['FONT_SIZE'])) {
 $font_size = floor(abs($font_size));
 
 // Output in text/css.
-header("Content-Type: text/css");
+header("Content-type: text/css; charset=UTF-8");
 
 // Check the cache
 cache_check_etag(md5(sprintf("%s-%s-%s", session_id(), $font_size, $_SESSION['UID'])));

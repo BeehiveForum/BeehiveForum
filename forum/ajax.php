@@ -66,7 +66,7 @@ switch ($_GET['action']) {
             break;
         }
 
-        header('Content-Type: application/json');
+        header('Content-type: application/json; charset=UTF-8');
 
         $content = json_encode($search_results_array);
 
@@ -335,7 +335,7 @@ switch ($_GET['action']) {
             exit;
         }
 
-        header('Content-Type: application/json');
+        header('Content-type: application/json; charset=UTF-8');
 
         $content = json_encode($pm_notification_data);
 
@@ -371,7 +371,7 @@ switch ($_GET['action']) {
 
         cache_disable();
 
-        header('Content-Type: application/json');
+        header('Content-type: application/json; charset=UTF-8');
 
         $content = json_encode(array(
             'image' => sprintf(
@@ -430,7 +430,7 @@ switch ($_GET['action']) {
             exit;
         }
 
-        header('Content-Type: application/json');
+        header('Content-type: application/json; charset=UTF-8');
 
         $content = json_encode(array(
             'success' => true,
@@ -528,7 +528,7 @@ switch ($_GET['action']) {
 
         $attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH);
 
-        header('Content-Type: application/json');
+        header('Content-type: application/json; charset=UTF-8');
 
         switch ($_GET['type']) {
 

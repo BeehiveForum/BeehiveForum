@@ -37,11 +37,14 @@ if (!defined('BH_INCLUDE_PATH')) {
 // Set the default timezone
 date_default_timezone_set('UTC');
 
+// Set default character set
+header('Content-type: text/html; charset=UTF-8');
+
 // Enable the error handler
 require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
 
-// Set the error reporting level to report all errors exception fatal errors
-error_reporting((E_ALL | E_STRICT) & ~ E_ERROR);
+// Set the error reporting level to report all errors
+error_reporting(E_ALL | E_STRICT);
 
 // Register shutdown function to check for uncaught errors
 register_shutdown_function('bh_shutdown_handler');

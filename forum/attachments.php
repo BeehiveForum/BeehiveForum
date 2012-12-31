@@ -70,7 +70,7 @@ $total_attachment_size = 0;
 
 $attachment_dir = rtrim($attachment_dir, '/');
 
-header('Content-Type: application/json');
+header('Content-type: application/json; charset=UTF-8');
 
 if (isset($_POST['summary'])) {
 
@@ -191,7 +191,7 @@ if (isset($_POST['delete'])) {
         } else {
 
             $image_width = null;
-            
+
             $image_height = null;
 
             $thumbnail = false;

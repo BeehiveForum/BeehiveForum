@@ -103,6 +103,9 @@ require_once BH_INCLUDE_PATH. 'forum.inc.php';
 // Initialise the session
 session::init();
 
+// Initialise gettext
+lang_init();
+
 // Enable the word filter ob filter
 ob_start('word_filter_ob_callback');
 

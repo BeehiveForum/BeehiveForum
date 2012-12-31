@@ -1083,7 +1083,7 @@ div.poll_option_list ol li {
     height: 100%;
     margin: 0;
     padding: 0;
-    vertical-align: top;
+    vertical-align: text-bottom;
 }
 
 .search_dropdown {

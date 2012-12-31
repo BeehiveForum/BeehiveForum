@@ -23,16 +23,24 @@ $(beehive).bind('init', function() {
 
     $('.emoticon_preview .emoticon').bind('click', function() {
 
-        var html = $('<p>').append($(this).closest('span.emoticon').clone()).html();
+        var $emoticon = $(this).closest('span.emoticon').clone();
+
+        var html = $('<p>').append($emoticon).html();
 
         var element = CKEDITOR.dom.element.createFromHtml(
-            '<img data-cke-real-element-type="emoticon" src="/forum/styles/tehforum/images/emoticon.png" class="emoticon e_smile">'
+            $.sprintf(
+                '<img data-cke-real-element-type="emoticon" src="%s">',
+                beehive.images['blank.png']
+            )
         );
 
         element.setAttributes({
             'data-cke-real-node-type': '1',
             'data-cke-realelement' : encodeURIComponent(html),
             'data-cke-resizable' : 'false',
+            'class' : $emoticon.attr('class'),
+            'title' : $emoticon.attr('title'),
+            'alt' : $emoticon.attr('title')
         });
 
         beehive.active_editor.insertElement(element);

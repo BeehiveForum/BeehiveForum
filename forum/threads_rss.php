@@ -132,9 +132,6 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 // Enable caching on RSS Feed
 cache_check_request_throttle(300);
 
-// Initialise Locale
-lang_init();
-
 // echo out the rss feed
 header('Content-type: text/xml; charset=UTF-8');
 

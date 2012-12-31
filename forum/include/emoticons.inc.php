@@ -149,6 +149,12 @@ function emoticons_apply($content)
 
 function emoticons_strip($content)
 {
+    $content =  preg_replace(
+        '/<span class="emoticon e_[^"]+" title="([^"]+)"><span class="e__">\1<\/span><\/span>&nbsp;/Uu',
+        '$1 ',
+        $content
+    );
+
     return preg_replace(
         '/<span class="emoticon e_[^"]+" title="([^"]+)"><span class="e__">\1<\/span><\/span>/Uu',
         '$1',

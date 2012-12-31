@@ -54,8 +54,6 @@ if (isset($_GET['view']) && ($_GET['view'] == 'full')) {
     header_redirect('index.php');
 }
 
-lang_init();
-
 $top_html = html_get_top_page();
 
 $hide_navigation = false;

@@ -227,6 +227,7 @@ USA
                         span: function (element) {
 
                             var test = element.attributes &&
+                                element.attributes['title'] &&
                                 element.attributes['class'] &&
                                 element.attributes['class'].match(/emoticon/);
 
@@ -236,9 +237,11 @@ USA
 
                             var emoticon = editor.createFakeParserElement(element, 'cke_emoticon', 'emoticon', 'false');
 
-                            emoticon.attributes.src = '/forum/styles/tehforum/images/emoticon.png';
+                            emoticon.attributes.src = beehive.images['blank.png'];
 
                             emoticon.attributes['class'] = element.attributes['class'];
+                            emoticon.attributes['title'] = element.attributes['title'];
+                            emoticon.attributes['alt'] = element.attributes['title'];
 
                             return emoticon;
                         }

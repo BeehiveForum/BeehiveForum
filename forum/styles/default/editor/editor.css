@@ -30,14 +30,6 @@
     white-space: pre;
 }
 
-.cke_skin_beehive .cke_browser_gecko textarea {
-    cursor: text;
-}
-
-.cke_skin_beehive .cke_browser_gecko textarea[disabled] {
-    cursor: default;
-}
-
 .cke_skin_beehive input[type="text"],
 .cke_skin_beehive input[type="password"] {
     cursor: text;
@@ -56,15 +48,6 @@
 .cke_skin_beehive .cke_editor {
     display: inline-table;
     width: 100%;
-}
-
-.cke_skin_beehive .cke_browser_webkit .cke_editor {
-    display: table;
-}
-
-.cke_skin_beehive span.cke_browser_webkit,
-.cke_skin_beehive span.cke_browser_gecko18 {
-    display: block;
 }
 
 .cke_skin_beehive,
@@ -106,10 +89,6 @@
     opacity: 0.5;
 }
 
-.cke_skin_beehive .cke_browser_air .cke_resizer {
-    cursor: move;
-}
-
 .cke_skin_beehive .cke_resizer_horizontal {
     cursor: e-resize;
 }
@@ -122,25 +101,12 @@
     display: none;
 }
 
-.cke_skin_beehive .cke_browser_ie6 .cke_contents textarea,
-.cke_skin_beehive .cke_browser_ie7 .cke_contents textarea {
-    position: absolute;
-}
-
 .cke_skin_beehive .cke_voice_label {
     display: none;
 }
 
 .cke_skin_beehive legend.cke_voice_label {
     display: none;
-}
-
-.cke_skin_beehive .cke_browser_ie legend.cke_voice_label {
-    position: absolute;
-    display: block;
-    width: 0;
-    height: 0;
-    overflow: hidden;
 }
 
 .cke_skin_beehive .cke_panel {
@@ -276,11 +242,6 @@ a:active.cke_colormore {
     border: 1px solid;
 }
 
-.cke_skin_beehive .cke_browser_webkit .cke_toolbox,
-.cke_skin_beehive .cke_browser_webkit .cke_toolbox>span {
-    white-space: normal;
-}
-
 .cke_skin_beehive .cke_toolbox {
     clear: both;
     padding-bottom: 1px;
@@ -371,8 +332,7 @@ a:active.cke_colormore {
     opacity: 0.3;
 }
 
-.cke_skin_beehive .cke_hc .cke_button a.cke_disabled *,
-.cke_skin_beehive .cke_browser_ie.cke_hc a:hover.cke_button .cke_disabled * {
+.cke_skin_beehive .cke_hc .cke_button a.cke_disabled {
     opacity: 0.6;
 }
 
@@ -422,54 +382,6 @@ a:active.cke_colormore {
     background-position: 2px -1004px;
     background-image: url(sprites.png);
     background-repeat: no-repeat;
-    cursor: default;
-}
-
-.cke_skin_beehive .cke_browser_gecko18 .cke_toolbar,
-.cke_skin_beehive .cke_browser_gecko18 .cke_button a,
-.cke_skin_beehive .cke_browser_gecko18 .cke_button a.cke_off,
-.cke_skin_beehive .cke_browser_gecko18 .cke_button .cke_icon,
-.cke_skin_beehive .cke_browser_gecko18 .cke_button .cke_buttonarrow,
-.cke_skin_beehive .cke_browser_gecko18 .cke_separator,
-.cke_skin_beehive .cke_browser_gecko18 .cke_toolbar_start,
-.cke_skin_beehive .cke_browser_gecko18 .cke_toolbar_end {
-    display: block;
-    float: left;
-}
-
-.cke_skin_beehive .cke_browser_gecko18 .cke_hc .cke_button .cke_icon {
-    display: none;
-}
-
-.cke_skin_beehive .cke_browser_gecko18 .cke_button .cke_label,
-.cke_skin_beehive .cke_browser_gecko18 .cke_break {
-    float: left;
-}
-
-.cke_skin_beehive .cke_browser_gecko18 .cke_separator {
-    margin-top: 4px;
-}
-
-.cke_skin_beehive .cke_browser_gecko18 .cke_button .cke_label {
-    padding-top: 3px;
-}
-
-.cke_skin_beehive .cke_browser_ie8 .cke_toolbar,
-.cke_skin_beehive .cke_browser_ie8 .cke_toolgroup {
-    vertical-align: top;
-}
-
-.cke_skin_beehive .cke_browser_iequirks.cke_browser_ie8 .cke_toolbar,
-.cke_skin_beehive .cke_browser_iequirks.cke_browser_ie8 .cke_toolgroup {
-    vertical-align: baseline;
-}
-
-.cke_skin_beehive .cke_browser_iequirks .cke_separator {
-    vertical-align: text-bottom;
-}
-
-.cke_skin_beehive .cke_browser_ie .cke_rcombo,
-.cke_skin_beehive .cke_browser_ie .cke_rcombo * {
     cursor: default;
 }
 
@@ -566,11 +478,6 @@ a:active.cke_colormore {
     display: inline;
 }
 
-.cke_browser_ie.cke_ltr .cke_skin_beehive .cke_menuarrow {
-    position: absolute;
-    right: 2px;
-}
-
 .cke_skin_beehive .cke_rcombo {
     display: inline-block;
     margin: 2px 4px 0 0;
@@ -602,10 +509,6 @@ a:active.cke_colormore {
     cursor: default;
 }
 
-.cke_skin_beehive .cke_browser_iequirks .cke_rcombo .cke_text {
-    height: 22px;
-}
-
 .cke_skin_beehive .cke_rcombo .cke_openbutton {
     display: inline-block;
     border: 1px inset threedface;
@@ -620,27 +523,12 @@ a:active.cke_colormore {
     width: 16px;
 }
 
-.cke_skin_beehive .cke_browser_iequirks .cke_rcombo .cke_openbutton .cke_icon {
-    height: 20px;
-}
-
 .cke_skin_beehive .cke_hc .cke_rcombo .cke_openbutton .cke_icon {
     background: none;
 }
 
 .cke_skin_beehive .cke_rcombo .cke_disabled .cke_text {
     color: #fff;
-}
-
-.cke_skin_beehive .cke_browser_gecko18 .cke_rcombo,
-.cke_skin_beehive .cke_browser_gecko18 .cke_rcombo .cke_label,
-.cke_skin_beehive .cke_browser_gecko18 .cke_rcombo .cke_text,
-.cke_skin_beehive .cke_browser_gecko18 .cke_rcombo .cke_openbutton,
-.cke_skin_beehive .cke_browser_webkit .cke_rcombo .cke_label,
-.cke_skin_beehive .cke_browser_webkit .cke_rcombo .cke_text,
-.cke_skin_beehive .cke_browser_webkit .cke_rcombo .cke_openbutton {
-    display: block;
-    float: left;
 }
 
 .cke_skin_beehive .cke_path {

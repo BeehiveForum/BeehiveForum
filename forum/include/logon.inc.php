@@ -42,8 +42,6 @@ require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 function logon_perform()
 {
-    $webtag = get_webtag();
-
     // Check to see if the user is logging in as a guest or a normal user.
     if (isset($_POST['guest_logon'])) {
 
@@ -99,6 +97,8 @@ function logon_perform()
 function logon_draw_form($logon_options)
 {
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     // Make sure logon form argument is valid.
     if (!is_numeric($logon_options)) $logon_options = LOGON_FORM_DEFAULT;
@@ -206,14 +206,14 @@ function logon_draw_form($logon_options)
         }
 
         if (isset($_GET['final_uri']) && strlen(trim($_GET['final_uri'])) > 0) {
-            
+
             $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
             if (preg_match("/^$available_files_preg/u", trim($_GET['final_uri'])) > 0) {
                 $final_uri = href_cleanup_query_keys($_GET['final_uri']);
-            }            
+            }
         }
-        
+
         if (isset($final_uri)) {
 
             $final_uri = rawurlencode($final_uri);

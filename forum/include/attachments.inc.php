@@ -484,6 +484,8 @@ function attachments_form_list($attachments_array, $hash_array)
 
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     $html = '';
 
     foreach ($attachments_array as $attachment) {
@@ -521,8 +523,6 @@ function attachments_get_message_link($hash)
 {
     if (!$db = db::get()) return false;
 
-    $webtag = get_webtag();
-
     $hash = $db->escape($hash);
 
     $sql = "SELECT FORUMS.WEBTAG, PAI.TID, PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
@@ -544,6 +544,8 @@ function attachments_get_pm_link($hash)
     if (!$db = db::get()) return false;
 
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     $hash = $db->escape($hash);
 
@@ -600,6 +602,8 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
     if (!is_md5($attachment['hash'])) return false;
 
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     if (isset($_SESSION['SHOW_THUMBS']) && is_numeric($_SESSION['SHOW_THUMBS'])) {
         $user_show_thumbs = $_SESSION['SHOW_THUMBS'];

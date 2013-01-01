@@ -71,6 +71,8 @@ function email_sendnotification($tuid, $fuid, $tid, $pid)
     // Get the forum webtag.
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     // Get the to user details.
     if (!($to_user = user_get($tuid))) return false;
 
@@ -138,7 +140,7 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
 
     // Get the forum details.
     if (!($table_prefix = get_table_prefix())) return false;
-    
+
     if (!($forum_fid = get_forum_fid())) return false;
 
     // Get the Swift Mailer Transport
@@ -164,6 +166,8 @@ function email_send_thread_subscription($fuid, $tid, $pid, $modified, &$exclude_
 
     // Get the forum webtag
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     // Only send the email to people who logged after the thread was modified.
     $last_visit_datetime = date(MYSQL_DATETIME, $modified);
@@ -242,7 +246,7 @@ function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$ex
 
     // Get the forum details.
     if (!($table_prefix = get_table_prefix())) return false;
-    
+
     if (!($forum_fid = get_forum_fid())) return false;
 
     // Get the Swift Mailer Transport
@@ -268,6 +272,8 @@ function email_send_folder_subscription($fuid, $fid, $tid, $pid, $modified, &$ex
 
     // Get the forum webtag
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     // Only send the email to people who logged after the thread was modified.
     $last_visit_datetime = date(MYSQL_DATETIME, $modified);
@@ -347,6 +353,8 @@ function email_send_pm_notification($tuid, $mid, $fuid)
     // Get Forum webtag
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     // Get the to user details
     if (!($to_user = user_get($tuid))) return false;
 
@@ -418,6 +426,8 @@ function email_send_pw_reminder($logon)
 
     // Get Forum Webtag
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
@@ -516,6 +526,8 @@ function email_send_user_confirmation($tuid)
     // Get Forum Webtag
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
@@ -567,6 +579,8 @@ function email_send_changed_email_confirmation($tuid)
 
     // Get Forum Webtag
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
@@ -620,6 +634,8 @@ function email_send_user_approval_notification($tuid)
     // Get Forum Webtag
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
@@ -669,6 +685,8 @@ function email_send_new_user_notification($tuid, $new_user_uid)
     // Get Forum Webtag
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
@@ -716,6 +734,8 @@ function email_send_user_approved_notification($tuid)
 
     // Get Forum Webtag
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
@@ -767,6 +787,8 @@ function email_send_post_approval_notification($tuid)
     // Get Forum Webtag
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
@@ -814,6 +836,8 @@ function email_send_link_approval_notification($tuid)
 
     // Get Forum Webtag
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     // Validate the email address before we continue.
     if (!email_address_valid($to_user['EMAIL'])) return false;

@@ -210,8 +210,6 @@ function emoticons_set_exists($emoticon_set)
 
 function emoticons_preview($emoticon_set, $width = 190, $height = 100)
 {
-    $webtag = get_webtag();
-
     // Make sure the emoticon set has no path info.
     $emoticon_set = basename($emoticon_set);
 

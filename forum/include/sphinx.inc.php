@@ -74,6 +74,13 @@ function sphinx_search_execute($search_arguments, &$error)
         return false;
     }
 
+    // Validate the webtag
+    if (!forum_check_webtag_available($webtag)) {
+
+        $error = SEARCH_SPHINX_UNAVAILABLE;
+        return false;
+    }
+
     // Regular Database connection.
     if (!$db = db::get()) return false;
 

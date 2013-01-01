@@ -1553,6 +1553,8 @@ function thread_list_draw_top($mode, $folder = false)
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('post.png'), "\" alt=\"", gettext("New Discussion"), "\" title=\"", gettext("New Discussion"), "\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("New Discussion"), "</a></td>\n";

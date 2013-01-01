@@ -59,6 +59,8 @@ function html_guest_error($final_uri = null)
 
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     if (!isset($final_uri)) {
         $final_uri = get_request_uri(true, false);
     }
@@ -86,6 +88,8 @@ function html_guest_error($final_uri = null)
 function html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left", $id = false)
 {
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     if (!is_string($header_text)) return;
     if (!is_string($string_msg)) return;
@@ -514,6 +518,8 @@ function html_draw_top()
     $emoticons = null;
 
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     $forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
 

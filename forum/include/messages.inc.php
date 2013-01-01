@@ -224,6 +224,8 @@ function message_apply_formatting($message, $ignore_sig = false)
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     $message_parts = preg_split('/(<[^>]+>)/u', $message, -1, PREG_SPLIT_DELIM_CAPTURE);
 
     $signature_parts = array();
@@ -310,6 +312,8 @@ function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $th
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     $frame_top_target = html_get_top_frame_name();
 
     if (is_array($highlight_array) && sizeof($highlight_array) > 0) {
@@ -371,6 +375,8 @@ function messages_social_links($tid)
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     if (forum_get_setting('show_share_links', 'Y') && isset($_SESSION['SHOW_SHARE_LINKS']) && ($_SESSION['SHOW_SHARE_LINKS'] == 'Y')) {
 
         echo "      <div style=\"display: inline-block; vertical-align: middle; margin-top: 1px\">\n";
@@ -399,9 +405,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     $perm_is_moderator = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
 
     $post_edit_time = forum_get_setting('post_edit_time', null, 0);
+
     $post_edit_grace_period = forum_get_setting('post_edit_grace_period', null, 0);
 
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
@@ -875,6 +884,8 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     if (($message = messages_get($tid, $pid, 1)) === false) return false;
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
@@ -1001,6 +1012,8 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
 function message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_per_page)
 {
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     echo "    <td align=\"left\" width=\"2%\" valign=\"top\">\n";
     echo "      <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
@@ -1150,6 +1163,8 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     if ($pid < 2 && $length < $ppp) {
         return;
     } else if ($pid < 1) {
@@ -1255,6 +1270,8 @@ function mess_nav_range($from,$to)
 function messages_interest_form($tid, $pid, $interest)
 {
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     $interest_levels_array = array(
         THREAD_IGNORED => gettext("Ignore"),
@@ -1600,6 +1617,8 @@ function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     // Valid TID and PID.
     if (!is_numeric($tid)) return false;
     if (!is_numeric($pid)) return false;
@@ -1658,6 +1677,8 @@ function validate_msg($msg)
 function messages_forum_stats($tid, $pid)
 {
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     if (forum_get_setting('show_stats', 'Y')) {
 

@@ -544,6 +544,8 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     $total_votes = 0;
 
     $user_votes = 0;
@@ -1149,6 +1151,8 @@ function poll_table_graph($poll_results, $total_votes)
 function poll_public_ballot_user_callback($user_data)
 {
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     if (isset($user_data['UID']) && ($user_data['UID'] > 0)) {
 

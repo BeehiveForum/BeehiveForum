@@ -387,6 +387,8 @@ function user_profile_popup_callback($logon)
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     return "<a href=\"user_profile.php?webtag=$webtag&amp;logon=$logon\" class=\"popup 650x500\" target=\"_blank\">$logon</a>";
 }
 

@@ -113,7 +113,7 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
     static $random_pid = false;
 
     $adsense_display_pages = adsense_display_pages();
-    
+
     $adsense_message_number = forum_get_setting('adsense_message_number', 1);
 
     $admin_area_files_preg  = implode("|^", array_map('preg_quote_callback', get_available_admin_files()));
@@ -129,15 +129,15 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
             if (($adsense_display_pages == ADSENSE_DISPLAY_TOP_OF_MESSAGES)) return true;
 
         } else {
-            
+
             if (($adsense_display_pages == ADSENSE_DISPLAY_BOTTOM_OF_MESSAGES)) {
                 return (($pid + 1) == $thread_length);
             }
-            
+
             if ($adsense_display_pages == ADSENSE_DISPLAY_ONCE_AFTER_NTH_MSG) {
                 return ($adsense_message_number == ($pid + 1));
             }
-            
+
             if ($adsense_display_pages == ADSENSE_DISPLAY_AFTER_EVERY_NTH_MSG) {
                 return (($pid + 1) % $adsense_message_number) == 0;
             }
@@ -145,7 +145,7 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
             if ($random_pid === false) {
                 $random_pid = min(mt_rand(0, $posts_per_page), $thread_length);
             }
-            
+
             if (($adsense_display_pages == ADSENSE_DISPLAY_AFTER_RANDOM_MSG) && ($pid == $random_pid)) return true;
         }
     }
@@ -156,20 +156,20 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
 function adsense_check_page_bottom()
 {
     $adsense_display_pages = adsense_display_pages();
-    
+
     $admin_area_files_preg  = implode("|^", array_map('preg_quote_callback', get_available_admin_files()));
 
     if (preg_match("/^nav\\.php|^$admin_area_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) return false;
 
-    if (($adsense_display_pages == ADSENSE_DISPLAY_BOTTOM_OF_ALL_PAGES)) return true;    
-    
+    if (($adsense_display_pages == ADSENSE_DISPLAY_BOTTOM_OF_ALL_PAGES)) return true;
+
     return false;
 }
 
 function adsense_get_banner_type(&$ad_type, &$ad_width, &$ad_height)
 {
     $ad_type = 'medium'; $ad_width = 468; $ad_height = 60;
-    
+
     $ad_sense_small_banner_pages_preg = implode("|^", array_map('preg_quote_callback', adsense_small_banner_pages()));
 
     if (preg_match("/^$ad_sense_small_banner_pages_preg/u", basename($_SERVER['PHP_SELF'])) > 0) {
@@ -180,11 +180,11 @@ function adsense_get_banner_type(&$ad_type, &$ad_width, &$ad_height)
 function adsense_small_banner_pages()
 {
     return array(
-        'index.php', 
-        'ldelete.php', 
-        'ldisplay.php', 
-        'ledit.php', 
-        'lforums.php', 
+        'index.php',
+        'ldelete.php',
+        'ldisplay.php',
+        'ledit.php',
+        'lforums.php',
         'llogon.php',
         'llogout.php',
         'lmessages.php',
@@ -205,6 +205,8 @@ function adsense_output_html()
     static $adsense_displayed = false;
 
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     if ($adsense_displayed === false) {
 

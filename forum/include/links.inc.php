@@ -267,6 +267,8 @@ function links_get_folder_path_links($fid, $folders, $html = true, $link_last_to
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     if (!is_numeric($fid)) return false;
 
     if (!is_array($folders)) return false;

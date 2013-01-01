@@ -93,6 +93,9 @@ function stats_get_html()
     // Get webtag
     $webtag = get_webtag();
 
+    // Validate the webtag
+    forum_check_webtag_available($webtag);
+
     // Number of active users
     $session_count = stats_get_active_session_count();
 
@@ -204,6 +207,7 @@ function stats_get_html()
                     } else {
 
                         $active_user_class = 'user_stats_normal';
+                        $active_user_title = '';
                     }
 
                     if (isset($user['AVATAR_URL']) && strlen($user['AVATAR_URL']) > 0) {

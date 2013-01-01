@@ -1527,6 +1527,8 @@ function admin_prepare_affected_sessions($affected_session)
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     if ($affected_session['UID'] > 0) {
 
         $affected_session_text = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$affected_session['UID']};\" ";
@@ -1690,6 +1692,8 @@ function admin_reset_user_password($uid, $password)
 function admin_check_credentials()
 {
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     if (isset($_SESSION['ADMIN_TIMEOUT']) && is_numeric($_SESSION['ADMIN_TIMEOUT']) && ($_SESSION['ADMIN_TIMEOUT'] > time())) {
 

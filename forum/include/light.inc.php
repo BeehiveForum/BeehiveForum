@@ -294,6 +294,8 @@ function light_html_draw_bottom()
 
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     echo "</div>\n";
     echo "<div id=\"footer\">\n";
 
@@ -313,6 +315,8 @@ function light_html_draw_bottom()
 function light_draw_logon_form($error_msg_array = array())
 {
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     if (isset($_GET['logout_success']) && $_GET['logout_success'] == 'true') {
         light_html_display_success_msg(gettext("You have successfully logged out."));
@@ -354,6 +358,8 @@ function light_draw_logon_form($error_msg_array = array())
 function light_draw_messages($tid, $pid)
 {
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     if (!$thread_data = thread_get($tid, session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
@@ -494,6 +500,8 @@ function light_draw_messages($tid, $pid)
 function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page = 1)
 {
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     $error_msg_array = array();
 
@@ -943,6 +951,8 @@ function light_draw_pm_inbox()
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     // Default values
     $pm_new_count = 0;
     $pm_outbox_count = 0;
@@ -1179,6 +1189,8 @@ function light_draw_my_forums()
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     if (isset($_GET['page']) && is_numeric($_GET['page'])) {
         $page = $_GET['page'];
     } else {
@@ -1314,6 +1326,8 @@ function light_messages_top($tid, $pid, $thread_title, $thread_interest_level = 
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     echo "<h3 class=\"thread_title\">";
     echo "<a href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.$pid"), "\">", word_filter_add_ob_tags($thread_title, true), "</a> ";
 
@@ -1350,6 +1364,8 @@ function light_form_quick_button($href, $label, $var_array = false, $target = "_
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     $html = "<form accept-charset=\"utf-8\" method=\"get\" action=\"$href\" target=\"$target\">";
     $html.= form_input_hidden("webtag", htmlentities_array($webtag));
 
@@ -1373,6 +1389,8 @@ function light_form_quick_button($href, $label, $var_array = false, $target = "_
 function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_preview = false)
 {
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     $total_votes = 0;
 
@@ -1549,12 +1567,12 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     $perm_is_moderator = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
 
     $post_edit_time = forum_get_setting('post_edit_time', null, 0);
+
     $post_edit_grace_period = forum_get_setting('post_edit_grace_period', null, 0);
 
     $webtag = get_webtag();
 
-    $attachments_array = array();
-    $image_attachments_array = array();
+    forum_check_webtag_available($webtag);
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
@@ -1825,6 +1843,8 @@ function light_messages_nav_strip($tid, $pid, $length, $ppp)
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     if ($pid < 2 && $length < $ppp) {
         return;
     } else if ($pid < 1) {
@@ -2049,6 +2069,8 @@ function light_attachments_make_link($attachment)
 
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     $href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}";
     $href.= "&amp;filename={$attachment['filename']}";
 
@@ -2130,6 +2152,8 @@ function light_post_edit_refuse()
 function light_html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
 {
     $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
 
     $available_methods = array(
         'get',
@@ -2258,6 +2282,8 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     echo "<div class=\"message\">\n";
     echo "<div class=\"message_header\">\n";
     echo "<div class=\"message_from\">\n";
@@ -2384,6 +2410,8 @@ function light_pm_check_messages()
     // Get the webtag
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     // Default the variables to return 0 even on error.
     $pm_new_count = 0;
     $pm_outbox_count = 0;
@@ -2399,17 +2427,11 @@ function light_pm_check_messages()
 
     } else if ($pm_new_count == 1 && $pm_outbox_count == 1) {
 
-        $pm_notification = gettext("You have 1 new message.
-
-You also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.
-
-Would you like to go to your Inbox now?");
+        $pm_notification = gettext("You have 1 new message.\r\n\r\nYou also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?");
 
     } else if ($pm_new_count == 0 && $pm_outbox_count == 1) {
 
-        $pm_notification = gettext("You have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.
-
-Would you like to go to your Inbox now?");
+        $pm_notification = gettext("You have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?");
 
     } else if ($pm_new_count > 1 && $pm_outbox_count == 0) {
 
@@ -2417,33 +2439,19 @@ Would you like to go to your Inbox now?");
 
     } else if ($pm_new_count > 1 && $pm_outbox_count == 1) {
 
-        $pm_notification = sprintf(gettext("You have %d new messages.
-
-You also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.
-
-Would you like to go to your Inbox now?"), $pm_new_count);
+        $pm_notification = sprintf(gettext("You have %d new messages.\r\n\r\nYou also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?"), $pm_new_count);
 
     } else if ($pm_new_count > 1 && $pm_outbox_count > 1) {
 
-        $pm_notification = sprintf(gettext("You have %d new messages.
-
-You also have %d messages awaiting delivery. To receive these message please clear some space in your Inbox.
-
-Would you like to go to your Inbox now?"), $pm_new_count, $pm_outbox_count);
+        $pm_notification = sprintf(gettext("You have %d new messages.\r\n\r\nYou also have %d messages awaiting delivery. To receive these message please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?"), $pm_new_count, $pm_outbox_count);
 
     } else if ($pm_new_count == 1 && $pm_outbox_count > 1) {
 
-        $pm_notification = sprintf(gettext("You have 1 new message.
-
-You also have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.
-
-Would you like to go to your Inbox now?"), $pm_outbox_count);
+        $pm_notification = sprintf(gettext("You have 1 new message.\r\n\r\nYou also have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?"), $pm_outbox_count);
 
     } else if ($pm_new_count == 0 && $pm_outbox_count > 1) {
 
-        $pm_notification = sprintf(gettext("You have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.
-
-Would you like to go to your Inbox now?"), $pm_outbox_count);
+        $pm_notification = sprintf(gettext("You have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?"), $pm_outbox_count);
     }
 
     if (isset($pm_notification) && strlen(trim($pm_notification)) > 0) {

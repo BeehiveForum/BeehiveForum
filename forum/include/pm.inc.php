@@ -898,6 +898,8 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     echo "<div align=\"center\">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "    <tr>\n";
@@ -2143,7 +2145,7 @@ function pm_export_word_filter_apply($content)
 function pm_export_attachments($messages_array, ZipArchive $zip)
 {
     if (!is_array($messages_array)) return false;
-    
+
     if (!($attachment_dir = attachments_check_dir())) return false;
 
     $attachments_added_success = false;

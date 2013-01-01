@@ -287,6 +287,8 @@ function forum_restricted_message()
 
         $webtag = get_webtag();
 
+        forum_check_webtag_available($webtag);
+
         $forum_owner_pm_link = sprintf('pm_write.php?webtag=%s&uid=%s', $webtag, $forum_owner_uid);
 
         $forum_owner_link = sprintf('<a href="index.php?webtag=%s&amp;final_uri=%s">%s</a>', $webtag, rawurlencode($forum_owner_pm_link), gettext('Forum Owner'));
@@ -319,6 +321,8 @@ function forum_check_password($forum_fid)
     if (!is_numeric($forum_fid)) return false;
 
     $webtag = get_webtag();
+
+    if (!forum_check_webtag_available($webtag)) return false;
 
     if (!($forum_passhash = forum_get_password($forum_fid))) return true;
 

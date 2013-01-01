@@ -87,11 +87,11 @@ function form_input_text_search($name, $value = false, $width = false, $maxchars
     $type = ($type == SEARCH_LOGON) ? 'search_logon' : 'search_thread';
 
     $classes = array(
-        $class, 
+        $class,
         $type,
         'search_input'
     );
-    
+
     if ($allow_multi) $classes[] = 'allow_multi';
 
     if (!in_array($type, array(SEARCH_LOGON, SEARCH_THREAD))) $type = SEARCH_LOGON;
@@ -415,6 +415,8 @@ function form_quick_button($href, $label, $var_array = false, $target = "_self")
 {
     $webtag = get_webtag();
 
+    forum_check_webtag_available($webtag);
+
     $html = "<form accept-charset=\"utf-8\" method=\"get\" action=\"$href\" target=\"$target\">";
     $html.= form_input_hidden("webtag", htmlentities_array($webtag));
 
@@ -444,7 +446,7 @@ function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true,
 
         $birthday_days   = array_merge(array('&nbsp;'), range(1, 31));
         $birthday_months = array_merge(array('&nbsp;'), lang_get_month_names());
-        
+
         $birthday_years  = array(
             '&nbsp;'
         ) + range_keys(1900, date('Y', time()));

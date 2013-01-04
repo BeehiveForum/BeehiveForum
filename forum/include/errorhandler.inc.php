@@ -347,6 +347,24 @@ function bh_error_process(Exception $exception)
         $error_msg_array[] = sprintf('<pre>%s</pre>', $post_vars);
     }
 
+    if (isset($_COOKIE) && sizeof($_COOKIE) > 0) {
+
+        $error_msg_array[] = '<p><b>$_COOKIE:</b></p>';
+
+        $cookie_vars = htmlentities_array(print_r($_COOKIE, true));
+
+        $error_msg_array[] = sprintf('<pre>%s</pre>', $cookie_vars);
+    }
+
+    if (isset($_SESSION) && sizeof($_SESSION) > 0) {
+
+        $error_msg_array[] = '<p><b>$_COOKIE:</b></p>';
+
+        $session_vars = htmlentities_array(print_r($_SESSION, true));
+
+        $error_msg_array[] = sprintf('<pre>%s</pre>', $session_vars);
+    }
+
     if (isset($_ENV) && sizeof($_ENV) > 0) {
 
         $error_msg_array[] = '<p><b>$_ENV:</b></p>';

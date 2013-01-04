@@ -664,21 +664,21 @@ function user_get_last_ip_address($uid)
 
 function user_get_pref_names($exclude = array())
 {
-    if (!$db = db::get()) return false;
-
-    if (!($table_prefix = get_table_prefix())) return false;
-
     $pref_names = array();
+
+    if (!$db = db::get()) return $pref_names;
+
+    if (!($table_prefix = get_table_prefix())) return $pref_names;
 
     $sql = "SHOW COLUMNS FROM USER_PREFS WHERE Field <> 'UID' ";
 
     if (is_array($exclude) && sizeof($exclude) > 0) {
 
-        $exclude_list = implode("', '", array_filter($exclude, array($db, 'escape')));
+        $exclude_list = implode("', '", array_map(array($db, 'escape'), $exclude));
         $sql.= "AND Field NOT IN ('$exclude_list')";
     }
 
-    if (!($result = $db->query($sql))) return false;
+    if (!($result = $db->query($sql))) return $pref_names;
 
     while (($column_data = $result->fetch_assoc()) !== null) {
         $pref_names[$column_data['Field']] = null;

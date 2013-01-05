@@ -32,6 +32,7 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'db.inc.php';
 require_once BH_INCLUDE_PATH. 'form.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'forum.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
 require_once BH_INCLUDE_PATH. 'lang.inc.php';
@@ -100,7 +101,7 @@ function forum_links_get_links_by_page($page = 1)
 
     if (($result->num_rows == 0) && ($forum_links_count > 0) && ($page > 1)) {
         return forum_links_get_links_by_page($page - 1);
-    }        
+    }
 
     while (($forum_links_data = $result->fetch_assoc()) !== null) {
 

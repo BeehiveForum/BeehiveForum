@@ -31,9 +31,11 @@ header('Content-Type: text/plain');
 
 $source_files_array = array();
 
-$include_files_functions_array = array('lang.inc.php' => array('$lang'));
+$include_files_functions_array = array('lang.inc.php' => array('gettext'));
 
 $include_files_constants_array = array();
+
+$ignore_files_array = array('errorhandler.inc.php', 'forum.inc.php', 'server.inc.php', 'cache.inc.php', 'install.inc.php', 'word_filter.inc.php');
 
 $ignore_functions_array = array();
 
@@ -141,7 +143,7 @@ foreach ($source_files_array as $source_file) {
 
     foreach ($include_files_functions_array as $include_file => $function_names_array) {
 
-        if ($include_file !== basename($source_file)) {
+        if ($include_file !== basename($source_file) && !in_array($include_file, $ignore_files_array)) {
 
             $include_file_line = "require_once BH_INCLUDE_PATH. '$include_file'";
 
@@ -150,9 +152,9 @@ foreach ($source_files_array as $source_file) {
             if (preg_match("/$include_file_line_preg/u", $source_file_contents) < 1) {
 
                 $function_names_preg = implode('\s?\(|[\s|\.|,]+', array_map('preg_quote_callback', $function_names_array));
-                
+
                 $function_names_preg = sprintf(
-                    '/[\s|\.|,]%s\s?\(/u', 
+                    '/[\s|\.|,]%s\s?\(/u',
                     $function_names_preg
                 );
 
@@ -166,7 +168,7 @@ foreach ($source_files_array as $source_file) {
 
     foreach ($include_files_constants_array as $include_file => $constant_names_array) {
 
-        if ($include_file !== basename($source_file)) {
+        if ($include_file !== basename($source_file) && !in_array($include_file, $ignore_files_array)) {
 
             $include_file_line = "require_once BH_INCLUDE_PATH. '$include_file'";
 
@@ -183,11 +185,11 @@ foreach ($source_files_array as $source_file) {
             }
         }
     }
-    
+
     if (sizeof($include_files_required_array) > 0) {
-        
+
         ksort($include_files_required_array);
-    
+
         echo "$source_file:\n", str_repeat("-", strlen($source_file) + 1), "\n";
         echo implode(";\n", $include_files_required_array), ";\n\n";
     }

@@ -29,6 +29,7 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
     exit;
 }
 
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'forum.inc.php';
 
 function image_enable_transparency($im)
@@ -37,13 +38,13 @@ function image_enable_transparency($im)
     if (!function_exists('imagesavealpha')) return $im;
 
     imagealphablending($im, false);
-    
+
     imagesavealpha($im, true);
-    
+
     $transparent = imagecolorallocatealpha($im, 255,255,255, 127);
-    
+
     imagefilledrectangle($im, 0, 0, imagesx($im), imagesy($im), $transparent);
-    
+
     imagealphablending($im, true);
 
     return $im;
@@ -78,7 +79,7 @@ function image_resize_imagemagick($src, $dest, $max_width = 150, $max_height = 1
 {
     if (!is_numeric($max_width)) return false;
     if (!is_numeric($max_height)) return false;
-    
+
     // Array of mime-types to encoding types for imagemagick
     $mime_type_encoding = array(
         'image/gif' => 'gif',
@@ -88,16 +89,16 @@ function image_resize_imagemagick($src, $dest, $max_width = 150, $max_height = 1
 
     // Get the imagemagick path from settings.
     if (!($imagemagick_path = forum_get_global_setting('attachment_imagemagick_path'))) return false;
-    
+
     // Check that imagemagick is executable.
     if (!is_executable($imagemagick_path)) return false;
-    
+
     // Check the destination directory is writable.
     if (!is_writable(dirname($dest))) return false;
 
     // Check the file exists and we can get some image data from it.
     if (!file_exists($src) || !($image_info = @getimagesize($src))) return false;
-    
+
     // Check it's an image type we support.
     if (!isset($image_info['mime']) || !isset($mime_type_encoding[$image_info['mime']])) return false;
 
@@ -172,9 +173,9 @@ function image_resize_gd($src, $dest, $max_width, $max_height)
 
     // Check the file exists and we can get some image data from it.
     if (!file_exists($src) || !($image_info = @getimagesize($src))) return false;
-    
+
     // Check the destination directory is writable.
-    if (!is_writable(dirname($dest))) return false;    
+    if (!is_writable(dirname($dest))) return false;
 
     // Check the gd_info function exists
     if (!function_exists('gd_info') || !($gd_info = gd_info())) return false;
@@ -196,7 +197,7 @@ function image_resize_gd($src, $dest, $max_width, $max_height)
 
     // Check 4: Can we actually read the image using the function?
     if (!($src_im = @$required_read_functions[$image_info[2]]($src))) return false;
-    
+
     // Extract the dimensions from the image info.
     $target_width  = $image_info[0];
     $target_height = $image_info[1];
@@ -207,7 +208,7 @@ function image_resize_gd($src, $dest, $max_width, $max_height)
         $target_width--;
         $target_height = $target_width * ($image_info[1] / $image_info[0]);
     }
-    
+
     // Calculate the offset.
     $offset_width = floor(($max_width - $target_width) / 2);
     $offset_height = floor(($max_height - $target_height) / 2);
@@ -237,5 +238,5 @@ function image_check_gd_info_key($image_types_array)
 
     return false;
 }
-  
+
 ?>

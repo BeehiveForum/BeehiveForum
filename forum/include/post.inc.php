@@ -42,6 +42,7 @@ require_once BH_INCLUDE_PATH. 'profile.inc.php';
 require_once BH_INCLUDE_PATH. 'search.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'sphinx.inc.php';
+require_once BH_INCLUDE_PATH. 'swift.inc.php';
 require_once BH_INCLUDE_PATH. 'thread.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
 require_once BH_INCLUDE_PATH. 'user_profile.inc.php';

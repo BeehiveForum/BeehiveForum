@@ -30,6 +30,7 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'forum.inc.php';
 require_once BH_INCLUDE_PATH. 'lang.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
@@ -73,7 +74,7 @@ function perm_has_admin_access($uid)
     if (!$db = db::get()) return false;
 
     if (!is_numeric($uid)) return false;
-    
+
     if (!($forum_fid = get_forum_fid())) {
         $forum_fid = 0;
     }
@@ -138,7 +139,7 @@ function perm_is_links_moderator($uid)
     if (!($forum_fid = get_forum_fid())) {
         $forum_fid = 0;
     }
-    
+
     $sql = "SELECT BIT_OR(GROUP_PERMS.PERM) AS STATUS FROM GROUP_PERMS GROUP_PERMS ";
     $sql.= "INNER JOIN GROUP_USERS GROUP_USERS ON (GROUP_USERS.GID = GROUP_PERMS.GID) ";
     $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FID IN (0) ";
@@ -161,9 +162,9 @@ function perm_check_folder_permissions($fid, $access_level, $uid)
     if (!is_numeric($uid)) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
-    
+
     if (!($forum_fid = get_forum_fid())) return false;
-    
+
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, USER_DATA.PERM AS USER_PERMS, ";
     $sql.= "COALESCE(USER_DATA.PERM_COUNT, 0) AS USER_PERM_COUNT, FOLDER.PERM AS FOLDER_PERMS, ";
     $sql.= "IF (FOLDER.PERM IS NULL, 0, 1) AS FOLDER_PERM_COUNT FROM `{$table_prefix}FOLDER` FOLDER ";
@@ -212,14 +213,14 @@ function perm_get_user_groups($page = 1, $sort_by = 'GROUP_NAME', $sort_dir = 'A
     if (!$db = db::get()) return false;
 
     $sort_by_array  = array(
-        'GROUPS.GROUP_NAME', 
-        'GROUPS.GROUP_DESC', 
-        'GROUP_PERMS', 
+        'GROUPS.GROUP_NAME',
+        'GROUPS.GROUP_DESC',
+        'GROUP_PERMS',
         'USER_COUNT'
     );
 
     $sort_dir_array = array(
-        'ASC', 
+        'ASC',
         'DESC'
     );
 
@@ -254,7 +255,7 @@ function perm_get_user_groups($page = 1, $sort_by = 'GROUP_NAME', $sort_dir = 'A
     if (($result->num_rows == 0) && ($user_groups_count > 0) && ($page > 1)) {
         return perm_get_user_groups($page - 1, $sort_by, $sort_dir);
     }
-    
+
     while (($permissions_data = $result->fetch_assoc()) !== null) {
         $user_groups_array[] = $permissions_data;
     }
@@ -632,7 +633,7 @@ function perm_group_get_folders($gid)
                 'STATUS' => $permissions_data['GROUP_PERMS'],
                 'FOLDER_PERMS' => $permissions_data['FOLDER_PERMS']
             );
-                
+
         } else if ($permissions_data['FOLDER_PERM_COUNT'] > 0) {
 
             $folders_array[$permissions_data['FID']] = array(
@@ -641,7 +642,7 @@ function perm_group_get_folders($gid)
                 'STATUS' => $permissions_data['FOLDER_PERMS'],
                 'FOLDER_PERMS' => $permissions_data['FOLDER_PERMS']
             );
-            
+
         } else {
 
             $folders_array[$permissions_data['FID']] = array(
@@ -828,7 +829,7 @@ function perm_user_get_folders($uid)
                 'STATUS' => $permissions_data['FOLDER_PERMS'],
                 'FOLDER_PERMS' => $permissions_data['FOLDER_PERMS']
             );
-            
+
         } else {
 
             $folders_array[$permissions_data['FID']] = array(
@@ -1025,7 +1026,7 @@ function perm_group_get_users($gid, $page = 1)
     if (!$db = db::get()) return false;
 
     if (!is_numeric($gid)) return 0;
-    
+
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
     $offset = calculate_page_offset($page, 20);
@@ -1052,7 +1053,7 @@ function perm_group_get_users($gid, $page = 1)
     if (($result->num_rows == 0) && ($group_user_count > 0) && ($page > 1)) {
         return perm_group_get_users($gid, $page - 1);
     }
-    
+
     while (($user_data = $result->fetch_assoc()) !== null) {
 
         if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {

@@ -31,8 +31,10 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 
 require_once BH_INCLUDE_PATH. 'admin.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
 require_once BH_INCLUDE_PATH. 'forum.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
 require_once BH_INCLUDE_PATH. 'server.inc.php';
 require_once BH_INCLUDE_PATH. 'swift.inc.php';
 
@@ -88,7 +90,7 @@ class captcha {
 
         $this->image_x = ($num_chars + 1) * (int)(($this->max_char_size + $this->min_char_size) / 1.5);
         $this->image_y = (int)(2.4 * $this->max_char_size);
-        
+
         if (($text_captcha_dir = forum_get_setting('text_captcha_dir', 'strlen', false)) !== false) {
             $this->text_captcha_dir = rtrim($text_captcha_dir, '/');
         }
@@ -126,7 +128,7 @@ class captcha {
         $this->generate_private_key();
         return (mb_strtolower($private_key_check) == mb_strtolower($this->private_key));
     }
-    
+
     public function get_num_chars()
     {
         return $this->num_chars;
@@ -252,11 +254,11 @@ class captcha {
 
                     $text_x += (int)($text_size + ($this->min_char_size / 5));
                 }
-                
+
                 $image_filename = tempnam(sys_get_temp_dir(), 'bhtc');
 
                 imagejpeg($image, $image_filename);
-                
+
                 return $image_filename;
             }
         }
@@ -268,7 +270,7 @@ class captcha {
     protected function check_working_dir()
     {
         if (!$this->text_captcha_dir) return false;
-        
+
         @mkdir("{$this->text_captcha_dir}/fonts", 0775, true);
 
         if (@is_dir("{$this->text_captcha_dir}/fonts")) {
@@ -281,7 +283,7 @@ class captcha {
     protected function load_fonts()
     {
         if (!$this->text_captcha_dir) return false;
-        
+
         if (!$this->fonts_loaded) {
 
             if ((@$dir = opendir("{$this->text_captcha_dir}/fonts"))) {

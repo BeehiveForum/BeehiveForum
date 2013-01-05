@@ -27,6 +27,7 @@ USA
 require_once 'lboot.php';
 
 // Includes required by this page.
+require_once BH_INCLUDE_PATH. 'attachments.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'email.inc.php';
 require_once BH_INCLUDE_PATH. 'emoticons.inc.php';

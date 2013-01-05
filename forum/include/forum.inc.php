@@ -47,7 +47,6 @@ require_once BH_INCLUDE_PATH. 'server.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'sitemap.inc.php';
 require_once BH_INCLUDE_PATH. 'stats.inc.php';
-require_once BH_INCLUDE_PATH. 'text_captcha.inc.php';
 require_once BH_INCLUDE_PATH. 'threads.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
 require_once BH_INCLUDE_PATH. 'word_filter.inc.php';

@@ -25,6 +25,7 @@ USA
 require_once 'boot.php';
 
 // Includes required by this page.
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
 require_once BH_INCLUDE_PATH. 'cache.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'format.inc.php';

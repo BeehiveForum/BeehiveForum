@@ -21,15 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
-    header("Request-URI: ../index.php");
-    header("Content-Location: ../index.php");
-    header("Location: ../index.php");
-    exit;
-}
-
-require_once BH_INCLUDE_PATH. 'cache.inc.php';
-require_once BH_INCLUDE_PATH. 'server.inc.php';
+// Required includes
+// End Required includes
 
 class Error extends Exception
 {

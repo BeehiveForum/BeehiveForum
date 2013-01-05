@@ -24,15 +24,8 @@ USA
 // Bootstrap
 require_once 'boot.php';
 
-// Includes required by this page.
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+// Required includes
+// End Required includes
 
 // Default final URI if one isn't specified.
 $final_uri = '&final_uri=logon.php%3Fwebtag%3D$webtag%26logout_success%3Dtrue';

@@ -21,21 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// We shouldn't be accessing this file directly.
-if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
-    header("Request-URI: ../index.php");
-    header("Content-Location: ../index.php");
-    header("Location: ../index.php");
-    exit;
-}
-
-require_once BH_INCLUDE_PATH. 'browser.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'lang.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
+// Required includes
+// End Required includes
 
 function emoticons_initialise()
 {

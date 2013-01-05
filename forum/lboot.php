@@ -100,12 +100,8 @@ cache_disable_proxy();
 // Check that Beehive is installed correctly
 check_install();
 
-// Other includes
-require_once BH_INCLUDE_PATH. 'banned.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'lang.inc.php';
-require_once BH_INCLUDE_PATH. 'light.inc.php';
+// Required includes
+// End Required includes
 
 // Initialise the session
 session::init();

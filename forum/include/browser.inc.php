@@ -21,16 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// We shouldn't be accessing this file directly.
-if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
-    header("Request-URI: ../index.php");
-    header("Content-Location: ../index.php");
-    header("Location: ../index.php");
-    exit;
-}
-
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
+// Required includes
+// End Required includes
 
 function browser_check($browser_check)
 {
@@ -124,12 +116,12 @@ function browser_mobile()
 
     // User Agent from https://code.google.com/p/the-devices-detection/source/list
     $mobile_agents = array(
-        'iPhone', 
-        'iPad', 
-        'iPod', 
-        'incognito', 
-        'webmate', 
-        'dream', 
+        'iPhone',
+        'iPad',
+        'iPod',
+        'incognito',
+        'webmate',
+        'dream',
         'CUPCAKE',
         'webOS',
         's8000',

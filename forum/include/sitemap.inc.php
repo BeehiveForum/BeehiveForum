@@ -21,21 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// We shouldn't be accessing this file directly.
-if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
-    header("Request-URI: ../index.php");
-    header("Content-Location: ../index.php");
-    header("Location: ../index.php");
-    exit;
-}
-
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'folder.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'server.inc.php';
+// Required includes
+// End Required includes
 
 function sitemap_get_available_forums()
 {
@@ -47,7 +34,7 @@ function sitemap_get_available_forums()
     if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
-    
+
     return $result;
 }
 
@@ -72,7 +59,7 @@ function sitemap_forum_get_threads($forum_fid)
     $sql.= "ORDER BY THREAD.TID";
 
     if (!($result = $db->query($sql))) return false;
-    
+
     if ($result->num_rows == 0) return false;
 
     return $result;
@@ -182,13 +169,13 @@ function sitemap_create_file()
 
     // Query the database to find available forums.
     if (!($result_forums = sitemap_get_available_forums())) return false;
-    
+
     // Iterate over each of the forums.
     while (($forum_data = $result_forums->fetch_assoc()) !== null) {
 
         // Get the MySQL result set for the current forum's threads.
         if (!($result_threads = sitemap_forum_get_threads($forum_data['FID']))) return false;
-        
+
         // Iterate over the threads and add them to the sitemap file.
         while (($thread_data = $result_threads->fetch_assoc()) !== null) {
 

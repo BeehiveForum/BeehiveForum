@@ -21,20 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// We shouldn't be accessing this file directly.
-if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
-    header("Request-URI: ../index.php");
-    header("Content-Location: ../index.php");
-    header("Location: ../index.php");
-    exit;
-}
-
-require_once BH_INCLUDE_PATH. 'browser.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'server.inc.php';
+// Required includes
+// End Required includes
 
 function check_install()
 {
@@ -302,7 +290,7 @@ function install_check_php_extensions()
 
     // Get an array of extensions currently loaded by PHP
     $loaded_extensions = get_loaded_extensions();
-    
+
     // Extract list of missing extensions.
     $missing_extensions = array_diff($required_extensions, $loaded_extensions);
 

@@ -21,16 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// We shouldn't be accessing this file directly.
-if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
-    header("Request-URI: ../index.php");
-    header("Content-Location: ../index.php");
-    header("Location: ../index.php");
-    exit;
-}
-
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'lang.inc.php';
+// Required includes
+// End Required includes
 
 function geshi_error_handler ()
 {
@@ -40,7 +32,7 @@ function geshi_error_handler ()
 if (@file_exists("geshi/geshi.php")) {
 
     include_once("geshi/geshi.php");
-    
+
     if (!defined('GESHI_VERSION') || version_compare(GESHI_VERSION, '1.0.8.8', '<')) {
         throw new Exception('Beehive Forum requires GeSHi 1.0.8.8 or newer');
     }

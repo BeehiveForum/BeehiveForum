@@ -21,17 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// We shouldn't be accessing this file directly.
-if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
-    header("Request-URI: ../index.php");
-    header("Content-Location: ../index.php");
-    header("Location: ../index.php");
-    exit;
-}
-
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'lang.inc.php';
+// Required includes
+// End Required includes
 
 function styles_get_available()
 {
@@ -40,7 +31,7 @@ function styles_get_available()
 
     // Try and open the styles directory for reading.
     if (!(@$dir = opendir("styles"))) return false;
-    
+
     // Iterate over the entries in the directory.
     while (($file = readdir($dir)) !== false) {
 
@@ -68,13 +59,13 @@ function styles_get_available()
 
     // Check we have something to return.
     if (sizeof($available_forum_styles) < 1) return false;
-        
+
     // Sort the styles alphabetically.
     asort($available_forum_styles);
-    
+
     // Reset the array pointer.
     reset($available_forum_styles);
-        
+
     // Return the styles.
     return $available_forum_styles;
 }
@@ -86,7 +77,7 @@ function style_exists($style_path)
 
     // Extract only the filename part.
     $style_path = basename($style_path);
-    
+
     // Check if a style.css exists in the path.
     return file_exists("styles/$style_path/style.css");
 }

@@ -21,12 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
-    header("Request-URI: ../index.php");
-    header("Content-Location: ../index.php");
-    header("Location: ../index.php");
-    exit;
-}
+// Required includes
+// End Required includes
 
 function server_os_mswin()
 {
@@ -353,11 +349,9 @@ function server_get_config()
 
     if (!$config) {
 
-        require_once BH_INCLUDE_PATH. 'config.inc.php';
 
         if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-            require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
-        }
+                    }
 
         $config = get_defined_vars();
 

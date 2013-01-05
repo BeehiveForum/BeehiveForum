@@ -24,16 +24,8 @@ USA
 // Bootstrap
 require_once 'boot.php';
 
-// Includes required by this page.
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'lang.inc.php';
-require_once BH_INCLUDE_PATH. 'logon.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
+// Required includes
+// End Required includes
 
 // Get the start page
 if (($start_page = forum_get_setting('start_page', 'strlen', false)) !== false) {

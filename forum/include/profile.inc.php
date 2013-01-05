@@ -21,21 +21,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// We shouldn't be accessing this file directly.
-if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
-    header("Request-URI: ../index.php");
-    header("Content-Location: ../index.php");
-    header("Location: ../index.php");
-    exit;
-}
-
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'lang.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
+// Required includes
+// End Required includes
 
 function profile_section_get_name($psid)
 {
@@ -158,7 +145,7 @@ function profile_sections_get_by_page($page = 1)
     if (($result->num_rows == 0) && ($profile_sections_count > 0) && ($page > 1)) {
         return profile_sections_get_by_page($page - 1);
     }
-        
+
     while (($profile_data = $result->fetch_assoc()) !== null) {
         $profile_sections_array[] = $profile_data;
     }
@@ -223,7 +210,7 @@ function profile_items_get_by_page($psid, $page = 1)
     if (($result->num_rows == 0) && ($profile_items_count > 0) && ($page > 1)) {
         return profile_items_get_by_page($psid, $page - 1);
     }
-    
+
     while (($profile_item = $result->fetch_assoc()) !== null) {
         $profile_items_array[] = $profile_item;
     }
@@ -717,7 +704,7 @@ function profile_get_item($piid)
 function profile_item_add_clear_entry(&$profile_item_options_array, $type)
 {
     $valid_item_types_aray = array(
-        PROFILE_ITEM_RADIO, 
+        PROFILE_ITEM_RADIO,
         PROFILE_ITEM_DROPDOWN
     );
 

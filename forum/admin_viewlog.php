@@ -24,19 +24,8 @@ USA
 // Bootstrap
 require_once 'boot.php';
 
-// Includes required by this page.
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'lang.inc.php';
-require_once BH_INCLUDE_PATH. 'logon.inc.php';
-require_once BH_INCLUDE_PATH. 'perm.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+// Required includes
+// End Required includes
 
 // Check we're logged in correctly
 if (!session::logged_in()) {
@@ -286,7 +275,7 @@ if (isset($group_by) && $group_by != ADMIN_LOG_GROUP_NONE) {
         echo "                    <td class=\"subhead\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a></td>\n";
     } else {
         echo "                    <td class=\"subhead\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a></td>\n";
-    }    
+    }
 }
 
 echo "                  </tr>\n";
@@ -752,9 +741,9 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                 $action_text = sprintf(gettext("User '%s' is banned. HTTP Referer '%s' matched ban data '%s'"), $admin_user_link, $entry_array[1], $admin_banned_link);
                 break;
-                
+
             case BAN_HIT_TYPE_SFS:
-            
+
                 $auto_update = true;
 
                 $index_link = "<a href=\"index.php?webtag=$webtag&amp;final_uri=%s\" target=\"_blank\">%s</a>";
@@ -768,11 +757,11 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
                     $admin_user_link = gettext("Guest");
                 }
-                
+
                 $ban_data_match = implode("', '", array_filter(array_slice($entry_array, 0, 3)));
 
                 $action_text = sprintf(gettext("User '%s' is banned by StopForumSpam. Matched ban data '%s'"), $admin_user_link, $ban_data_match);
-                break;          
+                break;
 
             case USER_PERMS_CHANGED:
 
@@ -813,11 +802,11 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
         }
 
         echo "                    <td align=\"left\">", $action_text, "</td>\n";
-        
+
         if (isset($group_by) && $group_by != ADMIN_LOG_GROUP_NONE) {
             echo "                    <td align=\"center\">{$admin_log_entry['COUNT']}</td>\n";
         }
-        
+
         echo "                  </tr>\n";
     }
 }

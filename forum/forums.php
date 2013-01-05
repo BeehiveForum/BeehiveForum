@@ -23,19 +23,8 @@ USA
 // Bootstrap
 require_once 'boot.php';
 
-// Includes required by this page.
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'lang.inc.php';
-require_once BH_INCLUDE_PATH. 'logon.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'myforums.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+// Required includes
+// End Required includes
 
 // Array to hold error messages
 $error_msg_array = array();
@@ -48,8 +37,8 @@ html_draw_top(sprintf("title=%s", gettext("My Forums")), "basetarget=$frame_top_
 
 // Types of available forums.
 $available_forum_views = array(
-    FORUMS_SHOW_ALL, 
-    FORUMS_SHOW_FAVS, 
+    FORUMS_SHOW_ALL,
+    FORUMS_SHOW_FAVS,
     FORUMS_SHOW_IGNORED
 );
 
@@ -204,12 +193,12 @@ if (isset($_POST['change_view'])) {
 $final_uri = "";
 
 if (isset($_GET['final_uri']) && strlen(trim($_GET['final_uri'])) > 0) {
-    
+
     $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
 
     if (preg_match("/^$available_files_preg/u", trim($_GET['final_uri'])) > 0) {
         $final_uri = href_cleanup_query_keys($_GET['final_uri'], 'webtag');
-    }    
+    }
 }
 
 // Handle adding and removing of favourites

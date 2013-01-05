@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-define("BH_INCLUDE_PATH", "./forum/include/");
+define('BH_INCLUDE_PATH', "./forum/include/");
 
 require_once BH_INCLUDE_PATH. 'format.inc.php';
 
@@ -31,17 +31,80 @@ header('Content-Type: text/plain');
 
 $source_files_array = array();
 
-$include_files_functions_array = array('lang.inc.php' => array('gettext'));
+$include_files_required_array = array();
+
+$include_files_functions_array = array(
+    'db.inc.php' => array(
+        '/db::[^\(]+\(/imu'
+    ),
+    'errorhandler.inc.php' => array(
+        '/new Error\s*\(/imu'
+    ),
+    'geshi.inc.php' => array(
+        '/new GeSHi\s*\(/imu',
+    ),
+    'html.inc.php' => array(
+        '/new html_frameset\s*\(/imu',
+        '/new html_frameset_rows\s*\(/imu',
+        '/new html_frameset_cols\s*\(/imu',
+        '/new html_frame\s*\(/imu',
+    ),
+    'lang.inc.php' => array(
+        '/[\s|\.|,|\(]gettext\s*\(/imu'
+    ),
+    'post.inc.php' => array(
+        '/new MessageTextParse\s*\(/imu',
+    ),
+    'rss_feed.inc.php' => array(
+        '/new rss_feed_item\s*\(/imu',
+    ),
+    'session.inc.php' => array(
+        '/session::[^\(]+\(/imu',
+    ),
+    'swift.inc.php' => array(
+        '/Swift_TransportFactory::get\s*\(/imu',
+        '/new Swift_SmtpTransportSingleton\s*\(/imu',
+        '/new Swift_MailTransportSingleton\s*\(/imu',
+        '/new Swift_SendmailTransportSingleton\s*\(/imu',
+        '/new Swift_MessageBeehive\s*\(/imu',
+    ),
+    'text_captcha.inc.php' => array(
+        '/new captcha\s*\(/imu'
+    ),
+);
 
 $include_files_constants_array = array();
 
-$ignore_files_array = array('errorhandler.inc.php', 'forum.inc.php', 'server.inc.php', 'cache.inc.php', 'install.inc.php', 'word_filter.inc.php');
+$ignore_files_array = array(
+    'errorhandler.inc.php',
+    'forum.inc.php',
+    'server.inc.php',
+    'cache.inc.php',
+    'install.inc.php',
+    'word_filter.inc.php',
+    'banned.inc.php',
+    'format.inc.php',
+    'header.inc.php',
+    'html.inc.php',
+    'lang.inc.php',
+);
 
 $ignore_functions_array = array();
 
-$ignore_constants_array = array('BH_INCLUDE_PATH', 'BEEHIVE_DEVELOPER_MODE', 'E_STRICT', 'BEEHIVEMODE_LIGHT');
+$ignore_constants_array = array(
+    'BH_INCLUDE_PATH',
+    'BEEHIVE_DEVELOPER_MODE',
+    'BEEHIVEMODE_LIGHT'
+);
 
-$source_files_dir_array = array('forum', 'forum/include');
+$source_files_dir_array = array(
+    'forum',
+    'forum/include'
+);
+
+$ignore_functions_preg = implode('|', array_map('preg_quote_callback', $ignore_functions_array));
+
+$ignore_constants_preg = implode('|', array_map('preg_quote_callback', $ignore_constants_array));
 
 set_time_limit(0);
 
@@ -57,75 +120,54 @@ foreach ($source_files_dir_array as $include_file_dir) {
 
             $path_info_array = pathinfo("$include_file_dir/$file");
 
-            if (isset($path_info_array['extension']) && $path_info_array['extension'] == 'php') {
+            if (!isset($path_info_array['extension']) || ($path_info_array['extension'] != 'php')) {
+                continue;
+            }
 
-                $source_files_array[] = "$include_file_dir/$file";
-                $source_file_contents = file_get_contents("$include_file_dir/$file");
+            $source_files_array[] = "$include_file_dir/$file";
 
-                $ignore_functions = implode("|", array_map('preg_quote_callback', $ignore_functions_array));
-                $ignore_constants = implode("|", array_map('preg_quote_callback', $ignore_constants_array));
+            $source_file_contents = file_get_contents("$include_file_dir/$file");
 
-                $function_matches = array();
+            $function_matches = array();
 
-                if (preg_match_all('/function\s([a-z1-9-_]+)[\s]?\(/iu', $source_file_contents, $function_matches)) {
+            $constant_matches = array();
 
-                    if (!isset($include_files_functions_array[$file])) {
+            if (preg_match_all('/^function\s+([^\(]+)\(/imu', $source_file_contents, $function_matches)) {
 
-                        if (sizeof($ignore_functions_array) > 0) {
-
-                            $function_matches = preg_grep("/$ignore_functions/u", $function_matches[1], PREG_GREP_INVERT);
-                            $include_files_functions_array[$file] = $function_matches;
-
-                        } else {
-
-                            $include_files_functions_array[$file] = $function_matches[1];
-                        }
-
-                    } else {
-
-                        if (sizeof($ignore_functions_array) > 0) {
-
-                            $include_files_functions_array[$file] = array_merge($include_files_functions_array[$file], $function_matches[1]);
-                            $include_files_functions_array = preg_grep("/$ignore_functions/u", $include_files_functions_array[$file], PREG_GREP_INVERT);
-
-                        } else {
-
-                            $include_files_functions_array[$file] = array_merge($include_files_functions_array[$file], $function_matches[1]);
-                        }
-                    }
+                if (sizeof($ignore_functions_array) > 0) {
+                    $function_matches[1] = preg_grep("/$ignore_functions_preg/u", $function_matches[1], PREG_GREP_INVERT);
                 }
 
-                $constant_matches = array();
+                if (sizeof($function_matches[1]) > 0) {
 
-                if (preg_match_all('/define[\s]?\(["|\']?([a-z1-9-_]+)/iu', $source_file_contents, $constant_matches)) {
+                    if (!isset($include_files_functions_array[$file])) {
+                        $include_files_functions_array[$file] = array();
+                    }
+
+                    foreach ($function_matches[1] as $function_match) {
+
+                        $include_files_functions_array[$file][] = sprintf(
+                            '/[\s|\.|,|\(]%s\s*\(/mu',
+                            preg_quote($function_match)
+                        );
+                    }
+                }
+            }
+
+            if (preg_match_all('/define\s*\(["|\']([A-Z0-9-_]+)["|\'],\s*[^\)]+\)/imu', $source_file_contents, $constant_matches)) {
+
+                if (sizeof($ignore_constants_array) > 0) {
+                    $constant_matches[1] = preg_grep("/$ignore_constants_preg/u", $constant_matches[1], PREG_GREP_INVERT);
+                }
+
+                if (sizeof($constant_matches[1]) > 0) {
 
                     if (!isset($include_files_constants_array[$file])) {
+                        $include_files_constants_array[$file] = array();
+                    }
 
-                        if (sizeof($ignore_constants_array) > 0) {
-
-                            $constant_matches = preg_grep("/$ignore_constants/u", $constant_matches[1], PREG_GREP_INVERT);
-
-                            if (sizeof($constant_matches) > 0) {
-
-                                $include_files_constants_array[$file] = $constant_matches;
-                            }
-
-                        } else {
-
-                            $include_files_constants_array[$file] = $constant_matches[1];
-                        }
-
-                    } else {
-
-                        if (sizeof($ignore_constants_array) > 0) {
-
-                            $include_files_constants_array[$file] = array_merge($include_files_constants_array[$file], $constant_matches[1]);
-                            $include_files_constants_array = preg_grep("/$ignore_constants/u", $include_files_constants_array[$file], PREG_GREP_INVERT);
-
-                        } else {
-
-                            $include_files_constants_array[$file] = array_merge($include_files_constants_array[$file], $constant_matches[1]);
-                        }
+                    foreach ($constant_matches[1] as $constant_match) {
+                        $include_files_constants_array[$file][] = $constant_match;
                     }
                 }
             }
@@ -133,11 +175,15 @@ foreach ($source_files_dir_array as $include_file_dir) {
     }
 }
 
-echo "Processing files...\n\n";
+ksort($include_files_functions_array);
+
+sort($source_files_array);
+
+echo "Checking files...\n\n";
 
 foreach ($source_files_array as $source_file) {
 
-    $include_files_required_array = array();
+    echo "Checking ", $source_file, "...\n";
 
     $source_file_contents = file_get_contents($source_file);
 
@@ -149,18 +195,14 @@ foreach ($source_files_array as $source_file) {
 
             $include_file_line_preg = preg_quote($include_file_line, "/");
 
-            if (preg_match("/$include_file_line_preg/u", $source_file_contents) < 1) {
+            if (preg_match("/$include_file_line_preg/imu", $source_file_contents) > 0) {
+                continue;
+            }
 
-                $function_names_preg = implode('\s?\(|[\s|\.|,]+', array_map('preg_quote_callback', $function_names_array));
+            foreach ($function_names_array as $function_name_preg) {
 
-                $function_names_preg = sprintf(
-                    '/[\s|\.|,]%s\s?\(/u',
-                    $function_names_preg
-                );
-
-                if (preg_match($function_names_preg, $source_file_contents) > 0) {
-
-                    $include_files_required_array[$include_file] = $include_file_line;
+                if (preg_match_all($function_name_preg, $source_file_contents) > 0) {
+                    $include_files_required_array[$source_file][$include_file] = $include_file_line;
                 }
             }
         }
@@ -174,24 +216,41 @@ foreach ($source_files_array as $source_file) {
 
             $include_file_line_preg = preg_quote($include_file_line, "/");
 
-            if (preg_match("/$include_file_line_preg/u", $source_file_contents) < 1) {
+            if (preg_match("/$include_file_line_preg/mu", $source_file_contents) > 0) {
+                continue;
+            }
 
-                $constant_names_preg = implode("|", array_map('preg_quote_callback', $constant_names_array));
+            $constant_names_preg = implode("|", array_map('preg_quote_callback', $constant_names_array));
 
-                if (preg_match("/{$constant_names_preg}/u", $source_file_contents) > 0) {
-
-                    $include_files_required_array[$include_file] = $include_file_line;
-                }
+            if (preg_match("/{$constant_names_preg}/u", $source_file_contents) > 0) {
+                $include_files_required_array[$source_file][$include_file] = $include_file_line;
             }
         }
     }
 
-    if (sizeof($include_files_required_array) > 0) {
+    break;
+}
 
-        ksort($include_files_required_array);
+echo "Found ", sizeof($include_files_required_array), " missing requires.\n\n";
 
-        echo "$source_file:\n", str_repeat("-", strlen($source_file) + 1), "\n";
-        echo implode(";\n", $include_files_required_array), ";\n\n";
+ksort($include_files_required_array);
+
+if (sizeof($include_files_required_array) > 0) {
+
+    foreach ($include_files_required_array as $source_file => $required_include_files) {
+
+        ksort($required_include_files);
+
+        $required_includes_lines = sprintf(
+            "// Required includes\n%s;\n// End Required includes\n\n",
+            implode(";\n", $required_include_files)
+        );
+
+        $source_file_contents = file_get_contents($source_file);
+
+        $source_file_contents = preg_replace("/\/\/ Required includes\n.*\/\/ End Required includes\n\n/mu", $required_includes_lines, $source_file_contents);
+
+        file_put_contents($source_file, $source_file_contents, FILE_TEXT);
     }
 }
 

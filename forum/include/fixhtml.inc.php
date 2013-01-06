@@ -25,6 +25,9 @@ USA
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 // End Required includes
 
+// HTML Purifier
+require_once BH_INCLUDE_PATH. 'htmlpurifier/HTMLPurifier.auto.php';
+
 function html_purifier_error()
 {
     return;

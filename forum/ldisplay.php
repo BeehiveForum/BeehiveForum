@@ -24,6 +24,16 @@ USA
 // Bootstrap
 require_once 'lboot.php';
 
+// Required includes
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'folder.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'light.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'poll.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'thread.inc.php';
+// End Required includes
 
 // Check that required variables are set
 // default to display most recent discussion for user

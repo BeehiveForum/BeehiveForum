@@ -24,6 +24,13 @@ USA
 // Bootstrap
 require_once 'lboot.php';
 
+// Required includes
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'light.inc.php';
+require_once BH_INCLUDE_PATH. 'pm.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
+// End Required includes
 
 // Check we're logged in correctly
 if (!session::logged_in()) {

@@ -113,21 +113,21 @@ if (isset($search_keyword) && strlen(trim($search_keyword)) > 0) {
 // Output any messages.
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '600', 'left');
+    html_display_error_array($error_msg_array, '700', 'left');
 
 } else if (isset($_GET['relupdated'])) {
 
-    html_display_success_msg(gettext("Relationships Updated!"), '600', 'left');
+    html_display_success_msg(gettext("Relationships Updated!"), '700', 'left');
 
 } else if (sizeof($user_peers_array['user_array']) < 1) {
 
     if (isset($search_keyword) && strlen(trim($search_keyword)) > 0) {
 
-        html_display_warning_msg(gettext("Search Returned No Results"), '600', 'left');
+        html_display_warning_msg(gettext("Search Returned No Results"), '700', 'left');
 
     } else {
 
-        html_display_warning_msg(gettext("You have no user relationships set up. Add a new user by searching below."), '600', 'left');
+        html_display_warning_msg(gettext("You have no user relationships set up. Add a new user by searching below."), '700', 'left');
     }
 }
 
@@ -136,7 +136,7 @@ echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"edit_relations.php\
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
 echo "  ", form_input_hidden("search_keyword", htmlentities_array($search_keyword)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -230,7 +230,7 @@ echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"edit_relations.php\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"posthead\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

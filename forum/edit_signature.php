@@ -153,28 +153,28 @@ if ($admin_edit === true) {
 
     $user = user_get($sig_uid);
 
-    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage User - %s "), format_user_name($user['LOGON'], $user['NICKNAME']))), "basetarget=_blank", "resize_width=600", "js/post.js", 'ckeditor/ckeditor.js', 'class=window_title');
+    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage User - %s "), format_user_name($user['LOGON'], $user['NICKNAME']))), "basetarget=_blank", "resize_width=700", "js/post.js", 'ckeditor/ckeditor.js', 'class=window_title');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
 } else {
 
-    html_draw_top(sprintf('title=%s', gettext("My Controls - Edit Signature")), "basetarget=_blank", "resize_width=600", "js/post.js", 'ckeditor/ckeditor.js', 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("My Controls - Edit Signature")), "basetarget=_blank", "resize_width=700", "js/post.js", 'ckeditor/ckeditor.js', 'class=window_title');
 
     echo "<h1>", gettext("Edit Signature"), "</h1>\n";
 }
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '600', 'left');
+    html_display_error_array($error_msg_array, '700', 'left');
 
 } else if (isset($_GET['updated'])) {
 
-    html_display_success_msg(gettext("Signature Updated"), '600', 'left');
+    html_display_success_msg(gettext("Signature Updated"), '700', 'left');
 
 } else if (isset($_GET['updated_global'])) {
 
-    html_display_success_msg(gettext("Signature Updated For All Forums"), '600', 'left');
+    html_display_success_msg(gettext("Signature Updated For All Forums"), '700', 'left');
 }
 
 echo "<br />\n";
@@ -194,7 +194,7 @@ if ($admin_edit === true) {
     echo "  ", form_input_hidden('sig_uid', htmlentities_array($sig_uid)), "\n";
 }
 
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -292,7 +292,7 @@ echo "  </table>\n";
 if ($show_set_all) {
 
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";

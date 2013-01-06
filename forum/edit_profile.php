@@ -168,11 +168,11 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '600', ($admin_edit) ? 'center' : 'left');
+        html_display_error_array($error_msg_array, '700', ($admin_edit) ? 'center' : 'left');
 
     } else if (isset($_GET['profile_updated'])) {
 
-        html_display_success_msg(gettext("Profile updated."), '600', ($admin_edit) ? 'center' : 'left');
+        html_display_success_msg(gettext("Profile updated."), '700', ($admin_edit) ? 'center' : 'left');
     }
 
     if ($admin_edit === true) echo "<div align=\"center\">\n";
@@ -183,7 +183,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
     if ($admin_edit === true) echo "  ", form_input_hidden('profile_uid', htmlentities_array($profile_uid)), "\n";
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
@@ -240,7 +240,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                        <td align=\"left\" width=\"225\">{$profile_item['ITEM_NAME']}</td>\n";
+        echo "                        <td align=\"left\" width=\"180\">{$profile_item['ITEM_NAME']}</td>\n";
 
         if (($profile_item['TYPE'] == PROFILE_ITEM_RADIO) || ($profile_item['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
 

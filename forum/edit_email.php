@@ -121,17 +121,17 @@ echo "<h1>", htmlentities_array(gettext("Email & Privacy")), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '600', 'left');
+    html_display_error_array($error_msg_array, '700', 'left');
 
 } else if (isset($_GET['updated'])) {
 
-    html_display_success_msg(gettext("Preferences were successfully updated."), '600', 'left');
+    html_display_success_msg(gettext("Preferences were successfully updated."), '700', 'left');
 }
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"edit_email.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

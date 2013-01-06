@@ -126,25 +126,25 @@ echo "<h1>", gettext("Folder Subscriptions"), "<img src=\"", html_style_image('s
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-    html_display_error_array($error_msg_array, '600', 'left');
+    html_display_error_array($error_msg_array, '700', 'left');
 
 } else if (isset($_GET['updated'])) {
 
-    html_display_success_msg(gettext("Folder interests updated successfully"), '600', 'left');
+    html_display_success_msg(gettext("Folder interests updated successfully"), '700', 'left');
 
 } else if (sizeof($folder_subscriptions['folder_array']) < 1) {
 
     if (isset($search_keyword) && strlen(trim($search_keyword)) > 0) {
 
-        html_display_warning_msg(gettext("Search Returned No Results"), '600', 'left');
+        html_display_warning_msg(gettext("Search Returned No Results"), '700', 'left');
 
     } else if ($view == FOLDER_IGNORED) {
 
-        html_display_warning_msg(gettext("You are not ignoring any folders."), '600', 'left');
+        html_display_warning_msg(gettext("You are not ignoring any folders."), '700', 'left');
 
     } else {
 
-        html_display_warning_msg(gettext("You are not subscribed to any folders."), '600', 'left');
+        html_display_warning_msg(gettext("You are not subscribed to any folders."), '700', 'left');
     }
 }
 
@@ -153,7 +153,7 @@ echo "<form accept-charset=\"utf-8\" name=\"subscriptions\" action=\"folder_subs
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
 echo "  ", form_input_hidden("search_keyword", htmlentities_array($search_keyword)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" colspan=\"3\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -228,7 +228,7 @@ echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"folder_subscriptio
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
 echo "  ", form_input_hidden("view", htmlentities_array($view)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"posthead\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

@@ -249,18 +249,18 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '600', 'left');
+        html_display_error_array($error_msg_array, '700', 'left');
 
     } else if (user_get_word_filter_count() > 19) {
 
-        html_display_error_msg(gettext("You cannot add any more word filters. Remove some unused ones or edit the existing ones first."), '600', 'left');
+        html_display_error_msg(gettext("You cannot add any more word filters. Remove some unused ones or edit the existing ones first."), '700', 'left');
     }
 
     echo "<br />\n";
     echo "<form accept-charset=\"utf-8\" name=\"startpage\" method=\"post\" action=\"edit_wordfilter.php\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('addfilter', 'true'), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -313,7 +313,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
 
-    html_display_warning_msg(sprintf('%s<p>%s</p>%s', gettext("<b>All</b> matches against the whole text so filtering mom to mum will also change moment to mument."), gettext("<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument."), gettext("<b>PREG</b> allows you to use Perl Regular Expressions to match text.")), '600', 'left');
+    html_display_warning_msg(sprintf('%s<p>%s</p>%s', gettext("<b>All</b> matches against the whole text so filtering mom to mum will also change moment to mument."), gettext("<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument."), gettext("<b>PREG</b> allows you to use Perl Regular Expressions to match text.")), '700', 'left');
 
     echo "</form>\n";
 
@@ -345,7 +345,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "<h1>", gettext("Edit Word Filter"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-        html_display_error_array($error_msg_array, '600', 'left');
+        html_display_error_array($error_msg_array, '700', 'left');
     }
 
     echo "<br />\n";
@@ -353,7 +353,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('filter_id', htmlentities_array($filter_id)), "\n";
     echo "  ", form_input_hidden("delete_filters[$filter_id]", 'Y'), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -406,7 +406,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
 
-    html_display_warning_msg(sprintf('%s<p>%s</p>%s', gettext("<b>All</b> matches against the whole text so filtering mom to mum will also change moment to mument."), gettext("<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument."), gettext("<b>PREG</b> allows you to use Perl Regular Expressions to match text.")), '600', 'left');
+    html_display_warning_msg(sprintf('%s<p>%s</p>%s', gettext("<b>All</b> matches against the whole text so filtering mom to mum will also change moment to mument."), gettext("<b>Whole Word</b> matches against whole words only so filtering mom to mum will NOT change moment to mument."), gettext("<b>PREG</b> allows you to use Perl Regular Expressions to match text.")), '700', 'left');
 
     echo "</form>\n";
 
@@ -422,21 +422,21 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        html_display_error_array($error_msg_array, '600', 'left');
+        html_display_error_array($error_msg_array, '700', 'left');
 
     } else if (isset($_GET['updated'])) {
 
-        html_display_success_msg(gettext("Word Filter updated"), '600', 'left');
+        html_display_success_msg(gettext("Word Filter updated"), '700', 'left');
 
     } else if (sizeof($word_filter_array['word_filter_array']) < 1) {
 
-        html_display_warning_msg(gettext("No existing word filter entries found. To add a filter click the 'Add New' button below."), '600', 'left');
+        html_display_warning_msg(gettext("No existing word filter entries found. To add a filter click the 'Add New' button below."), '700', 'left');
     }
 
     echo "<br />\n";
     echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"edit_wordfilter.php\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -486,7 +486,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";

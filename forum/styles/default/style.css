@@ -239,8 +239,12 @@ ul.ui-autocomplete li a.ui-state-focus {
     font-size: 75%;
 }
 
+select.bhinputprofileitem {
+    width: 454px;
+}
+
 .bhinputprofileitem {
-    width: 300px;
+    width: 450px;
 }
 
 .bhinputsearch {
@@ -477,7 +481,7 @@ div.poll_option_list ol li {
 }
 
 .edit_signature_content {
-    width: 550px;
+    width: 650px;
 }
 
 .edit_text {
@@ -1611,11 +1615,11 @@ div.spoiler_reveal * {
 }
 
 .user_pref_dropdown {
-    width: 302px;
+    width: 384px;
 }
 
 .user_pref_field {
-    width: 298px;
+    width: 380px;
 }
 
 .user_stats_curuser {

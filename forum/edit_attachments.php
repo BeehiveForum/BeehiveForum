@@ -140,7 +140,7 @@ if (isset($_POST['delete_confirm'])) {
             echo "<br />\n";
             echo "<form accept-charset=\"utf-8\" id=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"edit_attachments.php\">\n";
             echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
             echo "    <tr>\n";
             echo "      <td align=\"left\">\n";
             echo "        <table class=\"box\" width=\"100%\">\n";
@@ -236,13 +236,13 @@ html_draw_top(sprintf('title=%s', gettext("Attachments")), "js/attachments.js", 
 echo "<h1>", gettext("Attachments"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    html_display_error_array($error_msg_array, '600', 'center');
+    html_display_error_array($error_msg_array, '700', 'center');
 }
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"attachments\" method=\"post\" action=\"edit_attachments.php\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
@@ -315,7 +315,7 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";

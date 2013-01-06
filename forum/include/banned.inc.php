@@ -22,6 +22,12 @@ USA
 ======================================================================*/
 
 // Required includes
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'sfs.inc.php';
 // End Required includes
 
 function ban_check($user_data, $send_error = true)

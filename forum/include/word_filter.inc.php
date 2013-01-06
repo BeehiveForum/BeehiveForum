@@ -22,6 +22,10 @@ USA
 ======================================================================*/
 
 // Required includes
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 // End Required includes
 
 function word_filter_get($uid, &$word_filter_array)

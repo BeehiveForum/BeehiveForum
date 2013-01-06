@@ -22,6 +22,8 @@ USA
 ======================================================================*/
 
 // Required includes
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
 // End Required includes
 
 function geshi_error_handler ()

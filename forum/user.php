@@ -25,6 +25,11 @@ USA
 require_once 'boot.php';
 
 // Required includes
+require_once BH_INCLUDE_PATH. 'cache.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'server.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
 // End Required includes
 
 // Don't cache this page - fixes problems with Opera.

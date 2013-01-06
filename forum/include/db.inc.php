@@ -22,6 +22,8 @@ USA
 ======================================================================*/
 
 // Required includes
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'server.inc.php';
 // End Required includes
 
 class db extends mysqli

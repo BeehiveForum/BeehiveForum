@@ -22,6 +22,7 @@ USA
 ======================================================================*/
 
 // Required includes
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
 // End Required includes
 
 function get_ip_address()

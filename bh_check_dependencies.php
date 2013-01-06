@@ -21,24 +21,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-define('BH_INCLUDE_PATH', "./forum/include/");
-
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-
 set_time_limit(0);
 
 header('Content-Type: text/plain');
 
+function preg_quote_callback($str)
+{
+    return preg_quote($str, "/");
+}
+
 $source_files_array = array();
 
-$include_files_required_array = array();
+$update_files_array = array();
 
 $include_files_functions_array = array(
     'db.inc.php' => array(
-        '/db::[^\(]+\(/imu'
+        '/db::[^\(]+\(/imu',
     ),
     'errorhandler.inc.php' => array(
-        '/new Error\s*\(/imu'
+        '/new Error\s*\(/imu',
     ),
     'geshi.inc.php' => array(
         '/new GeSHi\s*\(/imu',
@@ -48,9 +49,6 @@ $include_files_functions_array = array(
         '/new html_frameset_rows\s*\(/imu',
         '/new html_frameset_cols\s*\(/imu',
         '/new html_frame\s*\(/imu',
-    ),
-    'lang.inc.php' => array(
-        '/[\s|\.|,|\(]gettext\s*\(/imu'
     ),
     'post.inc.php' => array(
         '/new MessageTextParse\s*\(/imu',
@@ -62,39 +60,15 @@ $include_files_functions_array = array(
         '/session::[^\(]+\(/imu',
     ),
     'swift.inc.php' => array(
-        '/Swift_TransportFactory::get\s*\(/imu',
+        '/Swift_TransportFactory::[^\(]+\(/imu',
         '/new Swift_SmtpTransportSingleton\s*\(/imu',
         '/new Swift_MailTransportSingleton\s*\(/imu',
         '/new Swift_SendmailTransportSingleton\s*\(/imu',
         '/new Swift_MessageBeehive\s*\(/imu',
     ),
     'text_captcha.inc.php' => array(
-        '/new captcha\s*\(/imu'
+        '/new captcha\s*\(/imu',
     ),
-);
-
-$include_files_constants_array = array();
-
-$ignore_files_array = array(
-    'errorhandler.inc.php',
-    'forum.inc.php',
-    'server.inc.php',
-    'cache.inc.php',
-    'install.inc.php',
-    'word_filter.inc.php',
-    'banned.inc.php',
-    'format.inc.php',
-    'header.inc.php',
-    'html.inc.php',
-    'lang.inc.php',
-);
-
-$ignore_functions_array = array();
-
-$ignore_constants_array = array(
-    'BH_INCLUDE_PATH',
-    'BEEHIVE_DEVELOPER_MODE',
-    'BEEHIVEMODE_LIGHT'
 );
 
 $source_files_dir_array = array(
@@ -102,156 +76,137 @@ $source_files_dir_array = array(
     'forum/include'
 );
 
-$ignore_functions_preg = implode('|', array_map('preg_quote_callback', $ignore_functions_array));
-
-$ignore_constants_preg = implode('|', array_map('preg_quote_callback', $ignore_constants_array));
-
 set_time_limit(0);
 
 header('Content-Type: text/plain');
 
-echo "Getting list of functions...\n";
-
 foreach ($source_files_dir_array as $include_file_dir) {
 
-    if (($dir = opendir($include_file_dir)) !== false) {
+    if (!($dir = opendir($include_file_dir))) {
+        continue;
+    }
 
-        while (($file = readdir($dir)) !== false) {
+    while (($filename = readdir($dir)) !== false) {
 
-            $path_info_array = pathinfo("$include_file_dir/$file");
+        $path_info_array = pathinfo("$include_file_dir/$filename");
 
-            if (!isset($path_info_array['extension']) || ($path_info_array['extension'] != 'php')) {
-                continue;
-            }
-
-            $source_files_array[] = "$include_file_dir/$file";
-
-            $source_file_contents = file_get_contents("$include_file_dir/$file");
-
-            $function_matches = array();
-
-            $constant_matches = array();
-
-            if (preg_match_all('/^function\s+([^\(]+)\(/imu', $source_file_contents, $function_matches)) {
-
-                if (sizeof($ignore_functions_array) > 0) {
-                    $function_matches[1] = preg_grep("/$ignore_functions_preg/u", $function_matches[1], PREG_GREP_INVERT);
-                }
-
-                if (sizeof($function_matches[1]) > 0) {
-
-                    if (!isset($include_files_functions_array[$file])) {
-                        $include_files_functions_array[$file] = array();
-                    }
-
-                    foreach ($function_matches[1] as $function_match) {
-
-                        $include_files_functions_array[$file][] = sprintf(
-                            '/[\s|\.|,|\(]%s\s*\(/mu',
-                            preg_quote($function_match)
-                        );
-                    }
-                }
-            }
-
-            if (preg_match_all('/define\s*\(["|\']([A-Z0-9-_]+)["|\'],\s*[^\)]+\)/imu', $source_file_contents, $constant_matches)) {
-
-                if (sizeof($ignore_constants_array) > 0) {
-                    $constant_matches[1] = preg_grep("/$ignore_constants_preg/u", $constant_matches[1], PREG_GREP_INVERT);
-                }
-
-                if (sizeof($constant_matches[1]) > 0) {
-
-                    if (!isset($include_files_constants_array[$file])) {
-                        $include_files_constants_array[$file] = array();
-                    }
-
-                    foreach ($constant_matches[1] as $constant_match) {
-                        $include_files_constants_array[$file][] = $constant_match;
-                    }
-                }
-            }
+        if (!isset($path_info_array['extension']) || ($path_info_array['extension'] != 'php')) {
+            continue;
         }
+
+        $source_files_array["$include_file_dir/$filename"] = $filename;
+    }
+}
+
+if (isset($_SERVER['argv'][1])) {
+
+    if (!file_exists($_SERVER['argv'][1]) || !is_readable($_SERVER['argv'][1])) {
+
+        echo "File '{$_SERVER['argv'][1]} does not exist or is not readable.\n\n";
+        exit;
+    }
+
+    $update_files_array[$_SERVER['argv'][1]] = basename($_SERVER['argv'][1]);
+
+} else {
+
+    $update_files_array = $source_files_array;
+}
+
+ksort($update_files_array);
+
+echo "Getting list of functions...\n";
+
+foreach ($source_files_array as $source_file => $filename) {
+
+    $source_file_contents = file_get_contents($source_file);
+
+    $function_matches = array();
+
+    $constant_matches = array();
+
+    if (!preg_match_all('/^function\s+([^\(]+)\(/imu', $source_file_contents, $function_matches)) {
+        continue;
+    }
+
+    if (sizeof($function_matches[1]) == 0) {
+        continue;
+    }
+
+    if (!isset($include_files_functions_array[$filename])) {
+        $include_files_functions_array[$filename] = array();
+    }
+
+    foreach ($function_matches[1] as $function_match) {
+
+        $include_files_functions_array[$filename][] = sprintf(
+            '/%s\s*\(/mu',
+            preg_quote($function_match)
+        );
     }
 }
 
 ksort($include_files_functions_array);
 
-sort($source_files_array);
+echo "Updating files...\n\n";
 
-echo "Checking files...\n\n";
+foreach ($update_files_array as $source_file => $filename) {
 
-foreach ($source_files_array as $source_file) {
+    echo "Updating ", $source_file, "...\n";
 
-    echo "Checking ", $source_file, "...\n";
+    $source_file_contents = preg_replace(
+        '/\/\/ Required includes.*\/\/ End Required includes/su',
+        "// Required includes\n// End Required includes",
+        file_get_contents($source_file)
+    );
 
-    $source_file_contents = file_get_contents($source_file);
+    $include_files_required_array = array(
+        'constants.inc.php' => "require_once BH_INCLUDE_PATH. 'constants.inc.php'",
+    );
 
     foreach ($include_files_functions_array as $include_file => $function_names_array) {
 
-        if ($include_file !== basename($source_file) && !in_array($include_file, $ignore_files_array)) {
-
-            $include_file_line = "require_once BH_INCLUDE_PATH. '$include_file'";
-
-            $include_file_line_preg = preg_quote($include_file_line, "/");
-
-            if (preg_match("/$include_file_line_preg/imu", $source_file_contents) > 0) {
-                continue;
-            }
-
-            foreach ($function_names_array as $function_name_preg) {
-
-                if (preg_match_all($function_name_preg, $source_file_contents) > 0) {
-                    $include_files_required_array[$source_file][$include_file] = $include_file_line;
-                }
-            }
+        if ($include_file == $filename) {
+            continue;
         }
-    }
 
-    foreach ($include_files_constants_array as $include_file => $constant_names_array) {
-
-        if ($include_file !== basename($source_file) && !in_array($include_file, $ignore_files_array)) {
-
-            $include_file_line = "require_once BH_INCLUDE_PATH. '$include_file'";
-
-            $include_file_line_preg = preg_quote($include_file_line, "/");
-
-            if (preg_match("/$include_file_line_preg/mu", $source_file_contents) > 0) {
-                continue;
-            }
-
-            $constant_names_preg = implode("|", array_map('preg_quote_callback', $constant_names_array));
-
-            if (preg_match("/{$constant_names_preg}/u", $source_file_contents) > 0) {
-                $include_files_required_array[$source_file][$include_file] = $include_file_line;
-            }
-        }
-    }
-
-    break;
-}
-
-echo "Found ", sizeof($include_files_required_array), " missing requires.\n\n";
-
-ksort($include_files_required_array);
-
-if (sizeof($include_files_required_array) > 0) {
-
-    foreach ($include_files_required_array as $source_file => $required_include_files) {
-
-        ksort($required_include_files);
-
-        $required_includes_lines = sprintf(
-            "// Required includes\n%s;\n// End Required includes\n\n",
-            implode(";\n", $required_include_files)
+        $include_file_line = sprintf(
+            "require_once BH_INCLUDE_PATH. '%s'",
+            $include_file
         );
 
-        $source_file_contents = file_get_contents($source_file);
+        $include_file_line_preg = sprintf(
+            "/%s/mu",
+            preg_quote($include_file_line)
+        );
 
-        $source_file_contents = preg_replace("/\/\/ Required includes\n.*\/\/ End Required includes\n\n/mu", $required_includes_lines, $source_file_contents);
+        if (preg_match($include_file_line_preg, $source_file_contents) > 0) {
+            continue;
+        }
 
-        file_put_contents($source_file, $source_file_contents, FILE_TEXT);
+        foreach ($function_names_array as $function_name_preg) {
+
+            if (preg_match_all($function_name_preg, $source_file_contents) > 0) {
+                $include_files_required_array[$include_file] = $include_file_line;
+            }
+        }
     }
+
+    ksort($include_files_required_array);
+
+    $required_includes_lines = sprintf(
+        "// Required includes\n%s;\n// End Required includes",
+        implode(";\n", $include_files_required_array)
+    );
+
+    file_put_contents(
+        $source_file,
+        preg_replace(
+            '/\/\/ Required includes.*\/\/ End Required includes/su',
+            $required_includes_lines,
+            $source_file_contents
+        )
+    );
 }
 
 ?>

@@ -22,7 +22,13 @@ USA
 ======================================================================*/
 
 // Required includes
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'server.inc.php';
 // End Required includes
+
+// Include Swift Mailer
+require_once BH_INCLUDE_PATH. 'swift/swift_required.php';
 
 // Swift Mailer Transport Factory
 abstract class Swift_TransportFactory

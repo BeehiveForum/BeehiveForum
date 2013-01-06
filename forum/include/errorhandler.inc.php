@@ -22,6 +22,13 @@ USA
 ======================================================================*/
 
 // Required includes
+require_once BH_INCLUDE_PATH. 'cache.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'install.inc.php';
+require_once BH_INCLUDE_PATH. 'server.inc.php';
 // End Required includes
 
 class Error extends Exception
@@ -322,7 +329,7 @@ function bh_error_process(Exception $exception)
 
     $error_msg_array[] =  $_SERVER['PHP_SELF'];
 
-    if (isset($_GET) && sizeof($_GET) > 0) {
+    if (isset($_GET)) {
 
         $error_msg_array[] = '<p><b>$_GET:</b></p>';
 
@@ -331,7 +338,7 @@ function bh_error_process(Exception $exception)
         $error_msg_array[] = sprintf('<pre>%s</pre>', $get_vars);
     }
 
-    if (isset($_POST) && sizeof($_POST) > 0) {
+    if (isset($_POST)) {
 
         $error_msg_array[] = '<p><b>$_POST:</b></p>';
 
@@ -340,7 +347,7 @@ function bh_error_process(Exception $exception)
         $error_msg_array[] = sprintf('<pre>%s</pre>', $post_vars);
     }
 
-    if (isset($_COOKIE) && sizeof($_COOKIE) > 0) {
+    if (isset($_COOKIE)) {
 
         $error_msg_array[] = '<p><b>$_COOKIE:</b></p>';
 
@@ -349,16 +356,16 @@ function bh_error_process(Exception $exception)
         $error_msg_array[] = sprintf('<pre>%s</pre>', $cookie_vars);
     }
 
-    if (isset($_SESSION) && sizeof($_SESSION) > 0) {
+    if (isset($_SESSION)) {
 
-        $error_msg_array[] = '<p><b>$_COOKIE:</b></p>';
+        $error_msg_array[] = '<p><b>$_SESSION:</b></p>';
 
         $session_vars = htmlentities_array(print_r($_SESSION, true));
 
         $error_msg_array[] = sprintf('<pre>%s</pre>', $session_vars);
     }
 
-    if (isset($_ENV) && sizeof($_ENV) > 0) {
+    if (isset($_ENV)) {
 
         $error_msg_array[] = '<p><b>$_ENV:</b></p>';
 
@@ -367,7 +374,7 @@ function bh_error_process(Exception $exception)
         $error_msg_array[] = sprintf('<pre>%s</pre>', $environment_vars);
     }
 
-    if (isset($_SERVER) && sizeof($_SERVER) > 0) {
+    if (isset($_SERVER)) {
 
         $error_msg_array[] = '<p><b>$_SERVER:</b></p>';
 

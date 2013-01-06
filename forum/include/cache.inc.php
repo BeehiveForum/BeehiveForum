@@ -22,6 +22,14 @@ USA
 ======================================================================*/
 
 // Required includes
+require_once BH_INCLUDE_PATH. 'browser.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'db.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'server.inc.php';
 // End Required includes
 
 function cache_disable()
@@ -351,13 +359,13 @@ function cache_check_request_throttle($amount)
 
     $request = get_request_uri();
 
-    if (isset($_SESSION['throttle'][$request]) && ($_SESSION['throttle'][$request] > time())) {
-        $throttle_timestamp = $_SESSION['throttle'][$request];
+    if (isset($_SESSION['THROTTLE'][$request]) && ($_SESSION['THROTTLE'][$request] > time())) {
+        $throttle_timestamp = $_SESSION['THROTTLE'][$request];
     } else {
         $throttle_timestamp = time() + $amount;
     }
 
-    $_SESSION['throttle'][$request] = $throttle_timestamp;
+    $_SESSION['THROTTLE'][$request] = $throttle_timestamp;
 
     header(sprintf('Cache-Control: max-age=%s', $amount));
     header(sprintf('Expires: %s GMT', gmdate('D, d M Y H:i:s', time() + $amount)));

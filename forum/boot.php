@@ -40,6 +40,9 @@ date_default_timezone_set('UTC');
 // Set default character set
 header('Content-type: text/html; charset=UTF-8');
 
+// Constants
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+
 // Enable the error handler
 require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
 
@@ -98,6 +101,13 @@ cache_disable_proxy();
 check_install();
 
 // Required includes
+require_once BH_INCLUDE_PATH. 'banned.inc.php';
+require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH. 'session.inc.php';
 // End Required includes
 
 // Initialise the session

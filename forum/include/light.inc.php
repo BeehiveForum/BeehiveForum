@@ -765,7 +765,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
             echo "  <h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder_number\">", word_filter_add_ob_tags($folder_info[$folder_number]['TITLE'], true), "</a></h3>";
             echo "  <div class=\"folder_inner\">\n";
 
-            if ((!session::logged_in()) || ($folder_info[$folder_number]['INTEREST'] > FOLDER_IGNORED) || ($mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($selected_folder) && $selected_folder == $folder_number)) {
+            if ((!session::logged_in()) || ($folder_info[$folder_number]['INTEREST'] > FOLDER_IGNORED) || ($mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($folder) && $folder == $folder_number)) {
 
                 if (is_array($thread_info)) {
 

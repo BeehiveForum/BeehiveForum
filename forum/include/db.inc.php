@@ -59,7 +59,7 @@ class db extends mysqli
                 throw new Exception('Could not change MySQL time-zone. Check your MySQL user credentials');
             }
 
-            if (isset($config['mysql_big_selects']) && ($config['mysql_big_selects'] === true)) {
+            if (isset(self::$config['mysql_big_selects']) && (self::$config['mysql_big_selects'] === true)) {
 
                 if (!$db->enable_compat_mode()) {
                     throw new Exception('Could not change MYSQL compatbility options. Check your MySQL user permissions.');

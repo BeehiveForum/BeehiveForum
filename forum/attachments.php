@@ -56,6 +56,10 @@ $attachment_details = null;
 
 $valid = true;
 
+$content = null;
+
+$content_type = 'text/html; charset=UTF-8';
+
 $file_hash = md5(uniqid(mt_rand()));
 
 $max_user_attachment_space = forum_get_setting('attachments_max_user_space', 'is_numeric', 1048576);
@@ -67,8 +71,6 @@ $attachment_mime_types = attachments_get_mime_types();
 $total_attachment_size = 0;
 
 $attachment_dir = rtrim($attachment_dir, '/');
-
-header('Content-type: application/json; charset=UTF-8');
 
 if (isset($_POST['summary'])) {
 
@@ -82,7 +84,9 @@ if (isset($_POST['summary'])) {
 
     $free_post_space = attachments_get_free_post_space($_SESSION['UID'], $hash_array);
 
-    echo json_encode(
+    $content_type = 'application/json; charset=UTF-8';
+
+    $content = json_encode(
         array(
             'used_post_space' => $used_post_space,
             'free_post_space' => ($free_post_space > -1) ? format_file_size($free_post_space) : gettext("Unlimited"),
@@ -90,10 +94,7 @@ if (isset($_POST['summary'])) {
         )
     );
 
-    exit;
-}
-
-if (isset($_POST['delete'])) {
+} else if (isset($_POST['delete'])) {
 
     $valid = true;
 
@@ -108,7 +109,9 @@ if (isset($_POST['delete'])) {
         }
     }
 
-    echo json_encode($valid);
+    $content_type = 'application/json; charset=UTF-8';
+
+    $content = json_encode($valid);
 
 } else {
 
@@ -123,7 +126,7 @@ if (isset($_POST['delete'])) {
                 if (isset($_FILES['upload']['error'][$i]) && $_FILES['upload']['error'][$i] != UPLOAD_ERR_OK) {
 
                     $valid = false;
-                    $error = gettext('Upload failed1');
+                    $error = gettext('Upload had errors');
 
                 } else {
 
@@ -141,13 +144,15 @@ if (isset($_POST['delete'])) {
 
                         $valid = false;
 
-                        $error = gettext('Upload failed2');
+                        $error = gettext('Failed to move uploaded file.');
                     }
                 }
             }
         }
 
     } else if (isset($_GET['upload']) && is_array($_GET['upload'])) {
+
+        $content_type = 'application/json; charset=UTF-8';
 
         $file_name = trim(array_shift($_GET['upload']));
 
@@ -222,12 +227,16 @@ if (isset($_POST['delete'])) {
         }
     }
 
-    echo json_encode(array(
+    $content = json_encode(array(
         'error' => $error,
         'attachment' => $attachment_details,
         'preventRetry' => true,
         'success' => $valid,
     ));
 }
+
+header(sprintf('Content-type: %s', $content_type));
+
+echo $content;
 
 ?>

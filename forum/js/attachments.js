@@ -45,17 +45,23 @@ $(beehive).bind('init', function() {
 
         var $attachments = $(this);
 
+        var $buttons = $attachments.find('.buttons');
+
         var $attachment_list = $attachments.find('ul');
-
-        var $upload_button = $('<a class="button upload">').text(beehive.lang['upload']);
-
-        var $delete_button = $('<a class="button delete" style="display: none">').text(beehive.lang['delete']);
 
         var $used_post_space = $attachments.find('span.used_post_space');
 
         var $free_post_space = $attachments.find('span.free_post_space');
 
         var $free_upload_space = $attachments.find('span.free_upload_space');
+
+        $buttons.append($('<a class="button upload">' + beehive.lang['upload'] + '</a>')).append('&nbsp;');
+
+        $buttons.append($('<a class="button delete" style="display: none">' + beehive.lang['delete'] + '</a>'));
+
+        var $upload_button = $buttons.find('a.button.upload');
+
+        var $delete_button = $buttons.find('a.button.delete');
 
         var refresh_summary = function() {
 
@@ -80,8 +86,6 @@ $(beehive).bind('init', function() {
                 }
             });
         };
-
-        $attachments.find('.buttons').append($upload_button).append('&nbsp;').append($delete_button);
 
         if ($attachments.find('li.attachment input:checkbox:checked').length > 0) {
             $delete_button.show();

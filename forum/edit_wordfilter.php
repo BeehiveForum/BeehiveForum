@@ -33,6 +33,7 @@ require_once BH_INCLUDE_PATH. 'header.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly

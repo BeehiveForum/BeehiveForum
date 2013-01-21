@@ -26,6 +26,7 @@ require_once 'boot.php';
 
 // Required includes
 require_once BH_INCLUDE_PATH. 'admin.inc.php';
+require_once BH_INCLUDE_PATH. 'adsense.inc.php';
 require_once BH_INCLUDE_PATH. 'attachments.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
@@ -35,6 +36,7 @@ require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'forum.inc.php';
 require_once BH_INCLUDE_PATH. 'header.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'pm.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'sitemap.inc.php';
 require_once BH_INCLUDE_PATH. 'sphinx.inc.php';
@@ -100,7 +102,8 @@ $adsense_page_type_array = array(
 $mail_functions_array = array(
     MAIL_FUNCTION_PHP => gettext("Use PHP mail function"),
     MAIL_FUNCTION_SMTP => gettext("Use SMTP Server"),
-    MAIL_FUNCTION_SENDMAIL => gettext("Use Sendmail")
+    MAIL_FUNCTION_SENDMAIL => gettext("Use Sendmail"),
+    MAIL_FUNCTION_NONE => gettext("Do not send email"),
 );
 
 // Array of valid attachment thumbnail methods.

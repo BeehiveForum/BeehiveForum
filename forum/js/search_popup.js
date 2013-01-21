@@ -64,13 +64,19 @@ $(beehive).bind('init', function() {
 
                 'source': function(request, response) {
 
+                    var term = request.term;
+
+                    if ($search_input.hasClass('multiple')) {
+                        term = term.split(/,\s*/).pop();
+                    }
+
                     $.ajax({
                         'cache' : false,
                         'data' : {
                             'webtag' : beehive.webtag,
                             'ajax' : true,
                             'action' : 'user_autocomplete',
-                            'term' : request.term
+                            'term' : term
                         },
                         'url' : beehive.forum_path + '/ajax.php',
                         'success': function(data) {
@@ -86,6 +92,29 @@ $(beehive).bind('init', function() {
                 },
                 'open': function(){
                     $('.ui-autocomplete').width($search_input.width() + 30);
+                },
+                'focus': function() {
+                    return false;
+                },
+                'select': function(event, ui) {
+
+                    if (!$search_input.hasClass('multiple')) {
+
+                        this.value = ui.item.value;
+                        return false;
+                    }
+
+                    var terms = this.value.split(/,\s*/);
+
+                    terms.pop();
+
+                    terms.push(ui.item.value);
+
+                    terms.push('');
+
+                    this.value = terms.join(', ');
+
+                    return false;
                 }
             });
         }

@@ -23,28 +23,23 @@ $(beehive).bind('init', function() {
 
     $('select#mail_function').bind('change', function() {
 
+        $('#smtp_settings').hide();
+        $('#sendmail_settings').hide();
+
         switch($(this).val()) {
-
-            case "0":
-
-                $('#smtp_settings').hide();
-                $('#sendmail_settings').hide();
-                break;
 
             case "1":
 
                 $('#smtp_settings').show();
-                $('#sendmail_settings').hide();
                 break;
 
             case "2":
 
-                $('#smtp_settings').hide();
                 $('#sendmail_settings').show();
                 break;
         }
     });
-    
+
     $('#forum_created,#forum_updated,#forum_removed').each(function() {
         beehive.reload_frame(top.document, beehive.frames.fnav);
     });

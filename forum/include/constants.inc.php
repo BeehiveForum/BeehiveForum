@@ -562,6 +562,7 @@ define('ADSENSE_DISPLAY_AFTER_RANDOM_MSG', 6);
 define('MAIL_FUNCTION_PHP', 0);
 define('MAIL_FUNCTION_SMTP', 1);
 define('MAIL_FUNCTION_SENDMAIL', 2);
+define('MAIL_FUNCTION_NONE', 3);
 
 // Browser detection
 define('BROWSER_UNKNOWN', 0);

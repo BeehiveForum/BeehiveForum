@@ -34,7 +34,7 @@ $source_files_array = array();
 
 $update_files_array = array();
 
-$include_files_functions_array = array(
+/*$include_files_functions_array = array(
     'db.inc.php' => array(
         '/db::[^\(]+\(/imu',
     ),
@@ -69,7 +69,7 @@ $include_files_functions_array = array(
     'text_captcha.inc.php' => array(
         '/new captcha\s*\(/imu',
     ),
-);
+);*/
 
 $source_files_dir_array = array(
     'forum',
@@ -125,24 +125,34 @@ foreach ($source_files_array as $source_file => $filename) {
 
     $constant_matches = array();
 
-    if (!preg_match_all('/^function\s+([^\(]+)\(/imu', $source_file_contents, $function_matches)) {
-        continue;
+    if (preg_match_all('/^function\s+([^\(]+)\(/imu', $source_file_contents, $function_matches)) {
+
+        if (!isset($include_files_functions_array[$filename])) {
+            $include_files_functions_array[$filename] = array();
+        }
+
+        foreach ($function_matches[1] as $function_match) {
+
+            $include_files_functions_array[$filename][] = sprintf(
+                '/(%1$s\s*\(|["|\']%1$s["|\'])/mu',
+                preg_quote($function_match)
+            );
+        }
     }
 
-    if (sizeof($function_matches[1]) == 0) {
-        continue;
-    }
+    if (preg_match_all('/^(abstract\s*)?class\s*([A-Z_\x7f-\xff][A-Z0-9_\x7f-\xff]*)/imu', $source_file_contents, $class_matches)) {
 
-    if (!isset($include_files_functions_array[$filename])) {
-        $include_files_functions_array[$filename] = array();
-    }
+        if (!isset($include_files_functions_array[$filename])) {
+            $include_files_functions_array[$filename] = array();
+        }
 
-    foreach ($function_matches[1] as $function_match) {
+        foreach ($class_matches[2] as $class_match) {
 
-        $include_files_functions_array[$filename][] = sprintf(
-            '/%s\s*\(/mu',
-            preg_quote($function_match)
-        );
+            $include_files_functions_array[$filename][] = sprintf(
+                '/(new %1$s\s*\(|%1$s::[^\(]+)/mu',
+                preg_quote($class_match)
+            );
+        }
     }
 }
 

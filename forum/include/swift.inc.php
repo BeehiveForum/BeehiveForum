@@ -35,11 +35,15 @@ abstract class Swift_TransportFactory
 {
     public static function get()
     {
-        $mail_function = forum_get_global_setting('mail_function', false, MAIL_FUNCTION_PHP);
+        $mail_function = forum_get_global_setting('mail_function', null, MAIL_FUNCTION_PHP);
+
+        if ($mail_function == MAIL_FUNCTION_NONE) {
+            return Swift_NullTransport::newInstance();
+        }
 
         if (($mail_function == MAIL_FUNCTION_SMTP) && ($smtp_server = forum_get_global_setting('smtp_server'))) {
 
-            $smtp_port = forum_get_global_setting('smtp_port', false, '25');
+            $smtp_port = forum_get_global_setting('smtp_port', null, '25');
 
             $transport = Swift_SmtpTransportSingleton::getInstance($smtp_server, $smtp_port);
 
@@ -154,7 +158,7 @@ class Swift_MessageBeehive extends Swift_Message
         $forum_email = forum_get_setting('forum_noreply_email', null, 'noreply@beehiveforum.co.uk');
 
         // Mail function we're using.
-        $mail_function = forum_get_global_setting('mail_function', false, MAIL_FUNCTION_PHP);
+        $mail_function = forum_get_global_setting('mail_function', null, MAIL_FUNCTION_PHP);
 
         // Get the Swift Headers set
         $headers = $this->getHeaders();
@@ -168,8 +172,8 @@ class Swift_MessageBeehive extends Swift_Message
         // Add header to identify Swift version
         $headers->addTextHeader('X-Swift-Mailer', 'Swift Mailer '. Swift::VERSION);
 
-        // Add header to identify mail function
-        $headers->addTextHeader('X-Swift-Transport', $mail_function);
+        // Add header to identify mail function used
+        $headers->addTextHeader('X-Beehive-Mail-Function', $mail_function);
 
         // Set the Message From Header
         $this->setFrom($forum_email, $forum_name);

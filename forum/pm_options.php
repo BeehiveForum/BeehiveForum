@@ -30,6 +30,7 @@ require_once BH_INCLUDE_PATH. 'form.inc.php';
 require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'header.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH. 'pm.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
 // End Required includes

@@ -34,6 +34,7 @@ require_once BH_INCLUDE_PATH. 'html.inc.php';
 require_once BH_INCLUDE_PATH. 'pm.inc.php';
 require_once BH_INCLUDE_PATH. 'search.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH. 'user_profile.inc.php';
 require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 // End Required includes
 

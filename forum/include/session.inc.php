@@ -38,6 +38,14 @@ abstract class session
     {
         session::$db = db::get(true);
 
+        if (!ini_get('session.gc_probability')) {
+            ini_set('session.gc_probability', 1);
+        }
+
+        if (!ini_get('session.gc_divisor')) {
+            ini_set('session.gc_divisor', 100);
+        }
+
         session_set_save_handler(
             array('session', 'open'),
             array('session', 'close'),

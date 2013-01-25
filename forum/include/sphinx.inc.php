@@ -186,14 +186,12 @@ function sphinx_search_execute($search_arguments, &$error)
     // with the Sphinx weight as our relevance.
     while (($search_result = $result->fetch_assoc()) !== null) {
 
-        $sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, ";
-        $sql.= "RELEVANCE) SELECT '{$_SESSION['UID']}' AS UID, '$forum_fid' AS FORUM, FOLDER.FID, THREAD.TID, POST.PID, THREAD.BY_UID, ";
-        $sql.= "POST.FROM_UID, POST.TO_UID, POST.CREATED, THREAD.LENGTH, {$search_result['weight']} AS RELEVANCE ";
-        $sql.= "FROM `{$table_prefix}POST` POST INNER JOIN `{$table_prefix}THREAD` ";
-        $sql.= "THREAD ON (THREAD.TID = POST.TID) INNER JOIN `{$table_prefix}FOLDER` FOLDER ";
-        $sql.= "ON (FOLDER.FID = THREAD.FID) WHERE THREAD.TID = '{$search_result['tid']}' ";
-        $sql.= "AND POST.PID = '{$search_result['pid']}' AND THREAD.LENGTH > 0 ";
-        $sql.= "AND THREAD.DELETED = 'N'";
+        $sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, TID, PID, RELEVANCE) ";
+        $sql.= "SELECT '{$_SESSION['UID']}' AS UID, '$forum_fid' AS FORUM, THREAD.TID, POST.PID ";
+        $sql.= "{$search_result['weight']} AS RELEVANCE FROM `{$table_prefix}POST` ";
+        $sql.= "POST INNER JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
+        $sql.= "WHERE THREAD.TID = '{$search_result['tid']}' AND POST.PID = '{$search_result['pid']}' ";
+        $sql.= "AND THREAD.LENGTH > 0 AND THREAD.DELETED = 'N'";
 
         if (!$db->query($sql)) return false;
     }

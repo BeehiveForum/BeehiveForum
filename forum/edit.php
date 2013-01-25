@@ -198,12 +198,6 @@ if ($valid && isset($_POST['preview'])) {
             $edit_message['CONTENT'].= "<div class=\"sig\">$t_sig</div>";
         }
 
-        if ($edit_message['TO_UID'] == 0) {
-
-            $edit_message['TLOGON'] = gettext("ALL");
-            $edit_message['TNICK'] = gettext("ALL");
-        }
-
         $edit_message['ATTACHMENTS'] = $attachments;
     }
 
@@ -377,20 +371,22 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>", gettext("To"), "</h2></td>\n";
 echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\">";
 
-if ($edit_message['TO_UID'] > 0) {
+if (isset($edit_message['RECIPIENTS']) && sizeof($edit_message['RECIPIENTS']) > 0) {
 
-    echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$edit_message['TO_UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($edit_message['TLOGON'], $edit_message['TNICK']), true), "</a>\n";
+    foreach ($edit_message['RECIPIENTS'] as $recipient) {
+
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$recipient['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($recipient['LOGON'], $recipient['NICKNAME']), true), "</a></td>\n";
+        echo "                      </tr>\n";
+    }
 
 } else {
 
-    echo word_filter_add_ob_tags(format_user_name($edit_message['TLOGON'], $edit_message['TNICK']), true);
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\">", gettext("ALL"), "</td>\n";
+    echo "                      </tr>\n";
 }
-
-echo "                        </td>\n";
-echo "                      </tr>\n";
 
 if (isset($_SESSION['EMOTICONS']) && strlen(trim($_SESSION['EMOTICONS'])) > 0) {
     $user_emoticon_pack = $_SESSION['EMOTICONS'];

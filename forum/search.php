@@ -60,6 +60,8 @@ if (isset($_GET['sort_by'])) {
         $sort_by = SEARCH_SORT_FOLDER_NAME;
     } else if ($_GET['sort_by'] == SEARCH_SORT_AUTHOR_NAME) {
         $sort_by = SEARCH_SORT_AUTHOR_NAME;
+    } else if ($_GET['sort_by'] == SEARCH_SORT_RELEVANCE) {
+        $sort_by = SEARCH_SORT_RELEVANCE;
     } else {
         $sort_by = SEARCH_SORT_CREATED;
     }

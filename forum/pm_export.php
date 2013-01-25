@@ -101,12 +101,6 @@ if (isset($_POST['export'])) {
         $options_array['PM_EXPORT_ATTACHMENTS'] = "N";
     }
 
-    if (isset($_POST['pm_export_style']) && $_POST['pm_export_style'] == "Y") {
-        $options_array['PM_EXPORT_STYLE'] = "Y";
-    } else {
-        $options_array['PM_EXPORT_STYLE'] = "N";
-    }
-
     if (isset($_POST['pm_export_wordfilter']) && $_POST['pm_export_wordfilter'] == "Y") {
         $options_array['PM_EXPORT_WORDFILTER'] = "Y";
     } else {
@@ -198,7 +192,7 @@ echo "                  <td align=\"left\" rowspan=\"7\" width=\"1%\">&nbsp;</td
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">", gettext("Export as type"), ":</td>\n";
-echo "                  <td align=\"left\">", form_dropdown_array("pm_export_type", array(gettext("HTML"), gettext("XML"), gettext("CSV")), (isset($user_prefs['PM_EXPORT_TYPE']) && is_numeric($user_prefs['PM_EXPORT_TYPE'])) ? $user_prefs['PM_EXPORT_TYPE'] : 0), "</td>\n";
+echo "                  <td align=\"left\">", form_dropdown_array("pm_export_type", array(gettext("HTML"), gettext("XML")), (isset($user_prefs['PM_EXPORT_TYPE']) && is_numeric($user_prefs['PM_EXPORT_TYPE'])) ? $user_prefs['PM_EXPORT_TYPE'] : 0), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" width=\"250\" style=\"white-space: nowrap\">", gettext("Export messages as"), ":</td>\n";
@@ -206,9 +200,6 @@ echo "                  <td align=\"left\">", form_dropdown_array("pm_export_fil
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_attachments", "Y", gettext("Export attachments"), (isset($user_prefs['PM_EXPORT_ATTACHMENTS']) && $user_prefs['PM_EXPORT_ATTACHMENTS'] == "Y") ? true : false), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_style", "Y", gettext("Include forum style sheet"), (isset($user_prefs['PM_EXPORT_STYLE']) && $user_prefs['PM_EXPORT_STYLE'] == "Y") ? true : false), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_wordfilter", "Y", gettext("Apply word filter to messages"), (isset($user_prefs['PM_EXPORT_WORDFILTER']) && $user_prefs['PM_EXPORT_WORDFILTER'] == "Y") ? true : false), "</td>\n";

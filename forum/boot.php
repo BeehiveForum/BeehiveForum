@@ -49,14 +49,14 @@ require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
 // Set the error reporting level to report all errors
 error_reporting(E_ALL | E_STRICT);
 
-// Register shutdown function to check for uncaught errors
-register_shutdown_function('bh_shutdown_handler');
+// Enable the error handler
+set_error_handler('bh_error_handler');
+
+// Attempt to handle fatal errors
+register_shutdown_function('bh_fatal_error_handler');
 
 // Enable the exception handler
 set_exception_handler('bh_exception_handler');
-
-// Enable the error handler
-set_error_handler('bh_error_handler');
 
 // Don't output errors to the browser
 ini_set('display_errors', '0');

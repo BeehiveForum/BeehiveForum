@@ -1022,28 +1022,24 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POST` (";
-        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "  REPLY_TO_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
         $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  VIEWED DATETIME DEFAULT NULL,";
         $sql.= "  CREATED DATETIME DEFAULT NULL,";
-        $sql.= "  STATUS TINYINT(4) DEFAULT '0',";
         $sql.= "  APPROVED DATETIME DEFAULT NULL,";
-        $sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
         $sql.= "  EDITED DATETIME DEFAULT NULL,";
-        $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
+        $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
         $sql.= "  IPADDRESS VARCHAR(255) DEFAULT NULL,";
         $sql.= "  MOVED_TID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
         $sql.= "  MOVED_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  PRIMARY KEY  (TID,PID),";
-        $sql.= "  KEY TO_UID (TO_UID),";
+        $sql.= "  PRIMARY KEY (TID,PID),";
         $sql.= "  KEY FROM_UID (FROM_UID),";
-        $sql.= "  KEY IPADDRESS (IPADDRESS, FROM_UID),";
+        $sql.= "  KEY IPADDRESS (IPADDRESS,FROM_UID),";
         $sql.= "  KEY APPROVED (APPROVED),";
         $sql.= "  KEY CREATED (CREATED)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
         if (!($result = $db->query($sql))) {
             throw new Exception('Failed to create table POST');
@@ -1061,6 +1057,18 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             throw new Exception('Failed to create table POST_CONTENT');
         }
 
+        $sql = "CREATE TABLE `{$forum_table_prefix}POST_RECIPIENT` (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  VIEWED DATETIME DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY (TID,PID,TO_UID)";
+        $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+
+        if (!@$db->query($sql)) {
+            throw new Exception('Failed to create table POST_RECIPIENT');
+        }
+
         $sql = "CREATE TABLE `{$forum_table_prefix}POST_SEARCH_ID` (";
         $sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -1070,7 +1078,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table POST_CONTENT');
+            throw new Exception('Failed to create table POST_SEARCH_ID');
         }
 
         $sql = "CREATE TABLE `{$forum_table_prefix}PROFILE_ITEM` (";
@@ -1450,10 +1458,10 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         // Create the first post in the thread. Make it appear to be from
         // the Owner UID.
-        $sql = "INSERT INTO `{$forum_table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, TO_UID, VIEWED, ";
-        $sql.= "CREATED, STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) ";
-        $sql.= "VALUES ('$new_tid', 0, '$owner_uid', 0, NULL, CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "0, CAST('$current_datetime' AS DATETIME), '$owner_uid', NULL, 0, '')";
+        $sql = "INSERT INTO `{$forum_table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, ";
+        $sql.= "CREATED, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) ";
+        $sql.= "VALUES ('$new_tid', 0, $owner_uid, CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "CAST('$current_datetime' AS DATETIME), '$owner_uid', NULL, NULL, NULL)";
 
         if (!@$db->query($sql)) {
             throw new Exception('Failed to create first post');
@@ -1651,9 +1659,11 @@ function forum_delete_tables($webtag, $database_name)
         'LINKS_FOLDERS',
         'LINKS_VOTE',
         'POLL',
+        'POLL_QUESTIONS',
         'POLL_VOTES',
         'POST',
         'POST_CONTENT',
+        'POST_RECIPIENT',
         'POST_SEARCH_ID',
         'PROFILE_ITEM',
         'PROFILE_SECTION',
@@ -1963,7 +1973,10 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
         $sql.= "FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
         $sql.= "LEFT JOIN `{$forum_data['PREFIX']}POST` POST ";
         $sql.= "ON (POST.TID = THREAD.TID) WHERE THREAD.FID IN ($folders) ";
-        $sql.= "AND POST.TO_UID = '{$_SESSION['UID']}' AND POST.VIEWED IS NULL ";
+        $sql.= "LEFT JOIN `{$table_prefix}POST_RECIPIENT` POST_RECIPIENT ";
+        $sql.= "ON (POST_RECIPIENT.TID = POST.TID AND POST_RECIPIENT.PID = POST.PID) ";
+        $sql.= "AND POST_RECIPIENT.TO_UID = '{$_SESSION['UID']}' ";
+        $sql.= "AND POST_RECIPIENT.VIEWED IS NULL ";
 
         if (!($result_unread_to_me = $db->query($sql))) return false;
 

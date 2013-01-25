@@ -44,47 +44,61 @@ require_once BH_INCLUDE_PATH. 'thread.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
 // End Required includes
 
-// Check we're logged in correctly
 if (!session::logged_in()) {
     light_html_guest_error();
 }
 
-// Check that PM system is enabled
 pm_enabled();
 
-// Get the user's post page preferences.
 $page_prefs = session::get_post_page_prefs();
 
-// Prune old messages for the current user
 pm_user_prune_folders($_SESSION['UID']);
 
-// Get the Message ID (MID) if any.
+$reply_mid = null;
+
+$forward_mid = null;
+
+$edit_mid = null;
+
+$reply_all = false;
+
 if (isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
 
-    $t_reply_mid = $_GET['replyto'];
+    $reply_mid = $_GET['replyto'];
 
 } else if (isset($_POST['replyto']) && is_numeric($_POST['replyto'])) {
 
-    $t_reply_mid = $_POST['replyto'];
+    $reply_mid = $_POST['replyto'];
+
+} else if (isset($_GET['replyall']) && is_numeric($_GET['replyall'])) {
+
+    $reply_mid = $_GET['replyall'];
+
+    $reply_all = true;
+
+} else if (isset($_POST['replyall']) && is_numeric($_POST['replyall'])) {
+
+    $reply_mid = $_POST['replyall'];
+
+    $reply_all = true;
 
 } else if (isset($_GET['fwdmsg']) && is_numeric($_GET['fwdmsg'])) {
 
-    $t_forward_mid = $_GET['fwdmsg'];
+    $forward_mid = $_GET['fwdmsg'];
 
 } else if (isset($_POST['fwdmsg']) && is_numeric($_POST['fwdmsg'])) {
 
-    $t_forward_mid = $_POST['fwdmsg'];
+    $forward_mid = $_POST['fwdmsg'];
 
 } else if (isset($_GET['editmsg']) && is_numeric($_GET['editmsg'])) {
 
-    $t_edit_mid = $_GET['editmsg'];
+    $edit_mid = $_GET['editmsg'];
 
 } else if (isset($_POST['editmsg']) && is_numeric($_POST['editmsg'])) {
 
-    $t_edit_mid = $_POST['editmsg'];
+    $edit_mid = $_POST['editmsg'];
 }
 
-// Get the tid.pid if any.
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     list($tid, $pid) = explode('.', $_GET['msg']);
@@ -100,65 +114,35 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
                 $thread_title = mb_substr($thread_title, 0, (55 - mb_strlen($thread_index))). '...';
             }
 
-            $t_subject = "RE:$thread_title $thread_index";
+            $subject = "RE:$thread_title $thread_index";
         }
     }
 }
 
-// Default Folder
-$folder = PM_FOLDER_INBOX;
-
-if (isset($_GET['folder'])) {
-
-    if ($_GET['folder'] == PM_FOLDER_SENT) {
-        $folder = PM_FOLDER_SENT;
-    } else if ($_GET['folder'] == PM_FOLDER_OUTBOX) {
-        $folder = PM_FOLDER_OUTBOX;
-    } else if ($_GET['folder'] == PM_FOLDER_SAVED) {
-        $folder = PM_FOLDER_SAVED;
-    }
-
-} else if (isset($_POST['folder'])) {
-
-    if ($_POST['folder'] == PM_FOLDER_SENT) {
-        $folder = PM_FOLDER_SENT;
-    } else if ($_POST['folder'] == PM_FOLDER_OUTBOX) {
-        $folder = PM_FOLDER_OUTBOX;
-    } else if ($_POST['folder'] == PM_FOLDER_SAVED) {
-        $folder = PM_FOLDER_SAVED;
-    }
-}
-
-// Assume everything is correct (form input, etc)
 $valid = true;
 
-// Array to hold error messages
 $error_msg_array = array();
+
+if (isset($_POST['attachment']) && is_array($_POST['attachment'])) {
+    $attachments = array_filter($_POST['attachment'], 'is_md5');
+} else {
+    $attachments = array();
+}
 
 if (isset($_POST['emots_toggle'])) {
 
-    if (isset($_POST['t_subject']) && strlen(trim($_POST['t_subject'])) > 0) {
-        $t_subject = trim($_POST['t_subject']);
+    if (isset($_POST['subject']) && strlen(trim($_POST['subject'])) > 0) {
+        $subject = trim($_POST['subject']);
     }
 
-    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-        $t_content = nl2br(fix_html(emoticons_strip($_POST['t_content'])));
+    if (isset($_POST['content']) && strlen(trim($_POST['content'])) > 0) {
+        $content = nl2br(fix_html(emoticons_strip($_POST['content'])));
     }
 
-    if (isset($_POST['to_radio']) && strlen(trim($_POST['to_radio'])) > 0) {
-        $to_radio = trim($_POST['to_radio']);
+    if (isset($_POST['to_logon']) && strlen(trim($_POST['to_logon'])) > 0) {
+        $to_logon = trim($_POST['to_logon'], ', ');
     } else {
-        $to_radio = '';
-    }
-
-    if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
-        $t_to_uid = $_POST['t_to_uid'];
-    } else {
-        $t_to_uid = 0;
-    }
-
-    if (isset($_POST['t_to_uid_others']) && strlen(trim($_POST['t_to_uid_others'])) > 0) {
-        $t_to_uid_others = trim($_POST['t_to_uid_others']);
+        $to_logon = '';
     }
 
     $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
@@ -174,13 +158,11 @@ if (isset($_POST['emots_toggle'])) {
     }
 }
 
-// Submit handling code
-if (isset($_POST['send']) || isset($_POST['preview'])) {
+if (isset($_POST['send']) || isset($_POST['preview']) || isset($_POST['save'])) {
 
-    // User clicked the send or preview button - check the data that was submitted
-    if (isset($_POST['t_subject']) && strlen(trim($_POST['t_subject'])) > 0) {
+    if (isset($_POST['subject']) && strlen(trim($_POST['subject'])) > 0) {
 
-        $t_subject = trim($_POST['t_subject']);
+        $subject = trim($_POST['subject']);
 
     } else {
 
@@ -188,9 +170,9 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
+    if (isset($_POST['content']) && strlen(trim($_POST['content'])) > 0) {
 
-        $t_content = nl2br(fix_html(emoticons_strip($_POST['t_content'])));
+        $content = nl2br(fix_html(emoticons_strip($_POST['content'])));
 
     } else {
 
@@ -198,29 +180,11 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         $valid = false;
     }
 
-    if (isset($_POST['to_radio']) && strlen(trim($_POST['to_radio'])) > 0) {
-        $to_radio = trim($_POST['to_radio']);
-    } else {
-        $to_radio = '';
-    }
+    if (isset($reply_mid) && is_numeric($reply_mid) && $reply_mid > 0) {
 
-    if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
-        $t_to_uid = $_POST['t_to_uid'];
-    } else {
-        $t_to_uid = 0;
-    }
+        if (($pm_data = pm_message_get($reply_mid)) !== false) {
 
-    if ($to_radio == 'friends' && $t_to_uid == 0) {
-
-        $error_msg_array[] = gettext("You must specify at least one recipient.");
-        $valid = false;
-    }
-
-    if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
-
-        if (($pm_data = pm_message_get($t_reply_mid)) !== false) {
-
-            $pm_data['CONTENT'] = pm_get_content($t_reply_mid);
+            $pm_data['CONTENT'] = pm_get_content($reply_mid);
 
         } else {
 
@@ -228,46 +192,42 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
         }
     }
 
-    if (isset($_POST['t_to_uid_others']) && strlen(trim($_POST['t_to_uid_others'])) > 0) {
+    if (isset($_POST['to_logon']) && strlen(trim($_POST['to_logon'])) > 0) {
 
-        $t_recipient_array = preg_split("/[;|,]/u", trim($_POST['t_to_uid_others']));
+        $to_logon_array = preg_split('/,\s*/u', trim($_POST['to_logon'], ', '));
 
-        $t_new_recipient_array['TO_UID'] = array();
-        $t_new_recipient_array['LOGON']  = array();
-        $t_new_recipient_array['NICK']   = array();
+        $to_logon_array = array_filter(array_map('trim', $to_logon_array), 'strlen');
 
-        foreach ($t_recipient_array as $key => $t_recipient) {
+        foreach ($to_logon_array as $key => $recipient) {
 
-            $to_logon = trim($t_recipient);
+            $to_logon = trim($recipient);
+
+            unset($to_logon_array[$key]);
 
             if (($to_user = user_get_by_logon($to_logon)) !== false) {
 
                 $peer_relationship = user_get_peer_relationship($to_user['UID'], $_SESSION['UID']);
 
-                if (!in_array($to_user['UID'], $t_new_recipient_array['TO_UID'])) {
+                $to_logon_array[$to_user['UID']] = array(
+                    'UID' => $to_user['UID'],
+                    'LOGON' => $to_user['LOGON'],
+                    'NICKNAME' => $to_user['NICKNAME']
+                );
 
-                    $t_new_recipient_array['TO_UID'][] = $to_user['UID'];
-                    $t_new_recipient_array['LOGON'][]  = $to_user['LOGON'];
-                    $t_new_recipient_array['NICK'][]   = $to_user['NICKNAME'];
-                }
+                if ((($peer_relationship ^ USER_BLOCK_PM) && user_allow_pm($to_user['UID'])) || session::check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
 
-                if ($to_radio == 'others') {
+                    pm_user_prune_folders($_SESSION['UID']);
 
-                    if ((($peer_relationship ^ USER_BLOCK_PM) && user_allow_pm($to_user['UID'])) || session::check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
+                    if (pm_get_free_space($_SESSION['UID']) < sizeof($to_logon_array)) {
 
-                        pm_user_prune_folders($_SESSION['UID']);
-
-                        if (pm_get_free_space($_SESSION['UID']) < sizeof($t_new_recipient_array['TO_UID'])) {
-
-                            $error_msg_array[] = gettext("You do not have enough free space to send this message.");
-                            $valid = false;
-                        }
-
-                    } else {
-
-                        $error_msg_array[] = sprintf(gettext("%s has opted out of receiving personal messages"), $to_logon);
+                        $error_msg_array[] = gettext("You do not have enough free space to send this message.");
                         $valid = false;
                     }
+
+                } else {
+
+                    $error_msg_array[] = sprintf(gettext("%s has opted out of receiving personal messages"), $to_logon);
+                    $valid = false;
                 }
 
             } else {
@@ -277,213 +237,155 @@ if (isset($_POST['send']) || isset($_POST['preview'])) {
             }
         }
 
-        $t_to_uid_others = implode('; ', $t_new_recipient_array['LOGON']);
+        $to_logon = implode(', ', array_map('user_get_logon_callback', $to_logon_array));
 
-        if ($to_radio == 'others') {
-
-            if ($valid && sizeof($t_new_recipient_array['TO_UID']) > 10) {
-
-                $error_msg_array[] = gettext("There is a limit of 10 recipients per message. Please amend your recipient list.");
-                $valid = false;
-            }
-
-            if ($valid && sizeof($t_new_recipient_array['TO_UID']) < 1) {
-
-                $error_msg_array[] = gettext("You must specify at least one recipient.");
-                $valid = false;
-            }
-        }
-
-    } else if ($to_radio == 'others') {
-
-        $error_msg_array[] = gettext("You must specify at least one recipient.");
-        $valid = false;
-    }
-
-} else if (isset($_POST['save'])) {
-
-    // User click the save button - Check the data that was submitted.
-    if (isset($_POST['t_subject']) && strlen(trim($_POST['t_subject'])) > 0) {
-
-        $t_subject = trim($_POST['t_subject']);
-
-    } else {
-
-        $t_subject = "";
-    }
-
-    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-
-        $t_content = nl2br(fix_html(emoticons_strip($_POST['t_content'])));
-
-    } else {
-
-        $t_content = "";
-    }
-
-    if (isset($_POST['to_radio']) && strlen(trim($_POST['to_radio'])) > 0) {
-        $to_radio = trim($_POST['to_radio']);
-    } else {
-        $to_radio = '';
-    }
-
-    if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
-        $t_to_uid = $_POST['t_to_uid'];
-    } else {
-        $t_to_uid = 0;
-    }
-
-    if (isset($_POST['t_to_uid_others']) && strlen(trim($_POST['t_to_uid_others'])) > 0) {
-
-        $t_recipient_array = preg_split("/[;|,]/u", trim($_POST['t_to_uid_others']));
-
-        if (sizeof($t_recipient_array) > 10) {
+        if ($valid && sizeof($to_logon_array) > 10) {
 
             $error_msg_array[] = gettext("There is a limit of 10 recipients per message. Please amend your recipient list.");
             $valid = false;
         }
 
-        $t_to_uid_others = implode(';', $t_recipient_array);
+        if ($valid && sizeof($to_logon_array) < 1) {
+
+            $error_msg_array[] = gettext("You must specify at least one recipient.");
+            $valid = false;
+        }
 
     } else {
 
-        $t_to_uid_others = "";
+        $error_msg_array[] = gettext("You must specify at least one recipient.");
+        $valid = false;
     }
 
-} else if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
+} else if (isset($reply_mid) && is_numeric($reply_mid) && $reply_mid > 0) {
 
-    if (!$t_to_uid_others = pm_get_user($t_reply_mid)) $t_to_uid_others = "";
+    if (($pm_data = pm_message_get($reply_mid)) !== false) {
 
-    if (($pm_data = pm_message_get($t_reply_mid)) !== false) {
+        $pm_data['CONTENT'] = pm_get_content($reply_mid);
 
-        $pm_data['CONTENT'] = pm_get_content($t_reply_mid);
+        $subject = preg_replace('/^(RE:)?/iu', 'RE:', $pm_data['SUBJECT']);
 
-        $t_subject = preg_replace('/^(RE:)?/iu', 'RE:', $pm_data['SUBJECT']);
+        $to_logon_array[$pm_data['FROM_UID']] = array(
+            'UID' => $pm_data['FROM_UID'],
+            'LOGON' => $pm_data['FROM_LOGON'],
+            'NICKNAME' => $pm_data['FROM_NICKNAME']
+        );
 
-    } else {
+        if ($reply_all && isset($pm_data['RECIPIENTS']) && sizeof($pm_data['RECIPIENTS']) > 0) {
 
-        light_pm_error_refuse();
-    }
+            foreach ($pm_data['RECIPIENTS'] as $recipient) {
+                $to_logon_array[$recipient['UID']] = $recipient;
+            }
+        }
 
-} else if (isset($t_forward_mid) && is_numeric($t_forward_mid) && $t_forward_mid > 0) {
+        $to_logon = implode(', ', array_map('user_get_logon_callback', $to_logon_array));
 
-    if (($pm_data = pm_message_get($t_forward_mid)) !== false) {
+        if (isset($_SESSION['PM_INCLUDE_REPLY']) && ($_SESSION['PM_INCLUDE_REPLY'] == 'Y')) {
 
-        $pm_data['CONTENT'] = pm_get_content($t_forward_mid);
+            $message_author = htmlentities_array(format_user_name($pm_data['FROM_LOGON'], $pm_data['FROM_NICKNAME']));
 
-        $t_subject = preg_replace('/^(FWD:)?/iu', 'FWD:', $pm_data['SUBJECT']);
-
-    } else {
-
-        light_pm_error_refuse();
-    }
-
-} else if (isset($t_edit_mid) && is_numeric($t_edit_mid) && $t_edit_mid > 0) {
-
-    if (($pm_data = pm_message_get($t_edit_mid)) !== false) {
-
-        $pm_data['CONTENT'] = pm_get_content($t_edit_mid);
-
-        $t_subject = $pm_data['SUBJECT'];
-
-        $parsed_message = new MessageTextParse($pm_data['CONTENT']);
-
-        $t_content = $parsed_message->getMessage();
-
-        $t_subject = $pm_data['SUBJECT'];
-
-        $t_to_uid = $pm_data['TO_UID'];
-
-        $t_to_uid_others = $pm_data['RECIPIENTS'];
-
-        if (strlen($t_to_uid_others) > 0) {
-            $to_radio = 'others';
-        } else if ($t_to_uid > 0) {
-            $to_radio = 'friends';
+            $content = sprintf(
+                '<div class="quotetext"><b>%s:</b> %s</div>
+                 <div class="quote">%s</div><p>&nbsp;</p>',
+                gettext('quote'),
+                $message_author,
+                fix_html($pm_data['CONTENT'])
+            );
         }
 
     } else {
 
         light_pm_error_refuse();
     }
+
+} else if (isset($forward_mid) && is_numeric($forward_mid) && $forward_mid > 0) {
+
+    if (($pm_data = pm_message_get($forward_mid)) !== false) {
+
+        $pm_data['CONTENT'] = pm_get_content($forward_mid);
+
+        $subject = preg_replace('/^(FWD:)?/iu', 'FWD:', $pm_data['SUBJECT']);
+
+        $message_author = htmlentities_array(format_user_name($pm_data['FROM_LOGON'], $pm_data['FROM_NICKNAME']));
+
+        $content = fix_html($pm_data['CONTENT']);
+
+        $attachments = $pm_data['ATTACHMENTS'];
+
+    } else {
+
+        light_pm_error_refuse();
+    }
+
+} else if (isset($edit_mid) && is_numeric($edit_mid) && $edit_mid > 0) {
+
+    if (($pm_data = pm_message_get($edit_mid)) !== false) {
+
+        $pm_data['CONTENT'] = pm_get_content($edit_mid);
+
+        $subject = $pm_data['SUBJECT'];
+
+        $parsed_message = new MessageTextParse($pm_data['CONTENT']);
+
+        $content = $parsed_message->getMessage();
+
+        $subject = $pm_data['SUBJECT'];
+
+        $reply_mid = $pm_data['REPLY_TO_MID'];
+
+        $to_logon = implode(', ', array_map('user_get_logon_callback', $pm_data['RECIPIENTS']));
+
+        $attachments = $pm_data['ATTACHMENTS'];
+
+    } else {
+
+        light_pm_error_refuse();
+    }
 }
 
-if (!isset($t_content)) $t_content = "";
+if (!isset($content)) $content = "";
 
-// Check the message length.
-if (mb_strlen($t_content) >= 65535) {
+if (mb_strlen($content) >= 65535) {
 
-    $error_msg_array[] = sprintf(gettext("Message length must be under 65,535 characters (currently: %s)"), number_format(mb_strlen($t_content)));
+    $error_msg_array[] = sprintf(gettext("Message length must be under 65,535 characters (currently: %s)"), number_format(mb_strlen($content)));
     $valid = false;
 }
 
-if (isset($_POST['attachment']) && is_array($_POST['attachment'])) {
-    $attachments = array_filter($_POST['attachment'], 'is_md5');
-} else {
-    $attachments = array();
-}
-// De-dupe key
-if (isset($_POST['t_dedupe']) && is_numeric($_POST['t_dedupe'])) {
-    $t_dedupe = $_POST['t_dedupe'];
+if (isset($_POST['dedupe']) && is_numeric($_POST['dedupe'])) {
+    $dedupe = $_POST['dedupe'];
 } else{
-    $t_dedupe = time();
+    $dedupe = time();
 }
 
-// Send the PM
 if ($valid && isset($_POST['send'])) {
 
-    if (post_check_ddkey($t_dedupe)) {
+    if (post_check_ddkey($dedupe)) {
 
-        if (isset($to_radio) && $to_radio == 'friends') {
+        if (isset($edit_mid) && is_numeric($edit_mid)) {
 
-            if (($new_mid = pm_send_message($t_to_uid, $_SESSION['UID'], $t_subject, $t_content)) !== false) {
+            $new_mid = pm_send_saved_message($edit_mid, $_SESSION['UID'], $to_logon_array, $subject, $content, $reply_mid);
 
-                if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments)) !== false) {
+        } else {
 
-                    foreach ($attachments_array as $attachment) {
+            $new_mid = pm_send_message($_SESSION['UID'], $to_logon_array, $subject, $content, $reply_mid);
+        }
 
-                        pm_add_attachment($new_mid, $attachment['aid']);
-                    }
+        if ($new_mid !== false) {
+
+            email_send_pm_notification($new_mid);
+
+            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments))) {
+
+                foreach ($attachments_array as $attachment) {
+
+                    pm_add_attachment($new_mid, $attachment['aid']);
                 }
-
-                email_send_pm_notification($t_to_uid, $new_mid, $_SESSION['UID']);
-
-            } else {
-
-                $error_msg_array[] = gettext("Error creating PM! Please try again in a few minutes");
-                $valid = false;
-            }
-
-            if (isset($t_edit_mid) && is_numeric($t_edit_mid)) {
-                pm_delete_message($t_edit_mid);
             }
 
         } else {
 
-            foreach ($t_new_recipient_array['TO_UID'] as $t_to_uid) {
-
-                if (($new_mid = pm_send_message($t_to_uid, $_SESSION['UID'], $t_subject, $t_content)) !== false) {
-
-                    email_send_pm_notification($t_to_uid, $new_mid, $_SESSION['UID']);
-
-                    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments)) !== false) {
-
-                        foreach ($attachments_array as $attachment) {
-
-                            pm_add_attachment($new_mid, $attachment['aid']);
-                        }
-                    }
-
-                } else {
-
-                    $error_msg_array[] = gettext("Error creating PM! Please try again in a few minutes");
-                    $valid = false;
-                }
-            }
-
-            if (isset($t_edit_mid) && is_numeric($t_edit_mid)) {
-                pm_delete_message($t_edit_mid);
-            }
+            $error_msg_array[] = gettext("Error creating PM! Please try again in a few minutes");
+            $valid = false;
         }
     }
 
@@ -495,11 +397,11 @@ if ($valid && isset($_POST['send'])) {
 
 } else if ($valid && isset($_POST['save'])) {
 
-    if (isset($t_edit_mid) && is_numeric($t_edit_mid)) {
+    if (isset($edit_mid) && is_numeric($edit_mid)) {
 
-        if (pm_update_saved_message($t_edit_mid, $t_subject, $t_content, $t_to_uid, $t_to_uid_others)) {
+        if (pm_update_saved_message($edit_mid, $_SESSION['UID'], $to_logon_array, $subject, $content, $reply_mid)) {
 
-            header_redirect("lpm.php?webtag=$webtag&mid=$t_edit_mid&message_saved=true");
+            header_redirect("lpm.php?webtag=$webtag&mid=$edit_mid&message_saved=true");
             exit;
 
         } else {
@@ -510,7 +412,7 @@ if ($valid && isset($_POST['send'])) {
 
     } else {
 
-        if (($saved_mid = pm_save_message($t_subject, $t_content, $t_to_uid, $t_to_uid_others)) !== false) {
+        if (($saved_mid = pm_save_message($_SESSION['UID'], $to_logon_array, $subject, $content, $reply_mid)) !== false) {
 
             if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments)) !== false) {
 
@@ -520,7 +422,8 @@ if ($valid && isset($_POST['send'])) {
                 }
             }
 
-            header_redirect("lpm.php?webtag=$webtag&mid=$saved_mid&message_saved=true");
+            $pm_folder_drafts = PM_FOLDER_DRAFTS;
+            header_redirect("lpm.php?webtag=$webtag&folder=$pm_folder_drafts&mid=$saved_mid&message_saved=true");
             exit;
 
         } else {
@@ -531,36 +434,32 @@ if ($valid && isset($_POST['send'])) {
     }
 }
 
-light_html_draw_top(sprintf("title=%s", gettext("Send New PM")), "robots=noindex,nofollow", 'js/fineuploader.min.js');
+light_html_draw_top(sprintf("title=%s", gettext("Send New PM")), "robots=noindex,nofollow", 'js/fineuploader.min.js', 'js/attachments.js');
 
-// preview message
 if ($valid && isset($_POST['preview'])) {
 
     echo "<h3>", gettext("Message Preview"), "</h3>\n";
 
-    $pm_preview_array['TLOGON'] = $t_new_recipient_array['LOGON'];
-    $pm_preview_array['TNICK']  = $t_new_recipient_array['NICK'];
-    $pm_preview_array['TO_UID'] = $t_new_recipient_array['TO_UID'];
+    $pm_preview_array['RECIPIENTS'] = $to_logon_array;
 
-    $preview_fuser = user_get($_SESSION['UID']);
+    $preview_from_user = user_get($_SESSION['UID']);
 
-    $pm_preview_array['FLOGON'] = $preview_fuser['LOGON'];
-    $pm_preview_array['FNICK']  = $preview_fuser['NICKNAME'];
-    $pm_preview_array['FROM_UID'] = $preview_fuser['UID'];
+    $pm_preview_array['FROM_LOGON'] = $preview_from_user['LOGON'];
+    $pm_preview_array['FROM_NICKNAME']  = $preview_from_user['NICKNAME'];
+    $pm_preview_array['FROM_UID'] = $preview_from_user['UID'];
 
-    $pm_preview_array['SUBJECT'] = $t_subject;
+    $pm_preview_array['SUBJECT'] = $subject;
     $pm_preview_array['CREATED'] = time();
 
-    $pm_preview_array['CONTENT'] = $t_content;
-	$pm_preview_array['ATTACHMENTS'] = $attachments;
+    $pm_preview_array['CONTENT'] = $content;
+    $pm_preview_array['ATTACHMENTS'] = $attachments;
 
-    light_pm_display($pm_preview_array, PM_FOLDER_OUTBOX, true);
+    light_pm_display($pm_preview_array, true);
 }
 
 echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"lpm_write.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-echo "  ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
-echo "  ", form_input_hidden("t_dedupe", htmlentities_array($t_dedupe));
+echo "  ", form_input_hidden("dedupe", htmlentities_array($dedupe));
 
 echo "<div class=\"post\">\n";
 echo "<h3>", gettext("Send New PM"), "</h3>\n";
@@ -570,9 +469,9 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);
 }
 
-echo "<div class=\"post_thread_title\">", gettext("Subject"), ":", light_form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 30, 64), "</div>\n";
-echo "<div class=\"post_to\">", gettext("To"), ":", light_form_input_text("t_to_uid_others", isset($t_to_uid_others) ? htmlentities_array($t_to_uid_others) : "", 0, 0), "</div>\n";
-echo "<div class=\"post_content\">", light_form_textarea("t_content", htmlentities_array(strip_paragraphs($t_content)), 10, 50, false, 'textarea'), "</div>\n";
+echo "<div class=\"post_thread_title\">", gettext("Subject"), ":", light_form_input_text("subject", isset($subject) ? htmlentities_array($subject) : "", 30, 64), "</div>\n";
+echo "<div class=\"post_to\">", gettext("To"), ":", light_form_input_text("to_logon", isset($to_logon) ? htmlentities_array($to_logon) : "", 0, 0), "</div>\n";
+echo "<div class=\"post_content\">", light_form_textarea("content", htmlentities_array(strip_paragraphs($content)), 10, 50, false, 'textarea'), "</div>\n";
 
 echo "<div class=\"post_buttons\">";
 echo light_form_submit("send", gettext("Send"));
@@ -581,20 +480,17 @@ echo light_form_submit("preview", gettext("Preview"));
 echo light_form_submit("cancel", gettext("Cancel"));
 echo "</div>";
 
-if (isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
-
-    echo form_input_hidden("replyto", htmlentities_array($t_reply_mid)), "\n";
-
-} else if (isset($t_forward_mid) && is_numeric($t_forward_mid) && $t_forward_mid > 0) {
-
-    echo form_input_hidden("fwdmsg", htmlentities_array($t_forward_mid)), "\n";
-
-} else if (isset($t_edit_mid) && is_numeric($t_edit_mid) && $t_edit_mid > 0) {
-
-    echo form_input_hidden("editmsg", htmlentities_array($t_edit_mid)), "\n";
+if (isset($reply_mid) && is_numeric($reply_mid) && $reply_mid > 0) {
+    echo form_input_hidden("replyto", htmlentities_array($reply_mid)), "\n";
 }
 
-echo "</div>";
+if (isset($forward_mid) && is_numeric($forward_mid) && $forward_mid > 0) {
+    echo form_input_hidden("fwdmsg", htmlentities_array($forward_mid)), "\n";
+}
+
+if (isset($edit_mid) && is_numeric($edit_mid) && $edit_mid > 0) {
+    echo form_input_hidden("editmsg", htmlentities_array($edit_mid)), "\n";
+}
 
 if (forum_get_setting('attachments_enabled', 'Y')) {
 
@@ -604,12 +500,13 @@ if (forum_get_setting('attachments_enabled', 'Y')) {
 }
 
 echo "</div>";
+echo "</div>";
 echo "</form>\n";
 
-if (isset($pm_data) && is_array($pm_data) && isset($t_reply_mid) && is_numeric($t_reply_mid) && $t_reply_mid > 0) {
+if (isset($pm_data) && is_array($pm_data) && isset($reply_mid) && is_numeric($reply_mid) && $reply_mid > 0) {
 
     echo "<h3>", gettext("In reply to"), ":</h3>\n";
-    light_pm_display($pm_data, PM_FOLDER_INBOX, true);
+    light_pm_display($pm_data, true);
 }
 
 light_html_draw_bottom();

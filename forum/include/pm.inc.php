@@ -32,7 +32,6 @@ require_once BH_INCLUDE_PATH. 'messages.inc.php';
 require_once BH_INCLUDE_PATH. 'search.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'user_profile.inc.php';
 require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 // End Required includes
 
@@ -53,8 +52,10 @@ function pm_mark_as_read($mid)
 
     $pm_read = PM_READ;
 
-    $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_read', NOTIFIED = 1 ";
-    $sql.= "WHERE MID = '$mid' AND TO_UID = '{$_SESSION['UID']}'";
+    $pm_unread = PM_UNREAD;
+
+    $sql = "UPDATE PM_TYPE SET TYPE = '$pm_read' WHERE MID = '$mid' ";
+    $sql.= "AND TYPE = '$pm_unread' AND UID = '{$_SESSION['UID']}'";
 
     if (!$db->query($sql)) return false;
 
@@ -100,16 +101,15 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limi
 
     $offset = calculate_page_offset($page, $limit);
 
-    $message_array = array();
-
     $pm_inbox_items = PM_INBOX_ITEMS;
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
-    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
-    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK FROM PM PM ";
-    $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
-    $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
-    $sql.= "WHERE (PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '{$_SESSION['UID']}' ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM_TYPE.TYPE, ";
+    $sql.= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
+    $sql.= "USER.NICKNAME AS FROM_NICKNAME FROM PM INNER JOIN PM_RECIPIENT ";
+    $sql.= "ON (PM_RECIPIENT.MID = PM.MID AND PM_RECIPIENT.TO_UID = '{$_SESSION['UID']}') ";
+    $sql.= "INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = '{$_SESSION['UID']}' ";
+    $sql.= "AND PM_TYPE.TYPE & $pm_inbox_items) LEFT JOIN USER ";
+    $sql.= "ON (USER.UID = PM.FROM_UID) GROUP BY PM.MID ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
     if (!($result = $db->query($sql))) return false;
@@ -124,35 +124,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limi
         return pm_get_inbox($sort_by, $sort_dir, $page - 1, $limit);
     }
 
-    while (($pm_data = $result->fetch_assoc()) !== null) {
-
-        if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
-            if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
-                $pm_data['FNICK'] = $pm_data['PFNICK'];
-            }
-        }
-
-        if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
-            if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
-                $pm_data['TNICK'] = $pm_data['PTNICK'];
-            }
-        }
-
-        if (!isset($pm_data['FLOGON'])) $pm_data['FLOGON'] = gettext("Unknown user");
-        if (!isset($pm_data['FNICK'])) $pm_data['FNICK'] = "";
-
-        if (!isset($pm_data['TLOGON'])) $pm_data['TLOGON'] = gettext("Unknown user");
-        if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
-
-        $message_array[$pm_data['MID']] = $pm_data;
-    }
-
-    pms_have_attachments($message_array);
-
-    return array(
-        'message_count' => $message_count,
-        'message_array' => $message_array
-    );
+    return pm_process_result($result, $message_count);
 }
 
 function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit = 10)
@@ -182,18 +154,19 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
 
     $limit = abs($limit);
 
-    $offset = calculate_page_offset($page, $limit);
+    $offset = calculate_page_offset($page, $limit);;
 
-    $message_array = array();
+    $pm_outbox = PM_OUTBOX;
 
-    $pm_outbox_items = PM_OUTBOX_ITEMS;
-
-    $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
-    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
-    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK FROM PM PM ";
-    $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
-    $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
-    $sql.= "WHERE (PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '{$_SESSION['UID']}' ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, $pm_outbox AS TYPE, ";
+    $sql.= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
+    $sql.= "USER.NICKNAME AS FROM_NICKNAME, COUNT(PM_RECIPIENT.TO_UID) AS RECIPIENT_COUNT, ";
+    $sql.= "COALESCE(OUTBOX.COUNT, 0) AS OUTBOX_COUNT FROM PM LEFT JOIN USER ON (USER.UID = PM.FROM_UID) ";
+    $sql.= "INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) LEFT JOIN (SELECT PM_TYPE.MID, ";
+    $sql.= "COUNT(*) AS COUNT FROM PM_TYPE WHERE (PM_TYPE.TYPE & $pm_outbox) ";
+    $sql.= "GROUP BY PM_TYPE.MID) AS OUTBOX ON (OUTBOX.MID = PM.MID) ";
+    $sql.= "WHERE PM.FROM_UID = '{$_SESSION['UID']}' ";
+    $sql.= "GROUP BY PM.MID HAVING RECIPIENT_COUNT = OUTBOX_COUNT ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
     if (!($result = $db->query($sql))) return false;
@@ -208,35 +181,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
         return pm_get_outbox($sort_by, $sort_dir, $page - 1, $limit);
     }
 
-    while (($pm_data = $result->fetch_assoc()) !== null) {
-
-        if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
-            if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
-                $pm_data['FNICK'] = $pm_data['PFNICK'];
-            }
-        }
-
-        if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
-            if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
-                $pm_data['TNICK'] = $pm_data['PTNICK'];
-            }
-        }
-
-        if (!isset($pm_data['FLOGON'])) $pm_data['FLOGON'] = gettext("Unknown user");
-        if (!isset($pm_data['FNICK'])) $pm_data['FNICK'] = "";
-
-        if (!isset($pm_data['TLOGON'])) $pm_data['TLOGON'] = gettext("Unknown user");
-        if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
-
-        $message_array[$pm_data['MID']] = $pm_data;
-    }
-
-    pms_have_attachments($message_array);
-
-    return array(
-        'message_count' => $message_count,
-        'message_array' => $message_array,
-    );
+    return pm_process_result($result, $message_count);
 }
 
 function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit = 10)
@@ -268,17 +213,21 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit
 
     $offset = calculate_page_offset($page, $limit);
 
-    $message_array = array();
+    $pm_outbox_items = PM_OUTBOX_ITEMS;
 
     $pm_sent_items = PM_SENT_ITEMS;
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
-    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
-    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK FROM PM PM ";
-    $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
-    $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
-    $sql.= "WHERE (PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '{$_SESSION['UID']}' ";
-    $sql.= "AND SMID = 0 ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM_TYPE.TYPE, ";
+    $sql.= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
+    $sql.= "USER.NICKNAME AS FROM_NICKNAME, COUNT(PM_RECIPIENT.TO_UID) AS RECIPIENT_COUNT, ";
+    $sql.= "COALESCE(OUTBOX.COUNT, 0) AS OUTBOX_COUNT FROM PM INNER JOIN PM_RECIPIENT ";
+    $sql.= "ON (PM_RECIPIENT.MID = PM.MID) INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID ";
+    $sql.= "AND PM_TYPE.UID = PM.FROM_UID) LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT ";
+    $sql.= "FROM PM_TYPE WHERE (PM_TYPE.TYPE & $pm_outbox_items) GROUP BY PM_TYPE.MID) AS OUTBOX ";
+    $sql.= "ON (OUTBOX.MID = PM.MID) LEFT JOIN USER ON (USER.UID = PM.FROM_UID) ";
+    $sql.= "WHERE (PM_TYPE.TYPE & $pm_sent_items) AND PM.FROM_UID = '{$_SESSION['UID']}' ";
+    $sql.= "GROUP BY PM.MID HAVING OUTBOX_COUNT = 0 OR OUTBOX_COUNT < RECIPIENT_COUNT ";
+    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -292,35 +241,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit
         return pm_get_sent($sort_by, $sort_dir, $page - 1, $limit);
     }
 
-    while (($pm_data = $result->fetch_assoc()) !== null) {
-
-        if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
-            if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
-                $pm_data['FNICK'] = $pm_data['PFNICK'];
-            }
-        }
-
-        if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
-            if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
-                $pm_data['TNICK'] = $pm_data['PTNICK'];
-            }
-        }
-
-        if (!isset($pm_data['FLOGON'])) $pm_data['FLOGON'] = gettext("Unknown user");
-        if (!isset($pm_data['FNICK'])) $pm_data['FNICK'] = "";
-
-        if (!isset($pm_data['TLOGON'])) $pm_data['TLOGON'] = gettext("Unknown user");
-        if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
-
-        $message_array[$pm_data['MID']] = $pm_data;
-    }
-
-    pms_have_attachments($message_array);
-
-    return array(
-        'message_count' => $message_count,
-        'message_array' => $message_array,
-    );
+    return pm_process_result($result, $message_count);
 }
 
 function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit = 10)
@@ -352,18 +273,14 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1,
 
     $offset = calculate_page_offset($page, $limit);
 
-    $message_array = array();
+    $pm_saved_items = PM_SAVED_ITEMS;
 
-    $pm_saved_out = PM_SAVED_OUT;
-    $pm_saved_in  = PM_SAVED_IN;
-
-    $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
-    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
-    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK FROM PM PM ";
-    $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
-    $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
-    $sql.= "WHERE ((PM.TYPE & $pm_saved_out > 0) AND PM.FROM_UID = '{$_SESSION['UID']}') OR ";
-    $sql.= "((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '{$_SESSION['UID']}') ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM_TYPE.TYPE, ";
+    $sql.= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
+    $sql.= "USER.NICKNAME AS FROM_NICKNAME FROM PM INNER JOIN PM_TYPE ";
+    $sql.= "ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = '{$_SESSION['UID']}' ";
+    $sql.= "AND PM_TYPE.TYPE & $pm_saved_items) LEFT JOIN USER ";
+    $sql.= "ON (USER.UID = PM.FROM_UID) GROUP BY PM.MID ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
     if (!($result = $db->query($sql))) return false;
@@ -378,35 +295,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1,
         return pm_get_saved_items($sort_by, $sort_dir, $page - 1, $limit);
     }
 
-    while (($pm_data = $result->fetch_assoc()) !== null) {
-
-        if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
-            if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
-                $pm_data['FNICK'] = $pm_data['PFNICK'];
-            }
-        }
-
-        if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
-            if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
-                $pm_data['TNICK'] = $pm_data['PTNICK'];
-            }
-        }
-
-        if (!isset($pm_data['FLOGON'])) $pm_data['FLOGON'] = gettext("Unknown user");
-        if (!isset($pm_data['FNICK'])) $pm_data['FNICK'] = "";
-
-        if (!isset($pm_data['TLOGON'])) $pm_data['TLOGON'] = gettext("Unknown user");
-        if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
-
-        $message_array[$pm_data['MID']] = $pm_data;
-    }
-
-    pms_have_attachments($message_array);
-
-    return array(
-        'message_count' => $message_count,
-        'message_array' => $message_array
-    );
+    return pm_process_result($result, $message_count);
 }
 
 function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit = 10)
@@ -438,16 +327,14 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
 
     $offset = calculate_page_offset($page, $limit);
 
-    $message_array = array();
-
     $pm_draft_items = PM_DRAFT_ITEMS;
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
-    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
-    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, TUSER.NICKNAME AS TNICK FROM PM PM ";
-    $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
-    $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
-    $sql.= "WHERE (PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '{$_SESSION['UID']}' ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM_TYPE.TYPE, ";
+    $sql.= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
+    $sql.= "USER.NICKNAME AS FROM_NICKNAME FROM PM INNER JOIN PM_TYPE ";
+    $sql.= "ON (PM_TYPE.MID = PM.MID AND PM_TYPE.TYPE & $pm_draft_items) ";
+    $sql.= "LEFT JOIN USER ON (USER.UID = PM.FROM_UID) ";
+    $sql.= "WHERE PM.FROM_UID = '{$_SESSION['UID']}' GROUP BY PM.MID ";
     $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
     if (!($result = $db->query($sql))) return false;
@@ -462,28 +349,116 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
         return pm_get_drafts($sort_by, $sort_dir, $page - 1, $limit);
     }
 
+    return pm_process_result($result, $message_count);
+}
+
+function pm_get_recipients(&$message_data)
+{
+    if (!isset($message_data['MID'])) return false;
+
+    if (!is_numeric($message_data['MID'])) return false;
+
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+
+    if (!($db = db::get())) return false;
+
+    $sql = "SELECT PM_RECIPIENT.MID, PM_RECIPIENT.TO_UID, PM_RECIPIENT.NOTIFIED, ";
+    $sql.= "USER.LOGON AS TO_LOGON, USER.NICKNAME TO_NICKNAME FROM PM_RECIPIENT ";
+    $sql.= "LEFT JOIN USER ON (USER.UID = PM_RECIPIENT.TO_UID) ";
+    $sql.= "WHERE PM_RECIPIENT.MID = '{$message_data['MID']}' ";
+    $sql.= "ORDER BY PM_RECIPIENT.TO_UID <> '{$_SESSION['UID']}'";
+
+    if (!($result = $db->query($sql))) return false;
+
+    while (($pm_user_data = $result->fetch_assoc()) !== null) {
+
+        if (!isset($pm_user_data['FROM_LOGON'])) $pm_user_data['FROM_LOGON'] = gettext("Unknown user");
+        if (!isset($pm_user_data['FROM_NICKNAME'])) $pm_user_data['FROM_NICKNAME'] = "";
+
+        if (!isset($pm_user_data['TO_LOGON'])) $pm_user_data['TO_LOGON'] = gettext("Unknown user");
+        if (!isset($pm_user_data['TO_NICKNAME'])) $pm_user_data['TO_NICKNAME'] = "";
+
+        if (!isset($message_data['RECIPIENTS'])) {
+            $message_data['RECIPIENTS'] = array();
+        }
+
+        $message_data['RECIPIENTS'][] = array(
+            'UID' => $pm_user_data['TO_UID'],
+            'LOGON' => $pm_user_data['TO_LOGON'],
+            'NICKNAME' => $pm_user_data['TO_NICKNAME'],
+            'NOTIFIED' => $pm_user_data['NOTIFIED'],
+        );
+    }
+
+    return true;
+}
+
+function pms_get_recipients(&$message_array)
+{
+    if (!is_array($message_array)) return false;
+
+    $mid_list = implode(',', array_filter(array_keys($message_array), 'is_numeric'));
+
+    if (sizeof($message_array) < 1) return false;
+
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+
+    if (!($db = db::get())) return false;
+
+    $sql = "SELECT PM_RECIPIENT.MID, PM_RECIPIENT.TO_UID, PM_RECIPIENT.NOTIFIED, ";
+    $sql.= "USER.LOGON AS TO_LOGON, USER.NICKNAME TO_NICKNAME FROM PM_RECIPIENT ";
+    $sql.= "LEFT JOIN USER ON (USER.UID = PM_RECIPIENT.TO_UID) ";
+    $sql.= "WHERE PM_RECIPIENT.MID IN ($mid_list) ";
+    $sql.= "ORDER BY PM_RECIPIENT.TO_UID <> '{$_SESSION['UID']}'";
+
+    if (!($result = $db->query($sql))) return false;
+
+    while (($pm_user_data = $result->fetch_assoc()) !== null) {
+
+        if (!isset($pm_user_data['FROM_LOGON'])) $pm_user_data['FROM_LOGON'] = gettext("Unknown user");
+        if (!isset($pm_user_data['FROM_NICKNAME'])) $pm_user_data['FROM_NICKNAME'] = "";
+
+        if (!isset($pm_user_data['TO_LOGON'])) $pm_user_data['TO_LOGON'] = gettext("Unknown user");
+        if (!isset($pm_user_data['TO_NICKNAME'])) $pm_user_data['TO_NICKNAME'] = "";
+
+        if (!isset($message_array[$pm_user_data['MID']]['RECIPIENTS'])) {
+            $message_array[$pm_user_data['MID']]['RECIPIENTS'] = array();
+        }
+
+        $message_array[$pm_user_data['MID']]['RECIPIENTS'][] = array(
+            'UID' => $pm_user_data['TO_UID'],
+            'LOGON' => $pm_user_data['TO_LOGON'],
+            'NICKNAME' => $pm_user_data['TO_NICKNAME'],
+            'NOTIFIED' => $pm_user_data['NOTIFIED'],
+        );
+    }
+
+    return true;
+}
+
+function pm_process_result($result, $message_count)
+{
+    $message_array = array();
+
     while (($pm_data = $result->fetch_assoc()) !== null) {
 
-        if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
-            if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
-                $pm_data['FNICK'] = $pm_data['PFNICK'];
-            }
-        }
+        if (!isset($pm_data['FROM_LOGON'])) $pm_data['FROM_LOGON'] = gettext("Unknown user");
+        if (!isset($pm_data['FROM_NICKNAME'])) $pm_data['FROM_NICKNAME'] = "";
 
-        if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
-            if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
-                $pm_data['TNICK'] = $pm_data['PTNICK'];
-            }
-        }
-
-        if (!isset($pm_data['FLOGON'])) $pm_data['FLOGON'] = gettext("Unknown user");
-        if (!isset($pm_data['FNICK'])) $pm_data['FNICK'] = "";
-
-        if (!isset($pm_data['TLOGON'])) $pm_data['TLOGON'] = gettext("Unknown user");
-        if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
-
-        $message_array[$pm_data['MID']] = $pm_data;
+        $message_array[$pm_data['MID']] = array(
+            'CREATED' => $pm_data['CREATED'],
+            'FROM_UID' => $pm_data['FROM_UID'],
+            'FROM_LOGON' => $pm_data['FROM_LOGON'],
+            'FROM_NICKNAME' => $pm_data['FROM_NICKNAME'],
+            'MID' => $pm_data['MID'],
+            'RECIPIENTS' => array(),
+            'REPLY_TO_MID' => $pm_data['REPLY_TO_MID'],
+            'SUBJECT' => $pm_data['SUBJECT'],
+            'TYPE' => $pm_data['TYPE'],
+        );
     }
+
+    pms_get_recipients($message_array);
 
     pms_have_attachments($message_array);
 
@@ -522,26 +497,34 @@ function pm_search_execute($search_string, &$error)
     $pm_max_user_messages = abs(forum_get_setting('pm_max_user_messages', null, 100));
     $limit = ($pm_max_user_messages > 1000) ? 1000 : $pm_max_user_messages;
 
-    $pm_inbox_items  = PM_INBOX_ITEMS;
-    $pm_sent_items   = PM_SENT_ITEMS;
-    $pm_outbox_items = PM_OUTBOX_ITEMS;
-    $pm_saved_out    = PM_SAVED_OUT;
-    $pm_saved_in     = PM_SAVED_IN;
-    $pm_draft_items  = PM_DRAFT_ITEMS;
+    $pm_inbox_items = PM_INBOX_ITEMS;
+    $pm_saved_items = PM_SAVED_ITEMS;
+    $pm_draft_items = PM_DRAFT_ITEMS;
+    $pm_outbox_items = PM_OUTBOX;
 
-    $sql = "INSERT INTO PM_SEARCH_RESULTS (UID, MID, TYPE, FROM_UID, TO_UID, ";
-    $sql.= "SUBJECT, RECIPIENTS, CREATED) SELECT {$_SESSION['UID']}, PM.MID, PM.TYPE, ";
-    $sql.= "PM.FROM_UID, PM.TO_UID, PM.SUBJECT, PM.RECIPIENTS, PM.CREATED ";
-    $sql.= "FROM PM LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
-    $sql.= "WHERE (((PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '{$_SESSION['UID']}') ";
-    $sql.= "OR ((PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '{$_SESSION['UID']}' AND PM.SMID = 0) ";
-    $sql.= "OR ((PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '{$_SESSION['UID']}') ";
-    $sql.= "OR ((PM.TYPE = $pm_saved_out AND PM.FROM_UID = '{$_SESSION['UID']}') OR ";
-    $sql.= "((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '{$_SESSION['UID']}') OR ";
-    $sql.= "((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '{$_SESSION['UID']}'))) ";
-    $sql.= "AND (MATCH(PM_CONTENT.CONTENT) AGAINST('$search_string_checked' IN BOOLEAN MODE) ";
-    $sql.= "OR (MATCH(PM.SUBJECT) AGAINST('$search_string_checked' IN BOOLEAN MODE))) ";
-    $sql.= "ORDER BY CREATED LIMIT $limit";
+    $sql = "INSERT INTO PM_SEARCH_RESULTS (UID, MID, RELEVANCE) SELECT '{$_SESSION['UID']}', PM.MID, ";
+    $sql.= "MATCH(PM_CONTENT.CONTENT, PM.SUBJECT) AGAINST('$search_string_checked' IN BOOLEAN MODE) AS RELEVANCE ";
+    $sql.= "FROM PM INNER JOIN (SELECT MID FROM ((SELECT PM.MID, NULL AS RECIPIENT_COUNT, NULL AS OUTBOX_COUNT ";
+    $sql.= "FROM PM INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID) WHERE ((PM_TYPE.TYPE & $pm_inbox_items) ";
+    $sql.= "AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ((PM_TYPE.TYPE & $pm_saved_items) ";
+    $sql.= "AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ((PM_TYPE.TYPE & $pm_draft_items) ";
+    $sql.= "AND PM.FROM_UID = '{$_SESSION['UID']}')) UNION (SELECT PM.MID, ";
+    $sql.= "COALESCE(RECIPIENTS.COUNT, 0) AS RECIPIENT_COUNT, ";
+    $sql.= "COALESCE(OUTBOX_ITEMS.COUNT, 0) AS OUTBOX_COUNT FROM PM LEFT JOIN (SELECT PM_RECIPIENT.MID, ";
+    $sql.= "COUNT(*) AS COUNT FROM PM_RECIPIENT GROUP BY PM_RECIPIENT.MID) AS RECIPIENTS ON (RECIPIENTS.MID = PM.MID) ";
+    $sql.= "LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT FROM PM_TYPE WHERE PM_TYPE.TYPE & $pm_outbox_items ";
+    $sql.= "GROUP BY PM_TYPE.MID) AS OUTBOX_ITEMS ON (OUTBOX_ITEMS.MID = PM.MID) WHERE PM.FROM_UID = '{$_SESSION['UID']}' ";
+    $sql.= "HAVING OUTBOX_COUNT = 0 OR OUTBOX_COUNT < RECIPIENT_COUNT) UNION (SELECT PM.MID, ";
+    $sql.= "COALESCE(RECIPIENTS.COUNT, 0) AS RECIPIENT_COUNT, COALESCE(OUTBOX_ITEMS.COUNT, 0) AS OUTBOX_COUNT ";
+    $sql.= "FROM PM LEFT JOIN (SELECT PM_RECIPIENT.MID, COUNT(*) AS COUNT FROM PM_RECIPIENT ";
+    $sql.= "GROUP BY PM_RECIPIENT.MID) AS RECIPIENTS ON (RECIPIENTS.MID = PM.MID) ";
+    $sql.= "LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT FROM PM_TYPE ";
+    $sql.= "WHERE PM_TYPE.TYPE & $pm_outbox_items GROUP BY PM_TYPE.MID) AS OUTBOX_ITEMS ";
+    $sql.= "ON (OUTBOX_ITEMS.MID = PM.MID) WHERE PM.FROM_UID = '{$_SESSION['UID']}' ";
+    $sql.= "HAVING RECIPIENT_COUNT = OUTBOX_COUNT)) AS MESSAGES) AS SEARCH_MESSAGES ";
+    $sql.= "ON (SEARCH_MESSAGES.MID = PM.MID) LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
+    $sql.= "WHERE MATCH(PM_CONTENT.CONTENT, PM.SUBJECT) AGAINST('$search_string_checked' IN BOOLEAN MODE) ";
+    $sql.= "GROUP BY PM.MID LIMIT $limit";
 
     if (!$db->query($sql)) return false;
 
@@ -552,7 +535,7 @@ function pm_search_execute($search_string, &$error)
     return false;
 }
 
-function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit = 10)
+function pm_fetch_search_results($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit = 10)
 {
     if (!$db = db::get()) return false;
 
@@ -560,7 +543,7 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $pag
         'PM.SUBJECT',
         'TYPE',
         'PM.FROM_UID',
-        'PM.TO_UID',
+        'PM_TYPE.UID',
         'CREATED'
     );
 
@@ -585,16 +568,13 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $pag
 
     $message_array = array();
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS PM_SEARCH_RESULTS.MID, PM_SEARCH_RESULTS.TYPE, ";
-    $sql.= "PM_SEARCH_RESULTS.FROM_UID, PM_SEARCH_RESULTS.TO_UID, PM_SEARCH_RESULTS.RECIPIENTS, ";
-    $sql.= "PM_SEARCH_RESULTS.SUBJECT, UNIX_TIMESTAMP(PM_SEARCH_RESULTS.CREATED) AS CREATED, ";
-    $sql.= "FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
-    $sql.= "TUSER.LOGON AS TLOGON, TUSER.NICKNAME AS TNICK FROM PM_SEARCH_RESULTS ";
-    $sql.= "LEFT JOIN PM ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
-    $sql.= "LEFT JOIN USER FUSER ON (PM_SEARCH_RESULTS.FROM_UID = FUSER.UID) ";
-    $sql.= "LEFT JOIN USER TUSER ON (PM_SEARCH_RESULTS.TO_UID = TUSER.UID) ";
-    $sql.= "WHERE PM_SEARCH_RESULTS.UID = '{$_SESSION['UID']}' AND PM.MID IS NOT NULL ";
-    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM_TYPE.TYPE, ";
+    $sql.= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
+    $sql.= "USER.NICKNAME AS FROM_NICKNAME FROM PM INNER JOIN PM_TYPE ";
+    $sql.= "ON (PM_TYPE.MID = PM.MID) INNER JOIN PM_SEARCH_RESULTS ";
+    $sql.= "ON (PM_SEARCH_RESULTS.MID = PM.MID) LEFT JOIN USER ON (USER.UID = PM.FROM_UID) ";
+    $sql.= "WHERE PM_SEARCH_RESULTS.UID = '{$_SESSION['UID']}' ";
+    $sql.= "GROUP BY PM.MID ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -608,35 +588,7 @@ function pm_fetch_search_results ($sort_by = 'CREATED', $sort_dir = 'DESC', $pag
         return pm_fetch_search_results($sort_by, $sort_dir, $page - 1, $limit);
     }
 
-    while (($pm_data = $result->fetch_assoc()) !== null) {
-
-        if (isset($pm_data['FLOGON']) && isset($pm_data['PFNICK'])) {
-            if (!is_null($pm_data['PFNICK']) && strlen($pm_data['PFNICK']) > 0) {
-                $pm_data['FNICK'] = $pm_data['PFNICK'];
-            }
-        }
-
-        if (isset($pm_data['TLOGON']) && isset($pm_data['PTNICK'])) {
-            if (!is_null($pm_data['PTNICK']) && strlen($pm_data['PTNICK']) > 0) {
-                $pm_data['TNICK'] = $pm_data['PTNICK'];
-            }
-        }
-
-        if (!isset($pm_data['FLOGON'])) $pm_data['FLOGON'] = gettext("Unknown user");
-        if (!isset($pm_data['FNICK'])) $pm_data['FNICK'] = "";
-
-        if (!isset($pm_data['TLOGON'])) $pm_data['TLOGON'] = gettext("Unknown user");
-        if (!isset($pm_data['TNICK'])) $pm_data['TNICK'] = "";
-
-        $message_array[$pm_data['MID']] = $pm_data;
-    }
-
-    pms_have_attachments($message_array);
-
-    return array(
-        'message_count' => $message_count,
-        'message_array' => $message_array
-    );
+    return pm_process_result($result, $message_count);
 }
 
 function pm_get_folder_message_counts()
@@ -653,21 +605,32 @@ function pm_get_folder_message_counts()
         PM_FOLDER_DRAFTS => 0
     );
 
-    $pm_inbox_items  = PM_INBOX_ITEMS;
-    $pm_sent_items   = PM_SENT_ITEMS;
-    $pm_outbox_items = PM_OUTBOX_ITEMS;
-    $pm_saved_out    = PM_SAVED_OUT;
-    $pm_saved_in     = PM_SAVED_IN;
-    $pm_draft_items  = PM_DRAFT_ITEMS;
+    $pm_inbox_items = PM_INBOX_ITEMS;
+    $pm_sent_items = PM_SENT_ITEMS;
+    $pm_outbox_items = PM_OUTBOX;
+    $pm_saved_items = PM_SAVED_ITEMS;
+    $pm_draft_items = PM_DRAFT_ITEMS;
 
-    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT, TYPE ";
-    $sql.= "FROM PM WHERE ((TYPE & $pm_inbox_items > 0) AND TO_UID = '{$_SESSION['UID']}') ";
-    $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '{$_SESSION['UID']}' AND SMID = 0) ";
-    $sql.= "OR ((TYPE & $pm_outbox_items > 0) AND FROM_UID = '{$_SESSION['UID']}') ";
-    $sql.= "OR ((TYPE & $pm_saved_out > 0) AND FROM_UID = '{$_SESSION['UID']}') ";
-    $sql.= "OR ((TYPE & $pm_saved_in > 0) AND TO_UID = '{$_SESSION['UID']}') ";
-    $sql.= "OR ((TYPE & $pm_draft_items > 0) AND FROM_UID = '{$_SESSION['UID']}') ";
-    $sql.= "GROUP BY TYPE";
+    $sql = "(SELECT PM_TYPE.TYPE, COUNT(DISTINCT PM.MID) AS MESSAGE_COUNT FROM PM ";
+    $sql.= "INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID) WHERE ((PM_TYPE.TYPE & $pm_inbox_items) ";
+    $sql.= "AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ((PM_TYPE.TYPE & $pm_saved_items) ";
+    $sql.= "AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ((PM_TYPE.TYPE & $pm_draft_items) ";
+    $sql.= "AND PM.FROM_UID = '{$_SESSION['UID']}') GROUP BY PM_TYPE.TYPE) UNION ";
+    $sql.= "(SELECT $pm_sent_items AS TYPE, COUNT(*) AS MESSAGE_COUNT FROM (SELECT PM.MID, ";
+    $sql.= "COUNT(PM_RECIPIENT.TO_UID) AS RECIPIENT_COUNT, COALESCE(OUTBOX.COUNT, 0) AS OUTBOX_COUNT ";
+    $sql.= "FROM PM INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
+    $sql.= "INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = PM.FROM_UID) ";
+    $sql.= "LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT FROM PM_TYPE ";
+    $sql.= "WHERE (PM_TYPE.TYPE & $pm_outbox_items) GROUP BY PM_TYPE.MID) AS OUTBOX ON (OUTBOX.MID = PM.MID) ";
+    $sql.= "WHERE (PM_TYPE.TYPE & $pm_sent_items) AND PM.FROM_UID = '{$_SESSION['UID']}' ";
+    $sql.= "GROUP BY PM.MID HAVING OUTBOX_COUNT = 0 OR OUTBOX_COUNT < RECIPIENT_COUNT) AS SENT) UNION ";
+    $sql.= "(SELECT $pm_outbox_items AS TYPE, COUNT(*) AS MESSAGE_COUNT FROM (SELECT PM.MID, ";
+    $sql.= "COUNT(PM_RECIPIENT.TO_UID) AS RECIPIENT_COUNT, COALESCE(OUTBOX.COUNT, 0) AS OUTBOX_COUNT ";
+    $sql.= "FROM PM INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
+    $sql.= "LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT FROM PM_TYPE ";
+    $sql.= "WHERE (PM_TYPE.TYPE & $pm_outbox_items) GROUP BY PM_TYPE.MID) AS OUTBOX ON (OUTBOX.MID = PM.MID) ";
+    $sql.= "WHERE PM.FROM_UID = '{$_SESSION['UID']}' GROUP BY PM.MID ";
+    $sql.= "HAVING RECIPIENT_COUNT = OUTBOX_COUNT) AS OUTBOX) ";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -681,7 +644,7 @@ function pm_get_folder_message_counts()
 
             $message_count_array[PM_FOLDER_SENT] = $pm_data_array['MESSAGE_COUNT'];
 
-        } else if ($pm_data_array['TYPE'] & PM_OUTBOX_ITEMS) {
+        } else if ($pm_data_array['TYPE'] & PM_OUTBOX) {
 
             $message_count_array[PM_FOLDER_OUTBOX] = $pm_data_array['MESSAGE_COUNT'];
 
@@ -696,7 +659,7 @@ function pm_get_folder_message_counts()
     }
 
     $sql = "SELECT COUNT(PM_SEARCH_RESULTS.MID) AS RESULT_COUNT ";
-    $sql.= "FROM PM_SEARCH_RESULTS LEFT JOIN PM ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
+    $sql.= "FROM PM_SEARCH_RESULTS INNER JOIN PM ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
     $sql.= "WHERE UID = '{$_SESSION['UID']}' AND PM.MID IS NOT NULL";
 
     if (!($result = $db->query($sql))) return false;
@@ -716,110 +679,11 @@ function pm_get_free_space($uid)
 
     $pm_max_user_messages = forum_get_setting('pm_max_user_messages', null, 100);
 
-    $pm_inbox_items  = PM_INBOX_ITEMS;
-    $pm_sent_items   = PM_SENT_ITEMS;
-    $pm_outbox_items = PM_OUTBOX_ITEMS;
-    $pm_saved_out    = PM_SAVED_OUT;
-    $pm_saved_in     = PM_SAVED_IN;
-    $pm_draft_items  = PM_DRAFT_ITEMS;
-
-    $sql = "SELECT COUNT(MID) AS MESSAGE_COUNT ";
-    $sql.= "FROM PM WHERE ((TYPE & $pm_inbox_items > 0) AND TO_UID = '$uid') ";
-    $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid' AND SMID = 0) ";
-    $sql.= "OR ((TYPE & $pm_outbox_items > 0) AND FROM_UID = '$uid') ";
-    $sql.= "OR ((TYPE & $pm_saved_out > 0) AND FROM_UID = '$uid') ";
-    $sql.= "OR ((TYPE & $pm_saved_in > 0) AND TO_UID = '$uid') ";
-    $sql.= "OR ((TYPE & $pm_draft_items > 0) AND FROM_UID = '$uid')";
-
-    if (!($result = $db->query($sql))) return false;
-
-    list($pm_user_message_count) = $result->fetch_row();
+    $pm_user_message_count = array_sum(pm_get_folder_message_counts());
 
     if ($pm_user_message_count > $pm_max_user_messages) return 0;
 
     return ($pm_max_user_messages - $pm_user_message_count);
-}
-
-function pm_get_user($mid)
-{
-    if (!$db = db::get()) return false;
-
-    if (!is_numeric($mid)) return false;
-
-    $sql = "SELECT USER.LOGON FROM PM ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = PM.FROM_UID) ";
-    $sql.= "WHERE PM.MID = '$mid' AND USER.UID IS NOT NULL";
-
-    if (!($result = $db->query($sql))) return false;
-
-    if ($result->num_rows == 0) return false;
-
-    list($logon) = $result->fetch_row();
-
-    return $logon;
-}
-
-function pm_user_get_friends()
-{
-    if (!$db = db::get()) return false;
-
-    if (!($table_prefix = get_table_prefix())) return false;
-
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
-
-    $user_rel = USER_FRIEND;
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "USER_PEER.RELATIONSHIP FROM `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
-    $sql.= "WHERE USER_PEER.UID = '{$_SESSION['UID']}' ";
-    $sql.= "AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
-    $sql.= "LIMIT 0, 20";
-
-    if (!($result = $db->query($sql))) return false;
-
-    $user_get_peers_array = array();
-
-    $user_get_peers_array[0] = "&lt;select recipient&gt;";
-
-    if ($result->num_rows == 0) return false;
-
-    while (($user_data = $result->fetch_assoc()) !== null) {
-
-        if (isset($user_data['LOGON'])) {
-
-            if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
-                if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
-                    $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
-                }
-            }
-
-            if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
-            if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
-
-            $user_get_peers_array[$user_data['UID']] = word_filter_add_ob_tags(format_user_name($user_data['LOGON'], $user_data['NICKNAME']), true);
-        }
-    }
-
-    return $user_get_peers_array;
-}
-
-function pm_get_subject($mid, $to_uid)
-{
-    if (!$db = db::get()) return false;
-
-    if (!is_numeric($mid)) return false;
-    if (!is_numeric($to_uid)) return false;
-
-    $sql = "SELECT SUBJECT FROM PM WHERE MID = '$mid' AND TO_UID = '$to_uid'";
-
-    if (!($result = $db->query($sql))) return false;
-
-    if ($result->num_rows == 0) return false;
-
-    list($pm_subject) = $result->fetch_row();
-
-    return $pm_subject;
 }
 
 function pm_message_get($mid)
@@ -830,42 +694,30 @@ function pm_message_get($mid)
 
     if (!is_numeric($mid)) return false;
 
-    $pm_inbox_items  = PM_INBOX_ITEMS;
-    $pm_sent_items   = PM_SENT_ITEMS;
-    $pm_outbox_items = PM_OUTBOX_ITEMS;
-    $pm_saved_out    = PM_SAVED_OUT;
-    $pm_saved_in     = PM_SAVED_IN;
-    $pm_draft_items  = PM_DRAFT_ITEMS;
+    $pm_outbox = PM_OUTBOX;
 
-    $sql = "SELECT PM.MID, PM.TYPE, PM.FROM_UID, PM.TO_UID, PM.SUBJECT, ";
-    $sql.= "PM.RECIPIENTS, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, FUSER.LOGON AS FLOGON, ";
-    $sql.= "TUSER.LOGON AS TLOGON, FUSER.NICKNAME AS FNICK, ";
-    $sql.= "TUSER.NICKNAME AS TNICK FROM PM PM ";
-    $sql.= "LEFT JOIN USER FUSER ON (PM.FROM_UID = FUSER.UID) ";
-    $sql.= "LEFT JOIN USER TUSER ON (PM.TO_UID = TUSER.UID) ";
-    $sql.= "WHERE (((PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '{$_SESSION['UID']}') ";
-    $sql.= "OR ((PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '{$_SESSION['UID']}' AND PM.SMID = 0) ";
-    $sql.= "OR ((PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '{$_SESSION['UID']}') ";
-    $sql.= "OR ((PM.TYPE & $pm_saved_out > 0) AND PM.FROM_UID = '{$_SESSION['UID']}') ";
-    $sql.= "OR ((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '{$_SESSION['UID']}') ";
-    $sql.= "OR ((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '{$_SESSION['UID']}')) ";
-    $sql.= "AND PM.MID = '$mid' LIMIT 0, 1";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM.SUBJECT, ";
+    $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, BIT_OR(PM_TYPE.TYPE) AS TYPE, USER.LOGON AS FROM_LOGON, ";
+    $sql.= "USER.NICKNAME AS FROM_NICKNAME, COUNT(PM_RECIPIENT.TO_UID) = COALESCE(OUTBOX.COUNT, 0) ";
+    $sql.= "AS EDITABLE FROM PM INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
+    $sql.= "LEFT JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = '{$_SESSION['UID']}') ";
+    $sql.= "LEFT JOIN USER ON (USER.UID = PM.FROM_UID) LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT ";
+    $sql.= "FROM PM_TYPE WHERE (PM_TYPE.TYPE & $pm_outbox) GROUP BY PM_TYPE.MID) AS OUTBOX ";
+    $sql.= "ON (OUTBOX.MID = PM.MID) WHERE PM.MID = '$mid' GROUP BY PM.MID ";
+    $sql.= "HAVING (EDITABLE = 1 AND FROM_UID = '{$_SESSION['UID']}') ";
+    $sql.= "OR TYPE IS NOT NULL";
 
     if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
-    if (!($pm_message_array = $result->fetch_assoc())) return false;
+    if (!($message_data = $result->fetch_assoc())) return false;
 
-    if (!($folder = pm_message_get_folder($mid, $pm_message_array['TYPE']))) return false;
+    pm_get_recipients($message_data);
 
-    if (($pm_message_array['TO_UID'] == $_SESSION['UID']) && ($pm_message_array['TYPE'] == PM_UNREAD) && ($folder == PM_FOLDER_INBOX)) {
-        pm_mark_as_read($mid);
-    }
+    pm_has_attachments($message_data);
 
-    pm_has_attachments($pm_message_array);
-
-    return $pm_message_array;
+    return $message_data;
 }
 
 function pm_get_content($mid)
@@ -885,7 +737,43 @@ function pm_get_content($mid)
     return $pm_content;
 }
 
-function pm_display($pm_message_array, $folder, $preview = false, $export_html = false)
+function pm_get_folder_type($folder)
+{
+    $folder_type_map = array(
+        PM_FOLDER_INBOX => PM_INBOX_ITEMS,
+        PM_FOLDER_SENT => PM_SENT_ITEMS,
+        PM_FOLDER_OUTBOX => PM_OUTBOX_ITEMS,
+        PM_FOLDER_SAVED => PM_SAVED_ITEMS,
+        PM_FOLDER_DRAFTS => PM_DRAFT_ITEMS,
+        PM_SEARCH_RESULTS => PM_ALL_ITEMS,
+    );
+
+    if (!isset($folder_type_map[$folder])) {
+        return false;
+    }
+
+    return $folder_type_map[$folder];
+}
+
+function pm_get_type_folder($type)
+{
+    $type_folder_map = array(
+        PM_INBOX_ITEMS => PM_FOLDER_INBOX,
+        PM_SENT_ITEMS => PM_FOLDER_SENT,
+        PM_OUTBOX_ITEMS => PM_FOLDER_OUTBOX,
+        PM_SAVED_ITEMS => PM_FOLDER_SAVED,
+        PM_DRAFT_ITEMS => PM_FOLDER_DRAFTS,
+        PM_ALL_ITEMS => PM_SEARCH_RESULTS,
+    );
+
+    if (!isset($type_folder_map[$type])) {
+        return false;
+    }
+
+    return $type_folder_map[$type];
+}
+
+function pm_display($message_data, $preview = false, $export_html = false)
 {
     $webtag = get_webtag();
 
@@ -904,88 +792,60 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
     echo "                    <table width=\"100%\" class=\"posthead\" cellspacing=\"1\" cellpadding=\"0\">\n";
     echo "                      <tr>\n";
 
-    if ($folder == PM_FOLDER_INBOX) {
+    if ($export_html === true) {
 
-        if ($export_html === true) {
-
-            echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;", gettext("From"), ":&nbsp;</span></td>\n";
-            echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']), true), "</span></td>\n";
-
-        } else {
-
-            echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;", gettext("From"), ":&nbsp;</span></td>\n";
-            echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['FROM_UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']), true), "</a></span></td>\n";
-        }
+        echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;", gettext("From"), ":&nbsp;</span></td>\n";
+        echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(format_user_name($message_data['FROM_LOGON'], $message_data['FROM_NICKNAME']), true), "</span></td>\n";
 
     } else {
 
-        if (isset($pm_message_array['RECIPIENTS']) && strlen(trim($pm_message_array['RECIPIENTS'])) > 0) {
-
-            $recipient_array = preg_split("/[;|,]/u", trim($pm_message_array['RECIPIENTS']));
-
-            if ($pm_message_array['TO_UID'] > 0) {
-                $recipient_array = array_unique(array_merge($recipient_array, array($pm_message_array['TLOGON'])));
-            }
-
-            if ($export_html === false) $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
-
-            echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;", gettext("To"), ":&nbsp;</span></td>\n";
-            echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span></td>\n";
-
-        } else if (is_array($pm_message_array['TLOGON'])) {
-
-            $recipient_array = array_unique($pm_message_array['TLOGON']);
-
-            if ($export_html === false) $recipient_array = array_map('user_profile_popup_callback', $recipient_array);
-
-            echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;", gettext("To"), ":&nbsp;</span></td>\n";
-            echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span></td>\n";
-
-        } else if (isset($pm_message_array['TO_UID']) && is_numeric($pm_message_array['TO_UID'])) {
-
-            if ($export_html === true) {
-
-                echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;", gettext("To"), ":&nbsp;</span></td>\n";
-                echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofromlabel\">", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), true), "</span></td>\n";
-
-            } else {
-
-                echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;", gettext("To"), ":&nbsp;</span></td>\n";
-                echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofromlabel\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), true), "</a></span></td>\n";
-            }
-
-        } else {
-
-            echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;", gettext("To"), ":&nbsp;</span></td>\n";
-            echo "                        <td align=\"left\" class=\"postbody\"><i>", gettext("No Recipients"), "</i></td>\n";
-        }
+        echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;", gettext("From"), ":&nbsp;</span></td>\n";
+        echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$message_data['FROM_UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($message_data['FROM_LOGON'], $message_data['FROM_NICKNAME']), true), "</a></span></td>\n";
     }
 
-    // Add emoticons/wikilinks and word filter tags
-    $pm_message_array['CONTENT'] = message_apply_formatting($pm_message_array['CONTENT']);
-    $pm_message_array['CONTENT'] = word_filter_add_ob_tags($pm_message_array['CONTENT']);
+    if (isset($message_data['TYPE']) && ($message_data['TYPE'] & PM_SAVED_DRAFT)) {
+
+        echo "                        <td align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\"><i>", gettext("Not Sent"), "</i>&nbsp;</span></td>\n";
+
+    } else {
+
+        echo "                        <td align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\">", format_time($message_data['CREATED']), "&nbsp;</span></td>\n";
+    }
 
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;", gettext("Subject"), ":&nbsp;</span></td>\n";
 
-    if (strlen(trim($pm_message_array['SUBJECT'])) > 0) {
+    if (strlen(trim($message_data['SUBJECT'])) > 0) {
 
-        echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags($pm_message_array['SUBJECT'], true), "</span></td>\n";
+        echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", word_filter_add_ob_tags($message_data['SUBJECT'], true), "</span></td>\n";
 
     } else {
 
         echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\"><i>", gettext("No Subject"), "</i></span></td>\n";
     }
 
-    if (isset($pm_message_array['TYPE']) && ($pm_message_array['TYPE'] & PM_SAVED_DRAFT) > 0) {
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;", gettext("To"), ":&nbsp;</span></td>\n";
 
-        echo "                        <td align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\"><i>", gettext("Not Sent"), "</i>&nbsp;</span></td>\n";
+    if (isset($message_data['RECIPIENTS']) && sizeof($message_data['RECIPIENTS']) > 0) {
+
+        echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
+
+        foreach ($message_data['RECIPIENTS'] as $recipient) {
+            echo "                          <a href=\"user_profile.php?webtag=$webtag&amp;uid={$recipient['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($recipient['LOGON'], $recipient['NICKNAME']), true), "</a>";
+        }
+
+        echo "                  </td>\n";
 
     } else {
 
-        echo "                        <td align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\">", format_time($pm_message_array['CREATED']), "&nbsp;</span></td>\n";
+        echo "                        <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">", gettext('Unknown User'), "</td>\n";
     }
+
+    $message_data['CONTENT'] = message_apply_formatting($message_data['CONTENT']);
+    $message_data['CONTENT'] = word_filter_add_ob_tags($message_data['CONTENT']);
 
     echo "                      </tr>\n";
     echo "                    </table>\n";
@@ -998,12 +858,12 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
     echo "                        <td colspan=\"3\" align=\"left\">&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td class=\"postbody\" align=\"left\">{$pm_message_array['CONTENT']}</td>\n";
+    echo "                        <td class=\"postbody\" align=\"left\">{$message_data['CONTENT']}</td>\n";
     echo "                      </tr>\n";
 
-    if (isset($pm_message_array['ATTACHMENTS']) && sizeof($pm_message_array['ATTACHMENTS']) > 0) {
+    if (isset($message_data['ATTACHMENTS']) && sizeof($message_data['ATTACHMENTS']) > 0) {
 
-        if (($attachments_array = attachments_get($pm_message_array['FROM_UID'], ATTACHMENT_FILTER_BOTH, $pm_message_array['ATTACHMENTS'])) !== false) {
+        if (($attachments_array = attachments_get($message_data['FROM_UID'], ATTACHMENT_FILTER_BOTH, $message_data['ATTACHMENTS'])) !== false) {
 
             echo "              <tr>\n";
             echo "                <td class=\"postbody\" align=\"left\">\n";
@@ -1022,31 +882,36 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
     echo "                    </table>\n";
     echo "                    <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
     echo "                      <tr>\n";
+    echo "                        <td align=\"center\">\n";
 
     if ($preview === false) {
 
-        if ($folder == PM_FOLDER_INBOX) {
+        if (($message_data['TYPE'] & PM_INBOX_ITEMS)) {
 
-            echo "                        <td align=\"center\"><img src=\"", html_style_image('post.png'), "\" border=\"0\" alt=\"", gettext("Reply"), "\" title=\"", gettext("Reply"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Reply"), "</a>&nbsp;&nbsp;<img src=\"", html_style_image('forward.png'), "\" border=\"0\" alt=\"", gettext("Forward"), "\" title=\"", gettext("Forward"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Forward"), "</a></td>\n";
+            echo "<img src=\"", html_style_image('post.png'), "\" border=\"0\" alt=\"", gettext("Reply"), "\" title=\"", gettext("Reply"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Reply"), "</a>&nbsp;\n";
 
-        } else if ($folder == PM_FOLDER_OUTBOX) {
+            if (isset($message_data['RECIPIENTS']) && sizeof($message_data['RECIPIENTS']) > 1) {
+                echo "<img src=\"", html_style_image('reply_all.png'), "\" border=\"0\" alt=\"", gettext("Reply All"), "\" title=\"", gettext("Reply All"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyall={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Reply All"), "</a>&nbsp;\n";
+            }
 
-            echo "                        <td align=\"center\"><img src=\"", html_style_image('post.png'), "\" border=\"0\" alt=\"", gettext("Edit"), "\" title=\"", gettext("Edit"), "\" />&nbsp;<a href=\"pm_edit.php?webtag=$webtag&amp;mid={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Edit"), "</a>&nbsp;&nbsp;<img src=\"", html_style_image('forward.png'), "\" border=\"0\" alt=\"", gettext("Forward"), "\" title=\"", gettext("Forward"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Forward"), "</a></td>\n";
+            echo "<img src=\"", html_style_image('forward.png'), "\" border=\"0\" alt=\"", gettext("Forward"), "\" title=\"", gettext("Forward"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Forward"), "</a>&nbsp;\n";
 
-        } else if ($folder == PM_FOLDER_DRAFTS) {
+        } else if (($message_data['TYPE'] & PM_OUTBOX_ITEMS)) {
 
-            echo "                        <td align=\"center\"><img src=\"", html_style_image('edit.png'), "\" border=\"0\" alt=\"", gettext("Edit"), "\" title=\"", gettext("Edit"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;editmsg={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Edit"), "</a></td>\n";
+            echo "<img src=\"", html_style_image('post.png'), "\" border=\"0\" alt=\"", gettext("Edit"), "\" title=\"", gettext("Edit"), "\" />&nbsp;<a href=\"pm_edit.php?webtag=$webtag&amp;mid={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Edit"), "</a>&nbsp;\n";
+            echo "<img src=\"", html_style_image('forward.png'), "\" border=\"0\" alt=\"", gettext("Forward"), "\" title=\"", gettext("Forward"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Forward"), "</a>&nbsp;\n";
+
+        } else if (($message_data['TYPE'] & PM_DRAFT_ITEMS)) {
+
+            echo "<img src=\"", html_style_image('edit.png'), "\" border=\"0\" alt=\"", gettext("Edit"), "\" title=\"", gettext("Edit"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;editmsg={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Edit"), "</a>&nbsp;\n";
 
         } else {
 
-            echo "                        <td align=\"center\"><img src=\"", html_style_image('forward.png'), "\" border=\"0\" alt=\"", gettext("Forward"), "\" title=\"", gettext("Forward"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Forward"), "</a></td>\n";
+            echo "<img src=\"", html_style_image('forward.png'), "\" border=\"0\" alt=\"", gettext("Forward"), "\" title=\"", gettext("Forward"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Forward"), "</a>&nbsp;\n";
         }
-
-    } else {
-
-        echo "                        <td align=\"center\">&nbsp;</td>\n";
     }
 
+    echo "                        </td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
@@ -1061,67 +926,17 @@ function pm_display($pm_message_array, $folder, $preview = false, $export_html =
     echo "</div>\n";
 }
 
-function pm_display_html_export($pm_message_array, $folder)
+function pm_display_html_export($message_data)
 {
     ob_start();
 
-    pm_display($pm_message_array, $folder, true, true);
+    pm_display($message_data, true, true);
 
     $pm_message_html = ob_get_contents();
 
     ob_end_clean();
 
     return word_filter_remove_ob_tags($pm_message_html);
-}
-
-function pm_message_get_folder($mid, $type = 0)
-{
-    if (!$db = db::get()) return false;
-
-    if (!is_numeric($mid)) return false;
-
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
-
-    $pm_message_type_array = array(
-        1 => PM_FOLDER_OUTBOX,
-        2 => PM_FOLDER_INBOX,
-        4 => PM_FOLDER_INBOX,
-        8 => PM_FOLDER_SENT,
-        16 => PM_FOLDER_SAVED,
-        32 => PM_FOLDER_SAVED,
-        64 => PM_FOLDER_DRAFTS
-    );
-
-    $pm_inbox_items  = PM_INBOX_ITEMS;
-    $pm_sent_items   = PM_SENT_ITEMS;
-    $pm_outbox_items = PM_OUTBOX_ITEMS;
-    $pm_saved_out    = PM_SAVED_OUT;
-    $pm_saved_in     = PM_SAVED_IN;
-    $pm_draft_items  = PM_DRAFT_ITEMS;
-
-    // Check the passed type before doing a query.
-    if (in_array($type, array_keys($pm_message_type_array), true)) {
-        return $pm_message_type_array[$type];
-    }
-
-    // Fetch the message type as specified by the MID
-    $sql = "SELECT TYPE FROM PM WHERE MID = '$mid' ";
-    $sql.= "AND (((TYPE & $pm_inbox_items > 0) AND TO_UID = '{$_SESSION['UID']}') ";
-    $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '{$_SESSION['UID']}' AND SMID = 0) ";
-    $sql.= "OR ((TYPE & $pm_outbox_items > 0) AND FROM_UID = '{$_SESSION['UID']}') ";
-    $sql.= "OR ((TYPE & $pm_saved_out > 0) AND FROM_UID = '{$_SESSION['UID']}') ";
-    $sql.= "OR ((TYPE & $pm_saved_in > 0) AND TO_UID = '{$_SESSION['UID']}') ";
-    $sql.= "OR ((TYPE & $pm_draft_items > 0) AND FROM_UID = '{$_SESSION['UID']}')) ";
-
-    if (!($result = $db->query($sql))) return false;
-
-    list($pm_message_type) = $result->fetch_row();
-
-    if (in_array($pm_message_type, array_keys($pm_message_type_array))) {
-        return $pm_message_type_array[$pm_message_type];
-    }
-
-    return false;
 }
 
 function pm_add_attachment($mid, $aid)
@@ -1139,153 +954,206 @@ function pm_add_attachment($mid, $aid)
     return true;
 }
 
-function pm_send_message($to_uid, $from_uid, $subject, $content)
+function pm_send_message($from_uid, $to_user_array, $subject, $content, $reply_mid = null)
 {
     if (!$db = db::get()) return false;
 
-    if (!is_numeric($to_uid)) return false;
     if (!is_numeric($from_uid)) return false;
 
-    // Escape the subject and content for insertion into database.
-    $subject_escaped = $db->escape($subject);
-    $content_escaped = $db->escape($content);
+    if (!is_array($to_user_array)) return false;
 
-    // PM_OUTBOX constant.
-    $pm_outbox = PM_OUTBOX;
+    if (!is_numeric($reply_mid) && !is_null($reply_mid)) return false;
 
-    $current_datetime = date(MYSQL_DATETIME, time());
+    foreach ($to_user_array as $to_user) {
 
-    // Insert the main PM Data into the database
-    $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
-    $sql.= "CREATED, NOTIFIED) VALUES ('$pm_outbox', '$to_uid', '$from_uid', ";
-    $sql.= "'$subject_escaped', '', CAST('$current_datetime' AS DATETIME), 0)";
-
-    if ($db->query($sql)) {
-
-        $new_mid = $db->insert_id;
-
-        // Insert the PM Content into the database
-        $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
-        $sql.= "VALUES ('$new_mid', '$content_escaped')";
-
-        if (!$db->query($sql)) return false;
-
-        // Check to see if we should be adding a 'Sent Item'
-        $user_prefs = user_get_prefs($from_uid);
-
-        if (isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
-
-            if (!pm_add_sent_item($new_mid, $to_uid, $from_uid, $subject, $content)) return false;
+        if (!isset($to_user['UID']) || !is_numeric($to_user['UID'])) {
+             return false;
         }
-
-        return $new_mid;
     }
-
-    return false;
-}
-
-function pm_add_sent_item($sent_item_mid, $to_uid, $from_uid, $subject, $content)
-{
-    if (!$db = db::get()) return false;
-
-    if (!is_numeric($sent_item_mid)) return false;
-    if (!is_numeric($to_uid)) return false;
-    if (!is_numeric($from_uid)) return false;
-
-    // Escape the subject and content for insertion into database.
-    $subject_escaped = $db->escape($subject);
-    $content_escaped = $db->escape($content);
-
-    // PM_SENT constant.
-    $pm_sent = PM_SENT;
-
-    // Current datetime
-    $current_datetime = date(MYSQL_DATETIME, time());
-
-    // Insert the main PM Data into the database
-    $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
-    $sql.= "CREATED, NOTIFIED, SMID) VALUES ('$pm_sent', '$to_uid', '$from_uid', ";
-    $sql.= "'$subject_escaped', '', CAST('$current_datetime' AS DATETIME), ";
-    $sql.= "1, '$sent_item_mid')";
-
-    if ($db->query($sql)) {
-
-        $new_mid = $db->insert_id;
-
-        // Insert the PM Content into the database
-        $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
-        $sql.= "VALUES ('$new_mid', '$content_escaped')";
-
-        if (!$db->query($sql)) return false;
-
-        return  $new_mid;
-    }
-
-    return false;
-}
-
-function pm_save_message($subject, $content, $to_uid, $recipient_list)
-{
-    if (!$db = db::get()) return false;
-
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
-
-    if (!is_numeric($to_uid)) return false;
 
     $subject = $db->escape($subject);
-    $recipient_list = $db->escape($recipient_list);
+
     $content = $db->escape($content);
+
+    $reply_mid = is_numeric($reply_mid) ? $reply_mid : 'NULL';
+
+    $pm_outbox = PM_OUTBOX;
+
+    $pm_sent = PM_SENT;
+
+    $current_datetime = date(MYSQL_DATETIME, time());
+
+    $sql = "INSERT INTO PM (SUBJECT, REPLY_TO_MID, FROM_UID, CREATED) ";
+    $sql.= "VALUES ('$subject', $reply_mid, '$from_uid', CAST('$current_datetime' AS DATETIME))";
+
+    if (!$db->query($sql)) return false;
+
+    $new_mid = $db->insert_id;
+
+    $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) VALUES ('$new_mid', '$content')";
+
+    if (!$db->query($sql)) return false;
+
+    foreach ($to_user_array as $to_user) {
+
+        $sql = "INSERT INTO PM_RECIPIENT (MID, TO_UID, NOTIFIED) ";
+        $sql.= "VALUES ('$new_mid', '{$to_user['UID']}', 'N')";
+
+        if (!$db->query($sql)) return false;
+
+        $sql = "INSERT INTO PM_TYPE (MID, UID, TYPE) ";
+        $sql.= "VALUES ('$new_mid', '{$to_user['UID']}', '$pm_outbox')";
+
+        if (!$db->query($sql)) return false;
+    }
+
+    $user_prefs = user_get_prefs($from_uid);
+
+    if (isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
+
+        $sql = "INSERT INTO PM_TYPE (MID, UID, TYPE) ";
+        $sql.= "VALUES ('$new_mid', '$from_uid', '$pm_sent')";
+
+        if (!$db->query($sql)) return false;
+    }
+
+    return $new_mid;
+}
+
+function pm_save_message($from_uid, $to_user_array, $subject, $content, $reply_mid = null)
+{
+    if (!$db = db::get()) return false;
+
+    if (!is_numeric($from_uid)) return false;
+
+    if (!is_array($to_user_array)) return false;
+
+    if (!is_numeric($reply_mid) && !is_null($reply_mid)) return false;
+
+    foreach ($to_user_array as $to_user) {
+
+        if (!isset($to_user['UID']) || !is_numeric($to_user['UID'])) {
+             return false;
+        }
+    }
+
+    $subject = $db->escape($subject);
+
+    $content = $db->escape($content);
+
+    $reply_mid = is_numeric($reply_mid) ? $reply_mid : 'NULL';
 
     $pm_saved_draft = PM_SAVED_DRAFT;
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
-    if (pm_get_free_space($_SESSION['UID']) > 0) {
+    $sql = "INSERT INTO PM (SUBJECT, REPLY_TO_MID, FROM_UID, CREATED) ";
+    $sql.= "VALUES ('$subject', $reply_mid, '$from_uid', CAST('$current_datetime' AS DATETIME))";
 
-        // Insert the main PM Data into the database
-        $sql = "INSERT INTO PM (TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
-        $sql.= "CREATED, NOTIFIED) VALUES ('$pm_saved_draft', '$to_uid', ";
-        $sql.= "'{$_SESSION['UID']}', '$subject', '$recipient_list', ";
-        $sql.= "CAST('$current_datetime' AS DATETIME), 0)";
+    if (!$db->query($sql)) return false;
 
-        if ($db->query($sql)) {
+    $new_mid = $db->insert_id;
 
-            $new_mid = $db->insert_id;
+    $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) VALUES ('$new_mid', '$content')";
 
-            // Insert the PM Content into the database
-            $sql = "INSERT INTO PM_CONTENT (MID, CONTENT) ";
-            $sql.= "VALUES ('$new_mid', '$content')";
+    if (!$db->query($sql)) return false;
 
-            if (!$db->query($sql)) return false;
+    foreach ($to_user_array as $to_user) {
 
-            return  $new_mid;
-        }
+        $sql = "INSERT INTO PM_RECIPIENT (MID, TO_UID, NOTIFIED) ";
+        $sql.= "VALUES ('$new_mid', '{$to_user['UID']}', 'N')";
+
+        if (!$db->query($sql)) return false;
     }
 
-    return false;
+    $sql = "INSERT INTO PM_TYPE (MID, UID, TYPE) ";
+    $sql.= "VALUES ('$new_mid', '$from_uid', '$pm_saved_draft')";
+
+    if (!$db->query($sql)) return false;
+
+    return $new_mid;
 }
 
-function pm_update_saved_message($mid, $subject, $content, $to_uid, $recipient_list)
+function pm_send_saved_message($mid, $from_uid, $to_user_array, $subject, $content, $reply_mid = null)
 {
     if (!$db = db::get()) return false;
 
-    if (!is_numeric($mid)) return false;
-    if (!is_numeric($to_uid)) return false;
+    if (!pm_update_saved_message($mid, $from_uid, $to_user_array, $subject, $content, $reply_mid)) return false;
+
+    $sql = "DELETE FROM PM_TYPE WHERE PM_TYPE.MID = '$mid'";
+
+    if (!$db->query($sql)) return false;
+
+    $pm_sent = PM_SENT;
+    $pm_outbox = PM_OUTBOX;
+
+    foreach ($to_user_array as $to_user) {
+
+        $sql = "INSERT INTO PM_TYPE (MID, UID, TYPE) ";
+        $sql.= "VALUES ('$mid', '{$to_user['UID']}', '$pm_outbox')";
+
+        if (!$db->query($sql)) return false;
+    }
+
+    $user_prefs = user_get_prefs($from_uid);
+
+    if (isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
+
+        $sql = "INSERT INTO PM_TYPE (MID, UID, TYPE) ";
+        $sql.= "VALUES ('$mid', '$from_uid', '$pm_sent')";
+
+        if (!$db->query($sql)) return false;
+    }
+
+    return $mid;
+}
+
+function pm_update_saved_message($mid, $from_uid, $to_user_array, $subject, $content, $reply_mid = null)
+{
+    if (!$db = db::get()) return false;
+
+    if (!is_numeric($from_uid)) return false;
+
+    if (!is_array($to_user_array)) return false;
+
+    if (!is_numeric($reply_mid) && !is_null($reply_mid)) return false;
+
+    foreach ($to_user_array as $to_user) {
+
+        if (!isset($to_user['UID']) || !is_numeric($to_user['UID'])) {
+             return false;
+        }
+    }
 
     $subject = $db->escape($subject);
+
     $content = $db->escape($content);
 
-    $recipient_list = $db->escape($recipient_list);
+    $reply_mid = is_numeric($reply_mid) ? $reply_mid : 'NULL';
 
-    // Update the subject text
-    $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject', TO_UID = '$to_uid', ";
-    $sql.= "RECIPIENTS = '$recipient_list' WHERE MID = '$mid'";
+    $pm_saved_draft = PM_SAVED_DRAFT;
+
+    $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject', ";
+    $sql.= "REPLY_TO_MID = $reply_mid, FROM_UID = '$from_uid' ";
+    $sql.= "WHERE MID = '$mid'";
 
     if (!$db->query($sql)) return false;
 
-    // Update the content
     $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content' WHERE MID = '$mid'";
+
     if (!$db->query($sql)) return false;
+
+    $sql = "DELETE FROM PM_RECIPIENT WHERE MID = '$mid'";
+
+    if (!$db->query($sql)) return false;
+
+    foreach ($to_user_array as $to_user) {
+
+        $sql = "INSERT INTO PM_RECIPIENT (MID, TO_UID, NOTIFIED) ";
+        $sql.= "VALUES ('$mid', '{$to_user['UID']}', 'N')";
+
+        if (!$db->query($sql)) return false;
+    }
 
     return true;
 }
@@ -1296,42 +1164,15 @@ function pm_edit_message($mid, $subject, $content)
 
     if (!is_numeric($mid)) return false;
 
-    $subject_escaped = $db->escape($subject);
-    $content_escaped = $db->escape($content);
-
-    // Update the subject text
-    $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject_escaped' WHERE MID = '$mid'";
-    if (!$db->query($sql)) return false;
-
-    // Update the content
-    $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content_escaped' WHERE MID = '$mid'";
-    if (!$db->query($sql)) return false;
-
-    return pm_update_sent_item($mid, $subject, $content);
-}
-
-function pm_update_sent_item($mid, $subject, $content)
-{
-    if (!$db = db::get()) return false;
-
-    if (!is_numeric($mid)) return false;
-
     $subject = $db->escape($subject);
     $content = $db->escape($content);
 
-    // Query the database for the sent item's MID
-    $sql = "SELECT MID FROM PM WHERE SMID = '$mid'";
-    if (!($result = $db->query($sql))) return false;
+    $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject' WHERE MID = '$mid'";
 
-    // Fetch the SMID.
-    list($sent_item_mid) = $result->fetch_row();
-
-    // Update the sent items subject text
-    $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject' WHERE MID = '$sent_item_mid'";
     if (!$db->query($sql)) return false;
 
-    // Update the sent item content
-    $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content' WHERE MID = '$sent_item_mid'";
+    $sql = "UPDATE LOW_PRIORITY PM_CONTENT SET CONTENT = '$content' WHERE MID = '$mid'";
+
     if (!$db->query($sql)) return false;
 
     return true;
@@ -1343,56 +1184,58 @@ function pm_delete_message($mid)
 
     if (!is_numeric($mid)) return false;
 
-    $pm_inbox_items = PM_INBOX_ITEMS;
-    $pm_outbox_items = PM_OUTBOX_ITEMS;
-    $pm_sent_items = PM_SENT_ITEMS;
-    $pm_saved_out = PM_SAVED_OUT;
-    $pm_saved_in  = PM_SAVED_IN;
-    $pm_draft_items = PM_DRAFT_ITEMS;
-
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    $sql = "SELECT PM.TYPE, PM.TO_UID, PM.FROM_UID, ";
-    $sql.= "PAF.FILENAME, PAF.HASH FROM PM PM ";
-    $sql.= "LEFT JOIN PM_ATTACHMENT_IDS PAI ON (PAI.MID = PM.MID) ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
-    $sql.= "WHERE (((PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '{$_SESSION['UID']}') OR ";
-    $sql.= "((PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '{$_SESSION['UID']}') OR ";
-    $sql.= "((PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '{$_SESSION['UID']}') OR ";
-    $sql.= "((PM.TYPE & $pm_saved_out > 0) AND PM.FROM_UID = '{$_SESSION['UID']}') OR ";
-    $sql.= "((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '{$_SESSION['UID']}') OR ";
-    $sql.= "((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '{$_SESSION['UID']}')) ";
-    $sql.= "AND PM.MID = '$mid' GROUP BY PM.MID LIMIT 1";
+    $pm_inbox_items = PM_INBOX_ITEMS;
+    $pm_outbox = PM_OUTBOX;
+    $pm_sent_items = PM_SENT_ITEMS;
+    $pm_saved_out = PM_SAVED_OUT;
+    $pm_saved_in = PM_SAVED_IN;
+    $pm_draft_items = PM_DRAFT_ITEMS;
+
+    $sql = "DELETE FROM PM_TYPE USING PM_TYPE INNER JOIN PM ON (PM.MID = PM_TYPE.MID) ";
+    $sql.= "WHERE (((PM_TYPE.TYPE & $pm_inbox_items) AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ";
+    $sql.= "((PM_TYPE.TYPE & $pm_outbox) AND PM.FROM_UID = '{$_SESSION['UID']}') OR ";
+    $sql.= "((PM_TYPE.TYPE & $pm_sent_items) AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ";
+    $sql.= "((PM_TYPE.TYPE & $pm_saved_out) AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ";
+    $sql.= "((PM_TYPE.TYPE & $pm_saved_in) AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ";
+    $sql.= "((PM_TYPE.TYPE & $pm_draft_items) AND PM.FROM_UID = '{$_SESSION['UID']}')) ";
+    $sql.= "AND PM_TYPE.MID = '$mid'";
 
     if (!($result = $db->query($sql))) return false;
 
-    if ($result->num_rows == 0) return false;
+    $sql = "DELETE FROM PM, PM_CONTENT, PM_RECIPIENT USING PM ";
+    $sql.= "LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
+    $sql.= "LEFT JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
+    $sql.= "LEFT JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID) ";
+    $sql.= "WHERE PM_TYPE.MID IS NULL AND PM.MID = '$mid'";
 
-    $result_row = $result->fetch_assoc();
+    if (!($result = $db->query($sql))) return false;
 
-    if ($result_row['TYPE'] == PM_SENT && isset($result_row['AID'])) {
-        attachments_delete($result_row['HASH']);
+    $sql = "SELECT PAF.HASH FROM POST_ATTACHMENT_FILES PAF ";
+    $sql.= "INNER JOIN PM_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql.= "LEFT JOIN PM ON (PM.MID = PAI.MID) WHERE PM.MID IS NULL ";
+    $sql.= "AND PAI.MID = '$mid'";
+
+    if (!($result = $db->query($sql))) return false;
+
+    while (($attachment_data = $result->fetch_assoc()) !== null) {
+        attachments_delete($attachment_data['HASH']);
     }
-
-    $sql = "DELETE QUICK FROM PM WHERE MID = '$mid'";
-
-    if (!($result = $db->query($sql))) return false;
-
-    $sql = "DELETE QUICK FROM PM_CONTENT WHERE MID = '$mid'";
-
-    if (!($result = $db->query($sql))) return false;
 
     return true;
 }
 
-function pm_delete_messages($messages_array)
+function pm_delete_messages($mid_array)
 {
-    if (!is_array($messages_array)) return false;
+    if (!is_array($mid_array)) return false;
 
-    if (sizeof($messages_array) < 1) return false;
+    $mid_array = array_filter($mid_array, 'is_numeric');
 
-    foreach ($messages_array as $message) {
-        if (!pm_delete_message($message)) return false;
+    if (sizeof($mid_array) < 1) return false;
+
+    foreach ($mid_array as $mid) {
+        if (!pm_delete_message($mid)) return false;
     }
 
     return true;
@@ -1413,30 +1256,32 @@ function pm_archive_message($mid)
     $pm_sent_items  = PM_SENT_ITEMS;
 
     // Archive any PM that are in the User's Inbox
-    $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_saved_in' ";
-    $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_inbox_items > 0) ";
-    $sql.= "AND TO_UID = '{$_SESSION['UID']}'";
+    $sql = "UPDATE LOW_PRIORITY PM_TYPE SET TYPE = '$pm_saved_in' ";
+    $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_inbox_items) ";
+    $sql.= "AND UID = '{$_SESSION['UID']}'";
 
     if (!$db->query($sql)) return false;
 
     // Archive any PM that are in the User's Sent Items
-    $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_saved_out' ";
-    $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_sent_items > 0) ";
-    $sql.= "AND SMID = 0 AND FROM_UID = '{$_SESSION['UID']}'";
+    $sql = "UPDATE LOW_PRIORITY PM_TYPE SET TYPE = '$pm_saved_out' ";
+    $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_sent_items) ";
+    $sql.= "AND UID = '{$_SESSION['UID']}'";
 
     if (!$db->query($sql)) return false;
 
     return true;
 }
 
-function pm_archive_messages($messages_array)
+function pm_archive_messages($mid_array)
 {
-    if (!is_array($messages_array)) return false;
+    if (!is_array($mid_array)) return false;
 
-    if (sizeof($messages_array) < 1) return false;
+    $mid_array = array_filter($mid_array, 'is_numeric');
 
-    foreach ($messages_array as $message) {
-        if (!pm_archive_message($message)) return false;
+    if (sizeof($mid_array) < 1) return false;
+
+    foreach ($mid_array as $mid) {
+        if (!pm_archive_message($mid)) return false;
     }
 
     return true;
@@ -1454,10 +1299,12 @@ function pm_get_new_messages($limit)
 
     $pm_outbox = PM_OUTBOX;
 
-    $sql = "SELECT MID, TYPE, TO_UID, FROM_UID, SUBJECT, RECIPIENTS, ";
-    $sql.= "CREATED, NOTIFIED, SMID FROM PM WHERE TYPE = '$pm_outbox' ";
-    $sql.= "AND TO_UID = '{$_SESSION['UID']}' ORDER BY CREATED ASC ";
-    $sql.= "LIMIT $limit";
+    $sql = "SELECT PM.MID, PM_TYPE.TYPE, PM.FROM_UID, PM_TYPE.UID, PM.SUBJECT, ";
+    $sql.= "PM.CREATED, PM_RECIPIENT.NOTIFIED FROM PM INNER JOIN PM_RECIPIENT ";
+    $sql.= "ON (PM_RECIPIENT.MID = PM.MID) INNER JOIN PM_TYPE ";
+    $sql.= "ON (PM_TYPE.MID = PM.MID) WHERE PM_TYPE.TYPE = '$pm_outbox' ";
+    $sql.= "AND PM_TYPE.UID = '{$_SESSION['UID']}' AND PM_RECIPIENT.NOTIFIED = 'N' ";
+    $sql.= "ORDER BY PM.CREATED ASC LIMIT $limit";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1494,38 +1341,35 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
     $pm_free_space = pm_get_free_space($_SESSION['UID']);
 
     // Get a list of messages we have received.
-    if (($messages_array = pm_get_new_messages($pm_free_space)) !== false) {
+    if (($message_array = pm_get_new_messages($pm_free_space)) !== false) {
 
         // Convert the array keys into a comma separated list.
-        $mid_list = implode(',', array_filter(array_keys($messages_array), 'is_numeric'));
+        $mid_list = implode(',', array_filter(array_keys($message_array), 'is_numeric'));
 
-        // Mark the selected messages as unread / received and make the
-        // sent items visible to the sender.
-        $sql = "UPDATE LOW_PRIORITY PM SET TYPE = '$pm_unread' WHERE MID in ($mid_list) ";
-        $sql.= "AND TO_UID = '{$_SESSION['UID']}'";
-
-        if (!($result = $db->query($sql))) return false;
-
-        $sql = "UPDATE LOW_PRIORITY PM SET SMID = 0 WHERE SMID IN ($mid_list) ";
-        $sql.= "AND TYPE = '$pm_sent_item' AND TO_UID = '{$_SESSION['UID']}'";
+        // Mark the selected messages as unread and notified.
+        $sql = "UPDATE LOW_PRIORITY PM_TYPE INNER JOIN PM_RECIPIENT ";
+        $sql.= "ON (PM_TYPE.MID = PM_RECIPIENT.MID AND PM_TYPE.UID = PM_RECIPIENT.TO_UID) ";
+        $sql.= "SET PM_TYPE.TYPE = '$pm_unread', PM_RECIPIENT.NOTIFIED = 'Y' ";
+        $sql.= "WHERE PM_TYPE.MID in ($mid_list) AND PM_TYPE.UID = '{$_SESSION['UID']}' ";
+        $sql.= "AND (PM_TYPE.TYPE & $pm_outbox) ";
 
         if (!($result = $db->query($sql))) return false;
 
         // Number of new messages we've received for popup.
-        $pm_new_count = sizeof($messages_array);
+        $pm_new_count = sizeof($message_array);
     }
 
     // Unread message count.
-    $sql = "SELECT COUNT(MID) FROM PM WHERE (TYPE & $pm_unread > 0) ";
-    $sql.= "AND TO_UID = '{$_SESSION['UID']}'";
+    $sql = "SELECT COUNT(MID) FROM PM_TYPE WHERE (TYPE & $pm_unread) ";
+    $sql.= "AND UID = '{$_SESSION['UID']}'";
 
     if (!($result = $db->query($sql))) return false;
 
     list($pm_unread_count) = $result->fetch_row();
 
     // Check for any undelivered messages waiting for the user.
-    $sql = "SELECT COUNT(MID) AS OUTBOX_COUNT FROM PM ";
-    $sql.= "WHERE TYPE = '$pm_outbox' AND TO_UID = '{$_SESSION['UID']}'";
+    $sql = "SELECT COUNT(MID) AS OUTBOX_COUNT FROM PM_TYPE ";
+    $sql.= "WHERE (TYPE & $pm_outbox) AND UID = '{$_SESSION['UID']}' ";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1607,8 +1451,8 @@ function pm_get_unread_count()
     $pm_unread = PM_UNREAD;
 
     // Check to see if the user has any new PMs
-    $sql = "SELECT COUNT(MID) FROM PM WHERE (TYPE & $pm_unread > 0) ";
-    $sql.= "AND TO_UID = '{$_SESSION['UID']}'";
+    $sql = "SELECT COUNT(MID) FROM PM_TYPE WHERE (TYPE & $pm_unread) ";
+    $sql.= "AND UID = '{$_SESSION['UID']}' ";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1633,9 +1477,15 @@ function pm_user_prune_folders($uid)
         $pm_prune_length_seconds = (intval($user_prefs['PM_AUTO_PRUNE']) * DAY_IN_SECONDS);
         $pm_prune_length_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - $pm_prune_length_seconds);
 
-        $sql = "DELETE LOW_PRIORITY FROM PM WHERE (((TYPE & $pm_read > 0) AND TO_UID = '$uid') ";
-        $sql.= "OR ((TYPE & $pm_sent_items > 0) AND FROM_UID = '$uid')) ";
-        $sql.= "AND CREATED < CAST('$pm_prune_length_datetime' AS DATETIME)";
+        $sql = "DELETE LOW_PRIORITY FROM PM_TYPE USING PM_TYPE INNER JOIN PM ON (PM.MID = PM_TYPE.MID) ";
+        $sql.= "WHERE (((PM_TYPE.TYPE & $pm_read) AND PM_TYPE.UID = '$uid') ";
+        $sql.= "OR ((PM_TYPE.TYPE & $pm_sent_items) AND PM_TYPE.UID = '$uid')) ";
+        $sql.= "AND PM.CREATED < CAST('$pm_prune_length_datetime' AS DATETIME)";
+
+        if (!$db->query($sql)) return false;
+
+        $sql = "DELETE FROM PM USING PM LEFT JOIN PM_TYPE ";
+        $sql.= "ON (PM_TYPE.MID = PM.MID) WHERE PM_TYPE.MID IS NULL";
 
         if (!$db->query($sql)) return false;
     }
@@ -1655,8 +1505,14 @@ function pm_system_prune_folders()
         $pm_prune_length_seconds = ($pm_prune_length * DAY_IN_SECONDS);
         $pm_prune_length_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - $pm_prune_length_seconds);
 
-        $sql = "DELETE LOW_PRIORITY FROM PM WHERE ((TYPE & $pm_read > 0) OR (TYPE & $pm_sent_items > 0)) ";
-        $sql.= "AND CREATED < CAST('$pm_prune_length_datetime' AS DATETIME)";
+        $sql = "DELETE LOW_PRIORITY FROM PM_TYPE USING PM_TYPE INNER JOIN PM ON (PM.MID = PM_TYPE.MID) ";
+        $sql.= "WHERE ((PM_TYPE.TYPE & $pm_read) OR (PM_TYPE.TYPE & $pm_sent_items)) ";
+        $sql.= "AND PM.CREATED < CAST('$pm_prune_length_datetime' AS DATETIME)";
+
+        if (!$db->query($sql)) return false;
+
+        $sql = "DELETE FROM PM USING PM LEFT JOIN PM_TYPE ";
+        $sql.= "ON (PM_TYPE.MID = PM.MID) WHERE PM_TYPE.MID IS NULL";
 
         if (!$db->query($sql)) return false;
     }
@@ -1677,13 +1533,13 @@ function pm_auto_prune_enabled()
     return ($pm_prune_length > 0);
 }
 
-function pms_have_attachments(&$messages_array)
+function pms_have_attachments(&$message_array)
 {
-    if (!is_array($messages_array)) return false;
+    if (!is_array($message_array)) return false;
 
-    if (sizeof($messages_array) < 1) return false;
+    $mid_list = implode(',', array_filter(array_keys($message_array), 'is_numeric'));
 
-    $mid_list = implode(',', array_filter(array_keys($messages_array), 'is_numeric'));
+    if (sizeof($message_array) < 1) return false;
 
     if (!$db = db::get()) return false;
 
@@ -1695,7 +1551,7 @@ function pms_have_attachments(&$messages_array)
     if (!($result = $db->query($sql))) return false;
 
     while (($pm_attachment_data = $result->fetch_assoc()) !== null) {
-        $messages_array[$pm_attachment_data['MID']]['ATTACHMENT_COUNT'] = $pm_attachment_data['ATTACHMENT_COUNT'];
+        $message_array[$pm_attachment_data['MID']]['ATTACHMENT_COUNT'] = $pm_attachment_data['ATTACHMENT_COUNT'];
     }
 
     return true;
@@ -1706,6 +1562,8 @@ function pm_has_attachments(&$message_data)
     if (!isset($message_data['MID'])) return false;
 
     if (!is_numeric($message_data['MID'])) return false;
+
+    $message_data['ATTACHMENTS'] = array();
 
     if (!$db = db::get()) return false;
 
@@ -1725,7 +1583,16 @@ function pm_has_attachments(&$message_data)
 function pm_export_folders($pm_folders_array, $options_array)
 {
     if (!is_array($pm_folders_array)) return false;
+
     if (!is_array($options_array)) return false;
+
+    $zip = new ZipArchive();
+
+    $zip_filename = tempnam(sys_get_temp_dir(), 'bhpe');
+
+    if (!($zip->open($zip_filename, ZipArchive::CREATE))) {
+        return false;
+    }
 
     $messages_array = array();
 
@@ -1764,13 +1631,24 @@ function pm_export_folders($pm_folders_array, $options_array)
         }
 
         if (sizeof($folder_messages_array) > 0) {
-            $messages_array+= $folder_messages_array['message_array'];
+            $messages_array = array_merge($messages_array, $folder_messages_array['message_array']);
         }
     }
 
-    if (!pm_export_messages($messages_array, $options_array)) return false;
+    pm_export_messages($messages_array, $zip, $options_array);
 
-    return true;
+    $zip->close();
+
+    $file_size = filesize($zip_filename);
+
+    while (@ob_end_clean());
+
+    header("Content-Length: $file_size");
+    header("Content-Type: application/zip");
+    header("Content-Disposition: attachment; filename=\"pm_backup_{$_SESSION['LOGON']}.zip\"");
+
+    readfile($zip_filename);
+    exit;
 }
 
 function pm_export_html_top($message = null)
@@ -1786,8 +1664,8 @@ function pm_export_html_top($message = null)
         $html.= "<title>". gettext("Messages"). "</title>\n";
     }
 
-    if (@file_exists("styles/style.css")) {
-        $html.= "<link rel=\"stylesheet\" href=\"styles/style.css\" type=\"text/css\" />\n";
+    if (($user_style = html_get_style_sheet())) {
+        $html.= "<link rel=\"stylesheet\" href=\"". html_get_forum_domain(). $user_style. "\" type=\"text/css\" media=\"screen\" />";
     }
 
     $html.= "</head>\n";
@@ -1804,11 +1682,11 @@ function pm_export_html_bottom()
     return $html;
 }
 
-function pm_export_messages($messages_array, $options_array = array())
+function pm_export_messages($message_array, ZipArchive $zip, $options_array = array())
 {
-    if (!is_array($messages_array)) return false;
+    if (!is_array($message_array)) return false;
 
-    if (sizeof($messages_array) < 1) return false;
+    if (sizeof($message_array) < 1) return false;
 
     if (!isset($_SESSION['LOGON']) || strlen(trim($_SESSION['LOGON'])) == 0) return false;
 
@@ -1816,19 +1694,10 @@ function pm_export_messages($messages_array, $options_array = array())
 
     if (!isset($options_array['PM_EXPORT_TYPE'])) {
 
-        if (isset($_SESSION['PM_EXPORT_TYPE']) && in_array($_SESSION['PM_EXPORT_TYPE'], array(PM_EXPORT_CSV, PM_EXPORT_HTML, PM_EXPORT_XML))) {
+        if (isset($_SESSION['PM_EXPORT_TYPE']) && in_array($_SESSION['PM_EXPORT_TYPE'], array(PM_EXPORT_HTML, PM_EXPORT_XML))) {
             $options_array['PM_EXPORT_TYPE'] = $_SESSION['PM_EXPORT_TYPE'];
         } else {
             $options_array['PM_EXPORT_TYPE'] = PM_EXPORT_HTML;
-        }
-    }
-
-    if (!isset($options_array['PM_EXPORT_STYLE'])) {
-
-        if (isset($_SESSION['PM_EXPORT_STYLE']) && in_array($_SESSION['PM_EXPORT_STYLE'], array('Y', 'N'))) {
-            $options_array['PM_EXPORT_STYLE'] = $_SESSION['PM_EXPORT_STYLE'];
-        } else {
-            $options_array['PM_EXPORT_STYLE'] = 'Y';
         }
     }
 
@@ -1841,59 +1710,29 @@ function pm_export_messages($messages_array, $options_array = array())
         }
     }
 
-    $zip = new ZipArchive();
-
-    $zip_filename = tempnam(sys_get_temp_dir(), 'bhpe');
-
-    if (!($zip->open($zip_filename, ZipArchive::CREATE))) {
-        return false;
-    }
-
-    if (($options_array['PM_EXPORT_STYLE'] == "Y") && (@file_exists("styles/style.css"))) {
-
-        $zip->addEmptyDir("styles");
-        $zip->addFile("styles/style.css", "styles/style.css");
-    }
-
     switch ($options_array['PM_EXPORT_TYPE']) {
 
         case PM_EXPORT_HTML:
 
-            if (!pm_export_html($messages_array, $zip, $options_array)) return false;
+            if (!pm_export_html($message_array, $zip, $options_array)) return false;
             break;
 
         case PM_EXPORT_XML:
 
-            if (!pm_export_xml($messages_array, $zip, $options_array)) return false;
-            break;
-
-        case PM_EXPORT_CSV:
-
-            if (!pm_export_csv($messages_array, $zip, $options_array)) return false;
+            if (!pm_export_xml($message_array, $zip, $options_array)) return false;
             break;
     }
 
     if ($options_array['PM_EXPORT_ATTACHMENTS'] == "Y") {
-        pm_export_attachments($messages_array, $zip);
+        pm_export_attachments($message_array, $zip);
     }
 
-    $zip->close();
-
-    $file_size = filesize($zip_filename);
-
-    while(@ob_end_clean());
-
-    header("Content-Length: $file_size");
-    header("Content-Type: application/zip");
-    header("Content-Disposition: attachment; filename=\"pm_backup_{$_SESSION['LOGON']}.zip\"");
-
-    readfile($zip_filename);
-    exit;
+    return true;
 }
 
-function pm_export_html($messages_array, ZipArchive $zip, $options_array = array())
+function pm_export_html($message_array, ZipArchive $zip, $options_array = array())
 {
-    if (!is_array($messages_array)) return false;
+    if (!is_array($message_array)) return false;
 
     if (!is_array($options_array)) $options_array = array();
 
@@ -1919,11 +1758,10 @@ function pm_export_html($messages_array, ZipArchive $zip, $options_array = array
         $pm_display = pm_export_html_top();
     }
 
-    if (sizeof($messages_array) == 0) return false;
+    if (sizeof($message_array) == 0) return false;
 
-    foreach ($messages_array as $message) {
+    foreach ($message_array as $message) {
 
-        $message['FOLDER'] = pm_message_get_folder($message['MID']);
         $message['CONTENT'] = pm_get_content($message['MID']);
 
         if ($options_array['PM_EXPORT_WORDFILTER'] == 'Y') {
@@ -1934,7 +1772,7 @@ function pm_export_html($messages_array, ZipArchive $zip, $options_array = array
             $pm_display = pm_export_html_top($message);
         }
 
-        $pm_display.= pm_display_html_export($message, $message['FOLDER']);
+        $pm_display.= pm_display_html_export($message);
 
         if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_SINGLE) {
             $pm_display.= "<br />\n";
@@ -1958,9 +1796,9 @@ function pm_export_html($messages_array, ZipArchive $zip, $options_array = array
     return true;
 }
 
-function pm_export_xml($messages_array, ZipArchive $zip, $options_array = array())
+function pm_export_xml($message_array, ZipArchive $zip, $options_array = array())
 {
-    if (!is_array($messages_array)) return false;
+    if (!is_array($message_array)) return false;
 
     if (!is_array($options_array)) $options_array = array();
 
@@ -1982,147 +1820,59 @@ function pm_export_xml($messages_array, ZipArchive $zip, $options_array = array(
         }
     }
 
-    if (sizeof($messages_array) == 0) return false;
+    if (sizeof($message_array) == 0) return false;
 
-    $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
-    $pm_display.= "  <beehiveforum>\n";
-    $pm_display.= "    <messages>\n";
+    $root_xml = new SimpleXMLElement('<beehiveforum/>');
+    $messages_xml = $root_xml->addChild('messages');
 
-    foreach ($messages_array as $message) {
+    foreach ($message_array as $message) {
 
-        $message['FOLDER'] = pm_message_get_folder($message['MID']);
         $message['CONTENT'] = pm_get_content($message['MID']);
 
         if ($options_array['PM_EXPORT_WORDFILTER'] == 'Y') {
             $message = array_map('pm_export_word_filter_apply', $message);
         }
 
-        $pm_display.= "      <message>\n";
+        $message_xml = $messages_xml->addChild('message');
 
-        foreach ($message as $key => $value) {
-            $pm_display.= sprintf('        <%1$s><![CDATA[%2$s]]></%1$s>', $key, $value);
-        }
+        $message_xml->addChild('mid', $message['CREATED']);
+        $message_xml->addChild('reply_to_mid', $message['REPLY_TO_MID']);
+        $message_xml->addChild('subject', $message['SUBJECT']);
+        $message_xml->addChild('created', $message['CREATED']);
 
-        $pm_display.= "      </message>\n";
+        $content_xml = dom_import_simplexml($message_xml);
+        $content_xml->appendChild($content_xml->ownerDocument->createCDATASection($message['CONTENT']));
 
-        if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_MANY) {
+        $from_xml = $message_xml->addChild('from');
 
-            $pm_display.= "    </messages>\n";
-            $pm_display.= "  </beehiveforum>\n";
+        $from_xml->addChild('uid', $message['FROM_UID']);
+        $from_xml->addChild('logon', $message['FROM_LOGON']);
 
-            $zip->addFromString(sprintf("message_%s.xml", $message['MID']), $pm_display);
+        $recipients_xml = $message_xml->addChild('recipients');
 
-            $pm_display = "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
-            $pm_display.= "  <beehiveforum>\n";
-            $pm_display.= "    <messages>\n";
-        }
-    }
+        if (isset($message['RECIPIENTS']) && sizeof($message['RECIPIENTS']) > 0) {
 
-    if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_SINGLE) {
+            foreach ($message['RECIPIENTS'] as $recipient) {
 
-        $pm_display.= "    </messages>\n";
-        $pm_display.= "  </beehiveforum>\n";
+                $recipient_xml = $recipients_xml->addChild('recipient');
 
-        $zip->addFromString("messages.xml", $pm_display);
-    }
-
-    return true;
-}
-
-function pm_export_csv($messages_array, ZipArchive $zip, $options_array = array())
-{
-    if (!is_array($messages_array)) return false;
-
-    if (!is_array($options_array)) $options_array = array();
-
-    if (!isset($options_array['PM_EXPORT_FILE'])) {
-
-        if (isset($_SESSION['PM_EXPORT_FILE']) && in_array($_SESSION['PM_EXPORT_FILE'], array(PM_EXPORT_SINGLE, PM_EXPORT_MANY))) {
-            $options_array['PM_EXPORT_FILE'] = $_SESSION['PM_EXPORT_FILE'];
-        } else {
-            $options_array['PM_EXPORT_FILE'] = PM_EXPORT_HTML;
-        }
-    }
-
-    if (!isset($options_array['PM_EXPORT_WORDFILTER'])) {
-
-        if (isset($_SESSION['PM_EXPORT_WORDFILTER']) && in_array($_SESSION['PM_EXPORT_WORDFILTER'], array('Y', 'N'))) {
-            $options_array['PM_EXPORT_WORDFILTER'] = $_SESSION['PM_EXPORT_WORDFILTER'];
-        } else {
-            $options_array['PM_EXPORT_WORDFILTER'] = 'Y';
-        }
-    }
-
-    if (sizeof($messages_array) == 0) return false;
-
-    $pm_csv_export = fopen('php://temp', 'w');
-
-    $pm_csv_header = array(
-        'MID',
-        'TYPE',
-        'FROM_UID',
-        'TO_UID',
-        'SUBJECT',
-        'RECIPIENTS',
-        'CREATED',
-        'FLOGON',
-        'TLOGON',
-        'FNICK',
-        'TNICK',
-        'FOLDER',
-        'CONTENT'
-    );
-
-    if (!fputcsv($pm_csv_export, $pm_csv_header)) return false;
-
-    foreach ($messages_array as $message) {
-
-        $message['FOLDER'] = pm_message_get_folder($message['MID']);
-
-        $message['CONTENT'] = preg_replace("[\r\n|\r|\n]", '\n', pm_get_content($message['MID']));
-
-        $message['CREATED'] = date('Y-m-d H:i:s', $message['CREATED']);
-
-        if ($options_array['PM_EXPORT_WORDFILTER'] == 'Y') {
-            $message = array_map('pm_export_word_filter_apply', $message);
-        }
-
-        if (!fputcsv($pm_csv_export, $message)) return false;
-
-        if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_MANY) {
-
-            rewind($pm_csv_export);
-
-            $pm_csv_contents = '';
-
-            while (!feof($pm_csv_export)) {
-                $pm_csv_contents.= fgets($pm_csv_export);
+                $recipient_xml->addChild('uid', $recipient['UID']);
+                $recipient_xml->addChild('logon', $recipient['LOGON']);
             }
+        }
 
-            $zip->addFromString(sprintf("message_%s.csv", $message['MID']), $pm_csv_contents);
+        if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_MANY) {
 
-            fclose($pm_csv_export);
+            $zip->addFromString(sprintf("message_%s.xml", $message['MID']), $root_xml->asXML());
 
-            $pm_csv_export = fopen('php://temp', 'r+');
-
-            if (!fputcsv($pm_csv_export, $pm_csv_header)) return false;
+            $root_xml = new SimpleXMLElement('<beehiveforum/>');
+            $messages_xml = $root_xml->addChild('messages');
         }
     }
 
     if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_SINGLE) {
-
-        rewind($pm_csv_export);
-
-        $pm_csv_contents = '';
-
-        while (!feof($pm_csv_export)) {
-            $pm_csv_contents.= fgets($pm_csv_export);
-        }
-
-        $zip->addFromString('messages.csv', $pm_csv_contents);
+        $zip->addFromString("messages.xml", $root_xml->asXML());
     }
-
-    fclose($pm_csv_export);
 
     return true;
 }
@@ -2133,9 +1883,9 @@ function pm_export_word_filter_apply($content)
     return word_filter_apply($content, $_SESSION['UID']);
 }
 
-function pm_export_attachments($messages_array, ZipArchive $zip)
+function pm_export_attachments($message_array, ZipArchive $zip)
 {
-    if (!is_array($messages_array)) return false;
+    if (!is_array($message_array)) return false;
 
     if (!($attachment_dir = attachments_check_dir())) return false;
 
@@ -2143,7 +1893,7 @@ function pm_export_attachments($messages_array, ZipArchive $zip)
 
     $zip->addEmptyDir("attachments");
 
-    foreach ($messages_array as $message) {
+    foreach ($message_array as $message) {
 
         if (($attachments_array = attachments_get($message['FROM_UID'], ATTACHMENT_FILTER_ASSIGNED, $message['ATTACHMENTS'])) !== false) {
 

@@ -71,12 +71,12 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 }
 
 // Get the message.
-if (!($pm_message_array = pm_message_get($mid))) {
+if (!($message_data = pm_message_get($mid))) {
     pm_edit_refuse();
 }
 
-if (isset($pm_message_array['ATTACHMENTS'])) {
-    $attachments = $pm_message_array['ATTACHMENTS'];
+if (isset($message_data['ATTACHMENTS'])) {
+    $attachments = $message_data['ATTACHMENTS'];
 } else {
     $attachments = array();
 }
@@ -121,13 +121,13 @@ if (!isset($t_content)) $t_content = "";
 
 if ($valid && isset($_POST['preview'])) {
 
-    $pm_message_array['CONTENT'] = $t_content;
+    $message_data['CONTENT'] = $t_content;
 
-    $pm_message_array['SUBJECT'] = $t_subject;
+    $message_data['SUBJECT'] = $t_subject;
 
-    $pm_message_array['FOLDER'] = PM_FOLDER_OUTBOX;
+    $message_data['FOLDER'] = PM_FOLDER_OUTBOX;
 
-	$pm_message_array['ATTACHMENTS'] = $attachments;
+	$message_data['ATTACHMENTS'] = $attachments;
 
 } else if ($valid && isset($_POST['apply'])) {
 
@@ -160,12 +160,6 @@ if ($valid && isset($_POST['preview'])) {
         $t_content = nl2br(fix_html(emoticons_strip($_POST['t_content'])));
     }
 
-    if (isset($_POST['to_radio']) && is_numeric($_POST['to_radio'])) {
-        $to_radio = $_POST['to_radio'];
-    } else {
-        $to_radio = 1;
-    }
-
     if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
         $t_to_uid = $_POST['t_to_uid'];
     } else {
@@ -186,7 +180,7 @@ if ($valid && isset($_POST['preview'])) {
 
 } else {
 
-    if ($pm_message_array['TYPE'] != PM_OUTBOX) {
+    if (!isset($message_data['EDITABLE']) || ($message_data['EDITABLE'] == 0)) {
         pm_edit_refuse();
     }
 
@@ -194,7 +188,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $t_content = $parsed_message->getMessage();
 
-    $t_subject = $pm_message_array['SUBJECT'];
+    $t_subject = $message_data['SUBJECT'];
 }
 
 light_html_draw_top(sprintf("title=%s", gettext("Edit Message")), 'js/fineuploader.min.js');
@@ -202,7 +196,7 @@ light_html_draw_top(sprintf("title=%s", gettext("Edit Message")), 'js/fineupload
 if ($valid && isset($_POST['preview'])) {
 
     echo "<h3>", gettext("Message Preview"), "</h3>\n";
-    light_pm_display($pm_message_array, PM_FOLDER_OUTBOX, true);
+    light_pm_display($message_data, true);
 }
 
 echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"lpm_edit.php\" method=\"post\" target=\"_self\">\n";
@@ -218,7 +212,23 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 echo "<div class=\"post_thread_title\">", gettext("Subject"), ":", light_form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 30, 64), "</div>\n";
-echo "<div class=\"post_to\">", gettext("To"), ":", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), true), "</div>\n";
+echo "<div class=\"post_to\">", gettext("To"), ":\n";
+echo "<div class=\"recipients\">\n";
+
+if (isset($message_data['RECIPIENTS']) && sizeof($message_data['RECIPIENTS']) > 0) {
+
+    foreach ($message_data['RECIPIENTS'] as $recipient) {
+        echo word_filter_add_ob_tags(format_user_name($recipient['LOGON'], $recipient['NICKNAME']), true), "\n";
+    }
+
+} else {
+
+    echo gettext('Unknown User');
+}
+
+echo "</div>\n";
+echo "</div>\n";
+
 echo "<div class=\"post_content\">", light_form_textarea("t_content", htmlentities_array(strip_paragraphs($t_content)), 10, 50, false, 'textarea'), "</div>\n";
 
 echo "<div class=\"post_buttons\">";

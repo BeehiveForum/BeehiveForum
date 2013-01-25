@@ -70,12 +70,12 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 }
 
 // Get the message.
-if (!($pm_message_array = pm_message_get($mid))) {
+if (!($message_data = pm_message_get($mid))) {
     pm_edit_refuse();
 }
 
-if (isset($pm_message_array['ATTACHMENTS'])) {
-    $attachments = $pm_message_array['ATTACHMENTS'];
+if (isset($message_data['ATTACHMENTS'])) {
+    $attachments = $message_data['ATTACHMENTS'];
 } else {
     $attachments = array();
 }
@@ -125,13 +125,13 @@ if (!isset($t_content)) $t_content = "";
 
 if ($valid && isset($_POST['preview'])) {
 
-    $pm_message_array['CONTENT'] = $t_content;
+    $message_data['CONTENT'] = $t_content;
 
-    $pm_message_array['SUBJECT'] = $t_subject;
+    $message_data['SUBJECT'] = $t_subject;
 
-    $pm_message_array['FOLDER'] = PM_FOLDER_OUTBOX;
+    $message_data['FOLDER'] = PM_FOLDER_OUTBOX;
 
-    $pm_message_array['ATTACHMENTS'] = $attachments;
+    $message_data['ATTACHMENTS'] = $attachments;
 
 } else if ($valid && isset($_POST['apply'])) {
 
@@ -190,7 +190,7 @@ if ($valid && isset($_POST['preview'])) {
 
 } else {
 
-    if ($pm_message_array['TYPE'] != PM_OUTBOX) {
+    if (!isset($message_data['EDITABLE']) || ($message_data['EDITABLE'] == 0)) {
         pm_edit_refuse();
     }
 
@@ -198,7 +198,7 @@ if ($valid && isset($_POST['preview'])) {
 
     $t_content = $parsed_message->getMessage();
 
-    $t_subject = $pm_message_array['SUBJECT'];
+    $t_subject = $message_data['SUBJECT'];
 }
 
 html_draw_top(sprintf("title=%s", gettext("Private Messages")), "resize_width=960", "js/attachments.js", "js/edit.js", "js/pm.js", "js/emoticons.js", 'ckeditor/ckeditor.js', 'js/fineuploader.min.js', "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
@@ -227,7 +227,7 @@ if ($valid && isset($_POST['preview'])) {
     echo "                  <td align=\"left\" class=\"subhead\">", gettext("Message Preview"), "</td>\n";
     echo "                </tr>";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\"><br />", pm_display($pm_message_array, PM_FOLDER_OUTBOX, true), "</td>\n";
+    echo "                  <td align=\"left\"><br />", pm_display($message_data, true), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -251,9 +251,13 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>", gettext("To"), "</h2></td>\n";
 echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$pm_message_array['TO_UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), true), "</a></td>\n";
-echo "                      </tr>\n";
+
+foreach ($message_data['RECIPIENTS'] as $recipient) {
+
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$recipient['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($recipient['LOGON'], $recipient['NICKNAME']), true), "</a></td>\n";
+    echo "                      </tr>\n";
+}
 
 if (isset($_SESSION['EMOTICONS']) && strlen(trim($_SESSION['EMOTICONS'])) > 0) {
     $user_emoticon_pack = $_SESSION['EMOTICONS'];

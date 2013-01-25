@@ -946,17 +946,19 @@ function light_draw_pm_inbox()
 
     forum_check_webtag_available($webtag);
 
-    // Default values
-    $pm_new_count = 0;
-    $pm_outbox_count = 0;
-    $pm_unread_count = 0;
+    $new_count = 0;
+    $outbox_count = 0;
+    $unread_count = 0;
 
-    // Check for new PMs
-    pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
+    $current_folder = PM_FOLDER_INBOX;
 
-    if (!($pm_folder_names_array = pm_get_folder_names())) {
+    pm_get_message_count($new_count, $outbox_count, $unread_count);
 
-        $pm_folder_names_array = array(
+    $error_msg_array = array();
+
+    if (!($folder_names_array = pm_get_folder_names())) {
+
+        $folder_names_array = array(
             PM_FOLDER_INBOX => gettext("Inbox"),
             PM_FOLDER_SENT => gettext("Sent Items"),
             PM_FOLDER_OUTBOX => gettext("Outbox"),
@@ -965,77 +967,85 @@ function light_draw_pm_inbox()
         );
     }
 
-    // Check to see which page we should be on
     if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-        $page = $_GET['page'];
+        $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
     } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
-        $page = $_POST['page'];
+        $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
     } else {
         $page = 1;
     }
 
     if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
-        $mid = ($_GET['mid'] > 0) ? $_GET['mid'] : 0;
-    } else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
-        $mid = ($_GET['pmid'] > 0) ? $_GET['pmid'] : 0;
-    } else if (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
-        $mid = ($_POST['mid'] > 0) ? $_POST['mid'] : 0;
-    }
 
-    $folder = PM_FOLDER_INBOX;
+        $mid = ($_GET['mid'] > 0) ? $_GET['mid'] : 0;
+
+    } else if (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
+
+        $mid = ($_POST['mid'] > 0) ? $_POST['mid'] : 0;
+
+    } else {
+
+        $mid = 0;
+    }
 
     if (isset($_GET['folder'])) {
 
         if ($_GET['folder'] == PM_FOLDER_INBOX) {
-            $folder = PM_FOLDER_INBOX;
+            $current_folder = PM_FOLDER_INBOX;
         } else if ($_GET['folder'] == PM_FOLDER_SENT) {
-            $folder = PM_FOLDER_SENT;
+            $current_folder = PM_FOLDER_SENT;
         } else if ($_GET['folder'] == PM_FOLDER_OUTBOX) {
-            $folder = PM_FOLDER_OUTBOX;
+            $current_folder = PM_FOLDER_OUTBOX;
         } else if ($_GET['folder'] == PM_FOLDER_SAVED) {
-            $folder = PM_FOLDER_SAVED;
+            $current_folder = PM_FOLDER_SAVED;
         } else if ($_GET['folder'] == PM_FOLDER_DRAFTS) {
-            $folder = PM_FOLDER_DRAFTS;
+            $current_folder = PM_FOLDER_DRAFTS;
+        } else if ($_GET['folder'] == PM_SEARCH_RESULTS) {
+            $current_folder = PM_SEARCH_RESULTS;
         }
 
     } else if (isset($_POST['folder'])) {
 
         if ($_POST['folder'] == PM_FOLDER_INBOX) {
-            $folder = PM_FOLDER_INBOX;
+            $current_folder = PM_FOLDER_INBOX;
         } else if ($_POST['folder'] == PM_FOLDER_SENT) {
-            $folder = PM_FOLDER_SENT;
+            $current_folder = PM_FOLDER_SENT;
         } else if ($_POST['folder'] == PM_FOLDER_OUTBOX) {
-            $folder = PM_FOLDER_OUTBOX;
+            $current_folder = PM_FOLDER_OUTBOX;
         } else if ($_POST['folder'] == PM_FOLDER_SAVED) {
-            $folder = PM_FOLDER_SAVED;
+            $current_folder = PM_FOLDER_SAVED;
         } else if ($_POST['folder'] == PM_FOLDER_DRAFTS) {
-            $folder = PM_FOLDER_DRAFTS;
+            $current_folder = PM_FOLDER_DRAFTS;
+        } else if ($_POST['folder'] == PM_SEARCH_RESULTS) {
+            $current_folder = PM_SEARCH_RESULTS;
         }
     }
 
-    if (isset($_GET['deletemsg']) && is_numeric($_GET['deletemsg']) && ($pm_message_array = pm_message_get($_GET['deletemsg']))) {
+    if (isset($_GET['deletemsg']) && is_numeric($_GET['deletemsg']) && ($message_data = pm_message_get($_GET['deletemsg']))) {
 
         $delete_mid = $_GET['deletemsg'];
 
-        $pm_message_array['CONTENT'] = pm_get_content($delete_mid);
+        $type = pm_get_folder_type($current_folder);
+
+        $message_data['CONTENT'] = pm_get_content($delete_mid);
 
         if (isset($_POST['pm_delete_confirm'])) {
 
-            if (pm_delete_message($delete_mid)) {
+            if (pm_delete_message($delete_mid, $type)) {
 
-                header_redirect("lpm.php?webtag=$webtag&folder=$folder&deleted=true");
+                header_redirect("lpm.php?webtag=$webtag&folder=$current_folder&deleted=true");
                 exit;
             }
 
         } else if (isset($_POST['cancel'])) {
 
-            header_redirect("lpm.php?webtag=$webtag&folder=$folder&mid=$delete_mid");
+            header_redirect("lpm.php?webtag=$webtag&folder=$current_folder&mid=$delete_mid");
             exit;
         }
 
-        echo "<form method=\"post\" action=\"lpm.php?deletemsg=$delete_mid&folder=$folder\">";
+        echo "<form method=\"post\" action=\"lpm.php?deletemsg=$delete_mid&folder=$current_folder\">";
 
-        light_pm_display($pm_message_array, $folder, true);
+        light_pm_display($message_data, true);
 
         echo "<div class=\"post_buttons\">";
         echo light_form_submit("pm_delete_confirm", gettext("Delete"));
@@ -1045,33 +1055,28 @@ function light_draw_pm_inbox()
         return;
     }
 
-    if (isset($mid) && is_numeric($mid)) {
+    if (isset($mid) && is_numeric($mid) && $mid > 0) {
 
-        if (!($folder = pm_message_get_folder($mid))) {
-
-            light_html_display_error_msg(gettext("Message not found in selected folder. Check that it hasn't been moved or deleted."));
-            return;
-        }
-
-        if (!$pm_message_array = pm_message_get($mid)) {
+        if (!($message_data = pm_message_get($mid))) {
 
             light_html_display_error_msg(gettext("Message not found. Check that it hasn't been deleted."));
-            return;
+
+        } else {
+
+            if (isset($_GET['message_sent'])) {
+                light_html_display_success_msg(gettext("Message sent successfully."));
+            } else if (isset($_GET['deleted'])) {
+                light_html_display_success_msg(gettext("Successfully deleted selected messages"));
+            } else if (isset($_GET['message_saved'])) {
+                light_html_display_success_msg(gettext("Message was successfully saved to 'Drafts' folder"));
+            }
+
+            $message_data['CONTENT'] = pm_get_content($mid);
+
+            light_pm_display($message_data);
         }
 
-        if (isset($_GET['message_sent'])) {
-            light_html_display_success_msg(gettext("Message sent successfully."));
-        } else if (isset($_GET['deleted'])) {
-            light_html_display_success_msg(gettext("Successfully deleted selected messages"));
-        } else if (isset($_GET['message_saved'])) {
-            light_html_display_success_msg(gettext("Message was successfully saved to 'Drafts' folder"));
-        }
-
-        $pm_message_array['CONTENT'] = pm_get_content($mid);
-
-        light_pm_display($pm_message_array, $folder);
-
-        echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder\" class=\"folder_list_link\">", gettext("Back to folder list"), "</a>";
+        echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder\" class=\"folder_list_link\">", gettext("Back to folder list"), "</a>";
 
     } else {
 
@@ -1083,54 +1088,54 @@ function light_draw_pm_inbox()
             light_html_display_success_msg(gettext("Message was successfully saved to 'Drafts' folder"));
         }
 
-        $pm_message_count_array = pm_get_folder_message_counts();
+        $message_count_array = pm_get_folder_message_counts();
 
         echo "<div id=\"folder_view\">\n";
         echo "<form accept-charset=\"utf-8\" method=\"get\" action=\"lpm.php\">\n";
         echo "<ul>\n";
-        echo "<li>", light_form_dropdown_array("folder", $pm_folder_names_array, $folder), "</li>\n";
+        echo "<li>", light_form_dropdown_array("folder", $folder_names_array, $current_folder), "</li>\n";
         echo "<li class=\"right_col\">", light_form_submit("go", gettext("Go!")), "</li>\n";
         echo "</ul>\n";
         echo "</form>\n";
         echo "</div>\n";
 
-        if (isset($pm_message_count_array[$folder]) && is_numeric($pm_message_count_array[$folder])) {
+        if (isset($message_count_array[$current_folder]) && is_numeric($message_count_array[$current_folder])) {
 
             echo "<div class=\"folder\">";
-            echo "  <h3>{$pm_folder_names_array[$folder]}</h3>\n";
+            echo "  <h3>{$folder_names_array[$current_folder]}</h3>\n";
             echo "  <div class=\"folder_inner\">\n";
-            echo "    <div class=\"folder_info\">{$pm_message_count_array[$folder]} ", gettext("Messages"), "</div>\n";
+            echo "    <div class=\"folder_info\">{$message_count_array[$current_folder]} ", gettext("Messages"), "</div>\n";
 
-            if ($folder == PM_FOLDER_INBOX) {
+            if ($current_folder == PM_FOLDER_INBOX) {
 
-                $pm_messages_array = pm_get_inbox(false, false, $page, 20);
+                $messages_array = pm_get_inbox(false, false, $page, 20);
 
-            } else if ($folder == PM_FOLDER_SENT) {
+            } else if ($current_folder == PM_FOLDER_SENT) {
 
-                $pm_messages_array = pm_get_sent(false, false, $page, 20);
+                $messages_array = pm_get_sent(false, false, $page, 20);
 
-            } else if ($folder == PM_FOLDER_OUTBOX) {
+            } else if ($current_folder == PM_FOLDER_OUTBOX) {
 
-                $pm_messages_array = pm_get_outbox(false, false, $page, 20);
+                $messages_array = pm_get_outbox(false, false, $page, 20);
 
-            } else if ($folder == PM_FOLDER_SAVED) {
+            } else if ($current_folder == PM_FOLDER_SAVED) {
 
-                $pm_messages_array = pm_get_saved_items(false, false, $page, 20);
+                $messages_array = pm_get_saved_items(false, false, $page, 20);
 
-            } else if ($folder == PM_FOLDER_DRAFTS) {
+            } else if ($current_folder == PM_FOLDER_DRAFTS) {
 
-                $pm_messages_array = pm_get_drafts(false, false, $page, 20);
+                $messages_array = pm_get_drafts(false, false, $page, 20);
             }
 
-            if (isset($pm_messages_array['message_array']) && sizeof($pm_messages_array['message_array']) > 0) {
+            if (isset($messages_array['message_array']) && sizeof($messages_array['message_array']) > 0) {
 
                 if ($page> 1) {
-                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;page=", ($page - 1), "\">", gettext("Previous"), "</a></div>\n";
+                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;page=", ($page - 1), "\">", gettext("Previous"), "</a></div>\n";
                 }
 
                 echo "<ul>\n";
 
-                foreach ($pm_messages_array['message_array'] as $message) {
+                foreach ($messages_array['message_array'] as $message) {
 
                     if ($message['TYPE'] == PM_UNREAD) {
                         echo "<li class=\"pm_unread\">";
@@ -1139,7 +1144,7 @@ function light_draw_pm_inbox()
                     }
 
                     echo "<span class=\"pm_title\">";
-                    echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;mid={$message['MID']}\">{$message['SUBJECT']}</a>";
+                    echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}\">{$message['SUBJECT']}</a>";
                     echo "</span>";
                     echo "<span class=\"pm_time\">", format_time($message['CREATED']), "</span>";
                     echo "</li>\n";
@@ -1147,10 +1152,10 @@ function light_draw_pm_inbox()
 
                 echo "</ul>\n";
 
-                $more_messages = $pm_message_count_array[$folder] - $page - 1;
+                $more_messages = $message_count_array[$current_folder] - $page - 1;
 
                 if ($more_messages > 0) {
-                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;page=", ($page + 1), "\">", gettext("Next"), "</a></div>\n";
+                    echo "<div class=\"folder_pagination\"><a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;page=", ($page + 1), "\">", gettext("Next"), "</a></div>\n";
                 }
             }
 
@@ -1160,17 +1165,17 @@ function light_draw_pm_inbox()
 
         echo "<a href=\"lpm_write.php?webtag=$webtag\" class=\"pm_send_new\">", gettext("Send New PM"), "</a>\n";
 
-        // Fetch the free PM space and calculate it as a percentage.
-        $pm_free_space = pm_get_free_space($_SESSION['UID']);
-        $pm_max_user_messages = forum_get_setting('pm_max_user_messages', null, 100);
+        $free_space = pm_get_free_space($_SESSION['UID']);
 
-        $pm_used_percent = (100 / $pm_max_user_messages) * ($pm_max_user_messages - $pm_free_space);
+        $max_user_messages = forum_get_setting('pm_max_user_messages', null, 100);
+
+        $used_percent = (100 / $max_user_messages) * ($max_user_messages - $free_space);
 
         echo "<div class=\"pm_bar\">\n";
-        echo "<div class=\"pm_bar_inner\" style=\"width: {$pm_used_percent}%\"></div>\n";
+        echo "<div class=\"pm_bar_inner\" style=\"width: {$used_percent}%\"></div>\n";
         echo "</div>\n";
 
-        echo "<div class=\"pm_folder_usage\">", sprintf(gettext("Your PM folders are %s full"), "$pm_used_percent%"), "</div>\n";
+        echo "<div class=\"pm_folder_usage\">", sprintf(gettext("Your PM folders are %s full"), "$used_percent%"), "</div>\n";
 
         if (pm_auto_prune_enabled()) {
             light_html_display_warning_msg(gettext("PM Folder pruning is enabled!"));
@@ -1586,20 +1591,21 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         }
     }
 
-    if (!isset($message['FROM_RELATIONSHIP'])) {
-
-        $message['FROM_RELATIONSHIP'] = 0;
-    }
-
-    if (!isset($message['TO_RELATIONSHIP'])) {
-
-        $message['TO_RELATIONSHIP'] = 0;
-    }
-
-    if (($message['TO_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) || ($message['FROM_RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
+    if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
 
         light_message_display_deleted($tid, $message['PID']);
         return;
+    }
+
+    if (isset($message['RECIPIENTS']) && sizeof($message['RECIPIENTS']) == 1) {
+
+        $recipient = array_slice(array_values($message['RECIPIENTS']), 0, 1);
+
+        if (isset($recipient['RELATIONSHIP']) && ($recipient['RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
+
+            light_message_display_deleted($tid, $message['PID']);
+            return;
+        }
     }
 
     if (forum_get_setting('require_post_approval', 'Y') && $message['FROM_UID'] != $_SESSION['UID']) {
@@ -1646,20 +1652,23 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     echo "<div class=\"message_header\">\n";
     echo "<div class=\"message_from\">\n";
-    echo "", gettext("From"), ": ", word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK']), true);
+    echo "", gettext("From"), ": ", word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true);
 
-    if ($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
-        echo "<span class=\"user_friend\" title=\"", gettext("Friend"), "\">[F]</span>";
-    } else if (($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
-        echo "<span class=\"user_enemy\" title=\"", gettext("Ignored user"), "\">[E]</span>";
+    if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_FRIEND)) {
+
+        echo "<span class=\"user_friend\" title=\"", gettext("Friend"), "\">", gettext("Friend"), "</span>";
+
+    } else if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
+
+        echo "<span class=\"user_enemy\" title=\"", gettext("Ignored user"), "\">", gettext("Enemy"), "</span>";
     }
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
-    if ($is_poll && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
+    if ($is_poll && $message['PID'] == 1 && isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
         $message['FROM_RELATIONSHIP']-= USER_IGNORED;
     }
 
-    if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text) {
+    if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text) {
 
         echo gettext("Ignored message");
 
@@ -1674,30 +1683,34 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     echo "<div class=\"clearer\"></div>\n";
     echo "</div>";
-    echo "<div class=\"message_to\">\n";
+    echo "<div class=\"message_to\">", gettext("To"), ": ";
 
-    if (($message['TLOGON'] != gettext("ALL")) && $message['TO_UID'] != 0) {
+    if (isset($message['RECIPIENTS']) && sizeof($message['RECIPIENTS']) > 0) {
 
-        echo "", gettext("To"), ": ", word_filter_add_ob_tags(format_user_name($message['TLOGON'], $message['TNICK']), true);
+        foreach ($message['RECIPIENTS'] as $recipient) {
 
-        if ($message['TO_RELATIONSHIP'] & USER_FRIEND) {
-            echo "<span class=\"user_friend\" title=\"", gettext("Friend"), "\">[F]</span>";
-        } else if (($message['TO_RELATIONSHIP'] & USER_IGNORED)) {
-            echo "<span class=\"user_enemy\" title=\"", gettext("Ignored user"), "\">[E]</span>";
-        }
+            if (isset($recipient['RELATIONSHIP']) && ($recipient['RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
+                continue;
+            }
 
-        if (!$is_preview) {
+            echo word_filter_add_ob_tags(format_user_name($recipient['LOGON'], $recipient['NICKNAME']), true), "\n";
 
-            if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
-                echo "<span class=\"message_read\">", format_time($message['VIEWED']), "</span>";
+            if (isset($recipient['VIEWED']) && $recipient['VIEWED'] > 0) {
+
+                echo "<span class=\"smalltext\"><img src=\"", html_style_image('post_read.png'), "\" alt=\"\" title=\"", sprintf(gettext("Read: %s"), format_time($recipient['VIEWED'])), "\" /></span>\n";
+
             } else {
-                echo "<span class=\"message_unread\" title=\"", gettext("Unread"), "\"></span>";
+
+                if ($is_preview == false) {
+
+                    echo "<span class=\"smalltext\"><img src=\"", html_style_image('post_unread.png'), "\" alt=\"\" title=\"", gettext("Unread Message"), "\" /></span>\n";
+                }
             }
         }
 
     } else {
 
-        echo "", gettext("To"), ": ", gettext("ALL"), "";
+        echo gettext('ALL');
     }
 
     if ($in_list && $msg_count > 0) {
@@ -2271,7 +2284,7 @@ function light_pm_enabled()
     return true;
 }
 
-function light_pm_display($pm_message_array, $folder, $preview = false)
+function light_pm_display($message_data, $preview = false)
 {
     $webtag = get_webtag();
 
@@ -2279,49 +2292,16 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
     echo "<div class=\"message\">\n";
     echo "<div class=\"message_header\">\n";
+
     echo "<div class=\"message_from\">\n";
-
-    if ($folder == PM_FOLDER_INBOX) {
-
-        echo "<span>", gettext("From"), ": ", word_filter_add_ob_tags(format_user_name($pm_message_array['FLOGON'], $pm_message_array['FNICK']), true), "</span>\n";
-
-    } else {
-
-        if (isset($pm_message_array['RECIPIENTS']) && strlen(trim($pm_message_array['RECIPIENTS'])) > 0) {
-
-            $recipient_array = preg_split("/[;|,]/u", trim($pm_message_array['RECIPIENTS']));
-
-            if ($pm_message_array['TO_UID'] > 0) {
-                $recipient_array = array_unique(array_merge($recipient_array, array($pm_message_array['TLOGON'])));
-            }
-
-            echo "<span>", gettext("To"), ": ", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span>\n";
-
-        } else if (is_array($pm_message_array['TLOGON'])) {
-
-            $recipient_array = array_unique($pm_message_array['TLOGON']);
-
-            echo "<span>", gettext("To"), ": ", word_filter_add_ob_tags(implode('; ', $recipient_array)), "</span>\n";
-
-        } else if (isset($pm_message_array['TO_UID']) && is_numeric($pm_message_array['TO_UID'])) {
-
-            echo "<span>", gettext("To"), ": ", word_filter_add_ob_tags(format_user_name($pm_message_array['TLOGON'], $pm_message_array['TNICK']), true), "</span>\n";
-
-        } else {
-
-            echo "<span>", gettext("To"), ": <span class=\"norecipients\">", gettext("No Recipients"), "</span></span>\n";
-        }
-    }
-
-    echo "<div class=\"clearer\"></div>\n";
+    echo "<span>", gettext("From"), ": ", word_filter_add_ob_tags(format_user_name($message_data['FROM_LOGON'], $message_data['FROM_NICKNAME']), true), "</span>\n";
     echo "</div>\n";
-    echo "<div class=\"message_subject\">\n";
 
-    echo "", gettext("Subject"), ": ";
+    echo "<div class=\"message_subject\">", gettext("Subject"), ": ";
 
-    if (strlen(trim($pm_message_array['SUBJECT'])) > 0) {
+    if (strlen(trim($message_data['SUBJECT'])) > 0) {
 
-        echo word_filter_add_ob_tags($pm_message_array['SUBJECT'], true), "\n";
+        echo word_filter_add_ob_tags($message_data['SUBJECT'], true), "\n";
 
     } else {
 
@@ -2330,16 +2310,33 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
     echo "<div class=\"clearer\"></div>\n";
     echo "</div>\n";
+
+    echo "<div class=\"message_to\">", gettext("To"), ": ";
+
+    if (isset($message_data['RECIPIENTS']) && sizeof($message_data['RECIPIENTS']) > 0) {
+
+        foreach ($message_data['RECIPIENTS'] as $recipient) {
+            echo "<span>", word_filter_add_ob_tags(format_user_name($recipient['LOGON'], $recipient['NICKNAME']), true), "</span>\n";
+        }
+
+    } else {
+
+        echo gettext('Unknown User');
+    }
+
+    echo "<div class=\"clearer\"></div>\n";
     echo "</div>\n";
 
-    $pm_message_array['CONTENT'] = message_apply_formatting($pm_message_array['CONTENT']);
-    $pm_message_array['CONTENT'] = word_filter_add_ob_tags($pm_message_array['CONTENT']);
+    echo "</div>\n";
 
-    echo "<div class=\"message_body\">", $pm_message_array['CONTENT'], "</div>\n";
+    $message_data['CONTENT'] = message_apply_formatting($message_data['CONTENT']);
+    $message_data['CONTENT'] = word_filter_add_ob_tags($message_data['CONTENT']);
 
-    if (isset($pm_message_array['ATTACHMENTS']) && sizeof($pm_message_array['ATTACHMENTS']) > 0) {
+    echo "<div class=\"message_body\">", $message_data['CONTENT'], "</div>\n";
 
-        if (($attachments_array = attachments_get($pm_message_array['FROM_UID'], ATTACHMENT_FILTER_ASSIGNED, $pm_message_array['ATTACHMENTS'])) !== false) {
+    if (isset($message_data['ATTACHMENTS']) && sizeof($message_data['ATTACHMENTS']) > 0) {
+
+        if (($attachments_array = attachments_get($message_data['FROM_UID'], ATTACHMENT_FILTER_ASSIGNED, $message_data['ATTACHMENTS'])) !== false) {
 
             echo "<div class=\"message_attachments\">\n";
             echo "  <span>", gettext("Attachments"), ":</span>\n";
@@ -2361,27 +2358,32 @@ function light_pm_display($pm_message_array, $folder, $preview = false)
 
         $links_array = array();
 
-        if ($folder == PM_FOLDER_INBOX) {
+        if (($message_data['TYPE'] & PM_INBOX_ITEMS) > 0) {
 
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;replyto={$pm_message_array['MID']}\" class=\"reply\">". gettext("Reply"). "</a>";
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" class=\"forward\">". gettext("Forward"). "</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;replyto={$message_data['MID']}\" class=\"reply\">". gettext("Reply"). "</a>";
 
-        } else if ($folder == PM_FOLDER_OUTBOX) {
+            if (isset($message_data['RECIPIENTS']) && sizeof($message_data['RECIPIENTS']) > 1) {
+                $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;replyall={$message_data['MID']}\" class=\"replyall\">". gettext("Reply All"). "</a>";
+            }
 
-            $links_array[] = "<a href=\"lpm_edit.php?webtag=$webtag&amp;mid={$pm_message_array['MID']}\" class=\"edit\">". gettext("Edit"). "</a>";
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" class=\"forward\">". gettext("Forward"). "</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" class=\"forward\">". gettext("Forward"). "</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$message_data['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
 
-        } else if ($folder == PM_FOLDER_DRAFTS) {
+        } else if (($message_data['TYPE'] & PM_OUTBOX_ITEMS) > 0) {
 
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$pm_message_array['MID']}\" class=\"edit\">". gettext("Edit"). "</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
+            $links_array[] = "<a href=\"lpm_edit.php?webtag=$webtag&amp;mid={$message_data['MID']}\" class=\"edit\">". gettext("Edit"). "</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" class=\"forward\">". gettext("Forward"). "</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$message_data['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
+
+        } else if (($message_data['TYPE'] & PM_DRAFT_ITEMS) > 0) {
+
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$message_data['MID']}\" class=\"edit\">". gettext("Edit"). "</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$message_data['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
 
         } else {
 
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$pm_message_array['MID']}\" class=\"forward\">". gettext("Forward"). "</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$pm_message_array['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" class=\"forward\">". gettext("Forward"). "</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$message_data['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
         }
 
         if (sizeof($links_array) > 0) {
@@ -2406,54 +2408,54 @@ function light_pm_check_messages()
     forum_check_webtag_available($webtag);
 
     // Default the variables to return 0 even on error.
-    $pm_new_count = 0;
-    $pm_outbox_count = 0;
-    $pm_unread_count = 0;
+    $new_count = 0;
+    $outbox_count = 0;
+    $unread_count = 0;
 
     // Get the number of messages.
-    pm_get_message_count($pm_new_count, $pm_outbox_count, $pm_unread_count);
+    pm_get_message_count($new_count, $outbox_count, $unread_count);
 
     // Format the message sent to the client.
-    if ($pm_new_count == 1 && $pm_outbox_count == 0) {
+    if ($new_count == 1 && $outbox_count == 0) {
 
-        $pm_notification = gettext("You have 1 new message. Would you like to go to your Inbox now?");
+        $notification = gettext("You have 1 new message. Would you like to go to your Inbox now?");
 
-    } else if ($pm_new_count == 1 && $pm_outbox_count == 1) {
+    } else if ($new_count == 1 && $outbox_count == 1) {
 
-        $pm_notification = gettext("You have 1 new message.\r\n\r\nYou also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?");
+        $notification = gettext("You have 1 new message.\r\n\r\nYou also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?");
 
-    } else if ($pm_new_count == 0 && $pm_outbox_count == 1) {
+    } else if ($new_count == 0 && $outbox_count == 1) {
 
-        $pm_notification = gettext("You have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?");
+        $notification = gettext("You have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?");
 
-    } else if ($pm_new_count > 1 && $pm_outbox_count == 0) {
+    } else if ($new_count > 1 && $outbox_count == 0) {
 
-        $pm_notification = sprintf(gettext("You have %d new messages. Would you like to go to your Inbox now?"), $pm_new_count);
+        $notification = sprintf(gettext("You have %d new messages. Would you like to go to your Inbox now?"), $new_count);
 
-    } else if ($pm_new_count > 1 && $pm_outbox_count == 1) {
+    } else if ($new_count > 1 && $outbox_count == 1) {
 
-        $pm_notification = sprintf(gettext("You have %d new messages.\r\n\r\nYou also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?"), $pm_new_count);
+        $notification = sprintf(gettext("You have %d new messages.\r\n\r\nYou also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?"), $new_count);
 
-    } else if ($pm_new_count > 1 && $pm_outbox_count > 1) {
+    } else if ($new_count > 1 && $outbox_count > 1) {
 
-        $pm_notification = sprintf(gettext("You have %d new messages.\r\n\r\nYou also have %d messages awaiting delivery. To receive these message please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?"), $pm_new_count, $pm_outbox_count);
+        $notification = sprintf(gettext("You have %d new messages.\r\n\r\nYou also have %d messages awaiting delivery. To receive these message please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?"), $new_count, $outbox_count);
 
-    } else if ($pm_new_count == 1 && $pm_outbox_count > 1) {
+    } else if ($new_count == 1 && $outbox_count > 1) {
 
-        $pm_notification = sprintf(gettext("You have 1 new message.\r\n\r\nYou also have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?"), $pm_outbox_count);
+        $notification = sprintf(gettext("You have 1 new message.\r\n\r\nYou also have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?"), $outbox_count);
 
-    } else if ($pm_new_count == 0 && $pm_outbox_count > 1) {
+    } else if ($new_count == 0 && $outbox_count > 1) {
 
-        $pm_notification = sprintf(gettext("You have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?"), $pm_outbox_count);
+        $notification = sprintf(gettext("You have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?"), $outbox_count);
     }
 
-    if (isset($pm_notification) && strlen(trim($pm_notification)) > 0) {
+    if (isset($notification) && strlen(trim($notification)) > 0) {
 
         // Wrap the notification in a hyperlink.
-        $pm_notification = sprintf("<a href=\"lpm.php?webtag=$webtag\">%s</a>\n", $pm_notification);
+        $notification = sprintf("<a href=\"lpm.php?webtag=$webtag\">%s</a>\n", $notification);
 
         // Display the notification
-        light_html_display_success_msg($pm_notification);
+        light_html_display_success_msg($notification);
     }
 
     // Prevent checking again.

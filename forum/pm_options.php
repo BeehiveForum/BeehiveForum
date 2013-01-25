@@ -108,12 +108,6 @@ if (isset($_POST['save'])) {
         $user_prefs['PM_EXPORT_ATTACHMENTS'] = "N";
     }
 
-    if (isset($_POST['pm_export_style']) && $_POST['pm_export_style'] == "Y") {
-        $user_prefs['PM_EXPORT_STYLE'] = "Y";
-    } else {
-        $user_prefs['PM_EXPORT_STYLE'] = "N";
-    }
-
     if (isset($_POST['pm_export_wordfilter']) && $_POST['pm_export_wordfilter'] == "Y") {
         $user_prefs['PM_EXPORT_WORDFILTER'] = "Y";
     } else {
@@ -204,9 +198,6 @@ echo "                  <td align=\"left\">", form_dropdown_array("pm_export_fil
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_attachments", "Y", gettext("Export attachments"), (isset($user_prefs['PM_EXPORT_ATTACHMENTS']) && $user_prefs['PM_EXPORT_ATTACHMENTS'] == "Y") ? true : false), "</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_style", "Y", gettext("Include forum style sheet"), (isset($user_prefs['PM_EXPORT_STYLE']) && $user_prefs['PM_EXPORT_STYLE'] == "Y") ? true : false), "</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"2\" style=\"white-space: nowrap\">", form_checkbox("pm_export_wordfilter", "Y", gettext("Apply word filter to messages"), (isset($user_prefs['PM_EXPORT_WORDFILTER']) && $user_prefs['PM_EXPORT_WORDFILTER'] == "Y") ? true : false), "</td>\n";

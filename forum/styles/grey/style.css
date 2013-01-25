@@ -121,10 +121,6 @@ p {
     font-size: 100%;
 }
 
-p:first-child {
-    margin-top: 0;
-}
-
 p,
 h1,
 h2 {

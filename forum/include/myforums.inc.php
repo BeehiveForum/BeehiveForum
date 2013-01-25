@@ -217,11 +217,12 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
 
         $forum_data['NUM_MESSAGES'] = $num_messages;
 
-        $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME ";
-        $sql.= "FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
-        $sql.= "LEFT JOIN `{$forum_data['PREFIX']}POST` POST ";
-        $sql.= "ON (POST.TID = THREAD.TID) WHERE THREAD.FID IN ($folders) ";
-        $sql.= "AND POST.TO_UID = '{$_SESSION['UID']}' AND POST.VIEWED IS NULL ";
+        $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
+        $sql.= "INNER JOIN `{$forum_data['PREFIX']}POST` POST ON (POST.TID = THREAD.TID) ";
+        $sql.= "INNER JOIN `{$forum_data['PREFIX']}POST_RECIPIENT` POST_RECIPIENT ";
+        $sql.= "ON (POST_RECIPIENT.TID = POST.TID AND POST_RECIPIENT.PID = POST.PID) ";
+        $sql.= "WHERE THREAD.FID IN ($folders) AND POST_RECIPIENT.TO_UID = '{$_SESSION['UID']}' ";
+        $sql.= "AND POST_RECIPIENT.VIEWED IS NULL ";
 
         if (!($result_unread_to_me = $db->query($sql))) return false;
 

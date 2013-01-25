@@ -656,14 +656,13 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $poll_data['VOTETYPE'] = $poll_vote_type;
     $poll_data['OPTIONTYPE'] = $option_type;
 
-    $poll_data['TLOGON'] = gettext("ALL");
-    $poll_data['TNICK'] = gettext("ALL");
+    $preview_message['RECIPIENTS'] = array();
 
-    $preview_tuser = user_get($_SESSION['UID']);
+    $preview_from_user = user_get($_SESSION['UID']);
 
-    $poll_data['FLOGON']   = $preview_tuser['LOGON'];
-    $poll_data['FNICK']    = $preview_tuser['NICKNAME'];
-    $poll_data['FROM_UID'] = $preview_tuser['UID'];
+    $poll_data['FROM_LOGON'] = $preview_from_user['LOGON'];
+    $poll_data['FROM_NICKNAME'] = $preview_from_user['NICKNAME'];
+    $poll_data['FROM_UID'] = $preview_from_user['UID'];
 
     $poll_preview_questions_array = $poll_questions_array;
 

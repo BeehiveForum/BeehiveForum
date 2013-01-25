@@ -147,19 +147,15 @@ function search_mysql_execute($search_arguments, &$error)
         // Base query slightly different if you're not searching by keywords
         if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS) {
 
-            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) SELECT SQL_NO_CACHE ";
+            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, TID, PID, RELEVANCE) SELECT SQL_NO_CACHE ";
             $select_sql.= "SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, THREAD.FID, POST.TID, MIN(POST.PID), ";
-            $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, MIN(POST.CREATED) AS DATE_CREATED, ";
-            $select_sql.= "THREAD.LENGTH, 1.0 AS RELEVANCE ";
+            $select_sql.= "1.0 AS RELEVANCE ";
 
         } else {
 
-            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) SELECT SQL_NO_CACHE ";
+            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, RELEVANCE) SELECT SQL_NO_CACHE ";
             $select_sql.= "SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, THREAD.FID, POST.TID, POST.PID, ";
-            $select_sql.= "THREAD.BY_UID, POST.FROM_UID, POST.TO_UID, POST.CREATED AS DATE_CREATED, ";
-            $select_sql.= "THREAD.LENGTH, 1.0 AS RELEVANCE ";
+            $select_sql.= "1.0 AS RELEVANCE ";
         }
 
         // Save the sort by and sort dir.
@@ -207,23 +203,19 @@ function search_mysql_execute($search_arguments, &$error)
 
         if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS) {
 
-            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) ";
+            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, RELEVANCE) ";
             $select_sql.= "SELECT SQL_NO_CACHE SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, ";
-            $select_sql.= "THREAD.FID, POST_CONTENT.TID, MIN(POST_CONTENT.PID), THREAD.BY_UID, ";
-            $select_sql.= "POST.FROM_UID, POST.TO_UID, MIN(POST.CREATED) AS DATE_CREATED, THREAD.LENGTH, ";
-            $select_sql.= "MATCH(POST_CONTENT.CONTENT, THREAD.TITLE) AGAINST('$search_string' IN BOOLEAN MODE) ";
-            $select_sql.= "AS RELEVANCE";
+            $select_sql.= "THREAD.FID, POST_CONTENT.TID, MIN(POST_CONTENT.PID), ";
+            $select_sql.= "MATCH(POST_CONTENT.CONTENT, THREAD.TITLE) ";
+            $select_sql.= "AGAINST('$search_string' IN BOOLEAN MODE) AS RELEVANCE";
 
         } else {
 
-            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, ";
-            $select_sql.= "BY_UID, FROM_UID, TO_UID, CREATED, LENGTH, RELEVANCE) ";
+            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, FID, TID, PID, RELEVANCE) ";
             $select_sql.= "SELECT SQL_NO_CACHE SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, ";
-            $select_sql.= "THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, THREAD.BY_UID, ";
-            $select_sql.= "POST.FROM_UID, POST.TO_UID, POST.CREATED AS DATE_CREATED, THREAD.LENGTH, ";
-            $select_sql.= "MATCH(POST_CONTENT.CONTENT, THREAD.TITLE) AGAINST('$search_string' IN BOOLEAN MODE) ";
-            $select_sql.= "AS RELEVANCE";
+            $select_sql.= "THREAD.FID, POST_CONTENT.TID, POST_CONTENT.PID, ";
+            $select_sql.= "MATCH(POST_CONTENT.CONTENT, THREAD.TITLE) ";
+            $select_sql.= "AGAINST('$search_string' IN BOOLEAN MODE) AS RELEVANCE";
         }
 
         $where_sql.= "AND MATCH(POST_CONTENT.CONTENT) AGAINST('$search_string' IN BOOLEAN MODE) ";
@@ -492,14 +484,14 @@ function search_fetch_results($page, $sort_by, $sort_dir)
 
     $sort_dir = ($sort_dir == SEARCH_SORT_DESC) ? 'DESC' : 'ASC';
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS SEARCH_RESULTS.FID, SEARCH_RESULTS.TID, SEARCH_RESULTS.PID, ";
-    $sql.= "SEARCH_RESULTS.BY_UID, SEARCH_RESULTS.FROM_UID, SEARCH_RESULTS.TO_UID, ";
-    $sql.= "USER_TRACK.LAST_SEARCH_KEYWORDS AS KEYWORDS, UNIX_TIMESTAMP(CREATED) AS CREATED, ";
-    $sql.= "USER.LOGON AS FROM_LOGON, USER.NICKNAME AS FROM_NICKNAME, ";
-    $sql.= "USER_PEER.PEER_NICKNAME FROM SEARCH_RESULTS ";
-    $sql.= "INNER JOIN USER ON (USER.UID = SEARCH_RESULTS.FROM_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = SEARCH_RESULTS.FROM_UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.FID, THREAD.TID, POST.PID, THREAD.BY_UID, POST.FROM_UID, ";
+    $sql.= "USER_TRACK.LAST_SEARCH_KEYWORDS AS KEYWORDS, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
+    $sql.= "USER.LOGON AS FROM_LOGON, COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS FROM_NICKNAME  ";
+    $sql.= "FROM SEARCH_RESULTS INNER JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = SEARCH_RESULTS.TID) ";
+    $sql.= "INNER JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
+    $sql.= "INNER JOIN `{$table_prefix}POST` POST ON (POST.TID = SEARCH_RESULTS.TID AND POST.PID = SEARCH_RESULTS.PID) ";
+    $sql.= "INNER JOIN USER ON (USER.UID = POST.FROM_UID) LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = POST.FROM_UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_TRACK` USER_TRACK ";
     $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) ";
     $sql.= "WHERE SEARCH_RESULTS.UID = '{$_SESSION['UID']}' ";
@@ -508,7 +500,7 @@ function search_fetch_results($page, $sort_by, $sort_dir)
     $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
 
-    switch($sort_by) {
+    switch ($sort_by) {
 
         case SEARCH_SORT_RELEVANCE:
 
@@ -517,22 +509,22 @@ function search_fetch_results($page, $sort_by, $sort_dir)
 
         case SEARCH_SORT_NUM_REPLIES:
 
-            $sql.= "ORDER BY SEARCH_RESULTS.LENGTH $sort_dir LIMIT $offset, 20";
+            $sql.= "ORDER BY THREAD.LENGTH $sort_dir LIMIT $offset, 20";
             break;
 
         case SEARCH_SORT_FOLDER_NAME:
 
-            $sql.= "ORDER BY SEARCH_RESULTS.FID $sort_dir LIMIT $offset, 20";
+            $sql.= "ORDER BY FOLDER.TITLE $sort_dir LIMIT $offset, 20";
             break;
 
         case SEARCH_SORT_AUTHOR_NAME:
 
-            $sql.= "ORDER BY SEARCH_RESULTS.FROM_UID $sort_dir LIMIT $offset, 20";
+            $sql.= "ORDER BY FROM_NICKNAME $sort_dir LIMIT $offset, 20";
             break;
 
         default:
 
-            $sql.= "ORDER BY SEARCH_RESULTS.CREATED $sort_dir LIMIT $offset, 20";
+            $sql.= "ORDER BY POST.CREATED $sort_dir LIMIT $offset, 20";
             break;
     }
 

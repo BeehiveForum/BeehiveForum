@@ -205,14 +205,13 @@ if (isset($_POST['preview'])) {
 
     if ($valid) {
 
-        $preview_message['TLOGON'] = gettext("ALL");
-        $preview_message['TNICK'] = gettext("ALL");
+        $preview_message['RECIPIENTS'] = array();
 
-        $preview_tuser = user_get($sig_uid);
+        $preview_from_user = user_get($sig_uid);
 
-        $preview_message['FLOGON'] = $preview_tuser['LOGON'];
-        $preview_message['FNICK'] = $preview_tuser['NICKNAME'];
-        $preview_message['FROM_UID'] = $preview_tuser['UID'];
+        $preview_message['FROM_LOGON'] = $preview_from_user['LOGON'];
+        $preview_message['FROM_NICKNAME'] = $preview_from_user['NICKNAME'];
+        $preview_message['FROM_UID'] = $preview_from_user['UID'];
 
         $preview_message['CONTENT'] = gettext("Signature Preview");
         $preview_message['CONTENT'].= "<div class=\"sig\">$sig_text</div>";

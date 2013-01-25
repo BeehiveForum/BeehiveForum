@@ -38,7 +38,6 @@ require_once BH_INCLUDE_PATH. 'poll.inc.php';
 require_once BH_INCLUDE_PATH. 'post.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'thread.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -184,23 +183,6 @@ $page_title = sprintf(gettext("Delete message %s"), $msg);
 light_html_draw_top("title=$page_title");
 
 echo "<h3>", $page_title, "</h3>\n";
-
-if ($preview_message['TO_UID'] == 0) {
-
-    $preview_message['TLOGON'] = gettext("ALL");
-    $preview_message['TNICK'] = gettext("ALL");
-
-} else {
-
-    $preview_tuser = user_get($preview_message['TO_UID']);
-    $preview_message['TLOGON'] = $preview_tuser['LOGON'];
-    $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-}
-
-$preview_tuser = user_get($preview_message['FROM_UID']);
-
-$preview_message['FLOGON'] = $preview_tuser['LOGON'];
-$preview_message['FNICK'] = $preview_tuser['NICKNAME'];
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);

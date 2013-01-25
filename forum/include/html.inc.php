@@ -1226,6 +1226,10 @@ function html_page_links($uri, $page, $record_count, $rows_per_page, $page_var =
 
     $sep = strstr($uri, '?') ? "&amp;" : "?";
 
+    if ($page < 1) $page = 1;
+
+    if ($page > $page_count) $page = $page_count;
+
     if ($page_count > 1) {
 
         echo "<span class=\"pagenum_text\">", gettext("Pages"), "&nbsp;($page_count):&nbsp;";
@@ -1300,7 +1304,7 @@ function html_page_links($uri, $page, $record_count, $rows_per_page, $page_var =
     echo "</span>";
 }
 
-function html_get_forum_uri($append_path = null)
+function html_get_forum_domain($return_array = false)
 {
     $uri_array = @parse_url($_SERVER['PHP_SELF']);
 
@@ -1351,6 +1355,19 @@ function html_get_forum_uri($append_path = null)
             }
         }
     }
+
+    if ($return_array) return $uri_array;
+
+    $server_uri = (isset($uri_array['scheme'])) ? "{$uri_array['scheme']}://" : '';
+    $server_uri.= (isset($uri_array['host']))   ? "{$uri_array['host']}"      : '';
+    $server_uri.= (isset($uri_array['port']))   ? ":{$uri_array['port']}"     : '';
+
+    return $server_uri;
+}
+
+function html_get_forum_uri($append_path = null)
+{
+    $uri_array = html_get_forum_domain(true);
 
     if (!isset($uri_array['path'])) {
 

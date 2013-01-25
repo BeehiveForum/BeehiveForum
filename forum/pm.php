@@ -53,6 +53,9 @@ $available_folders = array(
     PM_SEARCH_RESULTS
 );
 
+// Default to Inbox
+$current_folder = PM_FOLDER_INBOX;
+
 // Get the user's saved left frame width.
 if (isset($_SESSION['LEFT_FRAME_WIDTH']) && is_numeric($_SESSION['LEFT_FRAME_WIDTH'])) {
     $left_frame_width = max(100, $_SESSION['LEFT_FRAME_WIDTH']);
@@ -70,37 +73,43 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
     $mid = $_GET['mid'];
 
-    if (!$folder = pm_message_get_folder($mid)) $folder = PM_FOLDER_INBOX;
+    if (($message_data = pm_message_get($mid))) {
+
+        if (($message_folder = pm_get_type_folder($message_data['TYPE']))) {
+
+            $current_folder = $message_folder;
+        }
+    }
 
     if (isset($_GET['message_sent'])) {
 
-        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
-        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder&amp;message_sent=true#message", html_get_frame_name('pm_messages'), 0);
+        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$current_folder", html_get_frame_name('pm_folders'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$current_folder&amp;message_sent=true#message", html_get_frame_name('pm_messages'), 0);
 
     } else if (isset($_GET['message_saved'])) {
 
-        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
-        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder&amp;message_saved=true#message", html_get_frame_name('pm_messages'), 0);
+        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$current_folder", html_get_frame_name('pm_folders'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$current_folder&amp;message_saved=true#message", html_get_frame_name('pm_messages'), 0);
 
     } else {
 
-        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
-        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$folder#message", html_get_frame_name('pm_messages'), 0);
+        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$current_folder", html_get_frame_name('pm_folders'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$current_folder#message", html_get_frame_name('pm_messages'), 0);
     }
 
 } else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-    $folder = (in_array($_GET['folder'], $available_folders)) ? $_GET['folder'] : PM_FOLDER_INBOX;
+    $current_folder = (in_array($_GET['folder'], $available_folders)) ? $_GET['folder'] : PM_FOLDER_INBOX;
 
     if (isset($_GET['message_sent'])) {
 
-        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
-        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;folder=$folder&message_sent=true", html_get_frame_name('pm_messages'), 0);
+        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;folder=$current_folder", html_get_frame_name('pm_folders'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;folder=$current_folder&message_sent=true", html_get_frame_name('pm_messages'), 0);
 
     } else {
 
-        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;folder=$folder", html_get_frame_name('pm_folders'), 0);
-        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;folder=$folder", html_get_frame_name('pm_messages'), 0);
+        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;folder=$current_folder", html_get_frame_name('pm_folders'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;folder=$current_folder", html_get_frame_name('pm_messages'), 0);
     }
 }
 

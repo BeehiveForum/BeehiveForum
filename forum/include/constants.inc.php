@@ -282,6 +282,7 @@ define('PM_INBOX_ITEMS', 6);
 define('PM_SENT_ITEMS', 8);
 define('PM_SAVED_ITEMS', 48);
 define('PM_DRAFT_ITEMS', 64);
+define('PM_ALL_ITEMS', 127);
 
 // Allowed thread types in folders
 define('FOLDER_ALLOW_NORMAL_THREAD', 1);
@@ -398,7 +399,6 @@ define('TEXT_CAPTCHA_FONT_ERROR', 5);
 // PM Export constants
 define('PM_EXPORT_HTML', 0);
 define('PM_EXPORT_XML', 1);
-define('PM_EXPORT_CSV', 2);
 define('PM_EXPORT_SINGLE', 0);
 define('PM_EXPORT_MANY', 1);
 

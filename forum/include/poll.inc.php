@@ -286,80 +286,65 @@ function poll_get($tid)
 
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
 
-    $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
-    $sql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, UNIX_TIMESTAMP(POST.VIEWED) AS VIEWED, ";
+    $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
     $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY, POST.IPADDRESS, ";
     $sql.= "POST.MOVED_TID, POST.MOVED_PID, UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, ";
-    $sql.= "POST.APPROVED_BY, FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
-    $sql.= "USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, TUSER.LOGON AS TLOGON, ";
-    $sql.= "TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
-    $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK, ";
-    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON, COALESCE(USER_PREFS_FORUM.AVATAR_URL, USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, ";
+    $sql.= "POST.APPROVED_BY, USER.LOGON AS FROM_LOGON, COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS FROM_NICKNAME, ";
+    $sql.= "USER_PEER.RELATIONSHIP AS RELATIONSHIP, USER_PREFS_GLOBAL.ANON_LOGON, ";
+    $sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_URL, USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, ";
     $sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_AID, USER_PREFS_GLOBAL.AVATAR_AID) AS AVATAR_AID, ";
     $sql.= "(SELECT MAX(SESSIONS.TIME) FROM SESSIONS WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND SESSIONS.FID = $forum_fid AND SESSIONS.UID = POST.FROM_UID) AS USER_ACTIVE, ";
     $sql.= "POLL.CHANGEVOTE, POLL.POLLTYPE, POLL.SHOWRESULTS, POLL.VOTETYPE, POLL.OPTIONTYPE, ";
     $sql.= "UNIX_TIMESTAMP(POLL.CLOSES) AS CLOSES, POLL.ALLOWGUESTS ";
-    $sql.= "FROM `{$table_prefix}POST` POST LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
-    $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER_TO ";
-    $sql.= "ON (USER_PEER_TO.UID = '{$_SESSION['UID']}' AND USER_PEER_TO.PEER_UID = POST.TO_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER_FROM ";
-    $sql.= "ON (USER_PEER_FROM.UID = '{$_SESSION['UID']}' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}POLL` POLL ON (POST.TID = POLL.TID) ";
+    $sql.= "FROM `{$table_prefix}POST` POST LEFT JOIN USER ON (POST.FROM_UID = USER.UID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.UID = '{$_SESSION['UID']}' ";
+    $sql.= "AND USER_PEER.PEER_UID = POST.FROM_UID) LEFT JOIN `{$table_prefix}USER_PREFS` ";
+    $sql.= "USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = POST.FROM_UID) LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
+    $sql.= "ON (USER_PREFS_GLOBAL.UID = POST.FROM_UID) LEFT JOIN `{$table_prefix}POLL` POLL ON (POST.TID = POLL.TID) ";
     $sql.= "WHERE POST.TID = '$tid' AND POST.PID = 1";
 
     if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
-    $poll_data = $result->fetch_assoc();
+    if (!($message = $result->fetch_assoc())) return false;
 
-    if (!isset($poll_data['CLOSES'])) {
-        $poll_data['CLOSES'] = 0;
-    }
+    if (!isset($message['CLOSES'])) $message['CLOSES'] = 0;
+    if (!isset($message['CHANGEVOTE'])) $message['CHANGEVOTE'] = 1;
+    if (!isset($message['POLLTYPE'])) $message['POLLTYPE'] = 0;
+    if (!isset($message['SHOWRESULTS'])) $message['SHOWRESULTS'] = 1;
+    if (!isset($message['VOTETYPE'])) $message['VOTETYPE'] = 0;
+    if (!isset($message['OPTIONTYPE'])) $message['OPTIONTYPE'] = 0;
 
-    if (!isset($poll_data['CHANGEVOTE'])) {
-        $poll_data['CHANGEVOTE'] = 1;
-    }
+    if (!isset($message['VIEWED'])) $message['VIEWED'] = 0;
 
-    if (!isset($poll_data['POLLTYPE'])) {
-        $poll_data['POLLTYPE'] = 0;
-    }
+    if (!isset($message['APPROVED'])) $message['APPROVED'] = 0;
+    if (!isset($message['APPROVED_BY'])) $message['APPROVED_BY'] = 0;
 
-    if (!isset($poll_data['SHOWRESULTS'])) {
-        $poll_data['SHOWRESULTS'] = 1;
-    }
+    if (!isset($message['EDITED'])) $message['EDITED'] = 0;
+    if (!isset($message['EDITED_BY'])) $message['EDITED_BY'] = 0;
 
-    if (!isset($poll_data['VOTETYPE'])) {
-        $poll_data['VOTETYPE'] = 0;
-    }
+    if (!isset($message['IPADDRESS'])) $message['IPADDRESS'] = "";
 
-    if (!isset($poll_data['OPTIONTYPE'])) {
-        $poll_data['OPTIONTYPE'] = 0;
-    }
+    if (!isset($message['FROM_RELATIONSHIP'])) $message['FROM_RELATIONSHIP'] = 0;
 
-    if (isset($poll_data['TLOGON']) && isset($poll_data['PTNICK'])) {
-        if (!is_null($poll_data['PTNICK']) && strlen($poll_data['PTNICK']) > 0) {
-            $poll_data['TNICK'] = $poll_data['PTNICK'];
-        }
-    }
+    if (!isset($message['FROM_NICKNAME'])) $message['FROM_NICKNAME'] = gettext("Unknown user");
+    if (!isset($message['FROM_LOGON'])) $message['FROM_LOGON'] = gettext("Unknown user");
+    if (!isset($message['FROM_UID'])) $message['FROM_UID'] = -1;
 
-    if (isset($poll_data['FLOGON']) && isset($poll_data['PFNICK'])) {
-        if (!is_null($poll_data['PFNICK']) && strlen($poll_data['PFNICK']) > 0) {
-            $poll_data['FNICK'] = $poll_data['PFNICK'];
-        }
-    }
+    if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
+    if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
 
-    if (!isset($poll_data['FNICK'])) $poll_data['FNICK'] = gettext("Unknown user");
-    if (!isset($poll_data['FLOGON'])) $poll_data['FLOGON'] = gettext("Unknown user");
-    if (!isset($poll_data['FROM_UID'])) $poll_data['FROM_UID'] = -1;
+    $messages_array = array(
+        $message['PID'] => $message
+    );
 
-    if (!isset($poll_data['TNICK'])) $poll_data['TNICK'] = gettext("ALL");
-    if (!isset($poll_data['TLOGON'])) $poll_data['TLOGON'] = gettext("ALL");
+    messages_get_recipients($tid, $messages_array);
 
-    return $poll_data;
+    messages_have_attachments($tid, $messages_array);
+
+    return $messages_array[$message['PID']];
 }
 
 function poll_get_votes($tid, $include_votes = true)

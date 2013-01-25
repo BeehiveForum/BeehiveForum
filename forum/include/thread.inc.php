@@ -634,10 +634,10 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
         case THREAD_MERGE_BY_CREATED:
 
             $sql = "INSERT INTO `{$table_prefix}POST` (TID, REPLY_TO_PID, ";
-            $sql.= "FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, ";
+            $sql.= "FROM_UID, CREATED, APPROVED, APPROVED_BY, ";
             $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) ";
-            $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), ";
-            $sql.= "STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
+            $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, NULL, NOW(), ";
+            $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
             $sql.= "PID FROM `{$table_prefix}POST` WHERE TID IN ('$tida', '$tidb') ";
             $sql.= "ORDER BY CREATED";
             break;
@@ -645,10 +645,10 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
         case THREAD_MERGE_START:
 
             $sql = "INSERT INTO `{$table_prefix}POST` (TID, REPLY_TO_PID, ";
-            $sql.= "FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, ";
+            $sql.= "FROM_UID, CREATED, APPROVED, APPROVED_BY, ";
             $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) ";
-            $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), ";
-            $sql.= "STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
+            $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, NULL, NOW(), ";
+            $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
             $sql.= "PID FROM `{$table_prefix}POST` WHERE TID IN ('$tida', '$tidb') ";
             $sql.= "ORDER BY TID = '$tidb', CREATED";
             break;
@@ -656,10 +656,10 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
         case THREAD_MERGE_END:
 
             $sql = "INSERT INTO `{$table_prefix}POST` (TID, REPLY_TO_PID, ";
-            $sql.= "FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, ";
+            $sql.= "FROM_UID, CREATED, APPROVED, APPROVED_BY, ";
             $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) ";
-            $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), ";
-            $sql.= "STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
+            $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, NULL, NOW(), ";
+            $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
             $sql.= "PID FROM `{$table_prefix}POST` WHERE TID IN ('$tida', '$tidb') ";
             $sql.= "ORDER BY TID = '$tida', CREATED";
             break;
@@ -676,11 +676,28 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
         return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);
     }
 
+    // Copy the recipients to the new posts.
+    $sql = "INSERT INTO `{$table_prefix}POST_RECIPIENT` (TID, PID, TO_UID, VIEWED) ";
+    $sql.= "SELECT POST.TID, POST.PID, POST_RECIPIENT.TO_UID, POST_RECIPIENT.VIEWED ";
+    $sql.= "FROM `{$table_prefix}POST` POST LEFT JOIN `{$table_prefix}POST_RECIPIENT` POST_RECIPIENT ";
+    $sql.= "ON (POST_RECIPIENT.TID = POST.MOVED_TID AND POST_RECIPIENT.PID = POST.MOVED_PID) ";
+    $sql.= "WHERE POST.TID = '$new_tid'";
+
+    if (!$db->query($sql)) {
+
+        // Unlock the threads if they weren't originally locked.
+        thread_set_closed($tida, ($threada['CLOSED'] > 0));
+        thread_set_closed($tidb, ($threadb['CLOSED'] > 0));
+
+        // Return error message.
+        return thread_merge_error(THREAD_MERGE_QUERY_ERROR, $error_str);
+    }
+
     // Copy the post contents to the new thread
     $sql = "INSERT INTO `{$table_prefix}POST_CONTENT` (TID, PID, CONTENT) ";
     $sql.= "SELECT POST.TID, POST.PID, POST_CONTENT.CONTENT FROM `{$table_prefix}POST` POST ";
     $sql.= "LEFT JOIN `{$table_prefix}POST_CONTENT` POST_CONTENT ";
-    $sql.= "ON (POST_CONTENT.TID = POST.MOVED_TID AND POST_CONTENT.PID = MOVED_PID) ";
+    $sql.= "ON (POST_CONTENT.TID = POST.MOVED_TID AND POST_CONTENT.PID = POST.MOVED_PID) ";
     $sql.= "WHERE POST.TID = '$new_tid'";
 
     if (!$db->query($sql)) {
@@ -910,12 +927,27 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     $pid_list = implode(',', $pid_array);
 
     $sql = "INSERT INTO `{$table_prefix}POST` (TID, REPLY_TO_PID, ";
-    $sql.= "FROM_UID, TO_UID, VIEWED, CREATED, STATUS, APPROVED, APPROVED_BY, ";
-    $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) ";
-    $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, TO_UID, NULL, NOW(), ";
-    $sql.= "STATUS, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
-    $sql.= "PID FROM `{$table_prefix}POST` WHERE TID = $tid ";
+    $sql.= "FROM_UID, CREATED, APPROVED, APPROVED_BY, EDITED, EDITED_BY, ";
+    $sql.= "IPADDRESS, MOVED_TID, MOVED_PID) SELECT '$new_tid', REPLY_TO_PID, ";
+    $sql.= "FROM_UID, NOW(), APPROVED, APPROVED_BY, EDITED, EDITED_BY, ";
+    $sql.= "IPADDRESS, TID, PID FROM `{$table_prefix}POST` WHERE TID = $tid ";
     $sql.= "AND PID IN ($pid_list) ORDER BY CREATED";
+
+    if (!$db->query($sql)) {
+
+        // Unlock the original thread if it wasn't originally locked.
+        thread_set_closed($tid, ($thread_data['CLOSED'] > 0));
+
+        // Return error message.
+        return thread_split_error(THREAD_SPLIT_QUERY_ERROR, $error_str);
+    }
+
+    // Copy the recipients to the new thread
+    $sql = "INSERT INTO `{$table_prefix}POST_RECIPIENT` (TID, PID, TO_UID, VIEWED) ";
+    $sql.= "SELECT POST.TID, POST.PID, POST_RECIPIENT.TO_UID, NULL FROM `{$table_prefix}POST` POST ";
+    $sql.= "LEFT JOIN `{$table_prefix}POST_RECIPIENT` POST_RECIPIENT ";
+    $sql.= "ON (POST_RECIPIENT.TID = POST.MOVED_TID AND POST_RECIPIENT.PID = MOVED_PID) ";
+    $sql.= "WHERE POST.TID = '$new_tid'";
 
     if (!$db->query($sql)) {
 

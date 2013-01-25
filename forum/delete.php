@@ -37,7 +37,6 @@ require_once BH_INCLUDE_PATH. 'poll.inc.php';
 require_once BH_INCLUDE_PATH. 'post.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'thread.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -158,23 +157,6 @@ echo "<h1>", gettext("Delete Message"), " {$tid}.{$pid}</h1>\n";
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '720', 'left');
 }
-
-if ($preview_message['TO_UID'] == 0) {
-
-    $preview_message['TLOGON'] = gettext("ALL");
-    $preview_message['TNICK'] = gettext("ALL");
-
-} else {
-
-    $preview_tuser = user_get($preview_message['TO_UID']);
-    $preview_message['TLOGON'] = $preview_tuser['LOGON'];
-    $preview_message['TNICK'] = $preview_tuser['NICKNAME'];
-}
-
-$preview_tuser = user_get($preview_message['FROM_UID']);
-
-$preview_message['FLOGON'] = $preview_tuser['LOGON'];
-$preview_message['FNICK'] = $preview_tuser['NICKNAME'];
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"delete.php\" method=\"post\" target=\"_self\">\n";

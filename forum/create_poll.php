@@ -587,7 +587,7 @@ if ($valid && isset($_POST['post'])) {
 
             $tid = post_create_thread($fid, $_SESSION['UID'], $thread_title, 'Y', 'N');
 
-            $pid = post_create($fid, $tid, 0, $_SESSION['UID'], 0, '');
+            $pid = post_create($fid, $tid, 0, $_SESSION['UID'], array(), '');
 
             poll_create($tid, $poll_questions_array, $poll_closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests);
 
@@ -605,7 +605,7 @@ if ($valid && isset($_POST['post'])) {
                     $message_text.= "<div class=\"sig\">$sig_text</div>";
                 }
 
-                post_create($fid, $tid, 1, $_SESSION['UID'], $_SESSION['UID'], $message_text);
+                post_create($fid, $tid, 1, $_SESSION['UID'], array(), $message_text);
             }
 
             if ($high_interest == "Y") thread_set_high_interest($tid);
@@ -659,14 +659,13 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     $poll_data['VOTETYPE'] = $poll_vote_type;
     $poll_data['OPTIONTYPE'] = $option_type;
 
-    $poll_data['TLOGON'] = gettext("ALL");
-    $poll_data['TNICK'] = gettext("ALL");
+    $poll_data['RECIPIENTS'] = array();
 
-    $preview_tuser = user_get($_SESSION['UID']);
+    $preview_from_user = user_get($_SESSION['UID']);
 
-    $poll_data['FLOGON']   = $preview_tuser['LOGON'];
-    $poll_data['FNICK']    = $preview_tuser['NICKNAME'];
-    $poll_data['FROM_UID'] = $preview_tuser['UID'];
+    $poll_data['FROM_LOGON'] = $preview_from_user['LOGON'];
+    $poll_data['FROM_NICKNAME'] = $preview_from_user['NICKNAME'];
+    $poll_data['FROM_UID'] = $preview_from_user['UID'];
 
     $poll_preview_questions_array = $poll_questions_array;
 

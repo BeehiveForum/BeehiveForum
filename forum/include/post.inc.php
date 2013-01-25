@@ -37,57 +37,75 @@ require_once BH_INCLUDE_PATH. 'user.inc.php';
 require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 // End Required includes
 
-function post_create($fid, $tid, $reply_pid, $fuid, $tuid, $content, $hide_ipaddress = false)
+function post_create($fid, $tid, $reply_pid, $from_uid, $to_user_array, $content, $hide_ipaddress = false)
 {
-    if (!$db = db::get()) return -1;
+    if (!$db = db::get()) return false;
 
     $post_content = $db->escape($content);
 
     $ipaddress = ($hide_ipaddress == false) ? get_ip_address() : '';
 
-    if (!is_numeric($tid)) return -1;
-    if (!is_numeric($reply_pid)) return -1;
-    if (!is_numeric($fuid)) return -1;
-    if (!is_numeric($tuid)) return -1;
+    if (!is_numeric($tid)) return false;
+
+    if (!is_numeric($reply_pid)) return false;
+
+    if (!is_numeric($from_uid)) return false;
+
+    if (!is_array($to_user_array)) return false;
+
+    foreach ($to_user_array as $to_user) {
+
+        if (!isset($to_user['UID']) || !is_numeric($to_user['UID'])) {
+             return false;
+        }
+    }
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
-    if (!($table_prefix = get_table_prefix())) return -1;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     // Check that the post needs approval. If the user is a moderator their posts are self-approved.
-    if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fuid, $fid)) {
+    if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $from_uid) && !perm_is_moderator($from_uid, $fid)) {
 
         $sql = "INSERT INTO `{$table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, ";
-        $sql.= "TO_UID, CREATED, APPROVED, IPADDRESS) VALUES ($tid, $reply_pid, $fuid, ";
-        $sql.= "$tuid, CAST('$current_datetime' AS DATETIME), NULL, '$ipaddress')";
+        $sql.= "CREATED, APPROVED, IPADDRESS) VALUES ($tid, $reply_pid, $from_uid, ";
+        $sql.= "CAST('$current_datetime' AS DATETIME), NULL, '$ipaddress')";
 
     } else {
 
         $sql = "INSERT INTO `{$table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, ";
-        $sql.= "TO_UID, CREATED, APPROVED, APPROVED_BY, IPADDRESS) VALUES ($tid, $reply_pid, ";
-        $sql.= "$fuid, $tuid, CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "CAST('$current_datetime' AS DATETIME), $fuid, '$ipaddress')";
+        $sql.= "CREATED, APPROVED, APPROVED_BY, IPADDRESS) VALUES ($tid, $reply_pid, ";
+        $sql.= "$from_uid, CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "CAST('$current_datetime' AS DATETIME), $from_uid, '$ipaddress')";
     }
 
-    if (!$db->query($sql)) return -1;
+    if (!$db->query($sql)) return false;
 
     $new_pid = $db->insert_id;
+
+    foreach ($to_user_array as $to_user) {
+
+        $sql = "INSERT INTO `{$table_prefix}POST_RECIPIENT` (TID, PID, TO_UID) ";
+        $sql.= "VALUES ('$tid', '$new_pid', '{$to_user['UID']}')";
+
+        if (!$db->query($sql)) return false;
+    }
 
     $sql = "INSERT INTO `{$table_prefix}POST_CONTENT` (TID, PID, CONTENT) ";
     $sql.= "VALUES ('$tid', '$new_pid', '$post_content')";
 
-    if (!$db->query($sql)) return -1;
+    if (!$db->query($sql)) return false;
 
     $sql = "INSERT INTO `{$table_prefix}POST_SEARCH_ID` (TID, PID) ";
     $sql.= "VALUES('$tid', '$new_pid')";
 
-    if (!$db->query($sql)) return -1;
+    if (!$db->query($sql)) return false;
 
     post_update_thread_length($tid, $new_pid);
 
-    user_increment_post_count($fuid);
+    user_increment_post_count($from_uid);
 
-    if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $fuid) && !perm_is_moderator($fuid, $fid)) {
+    if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $from_uid) && !perm_is_moderator($from_uid, $fid)) {
         admin_send_post_approval_notification($fid);
     }
 

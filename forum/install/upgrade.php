@@ -45,6 +45,238 @@ if (!($forum_prefix_array = install_get_table_data())) {
     return;
 }
 
+$sql = "CREATE TABLE PM_RECIPIENT ( ";
+$sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  NOTIFIED CHAR(1) NOT NULL DEFAULT 'N',";
+$sql.= "  PRIMARY KEY (MID,TO_UID)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE PM_TYPE (";
+$sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  TYPE TINYINT(3) UNSIGNED NOT NULL,";
+$sql.= "  PRIMARY KEY (MID,UID,TYPE)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT INTO PM_CONTENT SELECT MID, NULL FROM PM WHERE MID NOT IN (SELECT MID FROM PM_CONTENT)";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "DELETE FROM PM_CONTENT WHERE MID NOT IN (SELECT MID FROM PM)";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT INTO PM_RECIPIENT SELECT PM.MID, PM.TO_UID, IF(PM.NOTIFIED = 1, 'Y', 'N') ";
+$sql.= "FROM PM WHERE PM.TYPE & 1 = 1 OR PM.TYPE & 2 = 2 OR PM.TYPE & 4 = 4 ";
+$sql.= "OR PM.TYPE & 16 = 16 OR PM.TYPE & 32 = 32";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT INTO PM_TYPE SELECT PM.MID, PM.TO_UID, PM.TYPE FROM PM ";
+$sql.= "WHERE PM.TYPE & 1 = 1 OR PM.TYPE & 2 = 2 OR PM.TYPE & 4 = 4 ";
+$sql.= "OR PM.TYPE & 16 = 16 OR PM.TYPE & 32 = 32";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT INTO PM_RECIPIENT SELECT PM.MID, PM.TO_UID, IF(PM.NOTIFIED = 1, 'Y', 'N') ";
+$sql.= "FROM PM WHERE PM.TYPE & 8 = 8 AND PM.SMID = 0";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT INTO PM_TYPE SELECT PM.MID, PM.FROM_UID, PM.TYPE FROM PM ";
+$sql.= "WHERE PM.TYPE & 8 = 8 AND PM.SMID = 0";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "DELETE FROM PM_RECIPIENT WHERE TO_UID = 0 OR TO_UID IS NULL";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM DROP COLUMN TYPE";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM DROP COLUMN TO_UID";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM DROP COLUMN RECIPIENTS";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM DROP COLUMN NOTIFIED";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM DROP COLUMN SMID";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM ADD COLUMN REPLY_TO_MID MEDIUMINT(8) UNSIGNED NULL AFTER MID";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM CHANGE FROM_UID FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM CHANGE SUBJECT SUBJECT VARCHAR(64) NOT NULL";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM CHANGE CREATED CREATED DATETIME NOT NULL";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM_SEARCH_RESULTS ADD COLUMN RELEVANCE FLOAT UNSIGNED NOT NULL AFTER MID";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM_SEARCH_RESULTS DROP COLUMN TYPE";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM_SEARCH_RESULTS DROP COLUMN FROM_UID";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM_SEARCH_RESULTS DROP COLUMN TO_UID";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM_SEARCH_RESULTS DROP COLUMN SUBJECT";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM_SEARCH_RESULTS DROP COLUMN RECIPIENTS";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM_SEARCH_RESULTS DROP COLUMN CREATED";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM_SEARCH_RESULTS CHANGE UID UID MEDIUMINT(8) UNSIGNED NOT NULL";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE PM_SEARCH_RESULTS CHANGE MID MID MEDIUMINT(8) UNSIGNED NOT NULL";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
 $sql = "ALTER TABLE POST_ATTACHMENT_FILES CHANGE AID AID_OLD VARCHAR(32) NOT NULL, CHANGE ID ID MEDIUMINT(8) UNSIGNED NOT NULL, DROP PRIMARY KEY";
 
 if (!($result = $db->query($sql))) {
@@ -291,6 +523,95 @@ if (!($result = $db->query($sql))) {
     return;
 }
 
+$sql = "ALTER TABLE SEARCH_RESULTS DROP COLUMN BY_UID";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE SEARCH_RESULTS DROP COLUMN FROM_UID";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE SEARCH_RESULTS DROP COLUMN TO_UID";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE SEARCH_RESULTS DROP COLUMN CREATED";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE SEARCH_RESULTS DROP COLUMN LENGTH";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+
+$sql = "ALTER TABLE SEARCH_RESULTS CHANGE UID UID MEDIUMINT(8) UNSIGNED NOT NULL";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE SEARCH_RESULTS CHANGE FORUM FORUM MEDIUMINT(8) UNSIGNED NOT NULL";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE SEARCH_RESULTS CHANGE FID FID MEDIUMINT(8) UNSIGNED NOT NULL";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE SEARCH_RESULTS CHANGE TID TID MEDIUMINT(8) UNSIGNED NOT NULL";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE SEARCH_RESULTS CHANGE PID PID MEDIUMINT(8) UNSIGNED NOT NULL";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE SEARCH_RESULTS CHANGE RELEVANCE RELEVANCE FLOAT UNSIGNED NOT NULL";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
 foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $sql = "UPDATE `{$table_data['PREFIX']}USER_PREFS` INNER JOIN POST_ATTACHMENT_FILES ";
@@ -338,6 +659,118 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     }
 
     $sql = "UPDATE `{$table_data['PREFIX']}USER_PREFS` SET PIC_AID = NULL WHERE PIC_AID = 0";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "CREATE TABLE `{$table_data['PREFIX']}POST_RECIPIENT` (";
+    $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql.= "  VIEWED DATETIME DEFAULT NULL,";
+    $sql.= "  PRIMARY KEY (TID,PID,TO_UID)";
+    $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "INSERT INTO `{$table_data['PREFIX']}POST_RECIPIENT` (TID, PID, TO_UID, VIEWED) ";
+    $sql.= "SELECT TID, PID, TO_UID, VIEWED FROM `{$table_data['PREFIX']}POST`";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` DROP COLUMN TO_UID;";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` DROP COLUMN VIEWED";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` DROP COLUMN STATUS";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` CHANGE TID TID MEDIUMINT(8) UNSIGNED NOT NULL";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` CHANGE APPROVED APPROVED DATETIME NULL";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` CHANGE APPROVED_BY APPROVED_BY MEDIUMINT(8) UNSIGNED NULL";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` CHANGE EDITED_BY EDITED_BY MEDIUMINT(8) UNSIGNED NULL";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` CHANGE IPADDRESS IPADDRESS VARCHAR(255) NULL";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE `{$table_data['PREFIX']}POST` SET EDITED_BY = NULL WHERE EDITED_BY = 0";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE `{$table_data['PREFIX']}POST` SET IPADDRESS = NULL WHERE LENGTH(IPADDRESS) = 0";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "DELETE FROM `{$table_data['PREFIX']}POST_RECIPIENT` WHERE TO_UID = 0";
 
     if (!($result = $db->query($sql))) {
 

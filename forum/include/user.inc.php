@@ -619,6 +619,11 @@ function user_get_by_logon($logon)
     return $user_array;
 }
 
+function user_get_logon_callback($user)
+{
+    return $user['LOGON'];
+}
+
 function user_get_sig($uid)
 {
     if (!$db = db::get()) return '';
@@ -699,7 +704,7 @@ function user_get_prefs($uid)
     $sql.= "USER_PREFS.LANGUAGE, USER_PREFS.PM_NOTIFY, USER_PREFS.PM_NOTIFY_EMAIL, ";
     $sql.= "USER_PREFS.PM_SAVE_SENT_ITEM, USER_PREFS.PM_INCLUDE_REPLY, ";
     $sql.= "USER_PREFS.PM_AUTO_PRUNE, USER_PREFS.PM_EXPORT_TYPE, ";
-    $sql.= "USER_PREFS.PM_EXPORT_FILE, USER_PREFS.PM_EXPORT_ATTACHMENTS, USER_PREFS.PM_EXPORT_STYLE, ";
+    $sql.= "USER_PREFS.PM_EXPORT_FILE, USER_PREFS.PM_EXPORT_ATTACHMENTS, ";
     $sql.= "USER_PREFS.PM_EXPORT_WORDFILTER, USER_PREFS.DOB_DISPLAY, USER_PREFS.ANON_LOGON, ";
     $sql.= "USER_PREFS.SHOW_STATS, USER_PREFS.IMAGES_TO_LINKS, USER_PREFS.USE_WORD_FILTER, ";
     $sql.= "USER_PREFS.USE_ADMIN_FILTER, USER_PREFS.ALLOW_EMAIL, USER_PREFS.USE_EMAIL_ADDR, ";
@@ -800,7 +805,6 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
         'PM_EXPORT_TYPE',
         'PM_EXPORT_FILE',
         'PM_EXPORT_ATTACHMENTS',
-        'PM_EXPORT_STYLE',
         'PM_EXPORT_WORDFILTER',
         'DOB_DISPLAY',
         'ANON_LOGON',
@@ -1001,7 +1005,6 @@ function user_check_pref($name, $value)
         case "PM_INCLUDE_REPLY":
         case "PM_SAVE_SENT_ITEM":
         case "PM_EXPORT_ATTACHMENTS":
-        case "PM_EXPORT_STYLE":
         case "PM_EXPORT_WORDFILTER":
         case "IMAGES_TO_LINKS":
         case "SHOW_STATS":

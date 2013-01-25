@@ -62,29 +62,21 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
 
-    $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, POST.TO_UID, ";
-    $sql.= "UNIX_TIMESTAMP(POST.CREATED) AS CREATED, UNIX_TIMESTAMP(POST.VIEWED) AS VIEWED, ";
+    $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
     $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY, POST.IPADDRESS, ";
     $sql.= "POST.MOVED_TID, POST.MOVED_PID, UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, ";
-    $sql.= "POST.APPROVED_BY, FUSER.LOGON AS FLOGON, FUSER.NICKNAME AS FNICK, ";
-    $sql.= "USER_PEER_FROM.RELATIONSHIP AS FROM_RELATIONSHIP, TUSER.LOGON AS TLOGON, ";
-    $sql.= "TUSER.NICKNAME AS TNICK, USER_PEER_TO.RELATIONSHIP AS TO_RELATIONSHIP, ";
-    $sql.= "USER_PEER_TO.PEER_NICKNAME AS PTNICK, USER_PEER_FROM.PEER_NICKNAME AS PFNICK, ";
-    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON, COALESCE(USER_PREFS_FORUM.AVATAR_URL, USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, ";
+    $sql.= "POST.APPROVED_BY, USER.LOGON AS FROM_LOGON, COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS FROM_NICKNAME, ";
+    $sql.= "USER_PEER.RELATIONSHIP AS RELATIONSHIP, USER_PREFS_GLOBAL.ANON_LOGON, ";
+    $sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_URL, USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, ";
     $sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_AID, USER_PREFS_GLOBAL.AVATAR_AID) AS AVATAR_AID, ";
     $sql.= "(SELECT MAX(SESSIONS.TIME) FROM SESSIONS WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND SESSIONS.FID = $forum_fid AND SESSIONS.UID = POST.FROM_UID) AS USER_ACTIVE ";
-    $sql.= "FROM `{$table_prefix}POST` POST LEFT JOIN USER FUSER ON (POST.FROM_UID = FUSER.UID) ";
-    $sql.= "LEFT JOIN USER TUSER ON (POST.TO_UID = TUSER.UID) LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER_TO ";
-    $sql.= "ON (USER_PEER_TO.UID = '{$_SESSION['UID']}' AND USER_PEER_TO.PEER_UID = POST.TO_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER_FROM ";
-    $sql.= "ON (USER_PEER_FROM.UID = '{$_SESSION['UID']}' AND USER_PEER_FROM.PEER_UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = POST.FROM_UID) ";
-    $sql.= "WHERE POST.TID = '$tid' ";
-    $sql.= "AND POST.PID >= '$pid' ";
-    $sql.= "ORDER BY POST.PID ";
-    $sql.= "LIMIT 0, $limit";
+    $sql.= "FROM `{$table_prefix}POST` POST LEFT JOIN USER ON (POST.FROM_UID = USER.UID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.UID = '{$_SESSION['UID']}' ";
+    $sql.= "AND USER_PEER.PEER_UID = POST.FROM_UID) LEFT JOIN `{$table_prefix}USER_PREFS` ";
+    $sql.= "USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = POST.FROM_UID) LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
+    $sql.= "ON (USER_PREFS_GLOBAL.UID = POST.FROM_UID) WHERE POST.TID = '$tid' AND POST.PID >= '$pid' ";
+    $sql.= "ORDER BY POST.PID LIMIT 0, $limit";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -98,6 +90,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
         $message['ATTACHMENTS'] = array();
 
+        $message['RECIPIENTS'] = array();
+
         if (!isset($message['VIEWED'])) $message['VIEWED'] = 0;
 
         if (!isset($message['APPROVED'])) $message['APPROVED'] = 0;
@@ -109,32 +103,18 @@ function messages_get($tid, $pid = 1, $limit = 1)
         if (!isset($message['IPADDRESS'])) $message['IPADDRESS'] = "";
 
         if (!isset($message['FROM_RELATIONSHIP'])) $message['FROM_RELATIONSHIP'] = 0;
-        if (!isset($message['TO_RELATIONSHIP'])) $message['TO_RELATIONSHIP'] = 0;
 
-        if (isset($message['TLOGON']) && isset($message['PTNICK'])) {
-            if (!is_null($message['PTNICK']) && strlen($message['PTNICK']) > 0) {
-                $message['TNICK'] = $message['PTNICK'];
-            }
-        }
-
-        if (isset($message['FLOGON']) && isset($message['PFNICK'])) {
-            if (!is_null($message['PFNICK']) && strlen($message['PFNICK']) > 0) {
-                $message['FNICK'] = $message['PFNICK'];
-            }
-        }
-
-        if (!isset($message['FNICK'])) $message['FNICK'] = gettext("Unknown user");
-        if (!isset($message['FLOGON'])) $message['FLOGON'] = gettext("Unknown user");
+        if (!isset($message['FROM_NICKNAME'])) $message['FROM_NICKNAME'] = gettext("Unknown user");
+        if (!isset($message['FROM_LOGON'])) $message['FROM_LOGON'] = gettext("Unknown user");
         if (!isset($message['FROM_UID'])) $message['FROM_UID'] = -1;
-
-        if (!isset($message['TNICK'])) $message['TNICK'] = gettext("ALL");
-        if (!isset($message['TLOGON'])) $message['TLOGON'] = gettext("ALL");
 
         if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
         if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
 
         $messages_array[$message['PID']] = $message;
     }
+
+    messages_get_recipients($tid, $messages_array);
 
     messages_have_attachments($tid, $messages_array);
 
@@ -165,6 +145,47 @@ function message_get_content($tid, $pid)
     }
 
     return $message_content["$tid.$pid"];
+}
+
+function messages_get_recipients($tid, &$messages_array)
+{
+    if (!($table_prefix = get_table_prefix())) return false;
+
+    if (!($forum_fid = get_forum_fid())) return false;
+
+    if (!$db = db::get()) return false;
+
+    if (!is_numeric($tid)) return false;
+
+    if (sizeof($messages_array) < 1) return false;
+
+    $pid_list = implode("','", array_keys($messages_array));
+
+    $sql = "SELECT POST_RECIPIENT.PID, POST_RECIPIENT.TO_UID, USER_PEER.RELATIONSHIP, ";
+    $sql.= "UNIX_TIMESTAMP(POST_RECIPIENT.VIEWED) AS VIEWED, ";
+    $sql.= "USER.LOGON, COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS NICKNAME ";
+    $sql.= "FROM `{$table_prefix}POST_RECIPIENT` POST_RECIPIENT LEFT JOIN USER ";
+    $sql.= "ON (USER.UID = POST_RECIPIENT.TO_UID) LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql.= "ON (USER_PEER.UID = '{$_SESSION['UID']}' AND USER_PEER.PEER_UID = POST_RECIPIENT.TO_UID) ";
+    $sql.= "WHERE POST_RECIPIENT.TID = '$tid' AND POST_RECIPIENT.PID IN ('$pid_list')";
+
+    if (!($result = $db->query($sql))) return false;
+
+    while (($recipient_data = $result->fetch_assoc()) !== null) {
+
+        if (!isset($messages_array[$recipient_data['PID']]['RECIPIENTS'])) {
+            $messages_array[$recipient_data['PID']]['RECIPIENTS'] = array();
+        }
+
+        $messages_array[$recipient_data['PID']]['RECIPIENTS'][] = array(
+            'UID' => $recipient_data['TO_UID'],
+            'LOGON' => $recipient_data['LOGON'],
+            'NICKNAME' => $recipient_data['NICKNAME'],
+            'VIEWED' => $recipient_data['VIEWED'],
+        );
+    }
+
+    return true;
 }
 
 function messages_have_attachments($tid, &$messages_array)
@@ -434,20 +455,21 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         }
     }
 
-    if (!isset($message['FROM_RELATIONSHIP'])) {
-
-        $message['FROM_RELATIONSHIP'] = 0;
-    }
-
-    if (!isset($message['TO_RELATIONSHIP'])) {
-
-        $message['TO_RELATIONSHIP'] = 0;
-    }
-
-    if (($message['TO_RELATIONSHIP'] & USER_IGNORED_COMPLETELY) || ($message['FROM_RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
+    if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
 
         message_display_deleted($tid, $message['PID'], $message, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
         return;
+    }
+
+    if (isset($message['RECIPIENTS']) && sizeof($message['RECIPIENTS']) == 1) {
+
+        $recipient = array_slice(array_values($message['RECIPIENTS']), 0, 1);
+
+        if (isset($recipient['RELATIONSHIP']) && ($recipient['RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
+
+            message_display_deleted($tid, $message['PID'], $message, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
+            return;
+        }
     }
 
     // Add emoticons/WikiLinks and ignore signature ----------------------------
@@ -459,7 +481,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
-        $message['CONTENT'] = message_apply_formatting($message['CONTENT'], (($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) || !$show_sigs));
+        $message['CONTENT'] = message_apply_formatting($message['CONTENT'], (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG)) || !$show_sigs);
     }
 
     // Check length of post to see if we should truncate it for display --------
@@ -553,18 +575,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if ($message['FROM_UID'] > -1) {
 
         echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" class=\"popup 650x500\">";
-        echo word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK']), true), "</a></span>";
+        echo word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true), "</a></span>";
 
     } else {
 
-        echo word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK']), true), "</span>";
+        echo word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true), "</span>";
     }
 
     if (isset($_SESSION['SHOW_AVATARS']) && ($_SESSION['SHOW_AVATARS'] == 'Y')) {
 
         if (isset($message['AVATAR_URL']) && strlen($message['AVATAR_URL']) > 0) {
 
-            echo "&nbsp;<img src=\"{$message['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK']), true), "\" border=\"0\" width=\"16\" height=\"16\" />";
+            echo "&nbsp;<img src=\"{$message['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true), "\" border=\"0\" width=\"16\" height=\"16\" />";
 
         } else if (isset($message['AVATAR_AID']) && is_numeric($message['AVATAR_AID'])) {
 
@@ -572,7 +594,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false)) !== false) {
 
-                echo "&nbsp;<img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($message['FLOGON'], $message['FNICK']), true), "\" border=\"0\" width=\"16\" height=\"16\" />\n";
+                echo "&nbsp;<img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true), "\" border=\"0\" width=\"16\" height=\"16\" />\n";
             }
         }
     }
@@ -580,17 +602,17 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     $temp_ignore = false;
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
-    if ($is_poll && isset($message['PID']) && $message['PID'] == 1 && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
+    if ($is_poll && isset($message['PID']) && $message['PID'] == 1 && (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED))) {
 
-        $message['FROM_RELATIONSHIP'] -= USER_IGNORED;
+        $message['FROM_RELATIONSHIP']-= USER_IGNORED;
         $temp_ignore = true;
     }
 
-    if ($message['FROM_RELATIONSHIP'] & USER_FRIEND) {
+    if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_FRIEND)) {
 
         echo "&nbsp;<img src=\"", html_style_image('friend.png'), "\" alt=\"", gettext("Friend"), "\" title=\"", gettext("Friend"), "\" />";
 
-    } else if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) || $temp_ignore) {
+    } else if ((isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) || $temp_ignore) {
 
         echo "&nbsp;<img src=\"", html_style_image('enemy.png'), "\" alt=\"", gettext("Ignored user"), "\" title=\"", gettext("Ignored user"), "\" />";
     }
@@ -598,7 +620,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "</td>\n";
     echo "                <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\">";
 
-    if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $_SESSION['UID'] != 0) {
+    if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $_SESSION['UID'] > 0) {
 
         echo "<b>", gettext("Ignored message"), "</b>";
 
@@ -607,7 +629,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         if ($in_list) {
 
             if ($from_user_permissions & USER_PERM_WORMED) echo "<b>", gettext("Wormed user"), "</b> ";
-            if ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG) echo "<b>", gettext("Ignored signature"), "</b> ";
+            if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG)) echo "<b>", gettext("Ignored signature"), "</b> ";
             if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] == 0) echo "<b>", gettext("Approval Required"), "</b> ";
 
             echo format_time($message['CREATED']);
@@ -620,41 +642,39 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "                <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;", gettext("To"), ":&nbsp;</span></td>\n";
     echo "                <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
-    if (($message['TLOGON'] != gettext("ALL")) && $message['TO_UID'] != 0) {
+    if (isset($message['RECIPIENTS']) && sizeof($message['RECIPIENTS']) > 0) {
 
-        echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['TO_UID']}\" target=\"_blank\" class=\"popup 650x500\">";
-        echo word_filter_add_ob_tags(format_user_name($message['TLOGON'], $message['TNICK']), true), "</a></span>";
+        foreach ($message['RECIPIENTS'] as $recipient) {
 
-        if ($message['TO_RELATIONSHIP'] & USER_FRIEND) {
+            if (isset($recipient['RELATIONSHIP']) && ($recipient['RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
+                continue;
+            }
 
-            echo "&nbsp;<img src=\"", html_style_image('friend.png'), "\" alt=\"", gettext("Friend"), "\" title=\"", gettext("Friend"), "\" />";
+            echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$recipient['UID']}\" target=\"_blank\" class=\"popup 650x500\">";
+            echo word_filter_add_ob_tags(format_user_name($recipient['LOGON'], $recipient['NICKNAME']), true), "</a>\n";
 
-        } else if ($message['TO_RELATIONSHIP'] & USER_IGNORED) {
+            if (isset($recipient['VIEWED']) && $recipient['VIEWED'] > 0) {
 
-            echo "&nbsp;<img src=\"", html_style_image('enemy.png'), "\" alt=\"", gettext("Ignored user"), "\" title=\"", gettext("Ignored user"), "\" />";
-        }
+                echo "<span class=\"smalltext\"><img src=\"", html_style_image('post_read.png'), "\" alt=\"\" title=\"", sprintf(gettext("Read: %s"), format_time($recipient['VIEWED'])), "\" /></span>\n";
 
-        if (isset($message['VIEWED']) && $message['VIEWED'] > 0) {
+            } else {
 
-            echo "&nbsp;<span class=\"smalltext\"><img src=\"", html_style_image('post_read.png'), "\" alt=\"\" title=\"", sprintf(gettext("Read: %s"), format_time($message['VIEWED'])), "\" /></span>";
+                if ($is_preview == false) {
 
-        } else {
-
-            if ($is_preview == false) {
-
-                echo "&nbsp;<span class=\"smalltext\"><img src=\"", html_style_image('post_unread.png'), "\" alt=\"\" title=\"", gettext("Unread Message"), "\" /></span>";
+                    echo "<span class=\"smalltext\"><img src=\"", html_style_image('post_unread.png'), "\" alt=\"\" title=\"", gettext("Unread Message"), "\" /></span>\n";
+                }
             }
         }
 
     } else {
 
-        echo "", gettext("ALL"), "</span>";
+        echo gettext('ALL');
     }
 
-    echo "</td>\n";
+    echo "</span></td>\n";
     echo "                <td align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\">";
 
-    if (($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && $_SESSION['UID'] != 0) {
+    if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && $_SESSION['UID'] > 0) {
 
         echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">", gettext("Stop ignoring this user"), "</a>&nbsp;&nbsp;&nbsp;";
         echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">", gettext("View Message"), "</a>";
@@ -675,7 +695,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "          </td>\n";
     echo "        </tr>\n";
 
-    if (!($message['FROM_RELATIONSHIP'] & USER_IGNORED) || !$limit_text) {
+    if ((isset($message['FROM_RELATIONSHIP']) && !($message['FROM_RELATIONSHIP'] & USER_IGNORED)) || !$limit_text) {
 
         echo "        <tr>\n";
         echo "          <td align=\"left\">\n";
@@ -1286,7 +1306,7 @@ function messages_interest_form($tid, $pid, $interest)
     echo "<br />\n";
 }
 
-function message_get_user($tid, $pid)
+function message_get_recipients($tid, $pid)
 {
     if (!$db = db::get()) return false;
 
@@ -1303,43 +1323,11 @@ function message_get_user($tid, $pid)
 
     if ($result->num_rows == 0) return false;
 
-    $user_data = $result->fetch_assoc();
+    $user_array = array();
 
-    return $user_data;
-}
-
-function message_get_user_array($tid, $pid)
-{
-    if (!$db = db::get()) return false;
-
-    if (!is_numeric($tid)) return false;
-    if (!is_numeric($pid)) return false;
-
-    if (!($table_prefix = get_table_prefix())) return false;
-
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "USER_PEER.PEER_NICKNAME FROM `{$table_prefix}POST` POST ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = POST.FROM_UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "WHERE POST.TID = '$tid' AND POST.PID = '$pid'";
-
-    if (!($result = $db->query($sql))) return false;
-
-    if ($result->num_rows == 0) return false;
-
-    $user_array = $result->fetch_assoc();
-
-    if (isset($user_array['LOGON']) && isset($user_array['PEER_NICKNAME'])) {
-        if (!is_null($user_array['PEER_NICKNAME']) && strlen($user_array['PEER_NICKNAME']) > 0) {
-            $user_array['NICKNAME'] = $user_array['PEER_NICKNAME'];
-        }
+    while (($user_data = $result->fetch_assoc()) !== null) {
+        $user_array[$user_data['UID']] = $user_data['LOGON'];
     }
-
-    if (!isset($user_array['LOGON'])) $user_array['LOGON'] = gettext("Unknown user");
-    if (!isset($user_array['NICKNAME'])) $user_array['NICKNAME'] = "";
 
     return $user_array;
 }
@@ -1395,7 +1383,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
     }
 
     // Mark posts as Viewed
-    $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST` SET VIEWED = CAST('$current_datetime' AS DATETIME) ";
+    $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST_RECIPIENT` SET VIEWED = CAST('$current_datetime' AS DATETIME) ";
     $sql.= "WHERE TID = '$tid' AND PID BETWEEN 1 AND '$pid' AND TO_UID = '{$_SESSION['UID']}' AND VIEWED IS NULL";
 
     if (!($result = $db->query($sql))) return false;
@@ -1449,8 +1437,8 @@ function messages_set_read($tid, $pid, $modified)
         }
     }
 
-    // Mark posts as Viewed...
-    $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST` SET VIEWED = NULL ";
+    // Mark posts as unread
+    $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST_RECIPIENT` SET VIEWED = NULL ";
     $sql.= "WHERE TID = '$tid' AND PID >= '$pid' AND TO_UID = '{$_SESSION['UID']}'";
 
     if (!$db->query($sql)) return false;

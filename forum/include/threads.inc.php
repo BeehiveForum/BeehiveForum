@@ -337,6 +337,8 @@ function threads_get_unread_to_me($uid, $folder, $page = 1) // get unread messag
     $sql.= "LEFT JOIN `{$table_prefix}THREAD_STATS` THREAD_STATS ";
     $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
     $sql.= "LEFT JOIN `{$table_prefix}POST` POST ON (POST.TID = THREAD.TID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}POST_RECIPIENT` POST_RECIPIENT ";
+    $sql.= "ON (POST_RECIPIENT.TID = POST.TID AND POST_RECIPIENT.PID = POST.PID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ON ";
     $sql.= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
@@ -350,7 +352,7 @@ function threads_get_unread_to_me($uid, $folder, $page = 1) // get unread messag
     $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
-    $sql.= "AND POST.TO_UID = '$uid' AND POST.VIEWED IS NULL ";
+    $sql.= "AND POST_RECIPIENT.TO_UID = '$uid' AND POST_RECIPIENT.VIEWED IS NULL ";
     $sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql.= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql.= "LIMIT $offset, 50";
@@ -582,7 +584,7 @@ function threads_get_unread_by_interest($uid, $folder, $page = 1, $interest = TH
     return threads_process_list($sql);
 }
 
-function threads_get_recently_viewed($uid, $folder, $page = 1) // get messages recently seem by $uid
+function threads_get_recently_viewed($uid, $folder, $page = 1) // get messages recently seen by $uid
 {
     // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0, 0);

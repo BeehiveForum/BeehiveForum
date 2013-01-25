@@ -486,6 +486,10 @@ h3.thread_title {
     background: url('images/post.png') transparent no-repeat scroll 0 50%;
 }
 
+.message_footer_links a.replyall {
+    background: url('images/reply_all.png') transparent no-repeat scroll 0 50%;
+}
+
 .message_footer_links a.edit {
     background: url('images/edit.png') transparent no-repeat scroll 0 50%;
 }
@@ -676,8 +680,14 @@ a.folder_list_link {
     margin: 0 0 10px;
 }
 
+.post_to .recipients {
+    font-weight: normal;
+    margin: 10px 0;
+}
+
 .post_to .select,
 .post_to .text,
+.post_to .recipients,
 .post_folder .select,
 .post_thread_title .text,
 .post_content .textarea {

@@ -96,22 +96,6 @@ function bh_exception_handler(Exception $exception)
 
     header_status(500, 'Internal Server Error');
 
-    if (($exception->getCode() == MYSQL_ERROR_NO_SUCH_TABLE) || ($exception->getCode() == MYSQL_ERROR_WRONG_COLUMN_NAME)) {
-
-        if (function_exists('install_incomplete') && !defined('BEEHIVE_DEVELOPER_MODE')) {
-
-            install_incomplete();
-        }
-    }
-
-    if ((preg_match('/include|include_once/u', $exception->getMessage()) > 0)) {
-
-        if (function_exists('install_missing_files') && !defined('BEEHIVE_DEVELOPER_MODE')) {
-
-            install_missing_files();
-        }
-    }
-
     $forum_path = server_get_forum_path();
 
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";

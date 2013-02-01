@@ -40,11 +40,8 @@ date_default_timezone_set('UTC');
 // Enable the error handler
 require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
 
-// Set the error reporting level to report all errors exception fatal errors
-error_reporting((E_ALL | E_STRICT) & ~ E_ERROR);
-
-// Register shutdown function to check for uncaught errors
-register_shutdown_function('bh_shutdown_handler');
+// Set the error reporting level to report all errors
+error_reporting(-1);
 
 // Enable the exception handler
 set_exception_handler('bh_exception_handler');
@@ -93,9 +90,6 @@ cache_disable_aol();
 
 // Disable caching if proxy server detected.
 cache_disable_proxy();
-
-// Check that Beehive is installed correctly
-check_install();
 
 // Multiple forum support
 require_once BH_INCLUDE_PATH. 'forum.inc.php';

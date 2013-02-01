@@ -97,9 +97,6 @@ cache_disable_aol();
 // Disable caching if proxy server detected.
 cache_disable_proxy();
 
-// Check that Beehive is installed correctly
-check_install();
-
 // Multiple forum support
 require_once BH_INCLUDE_PATH. 'forum.inc.php';
 

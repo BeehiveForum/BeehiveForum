@@ -21,47 +21,40 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-// Set the default timezone
-date_default_timezone_set('UTC');
-
-// Constant to define where the include files are
 define("BH_INCLUDE_PATH", "../include/");
 
-// Installer Detection
-define("BEEHIVEMODE_INSTALL", true);
+date_default_timezone_set('UTC');
 
-// Constant to define where the main forum files are
-define("BH_FORUM_PATH", "../");
+require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
 
-// Installation checking functions
-require_once BH_INCLUDE_PATH. 'install.inc.php';
+error_reporting(-1);
 
-// Multiple forum support
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
+set_exception_handler('bh_exception_handler');
 
-if (@file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
-    require_once BH_INCLUDE_PATH. 'config.inc.php';
-}
+set_error_handler('bh_error_handler');
 
-if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-    require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
-}
+ini_set('display_errors', '0');
+
+require_once BH_INCLUDE_PATH. 'server.inc.php';
 
 require_once BH_INCLUDE_PATH. 'cache.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
 
-// Disable caching.
-cache_disable();
+require_once BH_INCLUDE_PATH. 'install.inc.php';
 
-// Check the PHP version
+unregister_globals();
+
+disable_magic_quotes();
+
+set_server_protocol();
+
+cache_disable_aol();
+
+cache_disable_proxy();
+
 install_check_php_version();
 
-// Check the PHP extensions
 install_check_php_extensions();
 
-// Post Data handling.
 if (isset($_POST['install_method'])) {
 
     install_msie_buffer_fix();
@@ -236,21 +229,18 @@ if (isset($_POST['install_method'])) {
 
                 if (($config_file = @file_get_contents('config.inc.php'))) {
 
-                    // Database details
                     $config_file = str_replace('{db_server}',   $config['db_server'],   $config_file);
                     $config_file = str_replace('{db_port}',     $config['db_port'],     $config_file);
                     $config_file = str_replace('{db_username}', $config['db_username'], $config_file);
                     $config_file = str_replace('{db_password}', $config['db_password'], $config_file);
                     $config_file = str_replace('{db_database}', $config['db_database'], $config_file);
 
-                    // Error reporting to email address.
                     if (isset($enable_error_reports) && ($enable_error_reports == true)) {
                         $config_file = str_replace('{error_report_email_addr_to}', (isset($admin_email) ? $admin_email : ''), $config_file);
                     } else {
                         $config_file = str_replace('{error_report_email_addr_to}', 'false', $config_file);
                     }
 
-                    // Check to see if running in developer mode.
                     if (!defined('BEEHIVE_DEVELOPER_MODE')) {
 
                         if (@file_put_contents('../include/config.inc.php', $config_file)) {
@@ -263,17 +253,7 @@ if (isset($_POST['install_method'])) {
                     }
                 }
 
-                echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-                echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-                echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
-                echo "<head>\n";
-                echo "<title>Beehive Forum ", BEEHIVE_VERSION, " Installation</title>\n";
-                echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-                echo "<link rel=\"stylesheet\" href=\"../styles/default/style.css\" type=\"text/css\" />\n";
-                echo "</head>\n";
-                echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
-                echo "<br />\n";
-                echo "<div align=\"center\">\n";
+                install_draw_top();
 
                 if ($config_saved) {
 
@@ -378,9 +358,7 @@ if (isset($_POST['install_method'])) {
                     echo "</table>\n";
                 }
 
-                echo "</div>\n";
-                echo "</body>\n";
-                echo "</html>\n";
+                install_draw_bottom();
                 exit;
 
             } catch (Exception $e) {
@@ -432,14 +410,12 @@ if (isset($_POST['install_method'])) {
 
         if (isset($config['db_server'], $config['db_port'], $config['db_database'], $config['db_username'], $config['db_password'])) {
 
-            // Database details
             $config_file = str_replace('{db_server}',   $config['db_server'],   $config_file);
             $config_file = str_replace('{db_port}',     $config['db_port'],     $config_file);
             $config_file = str_replace('{db_username}', $config['db_username'], $config_file);
             $config_file = str_replace('{db_password}', $config['db_password'], $config_file);
             $config_file = str_replace('{db_database}', $config['db_database'], $config_file);
 
-            // Error reporting to email address.
             if (isset($enable_error_reports) && ($enable_error_reports == true)) {
                 $config_file = str_replace('{error_report_email_addr_to}', (isset($admin_email) ? $admin_email : ''), $config_file);
             } else {
@@ -454,7 +430,6 @@ if (isset($_POST['install_method'])) {
 
         } else {
 
-            // Database details
             $config_file = str_replace('{db_server}',   "", $config_file);
             $config_file = str_replace('{db_port}',     "", $config_file);
             $config_file = str_replace('{db_database}', "", $config_file);
@@ -463,17 +438,8 @@ if (isset($_POST['install_method'])) {
 
             install_msie_buffer_fix();
 
-            echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-            echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-            echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
-            echo "<head>\n";
-            echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
-            echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-            echo "<link rel=\"stylesheet\" href=\"../styles/default/style.css\" type=\"text/css\" />\n";
-            echo "</head>\n";
-            echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
-            echo "<br />\n";
-            echo "<div align=\"center\">\n";
+            install_draw_top();
+
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
             echo "    <tr>\n";
             echo "      <td align=\"left\" width=\"525\">\n";
@@ -541,9 +507,8 @@ if (isset($_POST['install_method'])) {
             echo "      </td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
-            echo "</div>\n";
-            echo "</body>\n";
-            echo "</html>\n";
+
+            install_draw_bottom();
             exit;
         }
 
@@ -553,21 +518,9 @@ if (isset($_POST['install_method'])) {
     }
 }
 
-echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">\n";
-echo "<head>\n";
-echo "<title>Beehive Forum ", BEEHIVE_VERSION, " - Installation</title>\n";
-echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-echo "<link rel=\"stylesheet\" href=\"../styles/default/style.css\" type=\"text/css\" />\n";
-echo "<script language=\"javascript\" type=\"text/javascript\" src=\"../js/jquery-1.7.1.min.js\"></script>\n";
-echo "<script language=\"javascript\" type=\"text/javascript\" src=\"../js/general.js\"></script>\n";
-echo "<script language=\"javascript\" type=\"text/javascript\" src=\"../js/install.js\"></script>\n";
-echo "</head>\n";
-echo "<body>\n";
+install_draw_top();
+
 echo "<form accept-charset=\"utf-8\" id=\"install_form\" method=\"post\" action=\"index.php\">\n";
-echo "<h1>Beehive Forum ", BEEHIVE_VERSION, " Installation</h1>\n";
-echo "<div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" colspan=\"2\">\n";
@@ -781,9 +734,8 @@ echo "    <tr>\n";
 echo "      <td align=\"center\"><input type=\"submit\" name=\"install\" id=\"install_button\" value=\"Install\" class=\"button\" tabindex=\"15\" /></td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
-echo "</div>\n";
 echo "</form>\n";
-echo "</body>\n";
-echo "</html>\n";
+
+install_draw_bottom();
 
 ?>

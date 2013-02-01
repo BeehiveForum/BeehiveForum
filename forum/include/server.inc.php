@@ -350,15 +350,18 @@ function server_get_config()
 
     if (!$config) {
 
-        require_once BH_INCLUDE_PATH. 'config.inc.php';
+        if (@file_exists(BH_INCLUDE_PATH. 'config.inc.php')) {
 
-        if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-            require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
+            require_once BH_INCLUDE_PATH. 'config.inc.php';
+
+            if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
+                require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
+            }
+
+            $config = get_defined_vars();
+
+            unset($config['config']);
         }
-
-        $config = get_defined_vars();
-
-        unset($config['config']);
     }
 
     return $config;

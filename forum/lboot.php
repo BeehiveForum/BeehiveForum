@@ -97,9 +97,6 @@ cache_disable_aol();
 // Disable caching if proxy server detected.
 cache_disable_proxy();
 
-// Check that Beehive is installed correctly
-check_install();
-
 // Required includes
 require_once BH_INCLUDE_PATH. 'banned.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';

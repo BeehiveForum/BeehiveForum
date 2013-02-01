@@ -27,7 +27,7 @@ date_default_timezone_set('UTC');
 
 require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
 
-error_reporting(-1);
+error_reporting(E_ALL | E_STRICT);
 
 set_exception_handler('bh_exception_handler');
 

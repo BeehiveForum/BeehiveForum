@@ -187,7 +187,7 @@ function sphinx_search_execute($search_arguments, &$error)
     while (($search_result = $result->fetch_assoc()) !== null) {
 
         $sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, TID, PID, RELEVANCE) ";
-        $sql.= "SELECT '{$_SESSION['UID']}' AS UID, '$forum_fid' AS FORUM, THREAD.TID, POST.PID ";
+        $sql.= "SELECT '{$_SESSION['UID']}' AS UID, '$forum_fid' AS FORUM, THREAD.TID, POST.PID, ";
         $sql.= "{$search_result['weight']} AS RELEVANCE FROM `{$table_prefix}POST` ";
         $sql.= "POST INNER JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
         $sql.= "WHERE THREAD.TID = '{$search_result['tid']}' AND POST.PID = '{$search_result['pid']}' ";

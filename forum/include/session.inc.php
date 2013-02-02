@@ -142,9 +142,14 @@ abstract class session
 
     public static function gc($lifetime)
     {
+        $current_datetime = date(MYSQL_DATETIME, time());
+
         $expires_datetime = date(MYSQL_DATETIME, time() - ($lifetime + DAY_IN_SECONDS));
 
-        $sql = "DELETE FROM SESSIONS WHERE TIME < CAST('$expires_datetime' AS DATETIME)";
+        $sql = "DELETE FROM SESSIONS USING SESSIONS LEFT JOIN (SELECT UID, ";
+        $sql.= "MAX(EXPIRES) AS EXPIRES FROM USER_TOKEN) AS TOKENS ON (TOKENS.UID = SESSIONS.UID) ";
+        $sql.= "WHERE TIME < CAST('$expires_datetime' AS DATETIME) AND (TOKENS.UID IS NULL OR ";
+        $sql.= "TOKENS.EXPIRES < CAST('$current_datetime' AS DATETIME)";
 
         if (!(session::$db->query($sql))) return false;
 

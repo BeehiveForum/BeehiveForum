@@ -29,12 +29,71 @@ require_once BH_INCLUDE_PATH. 'header.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
 // End Required includes
 
+function install_check()
+{
+    if (!file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
+        header_redirect('./install/index.php');
+    }
+
+    install_check_php_version();
+
+    install_check_php_extensions();
+
+    install_check_mysql_version();
+
+    if (@file_exists('./install/index.php') && !defined("BEEHIVE_DEVELOPER_MODE")) {
+
+        install_draw_top();
+
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"500\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">Installation Incomplete</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table class=\"posthead\" width=\"95%\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">Your Beehive Forum would appear to be already installed, but you have not removed the installation files. You must delete the 'install' directory before your Beehive Forum can be used.</td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "  <form accept-charset=\"utf-8\" method=\"get\" action=\"index.php\">\n";
+        echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
+        echo "      <tr>\n";
+        echo "        <td align=\"left\" width=\"500\">&nbsp;</td>\n";
+        echo "      </tr>\n";
+        echo "      <tr>\n";
+        echo "        <td align=\"center\"><input type=\"submit\" name=\"submit\" value=\"Retry\" class=\"button\" /></td>\n";
+        echo "      </tr>\n";
+        echo "    </table>\n";
+        echo "  </form>\n";
+
+        install_draw_bottom();
+        exit;
+    }
+}
+
 function install_check_mysql_version()
 {
-    // Get the MySQL version.
     $mysql_version = db::get_version();
 
-    // If the version isn't available or is below what we need show an error
     if ($mysql_version === false || version_compare($mysql_version, BEEHIVE_MYSQL_MIN_VERSION, "<")) {
 
         install_draw_top();
@@ -76,10 +135,8 @@ function install_check_mysql_version()
 
 function install_check_php_extensions()
 {
-    // Static variable to store our required extensions.
     static $required_extensions = false;
 
-    // Initialise the variable store.
     if (!is_array($required_extensions)) {
 
         $required_extensions = array(
@@ -95,21 +152,16 @@ function install_check_php_extensions()
         );
     }
 
-    // Get an array of extensions currently loaded by PHP
     $loaded_extensions = get_loaded_extensions();
 
-    // Extract list of missing extensions.
     $missing_extensions = array_diff($required_extensions, $loaded_extensions);
 
-    // Compare them to the ones we require.
     if (sizeof($missing_extensions) > 0) {
 
-        // Format the list of required PHP extensions we use.
         foreach ($required_extensions as $key => $extension_name) {
             $required_extensions[$key] = sprintf('<a href="http://www.php.net/%1$s">%1$s</a>', $extension_name);
         }
 
-        // Format the list of missing PHP extensions we need.
         foreach ($missing_extensions as $key => $extension_name) {
             $missing_extensions[$key] = sprintf('<a href="http://www.php.net/%1$s">%1$s</a>', $extension_name);
         }
@@ -183,7 +235,6 @@ function install_check_php_extensions()
 
 function install_check_php_version()
 {
-    // Get and compare the PHP version.
     if (version_compare(phpversion(), BEEHIVE_PHP_MIN_VERSION, "<")) {
 
         install_draw_top();
@@ -311,16 +362,12 @@ function install_check_column_type($database_name, $table_name, $column_name, $c
 
 function install_get_table_names(&$global_tables, &$forum_tables)
 {
-    // Static store of global BH table names
     static $global_tables_store = false;
 
-    // Static store of per-forum BH table names.
     static $forum_tables_store = false;
 
-    // Check the global store has been initialised.
     if (!is_array($global_tables_store)) {
 
-        // Initislise the global store.
         $global_tables_store = array(
             'FORUMS',
             'FORUM_SETTINGS',
@@ -346,10 +393,8 @@ function install_get_table_names(&$global_tables, &$forum_tables)
          );
     }
 
-    // Check the per-forum store has been initialised.
     if (!is_array($forum_tables_store)) {
 
-        // Initialise the store.
         $forum_tables_store = array(
             'ADMIN_LOG',
             'BANNED',
@@ -384,52 +429,39 @@ function install_get_table_names(&$global_tables, &$forum_tables)
         );
     }
 
-    // Set the by-ref var to the global tables store.
     $global_tables = $global_tables_store;
 
-    // Set the by-ref variable to the per-forum tables store.
     $forum_tables = $forum_tables_store;
 }
 
 function install_check_table_conflicts($database_name, $webtag, $check_forum_tables, $check_global_tables, $remove_conflicts)
 {
-    // Database connection.
     if (!($db = db::get())) return false;
 
-    // SQL to get a list of existing tables in the database.
     $sql = "SHOW TABLES FROM `$database_name`";
 
-    // Execute query.
     if (!($result = $db->query($sql))) return false;
 
-    // Check there are some existing tables in the database.
     if ($result->num_rows < 1) return false;
 
-    // Get the existing tables as an array.
     while (($table_data = $result->fetch_row()) !== null) {
         $existing_tables[] = $table_data[0];
     }
 
-    // Get arrays of global and forum tables.
     install_get_table_names($global_tables, $forum_tables);
 
-    // Prefix the forum tables with the webtag
     array_walk($forum_tables, 'install_prefix_webtag', $webtag);
 
-    // Construct the final array we'll use to check.
     $check_tables_array = array_merge($check_global_tables ? $global_tables : array(), $check_forum_tables ? $forum_tables : array());
 
-    // array_intersect can find our duplicates.
     $conflicting_tables_array = array_intersect($existing_tables, $check_tables_array);
 
-    // Check if we should remove conflicts automatically.
     if (($remove_conflicts === true) && (sizeof($conflicting_tables_array) > 0)) {
 
         $sql = sprintf('DROP TABLE IF EXISTS `%s`', implode('`, `', array_map(array($db, 'escape', $conflicting_tables_array))));
         $db->query($sql);
     }
 
-    // Return either the conflicting table names or false.
     return sizeof($conflicting_tables_array) > 0 ? $conflicting_tables_array : false;
 }
 

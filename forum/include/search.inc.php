@@ -568,11 +568,23 @@ function search_get_first_result_msg()
 {
     if (!$db = db::get()) return false;
 
+    if (!($table_prefix = get_table_prefix())) return false;
+
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     search_get_sort($sort_by, $sort_dir);
 
-    $sql = "SELECT TID, PID FROM SEARCH_RESULTS WHERE UID = '{$_SESSION['UID']}' ";
+    $sql = "SELECT THREAD.TID, POST.PID FROM SEARCH_RESULTS ";
+    $sql.= "INNER JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = SEARCH_RESULTS.TID) ";
+    $sql.= "INNER JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
+    $sql.= "INNER JOIN `{$table_prefix}POST` POST ON (POST.TID = SEARCH_RESULTS.TID AND POST.PID = SEARCH_RESULTS.PID) ";
+    $sql.= "INNER JOIN USER ON (USER.UID = POST.FROM_UID) LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql.= "ON (USER_PEER.PEER_UID = POST.FROM_UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql.= "WHERE SEARCH_RESULTS.UID = '{$_SESSION['UID']}' ";
+    $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
+    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
+    $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED. ") = 0 ";
+    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
 
     if (!in_array($sort_dir, array(SEARCH_SORT_ASC, SEARCH_SORT_DESC))) {
         $sort_dir = SEARCH_SORT_DESC;
@@ -584,27 +596,27 @@ function search_get_first_result_msg()
 
         case SEARCH_SORT_RELEVANCE:
 
-            $sql.= "ORDER BY RELEVANCE $sort_dir LIMIT 1";
+            $sql.= "ORDER BY SEARCH_RESULTS.RELEVANCE $sort_dir LIMIT 1";
             break;
 
         case SEARCH_SORT_NUM_REPLIES:
 
-            $sql.= "ORDER BY LENGTH $sort_dir LIMIT 1";
+            $sql.= "ORDER BY THREAD.LENGTH $sort_dir LIMIT 1";
             break;
 
         case SEARCH_SORT_FOLDER_NAME:
 
-            $sql.= "ORDER BY FID $sort_dir LIMIT 1";
+            $sql.= "ORDER BY FOLDER.TITLE $sort_dir LIMIT 1";
             break;
 
         case SEARCH_SORT_AUTHOR_NAME:
 
-            $sql.= "ORDER BY FROM_UID $sort_dir LIMIT 1";
+            $sql.= "ORDER BY FROM_NICKNAME $sort_dir LIMIT 1";
             break;
 
         default:
 
-            $sql.= "ORDER BY CREATED $sort_dir LIMIT 1";
+            $sql.= "ORDER BY POST.CREATED $sort_dir LIMIT 1";
             break;
     }
 

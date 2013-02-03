@@ -151,7 +151,7 @@ if (($threads_array = threads_get_most_recent($limit, $fid, ($sort_created == 'Y
 
     foreach ($threads_array as $thread) {
 
-        $t_title = $thread['TITLE'];
+        $title = $thread['TITLE'];
 
         // Make the date human readable and fetch the content of the last
         // post in the thread. Can easily change this if it isn't right
@@ -161,48 +161,46 @@ if (($threads_array = threads_get_most_recent($limit, $fid, ($sort_created == 'Y
         // Get the post content and author
         if ($sort_created == 'Y') {
 
-            $t_content = message_get_content($thread['TID'], 1);
-            $t_user_array = message_get_user_array($thread['TID'], 1);
+            $content = message_get_content($thread['TID'], 1);
+            $author = message_get_author($thread['TID'], 1);
 
         } else {
 
-            $t_content = message_get_content($thread['TID'], $thread['LENGTH']);
-            $t_user_array = message_get_user_array($thread['TID'], $thread['LENGTH']);
+            $content = message_get_content($thread['TID'], $thread['LENGTH']);
+            $author = message_get_author($thread['TID'], $thread['LENGTH']);
         }
 
         // Strip signatures from the RSS feed
-        $t_content = message_apply_formatting($t_content, true);
+        $content = message_apply_formatting($content, true);
 
         // Strip HTML and trim the content back.
-        $t_content = strip_tags(trim(xml_strip_invalid_chars($t_content)));
+        $content = strip_tags(trim(xml_strip_invalid_chars($content)));
 
         // Convert HTML special chars (& -> &amp;, etc);
-        $t_content = htmlspecialchars($t_content);
-        $t_title   = htmlspecialchars($t_title);
+        $content = htmlspecialchars($content);
+        $title   = htmlspecialchars($title);
 
         // Check for double-encoded HTML chars (&amp;amp;, etc.)
-        $t_content = preg_replace("/&amp;(#[0-9]+|[a-z]+);/iu", "&\\1;", $t_content);
-        $t_title   = preg_replace("/&amp;(#[0-9]+|[a-z]+);/iu", "&\\1;", $t_title);
+        $content = preg_replace("/&amp;(#[0-9]+|[a-z]+);/iu", "&\\1;", $content);
+        $title   = preg_replace("/&amp;(#[0-9]+|[a-z]+);/iu", "&\\1;", $title);
 
         // Convert HTML entities to XML literals.
-        $t_content = html_entity_to_decimal($t_content);
-        $t_title   = html_entity_to_decimal($t_title);
+        $content = html_entity_to_decimal($content);
+        $title   = html_entity_to_decimal($title);
 
         // Output the item.
         echo "<item>\n";
         echo "  <guid isPermaLink=\"true\">{$forum_location}/index.php?webtag=$webtag&amp;msg={$thread['TID']}.1</guid>\n";
         echo "  <pubDate>{$modified_date} UT</pubDate>\n";
-        echo "  <title>{$t_title}</title>\n";
+        echo "  <title>{$title}</title>\n";
         echo "  <link>{$forum_location}/index.php?webtag=$webtag&amp;msg={$thread['TID']}.1</link>\n";
 
         // Get the author of the message.
-        if (isset($t_user_array['LOGON'])) {
-
-            $t_user = htmlentities_array(format_user_name($t_user_array['LOGON'], $t_user_array['NICKNAME']));
-            echo "  <dc:creator>{$t_user}</dc:creator>\n";
+        if (isset($author['LOGON'])) {
+            echo "  <dc:creator>", htmlentities_array(format_user_name($author['LOGON'], $author['NICKNAME'])), "</dc:creator>\n";
         }
 
-        echo "  <description><![CDATA[{$t_content}]]></description>\n";
+        echo "  <description><![CDATA[{$content}]]></description>\n";
         echo "  <comments>{$forum_location}/index.php?webtag=$webtag&amp;msg={$thread['TID']}.1</comments>\n";
         echo "</item>\n";
     }

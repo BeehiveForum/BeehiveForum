@@ -118,8 +118,8 @@ $(beehive).bind('init', function() {
 
     $('#quick_reply_container input#cancel').bind('click', function() {
 
-        if (CKEDITOR.instances.t_content) {
-            CKEDITOR.instances.t_content.destroy();
+        if (CKEDITOR.instances.content) {
+            CKEDITOR.instances.content.destroy();
         }
 
         $('#quick_reply_container').hide();
@@ -133,8 +133,8 @@ $(beehive).bind('init', function() {
 
         var quick_reply_data = /^([0-9]+)\.([0-9]+)$/.exec($(this).data('msg'));
 
-        if (CKEDITOR.instances.t_content) {
-            CKEDITOR.instances.t_content.destroy();
+        if (CKEDITOR.instances.content) {
+            CKEDITOR.instances.content.destroy();
         }
 
         if (quick_reply_data.length === 3) {
@@ -145,11 +145,11 @@ $(beehive).bind('init', function() {
 
             if ($quick_reply_location.length == 1) {
 
-                $quick_reply_container.find('#t_rpid').val(quick_reply_data[2]);
+                $quick_reply_container.find('input[name="replyto"]').val(quick_reply_data[0]);
 
                 $quick_reply_container.appendTo($quick_reply_location).show();
 
-                $quick_reply_container.find('#t_content').each(beehive.editor);
+                $quick_reply_container.find('#content').each(beehive.editor);
 
                 $quick_reply_container.find('input#post').get(0).scrollIntoView(false);
             }

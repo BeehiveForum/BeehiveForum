@@ -454,6 +454,12 @@ if (isset($_POST['to_logon']) && strlen(trim($_POST['to_logon'])) > 0) {
 } else if (isset($tid) && isset($reply_to_pid) && ($reply_to_pid > 0)) {
 
     $to_logon = $reply_message['FROM_LOGON'];
+
+    $to_logon_array[$reply_message['FROM_UID']] = array(
+        'UID' => $reply_message['FROM_UID'],
+        'LOGON' => $reply_message['FROM_LOGON'],
+        'NICKNAME' => $reply_message['FROM_NICKNAME']
+    );
 }
 
 $allow_html = true;

@@ -1291,12 +1291,12 @@ function admin_delete_user($uid, $delete_content = false)
     if (!is_bool($delete_content)) $delete_content = false;
 
     // Constants for deleting PM data
-    $pm_inbox_items  = PM_INBOX_ITEMS;
-    $pm_sent_items   = PM_SENT_ITEMS;
-    $pm_outbox_items = PM_OUTBOX_ITEMS;
-    $pm_saved_out    = PM_SAVED_OUT;
-    $pm_saved_in     = PM_SAVED_IN;
-    $pm_draft_items  = PM_DRAFT_ITEMS;
+    $pm_inbox_items = PM_INBOX_ITEMS;
+    $pm_outbox = PM_OUTBOX;
+    $pm_sent_items = PM_SENT_ITEMS;
+    $pm_saved_out = PM_SAVED_OUT;
+    $pm_saved_in = PM_SAVED_IN;
+    $pm_draft_items = PM_DRAFT_ITEMS;
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
@@ -1419,28 +1419,38 @@ function admin_delete_user($uid, $delete_content = false)
 
             if (!$db->query($sql)) return false;
 
-            // Delete User's PM Content
-            $sql = "DELETE QUICK FROM PM_CONTENT USING PM_CONTENT ";
-            $sql.= "LEFT JOIN PM ON (PM.MID = PM_CONTENT.MID) ";
-            $sql.= "WHERE ((PM.TYPE & $pm_inbox_items > 0) AND PM.TO_UID = '$uid') ";
-            $sql.= "OR ((PM.TYPE & $pm_sent_items > 0) AND PM.FROM_UID = '$uid' AND PM.SMID = 0) ";
-            $sql.= "OR ((PM.TYPE & $pm_outbox_items > 0) AND PM.FROM_UID = '$uid') ";
-            $sql.= "OR ((PM.TYPE & $pm_saved_out > 0) AND PM.FROM_UID = '$uid') ";
-            $sql.= "OR ((PM.TYPE & $pm_saved_in > 0) AND PM.TO_UID = '$uid') ";
-            $sql.= "OR ((PM.TYPE & $pm_draft_items > 0) AND PM.FROM_UID = '$uid') ";
+            // Remove all PM_TYPE records
+            $sql = "DELETE QUICK FROM PM_TYPE WHERE UID = '$uid'";
 
             if (!$db->query($sql)) return false;
 
-            // Delete User's PMs.
-            $sql = "DELETE QUICK FROM PM WHERE ((TYPE & $pm_inbox_items > 0) ";
-            $sql.= "AND TO_UID = '$uid') OR ((TYPE & $pm_sent_items > 0) ";
-            $sql.= "AND FROM_UID = '$uid' AND SMID = 0) OR ((TYPE & $pm_outbox_items > 0) ";
-            $sql.= "AND FROM_UID = '$uid') OR ((TYPE & $pm_saved_out > 0) ";
-            $sql.= "AND FROM_UID = '$uid') OR ((TYPE & $pm_saved_in > 0) ";
-            $sql.= "AND TO_UID = '$uid') OR ((TYPE & $pm_draft_items > 0) ";
-            $sql.= "AND FROM_UID = '$uid') ";
+            // Remove all PM_RECIPIENT records
+            $sql = "DELETE QUICK FROM PM_RECIPIENT WHERE TO_UID = '$uid'";
 
             if (!$db->query($sql)) return false;
+
+            // Delete any PMs from this user.
+            $sql = "DELETE QUICK FROM PM WHERE FROM_UID = '$uid'";
+
+            if (!$db->query($sql)) return false;
+
+            // Remove any PMs that have no recipients.
+            $sql = "DELETE QUICK FROM PM, PM_CONTENT USING PM ";
+            $sql.= "LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
+            $sql.= "LEFT JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
+            $sql.= "LEFT JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID) ";
+            $sql.= "WHERE PM_TYPE.MID IS NULL OR PM_RECIPIENT.MID IS NULL";
+
+            if (!$db->query($sql)) return false;
+
+            // Delete all the attachments uploaded by the user.
+            $sql = "SELECT HASH FROM POST_ATTACHMENT_FILES WHERE UID = '$uid'";
+
+            if (!($result = $db->query($sql))) return false;
+
+            while (($attachment_data = $result->fetch_assoc()) !== null) {
+                attachments_delete($attachment_data['HASH']);
+            }
 
             // Delete User's PM Search Results
             $sql = "DELETE QUICK FROM PM_SEARCH_RESULTS WHERE UID = '$uid'";

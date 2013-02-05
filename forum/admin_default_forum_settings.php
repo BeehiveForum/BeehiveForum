@@ -1512,13 +1512,6 @@ echo "                        <td align=\"left\" width=\"270\">", gettext("Attac
 echo "                        <td align=\"left\">", form_input_text("attachment_dir", (isset($forum_global_settings['attachment_dir'])) ? htmlentities_array($forum_global_settings['attachment_dir']) : "attachments", 35, 255), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"270\">", gettext("Allowed attachment mime-types"), ":</td>\n";
-echo "                        <td align=\"left\">", form_input_text("attachment_mime_types", (isset($forum_global_settings['attachment_mime_types'])) ? htmlentities_array($forum_global_settings['attachment_mime_types']) : '', 35), "&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">", gettext("Attachment thumbnail method"), ":</td>\n";
 echo "                        <td align=\"left\">", form_dropdown_array('attachment_thumbnail_method', $attachment_thumbnail_methods, (isset($forum_global_settings['attachment_thumbnail_method']) ? $forum_global_settings['attachment_thumbnail_method'] : ATTACHMENT_THUMBNAIL_PHPGD)), "</td>\n";
 echo "                      </tr>\n";
@@ -1541,14 +1534,20 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">", gettext("Maximum attachment file size"), ":</td>\n";
 echo "                        <td align=\"left\">", form_input_text("attachment_size_limit", (isset($forum_global_settings['attachment_size_limit'])) ? htmlentities_array(($forum_global_settings['attachment_size_limit'] / 1024) / 1024) : '', 10, 32), "&nbsp;MB</td>\n";
 echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" valign=\"top\" width=\"270\" colspan=\"2\">", gettext("Allowed attachment mime-types"), ":</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">", form_textarea("attachment_mime_types", (isset($forum_global_settings['attachment_mime_types'])) ? htmlentities_array($forum_global_settings['attachment_mime_types']) : "", 6, 82, false, 'admin_tools_textarea'), "&nbsp;</td>\n";
+echo "                      </tr>\n";
 
 if (isset($forum_global_settings['attachments_enabled']) && $forum_global_settings['attachments_enabled'] == "Y") {
 
     if (!attachments_check_dir()) {
 
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-        echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td colspan=\"2\">\n";
 
@@ -1570,7 +1569,7 @@ echo "                          <p class=\"smalltext\">", gettext("<b>Maximum at
 echo "                          <p class=\"smalltext\">", gettext("<b>Maximum attachment file size</b> is the maximum size of a single uploaded file. This is the limit of your webserver and/or PHP. Only set this value if you are having problems with attachments not uploading. Leave it blank to have your Beehive Forum determine the amount from PHP's upload_max_filesize configuration setting."), "</p>\n";
 echo "                          <p class=\"smalltext\">", gettext("<b>Allow embedding of attachments in messages / signatures</b> allows users to embed attachments in posts. Enabling this option while useful can increase your bandwidth usage drastically under certain configurations of PHP. If you have limited bandwidth it is recommended that you disable this option."), "</p>\n";
 echo "                          <p class=\"smalltext\">", gettext("<b>Use Alternative attachment method</b> Forces Beehive to use an alternative retrieval method for attachments. If you receive 404 error messages when trying to download attachments from messages try enabling this option."), "</p>\n";
-echo "                          <p class=\"smalltext\">", gettext("<b>Allowed attachment mime-types</b> allows you to restrict the mime-types of files that can be uploaded. To specify multiple mime-types, separate them using semi-colons. <b>Note:</b> Beehive doesn't perform strict analysis of the uploaded files uploaded and renamed files may be able to circumvent this restriction."), "</p>\n";
+echo "                          <p class=\"smalltext\">", gettext("<b>Allowed attachment mime-types</b> allows you to restrict the mime-types of files that can be uploaded. Enter each allowed mime-type on a new line. <b>Note:</b> Beehive doesn't perform strict analysis of the files uploaded and renamed files may be able to circumvent this restriction."), "</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

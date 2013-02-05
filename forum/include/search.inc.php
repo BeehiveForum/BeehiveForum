@@ -87,8 +87,8 @@ function search_execute($search_arguments, &$error)
         // Make sure the uid_array key is an empty array.
         $search_arguments['user_uid_array'] = array();
 
-        // Username argument is a semi-colon separated list.
-        $search_arguments['username_array'] = array_map('trim', explode(';', $search_arguments['username']));
+        // Username argument is a comma separated list.
+        $search_arguments['username_array'] = preg_split('/,\s*/u', trim($search_arguments['username'], ', '));
 
         // Iterate over the provided usernames
         foreach ($search_arguments['username_array'] as $username) {

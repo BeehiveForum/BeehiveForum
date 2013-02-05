@@ -1152,7 +1152,7 @@ function user_search($user_search)
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    $user_search_array = explode(";", $user_search);
+    $user_search_array = preg_split('/,\s*/u', trim($user_search, ', '));
     $user_search_array = array_map('user_search_array_clean', $user_search_array);
 
     $user_search_logon = implode("%' OR LOGON LIKE '", $user_search_array);
@@ -1399,7 +1399,7 @@ function user_search_relationships($user_search, $page = 1, $exclude_uid = 0)
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    $user_search_array = explode(";", $user_search);
+    $user_search_array = preg_split('/,\s*/u', trim($user_search, ', '));
     $user_search_array = array_map('user_search_array_clean', $user_search_array);
 
     $user_search_logon = implode("%' OR LOGON LIKE '", $user_search_array);

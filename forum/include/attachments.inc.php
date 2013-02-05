@@ -686,7 +686,7 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
 function attachments_get_mime_types()
 {
     if (($allowed_mimetypes = forum_get_setting('attachment_mime_types', 'strlen', false)) !== false) {
-        return explode(';', $allowed_mimetypes);
+        return array_map('trim', explode("\n", $allowed_mimetypes));
     }
 
     return array();

@@ -137,12 +137,11 @@ $(beehive).bind('init', function() {
             var result_array = [];
 
             $('input[name^=selected]:checked').each(function() {
-
                 result_array.push($(this).val());
-                return $search_container.hasClass('allow_multi');
+                return $search_input.hasClass('allow_multi');
             });
 
-            $search_input.val(result_array.join(';'));
+            $search_input.val(result_array.join(', '));
         }
 
         window.close();

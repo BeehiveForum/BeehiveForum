@@ -1879,7 +1879,7 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
 
     $forums_array = array();
 
-    $forum_search_array = explode(";", $forum_search);
+    $forum_search_array = preg_split('/,\s*/u', trim($forum_search, ', '));
     $forum_search_array = array_map('forum_search_array_clean', $forum_search_array);
 
     $forum_search_webtag = implode("%' OR FORUMS.WEBTAG LIKE '%", $forum_search_array);

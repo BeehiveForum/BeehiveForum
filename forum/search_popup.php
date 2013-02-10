@@ -86,7 +86,7 @@ if (isset($_POST['obj_id']) && strlen(trim($_POST['obj_id'])) > 0) {
 if (isset($_POST['selected']) && is_array($_POST['selected'])) {
     $selected_array = array_unique($_POST['selected']);
 } else if (isset($_GET['selected']) && strlen(trim($_GET['selected'])) > 0) {
-    $selected_array = array_unique(preg_split('/,\s*/u', trim($_GET['to_logon'], ', ')););
+    $selected_array = array_unique(preg_split('/,\s*/u', trim($_GET['selected'], ', ')));
 } else {
     $selected_array = array();
 }

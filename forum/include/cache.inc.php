@@ -287,7 +287,7 @@ function cache_check_last_modified($last_modified, $etag, $expires = null)
         $remote_etag = false;
     }
 
-    if (($remote_etag == $etag) || ($remote_etag === false && ($remote_last_modified == $last_modified))) {
+    if (($remote_etag == $etag) && ($remote_last_modified == $last_modified)) {
 
         header("Etag: W/\"$remote_etag\"", true);
         header("Expires: $cache_expires", true);

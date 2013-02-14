@@ -115,7 +115,7 @@ while (@ob_end_clean());
 $file_size = filesize($file_path);
 
 // Last Modified Header for cache control
-cache_check_last_modified(filemtime($file_path));
+cache_check_last_modified(filemtime($file_path), md5_file($file_path));
 
 // Send remaining headers for length and filename.
 header("Content-length: $file_size");

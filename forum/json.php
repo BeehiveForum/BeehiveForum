@@ -152,7 +152,7 @@ if (isset($_GET['json'])) {
 header(sprintf('Content-type: %s; charset=UTF-8', $content_type), true);
 
 // Check the cache of the file.
-cache_check_etag(md5($content_type. $content));
+cache_check_last_modified(time(), md5($_SESSION['UID']. $_SESSION['LOGON']. $content));
 
 // Output the content
 echo $content;

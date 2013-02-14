@@ -47,7 +47,7 @@ $font_size = floor(abs($font_size));
 header("Content-type: text/css; charset=UTF-8");
 
 // Check the cache
-cache_check_etag(md5(sprintf("%s-%s-%s", session_id(), $font_size, $_SESSION['UID'])));
+cache_check_last_modified(time(), md5($font_size. $_SESSION['UID']. $_SESSION['LOGON']));
 
 // Check the user's font size.
 if ($font_size < 5) $font_size = 5;

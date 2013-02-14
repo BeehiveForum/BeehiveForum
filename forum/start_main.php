@@ -39,7 +39,7 @@ if (($start_page = forum_get_setting('start_page', 'strlen', false)) !== false) 
     if (($start_page_css = forum_get_setting('start_page_css', 'strlen', false)) !== false) {
 
         // Check for cached page.
-        cache_check_etag(md5($start_page. $start_page_css));
+        cache_check_last_modified(time(), md5($start_page. $start_page_css));
 
         html_draw_top("inline_css=$start_page_css");
         echo message_apply_formatting($start_page);
@@ -48,7 +48,7 @@ if (($start_page = forum_get_setting('start_page', 'strlen', false)) !== false) 
     } else {
 
         // Check for cached page.
-        cache_check_etag(md5($start_page));
+        cache_check_last_modified(time(), md5($start_page));
 
         html_draw_top();
         echo message_apply_formatting($start_page);

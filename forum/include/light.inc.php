@@ -1623,7 +1623,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         $post_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_self\">%s</a>";
         $post_link = sprintf($post_link, $message['MOVED_TID'], $message['MOVED_PID'], gettext("here"));
 
-        light_html_display_warning_msg(gettext("<b>Thread Split:</b> This post has been moved %s"), $post_link);
+        light_html_display_warning_msg(sprintf(gettext("<b>Thread Split:</b> This post has been moved %s"), $post_link));
         return;
     }
 

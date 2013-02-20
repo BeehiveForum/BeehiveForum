@@ -697,15 +697,13 @@ function pm_message_get($mid)
     $pm_outbox = PM_OUTBOX;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM.SUBJECT, ";
-    $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, BIT_OR(PM_TYPE.TYPE) AS TYPE, USER.LOGON AS FROM_LOGON, ";
-    $sql.= "USER.NICKNAME AS FROM_NICKNAME, COUNT(PM_RECIPIENT.TO_UID) = COALESCE(OUTBOX.COUNT, 0) ";
-    $sql.= "AS EDITABLE FROM PM INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
-    $sql.= "LEFT JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = '{$_SESSION['UID']}') ";
+    $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, USER.NICKNAME AS FROM_NICKNAME, ";
+    $sql.= "PM_TYPE.TYPE, COUNT(PM_RECIPIENT.TO_UID) = COALESCE(OUTBOX.COUNT, 0) AS EDITABLE ";
+    $sql.= "FROM PM INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
+    $sql.= "INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN USER ON (USER.UID = PM.FROM_UID) LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT ";
     $sql.= "FROM PM_TYPE WHERE (PM_TYPE.TYPE & $pm_outbox) GROUP BY PM_TYPE.MID) AS OUTBOX ";
     $sql.= "ON (OUTBOX.MID = PM.MID) WHERE PM.MID = '$mid' GROUP BY PM.MID ";
-    $sql.= "HAVING (EDITABLE = 1 AND FROM_UID = '{$_SESSION['UID']}') ";
-    $sql.= "OR TYPE IS NOT NULL";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -896,16 +894,15 @@ function pm_display($message_data, $preview = false, $export_html = false)
 
             echo "<img src=\"", html_style_image('forward.png'), "\" border=\"0\" alt=\"", gettext("Forward"), "\" title=\"", gettext("Forward"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Forward"), "</a>&nbsp;\n";
 
-        } else if (($message_data['TYPE'] & PM_OUTBOX_ITEMS)) {
-
-            echo "<img src=\"", html_style_image('post.png'), "\" border=\"0\" alt=\"", gettext("Edit"), "\" title=\"", gettext("Edit"), "\" />&nbsp;<a href=\"pm_edit.php?webtag=$webtag&amp;mid={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Edit"), "</a>&nbsp;\n";
-            echo "<img src=\"", html_style_image('forward.png'), "\" border=\"0\" alt=\"", gettext("Forward"), "\" title=\"", gettext("Forward"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Forward"), "</a>&nbsp;\n";
-
         } else if (($message_data['TYPE'] & PM_DRAFT_ITEMS)) {
 
             echo "<img src=\"", html_style_image('edit.png'), "\" border=\"0\" alt=\"", gettext("Edit"), "\" title=\"", gettext("Edit"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;editmsg={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Edit"), "</a>&nbsp;\n";
 
         } else {
+
+            if ($message_data['EDITABLE'] == 1) {
+                echo "<img src=\"", html_style_image('post.png'), "\" border=\"0\" alt=\"", gettext("Edit"), "\" title=\"", gettext("Edit"), "\" />&nbsp;<a href=\"pm_edit.php?webtag=$webtag&amp;mid={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Edit"), "</a>&nbsp;\n";
+            }
 
             echo "<img src=\"", html_style_image('forward.png'), "\" border=\"0\" alt=\"", gettext("Forward"), "\" title=\"", gettext("Forward"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Forward"), "</a>&nbsp;\n";
         }

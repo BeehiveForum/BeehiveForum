@@ -1021,9 +1021,9 @@ function light_draw_pm_inbox()
         }
     }
 
-    if (isset($_GET['deletemsg']) && is_numeric($_GET['deletemsg']) && ($message_data = pm_message_get($_GET['deletemsg']))) {
+    if (isset($_GET['delete_msg']) && is_numeric($_GET['delete_msg']) && ($message_data = pm_message_get($_GET['delete_msg']))) {
 
-        $delete_mid = $_GET['deletemsg'];
+        $delete_mid = $_GET['delete_msg'];
 
         $type = pm_get_folder_type($current_folder);
 
@@ -1043,7 +1043,7 @@ function light_draw_pm_inbox()
             exit;
         }
 
-        echo "<form method=\"post\" action=\"lpm.php?deletemsg=$delete_mid&folder=$current_folder\">";
+        echo "<form method=\"post\" action=\"lpm.php?delete_msg=$delete_mid&folder=$current_folder\">";
 
         light_pm_display($message_data, true);
 
@@ -1074,6 +1074,10 @@ function light_draw_pm_inbox()
             $message_data['CONTENT'] = pm_get_content($mid);
 
             light_pm_display($message_data);
+
+            if (($current_folder == PM_FOLDER_INBOX) && ($message_data['TYPE'] == PM_UNREAD)) {
+                pm_mark_as_read($mid);
+            }
         }
 
         echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder\" class=\"folder_list_link\">", gettext("Back to folder list"), "</a>";
@@ -2367,23 +2371,23 @@ function light_pm_display($message_data, $preview = false)
             }
 
             $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" class=\"forward\">". gettext("Forward"). "</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$message_data['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;delete_msg={$message_data['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
 
         } else if (($message_data['TYPE'] & PM_OUTBOX_ITEMS) > 0) {
 
             $links_array[] = "<a href=\"lpm_edit.php?webtag=$webtag&amp;mid={$message_data['MID']}\" class=\"edit\">". gettext("Edit"). "</a>";
             $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" class=\"forward\">". gettext("Forward"). "</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$message_data['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;delete_msg={$message_data['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
 
         } else if (($message_data['TYPE'] & PM_DRAFT_ITEMS) > 0) {
 
             $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$message_data['MID']}\" class=\"edit\">". gettext("Edit"). "</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$message_data['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;delete_msg={$message_data['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
 
         } else {
 
             $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" class=\"forward\">". gettext("Forward"). "</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;folder=$folder&amp;deletemsg={$message_data['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;delete_msg={$message_data['MID']}\" class=\"delete\">". gettext("Delete"). "</a>";
         }
 
         if (sizeof($links_array) > 0) {

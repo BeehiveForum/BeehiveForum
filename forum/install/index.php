@@ -33,7 +33,7 @@ set_exception_handler('bh_exception_handler');
 
 set_error_handler('bh_error_handler');
 
-ini_set('display_errors', '0');
+@ini_set('display_errors', '0');
 
 require_once BH_INCLUDE_PATH. 'server.inc.php';
 

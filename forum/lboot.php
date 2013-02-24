@@ -59,7 +59,7 @@ register_shutdown_function('bh_fatal_error_handler');
 set_exception_handler('bh_exception_handler');
 
 // Don't output errors to the browser
-ini_set('display_errors', '0');
+@ini_set('display_errors', '0');
 
 // Fix problems with PHP and APC session storage
 register_shutdown_function('session_write_close');

@@ -139,7 +139,7 @@ if (isset($_POST['install_method'])) {
     if (isset($_POST['db_cpassword']) && strlen(trim($_POST['db_cpassword'])) > 0) {
         $config['db_cpassword'] = trim($_POST['db_cpassword']);
     } else {
-        $config['db_cpassword'] = "";
+        $config['db_cpassword'] = '';
     }
 
     if (isset($install_method) && ($install_method < 2)) {
@@ -202,7 +202,7 @@ if (isset($_POST['install_method'])) {
 
     if ($valid) {
 
-        $sql = "";
+        $sql = '';
 
         try {
 
@@ -225,12 +225,12 @@ if (isset($_POST['install_method'])) {
                     include_once("new-install.php");
                 }
 
-                $config_file = "";
+                $config_file = '';
 
                 if (($config_file = @file_get_contents('config.inc.php')) !== false) {
 
-                    $config_file = str_replace('{db_server}',   $config['db_server'],   $config_file);
-                    $config_file = str_replace('{db_port}',     $config['db_port'],     $config_file);
+                    $config_file = str_replace('{db_server}', $config['db_server'], $config_file);
+                    $config_file = str_replace('{db_port}', $config['db_port'], $config_file);
                     $config_file = str_replace('{db_username}', $config['db_username'], $config_file);
                     $config_file = str_replace('{db_password}', $config['db_password'], $config_file);
                     $config_file = str_replace('{db_database}', $config['db_database'], $config_file);
@@ -238,7 +238,7 @@ if (isset($_POST['install_method'])) {
                     if (isset($enable_error_reports) && ($enable_error_reports == true)) {
                         $config_file = str_replace('{error_report_email_addr_to}', (isset($admin_email) ? $admin_email : ''), $config_file);
                     } else {
-                        $config_file = str_replace('{error_report_email_addr_to}', 'false', $config_file);
+                        $config_file = str_replace('{error_report_email_addr_to}', '', $config_file);
                     }
 
                     if (!defined('BEEHIVE_DEVELOPER_MODE')) {
@@ -253,13 +253,13 @@ if (isset($_POST['install_method'])) {
                     }
                 }
 
-                install_draw_top();
+                install_draw_top("../js/jquery.min.js", "../js/install.js");
 
                 if ($config_saved) {
 
-                    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
+                    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
                     echo "  <tr>\n";
-                    echo "    <td align=\"left\" width=\"525\">\n";
+                    echo "    <td align=\"left\" width=\"650\">\n";
                     echo "      <table class=\"box\" width=\"100%\">\n";
                     echo "        <tr>\n";
                     echo "          <td align=\"left\" class=\"posthead\">\n";
@@ -268,7 +268,7 @@ if (isset($_POST['install_method'])) {
                     echo "                <td align=\"left\" class=\"subhead\">Installation Complete</td>\n";
                     echo "              </tr>\n";
                     echo "              <tr>\n";
-                    echo "                <td align=\"center\" colspan=\"2\">\n";
+                    echo "                <td align=\"center\">\n";
                     echo "                  <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
                     echo "                    <tr>\n";
                     echo "                      <td align=\"left\" class=\"postbody\">Installation of your Beehive Forum has completed successfully, but before you can use it you must delete the install folder. Once this has been done you can click Continue below to start using your Beehive Forum.</td>\n";
@@ -295,9 +295,9 @@ if (isset($_POST['install_method'])) {
 
                 } else {
 
-                    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
+                    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
                     echo "  <tr>\n";
-                    echo "    <td align=\"left\" width=\"525\">\n";
+                    echo "    <td align=\"left\" width=\"650\">\n";
                     echo "      <table class=\"box\" width=\"100%\">\n";
                     echo "        <tr>\n";
                     echo "          <td align=\"left\" class=\"posthead\">\n";
@@ -306,7 +306,7 @@ if (isset($_POST['install_method'])) {
                     echo "                <td align=\"left\" class=\"subhead\">Database Setup Complete</td>\n";
                     echo "              </tr>\n";
                     echo "              <tr>\n";
-                    echo "                <td align=\"center\" colspan=\"2\">\n";
+                    echo "                <td align=\"center\">\n";
                     echo "                  <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
                     echo "                    <tr>\n";
                     echo "                      <td align=\"left\" class=\"postbody\">Your database has been succesfully setup for use with Beehive. However we were unable to automatically apply the changes to your config.inc.php.</td>\n";
@@ -334,7 +334,7 @@ if (isset($_POST['install_method'])) {
                     echo "  </tr>\n";
                     echo "  <tr>\n";
                     echo "    <td align=\"center\">\n";
-                    echo "      <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
+                    echo "      <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
                     echo "        <tr>\n";
                     echo "          <td width=\"55%\" align=\"right\">\n";
                     echo "            <form accept-charset=\"utf-8\" method=\"post\" action=\"index.php\">\n";
@@ -374,7 +374,7 @@ if (isset($_POST['install_method'])) {
 
 } else if (isset($_POST['download_config'])) {
 
-    $config_file = "";
+    $config_file = '';
 
     if (($config_file = @file_get_contents('config.inc.php')) !== false) {
 
@@ -410,8 +410,8 @@ if (isset($_POST['install_method'])) {
 
         if (isset($config['db_server'], $config['db_port'], $config['db_database'], $config['db_username'], $config['db_password'])) {
 
-            $config_file = str_replace('{db_server}',   $config['db_server'],   $config_file);
-            $config_file = str_replace('{db_port}',     $config['db_port'],     $config_file);
+            $config_file = str_replace('{db_server}', $config['db_server'], $config_file);
+            $config_file = str_replace('{db_port}', $config['db_port'], $config_file);
             $config_file = str_replace('{db_username}', $config['db_username'], $config_file);
             $config_file = str_replace('{db_password}', $config['db_password'], $config_file);
             $config_file = str_replace('{db_database}', $config['db_database'], $config_file);
@@ -419,7 +419,7 @@ if (isset($_POST['install_method'])) {
             if (isset($enable_error_reports) && ($enable_error_reports == true)) {
                 $config_file = str_replace('{error_report_email_addr_to}', (isset($admin_email) ? $admin_email : ''), $config_file);
             } else {
-                $config_file = str_replace('{error_report_email_addr_to}', 'false', $config_file);
+                $config_file = str_replace('{error_report_email_addr_to}', '', $config_file);
             }
 
             header("Content-Type: text/plain; name=\"config.inc.php\"");
@@ -430,19 +430,19 @@ if (isset($_POST['install_method'])) {
 
         } else {
 
-            $config_file = str_replace('{db_server}',   "", $config_file);
-            $config_file = str_replace('{db_port}',     "", $config_file);
-            $config_file = str_replace('{db_database}', "", $config_file);
-            $config_file = str_replace('{db_username}', "", $config_file);
-            $config_file = str_replace('{db_password}', "", $config_file);
+            $config_file = str_replace('{db_server}', '', $config_file);
+            $config_file = str_replace('{db_port}', '', $config_file);
+            $config_file = str_replace('{db_database}', '', $config_file);
+            $config_file = str_replace('{db_username}', '', $config_file);
+            $config_file = str_replace('{db_password}', '', $config_file);
 
             install_msie_buffer_fix();
 
-            install_draw_top();
+            install_draw_top("../js/jquery.min.js", "../js/install.js");
 
-            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
             echo "    <tr>\n";
-            echo "      <td align=\"left\" width=\"525\">\n";
+            echo "      <td align=\"left\" width=\"650\">\n";
             echo "        <table class=\"box\" width=\"100%\">\n";
             echo "          <tr>\n";
             echo "            <td align=\"left\" class=\"posthead\">\n";
@@ -451,7 +451,7 @@ if (isset($_POST['install_method'])) {
             echo "                  <td align=\"left\" class=\"subhead\">Config Download Failed</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"center\" colspan=\"2\">\n";
+            echo "                  <td align=\"center\">\n";
             echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" class=\"postbody\">Oops! It would appear that we don't have enough information to be able to send you your config.inc.php. This would only have happened if the previous page didn't send us the right information.</td>\n";
@@ -497,9 +497,9 @@ if (isset($_POST['install_method'])) {
             echo "      </td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";
-            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
             echo "    <tr>\n";
-            echo "      <td align=\"left\" width=\"525\">&nbsp;</td>\n";
+            echo "      <td align=\"left\" width=\"650\">&nbsp;</td>\n";
             echo "    </tr>\n";
             echo "    <tr>\n";
             echo "      <td align=\"center\">\n";
@@ -518,19 +518,21 @@ if (isset($_POST['install_method'])) {
     }
 }
 
-install_draw_top();
+install_draw_top("../js/jquery.min.js", "../js/install.js");
 
 echo "<form accept-charset=\"utf-8\" id=\"install_form\" method=\"post\" action=\"index.php\">\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" colspan=\"2\">\n";
-echo "        <p>Welcome to the Beehive Forum installation script. To get everything kicking off to a great start please fill out the details below and click the Install button!</p>\n";
+echo "      <td align=\"left\">\n";
+echo "        <p>Welcome to the Beehive Forum installer. Please fill out the details below and when you're ready, click the Install button to start the installation.</p>\n";
 echo "        <p><b>WARNING</b>: Proceed only if you have performed a backup of your database! Failure to do so could result in loss of your forum. You have been warned!</p>\n";
 echo "      </td>\n";
 echo "    </tr>\n";
+echo "  </table>\n";
 
 if (isset($error_array) && sizeof($error_array) > 0) {
 
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\" colspan=\"2\"><hr /></td>\n";
     echo "    </tr>\n";
@@ -545,42 +547,46 @@ if (isset($error_array) && sizeof($error_array) > 0) {
     echo "        </ul>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
+    echo "  </table>\n";
 }
 
-echo "  </table>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" width=\"525\">\n";
+echo "      <td align=\"left\" width=\"650\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\" class=\"subhead\">Basic Configuration</td>\n";
-echo "                  <td style=\"white-space: nowrap\" class=\"subhead\" align=\"right\"><img src=\"../styles/default/images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" class=\"install_help_icon\" id=\"help_basic\" /></td>\n";
+echo "                  <td align=\"left\" style=\"white-space: nowrap\" class=\"subhead\">Installation Method and Webtag</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"center\" colspan=\"2\">\n";
+echo "                  <td align=\"center\">\n";
 echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Installation Method:</td>\n";
 echo "                        <td align=\"left\" class=\"postbody\">\n";
 echo "                          <select name=\"install_method\" id =\"install_method\" class=\"install_input\" tabindex=\"1\">\n";
 echo "                            <option value=\"\">Please select...</option>\n";
-echo "                            <option value=\"0\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : "", ">New Install</option>\n";
-echo "                            <option value=\"1\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : "", ">Reinstall</option>\n";
-echo "                            <option value=\"2\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : "", ">Reconnect</option>\n";
-echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : "", ">Upgrade 1.3.0 to 1.3.1</option>\n";
+echo "                            <option value=\"0\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : '', ">New Install</option>\n";
+echo "                            <option value=\"1\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : '', ">Reinstall</option>\n";
+echo "                            <option value=\"2\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : '', ">Reconnect</option>\n";
+echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : '', ">Upgrade 1.3.0 to 1.3.1</option>\n";
 echo "                          </select>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" valign=\"top\" class=\"postbody\">Default Forum Webtag:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"forum_webtag\" class=\"bhinputtext install_input\" value=\"", (isset($forum_webtag) && strlen($forum_webtag) > 0 ? htmlentities_array($forum_webtag) : ''), "\" size=\"28\" maxlength=\"32\" tabindex=\"2\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"forum_webtag\" class=\"install_input\" value=\"", (isset($forum_webtag) && strlen($forum_webtag) > 0 ? htmlentities_array($forum_webtag) : ''), "\" size=\"45\" maxlength=\"32\" tabindex=\"2\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";
+echo "                        <td colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">", gettext("For new installations please select <b>New Install</b> from the drop-down and enter a Default Forum Webtag. A webtag may contain the characters A-Z, 0-9 and underscore. If you enter any other characters, errors will occur during install."), "</p>\n";
+echo "                          <p class=\"smalltext\">", gettext("If you are performing a <b>Reinstall</b>, please enter a webtag as above. Any existing Beehive Forum tables will be automatically removed and all data within them will be permanently deleted."), "</p>\n";
+echo "                          <p class=\"smalltext\">", gettext("For <b>Reconnections</b>, the database portion of the setup is skipped and the installation simply rewrites your config.inc.php file. Use this when you need to change your config.inc.php without reinstalling your Beehive Forum."), "</p>\n";
+echo "                          <p class=\"smalltext\">", gettext("Finally, for <b>Upgrades</b> please select the correct upgrade path. The webtag field is also ignored when using this option. Selecting the wrong option here can have dire consequences for your forum if you have not backed-up."), "</p>\n";
+echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -593,46 +599,47 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" width=\"525\">\n";
+echo "      <td align=\"left\" width=\"650\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\" class=\"subhead\">MySQL Database Configuration</td>\n";
-echo "                  <td style=\"white-space: nowrap\" class=\"subhead\" align=\"right\"><img src=\"../styles/default/images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" class=\"install_help_icon\" id=\"help_database\" /></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"center\" colspan=\"2\">\n";
+echo "                  <td align=\"center\">\n";
 echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Hostname:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_server\" class=\"bhinputtext install_input\" value=\"", (isset($config['db_server']) && strlen($config['db_server']) > 0 ? htmlentities_array($config['db_server']) : ''), "\" size=\"28\" tabindex=\"3\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_server\" class=\"install_input\" value=\"", (isset($config['db_server']) && strlen($config['db_server']) > 0 ? htmlentities_array($config['db_server']) : ''), "\" size=\"45\" tabindex=\"3\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Port:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_port\" class=\"bhinputtext install_input\" value=\"", (isset($config['db_port']) && strlen($config['db_port']) > 0 ? htmlentities_array($config['db_port']) : '3306'), "\" size=\"28\" tabindex=\"3\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_port\" class=\"install_input\" value=\"", (isset($config['db_port']) && strlen($config['db_port']) > 0 ? htmlentities_array($config['db_port']) : '3306'), "\" size=\"10\" tabindex=\"3\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Database Name:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_database\" class=\"bhinputtext install_input\" value=\"", (isset($config['db_database']) && strlen($config['db_database']) > 0 ? htmlentities_array($config['db_database']) : ''), "\" size=\"28\" tabindex=\"4\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_database\" class=\"install_input\" value=\"", (isset($config['db_database']) && strlen($config['db_database']) > 0 ? htmlentities_array($config['db_database']) : ''), "\" size=\"45\" tabindex=\"4\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Username:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_username\" class=\"bhinputtext install_input\" value=\"", (isset($config['db_username']) && strlen($config['db_username']) > 0 ? htmlentities_array($config['db_username']) : ''), "\" size=\"28\" tabindex=\"5\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"db_username\" class=\"install_input\" value=\"", (isset($config['db_username']) && strlen($config['db_username']) > 0 ? htmlentities_array($config['db_username']) : ''), "\" size=\"45\" tabindex=\"5\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Password:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"db_password\" class=\"bhinputtext install_input\" value=\"\" size=\"28\" tabindex=\"6\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"db_password\" class=\"install_input\" value=\"\" size=\"45\" tabindex=\"6\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Confirm Password:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"db_cpassword\" class=\"bhinputtext install_input\" value=\"\" size=\"28\" tabindex=\"7\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"db_cpassword\" class=\"install_input\" value=\"\" size=\"45\" tabindex=\"7\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";
+echo "                        <td colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">", gettext("These are the MySQL database details required by to install and run your Beehive Forum. If you do not know what these settings are please contact your hosting provider."), "</p>\n";
+echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -645,38 +652,39 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" width=\"525\">\n";
+echo "      <td align=\"left\" width=\"650\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\" class=\"subhead\">Admin Account (New installs only)</td>\n";
-echo "                  <td style=\"white-space: nowrap\" class=\"subhead\" align=\"right\"><img src=\"../styles/default/images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" class=\"install_help_icon\" id=\"help_admin\" /></td>\n";
+echo "                  <td align=\"left\" style=\"white-space: nowrap\" class=\"subhead\">Admin Account - For new installs only</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"center\" colspan=\"2\">\n";
+echo "                  <td align=\"center\">\n";
 echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Username:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"admin_username\" class=\"bhinputtext install_input\" value=\"", (isset($admin_username) && strlen($admin_username) > 0 ? htmlentities_array($admin_username) : ''), "\" size=\"28\" maxlength=\"32\" tabindex=\"8\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"admin_username\" class=\"install_input\" value=\"", (isset($admin_username) && strlen($admin_username) > 0 ? htmlentities_array($admin_username) : ''), "\" size=\"45\" maxlength=\"32\" tabindex=\"8\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Email Address:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"admin_email\" class=\"bhinputtext install_input\" value=\"", (isset($admin_email) && strlen($admin_email) > 0 ? htmlentities_array($admin_email) : ''), "\" size=\"28\" maxlength=\"80\" tabindex=\"9\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"text\" name=\"admin_email\" class=\"install_input\" value=\"", (isset($admin_email) && strlen($admin_email) > 0 ? htmlentities_array($admin_email) : ''), "\" size=\"45\" maxlength=\"80\" tabindex=\"9\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Admin Password:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"admin_password\" class=\"bhinputtext install_input\" value=\"\" size=\"28\" maxlength=\"32\" tabindex=\"10\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"admin_password\" class=\"install_input\" value=\"\" size=\"45\" maxlength=\"32\" tabindex=\"10\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\" class=\"postbody\">Confirm Password:</td>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"admin_cpassword\" class=\"bhinputtext install_input\" value=\"\" size=\"28\" maxlength=\"32\" tabindex=\"11\" /></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><input type=\"password\" name=\"admin_cpassword\" class=\"install_input\" value=\"\" size=\"45\" maxlength=\"32\" tabindex=\"11\" /></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";
+echo "                        <td colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">", gettext("The credentials of the user you want to have initial Admin access. This information is only required for new installations. Upgrades will leave the existing user accounts intact."), "</p>\n";
+echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";
@@ -689,28 +697,31 @@ echo "      </td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
-echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"525\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" width=\"525\">\n";
+echo "      <td align=\"left\" width=\"650\">\n";
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table cellpadding=\"2\" cellspacing=\"0\" class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\" class=\"subhead\">Advanced Options</td>\n";
-echo "                  <td style=\"white-space: nowrap\" class=\"subhead\" align=\"right\"><img src=\"../styles/default/images/help.png\" border=\"0\" alt=\"Help!\" title=\"Help!\" class=\"install_help_icon\" id=\"help_advanced\" /></td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"center\" colspan=\"2\">\n";
+echo "                  <td align=\"center\">\n";
 echo "                    <table cellpadding=\"2\" cellspacing=\"0\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"remove_conflicts\" id=\"remove_conflicts\" value=\"Y\" tabindex=\"12\"", (isset($remove_conflicts) && $remove_conflicts == 'Y' ? " checked=\"checked\"" : ""), " /><label for=\"remove_conflicts\">Automatically remove tables that conflict with Beehive Forum's own.</label></span></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><span class=\"install_checkbox\"><input type=\"checkbox\" name=\"remove_conflicts\" id=\"remove_conflicts\" value=\"Y\" tabindex=\"12\"", (isset($remove_conflicts) && $remove_conflicts == 'Y' ? " checked=\"checked\"" : ''), " /><label for=\"remove_conflicts\">Automatically remove tables that conflict with Beehive Forum's own.</label></span></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"postbody\"><span class=\"bhinputcheckbox\"><input type=\"checkbox\" name=\"enable_error_reports\" id=\"enable_error_reports\" value=\"Y\" tabindex=\"14\"", (isset($enable_error_reports) && $enable_error_reports == 'Y' ? " checked=\"checked\"" : ""), " /><label for=\"enable_error_reports\">Send error reports to Admin email address.</label></span></td>\n";
+echo "                        <td align=\"left\" class=\"postbody\"><span class=\"install_checkbox\"><input type=\"checkbox\" name=\"enable_error_reports\" id=\"enable_error_reports\" value=\"Y\" tabindex=\"14\"", (isset($enable_error_reports) && $enable_error_reports == 'Y' ? " checked=\"checked\"" : ''), " /><label for=\"enable_error_reports\">Send error reports to Admin email address.</label></span></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"postbody\" colspan=\"2\">&nbsp;</td>\n";
+echo "                        <td colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">", gettext("<b>Caution!</b> These options are recommended for advanced users only. There use can have a detrimental effect on the functionality of your Beehive Forum AND other software you may have installed."), "</p>\n";
+echo "                          <p class=\"smalltext\">", gettext("<b>Automatically remove tables</b> permanently removes tables that would have conflicted with those used by Beehive Forum. If other tables exist which conflict with those used by the Beehive Forum software then enabling this option may cause any other scripts or software which rely on them to fail."), "</p>\n";
+echo "                          <p class=\"smalltext\">", gettext("<b>Enable error reports</b> enables verbose error reporting for your Beehive Forum and sends these reports to the Admin User's Email Address. These error reports can be useful for helping to diagnose problems and find bugs that you can submit back to Project Beehive Forum. This option is only available when performing a new installation. To enable post-install please see readme.txt for instructions."), "</p>\n";
+echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

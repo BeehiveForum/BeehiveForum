@@ -288,12 +288,14 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
             if (($message = messages_get($search_result['TID'], $search_result['PID'], 1)) !== false) {
 
-                $message['CONTENT'] = message_get_content($search_result['TID'], $search_result['PID']);
-
                 if (($thread_data = thread_get($search_result['TID'])) !== false) {
 
-                    $message['TITLE']   = trim($thread_data['TITLE']);
-                    $message['CONTENT'] = trim(strip_tags(message_get_content($search_result['TID'], $search_result['PID'])));
+                    $message['TITLE'] = trim($thread_data['TITLE']);
+
+                    // Fetch the messaage content, strip the signature and remove HTML.
+                    $message['CONTENT'] = message_get_content($search_result['TID'], $search_result['PID']);
+                    $message['CONTENT'] = message_apply_formatting($message['CONTENT'], true);
+                    $message['CONTENT'] = trim(strip_tags($message['CONTENT']));
 
                     // Limit thread title to 20 characters.
                     if (mb_strlen($message['TITLE']) > 20) {
@@ -303,8 +305,8 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
                     }
 
                     // Limit displayed post content to 35 characters
-                    if (mb_strlen($message['CONTENT']) > 35) {
-                        $message['CONTENT'] = word_filter_add_ob_tags(mb_substr($message['CONTENT'], 0, 35), true). "&hellip;";
+                    if (mb_strlen($message['CONTENT']) > 70) {
+                        $message['CONTENT'] = word_filter_add_ob_tags(fix_html(mb_substr($message['CONTENT'], 0, 70)), true). "&hellip;";
                     } else {
                         $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT'], true);
                     }

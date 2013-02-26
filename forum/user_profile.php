@@ -383,20 +383,6 @@ if (($user_profile_array = user_get_profile_entries($uid)) !== false) {
     echo "              </table>\n";
 }
 
-echo "              <table class=\"profile_footer\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" align=\"right\" colspan=\"2\">", gettext("Longest session"), ": {$user_profile['USER_TIME_BEST']}&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td class=\"subhead\" colspan=\"2\" align=\"right\">", gettext("Total time"), ": {$user_profile['USER_TIME_TOTAL']}&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "                <tr>\n";
-echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">&nbsp;</td>\n";
-echo "                </tr>\n";
-echo "              </table>\n";
 echo "            </td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";

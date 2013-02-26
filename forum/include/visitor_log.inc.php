@@ -127,8 +127,6 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
         'POST_COUNT' => gettext("Post Count"),
         'LAST_VISIT' => gettext("Last Visit"),
         'REGISTERED' => gettext("Registered"),
-        'USER_TIME_BEST' => gettext("Longest session"),
-        'USER_TIME_TOTAL' => gettext("Total time"),
         'DOB' => gettext("Birthday"),
         'AGE' => gettext("Age"),
         'TIMEZONE' => gettext("Time Zone"),
@@ -201,8 +199,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
         'POST_COUNT' => '(POST_COUNT IS NOT NULL)',
         'LAST_VISIT' => '(LAST_VISIT IS NOT NULL)',
         'REGISTERED' => '(REGISTERED IS NOT NULL)',
-        'USER_TIME_BEST' => '(USER_TIME_BEST IS NOT NULL)',
-        'USER_TIME_TOTAL' => '(USER_TIME_TOTAL IS NOT NULL)',
         'DOB' => '(DOB IS NOT NULL)',
         'AGE' => '(AGE IS NOT NULL AND AGE > 0)',
         'TIMEZONE' => '(TIMEZONE IS NOT NULL)',
@@ -217,17 +213,16 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
 
     // Main Query
     $select_sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
-    $select_sql.= "USER_PEER.PEER_NICKNAME, USER_TRACK.POST_COUNT AS POST_COUNT, ";
+    $select_sql.= "USER_PEER.PEER_NICKNAME, USER_TRACK.USER_VALUE AS POST_COUNT, ";
     $select_sql.= "IF (USER_PREFS_GLOBAL.DOB_DISPLAY > 1, DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '0000-%m-%d'), NULL) AS DOB, ";
     $select_sql.= "IF (USER_PREFS_GLOBAL.DOB_DISPLAY IN (1, 3), $year - DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '%Y') - ";
     $select_sql.= "('00-$month-$day' < DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '00-%m-%d')), ";
     $select_sql.= "NULL) AS AGE, TIMEZONES.TZID AS TIMEZONE, UNIX_TIMESTAMP('$current_datetime') AS LOCAL_TIME, ";
-    $select_sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
-    $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
-    $select_sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_URL, USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, ";
-    $select_sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_AID, USER_PREFS_GLOBAL.AVATAR_AID) AS AVATAR_AID, ";
-    $select_sql.= "SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, SEARCH_ENGINE_BOTS.URL, ";
-    $select_sql.= "IF (USER_PREFS_GLOBAL.ANON_LOGON = 1, NULL, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON)) AS LAST_VISIT ";
+    $select_sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, COALESCE(USER_PREFS_FORUM.AVATAR_URL, ";
+    $select_sql.= "USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, COALESCE(USER_PREFS_FORUM.AVATAR_AID, ";
+    $select_sql.= "USER_PREFS_GLOBAL.AVATAR_AID) AS AVATAR_AID, SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, ";
+    $select_sql.= "SEARCH_ENGINE_BOTS.URL, IF (USER_PREFS_GLOBAL.ANON_LOGON = 1, NULL, ";
+    $select_sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON)) AS LAST_VISIT ";
 
     // Include the selected numeric (PIID) profile items
     $profile_entry_array = array();
@@ -253,7 +248,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
     // Various joins we need for User's Age, DOB, etc.
     $join_sql = "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
     $join_sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = USER.UID) ";
-    $join_sql.= "LEFT JOIN `{$table_prefix}USER_TRACK` USER_TRACK ON (USER_TRACK.UID = USER.UID) ";
+    $join_sql.= "LEFT JOIN `{$table_prefix}USER_TRACK` USER_TRACK ON (USER_TRACK.UID = USER.UID AND USER_TRACK.USER_KEY = 'POST_COUNT') ";
     $join_sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
     $join_sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
     $join_sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS_GLOBAL.TIMEZONE) ";
@@ -386,18 +381,6 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
             $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
         } else {
             $user_data['REGISTERED'] = gettext("Unknown");
-        }
-
-        if (isset($user_data['USER_TIME_BEST']) && is_numeric($user_data['USER_TIME_BEST'])) {
-            $user_data['USER_TIME_BEST'] = format_time_display($user_data['USER_TIME_BEST']);
-        } else {
-            $user_data['USER_TIME_BEST'] = gettext("Unknown");
-        }
-
-        if (isset($user_data['USER_TIME_TOTAL']) && is_numeric($user_data['USER_TIME_TOTAL'])) {
-            $user_data['USER_TIME_TOTAL'] = format_time_display($user_data['USER_TIME_TOTAL']);
-        } else {
-            $user_data['USER_TIME_TOTAL'] = gettext("Unknown");
         }
 
         if (!isset($user_data['AGE']) || !is_numeric($user_data['AGE'])) {

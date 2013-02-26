@@ -590,14 +590,6 @@ if (($most_users = stats_get_most_users()) !== false) {
     echo "                </tr>\n";
 }
 
-if (($most_active_user = stats_get_most_active_user()) !== false) {
-
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"40%\">", gettext("Most active user"), ":&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$most_active_user['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($most_active_user['LOGON'], $most_active_user['NICKNAME']), true), "</a> (", format_time_display($most_active_user['TOTAL_TIME'], true), ")</td>\n";
-    echo "                </tr>\n";
-}
-
 echo "                <tr>\n";
 echo "                  <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
 echo "                </tr>\n";

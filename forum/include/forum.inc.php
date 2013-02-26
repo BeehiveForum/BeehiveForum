@@ -1363,18 +1363,10 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_TRACK` (";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-        $sql.= "  DDKEY DATETIME DEFAULT NULL,";
-        $sql.= "  LAST_POST DATETIME DEFAULT NULL,";
-        $sql.= "  LAST_SEARCH DATETIME DEFAULT NULL,";
-        $sql.= "  LAST_SEARCH_KEYWORDS TEXT DEFAULT NULL,";
-        $sql.= "  LAST_SEARCH_SORT_BY TINYINT(3) UNSIGNED DEFAULT NULL, ";
-        $sql.= "  LAST_SEARCH_SORT_DIR TINYINT(3) UNSIGNED DEFAULT NULL, ";
-        $sql.= "  POST_COUNT MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  USER_TIME_BEST DATETIME DEFAULT NULL,";
-        $sql.= "  USER_TIME_TOTAL DATETIME DEFAULT NULL,";
-        $sql.= "  USER_TIME_UPDATED DATETIME DEFAULT NULL,";
-        $sql.= "  PRIMARY KEY  (UID)";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  USER_KEY VARHCAR(255) NOT NULL,";
+        $sql.= "  USER_VALUE TEXT";
+        $sql.= "  PRIMARY KEY  (UID, KEY)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         if (!@$db->query($sql)) {

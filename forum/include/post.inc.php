@@ -476,8 +476,8 @@ function post_check_ddkey($ddkey)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "SELECT DDKEY FROM `{$table_prefix}USER_TRACK` ";
-    $sql.= "WHERE UID = '{$_SESSION['UID']}'";
+    $sql = "SELECT USER_VALUE FROM `{$table_prefix}USER_TRACK` ";
+    $sql.= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'DDKEY'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -486,7 +486,8 @@ function post_check_ddkey($ddkey)
         list($ddkey_datetime_check) = $result->fetch_row();
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
-        $sql.= "SET DDKEY = CAST('$ddkey_datetime' AS DATETIME) WHERE UID = '{$_SESSION['UID']}'";
+        $sql.= "SET USER_VALUE = CAST('$ddkey_datetime' AS DATETIME) ";
+        $sql.= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'DDKEY'";
 
         if (!($result = $db->query($sql))) return false;
 
@@ -494,8 +495,8 @@ function post_check_ddkey($ddkey)
 
         $ddkey_datetime_check = '';
 
-        $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, DDKEY) ";
-        $sql.= "VALUES ('{$_SESSION['UID']}', CAST('$ddkey_datetime' AS DATETIME))";
+        $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, USER_KEY, USER_VALUE) ";
+        $sql.= "VALUES ('{$_SESSION['UID']}', 'DDKEY', CAST('$ddkey_datetime' AS DATETIME))";
 
         if (!($result = $db->query($sql))) return false;
     }
@@ -517,9 +518,9 @@ function post_check_frequency()
 
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
-    $sql = "SELECT UNIX_TIMESTAMP(LAST_POST) + $minimum_post_frequency, ";
+    $sql = "SELECT UNIX_TIMESTAMP(USER_VALUE) + $minimum_post_frequency, ";
     $sql.= "UNIX_TIMESTAMP('$current_datetime') FROM `{$table_prefix}USER_TRACK` ";
-    $sql.= "WHERE UID = '{$_SESSION['UID']}'";
+    $sql.= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'LAST_POST'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -530,8 +531,8 @@ function post_check_frequency()
         if (!is_numeric($last_post_stamp) || $last_post_stamp < $current_timestamp) {
 
             $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
-            $sql.= "SET LAST_POST = CAST('$current_datetime' AS DATETIME) ";
-            $sql.= "WHERE UID = '{$_SESSION['UID']}'";
+            $sql.= "SET USER_VALUE = CAST('$current_datetime' AS DATETIME) ";
+            $sql.= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'LAST_POST'";
 
             if (!($result = $db->query($sql))) return false;
 
@@ -540,8 +541,8 @@ function post_check_frequency()
 
     } else{
 
-        $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, LAST_POST) ";
-        $sql.= "VALUES ('{$_SESSION['UID']}', CAST('$current_datetime' AS DATETIME))";
+        $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, USER_KEY, USER_VALUE) ";
+        $sql.= "VALUES ('{$_SESSION['UID']}', 'LAST_POST', CAST('$current_datetime' AS DATETIME))";
 
         if (!($result = $db->query($sql))) return false;
 

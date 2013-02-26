@@ -1173,29 +1173,6 @@ function stats_get_most_popular_timezone()
     return $timezone_data;
 }
 
-function stats_get_most_active_user()
-{
-    if (!$db = db::get()) return false;
-
-    if (!($table_prefix = get_table_prefix())) return false;
-
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS TOTAL_TIME ";
-    $sql.= "FROM `{$table_prefix}USER_TRACK` USER_TRACK ";
-    $sql.= "LEFT JOIN USER ON (USER.UID = USER_TRACK.UID) ";
-    $sql.= "WHERE USER_TRACK.USER_TIME_TOTAL IS NOT NULL ";
-    $sql.= "ORDER BY TOTAL_TIME DESC ";
-    $sql.= "LIMIT 0, 1";
-
-    if (!($result = $db->query($sql))) return false;
-
-    if ($result->num_rows == 0) return false;
-
-    $user_data = $result->fetch_assoc();
-
-    return $user_data;
-}
-
 function stats_get_inactive_user_count()
 {
     if (!$db = db::get()) return false;

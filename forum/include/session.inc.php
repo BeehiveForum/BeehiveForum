@@ -343,43 +343,6 @@ abstract class session
         return (($user_perm_test & $perm) == $perm);
     }
 
-    public static function update_user_time($uid)
-    {
-        if (!($table_prefix = get_table_prefix())) return false;
-
-        if (!($forum_fid = get_forum_fid())) return false;
-
-        $uid = session::$db->escape($uid);
-
-        $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, USER_TIME_BEST) ";
-        $sql.= "SELECT USER_FORUM.UID, FROM_UNIXTIME(UNIX_TIMESTAMP(SESSIONS.TIME) - UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT)) ";
-        $sql.= "FROM SESSIONS LEFT JOIN USER_FORUM ON (USER_FORUM.UID = SESSIONS.UID AND USER_FORUM.FID = SESSIONS.FID) ";
-        $sql.= "LEFT JOIN `{$table_prefix}USER_TRACK` USER_TRACK ON (USER_TRACK.UID = USER_FORUM.UID) ";
-        $sql.= "WHERE SESSIONS.UID = '$uid' AND SESSIONS.FID = '$forum_fid' AND ((SESSIONS.TIME > USER_FORUM.LAST_VISIT ";
-        $sql.= "AND (UNIX_TIMESTAMP(SESSIONS.TIME) - UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT)) > UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST)) ";
-        $sql.= "OR USER_TRACK.USER_TIME_BEST IS NULL) ON DUPLICATE KEY UPDATE USER_TIME_BEST = VALUES(USER_TIME_BEST)";
-
-        if (!session::$db->query($sql)) return false;
-
-        $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, USER_TIME_TOTAL, USER_TIME_UPDATED) ";
-        $sql.= "SELECT UID, FROM_UNIXTIME(USER_TIME_TOTAL + (TIME_END - TIME_START)) AS USER_TIME_TOTAL, ";
-        $sql.= "FROM_UNIXTIME(TIME_END) AS USER_TIME_UPDATED FROM (SELECT UID, USER_TIME_TOTAL, ";
-        $sql.= "IF (USER_TIME_UPDATED >= LAST_VISIT, USER_TIME_UPDATED, LAST_VISIT) AS TIME_START, ";
-        $sql.= "IF (session::TIME >= USER_TIME_UPDATED, SESSION_TIME, USER_TIME_UPDATED) AS TIME_END ";
-        $sql.= "FROM (SELECT USER_FORUM.UID, COALESCE(UNIX_TIMESTAMP(USER_TRACK.USER_TIME_UPDATED), 0) AS USER_TIME_UPDATED, ";
-        $sql.= "COALESCE(UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT), 0) AS LAST_VISIT, COALESCE(UNIX_TIMESTAMP(SESSIONS.TIME), 0) AS session::TIME, ";
-        $sql.= "COALESCE(UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL), 0) AS USER_TIME_TOTAL FROM SESSIONS ";
-        $sql.= "INNER JOIN USER_FORUM ON (USER_FORUM.UID = SESSIONS.UID AND USER_FORUM.FID = SESSIONS.FID) ";
-        $sql.= "LEFT JOIN `{$table_prefix}USER_TRACK` USER_TRACK ON (USER_TRACK.UID = USER_FORUM.UID) ";
-        $sql.= "WHERE SESSIONS.UID = '$uid' AND SESSIONS.FID = '$forum_fid') AS USER_TIMES) AS TIME_COMPARE ";
-        $sql.= "ON DUPLICATE KEY UPDATE USER_TIME_TOTAL = VALUES(USER_TIME_TOTAL), ";
-        $sql.= "USER_TIME_UPDATED = VALUES(USER_TIME_UPDATED)";
-
-        if (!session::$db->query($sql)) return false;
-
-        return true;
-    }
-
     public static function update_visitor_log($uid, $forum_fid)
     {
         $ip_address = get_ip_address();

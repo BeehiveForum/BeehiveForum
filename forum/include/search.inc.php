@@ -412,9 +412,10 @@ function search_save_arguments($search_arguments)
         $sort_dir = '';
     }
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
-    $sql.= "SET LAST_SEARCH_KEYWORDS = '$keywords', LAST_SEARCH_SORT_BY = '$sort_by', ";
-    $sql.= "LAST_SEARCH_SORT_DIR = '$sort_dir' WHERE UID = '{$_SESSION['UID']}'";
+    $sql = "REPLACE INTO `{$table_prefix}USER_TRACK` (UID, USER_KEY, USER_VALUE) ";
+    $sql.= "VALUES ('{$_SESSION['UID']}', 'LAST_SEARCH_KEYWORDS', '$keywords'), ";
+    $sql.= "('{$_SESSION['UID']}', 'LAST_SEARCH_SORT_BY', '$sort_by'), ";
+    $sql.= "('{$_SESSION['UID']}', 'LAST_SEARCH_SORT_DIR', '$sort_dir')";
 
     if (!$db->query($sql)) return false;
 
@@ -429,8 +430,8 @@ function search_get_keywords($remove_non_matches = true)
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    $sql = "SELECT LAST_SEARCH_KEYWORDS FROM `{$table_prefix}USER_TRACK` ";
-    $sql.= "WHERE UID = '{$_SESSION['UID']}'";
+    $sql = "SELECT USER_VALUE FROM `{$table_prefix}USER_TRACK` ";
+    $sql.= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'LAST_SEARCH_KEYWORDS'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -451,15 +452,29 @@ function search_get_sort(&$sort_by, &$sort_dir)
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    $sql = "SELECT LAST_SEARCH_SORT_BY, LAST_SEARCH_SORT_DIR ";
-    $sql.= "FROM `{$table_prefix}USER_TRACK` ";
-    $sql.= "WHERE UID = '{$_SESSION['UID']}'";
+    $sql = "SELECT USER_KEY, USER_VALUE FROM `{$table_prefix}USER_TRACK` ";
+    $sql.= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY IN ('LAST_SEARCH_SORT_BY', ";
+    $sql.= "'LAST_SEARCH_SORT_DIR')";
 
     if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
-    list($sort_by, $sort_dir) = $result->fetch_row();
+    while (($user_track_data = $result->fetch_row())) {
+
+        switch ($user_track_data['USER_KEY']) {
+
+            case 'LAST_SEARCH_SORT_BY':
+
+                $sort_by = $user_track_data['USER_VALUE'];
+                break;
+
+            case 'LAST_SEARCH_SORT_DIR':
+
+                $sort_dir = $user_track_data['USER_VALUE'];
+                break;
+        }
+    }
 
     return true;
 }
@@ -485,15 +500,15 @@ function search_fetch_results($page, $sort_by, $sort_dir)
     $sort_dir = ($sort_dir == SEARCH_SORT_DESC) ? 'DESC' : 'ASC';
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS THREAD.FID, THREAD.TID, POST.PID, THREAD.BY_UID, POST.FROM_UID, ";
-    $sql.= "USER_TRACK.LAST_SEARCH_KEYWORDS AS KEYWORDS, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
+    $sql.= "USER_TRACK.USER_VALUE AS KEYWORDS, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
     $sql.= "USER.LOGON AS FROM_LOGON, COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS FROM_NICKNAME  ";
     $sql.= "FROM SEARCH_RESULTS INNER JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = SEARCH_RESULTS.TID) ";
     $sql.= "INNER JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "INNER JOIN `{$table_prefix}POST` POST ON (POST.TID = SEARCH_RESULTS.TID AND POST.PID = SEARCH_RESULTS.PID) ";
     $sql.= "INNER JOIN USER ON (USER.UID = POST.FROM_UID) LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = POST.FROM_UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_TRACK` USER_TRACK ";
-    $sql.= "ON (USER_TRACK.UID = SEARCH_RESULTS.UID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_TRACK` USER_TRACK ON (USER_TRACK.UID = SEARCH_RESULTS.UID ";
+    $sql.= "AND USER_TRACK.USER_KEY = 'LAST_SEARCH_KEYWORDS') ";
     $sql.= "WHERE SEARCH_RESULTS.UID = '{$_SESSION['UID']}' ";
     $sql.= "AND ((USER_PEER.RELATIONSHIP & ". USER_IGNORED_COMPLETELY. ") = 0 ";
     $sql.= "OR USER_PEER.RELATIONSHIP IS NULL) ";
@@ -847,9 +862,9 @@ function check_search_frequency()
 
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
-    $sql = "SELECT UNIX_TIMESTAMP(LAST_SEARCH) + $search_min_frequency, ";
+    $sql = "SELECT UNIX_TIMESTAMP(USER_VALUE) + $search_min_frequency, ";
     $sql.= "UNIX_TIMESTAMP('$current_datetime') FROM `{$table_prefix}USER_TRACK` ";
-    $sql.= "WHERE UID = '{$_SESSION['UID']}'";
+    $sql.= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'LAST_SEARCH'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -860,8 +875,8 @@ function check_search_frequency()
         if (!is_numeric($last_search_stamp) || $last_search_stamp < $current_timestamp) {
 
             $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
-            $sql.= "SET LAST_SEARCH = CAST('$current_datetime' AS DATETIME) ";
-            $sql.= "WHERE UID = '{$_SESSION['UID']}'";
+            $sql.= "SET USER_VALUE = CAST('$current_datetime' AS DATETIME) ";
+            $sql.= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'LAST_SEARCH'";
 
             if (!($result = $db->query($sql))) return false;
 
@@ -870,8 +885,8 @@ function check_search_frequency()
 
     } else{
 
-        $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, LAST_SEARCH) ";
-        $sql.= "VALUES ('{$_SESSION['UID']}', CAST('$current_datetime' AS DATETIME))";
+        $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, USER_KEY, USER_VALUE) ";
+        $sql.= "VALUES ('{$_SESSION['UID']}', 'LAST_SEARCH', CAST('$current_datetime' AS DATETIME))";
 
         if (!($result = $db->query($sql))) return false;
 

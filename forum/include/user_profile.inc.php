@@ -87,20 +87,12 @@ function user_get_profile($uid)
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT, ";
     $sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
-    $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
-    $sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
     $sql.= "USER_PEER.RELATIONSHIP, SESSIONS.ID FROM USER USER ";
     $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ";
-    $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID ";
-    $sql.= "AND USER_FORUM.FID = '$forum_fid') ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_TRACK` USER_TRACK ";
-    $sql.= "ON (USER_TRACK.UID = USER.UID) ";
-    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID ";
-    $sql.= "AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME)) ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = USER.UID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID AND USER_FORUM.FID = '$forum_fid') ";
+    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME)) ";
     $sql.= "WHERE USER.UID = '$uid' ";
     $sql.= "GROUP BY USER.UID";
 
@@ -126,18 +118,6 @@ function user_get_profile($uid)
         $user_profile['REGISTERED'] = format_date($user_profile['REGISTERED']);
     } else {
         $user_profile['REGISTERED'] = gettext("Unknown");
-    }
-
-    if (isset($user_profile['USER_TIME_BEST']) && $user_profile['USER_TIME_BEST'] > 0) {
-        $user_profile['USER_TIME_BEST'] = format_time_display($user_profile['USER_TIME_BEST']);
-    } else {
-        $user_profile['USER_TIME_BEST'] = gettext("Unknown");
-    }
-
-    if (isset($user_profile['USER_TIME_TOTAL']) && $user_profile['USER_TIME_TOTAL'] > 0) {
-        $user_profile['USER_TIME_TOTAL'] = format_time_display($user_profile['USER_TIME_TOTAL']);
-    } else {
-        $user_profile['USER_TIME_TOTAL'] = gettext("Unknown");
     }
 
     if (isset($user_prefs['DOB_DISPLAY']) && !empty($user_prefs['DOB']) && $user_prefs['DOB'] != "0000-00-00") {
@@ -355,8 +335,9 @@ function user_get_post_count($uid)
 
     if (!$db = db::get()) return false;
 
-    $sql = "SELECT POST_COUNT FROM `{$table_prefix}USER_TRACK` ";
-    $sql.= "WHERE UID = '$uid' AND POST_COUNT IS NOT NULL";
+    $sql = "SELECT USER_VALUE FROM `{$table_prefix}USER_TRACK` ";
+    $sql.= "WHERE UID = '$uid' AND USER_KEY = 'POST_COUNT' ";
+    $sql.= "AND USER_VALUE IS NOT NULL";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -366,9 +347,9 @@ function user_get_post_count($uid)
         return $post_count;
     }
 
-    $sql = "INSERT IGNORE INTO `{$table_prefix}USER_TRACK` (UID, POST_COUNT) ";
-    $sql.= "SELECT '$uid', COUNT(POST.PID) AS POST_COUNT FROM `{$table_prefix}POST` POST ";
-    $sql.= "WHERE FROM_UID = '$uid' ON DUPLICATE KEY UPDATE POST_COUNT = VALUES(POST_COUNT)";
+    $sql = "INSERT IGNORE INTO `{$table_prefix}USER_TRACK` (UID, USER_KEY, USER_VALUE) ";
+    $sql.= "SELECT '$uid', 'POST_COUNT', COUNT(POST.PID) AS POST_COUNT FROM `{$table_prefix}POST` POST ";
+    $sql.= "WHERE FROM_UID = '$uid' ON DUPLICATE KEY UPDATE USER_VALUE = VALUES(USER_VALUE)";
 
     if (!($result = $db->query($sql))) return false;
 

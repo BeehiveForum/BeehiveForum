@@ -202,7 +202,8 @@ function user_increment_post_count($uid)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
-    $sql.= "SET POST_COUNT = POST_COUNT + 1 WHERE UID = '$uid'";
+    $sql.= "SET USER_VALUE = USER_VALUE + 1 WHERE UID = '$uid' ";
+    $sql.= "AND USER_KEY = 'POST_COUNT'";
 
     if (!$db->query($sql)) return false;
 
@@ -219,7 +220,8 @@ function user_update_post_count($uid, $post_count)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
-    $sql.= "SET POST_COUNT = '$post_count' WHERE UID = '$uid'";
+    $sql.= "SET USER_VALUE = '$post_count' WHERE UID = '$uid' ";
+    $sql.= "AND USER_KEY = 'POST_COUNT'";
 
     if (!$db->query($sql)) return false;
 
@@ -235,7 +237,8 @@ function user_reset_post_count($uid)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
-    $sql.= "SET POST_COUNT = NULL WHERE UID = '$uid'";
+    $sql.= "SET USER_VALUE = NULL WHERE UID = '$uid' ";
+    $sql.= "AND USER_KEY = 'POST_COUNT'";
 
     if (!$db->query($sql)) return false;
 

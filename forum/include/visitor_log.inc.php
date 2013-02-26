@@ -209,13 +209,19 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
         'LOCAL_TIME' => '(LOCAL_TIME IS NOT NULL)'
     );
 
+    // Year, Month and Day for Age calculation
+    list($year, $month, $day) = explode('-', date(MYSQL_DATE, time()));
+
+    // Current Date for User's local time
+    $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
+
     // Main Query
     $select_sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
     $select_sql.= "USER_PEER.PEER_NICKNAME, USER_TRACK.POST_COUNT AS POST_COUNT, ";
     $select_sql.= "IF (USER_PREFS_GLOBAL.DOB_DISPLAY > 1, DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '0000-%m-%d'), NULL) AS DOB, ";
-    $select_sql.= "IF (USER_PREFS_GLOBAL.DOB_DISPLAY IN (1, 3), 2012 - DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '%Y') - ";
-    $select_sql.= "('00-07-07' < DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '00-%m-%d')), ";
-    $select_sql.= "NULL) AS AGE, TIMEZONES.TZID AS TIMEZONE, UNIX_TIMESTAMP('2012-07-07 11:03:00') AS LOCAL_TIME, ";
+    $select_sql.= "IF (USER_PREFS_GLOBAL.DOB_DISPLAY IN (1, 3), $year - DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '%Y') - ";
+    $select_sql.= "('00-$month-$day' < DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '00-%m-%d')), ";
+    $select_sql.= "NULL) AS AGE, TIMEZONES.TZID AS TIMEZONE, UNIX_TIMESTAMP('$current_datetime') AS LOCAL_TIME, ";
     $select_sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, UNIX_TIMESTAMP(USER_TRACK.USER_TIME_BEST) AS USER_TIME_BEST, ";
     $select_sql.= "UNIX_TIMESTAMP(USER_TRACK.USER_TIME_TOTAL) AS USER_TIME_TOTAL, ";
     $select_sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_URL, USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, ";

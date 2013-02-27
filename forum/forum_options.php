@@ -333,12 +333,6 @@ if (isset($_POST['save'])) {
         $user_prefs_global['START_PAGE'] = false;
     }
 
-    if (isset($_POST['sig_toggle']) && $_POST['sig_toggle'] == "Y") {
-        $user_prefs['POST_PAGE'] = $user_prefs['POST_PAGE'] | POST_SIGNATURE_DISPLAY;
-    } else {
-        $user_prefs['POST_PAGE'] = $user_prefs['POST_PAGE'] & ~POST_SIGNATURE_DISPLAY;
-    }
-
     // Update USER_PREFS
     if (user_update_prefs($_SESSION['UID'], $user_prefs, $user_prefs_global)) {
 

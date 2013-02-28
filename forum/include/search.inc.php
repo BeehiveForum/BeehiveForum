@@ -856,44 +856,57 @@ function check_search_frequency()
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    $search_min_frequency = intval(forum_get_setting('search_min_frequency', null, 30));
+    $search_limit_count = forum_get_setting('search_limit_count', null, 1);
 
-    if ($search_min_frequency == 0) return true;
+    $search_limit_time = forum_get_setting('search_limit_time', null, 30);
 
-    $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
+    if ($search_limit_time == 0 || $search_limit_count == 0) return true;
 
-    $sql = "SELECT UNIX_TIMESTAMP(USER_VALUE) + $search_min_frequency, ";
-    $sql.= "UNIX_TIMESTAMP('$current_datetime') FROM `{$table_prefix}USER_TRACK` ";
+    $sql = "SELECT USER_VALUE FROM `{$table_prefix}USER_TRACK` ";
     $sql.= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'LAST_SEARCH'";
 
     if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows > 0) {
 
-        list($last_search_stamp, $current_timestamp) = $result->fetch_row();
+        $last_search_row = $result->fetch_row();
 
-        if (!is_numeric($last_search_stamp) || $last_search_stamp < $current_timestamp) {
+        $last_search_timestamp_array = @unserialize($last_search_row[0]);
 
-            $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
-            $sql.= "SET USER_VALUE = CAST('$current_datetime' AS DATETIME) ";
-            $sql.= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'LAST_SEARCH'";
-
-            if (!($result = $db->query($sql))) return false;
-
-            return true;
+        if (!is_array($last_search_timestamp_array)) {
+            $last_search_timestamp_array = array();
         }
 
-    } else{
+        sort($last_search_timestamp_array);
 
-        $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, USER_KEY, USER_VALUE) ";
-        $sql.= "VALUES ('{$_SESSION['UID']}', 'LAST_SEARCH', CAST('$current_datetime' AS DATETIME))";
+    } else {
 
-        if (!($result = $db->query($sql))) return false;
-
-        return true;
+        $last_search_timestamp_array = array(time());
     }
 
-    return false;
+    foreach ($last_search_timestamp_array as $key => $last_search_timestamp) {
+
+        if (($last_search_timestamp + $search_limit_time) < time()) {
+            unset($last_search_timestamp_array[$key]);
+        }
+    }
+
+    while (sizeof($last_search_timestamp_array) > $search_limit_count) {
+        array_pop($last_search_timestamp_array);
+    }
+
+    $success = sizeof($last_search_timestamp_array) < $search_limit_count;
+
+    $last_search_timestamp_array[] = time();
+
+    $last_search_row = $db->escape(serialize($last_search_timestamp_array));
+
+    $sql = "REPLACE INTO `{$table_prefix}USER_TRACK` (UID, USER_KEY, USER_VALUE) ";
+    $sql.= "VALUES ('{$_SESSION['UID']}', 'LAST_SEARCH', '$last_search_row')";
+
+    if (!$db->query($sql)) return false;
+
+    return $success;
 }
 
 function search_output_opensearch_xml()

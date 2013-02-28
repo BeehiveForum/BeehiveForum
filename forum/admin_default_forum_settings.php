@@ -201,10 +201,16 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['messages_unread_cutoff'] = forum_get_setting('messages_unread_cutoff', 'is_numeric', YEAR_IN_SECONDS);
     }
 
-    if (isset($_POST['search_min_frequency']) && is_numeric($_POST['search_min_frequency'])) {
-        $new_forum_settings['search_min_frequency'] = $_POST['search_min_frequency'];
+    if (isset($_POST['search_limit_count']) && is_numeric($_POST['search_limit_count'])) {
+        $new_forum_settings['search_limit_count'] = $_POST['search_limit_count'];
     } else {
-        $new_forum_settings['search_min_frequency'] = 30;
+        $new_forum_settings['search_limit_count'] = 1;
+    }
+
+    if (isset($_POST['search_limit_time']) && is_numeric($_POST['search_limit_time'])) {
+        $new_forum_settings['search_limit_time'] = $_POST['search_limit_time'];
+    } else {
+        $new_forum_settings['search_limit_time'] = 1;
     }
 
     if (isset($_POST['sphinx_search_enabled']) && $_POST['sphinx_search_enabled'] == "Y") {
@@ -862,14 +868,15 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"250\">", gettext("Search Frequency"), ":</td>\n";
-echo "                        <td align=\"left\">", form_input_text("search_min_frequency", (isset($forum_global_settings['search_min_frequency'])) ? htmlentities_array($forum_global_settings['search_min_frequency']) : "30", 10, 3), "&nbsp;</td>\n";
+echo "                        <td align=\"left\" width=\"270\">", gettext("Limit Searches to"), ":</td>\n";
+echo "                        <td align=\"left\">", sprintf(gettext("%s search(es) every %s seconds"), form_input_text("search_limit_count", (isset($forum_global_settings['search_limit_count'])) ? htmlentities_array($forum_global_settings['search_limit_count']) : 1, 4, 3), form_input_text("search_limit_time", (isset($forum_global_settings['search_limit_time'])) ? htmlentities_array($forum_global_settings['search_limit_time']) : 30, 4, 3)), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" colspan=\"2\">\n";
-echo "                          <p class=\"smalltext\">", gettext("<b>Search Frequency</b> defines how long a user must wait before performing another search. Searches place a high demand on the database so it is recommended that you set this to at least 30 seconds to prevent \"search spamming\" from killing the server."), "</p>\n";
+echo "                          <p class=\"smalltext\">", gettext("This setting defines how long a user must wait before performing another search. Searches can place a high demand on the database, so it is recommended that you set this to 1 search every 30 seconds to prevent \"search spamming\" having negative effect on your server."), "</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -923,6 +930,14 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", gettext("Sphinx Search Port"), ":</td>\n";
 echo "                        <td align=\"left\">", form_input_text("sphinx_search_port", (isset($forum_global_settings['sphinx_search_port'])) ? htmlentities_array($forum_global_settings['sphinx_search_port']) : '', 5), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">", gettext("These settings allow you to integrate Sphinx Search into your Beehive Forum. Sphinx Search provides an alternative to MySQL's full-text searching and can help provide better search results and can help reduce server load. Spinx Search must be installed on your server and configured before it will work with your Beehive Forum. For instructions please see the Beehive Forum docs."), "</p>\n";
+echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

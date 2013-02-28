@@ -208,32 +208,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
     $error = SEARCH_NO_ERROR;
 
-    if (($search_success = search_execute($search_arguments, $error)) !== false) {
-
-        if (isset($_GET['search_string']) || isset($_GET['logon'])) {
-
-            $redirect_uri = "index.php?webtag=$webtag&final_uri=discussion.php";
-            $redirect_uri.= "%3Fwebtag%3D$webtag%26left%3Dsearch_results";
-
-            header_redirect($redirect_uri);
-            exit;
-
-        } else {
-
-            header_redirect("search.php?webtag=$webtag&search_success=true&sort_by=$sort_by&sort_dir=$sort_dir");
-            exit;
-        }
-
-    } else if (isset($_GET['search_string']) || isset($_GET['logon'])) {
-
-        $redirect_uri = "index.php?webtag=$webtag&final_uri=discussion.php";
-        $redirect_uri.= "%3Fwebtag%3D$webtag%26right%3Dsearch";
-        $redirect_uri.= "%26search_error%3D$error";
-
-        header_redirect($redirect_uri);
-        exit;
-
-    } else {
+    if (!($search_success = search_execute($search_arguments, $error))) {
 
         switch ($error) {
 
@@ -253,8 +228,9 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
             case SEARCH_FREQUENCY_TOO_GREAT:
 
-                $search_frequency = forum_get_setting('search_min_frequency', 'is_numeric', 0);
-                $error_msg_array[] = sprintf(gettext("You can only search once every %s seconds. Please try again later."), $search_frequency);
+                $search_limit_count = forum_get_setting('search_limit_count', 'is_numeric', 1);
+                $search_limit_time = forum_get_setting('search_limit_time', 'is_numeric', 30);
+                $error_msg_array[] = sprintf(gettext("You can only perform %d search(es) every %s seconds."), $search_limit_count, $search_limit_time);
                 break;
 
             case SEARCH_SPHINX_UNAVAILABLE:
@@ -407,7 +383,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
     html_display_error_array($error_msg_array, '500', 'center');
 
-} else if (isset($_GET['search_success'])) {
+} else if (isset($search_success) && $search_success) {
 
     $frame_target = html_get_frame_name('left');
     $results_link = sprintf("<a href=\"search.php?webtag=$webtag&amp;page=1&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\" target=\"$frame_target\">%s</a>", gettext("Click here to view results."));
@@ -434,8 +410,9 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
         case SEARCH_FREQUENCY_TOO_GREAT:
 
-            $search_frequency = forum_get_setting('search_min_frequency', 'is_numeric', 0);
-            html_display_error_msg(sprintf(gettext("You can only search once every %s seconds. Please try again later."), $search_frequency));
+            $search_limit_count = forum_get_setting('search_limit_count', 'is_numeric', 1);
+            $search_limit_time = forum_get_setting('search_limit_time', 'is_numeric', 30);
+            html_display_error_msg(sprintf(gettext("You can only perform %d search(es) every %s seconds."), $search_limit_count, $search_limit_time));
             break;
     }
 

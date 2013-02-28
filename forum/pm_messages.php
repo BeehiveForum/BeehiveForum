@@ -319,8 +319,9 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 } else if (isset($_GET['search_frequency_error'])) {
 
-    $search_frequency = forum_get_setting('search_min_frequency', 'strlen', 0);
-    html_display_warning_msg(sprintf(gettext("You can only search once every %s seconds. Please try again later."), $search_frequency), '96%', 'center');
+    $search_limit_count = forum_get_setting('search_limit_count', 'is_numeric', 1);
+    $search_limit_time = forum_get_setting('search_limit_time', 'is_numeric', 30);
+    html_display_error_msg(sprintf(gettext("You can only perform %d search(es) every %s seconds."), $search_limit_count, $search_limit_time), '96%', 'center');
 
 } else if (isset($messages_array['message_array']) && sizeof($messages_array['message_array']) < 1) {
 

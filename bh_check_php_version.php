@@ -65,7 +65,6 @@ if (isset($_SERVER['argc']) && ($_SERVER['argc'] > 1)) {
         'ignore_dirs' => array(
             'forum/include/languages',
             'forum/include/swift',
-            'forum/geshi',
             'forum/tiny_mce'
         ),
     );

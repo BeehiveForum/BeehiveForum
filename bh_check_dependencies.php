@@ -34,43 +34,6 @@ $source_files_array = array();
 
 $update_files_array = array();
 
-/*$include_files_functions_array = array(
-    'db.inc.php' => array(
-        '/db::[^\(]+\(/imu',
-    ),
-    'errorhandler.inc.php' => array(
-        '/new Error\s*\(/imu',
-    ),
-    'geshi.inc.php' => array(
-        '/new GeSHi\s*\(/imu',
-    ),
-    'html.inc.php' => array(
-        '/new html_frameset\s*\(/imu',
-        '/new html_frameset_rows\s*\(/imu',
-        '/new html_frameset_cols\s*\(/imu',
-        '/new html_frame\s*\(/imu',
-    ),
-    'post.inc.php' => array(
-        '/new MessageTextParse\s*\(/imu',
-    ),
-    'rss_feed.inc.php' => array(
-        '/new rss_feed_item\s*\(/imu',
-    ),
-    'session.inc.php' => array(
-        '/session::[^\(]+\(/imu',
-    ),
-    'swift.inc.php' => array(
-        '/Swift_TransportFactory::[^\(]+\(/imu',
-        '/new Swift_SmtpTransportSingleton\s*\(/imu',
-        '/new Swift_MailTransportSingleton\s*\(/imu',
-        '/new Swift_SendmailTransportSingleton\s*\(/imu',
-        '/new Swift_MessageBeehive\s*\(/imu',
-    ),
-    'text_captcha.inc.php' => array(
-        '/new captcha\s*\(/imu',
-    ),
-);*/
-
 $source_files_dir_array = array(
     'forum',
     'forum/include'

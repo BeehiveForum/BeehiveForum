@@ -213,7 +213,7 @@ function logon_draw_form($logon_options)
             $register_link = rawurlencode("register.php?webtag=$webtag&final_uri=$final_uri");
             $forgot_pw_link = rawurlencode("forgot_pw.php?webtag=$webtag&final_uri=$final_uri");
 
-            echo "<p class=\"smalltext\">", sprintf(gettext("Don't have an account? %s"), "<a href=\"index.php?webtag=$webtag&amp;final_uri=$register_link\" target=\"". html_get_top_frame_name(). "\">", gettext("Register now"), "</a>"), "</p>\n";
+            echo "<p class=\"smalltext\">", sprintf(gettext("Don't have an account? %s"), "<a href=\"index.php?webtag=$webtag&amp;final_uri=$register_link\" target=\"". html_get_top_frame_name(). "\">". gettext("Register now"). "</a>"). "</p>\n";
             echo "<hr class=\"bhlogonseparator\" />\n";
             echo "<h2>", gettext("Problems logging on?"), "</h2>\n";
             echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes&amp;final_uri=$final_uri\" target=\"", html_get_top_frame_name(), "\">", gettext("Delete Cookies"), "</a></p>\n";
@@ -221,7 +221,7 @@ function logon_draw_form($logon_options)
 
         } else {
 
-            echo "<p class=\"smalltext\">", sprintf(gettext("Don't have an account? %s"), "<a href=\"index.php?webtag=$webtag&amp;final_uri=register.php%3Fwebtag%3D$webtag\" target=\"". html_get_top_frame_name(). "\">", gettext("Register now"), "</a>"), "</p>\n";
+            echo "<p class=\"smalltext\">", sprintf(gettext("Don't have an account? %s"), "<a href=\"index.php?webtag=$webtag&amp;final_uri=register.php%3Fwebtag%3D$webtag\" target=\"". html_get_top_frame_name(). "\">". gettext("Register now"). "</a>"), "</p>\n";
             echo "<hr class=\"bhlogonseparator\" />\n";
             echo "<h2>", gettext("Problems logging on?"), "</h2>\n";
             echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;deletecookie=yes\" target=\"", html_get_top_frame_name(), "\">", gettext("Delete Cookies"), "</a></p>\n";

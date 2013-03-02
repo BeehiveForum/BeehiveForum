@@ -35,7 +35,7 @@ require_once BH_INCLUDE_PATH. 'user.inc.php';
 // End Required includes
 
 // Default final URI if one isn't specified.
-$final_uri = '&final_uri=logon.php%3Fwebtag%3D$webtag%26logout_success%3Dtrue';
+$final_uri = "&final_uri=logon.php%3Fwebtag%3D$webtag%26logout_success%3Dtrue";
 
 if (isset($_REQUEST['final_uri']) && strlen(trim($_REQUEST['final_uri'])) > 0) {
 

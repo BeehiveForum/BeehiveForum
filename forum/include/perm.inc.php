@@ -260,6 +260,31 @@ function perm_get_user_groups($page = 1, $sort_by = 'GROUP_NAME', $sort_dir = 'A
     );
 }
 
+function perm_get_user_group_names()
+{
+    if (!$db = db::get()) return false;
+
+    if (!($table_prefix = get_table_prefix())) return false;
+
+    if (!($forum_fid = get_forum_fid())) return false;
+
+    $sql = "SELECT GROUPS.GID, GROUPS.GROUP_NAME FROM GROUPS ";
+    $sql.= "GROUP BY GROUPS.GID";
+
+    if (!($result = $db->query($sql))) return false;
+
+    $user_groups_array = array();
+
+    if ($result->num_rows > 0) {
+
+        while (($perm_data = $result->fetch_assoc()) !== null) {
+            $user_groups_array[$perm_data['GID']] = $perm_data['GROUP_NAME'];
+        }
+    }
+
+    return $user_groups_array;
+}
+
 function perm_user_get_groups($uid)
 {
     if (!$db = db::get()) return false;

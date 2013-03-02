@@ -91,17 +91,6 @@ if (isset($_POST['cancel'])) {
     header_redirect($ret);
 }
 
-if (isset($_POST['edit_users']) && is_array($_POST['edit_users'])) {
-
-    list($gid) = array_keys($_POST['edit_users']);
-
-    $redirect_uri = "admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid";
-    $redirect_uri.= "&ret=admin_user.php%3Fwebtag%3D$webtag%26uid=$uid%26ret%3D";
-    $redirect_uri.= rawurlencode($ret);
-
-    header_redirect($redirect_uri);
-}
-
 // Array to hold error messages
 $error_msg_array = array();
 
@@ -467,6 +456,31 @@ if (isset($_POST['action_submit'])) {
 
     if ($valid) {
         $success_html = gettext("Updates saved successfully");
+    }
+
+} else if (isset($_POST['remove_group']) && is_array($_POST['remove_group'])) {
+
+    $group_ids = array_filter(array_keys($_POST['remove_group']), 'is_numeric');
+
+    if (sizeof($group_ids) > 0) {
+
+        foreach ($group_ids as $gid) {
+
+            if (!(perm_is_group($gid))) continue;
+
+            perm_remove_user_from_group($uid, $gid);
+        }
+
+        header_redirect("admin_user.php?webtag=$webtag&uid=$uid&group_removed=true");
+        exit;
+    }
+
+} else if (isset($_POST['add_group']) && is_numeric($_POST['add_group'])) {
+
+    if (perm_is_group($_POST['add_group']) && perm_add_user_to_group($uid, $_POST['add_group'])) {
+
+        header_redirect("admin_user.php?webtag=$webtag&uid=$uid&group_added=true");
+        exit;
     }
 }
 
@@ -1090,6 +1104,14 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 } else if (isset($_GET['approved'])) {
 
     html_display_success_msg(gettext("Successfully approved user"), '800', 'center');
+
+} else if (isset($_GET['group_removed'])) {
+
+    html_display_success_msg(gettext("Successfully removed user from group"), '800', 'center');
+
+} else if (isset($_GET['group_added'])) {
+
+    html_display_success_msg(gettext("Successfully added user to group"), '800', 'center');
 }
 
 echo "<br />\n";
@@ -1589,45 +1611,33 @@ if (forum_check_webtag_available($webtag)) {
     echo "                <tr>\n";
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">", gettext("User Groups"), "</td>\n";
     echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\">&nbsp;</td>\n";
+    echo "                </tr>\n";
 
     if (($user_groups_array = perm_user_get_groups($uid)) !== false) {
 
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
-        echo "                    <table width=\"90%\">\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", gettext("This user is a member of the following groups"), ":</td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                      </tr>\n";
-        echo "                    </table>\n";
         echo "                    <table class=\"box\" width=\"90%\">\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" class=\"posthead\">\n";
         echo "                          <table class=\"posthead\" width=\"100%\">\n";
         echo "                            <tr>\n";
-        echo "                              <td align=\"left\" class=\"subhead\" width=\"200\">", gettext("Groups"), "</td>\n";
-        echo "                              <td align=\"left\" class=\"subhead\" width=\"50\">", gettext("Users"), "</td>\n";
-        echo "                              <td align=\"left\" class=\"subhead\">&nbsp;</td>\n";
+        echo "                              <td align=\"left\" class=\"subhead\">", gettext("Group"), "</td>\n";
+        echo "                              <td align=\"left\" class=\"subhead\" width=\"220\">&nbsp;</td>\n";
         echo "                            </tr>\n";
-        echo "                            <tr>\n";
-        echo "                              <td align=\"left\" colspan=\"3\">\n";
-        echo "                                <div class=\"admin_folder_perms\">\n";
 
         foreach ($user_groups_array as $user_group) {
 
-            echo "                                <table class=\"posthead\" width=\"100%\">\n";
-            echo "                                  <tr>\n";
-            echo "                                    <td align=\"left\" valign=\"top\" width=\"200\">&nbsp;<a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}&ret=admin_user.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
-            echo "                                    <td valign=\"top\" align=\"center\" width=\"50\">{$user_group['USER_COUNT']}</td>\n";
-            echo "                                    <td valign=\"top\" align=\"right\">", form_submit("edit_users[{$user_group['GID']}]", gettext("Add/Remove Users")), "&nbsp;</td>\n";
-            echo "                                  </tr>\n";
-            echo "                                </table>\n";
+            echo "                            <tr>\n";
+            echo "                              <td align=\"left\" valign=\"top\">&nbsp;<a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}&ret=admin_user.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+            echo "                              <td valign=\"top\" align=\"right\" width=\"220\">", form_submit("remove_group[{$user_group['GID']}]", gettext("Remove user from group")), "&nbsp;</td>\n";
+            echo "                            </tr>\n";
         }
 
-        echo "                                </div>\n";
-        echo "                              </td>\n";
+        echo "                            <tr>\n";
+        echo "                              <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
         echo "                            </tr>\n";
         echo "                          </table>\n";
         echo "                        </td>\n";
@@ -1635,14 +1645,21 @@ if (forum_check_webtag_available($webtag)) {
         echo "                    </table>\n";
         echo "                  </td>\n";
         echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+    }
 
-    } else {
+    if (($user_groups_array = perm_get_user_group_names())) {
 
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
-        echo "                    <table class=\"posthead\" width=\"90%\">\n";
+        echo "                    <table width=\"90%\" class=\"posthead\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", gettext("This user is not in any user groups"), "</td>\n";
+        echo "                        <td align=\"center\">", gettext("Add user to group"), ":&nbsp;", form_dropdown_array('add_group', $user_groups_array, false, false, 'admin_options_dropdown'), "&nbsp;", form_submit('add_group_submit', gettext("Add")), "</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";

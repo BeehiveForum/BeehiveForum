@@ -616,7 +616,7 @@ function profile_sections_positions_update()
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($profile_data = $result->fetch_row()) !== null) {
+    while (($profile_data = $result->fetch_assoc()) !== null) {
 
         $new_position++;
 
@@ -643,7 +643,7 @@ function profile_items_positions_update()
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($profile_data = $result->fetch_row()) !== null) {
+    while (($profile_data = $result->fetch_assoc()) !== null) {
 
         if (($current_section == false) || ($current_section <> $profile_data['PSID'])) {
 

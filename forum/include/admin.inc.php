@@ -1565,7 +1565,7 @@ function admin_send_user_approval_notification()
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($admin_data = $result->fetch_row()) !== null) {
+    while (($admin_data = $result->fetch_assoc()) !== null) {
 
         if (!email_send_user_approval_notification($admin_data['UID'])) {
 
@@ -1595,7 +1595,7 @@ function admin_send_new_user_notification($new_user_uid)
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($admin_data = $result->fetch_row()) !== null) {
+    while (($admin_data = $result->fetch_assoc()) !== null) {
 
         if (!email_send_new_user_notification($admin_data['UID'], $new_user_uid)) {
             $notification_success = false;
@@ -1628,7 +1628,7 @@ function admin_send_post_approval_notification($fid)
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($admin_data = $result->fetch_row()) !== null) {
+    while (($admin_data = $result->fetch_assoc()) !== null) {
 
         if (!email_send_post_approval_notification($admin_data['UID'])) {
 
@@ -1660,7 +1660,7 @@ function admin_send_link_approval_notification()
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($admin_data = $result->fetch_row()) !== null) {
+    while (($admin_data = $result->fetch_assoc()) !== null) {
 
         if (!email_send_link_approval_notification($admin_data['UID'])) {
 

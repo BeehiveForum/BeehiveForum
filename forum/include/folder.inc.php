@@ -670,7 +670,7 @@ function folder_positions_update()
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($folder_data = $result->fetch_row()) !== null) {
+    while (($folder_data = $result->fetch_assoc()) !== null) {
 
         $new_position++;
 

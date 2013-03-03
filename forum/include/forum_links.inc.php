@@ -354,7 +354,7 @@ function forum_links_positions_update()
 
     if (!($result = $db->query($sql))) return false;
 
-    while (($link_data = $result->fetch_row()) !== null) {
+    while (($link_data = $result->fetch_assoc()) !== null) {
 
         $new_position++;
 

@@ -460,7 +460,7 @@ function search_get_sort(&$sort_by, &$sort_dir)
 
     if ($result->num_rows == 0) return false;
 
-    while (($user_track_data = $result->fetch_row())) {
+    while (($user_track_data = $result->fetch_assoc())) {
 
         switch ($user_track_data['USER_KEY']) {
 

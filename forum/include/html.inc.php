@@ -327,36 +327,30 @@ function html_get_user_style_path()
     return $user_style;
 }
 
-function html_get_style_sheet($filename = 'style.css')
+function html_get_style_sheet($filename = 'style.css', $allow_cdn = true)
 {
-    if (!($user_style = html_get_user_style_path())) {
-        return html_get_forum_file_path(sprintf('styles/default/%s', basename($filename)));
-    }
-
-    return html_get_forum_file_path(sprintf('styles/%s/%s', basename($user_style), basename($filename)));
+    if (!($user_style = html_get_user_style_path())) $user_style = 'default';
+    return html_get_forum_file_path(sprintf('styles/%s/%s', basename($user_style), basename($filename)), $allow_cdn);
 }
 
-function html_get_script_style_sheet()
+function html_get_script_style_sheet($allow_cdn = true)
 {
-    if (!($user_style = html_get_user_style_path())) return false;
+    if (!($user_style = html_get_user_style_path())) $user_style = 'default';
 
     $script_style_sheet = sprintf('styles/%s/%s.css', basename($user_style), basename($_SERVER['PHP_SELF'], '.php'));
 
-    if (($user_style === false) || !file_exists($script_style_sheet)) return false;
+    if (!file_exists($script_style_sheet)) return false;
 
-    return html_get_forum_file_path($script_style_sheet);
+    return html_get_forum_file_path($script_style_sheet, $allow_cdn);
 }
 
-function html_get_top_page()
+function html_get_top_page($allow_cdn = true)
 {
-    if (!($user_style = html_get_user_style_path())) {
-        return html_get_forum_file_path('styles/default/top.php');
-    }
-
-    return html_get_forum_file_path(sprintf('styles/%s/top.php', basename($user_style)));
+    if (!($user_style = html_get_user_style_path())) $user_style = 'default';
+    return html_get_forum_file_path(sprintf('styles/%s/top.php', basename($user_style)), $allow_cdn);
 }
 
-function html_get_emoticon_style_sheet($emoticon_set = false)
+function html_get_emoticon_style_sheet($emoticon_set = false, $allow_cdn = true)
 {
     if (($emoticon_set) && emoticons_set_exists($emoticon_set)) {
 
@@ -372,7 +366,7 @@ function html_get_emoticon_style_sheet($emoticon_set = false)
     }
 
     if (emoticons_set_exists($user_emoticon_pack)) {
-        return html_get_forum_file_path(sprintf('emoticons/%s/style.css', basename($user_emoticon_pack)));
+        return html_get_forum_file_path(sprintf('emoticons/%s/style.css', basename($user_emoticon_pack)), $allow_cdn);
     }
 
     return false;
@@ -415,20 +409,16 @@ function html_get_forum_email()
 
 function html_get_frame_name($basename)
 {
-    // Forum URL
     $forum_uri = html_get_forum_uri();
 
-    // Get the webtag
     $webtag = get_webtag();
 
-    // If webtag available add that to the hash.
     if (forum_check_webtag_available($webtag)) {
 
         $frame_md5_hash = md5(sprintf('%s-%s-%s', $forum_uri, $webtag, $basename));
         return sprintf('bh_frame_%s', preg_replace('/[^a-z]+/iu', '', $frame_md5_hash));
     }
 
-    // No webtag just use forum URL and frame basename.
     $frame_md5_hash = md5(sprintf('%s-%s', $forum_uri, $basename));
     return sprintf('bh_frame_%s', preg_replace('/[^a-z]+/iu', '', $frame_md5_hash));
 }
@@ -450,13 +440,15 @@ function html_include_javascript($script_filepath)
 
     if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return;
 
+    if (!isset($path_parts['query'])) $path_parts['query'] = null;
+
     if (forum_get_setting('use_minified_scripts', 'Y')) {
         $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
     }
 
-    $script_filepath = rtrim($path_parts['dirname'], '/'). '/'. $path_parts['basename'];
+    $path_parts['query'] = html_query_string_add($path_parts['query'], 'version', BEEHIVE_VERSION, '&amp;');
 
-    $script_filepath.= isset($path_parts['query']) ? "?{$path_parts['query']}" : '';
+    $script_filepath = rtrim($path_parts['dirname'], '/'). '/'. $path_parts['basename']. '?'. $path_parts['query'];
 
     printf("<script type=\"text/javascript\" src=\"%s\"></script>\n", $script_filepath);
 }
@@ -467,13 +459,15 @@ function html_include_css($script_filepath, $media = 'screen')
 
     if (!array_keys_exist($path_parts, 'basename', 'filename', 'extension', 'dirname')) return;
 
+    if (!isset($path_parts['query'])) $path_parts['query'] = null;
+
     if (forum_get_setting('use_minified_scripts', 'Y')) {
         $path_parts['basename'] = sprintf('%s.min.%s', $path_parts['filename'], $path_parts['extension']);
     }
 
-    $script_filepath = rtrim($path_parts['dirname'], '/'). '/'. $path_parts['basename'];
+    $path_parts['query'] = html_query_string_add($path_parts['query'], 'version', BEEHIVE_VERSION, '&amp;');
 
-    $script_filepath.= isset($path_parts['query']) ? "?{$path_parts['query']}" : '';
+    $script_filepath = rtrim($path_parts['dirname'], '/'). '/'. $path_parts['basename']. '?'. $path_parts['query'];
 
     printf("<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\" media=\"%s\" />\n", $script_filepath, $media);
 }
@@ -1161,13 +1155,10 @@ function html_js_safe_str($str)
     return strtr($str, $unsafe_chars_tbl);
 }
 
-function html_style_image($img, $allow_cdn = true)
+function html_style_image($image, $allow_cdn = true)
 {
-    if (!($user_style = html_get_user_style_path())) {
-        return html_get_forum_file_path(sprintf('styles/default/images/%s', $img), $allow_cdn);
-    }
-
-    return html_get_forum_file_path(sprintf('styles/%s/images/%s', basename($user_style), $img), $allow_cdn);
+    if (!($user_style = html_get_user_style_path())) $user_style = 'default';
+    return html_get_forum_file_path(sprintf('styles/%s/images/%s?version=%s', basename($user_style), basename($image), BEEHIVE_VERSION), $allow_cdn);
 }
 
 function html_set_cookie($name, $value, $expires = 0)
@@ -1216,6 +1207,26 @@ function href_cleanup_query_keys($uri, $remove_keys = null)
     }
 
     return build_url_str($uri_array);
+}
+
+function html_query_string_add($query_string, $key, $value, $arg_separator = '&')
+{
+    parse_str($query_string, $query_array);
+
+    $query_array[$key] = $value;
+
+    return http_build_query($query_array, null, $arg_separator);
+}
+
+function html_query_string_remove($query_string, $key, $value = null, $arg_separator = '&')
+{
+    parse_str($query_string, $query_array);
+
+    if ((isset($query_array[$key]) && ($query_array[$key] == $value)) || $value = null) {
+        unset($query_array[$key]);
+    }
+
+    return http_build_query($query_array, null, $arg_separator);
 }
 
 function html_page_links($uri, $page, $record_count, $rows_per_page, $page_var = "page")

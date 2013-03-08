@@ -1030,7 +1030,7 @@ function perm_folder_reset_user_permissions($fid)
     $remove_perms = (double) $remove_perms | USER_PERM_LINKS_MODERATE | USER_PERM_EMAIL_CONFIRM;
     $remove_perms = (double) $remove_perms | USER_PERM_CAN_IGNORE_ADMIN | USER_PERM_PILLORIED;
 
-    $folder_perms = $folder_perms ^ $remove_perms;
+    $folder_perms = $folder_perms & ~$remove_perms;
 
     $sql = "UPDATE LOW_PRIORITY GROUP_PERMS SET PERM = '$folder_perms' | (PERM & $upfm) ";
     $sql.= "WHERE FID = '$fid' AND GID <> '0' AND FORUM = '$forum_fid'";
@@ -1135,7 +1135,7 @@ function perm_user_cancel_email_confirmation($uid)
 
     if (!($gid = perm_get_user_gid($uid))) return false;
 
-    $sql = "UPDATE GROUP_PERMS SET PERM = PERM ^ $perm ";
+    $sql = "UPDATE GROUP_PERMS SET PERM = PERM & ~$perm ";
     $sql.= "WHERE GID = '$gid' AND FORUM = 0 AND FID = 0";
 
     if (!$db->query($sql)) return false;

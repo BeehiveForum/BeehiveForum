@@ -92,7 +92,7 @@ switch ($_GET['action']) {
         if ($_GET['display'] === 'true') {
             $page_prefs = (double)$page_prefs | POST_SIGNATURE_DISPLAY;
         } else {
-            $page_prefs = (double)$page_prefs ^ ($page_prefs & POST_SIGNATURE_DISPLAY);
+            $page_prefs = (double)$page_prefs & ~POST_SIGNATURE_DISPLAY;
         }
 
         $user_prefs = array(
@@ -124,7 +124,7 @@ switch ($_GET['action']) {
         if ($_GET['display'] === 'true') {
             $page_prefs = (double)$page_prefs | POST_ATTACHMENT_DISPLAY;
         } else {
-            $page_prefs = (double)$page_prefs ^ ($page_prefs & POST_ATTACHMENT_DISPLAY);
+            $page_prefs = (double)$page_prefs & ~POST_ATTACHMENT_DISPLAY;
         }
 
         $user_prefs = array(
@@ -156,7 +156,7 @@ switch ($_GET['action']) {
         if ($_GET['display'] === 'true') {
             $page_prefs = (double)$page_prefs | POST_EMOTICONS_DISPLAY;
         } else {
-            $page_prefs = (double)$page_prefs ^ ($page_prefs & POST_EMOTICONS_DISPLAY);
+            $page_prefs = (double)$page_prefs & ~POST_EMOTICONS_DISPLAY;
         }
 
         $user_prefs = array(
@@ -188,7 +188,7 @@ switch ($_GET['action']) {
         if ($_GET['display'] === 'true') {
             $page_prefs = (double)$page_prefs | POLL_ADVANCED_DISPLAY;
         } else {
-            $page_prefs = (double)$page_prefs ^ ($page_prefs & POLL_ADVANCED_DISPLAY);
+            $page_prefs = (double)$page_prefs & ~POLL_ADVANCED_DISPLAY;
         }
 
         $user_prefs = array(
@@ -220,7 +220,7 @@ switch ($_GET['action']) {
         if ($_GET['display'] === 'true') {
             $page_prefs = (double)$page_prefs | POLL_ADDITIONAL_MESSAGE_DISPLAY;
         } else {
-            $page_prefs = (double)$page_prefs ^ ($page_prefs & POLL_ADDITIONAL_MESSAGE_DISPLAY);
+            $page_prefs = (double)$page_prefs & ~POLL_ADDITIONAL_MESSAGE_DISPLAY;
         }
 
         $user_prefs = array(
@@ -252,7 +252,7 @@ switch ($_GET['action']) {
         if ($_GET['display'] === 'true') {
             $page_prefs = (double)$page_prefs | POLL_EDIT_SOFT_DISPLAY;
         } else {
-            $page_prefs = (double)$page_prefs ^ ($page_prefs & POLL_EDIT_SOFT_DISPLAY);
+            $page_prefs = (double)$page_prefs & ~POLL_EDIT_SOFT_DISPLAY;
         }
 
         $user_prefs = array(

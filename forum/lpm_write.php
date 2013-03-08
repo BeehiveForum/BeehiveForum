@@ -214,7 +214,7 @@ if (isset($_POST['send']) || isset($_POST['preview']) || isset($_POST['save'])) 
                     'NICKNAME' => $to_user['NICKNAME']
                 );
 
-                if ((($peer_relationship ^ USER_BLOCK_PM) && user_allow_pm($to_user['UID'])) || session::check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
+                if (((($peer_relationship & USER_BLOCK_PM) == 0) && user_allow_pm($to_user['UID'])) || session::check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
 
                     pm_user_prune_folders($_SESSION['UID']);
 

@@ -1023,7 +1023,7 @@ function perm_folder_reset_user_permissions($fid)
 
     $folder_perms = perm_folder_get_permissions($fid);
 
-    $upfm = USER_PERM_FOLDER_MODERATE;
+    $user_perm_folder_moderate = USER_PERM_FOLDER_MODERATE;
 
     $remove_perms = (double) USER_PERM_BANNED | USER_PERM_WORMED;
     $remove_perms = (double) $remove_perms | USER_PERM_ADMIN_TOOLS | USER_PERM_FORUM_TOOLS;
@@ -1032,7 +1032,7 @@ function perm_folder_reset_user_permissions($fid)
 
     $folder_perms = $folder_perms & ~$remove_perms;
 
-    $sql = "UPDATE LOW_PRIORITY GROUP_PERMS SET PERM = '$folder_perms' | (PERM & $upfm) ";
+    $sql = "UPDATE LOW_PRIORITY GROUP_PERMS SET PERM = '$folder_perms' | (PERM & $user_perm_folder_moderate) ";
     $sql.= "WHERE FID = '$fid' AND GID <> '0' AND FORUM = '$forum_fid'";
 
     if (!$db->query($sql)) return false;

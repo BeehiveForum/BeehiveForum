@@ -39,7 +39,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     $uid = $_GET['u'];
 }
 
-if (isset($_GET['h']) && is_md5($_GET['h'])) {
+if (isset($_GET['h']) && is_string($_GET['h'])) {
     $key = $_GET['h'];
 }
 

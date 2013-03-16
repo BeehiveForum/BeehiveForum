@@ -615,15 +615,15 @@ echo form_submit('preview', gettext("Preview"), "tabindex=\"4\""), "&nbsp;";
 
 if (isset($edit_mid) && is_numeric($edit_mid) && $edit_mid > 0) {
 
-    echo "<a href=\"pm.php?webtag=$webtag&mid=$edit_mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\r\n";
+    echo "<a href=\"pm.php?webtag=$webtag&mid=$edit_mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 
 } else if (isset($forward_mid) && is_numeric($forward_mid)  && $forward_mid > 0) {
 
-    echo "<a href=\"pm.php?webtag=$webtag&mid=$forward_mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\r\n";
+    echo "<a href=\"pm.php?webtag=$webtag&mid=$forward_mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 
 } else {
 
-    echo "<a href=\"pm.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\r\n";
+    echo "<a href=\"pm.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 }
 
 if (forum_get_setting('attachments_enabled', 'Y')) {

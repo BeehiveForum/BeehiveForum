@@ -98,7 +98,7 @@ function email_send_notification($tid, $pid)
         $forum_link = html_get_forum_uri("index.php?webtag=$webtag");
 
         $message_body = wordwrap(sprintf(
-            gettext("Hello %s,\r\n\r\n%s posted a message to you on %s.\r\n\r\nThe subject is: %s.\r\n\r\nTo read that message and others in the same discussion, go to:\r\n%s\r\n\r\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n\r\nNote: If you do not wish to receive email notifications of forum messages posted to you, go to: %s click on My Controls then Email and Privacy, unselect the Email Notification checkbox and press Submit."),
+            gettext("Hello %s,\n\n%s posted a message to you on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of forum messages posted to you, go to: %s click on My Controls then Email and Privacy, unselect the Email Notification checkbox and press Submit."),
             $recipient,
             $message_author,
             $forum_name,
@@ -184,7 +184,7 @@ function email_send_thread_subscription($tid, $pid)
         $message_link = html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid");
 
         $message_body = wordwrap(sprintf(
-            gettext("Hello %s,\r\n\r\n%s posted a message in a thread you have subscribed to on %s.\r\n\r\nThe subject is: %s.\r\n\r\nTo read that message and others in the same discussion, go to:\r\n%s\r\n\r\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n\r\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level at the bottom of the page."),
+            gettext("Hello %s,\n\n%s posted a message in a thread you have subscribed to on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level at the bottom of the page."),
             $recipient,
             $message_author,
             $forum_name,
@@ -275,7 +275,7 @@ function email_send_folder_subscription($tid, $pid)
         $message_link = html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid");
 
         $message_body = wordwrap(sprintf(gettext(
-            "Hello %s,\r\n\r\n%s posted a message in a folder you are subscribed to on %s.\r\n\r\nThe subject is: %s.\r\n\r\nTo read that message and others in the same discussion, go to:\r\n%s\r\n\r\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n\r\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level by clicking on the folder's icon at the top of page."),
+            "Hello %s,\n\n%s posted a message in a folder you are subscribed to on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level by clicking on the folder's icon at the top of page."),
             $recipient,
             $message_author,
             $forum_name,
@@ -349,7 +349,7 @@ function email_send_pm_notification($mid)
 
         $message_body = wordwrap(
             sprintf(
-                gettext("Hello %s,\r\n\r\n%s posted a PM to you on %s.\r\n\r\nThe subject is: %s.\r\n\r\nTo read the message go to:\r\n%s\r\n\r\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n\r\nNote: If you do not wish to receive email notifications of new PM messages posted to you, go to: %s click My Controls then Email and Privacy, unselect the PM Notification checkbox and press Submit."),
+                gettext("Hello %s,\n\n%s posted a PM to you on %s.\n\nThe subject is: %s.\n\nTo read the message go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new PM messages posted to you, go to: %s click My Controls then Email and Privacy, unselect the PM Notification checkbox and press Submit."),
                 $recipient,
                 $message_author,
                 $forum_name,
@@ -402,7 +402,7 @@ function email_send_pw_reminder($logon)
     $change_pw_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$change_pw_link");
 
     $message_body = wordwrap(sprintf(
-        gettext("Hello %s,\r\n\r\nYou requested this e-mail from %s because you have forgotten your password.\r\n\r\nClick the link below (or copy and paste it into your browser) to reset your password:\r\n\r\n%s"),
+        gettext("Hello %s,\n\nYou requested this e-mail from %s because you have forgotten your password.\n\nClick the link below (or copy and paste it into your browser) to reset your password:\n\n%s"),
         $recipient,
         $forum_name,
         $change_pw_link
@@ -446,7 +446,7 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
     $passwd_changed_by = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid, true);
 
     $message_body = wordwrap(sprintf(
-        gettext("Hello %s,\r\n\r\nThis a notification email to inform you that your password on %s has been changed.\r\n\r\nIt has been changed to: %s and was changed by: %s.\r\n\r\nIf you have received this email in error or were not expecting a change to your password please contact the forum owner or a moderator on %s immediately to correct it."),
+        gettext("Hello %s,\n\nThis a notification email to inform you that your password on %s has been changed.\n\nIt has been changed to: %s and was changed by: %s.\n\nIf you have received this email in error or were not expecting a change to your password please contact the forum owner or a moderator on %s immediately to correct it."),
         $recipient,
         $forum_name,
         $new_password,
@@ -494,7 +494,7 @@ function email_send_user_confirmation($tuid)
     $confirm_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$confirm_link");
 
     $message_body = wordwrap(sprintf(
-        gettext("Hello %s,\r\n\r\nYou recently created a new user account on %s.\r\n\r\nBefore you can start posting we need to confirm your email address. Don't worry this is quite easy. All you need to do is click the link below (or copy and paste it into your browser):\r\n\r\n%s\r\n\r\nOnce confirmation is complete you may login and start posting immediately.\r\n\r\nIf you did not create a user account on %s please accept our apologies and forward this email to %s so that the source of it may be investigated."),
+        gettext("Hello %s,\n\nYou recently created a new user account on %s.\n\nBefore you can start posting we need to confirm your email address. Don't worry this is quite easy. All you need to do is click the link below (or copy and paste it into your browser):\n\n%s\n\nOnce confirmation is complete you may login and start posting immediately.\n\nIf you did not create a user account on %s please accept our apologies and forward this email to %s so that the source of it may be investigated."),
         $recipient,
         $forum_name,
         $confirm_link,
@@ -542,7 +542,7 @@ function email_send_changed_email_confirmation($tuid)
     $confirm_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$confirm_link");
 
     $message_body = wordwrap(sprintf(
-        gettext("Hello %s,\r\n\r\nYou recently changed your email on %s.\r\n\r\nBefore you can start posting again we need to confirm your new email address. Don't worry this is quite easy. All you need to do is click the link below (or copy and paste it into your browser):\r\n\r\n%s\r\n\r\nOnce confirmation is complete you may continue to use the forum as normal.\r\n\r\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated."),
+        gettext("Hello %s,\n\nYou recently changed your email on %s.\n\nBefore you can start posting again we need to confirm your new email address. Don't worry this is quite easy. All you need to do is click the link below (or copy and paste it into your browser):\n\n%s\n\nOnce confirmation is complete you may continue to use the forum as normal.\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated."),
         $recipient,
         $forum_name,
         $confirm_link,
@@ -588,7 +588,7 @@ function email_send_user_approval_notification($tuid)
     $admin_users_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_users_link");
 
     $message_body = wordwrap(sprintf(gettext(
-        "Hello %s,\r\n\r\nA new user account has been created on %s.\r\n\r\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\r\n\r\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\r\n\r\n%s\r\n\r\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n\r\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."),
+        "Hello %s,\n\nA new user account has been created on %s.\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."),
         $recipient,
         $forum_name,
         $admin_users_link
@@ -634,7 +634,7 @@ function email_send_new_user_notification($tuid, $new_user_uid)
     $admin_user_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_user_link");
 
     $message_body = wordwrap(sprintf(gettext(
-        "Hello %s,\r\n\r\nA new user account has been created on %s.\r\n\r\nTo view this user account please visit the Admin Users section and click on the new user or click the link below:\r\n\r\n%s"),
+        "Hello %s,\n\nA new user account has been created on %s.\n\nTo view this user account please visit the Admin Users section and click on the new user or click the link below:\n\n%s"),
         $recipient,
         $forum_name,
         $admin_user_link
@@ -678,7 +678,7 @@ function email_send_user_approved_notification($tuid)
     $forum_link = html_get_forum_uri("index.php?webtag=$webtag");
 
     $message_body = wordwrap(sprintf(gettext(
-        "Hello %s,\r\n\r\nYour user account at %s has been approved. You can login and start posting immediately by clicking the link below:\r\n\r\n%s\r\n\r\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated."),
+        "Hello %s,\n\nYour user account at %s has been approved. You can login and start posting immediately by clicking the link below:\n\n%s\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated."),
         $recipient,
         $forum_name,
         $forum_link,
@@ -724,7 +724,7 @@ function email_send_post_approval_notification($tuid)
     $admin_post_approval_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_post_approval_link");
 
     $message_body = wordwrap(sprintf(
-        gettext("Hello %s,\r\n\r\nA new post has been created on %s.\r\n\r\nAs you are a Moderator on this forum you are required to approve this post before it can be read by other users.\r\n\r\nYou can approve this post and any others pending approval by visiting the Admin Post Approval section of your forum or by clicking the link below:\r\n\r\n%s\r\n\r\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n\r\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."),
+        gettext("Hello %s,\n\nA new post has been created on %s.\n\nAs you are a Moderator on this forum you are required to approve this post before it can be read by other users.\n\nYou can approve this post and any others pending approval by visiting the Admin Post Approval section of your forum or by clicking the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."),
         $recipient,
         $forum_name,
         $admin_post_approval_link
@@ -768,7 +768,7 @@ function email_send_link_approval_notification($tuid)
     $admin_post_approval_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_post_approval_link");
 
     $message_body = wordwrap(sprintf(gettext(
-        "Hello %s,\r\n\r\nA new link has been created on %s.\r\n\r\nAs you are a Link Moderator on this forum you are required to approve this link before it can be read by other users.\r\n\r\nYou can approve this link and any others pending approval by visiting the Admin Link Approval section of your forum or by clicking the link below:\r\n\r\n%s\r\n\r\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n\r\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."),
+        "Hello %s,\n\nA new link has been created on %s.\n\nAs you are a Link Moderator on this forum you are required to approve this link before it can be read by other users.\n\nYou can approve this link and any others pending approval by visiting the Admin Link Approval section of your forum or by clicking the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."),
         $recipient,
         $forum_name,
         $admin_post_approval_link
@@ -809,7 +809,7 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message_body, $use_
 
     $message_body = word_filter_apply($message_body, $tuid, true);
 
-    $message_body.= "\r\n\r\n". wordwrap(sprintf(gettext("This message was sent from %s by %s"), $forum_name, $sent_from));
+    $message_body.= "\n\n". wordwrap(sprintf(gettext("This message was sent from %s by %s"), $forum_name, $sent_from));
 
     $message->setTo($to_user['EMAIL'], $recipient);
 

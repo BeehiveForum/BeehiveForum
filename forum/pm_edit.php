@@ -312,11 +312,11 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 
-echo form_submit('apply', gettext("Apply"), "tabindex=\"2\""), "\r\n";
+echo form_submit('apply', gettext("Apply"), "tabindex=\"2\""), "\n";
 
-echo form_submit('preview', gettext("Preview"), "tabindex=\"3\""), "\r\n";
+echo form_submit('preview', gettext("Preview"), "tabindex=\"3\""), "\n";
 
-echo "<a href=\"pm.php?webtag=$webtag&mid=$mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\r\n";
+echo "<a href=\"pm.php?webtag=$webtag&mid=$mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 
 if (forum_get_setting('attachments_enabled', 'Y')) {
 

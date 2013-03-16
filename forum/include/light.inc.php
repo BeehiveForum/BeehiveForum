@@ -2426,11 +2426,11 @@ function light_pm_check_messages()
 
     } else if ($new_count == 1 && $outbox_count == 1) {
 
-        $notification = gettext("You have 1 new message.\r\n\r\nYou also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?");
+        $notification = gettext("You have 1 new message.\n\nYou also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\n\nWould you like to go to your Inbox now?");
 
     } else if ($new_count == 0 && $outbox_count == 1) {
 
-        $notification = gettext("You have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?");
+        $notification = gettext("You have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\n\nWould you like to go to your Inbox now?");
 
     } else if ($new_count > 1 && $outbox_count == 0) {
 
@@ -2438,19 +2438,19 @@ function light_pm_check_messages()
 
     } else if ($new_count > 1 && $outbox_count == 1) {
 
-        $notification = sprintf(gettext("You have %d new messages.\r\n\r\nYou also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?"), $new_count);
+        $notification = sprintf(gettext("You have %d new messages.\n\nYou also have 1 message awaiting delivery. To receive this message please clear some space in your Inbox.\n\nWould you like to go to your Inbox now?"), $new_count);
 
     } else if ($new_count > 1 && $outbox_count > 1) {
 
-        $notification = sprintf(gettext("You have %d new messages.\r\n\r\nYou also have %d messages awaiting delivery. To receive these message please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?"), $new_count, $outbox_count);
+        $notification = sprintf(gettext("You have %d new messages.\n\nYou also have %d messages awaiting delivery. To receive these message please clear some space in your Inbox.\n\nWould you like to go to your Inbox now?"), $new_count, $outbox_count);
 
     } else if ($new_count == 1 && $outbox_count > 1) {
 
-        $notification = sprintf(gettext("You have 1 new message.\r\n\r\nYou also have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?"), $outbox_count);
+        $notification = sprintf(gettext("You have 1 new message.\n\nYou also have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\n\nWould you like to go to your Inbox now?"), $outbox_count);
 
     } else if ($new_count == 0 && $outbox_count > 1) {
 
-        $notification = sprintf(gettext("You have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\r\n\r\nWould you like to go to your Inbox now?"), $outbox_count);
+        $notification = sprintf(gettext("You have %d messages awaiting delivery. To receive these messages please clear some space in your Inbox.\n\nWould you like to go to your Inbox now?"), $outbox_count);
     }
 
     if (isset($notification) && strlen(trim($notification)) > 0) {

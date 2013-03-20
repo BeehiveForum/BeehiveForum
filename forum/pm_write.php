@@ -473,7 +473,7 @@ if ($valid && isset($_POST['send'])) {
     }
 }
 
-html_draw_top(sprintf('title=%s', gettext("Private Messages - Send New PM")), "resize_width=960", "js/pm.js", "js/attachments.js", "js/emoticons.js", "js/search_popup.js", 'ckeditor/ckeditor.js', 'js/fineuploader.min.js', "basetarget=_blank", 'class=window_title');
+html_draw_top(sprintf("title=%s", gettext("Private Messages - Send New PM")), "resize_width=960", "basetarget=_blank", "js/pm.js", "js/attachments.js", "js/emoticons.js", 'js/search.js', 'js/search_popup.js', 'ckeditor/ckeditor.js', 'js/fineuploader.min.js', 'class=window_title');
 
 echo "<h1>", gettext("Private Messages"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Send New PM"), "</h1>\n";
 

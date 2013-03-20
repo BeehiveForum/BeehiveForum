@@ -26,7 +26,7 @@ $(beehive).bind('init', function() {
         resize_image : function() {
 
             var max_width = beehive.get_resize_width.call(this);
-            
+
             if ($(this).parent('div.image_resize_container').length > 0) {
 
                 $(this).parent('div.image_resize_container').css('width', max_width * 0.95);
@@ -40,7 +40,7 @@ $(beehive).bind('init', function() {
                     var $resize_banner = $('<div class="image_resize_text">');
 
                     var $resize_icon = $('<img class="image_resize_icon" />');
-                    
+
                     $resize_icon.attr('src', beehive.images['warning.png']);
 
                     $resize_banner.append($resize_icon);
@@ -62,7 +62,7 @@ $(beehive).bind('init', function() {
         check_overflow : function() {
 
             var max_width = beehive.get_resize_width.call(this);
-            
+
             if ($(this).find('div.overflow_fix').length > 0) {
 
                 $(this).find('div.overflow_fix').css('width', max_width * 0.95);
@@ -85,12 +85,12 @@ $(beehive).bind('init', function() {
     });
 
     $(window).bind('resize', function() {
-        
-        $('.postcontent img').each(beehive.resize_image);
-        $('.postcontent').each(beehive.check_overflow);
+
+        $('.overflow_content img').each(beehive.resize_image);
+        $('.overflow_content').each(beehive.check_overflow);
     });
-    
-    $('body').on('load', '.postcontent img', beehive.resize_image);
+
+    $('body').on('load', '.overflow_content img', beehive.resize_image);
 
     $(window).trigger('resize');
 });

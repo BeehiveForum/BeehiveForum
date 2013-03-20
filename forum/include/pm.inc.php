@@ -856,7 +856,7 @@ function pm_display($message_data, $preview = false, $export_html = false)
     echo "                        <td colspan=\"3\" align=\"left\">&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td class=\"postbody\" align=\"left\">{$message_data['CONTENT']}</td>\n";
+    echo "                        <td class=\"postbody overflow_content\" align=\"left\">{$message_data['CONTENT']}</td>\n";
     echo "                      </tr>\n";
 
     if (isset($message_data['ATTACHMENTS']) && sizeof($message_data['ATTACHMENTS']) > 0) {

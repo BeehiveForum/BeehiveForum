@@ -213,7 +213,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
 
     // Main Query
     $select_sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.RELATIONSHIP, ";
-    $select_sql.= "USER_PEER.PEER_NICKNAME, USER_TRACK.USER_VALUE AS POST_COUNT, ";
+    $select_sql.= "USER_PEER.PEER_NICKNAME, CAST(USER_TRACK.USER_VALUE AS UNSIGNED) AS POST_COUNT, ";
     $select_sql.= "IF (USER_PREFS_GLOBAL.DOB_DISPLAY > 1, DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '0000-%m-%d'), NULL) AS DOB, ";
     $select_sql.= "IF (USER_PREFS_GLOBAL.DOB_DISPLAY IN (1, 3), $year - DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '%Y') - ";
     $select_sql.= "('00-$month-$day' < DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '00-%m-%d')), ";

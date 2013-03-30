@@ -70,7 +70,7 @@ function parse_array_to_css($css_rules_array)
         $selector = implode(",\n", array_map('trim', explode(',', $selector)));
 
         $css_file_contents.= sprintf(
-            "%s {\n    %s;\n}\n\n",
+            "%s {\n    %s\n}\n\n",
             $selector,
             implode_assoc($rules_set, ': ', ";\n    ")
         );
@@ -145,6 +145,14 @@ $default_css_files_array = get_css_styles('forum/styles/', '/default\/.+\.css$/i
 $default_css_files_array = $default_css_files_array['default'];
 
 foreach ($default_css_files_array as $default_css_filename => $default_css_rules) {
+
+    file_put_contents(
+        sprintf(
+            'forum/styles/default/%s',
+            $default_css_filename
+        ),
+        parse_array_to_css($default_css_rules)
+    );
 
     foreach ($style_css_files_array as $style_name => $style_css_files) {
 

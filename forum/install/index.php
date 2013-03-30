@@ -41,6 +41,8 @@ require_once BH_INCLUDE_PATH. 'cache.inc.php';
 
 require_once BH_INCLUDE_PATH. 'install.inc.php';
 
+$error_html = null;
+
 unregister_globals();
 
 disable_magic_quotes();
@@ -572,7 +574,7 @@ echo "                            <option value=\"\">Please select...</option>\n
 echo "                            <option value=\"0\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : '', ">New Install</option>\n";
 echo "                            <option value=\"1\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : '', ">Reinstall</option>\n";
 echo "                            <option value=\"2\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : '', ">Reconnect</option>\n";
-echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : '', ">Upgrade 1.3.0 to 1.3.1</option>\n";
+echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : '', ">Upgrade 1.3.1 to 1.4.0</option>\n";
 echo "                          </select>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
@@ -638,7 +640,7 @@ echo "                        <td align=\"left\" class=\"postbody\"><input type=
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
-echo "                          <p class=\"smalltext\">", gettext("These are the MySQL database details required by to install and run your Beehive Forum. If you do not know what these settings are please contact your hosting provider."), "</p>\n";
+echo "                          <p class=\"smalltext\">", gettext("These are the MySQL database details required to install and run your Beehive Forum. If you do not know what these settings are please contact your hosting provider."), "</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";

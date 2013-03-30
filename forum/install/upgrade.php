@@ -614,6 +614,57 @@ if (!($result = $db->query($sql))) {
 
 foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
+    $sql = "CREATE TABLE `{$table_data['PREFIX']}USER_TRACK_NEW` (";
+    $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql.= "  USER_KEY VARCHAR(255) NOT NULL,";
+    $sql.= "  USER_VALUE TEXT,";
+    $sql.= "  PRIMARY KEY (UID,USER_KEY)";
+    $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
+    $user_track_keys = array(
+        'DDKEY',
+        'LAST_POST',
+        'LAST_SEARCH',
+        'LAST_SEARCH_KEYWORDS',
+        'LAST_SEARCH_SORT_BY',
+        'LAST_SEARCH_SORT_DIR',
+        'POST_COUNT'
+    );
+
+    foreach ($user_track_keys as $user_key) {
+
+        $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK_NEW` (UID, USER_KEY, USER_VALUE) ";
+        $sql.= "SELECT UID, '$user_key', `$user_key` FROM `{$table_data['PREFIX']}USER_TRACK`";
+
+        if (!($result = $db->query($sql))) {
+
+            $valid = false;
+            return;
+        }
+    }
+
+    $sql = "DROP TABLE `{$table_data['PREFIX']}USER_TRACK`";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "RENAME TABLE `{$table_data['PREFIX']}USER_TRACK_NEW` TO `{$table_data['PREFIX']}USER_TRACK`";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
     $sql = "UPDATE `{$table_data['PREFIX']}USER_PREFS` INNER JOIN POST_ATTACHMENT_FILES ";
     $sql.= "ON (POST_ATTACHMENT_FILES.HASH = `{$table_data['PREFIX']}USER_PREFS`.AVATAR_AID) ";
     $sql.= "SET `{$table_data['PREFIX']}USER_PREFS`.AVATAR_AID = POST_ATTACHMENT_FILES.AID";

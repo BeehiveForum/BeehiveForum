@@ -247,6 +247,21 @@ function get_forum_check_webtag_ignore_files()
     );
 }
 
+function get_guest_access_ignore_files()
+{
+    return array(
+        'admin.php',
+        'index.php',
+        'forums.php',
+        'lforums.php',
+        'llogon.php',
+        'llogout.php',
+        'logon.php',
+        'logout.php',
+        'nav.php',
+    );
+}
+
 function get_forum_access_ignore_files()
 {
     return array_merge(

@@ -142,4 +142,9 @@ if (!forum_check_webtag_available($webtag) || !forum_check_access_level()) {
     header_redirect("lforums.php?webtag_error");
 }
 
+// Check guest access is available.
+if (!forum_check_guest_access_allowed()) {
+    header_redirect("llogon.php?webtag=$webtag");
+}
+
 ?>

@@ -171,6 +171,28 @@ function forum_check_webtag_available_ignore()
     return false;
 }
 
+function forum_check_guest_access_allowed()
+{
+    $result = forum_check_guest_access_allowed_ignore();
+
+    if (!user_guest_enabled() && session::get_value('UID') == 0) {
+        return $result;
+    }
+
+    return true;
+}
+
+function forum_check_guest_access_allowed_ignore()
+{
+    $guest_access_ignore_files_preg = implode("|^", array_map('preg_quote_callback', get_guest_access_ignore_files()));
+
+    if (preg_match("/^$guest_access_ignore_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) {
+        return true;
+    }
+
+    return false;
+}
+
 function forum_check_access_level()
 {
     $result = forum_check_access_level_ignore();

@@ -43,6 +43,7 @@ $(beehive).bind('init', function() {
             'alt' : $emoticon.attr('title')
         });
 
+        beehive.active_editor.insertText(' ');
         beehive.active_editor.insertElement(element);
         beehive.active_editor.insertText(' ');
     });

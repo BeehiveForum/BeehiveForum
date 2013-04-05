@@ -139,7 +139,7 @@ $webtag = get_webtag();
 
 // Check we have a webtag and have access to the specified forum
 if (!forum_check_webtag_available($webtag) || !forum_check_access_level()) {
-    header_redirect("lforums.php?webtag_error");
+    header_redirect("lforums.php?webtag_error=$webtag");
 }
 
 // Check guest access is available.

@@ -50,7 +50,7 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 admin_check_credentials();
 
 // Redirect to Add Group page if requested.
-if (isset($_POST['addnew'])) {
+if (isset($_POST['add_new'])) {
     header_redirect("admin_user_groups_add.php?webtag=$webtag");
 }
 
@@ -62,6 +62,8 @@ if (isset($_GET['sort_by'])) {
         $sort_by = "GROUPS.GROUP_DESC";
     } else if ($_GET['sort_by'] == "USER_COUNT") {
         $sort_by = "USER_COUNT";
+    } else if ($_GET['sort_by'] == "DEFAULT_GROUP") {
+        $sort_by = "DEFAULT_GROUP";
     } else if ($_GET['sort_by'] == "GROUP_PERMS") {
         $sort_by = "GROUP_PERMS";
     } else {
@@ -87,6 +89,12 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = 1;
 }
 
+$default_user_group = forum_get_setting('default_user_group');
+
+$user_groups_array = perm_get_user_groups($page, $sort_by, $sort_dir);
+
+$user_group_name_array = perm_get_user_group_names();
+
 if (isset($_POST['delete'])) {
 
     $valid = true;
@@ -111,15 +119,21 @@ if (isset($_POST['delete'])) {
 
         if ($valid) {
 
-            header_redirect("admin_user_groups.php?webtag=$webtag&deleted=true");
+            header_redirect("admin_user_groups.php?webtag=$webtag&page=$page&sort_by=$sort_by&sort_dir=$sort_dir&deleted=true");
             exit;
         }
+    }
+
+} else if (isset($_GET['set_default']) && is_numeric($_GET['set_default'])) {
+
+    $forum_settings['default_user_group'] = $_GET['set_default'];
+
+    if ((isset($user_group_name_array[$_GET['set_default']]) || $_GET['set_default'] == 0) && forum_save_settings($forum_settings)) {
+        header_redirect("admin_user_groups.php?webtag=$webtag&page=$page&sort_by=$sort_by&sort_dir=$sort_dir&default={$_GET['set_default']}");
     }
 }
 
 html_draw_top(sprintf('title=%s', gettext("Admin - User Groups")), 'class=window_title');
-
-$user_groups_array = perm_get_user_groups($page, $sort_by, $sort_dir);
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("User Groups"), "</h1>\n";
 
@@ -135,9 +149,24 @@ if (isset($_GET['added'])) {
 
     html_display_success_msg(gettext("Successfully deleted selected groups"), '86%', 'center');
 
+} else if (isset($_GET['default'])) {
+
+    if (isset($user_group_name_array[$_GET['default']])) {
+
+        html_display_success_msg(sprintf(gettext('Successfully set default group to "%s".'), $user_group_name_array[$_GET['default']]), '86%', 'center');
+
+    } else if ($_GET['default'] == 0) {
+
+        html_display_success_msg(gettext('Successfully cleared default group'), '86%', 'center');
+    }
+
 } else if (sizeof($user_groups_array['user_groups_array']) < 1) {
 
     html_display_warning_msg(gettext("No User Groups have been set up. To add a group click the 'Add New' button below."), '86%', 'center');
+
+} else {
+
+    html_display_warning_msg(gettext("To change the default group, click the tick in the right-hand column. Note: The default group will be applied the first time a user visits your forum. It will not be applied retrospectively."), '86%', 'center');
 }
 
 echo "<br />\n";
@@ -194,6 +223,16 @@ if ($sort_by == 'USER_COUNT' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=DESC&amp;page=$page\">", gettext("Users"), "</a></td>\n";
 }
 
+if ($sort_by == 'DEFAULT_GROUP' && $sort_dir == 'ASC') {
+    echo "                   <td class=\"subhead_sort_asc\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=DEFAULT_GROUP&amp;sort_dir=DESC&amp;page=$page\">", gettext("Default"), "</a></td>\n";
+} else if ($sort_by == 'DEFAULT_GROUP' && $sort_dir == 'DESC') {
+    echo "                   <td class=\"subhead_sort_desc\" align=\"center\" class=\"header_sort_desc\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=DEFAULT_GROUP&amp;sort_dir=ASC&amp;page=$page\">", gettext("Default"), "</a></td>\n";
+} else if ($sort_dir == 'ASC') {
+    echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=DEFAULT_GROUP&amp;sort_dir=ASC&amp;page=$page\">", gettext("Default"), "</a></td>\n";
+} else {
+    echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=DEFAULT_GROUP&amp;sort_dir=DESC&amp;page=$page\">", gettext("Default"), "</a></td>\n";
+}
+
 echo "                </tr>\n";
 
 if (sizeof($user_groups_array['user_groups_array']) > 0) {
@@ -222,12 +261,21 @@ if (sizeof($user_groups_array['user_groups_array']) > 0) {
         }
 
         echo "                  <td align=\"center\" width=\"10%\" valign=\"top\"><a href=\"admin_user_groups_edit_users.php?webtag=$webtag&amp;gid={$user_group['GID']}\">{$user_group['USER_COUNT']}</a></td>\n";
+        echo "                  <td align=\"center\" style=\"white-space: nowrap\">";
+
+        if (isset($default_user_group) && ($default_user_group == $user_group['GID'])) {
+            echo "<a href=\"admin_user_groups.php?webtag=$webtag&amp;page=$page&amp;sort_dir=$sort_dir&amp;sort_by=$sort_by&amp;set_default=0\"><img src=\"", html_style_image('default_group.png'), "\" border=\"0\" alt=\"", gettext("Unset Default"), "\" title=\"", gettext("Unset Default"), "\" /></a>\n";
+        } else {
+            echo "<a href=\"admin_user_groups.php?webtag=$webtag&amp;page=$page&amp;sort_dir=$sort_dir&amp;sort_by=$sort_by&amp;set_default={$user_group['GID']}\"><img src=\"", html_style_image('set_default_group.png'), "\" border=\"0\" alt=\"", gettext("Make Default"), "\" title=\"", gettext("Make Default"), "\" /></a>\n";
+        }
+
+        echo "                  </td>\n";
         echo "                </tr>\n";
     }
 }
 
 echo "                <tr>\n";
-echo "                  <td align=\"left\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" colspan=\"6\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "              </table>\n";
 echo "            </td>\n";
@@ -245,7 +293,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", form_submit("addnew", gettext("Add New")), "&nbsp;", form_submit("delete", gettext("Delete Selected")), "</td>\n";
+echo "      <td align=\"center\">", form_submit("add_new", gettext("Add New")), "&nbsp;", form_submit("delete", gettext("Delete Selected")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
@@ -258,7 +306,7 @@ echo "        <tr>\n";
 echo "          <td align=\"left\" class=\"posthead\">\n";
 echo "            <table class=\"posthead\" width=\"100%\">\n";
 echo "              <tr>\n";
-echo "                <td colspan=\"4\" class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">Permissions Key</td>\n";
+echo "                <td colspan=\"4\" class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">", gettext("Permissions Key"), "</td>\n";
 echo "              </tr>\n";
 echo "              <tr>\n";
 echo "                <td align=\"center\">\n";

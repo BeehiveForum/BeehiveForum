@@ -54,14 +54,14 @@ if (forum_check_webtag_available($webtag)) {
 }
 
 if (forum_get_setting('show_pms', 'Y')) {
-    echo "<a href=\"pm.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Inbox"), "</a>&nbsp;|&nbsp;\n";
+    echo "<a href=\"pm.php\" target=\"", html_get_frame_name('main'), "\">", gettext("Inbox"), "</a>&nbsp;|&nbsp;\n";
 }
 
 if (forum_check_webtag_available($webtag)) {
     echo "<a href=\"user.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("My Controls"), "</a>&nbsp;|&nbsp;\n";
 }
 
-if (forums_get_available_count() > 1 || !forum_check_webtag_available($webtag)) {
+if (forums_get_available_count() > 1 || !forum_get_default()) {
     echo "<a href=\"forums.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("My Forums"), "</a>&nbsp;|&nbsp;\n";
 }
 

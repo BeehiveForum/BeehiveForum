@@ -493,7 +493,7 @@ if (session::logged_in()) {
 
         echo "<h1>", gettext("My Forums"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$forum_header_array[$view_type]}</h1>\n";
 
-        if (isset($_GET['webtag_error'])) {
+        if (isset($_GET['webtag_error']) && strlen(trim($_GET['webtag_error'])) > 0) {
 
             html_display_error_msg(gettext("Invalid forum or forum is not available"), '70%', 'center');
 

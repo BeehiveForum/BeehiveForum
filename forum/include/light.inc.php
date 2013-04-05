@@ -253,7 +253,7 @@ function light_html_draw_top()
     echo "<div id=\"menu\">\n";
     echo "  <ul>\n";
 
-    if (forums_get_available_count() > 1 || !forum_check_webtag_available($webtag)) {
+    if (forums_get_available_count() > 1 || !forum_get_default()) {
         echo "    <li class=\"menu_item\"><a href=\"lforums.php?webtag=$webtag\">", gettext("My Forums"), "</a></li>\n";
     }
 
@@ -1199,7 +1199,7 @@ function light_draw_my_forums()
         $page = 1;
     }
 
-    if (isset($_GET['webtag_error'])) {
+    if (isset($_GET['webtag_error']) && strlen(trim($_GET['webtag_error'])) > 0) {
         light_html_display_error_msg(gettext("Invalid forum or forum is not available"));
     }
 

@@ -140,7 +140,7 @@ $webtag = get_webtag();
 // Check we have a webtag and have access to the specified forum
 if (!forum_check_webtag_available($webtag) || !forum_check_access_level()) {
     $request_uri = rawurlencode(get_request_uri(false));
-    header_redirect("forums.php?webtag_error&final_uri=$request_uri");
+    header_redirect("forums.php?webtag_error=$webtag&final_uri=$request_uri");
 }
 
 // Check guest access is available.

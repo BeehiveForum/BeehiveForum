@@ -210,7 +210,8 @@ function perm_get_user_groups($page = 1, $sort_by = 'GROUP_NAME', $sort_dir = 'A
         'GROUPS.GROUP_NAME',
         'GROUPS.GROUP_DESC',
         'GROUP_PERMS',
-        'USER_COUNT'
+        'USER_COUNT',
+        'DEFAULT_GROUP',
     );
 
     $sort_dir_array = array(
@@ -233,10 +234,13 @@ function perm_get_user_groups($page = 1, $sort_by = 'GROUP_NAME', $sort_dir = 'A
     $user_groups_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS GROUPS.GID, GROUPS.GROUP_NAME, GROUPS.GROUP_DESC, ";
-    $sql.= "COUNT(DISTINCT GROUP_USERS.UID) AS USER_COUNT, BIT_OR(GROUP_PERMS.PERM) AS GROUP_PERMS ";
-    $sql.= "FROM GROUPS INNER JOIN GROUP_PERMS USING (GID) LEFT JOIN GROUP_USERS USING (GID) ";
-    $sql.= "WHERE GROUP_PERMS.FORUM = '$forum_fid' AND GROUP_PERMS.FID = 0 ";
-    $sql.= "GROUP BY GROUP_PERMS.GID LIMIT $offset, 10";
+    $sql.= "COUNT(DISTINCT GROUP_USERS.UID) AS USER_COUNT, BIT_OR(GROUP_PERMS.PERM) AS GROUP_PERMS, ";
+    $sql.= "IF(FORUM_SETTINGS.SVALUE = GROUPS.GID, 1, 0) AS DEFAULT_GROUP FROM GROUPS ";
+    $sql.= "INNER JOIN GROUP_PERMS USING (GID) LEFT JOIN GROUP_USERS USING (GID) ";
+    $sql.= "LEFT JOIN FORUM_SETTINGS ON (FORUM_SETTINGS.FID = '$forum_fid' ";
+    $sql.= "AND FORUM_SETTINGS.SNAME = 'default_user_group') WHERE GROUP_PERMS.FORUM = '$forum_fid' ";
+    $sql.= "AND GROUP_PERMS.FID = 0 GROUP BY GROUP_PERMS.GID ";
+    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -471,6 +475,24 @@ function perm_get_group_name($gid)
     list($group_name) = $result->fetch_row();
 
     return $group_name;
+}
+
+function perm_get_default_group()
+{
+    if (!$db = db::get()) return false;
+
+    $sql = "SELECT GROUPS.GID FROM GROUPS INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
+    $sql.= "INNER JOIN FORUM_SETTINGS ON (FORUM_SETTINGS.FID = GROUP_PERMS.FORUM ";
+    $sql.= "AND FORUM_SETTINGS.SNAME = 'default_user_group' AND FORUM_SETTINGS.SVALUE = GROUPS.GID) ";
+    $sql.= "GROUP BY GROUPS.GID";
+
+    if (!($result = $db->query($sql))) return false;
+
+    if ($result->num_rows == 0) return false;
+
+    list($gid) = $result->fetch_row();
+
+    return $gid;
 }
 
 function perm_is_group($gid)

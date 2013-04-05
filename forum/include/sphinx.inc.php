@@ -68,7 +68,7 @@ function sphinx_search_execute($search_arguments, &$error)
     }
 
     // Validate the webtag
-    if (!forum_check_webtag_available($webtag)) {
+    if (!forum_check_webtag_available($sphinx_search_index)) {
 
         $error = SEARCH_SPHINX_UNAVAILABLE;
         return false;

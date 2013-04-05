@@ -573,6 +573,7 @@ function forum_check_setting_name($setting_name)
         'default_emoticons',
         'default_language',
         'default_style',
+        'default_user_group',
         'enable_wiki_integration',
         'enable_wiki_quick_links',
         'enable_google_analytics',
@@ -1841,11 +1842,24 @@ function forum_get_permissions($fid, $page = 1)
     );
 }
 
+function forum_get_default()
+{
+    if (!$db = db::get()) return false;
+
+    $sql = "SELECT WEBTAG FROM FORUMS WHERE DEFAULT_FORUM = 1";
+
+    if (!($result = $db->query($sql))) return false;
+
+    if ($result->num_rows == 0) return false;
+
+    list($webtag) = $result->fetch_row();
+
+    return $webtag;
+}
+
 function forum_update_default($fid)
 {
     if (!is_numeric($fid)) return false;
-
-    if ($fid == 0) return false;
 
     if (!$db = db::get()) return false;
 
@@ -2075,6 +2089,30 @@ function forum_get_all_fids()
     }
 
     return $fids_array;
+}
+
+function forum_get_last_visit($uid)
+{
+    if ($uid == 0) return false;
+
+    if (!$db = db::get()) return false;
+
+    if (!is_numeric($uid)) return false;
+
+    if (!($table_prefix = get_table_prefix())) return false;
+
+    if (!($forum_fid = get_forum_fid())) return false;
+
+    $sql = "SELECT UNIX_TIMESTAMP(LAST_VISIT) FROM USER_FORUM ";
+    $sql.= "WHERE USER_FORUM.FID = $forum_fid AND USER_FORUM.UID = $uid";
+
+    if (!($result = $db->query($sql))) return false;
+
+    if ($result->num_rows == 0) return false;
+
+    list($last_visit) = $result->fetch_row();
+
+    return $last_visit;
 }
 
 function forum_update_last_visit($uid)

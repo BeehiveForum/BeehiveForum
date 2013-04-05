@@ -220,19 +220,17 @@ abstract class session
         return $_SESSION['POST_PAGE'];
     }
 
-    public static function get_folders_by_perm($perm, $forum_fid = false)
+    public static function get_folders_by_perm($perm, $forum_fid = null)
     {
         if (!is_numeric($perm)) return false;
 
-        if (!isset($_SESSION['PERMS'])) return false;
-
-        if (!(is_numeric($forum_fid) || ($forum_fid = get_forum_fid()))) return false;
+        if (!is_numeric($forum_fid) && !($forum_fid = get_forum_fid())) $forum_fid = 0;
 
         if (!isset($_SESSION['PERMS'][$forum_fid])) {
 
             $_SESSION['PERMS'][$forum_fid] = array();
 
-            if (($user_perms = session::get_perm_array($_SESSION['UID'], $forum_fid)) !== false) {
+            if (($user_perms = session::get_perm_array($_SESSION['UID'], $forum_fid))) {
                 $_SESSION['PERMS'][$forum_fid] = $user_perms[$forum_fid];
             }
         }
@@ -311,11 +309,11 @@ abstract class session
         return $user_perm;
     }
 
-    public static function check_perm($perm, $folder_fid, $forum_fid = false)
+    public static function check_perm($perm, $folder_fid, $forum_fid = null)
     {
         if (!is_numeric($folder_fid)) return false;
 
-        if (!(is_numeric($forum_fid) || ($forum_fid = get_forum_fid()))) $forum_fid = 0;
+        if (!is_numeric($forum_fid) && !($forum_fid = get_forum_fid())) $forum_fid = 0;
 
         $user_perm_test = 0;
 
@@ -396,20 +394,21 @@ abstract class session
 
         if (!is_numeric($forum_fid)) return $user_perm_array;
 
-        if (!($table_prefix = forum_get_table_prefix($forum_fid))) return $user_perm_array;
+        if (($table_prefix = forum_get_table_prefix($forum_fid))) {
 
-        $sql = "SELECT FID, PERM, IF (PERM IS NULL, 0, 1) AS FOLDER_PERM_COUNT ";
-        $sql.= "FROM `{$table_prefix}FOLDER`";
+            $sql = "SELECT FID, PERM, IF (PERM IS NULL, 0, 1) AS FOLDER_PERM_COUNT ";
+            $sql.= "FROM `{$table_prefix}FOLDER`";
 
-        if (!($result = session::$db->query($sql))) return $user_perm_array;
+            if (!($result = session::$db->query($sql))) return $user_perm_array;
 
-        if ($result->num_rows == 0) return $user_perm_array;
+            if ($result->num_rows == 0) return $user_perm_array;
 
-        while (($permission_data = $result->fetch_assoc()) !== null) {
+            while (($permission_data = $result->fetch_assoc()) !== null) {
 
-            if ($permission_data['FOLDER_PERM_COUNT'] > 0) {
+                if ($permission_data['FOLDER_PERM_COUNT'] > 0) {
 
-                $user_perm_array[$forum_fid][$permission_data['FID']] = (double)$permission_data['PERM'];
+                    $user_perm_array[$forum_fid][$permission_data['FID']] = (double)$permission_data['PERM'];
+                }
             }
         }
 
@@ -487,8 +486,6 @@ abstract class session
         session::refresh($uid);
 
         session::update_visitor_log($uid, $forum_fid);
-
-        forum_update_last_visit($uid);
     }
 
     public static function refresh($uid)
@@ -523,7 +520,7 @@ abstract class session
             $_SESSION = array_merge($_SESSION, user_get_pref_names(array('STYLE')));
         }
 
-        if (($user_perms = session::get_perm_array($uid, $forum_fid)) !== false) {
+        if (($user_perms = session::get_perm_array($uid, $forum_fid))) {
             $_SESSION['PERMS'] = $user_perms;
         }
 
@@ -534,6 +531,12 @@ abstract class session
         if (!isset($_SESSION['RAND_HASH'])) {
             $_SESSION['RAND_HASH'] = md5(uniqid(mt_rand()));
         }
+
+        if (!forum_get_last_visit($uid) && ($gid = perm_get_default_group())) {
+            perm_add_user_to_group($uid, $gid);
+        }
+
+        forum_update_last_visit($uid);
     }
 
     public static function end()

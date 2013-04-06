@@ -23,8 +23,13 @@ $(beehive).bind('init', function() {
 
     $('a.threadname').bind('click', function() {
 
-        $('img.thread_bullet[src$="current_thread.png"]').attr('src', beehive.images['bullet.png']);
-        $('#' + $(this).data('tid')).attr('src', beehive.images['current_thread.png']);
+        $('img.thread_bullet.current_thread')
+            .attr('src', beehive.images['bullet.png'])
+            .removeClass('current_thread');
+
+        $('#' + $(this).data('tid'))
+            .attr('src', beehive.images['current_thread.png'])
+            .addClass('current_thread');
     });
 
     $('#mark_read_submit').bind('click', function() {

@@ -573,7 +573,7 @@ foreach ($folder_order as $folder_number) {
                                 if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo "<img src=\"", html_style_image('current_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
+                                    echo "<img src=\"", html_style_image('current_thread.png'), "\" class=\"thread_bullet current_thread\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
 
                                 } else {
 
@@ -602,7 +602,7 @@ foreach ($folder_order as $folder_number) {
                                 if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo "<img src=\"", html_style_image('current_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
+                                    echo "<img src=\"", html_style_image('current_thread.png'), "\" class=\"thread_bullet current_thread\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
 
                                 } else {
 
@@ -627,7 +627,7 @@ foreach ($folder_order as $folder_number) {
                                 if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo "<img src=\"", html_style_image('current_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
+                                    echo "<img src=\"", html_style_image('current_thread.png'), "\" class=\"thread_bullet current_thread\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
 
                                 } else {
 

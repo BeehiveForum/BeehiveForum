@@ -747,6 +747,7 @@ function html_draw_top()
     if ($base_target) echo "<base target=\"$base_target\" />\n";
 
     html_include_javascript(html_get_forum_file_path('js/jquery.min.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.placeholder.min.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.ui.autocomplete.min.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.parsequery.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.js'));

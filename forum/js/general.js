@@ -484,6 +484,8 @@ $(beehive).bind('init', function() {
 
     $('textarea.editor:visible').each(beehive.editor);
 
+    $('input, textarea').placeholder();
+
     if (beehive.show_share_links == 'Y') {
 
         $.getScript(document.location.protocol + '//apis.google.com/js/plusone.js');

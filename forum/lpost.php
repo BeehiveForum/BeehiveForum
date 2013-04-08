@@ -553,7 +553,7 @@ if ($new_thread) {
     }
 }
 
-echo "<div class=\"post_to\">", gettext("To"), ":", light_form_input_text("to_logon", isset($to_logon) ? htmlentities_array($to_logon) : "", 30), "</div>";
+echo "<div class=\"post_to\">", gettext("To"), ":", light_form_input_text("to_logon", isset($to_logon) ? htmlentities_array($to_logon) : "", 30, null, null, gettext("Leave blank for all")), "</div>";
 echo "<div class=\"post_content\">", gettext("Content"), ":", light_form_textarea("content", htmlentities_array(strip_paragraphs($content)), 10, 50, false, 'textarea'), "</div>";
 echo "<div class=\"post_buttons\">";
 echo light_form_submit("post", gettext("Post"));

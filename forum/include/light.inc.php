@@ -268,7 +268,7 @@ function light_html_draw_top()
 
     echo "  </ul>\n";
     echo "</div>\n";
-    echo "<div id=\"content\">\n";
+    echo "<div id=\"page_content\">\n";
 
     light_pm_check_messages();
 
@@ -1285,7 +1285,7 @@ function light_draw_my_forums()
     }
 }
 
-function light_form_dropdown_array($name, $options_array, $default = "", $custom_html = false)
+function light_form_dropdown_array($name, $options_array, $default = null, $custom_html = null)
 {
     $id = form_unique_id($name);
 
@@ -1310,7 +1310,7 @@ function light_form_dropdown_array($name, $options_array, $default = "", $custom
     return $html;
 }
 
-function light_form_submit($name = "submit", $value = "Submit", $custom_html = "")
+function light_form_submit($name = "submit", $value = "Submit", $custom_html = null)
 {
     $id = form_unique_id($name);
 
@@ -1343,7 +1343,7 @@ function light_messages_top($tid, $pid, $thread_title, $thread_interest_level = 
     echo "</h3>\n";
 }
 
-function light_form_radio($name, $value, $text, $checked = false, $custom_html = false)
+function light_form_radio($name, $value, $text, $checked = false, $custom_html = null)
 {
     $id = form_unique_id($name);
 
@@ -1362,7 +1362,7 @@ function light_form_radio($name, $value, $text, $checked = false, $custom_html =
     return $html;
 }
 
-function light_form_quick_button($href, $label, $var_array = false, $target = "_self")
+function light_form_quick_button($href, $label, $var_array = null, $target = "_self")
 {
     $webtag = get_webtag();
 
@@ -1991,30 +1991,32 @@ function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="
     return light_form_dropdown_array($field_name. $suffix, $available_folders, $default_fid);
 }
 
-function light_form_textarea($name, $value = "", $rows = 0, $cols = 0, $custom_html = '', $class = 'textarea')
+function light_form_textarea($name, $value = null, $rows = null, $cols = null, $custom_html = null, $class = 'textarea', $placeholder = null)
 {
-    if (!is_numeric($rows)) $rows = 5;
-    if (!is_numeric($cols)) $cols = 50;
-
     $id = form_unique_id($name);
 
-    if (strlen(trim($custom_html)) > 0) {
-        $custom_html = sprintf(' %s', trim($custom_html));
+    $html = "<textarea name=\"$name\" id=\"$id\" class=\"$class\"";
+
+    if (isset($custom_html) && is_string($custom_html)) {
+        $html.= sprintf(" %s", trim($custom_html));
     }
 
-    return sprintf(
-        '<textarea name="%s" id="%s" class="%s" rows="%s" cols="%s"%s>%s</textarea>',
-        $name,
-        $id,
-        $class,
-        $rows,
-        $cols,
-        $custom_html,
-        $value
-    );
+    if (is_numeric($rows)) {
+        $html.= " rows=\"$rows\"";
+    }
+
+    if (is_numeric($cols)) {
+        $html.= " cols=\"$cols\"";
+    }
+
+    if (isset($placeholder) && is_string($placeholder)) {
+        $html.= " placeholder=\"$placeholder\"";
+    }
+
+    return $html. ">$value</textarea>";
 }
 
-function light_form_checkbox($name, $value, $text, $checked = false, $custom_html = false)
+function light_form_checkbox($name, $value, $text, $checked = false, $custom_html = null)
 {
     $id = form_unique_id($name);
 
@@ -2033,36 +2035,39 @@ function light_form_checkbox($name, $value, $text, $checked = false, $custom_htm
     return $html;
 }
 
-function light_form_field($name, $value = "", $width = false, $maxchars = false, $type = "text", $custom_html = false)
+function light_form_field($name, $value = null, $width = null, $maxchars = null, $type = "text", $custom_html = null, $placeholder = null)
 {
     $id = form_unique_id($name);
 
-    $html = "<input type=\"$type\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"$type\"";
+    $html = "<input type=\"$type\" name=\"$name\" id=\"$id\" class=\"$type\" value=\"$value\"";
 
-    if (strlen(trim($custom_html)) > 0) {
+    if (isset($custom_html) && is_string($custom_html)) {
         $html.= sprintf(" %s", trim($custom_html));
     }
 
-    if (is_numeric($width) && $width > 0) {
+    if (is_numeric($width)) {
         $html.= " size=\"$width\"";
     }
 
-    if (is_numeric($maxchars) && $maxchars > 0) {
+    if (is_numeric($maxchars)) {
         $html.= " maxlength=\"$maxchars\"";
     }
 
-    $html.= " />";
-    return $html;
+    if (isset($placeholder) && is_string($placeholder)) {
+        $html.= " placeholder=\"$placeholder\"";
+    }
+
+    return $html. " />";
 }
 
-function light_form_input_text($name, $value = "", $width = 0, $maxlength = 0, $custom_html = false)
+function light_form_input_text($name, $value = null, $width = null, $maxlength = null, $custom_html = null, $placeholder = null)
 {
-    return light_form_field($name, $value, $width, $maxlength, "text", $custom_html);
+    return light_form_field($name, $value, $width, $maxlength, "text", $custom_html, $placeholder);
 }
 
-function light_form_input_password($name, $value = "", $width = 0, $maxlength = 0, $custom_html = false)
+function light_form_input_password($name, $value = null, $width = null, $maxlength = null, $custom_html = null, $placeholder = null)
 {
-    return light_form_field($name, $value, $width, $maxlength, "password", $custom_html);
+    return light_form_field($name, $value, $width, $maxlength, "password", $custom_html, $placeholder);
 }
 
 function light_html_message_type_error()

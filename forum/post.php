@@ -581,7 +581,7 @@ if (!isset($fid)) {
     $fid = 1;
 }
 
-if (($new_thread && !$folder_dropdown = folder_draw_dropdown($fid, "fid", "", FOLDER_ALLOW_NORMAL_THREAD, USER_PERM_THREAD_CREATE, "", "post_folder_dropdown"))) {
+if (($new_thread && !($folder_dropdown = folder_draw_dropdown($fid, "fid", "", FOLDER_ALLOW_NORMAL_THREAD, USER_PERM_THREAD_CREATE, "", "post_folder_dropdown")))) {
     html_draw_error(gettext("You cannot create new threads."));
 }
 
@@ -700,7 +700,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>", gettext("To"), "</h2></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text_search("to_logon", isset($to_logon) ? htmlentities_array($to_logon) : "", false, false, SEARCH_LOGON, true, sprintf('title="%s"', gettext("Separate recipients by a comma")), "post_to_others multiple"), "</td>\n";
+echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_input_text_search("to_logon", isset($to_logon) ? htmlentities_array($to_logon) : "", false, false, SEARCH_LOGON, true, sprintf('title="%s"', gettext("Separate recipients by a comma")), "post_to_others multiple", gettext("Leave blank for all")), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

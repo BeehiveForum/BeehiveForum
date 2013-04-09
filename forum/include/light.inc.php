@@ -189,6 +189,7 @@ function light_html_draw_top()
     }
 
     html_include_javascript(html_get_forum_file_path('js/jquery.min.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.placeholder.min.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.js'));
     html_include_javascript(html_get_forum_file_path('js/general.js'));
     html_include_javascript(html_get_forum_file_path('js/light.js'));
@@ -259,6 +260,7 @@ function light_html_draw_top()
 
     echo "    <li class=\"menu_item\"><a href=\"lthread_list.php?webtag=$webtag\">", gettext("Messages"), "</a></li>\n";
     echo "    <li class=\"menu_item\"><a href=\"lpm.php?webtag=$webtag\">", gettext("Inbox"), "</a></li>\n";
+    echo "    <li class=\"menu_item\"><a href=\"lsearch.php?webtag=$webtag\">", gettext("Search"), "</a></li>\n";
 
     if (!session::logged_in()) {
         echo "    <li class=\"menu_item\"><a href=\"llogon.php?webtag=$webtag\">", gettext("Login"), "</a></li>\n";

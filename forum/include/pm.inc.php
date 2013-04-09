@@ -591,7 +591,7 @@ function pm_fetch_search_results($sort_by = 'CREATED', $sort_dir = 'DESC', $page
     return pm_process_result($result, $message_count);
 }
 
-function pm_get_folder_message_counts()
+function pm_get_folder_message_counts($include_search = true)
 {
     if (!$db = db::get()) return false;
 
@@ -602,7 +602,8 @@ function pm_get_folder_message_counts()
         PM_FOLDER_SENT => 0,
         PM_FOLDER_OUTBOX => 0,
         PM_FOLDER_SAVED => 0,
-        PM_FOLDER_DRAFTS => 0
+        PM_FOLDER_DRAFTS => 0,
+        PM_SEARCH_RESULTS => 0,
     );
 
     $pm_inbox_items = PM_INBOX_ITEMS;
@@ -658,15 +659,18 @@ function pm_get_folder_message_counts()
         }
     }
 
-    $sql = "SELECT COUNT(PM_SEARCH_RESULTS.MID) AS RESULT_COUNT ";
-    $sql.= "FROM PM_SEARCH_RESULTS INNER JOIN PM ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
-    $sql.= "WHERE UID = '{$_SESSION['UID']}' AND PM.MID IS NOT NULL";
+    if ($include_search) {
 
-    if (!($result = $db->query($sql))) return false;
+        $sql = "SELECT COUNT(PM_SEARCH_RESULTS.MID) AS RESULT_COUNT ";
+        $sql.= "FROM PM_SEARCH_RESULTS INNER JOIN PM ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
+        $sql.= "WHERE UID = '{$_SESSION['UID']}' AND PM.MID IS NOT NULL";
 
-    list($search_results_count) = $result->fetch_row();
+        if (!($result = $db->query($sql))) return false;
 
-    $message_count_array[PM_SEARCH_RESULTS] = $search_results_count;
+        list($search_results_count) = $result->fetch_row();
+
+        $message_count_array[PM_SEARCH_RESULTS] = $search_results_count;
+    }
 
     return $message_count_array;
 }
@@ -679,7 +683,7 @@ function pm_get_free_space($uid)
 
     $pm_max_user_messages = forum_get_setting('pm_max_user_messages', null, 100);
 
-    $pm_user_message_count = array_sum(pm_get_folder_message_counts());
+    $pm_user_message_count = array_sum(pm_get_folder_message_counts(false));
 
     if ($pm_user_message_count > $pm_max_user_messages) return 0;
 
@@ -1593,7 +1597,7 @@ function pm_export_folders($pm_folders_array, $options_array)
 
     $messages_array = array();
 
-    $pm_message_count_array = pm_get_folder_message_counts();
+    $pm_message_count_array = pm_get_folder_message_counts(false);
 
     foreach ($pm_folders_array as $folder) {
 

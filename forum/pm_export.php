@@ -150,7 +150,7 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\">\n";
 
-$pm_message_count_array = pm_get_folder_message_counts();
+$pm_message_count_array = pm_get_folder_message_counts(false);
 
 foreach ($pm_folder_names_array as $folder_type => $folder_name) {
 

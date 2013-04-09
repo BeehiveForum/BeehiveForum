@@ -650,13 +650,15 @@ a.folder_list_link {
     background-color: #D42AD4
 }
 
-.post {
+.post,
+.search {
     background-color: #FFFFFF;
     border: 1px solid #000000;
     padding: 2px
 }
 
-.post h3 {
+.post h3,
+.search h3 {
     background-color: #FFA41A;
     color: #FFFFFF;
     font-size: 13px;
@@ -665,7 +667,8 @@ a.folder_list_link {
     padding: 2px 3px
 }
 
-.post .post_inner {
+.post .post_inner,
+.search .search_inner {
     background-color: #FFC846;
     padding: 8px
 }
@@ -676,7 +679,12 @@ a.folder_list_link {
 .post_content,
 .post_attachments,
 .post_html,
-.post_buttons {
+.post_buttons,
+.search_keywords,
+.search_user,
+.search_folder,
+.search_date,
+.search_buttons {
     margin: 0 0 10px
 }
 
@@ -686,14 +694,17 @@ a.folder_list_link {
 }
 
 .post_to .select,
-.post_folder .select {
+.post_folder .select,
+.search_folder .select,
+.search_date .select {
     width: calc(100% - 6px)
 }
 
 .post_to .text,
 .post_to .recipients,
 .post_thread_title .text,
-.post_content .textarea {
+.post_content .textarea,
+.search .text {
     width: calc(100% - 12px)
 }
 
@@ -704,7 +715,8 @@ a.folder_list_link {
 }
 
 .post_html,
-.post_buttons {
+.post_buttons,
+.search_buttons {
     text-align: center
 }
 
@@ -712,7 +724,11 @@ a.folder_list_link {
 .post_thread_title,
 .post_to,
 .post_content,
-.post_html span {
+.post_html span,
+.search_keywords,
+.search_user,
+.search_folder,
+.search_date {
     font-weight: bold
 }
 
@@ -720,7 +736,8 @@ a.folder_list_link {
     margin: 0px 3px
 }
 
-.post_buttons .button {
+.post_buttons .button,
+.search_buttons .button {
     margin: 0px 3px
 }
 
@@ -850,7 +867,8 @@ span.user_enemy {
     background: url('images/enemy.png') transparent no-repeat scroll 0 2px
 }
 
-.thread_pagination {
+.thread_pagination,
+.search_pagination {
     margin: 10px 0
 }
 

@@ -504,24 +504,8 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    echo "<div id=\"thread_view\">\n";
-    echo "<form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
+    light_thread_list_draw_top($mode, $folder);
 
-    echo form_input_hidden("webtag", htmlentities_array($webtag));
-
-    if (is_numeric($folder) && in_array($folder, folder_get_available_array())) {
-        echo form_input_hidden('folder', htmlentities_array($folder)), "\n";
-    }
-
-    echo "<ul>\n";
-    echo "<li>", light_threads_draw_discussions_dropdown($mode), "</li>\n";
-
-    echo "<li class=\"right_col\">", light_form_submit("go", gettext("Go!")), "</li>\n";
-    echo "</ul>\n";
-    echo "</form>\n";
-    echo "</div>\n";
-
-    // Fetch the right threads for whichever mode is selected
     switch ($mode) {
 
         case UNREAD_DISCUSSIONS:
@@ -938,6 +922,30 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
         echo "</form>\n";
         echo "</div>\n";
     }
+}
+
+function light_thread_list_draw_top($mode, $folder = null)
+{
+    $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
+
+    echo "<div id=\"thread_view\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"f_mode\" method=\"get\" action=\"lthread_list.php\">\n";
+
+    echo form_input_hidden("webtag", htmlentities_array($webtag));
+
+    if (is_numeric($folder) && in_array($folder, folder_get_available_array())) {
+        echo form_input_hidden('folder', htmlentities_array($folder)), "\n";
+    }
+
+    echo "<ul>\n";
+    echo "<li>", light_threads_draw_discussions_dropdown($mode), "</li>\n";
+
+    echo "<li class=\"right_col\">", light_form_submit("go", gettext("Go!")), "</li>\n";
+    echo "</ul>\n";
+    echo "</form>\n";
+    echo "</div>\n";
 }
 
 function light_draw_pm_inbox()
@@ -2127,6 +2135,7 @@ function light_threads_draw_discussions_dropdown($mode)
             POLL_THREADS => gettext("Polls"),
             STICKY_THREADS => gettext("Sticky Threads"),
             MOST_UNREAD_POSTS => gettext("Most unread posts"),
+            SEARCH_RESULTS => gettext("Search Results"),
             DELETED_THREADS => gettext("Deleted Threads")
         );
 
@@ -2469,6 +2478,52 @@ function light_pm_check_messages()
 
     // Prevent checking again.
     $light_pm_check_messages_done = true;
+}
+
+function light_folder_search_dropdown($selected_folder)
+{
+    if (!$db = db::get()) return false;
+
+    if (!is_numeric($selected_folder)) return false;
+
+    if (!($table_prefix = get_table_prefix())) return false;
+
+    $available_folders = array();
+
+    $access_allowed = USER_PERM_POST_READ;
+
+    $sql = "SELECT FID, TITLE FROM `{$table_prefix}FOLDER` ";
+    $sql.= "ORDER BY FID ";
+
+    if (!($result = $db->query($sql))) return false;
+
+    if ($result->num_rows == 0) return false;
+
+    while (($folder_data = $result->fetch_assoc()) !== null) {
+
+        if (!session::logged_in()) {
+
+            if (session::check_perm(USER_PERM_GUEST_ACCESS, $folder_data['FID'])) {
+
+                $available_folders[$folder_data['FID']] = htmlentities_array($folder_data['TITLE']);
+            }
+
+        } else {
+
+            if (session::check_perm($access_allowed, $folder_data['FID'])) {
+
+                $available_folders[$folder_data['FID']] = htmlentities_array($folder_data['TITLE']);
+            }
+        }
+    }
+
+    if (sizeof($available_folders) == 0) return false;
+
+    $available_folders = array(
+        gettext("ALL")
+    ) + $available_folders;
+
+    return light_form_dropdown_array("fid", $available_folders, $selected_folder);
 }
 
 ?>

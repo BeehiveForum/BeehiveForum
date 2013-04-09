@@ -80,6 +80,12 @@ if (!session::logged_in()) {
 
         $_SESSION['THREAD_MODE'] = $mode;
 
+        if ($mode == SEARCH_RESULTS) {
+
+            header_redirect("lsearch.php?webtag=$webtag&page=1");
+            exit;
+        }
+
     } else {
 
         if (isset($_SESSION['THREAD_MODE']) && is_numeric($_SESSION['THREAD_MODE'])) {

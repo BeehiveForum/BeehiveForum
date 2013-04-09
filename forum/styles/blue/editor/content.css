@@ -1,6 +1,6 @@
 body {
     font-family: verdana,arial,helvetica,sans-serif;
-    font-size: 80%;
+    font-size: 80%
 }
 
 pre.code {
@@ -14,7 +14,7 @@ pre.code {
     margin-top: 0px;
     min-height: 16px;
     overflow: auto;
-    padding: 3px;
+    padding: 3px
 }
 
 div.quote {
@@ -25,7 +25,7 @@ div.quote {
     margin-right: 10px;
     margin-top: 0px;
     min-height: 16px;
-    padding: 3px;
+    padding: 3px
 }
 
 div.quotetext {
@@ -33,38 +33,38 @@ div.quotetext {
     margin-left: 40px;
     margin-right: 10px;
     margin-top: 5px;
-    padding: 3px;
+    padding: 3px
 }
 
 span.spoiler {
     background: #EEEEEE url('../images/spoiler.png');
     border: 1px solid #CCCCCC;
     color: #EEEEEE;
-    padding: 0px 3px;
+    padding: 0px 3px
 }
 
 span.spoiler > span {
-    color: transparent;
+    color: transparent
 }
 
 span.emoticon {
-    vertical-align: bottom;
+    vertical-align: bottom
 }
 
 pre.code span.emoticon {
-    background-image: none;
+    background-image: none
 }
 
 pre.code span.emoticon span {
-    display: inherit;
+    display: inherit
 }
 
 p:first-child {
-    margin-top: 0;
+    margin-top: 0
 }
 
 a {
     background-color: transparent;
     color: #000000;
-    text-decoration: underline;
+    text-decoration: underline
 }

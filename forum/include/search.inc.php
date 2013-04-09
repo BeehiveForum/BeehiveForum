@@ -479,7 +479,7 @@ function search_get_sort(&$sort_by, &$sort_dir)
     return true;
 }
 
-function search_fetch_results($page, $sort_by, $sort_dir)
+function search_fetch_results($page, $sort_by = null, $sort_dir = null)
 {
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 

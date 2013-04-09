@@ -1,5 +1,5 @@
 body .cke_dialog {
-    visibility: visible;
+    visibility: visible
 }
 
 .cke_skin_beehive .cke_dialog_body {
@@ -7,7 +7,7 @@ body .cke_dialog {
     border: 1px solid #000000;
     margin: 0;
     padding: 2px;
-    z-index: 1;
+    z-index: 1
 }
 
 .cke_skin_beehive .cke_dialog_tl,
@@ -18,7 +18,7 @@ body .cke_dialog {
 .cke_skin_beehive .cke_dialog_bl,
 .cke_skin_beehive .cke_dialog_br,
 .cke_skin_beehive .cke_dialog_bc {
-    display: none;
+    display: none
 }
 
 .cke_skin_beehive .cke_dialog_title {
@@ -28,26 +28,26 @@ body .cke_dialog {
     font-size: 12px;
     margin-bottom: 10px;
     padding: 3px 5px;
-    position: relative;
+    position: relative
 }
 
 .cke_skin_beehive .cke_dialog_contents {
     background-color: #FF6666;
     margin: 0 10px 10px;
     overflow: auto;
-    padding: 5px;
+    padding: 5px
 }
 
 .cke_skin_beehive table.cke_dialog_contents {
-    border: 1px solid #000000;
+    border: 1px solid #000000
 }
 
 .cke_skin_beehive .cke_dialog_footer {
-    text-align: right;
+    text-align: right
 }
 
 .cke_skin_beehive .cke_dialog_footer .cke_resizer {
-    margin-top: 21px;
+    margin-top: 21px
 }
 
 .cke_skin_beehive .cke_dialog_tabs {
@@ -56,7 +56,7 @@ body .cke_dialog {
     display: inline-block;
     height: 23px;
     margin: 0 10px;
-    z-index: 2;
+    z-index: 2
 }
 
 .cke_skin_beehive a.cke_dialog_tab,
@@ -70,7 +70,7 @@ body .cke_dialog {
     cursor: pointer;
     display: inline-block;
     height: 14px;
-    padding: 4px 5px;
+    padding: 4px 5px
 }
 
 .cke_skin_beehive a.cke_dialog_tab_selected,
@@ -80,31 +80,31 @@ body .cke_dialog {
 .cke_skin_beehive a:visited.cke_dialog_tab_selected {
     background-color: #FF6666;
     border-bottom: 1px solid #FF6666;
-    cursor: default;
+    cursor: default
 }
 
 .cke_skin_beehive .cke_single_page .cke_dialog_tabs {
-    display: none;
+    display: none
 }
 
 .cke_skin_beehive .cke_single_page .cke_dialog_title {
-    padding-bottom: 3px;
+    padding-bottom: 3px
 }
 
 .cke_skin_beehive .cke_dialog_ui_vbox table,
 .cke_skin_beehive .cke_dialog_ui_hbox table {
-    margin: auto;
+    margin: auto
 }
 
 .cke_skin_beehive .cke_dialog_ui_vbox_child {
-    padding: 5px 0;
+    padding: 5px 0
 }
 
 .cke_skin_beehive input.cke_dialog_ui_input_text,
 .cke_skin_beehive input.cke_dialog_ui_input_password {
     background-color: #FFFFFF;
     color: #000000;
-    width: 100%;
+    width: 100%
 }
 
 .cke_skin_beehive div.cke_dialog_ui_input_text,
@@ -112,7 +112,7 @@ body .cke_dialog {
     background-color: #FFFFFF;
     border: 1px inset threedface;
     margin-right: 15px;
-    padding: 1px 0 1px 2px;
+    padding: 1px 0 1px 2px
 }
 
 .cke_skin_beehive textarea.cke_dialog_ui_input_textarea {
@@ -120,33 +120,33 @@ body .cke_dialog {
     color: #000000;
     overflow: auto;
     resize: none;
-    width: 100%;
+    width: 100%
 }
 
 .cke_skin_beehive div.cke_dialog_ui_input_textarea {
     background-color: #FFFFFF;
     border: 1px inset threedface;
-    padding: 1px 0 1px 2px;
+    padding: 1px 0 1px 2px
 }
 
 .cke_skin_beehive div.cke_disabled .cke_dialog_ui_labeled_content * {
     background-color: #a0a0a0;
-    cursor: default;
+    cursor: default
 }
 
 .cke_skin_beehive .cke_dialog_ui_hbox {
-    width: 100%;
+    width: 100%
 }
 
 .cke_skin_beehive .cke_dialog_ui_hbox_first,
 .cke_skin_beehive .cke_dialog_ui_hbox_child,
 .cke_skin_beehive .cke_dialog_ui_hbox_last {
-    vertical-align: top;
+    vertical-align: top
 }
 
 .cke_skin_beehive a.cke_dialog_ui_button {
     border-collapse: separate;
-    cursor: default;
+    cursor: default
 }
 
 .cke_skin_beehive span.cke_dialog_ui_button {
@@ -157,18 +157,18 @@ body .cke_dialog {
     display: inline-block;
     font-weight: bold;
     padding: 1px 6px;
-    text-align: center;
+    text-align: center
 }
 
 .cke_skin_beehive a.cke_dialog_ui_button span.cke_disabled {
     background-color: #c5c5b3;
     border: #898980 1px solid;
-    color: #5e5e55;
+    color: #5e5e55
 }
 
 .cke_skin_beehive a:focus span.cke_dialog_ui_button,
 .cke_skin_beehive a:active span.cke_dialog_ui_button {
-    background-color: #B91330;
+    background-color: #B91330
 }
 
 .cke_skin_beehive .cke_dialog_footer_buttons {
@@ -176,50 +176,50 @@ body .cke_dialog {
     margin-left: 12px;
     margin-right: 12px;
     position: relative;
-    width: auto;
+    width: auto
 }
 
 .cke_skin_beehive .cke_dialog_footer_buttons span.cke_dialog_ui_button {
-    margin: 7px 0;
+    margin: 7px 0
 }
 
 .cke_skin_beehive strong {
-    font-weight: bold;
+    font-weight: bold
 }
 
 .cke_skin_beehive a.cke_dialog_close_button,
 .cke_skin_beehive a:hover.cke_dialog_close_button {
-    display: none;
+    display: none
 }
 
 .cke_skin_beehive a.cke_dialog_close_button span {
-    display: none;
+    display: none
 }
 
 .cke_skin_beehive .cke_dialog_ui_input_select {
     background-color: #FFFFFF;
     border: 1px inset threedface;
     color: #000000;
-    width: 100%;
+    width: 100%
 }
 
 .cke_skin_beehive .cke_dialog_ui_input_file {
     height: 25px;
-    width: 100%;
+    width: 100%
 }
 
 .cke_skin_beehive .cke_dialog .cke_dark_background {
     background-color: #eaead1;
     font-size: 14px;
-    text-align: center;
+    text-align: center
 }
 
 .cke_skin_beehive .cke_dialog .cke_hand {
-    cursor: pointer;
+    cursor: pointer
 }
 
 .cke_skin_beehive .cke_dialog .cke_centered {
-    text-align: center;
+    text-align: center
 }
 
 .cke_skin_beehive .cke_dialog a.cke_btn_reset {
@@ -230,7 +230,7 @@ body .cke_dialog {
     float: right;
     font-size: 1px;
     height: 16px;
-    width: 16px;
+    width: 16px
 }
 
 .cke_skin_beehive .cke_dialog a.cke_btn_locked,
@@ -242,21 +242,21 @@ body .cke_dialog {
     float: left;
     font-size: 1px;
     height: 16px;
-    width: 16px;
+    width: 16px
 }
 
 .cke_skin_beehive .cke_dialog a.cke_btn_locked .cke_icon {
-    display: none;
+    display: none
 }
 
 .cke_skin_beehive .cke_dialog a.cke_btn_unlocked {
     background-image: url(images/mini.gif);
-    background-position: 0 -16px;
+    background-position: 0 -16px
 }
 
 .cke_skin_beehive .cke_dialog .cke_btn_over {
     border: outset 1px;
-    cursor: pointer;
+    cursor: pointer
 }
 
 .cke_skin_beehive .cke_dialog .ImagePreviewBox {
@@ -265,11 +265,11 @@ body .cke_dialog {
     height: 210px;
     overflow: scroll;
     padding: 2px;
-    width: 230px;
+    width: 230px
 }
 
 .cke_skin_beehive .cke_dialog .ImagePreviewBox table td {
-    white-space: normal;
+    white-space: normal
 }
 
 .cke_skin_beehive .cke_dialog .ImagePreviewLoader {
@@ -281,7 +281,7 @@ body .cke_dialog {
     padding: 2px;
     position: absolute;
     white-space: normal;
-    width: 230px;
+    width: 230px
 }
 
 .cke_skin_beehive .cke_dialog .FlashPreviewBox {
@@ -291,49 +291,49 @@ body .cke_dialog {
     overflow: auto;
     padding: 2px;
     white-space: normal;
-    width: 390px;
+    width: 390px
 }
 
 .cke_skin_beehive .cke_dialog .cke_pastetext {
     height: 170px;
-    width: 346px;
+    width: 346px
 }
 
 .cke_skin_beehive .cke_dialog .cke_pastetext textarea {
     height: 170px;
     resize: none;
-    width: 340px;
+    width: 340px
 }
 
 .cke_skin_beehive .cke_dialog iframe.cke_pasteframe {
     background-color: white;
     border: 1px solid black;
     height: 130px;
-    width: 346px;
+    width: 346px
 }
 
 .cke_skin_beehive .cke_dialog .cke_light_background {
     background-color: #ffffbe;
-    text-align: center;
+    text-align: center
 }
 
 .cke_skin_beehive .cke_disabled {
-    color: #a0a0a0;
+    color: #a0a0a0
 }
 
 .cke_skin_beehive .cke_dialog_body .cke_label {
-    display: none;
+    display: none
 }
 
 .cke_skin_beehive .cke_dialog_contents a.colorChooser {
     display: block;
     margin-left: 10px;
     margin-top: 12px;
-    width: 40px;
+    width: 40px
 }
 
 .cke_skin_beehive .cke_dialog_contents a.colorChooser .cke_dialog_ui_button {
-    width: 100%;
+    width: 100%
 }
 
 .cke_skin_beehive .cke_iframe_shim {
@@ -343,11 +343,11 @@ body .cke_dialog {
     position: absolute;
     top: 0;
     width: 100%;
-    z-index: -1;
+    z-index: -1
 }
 
 .cke_dialog label {
     cursor: default;
     display: inline;
-    margin-bottom: auto;
+    margin-bottom: auto
 }

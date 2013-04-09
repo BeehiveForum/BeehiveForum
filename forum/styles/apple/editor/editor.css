@@ -14,68 +14,68 @@
     text-decoration: none;
     vertical-align: baseline;
     white-space: nowrap;
-    width: auto;
+    width: auto
 }
 
 .cke_panel_frame {
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 12px;
+    font-size: 12px
 }
 
 .cke_skin_beehive iframe {
-    vertical-align: inherit;
+    vertical-align: inherit
 }
 
 .cke_skin_beehive textarea {
-    white-space: pre;
+    white-space: pre
 }
 
 .cke_skin_beehive input[type="text"],
 .cke_skin_beehive input[type="password"] {
-    cursor: text;
+    cursor: text
 }
 
 .cke_skin_beehive input[type="text"][disabled],
 .cke_skin_beehive input[type="password"][disabled] {
-    cursor: default;
+    cursor: default
 }
 
 .cke_skin_beehive fieldset {
     border: 2px groove #E0DFE3;
-    padding: 10px;
+    padding: 10px
 }
 
 .cke_skin_beehive .cke_editor {
     display: inline-table;
-    width: 100%;
+    width: 100%
 }
 
 .cke_skin_beehive,
 .cke_skin_beehive .cke_wrapper {
-    display: block;
+    display: block
 }
 
 .cke_skin_beehive .cke_top {
-    border: none;
+    border: none
 }
 
 .cke_skin_beehive .cke_bottom {
     background-color: #FFFFFF;
     border: 1px inset threedface;
-    border-top: none;
+    border-top: none
 }
 
 .cke_skin_beehive .cke_contents {
     background-color: #FFFFFF;
     border: 1px inset threedface;
-    border-bottom: none;
+    border-bottom: none
 }
 
 .cke_skin_beehive textarea.cke_source {
     background-color: #FFFFFF;
     font-family: 'Courier New', Monospace;
     font-size: small;
-    white-space: pre;
+    white-space: pre
 }
 
 .cke_skin_beehive .cke_resizer {
@@ -86,27 +86,27 @@
     height: 12px;
     margin-top: 12px;
     opacity: 0.5;
-    width: 12px;
+    width: 12px
 }
 
 .cke_skin_beehive .cke_resizer_horizontal {
-    cursor: e-resize;
+    cursor: e-resize
 }
 
 .cke_skin_beehive .cke_resizer_vertical {
-    cursor: n-resize;
+    cursor: n-resize
 }
 
 .cke_skin_beehive .cke_maximized .cke_resizer {
-    display: none;
+    display: none
 }
 
 .cke_skin_beehive .cke_voice_label {
-    display: none;
+    display: none
 }
 
 .cke_skin_beehive legend.cke_voice_label {
-    display: none;
+    display: none
 }
 
 .cke_skin_beehive .cke_panel {
@@ -114,35 +114,35 @@
     border: 1px solid;
     height: 100px;
     overflow: hidden;
-    width: 120px;
+    width: 120px
 }
 
 .cke_skin_beehive .cke_panel iframe {
     height: 100%;
-    width: 100%;
+    width: 100%
 }
 
 cke_skin_beehive .cke_panel_frame .cke_label {
-    display: none;
+    display: none
 }
 
 html.cke_skin_beehive_container {
-    visibility: visible;
+    visibility: visible
 }
 
 body.cke_panel_frame {
-    overflow: auto;
+    overflow: auto
 }
 
 ul.cke_panel_list {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    white-space: nowrap;
+    white-space: nowrap
 }
 
 li.cke_panel_listItem {
-    margin: 0;
+    margin: 0
 }
 
 .cke_panel_listItem a {
@@ -151,17 +151,17 @@ li.cke_panel_listItem {
     overflow: hidden;
     padding: 2px;
     text-decoration: none;
-    text-overflow: ellipsis;
+    text-overflow: ellipsis
 }
 
 * html .cke_panel_listItem a {
-    width: 100%;
+    width: 100%
 }
 
 .cke_panel_listItem.cke_selected a {
     background-color: highlight;
     border: 1px solid transparent;
-    color: buttonhighlight;
+    color: buttonhighlight
 }
 
 .cke_hc .cke_panel_listItem.cke_selected a,
@@ -169,11 +169,11 @@ li.cke_panel_listItem {
 .cke_hc .cke_panel_listItem a:focus,
 .cke_hc .cke_panel_listItem a:active {
     border-width: 3px;
-    padding: 0;
+    padding: 0
 }
 
 .cke_panel_grouptitle {
-    display: none;
+    display: none
 }
 
 .cke_panel_listItem p,
@@ -185,42 +185,42 @@ li.cke_panel_listItem {
 .cke_panel_listItem h6,
 .cke_panel_listItem pre {
     margin-bottom: 3px;
-    margin-top: 3px;
+    margin-top: 3px
 }
 
 .cke_skin_beehive .cke_button_textcolor_panel,
 .cke_skin_beehive .cke_button_bgcolor_panel {
     height: 135px;
-    width: 150px;
+    width: 150px
 }
 
 .cke_colorblock {
-    padding: 3px;
+    padding: 3px
 }
 
 .cke_colorblock,
 .cke_colorblock a {
     color: #000000;
-    text-decoration: none;
+    text-decoration: none
 }
 
 span.cke_colorbox {
     border: 1px solid;
     float: left;
     height: 10px;
-    width: 10px;
+    width: 10px
 }
 
 a.cke_colorbox {
     border: 1px solid transparent;
     float: left;
-    padding: 2px;
+    padding: 2px
 }
 
 a:hover.cke_colorbox,
 a:focus.cke_colorbox,
 a:active.cke_colorbox {
-    border: 1px solid;
+    border: 1px solid
 }
 
 a.cke_colorauto,
@@ -228,7 +228,7 @@ a.cke_colormore {
     border: 1px solid transparent;
     cursor: pointer;
     display: block;
-    padding: 2px;
+    padding: 2px
 }
 
 a:hover.cke_colorauto,
@@ -237,12 +237,12 @@ a:focus.cke_colorauto,
 a:focus.cke_colormore,
 a:active.cke_colorauto,
 a:active.cke_colormore {
-    border: 1px solid;
+    border: 1px solid
 }
 
 .cke_skin_beehive .cke_toolbox {
     clear: both;
-    padding-bottom: 1px;
+    padding-bottom: 1px
 }
 
 .cke_skin_beehive a.cke_toolbox_collapser,
@@ -255,18 +255,18 @@ a:active.cke_colormore {
     float: right;
     height: 11px;
     margin: 11px 2px 2px;
-    width: 11px;
+    width: 11px
 }
 
 .cke_skin_beehive a.cke_toolbox_collapser span {
-    display: none;
+    display: none
 }
 
 .cke_skin_beehive .cke_hc a.cke_toolbox_collapser span {
     display: inline;
     font-family: Arial;
     font-size: 10px;
-    font-weight: bold;
+    font-weight: bold
 }
 
 .cke_skin_beehive a.cke_toolbox_collapser_min,
@@ -274,41 +274,41 @@ a:active.cke_colormore {
     background-image: url(sprites.png);
     background-position: 4px -1047px;
     background-repeat: no-repeat;
-    margin: 2px;
+    margin: 2px
 }
 
 .cke_skin_beehive .cke_toolbar {
     display: block;
-    height: 30px;
+    height: 30px
 }
 
 .cke_skin_beehive .cke_toolgroup {
     display: inline-block;
     float: left;
-    padding-bottom: 4px;
+    padding-bottom: 4px
 }
 
 .cke_skin_beehive .cke_separator {
     border-left: solid 1px #B2CBFF;
     display: inline-block;
     float: left;
-    margin: 6px 2px;
+    margin: 6px 2px
 }
 
 .cke_skin_beehive .cke_break {
-    clear: left;
+    clear: left
 }
 
 .cke_skin_beehive .cke_toolbar_start,
 .cke_skin_beehive .cke_toolbar_end {
-    display: none;
+    display: none
 }
 
 .cke_skin_beehive .cke_button {
     display: inline-block;
     height: 22px;
     margin: 2px 0 0;
-    width: 24px;
+    width: 24px
 }
 
 .cke_skin_beehive .cke_button a,
@@ -323,21 +323,21 @@ a:active.cke_colormore {
     outline: none;
     padding: 0;
     vertical-align: top;
-    width: 22px;
+    width: 22px
 }
 
 .cke_skin_beehive .cke_button a.cke_disabled * {
-    opacity: 0.3;
+    opacity: 0.3
 }
 
 .cke_skin_beehive .cke_hc .cke_button a.cke_disabled {
-    opacity: 0.6;
+    opacity: 0.6
 }
 
 .cke_skin_beehive .cke_button a:hover,
 .cke_skin_beehive .cke_button a:focus,
 .cke_skin_beehive .cke_button a:active {
-    border: 1px outset threedface;
+    border: 1px outset threedface
 }
 
 .cke_skin_beehive .cke_button .cke_icon {
@@ -346,23 +346,23 @@ a:active.cke_colormore {
     display: inline-block;
     height: 18px;
     margin: 2px 0 0 2px;
-    width: 20px;
+    width: 20px
 }
 
 .cke_skin_beehive .cke_button .cke_label {
     cursor: default;
     display: none;
     padding-left: 3px;
-    vertical-align: middle;
+    vertical-align: middle
 }
 
 .cke_skin_beehive .cke_hc .cke_button .cke_label {
     display: inline-block;
-    padding: 0;
+    padding: 0
 }
 
 .cke_skin_beehive .cke_hc .cke_button .cke_icon {
-    display: none;
+    display: none
 }
 
 .cke_skin_beehive .cke_accessibility {
@@ -370,7 +370,7 @@ a:active.cke_colormore {
     height: 0;
     overflow: hidden;
     position: absolute;
-    width: 0;
+    width: 0
 }
 
 .cke_skin_beehive .cke_button .cke_buttonarrow {
@@ -380,41 +380,41 @@ a:active.cke_colormore {
     cursor: default;
     display: inline-block;
     height: 18px;
-    width: 8px;
+    width: 8px
 }
 
 .cke_skin_beehive .cke_contextmenu {
     background-color: threedface;
     border: 1px solid activeborder;
-    padding: 2px;
+    padding: 2px
 }
 
 .cke_skin_beehive .cke_menuitem a {
     border: 1px solid transparent;
     color: buttontext;
-    display: block;
+    display: block
 }
 
 .cke_skin_beehive .cke_menuitem a:hover {
     background-color: #D1E2F2;
     border: 1px solid highlight;
-    color: buttontext;
+    color: buttontext
 }
 
 .cke_skin_beehive .cke_menuitem span {
-    cursor: default;
+    cursor: default
 }
 
 .cke_skin_beehive .cke_menuitem a:hover,
 .cke_skin_beehive .cke_menuitem a:focus,
 .cke_skin_beehive .cke_menuitem a:active {
-    display: block;
+    display: block
 }
 
 .cke_hc .cke_menuitem a:hover,
 .cke_hc .cke_menuitem a:focus,
 .cke_hc .cke_menuitem a:active {
-    border: 2px solid;
+    border: 2px solid
 }
 
 .cke_skin_beehive .cke_menuitem .cke_icon {
@@ -425,7 +425,7 @@ a:active.cke_colormore {
     float: left;
     height: 16px;
     margin: 1px 2px;
-    width: 16px;
+    width: 16px
 }
 
 .cke_skin_beehive .cke_menuitem .cke_icon_wrapper {
@@ -433,23 +433,23 @@ a:active.cke_colormore {
     clear: both;
     float: left;
     height: 18px;
-    width: 16px;
+    width: 16px
 }
 
 .cke_skin_beehive .cke_menuitem .cke_label {
     display: block;
     margin-left: 24px;
-    padding: 2px;
+    padding: 2px
 }
 
 .cke_skin_beehive .cke_menuitem a.cke_disabled:hover .cke_label,
 .cke_skin_beehive .cke_menuitem a.cke_disabled:focus .cke_label,
 .cke_skin_beehive .cke_menuitem a.cke_disabled:active .cke_label {
-    background-color: transparent;
+    background-color: transparent
 }
 
 .cke_skin_beehive .cke_menuseparator {
-    height: 2px;
+    height: 2px
 }
 
 .cke_skin_beehive .cke_menuarrow {
@@ -460,39 +460,39 @@ a:active.cke_colormore {
     height: 5px;
     margin-right: 2px;
     margin-top: 3px;
-    width: 3px;
+    width: 3px
 }
 
 .cke_skin_beehive .cke_menuarrow span {
-    display: none;
+    display: none
 }
 
 .cke_hc .cke_skin_beehive .cke_menuarrow {
     margin-top: 0;
-    width: auto;
+    width: auto
 }
 
 .cke_hc .cke_skin_beehive .cke_menuarrow span {
-    display: inline;
+    display: inline
 }
 
 .cke_skin_beehive .cke_rcombo {
     display: inline-block;
     margin: 2px 4px 0 0;
-    vertical-align: top;
+    vertical-align: top
 }
 
 .cke_skin_beehive .cke_rcombopanel {
-    border: 1px inset #000000;
+    border: 1px inset #000000
 }
 
 .cke_skin_beehive .cke_rcombo a {
     display: inline-block;
-    float: left;
+    float: left
 }
 
 .cke_skin_beehive .cke_rcombo .cke_label {
-    display: none;
+    display: none
 }
 
 .cke_skin_beehive .cke_rcombo .cke_text {
@@ -504,35 +504,35 @@ a:active.cke_colormore {
     height: 16px;
     padding: 2px 5px;
     vertical-align: top;
-    width: 100px;
+    width: 100px
 }
 
 .cke_skin_beehive .cke_rcombo .cke_openbutton {
     border: 1px inset threedface;
     border-left: none;
     display: inline-block;
-    height: 20px;
+    height: 20px
 }
 
 .cke_skin_beehive .cke_rcombo .cke_openbutton .cke_icon {
     background: threedface url(sprites.png) no-repeat 6px 9px;
     display: inline-block;
     height: 20px;
-    width: 16px;
+    width: 16px
 }
 
 .cke_skin_beehive .cke_hc .cke_rcombo .cke_openbutton .cke_icon {
-    background: none;
+    background: none
 }
 
 .cke_skin_beehive .cke_rcombo .cke_disabled .cke_text {
-    color: #fff;
+    color: #fff
 }
 
 .cke_skin_beehive .cke_path {
     display: inline-block;
     float: left;
-    padding: 0 3px;
+    padding: 0 3px
 }
 
 .cke_skin_beehive .cke_path a,
@@ -543,11 +543,11 @@ a:active.cke_colormore {
     float: left;
     font-size: 11px;
     margin: 3px 0 0;
-    padding: 2px 4px;
+    padding: 2px 4px
 }
 
 .cke_skin_beehive .cke_path .cke_empty {
-    visibility: hidden;
+    visibility: hidden
 }
 
 .cke_skin_beehive .cke_path a:hover,
@@ -555,126 +555,126 @@ a:active.cke_colormore {
 .cke_skin_beehive .cke_path a:active {
     background-color: #dff1ff;
     border: solid 1px #316ac5;
-    outline: none;
+    outline: none
 }
 
 .cke_skin_beehive .cke_path .cke_label {
-    display: none;
+    display: none
 }
 
 .cke_skin_beehive .cke_button .cke_on {
-    border: 1px inset threedface;
+    border: 1px inset threedface
 }
 
 .cke_skin_beehive .cke_button_bold .cke_icon {
-    background-position: -2px -1px;
+    background-position: -2px -1px
 }
 
 .cke_skin_beehive .cke_button_italic .cke_icon {
-    background-position: -24px -1px;
+    background-position: -24px -1px
 }
 
 .cke_skin_beehive .cke_button_underline .cke_icon {
-    background-position: -46px -1px;
+    background-position: -46px -1px
 }
 
 .cke_skin_beehive .cke_button_strike .cke_icon {
-    background-position: -68px -1px;
+    background-position: -68px -1px
 }
 
 .cke_skin_beehive .cke_button_superscript .cke_icon {
-    background-position: -90px -1px;
+    background-position: -90px -1px
 }
 
 .cke_skin_beehive .cke_button_subscript .cke_icon {
-    background-position: -112px -1px;
+    background-position: -112px -1px
 }
 
 .cke_skin_beehive .cke_button_justifyleft .cke_icon {
-    background-position: -136px -1px;
+    background-position: -136px -1px
 }
 
 .cke_skin_beehive .cke_button_justifycenter .cke_icon {
-    background-position: -156px -1px;
+    background-position: -156px -1px
 }
 
 .cke_skin_beehive .cke_button_justifyright .cke_icon {
-    background-position: -178px -1px;
+    background-position: -178px -1px
 }
 
 .cke_skin_beehive .cke_button_numberedlist .cke_icon {
-    background-position: -200px -1px;
+    background-position: -200px -1px
 }
 
 .cke_skin_beehive .cke_button_bulletedlist .cke_icon {
-    background-position: -222px -1px;
+    background-position: -222px -1px
 }
 
 .cke_skin_beehive .cke_button_indent .cke_icon {
-    background-position: -244px -1px;
+    background-position: -244px -1px
 }
 
 .cke_skin_beehive .cke_button_code .cke_icon {
-    background-position: -266px -1px;
+    background-position: -266px -1px
 }
 
 .cke_skin_beehive .cke_button_quote .cke_icon {
-    background-position: -288px -1px;
+    background-position: -288px -1px
 }
 
 .cke_skin_beehive .cke_button_spoiler .cke_icon {
-    background-position: -310px -1px;
+    background-position: -310px -1px
 }
 
 .cke_skin_beehive .cke_button_horizontalrule .cke_icon {
-    background-position: -332px -1px;
+    background-position: -332px -1px
 }
 
 .cke_skin_beehive .cke_button_image .cke_icon {
-    background-position: -354px -1px;
+    background-position: -354px -1px
 }
 
 .cke_skin_beehive .cke_button_flash .cke_icon {
-    background-position: -398px -1px;
+    background-position: -398px -1px
 }
 
 .cke_skin_beehive .cke_button_link .cke_icon {
-    background-position: -420px -1px;
+    background-position: -420px -1px
 }
 
 .cke_skin_beehive .cke_button_textcolor .cke_icon {
-    background-position: -508px -1px;
+    background-position: -508px -1px
 }
 
 .cke_skin_beehive .cke_button_cut .cke_icon {
-    background-position: -530px -1px;
+    background-position: -530px -1px
 }
 
 .cke_skin_beehive .cke_button_copy .cke_icon {
-    background-position: -552px -1px;
+    background-position: -552px -1px
 }
 
 .cke_skin_beehive .cke_button_paste .cke_icon {
-    background-position: -574px -1px;
+    background-position: -574px -1px
 }
 
 .cke_skin_beehive .cke_button_source .cke_icon {
-    background-position: -596px -1px;
+    background-position: -596px -1px
 }
 
 .cke_skin_beehive .cke_font_panel {
     height: 170px;
-    width: 150px;
+    width: 150px
 }
 
 .cke_skin_beehive .cke_fontSize_panel {
-    height: 170px;
+    height: 170px
 }
 
 .cke_skin_beehive .cke_fontSize .cke_text {
-    width: 40px;
+    width: 40px
 }
 
 html .cke_skin_beehive {
-    visibility: inherit;
+    visibility: inherit
 }

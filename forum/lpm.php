@@ -43,7 +43,7 @@ light_pm_enabled();
 // Prune old messages for the current user
 pm_user_prune_folders($_SESSION['UID']);
 
-light_html_draw_top();
+light_html_draw_top('js/pm.js');
 
 light_draw_pm_inbox();
 

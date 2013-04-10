@@ -88,7 +88,7 @@ if (!session::logged_in()) {
 
     } else {
 
-        if (isset($_SESSION['THREAD_MODE']) && is_numeric($_SESSION['THREAD_MODE'])) {
+        if (isset($_SESSION['THREAD_MODE']) && is_numeric($_SESSION['THREAD_MODE']) && ($_SESSION['THREAD_MODE'] != SEARCH_RESULTS)) {
             $mode = $_SESSION['THREAD_MODE'];
         } else {
             $mode = UNREAD_DISCUSSIONS;
@@ -179,7 +179,7 @@ if (!session::logged_in()) {
     }
 }
 
-light_html_draw_top();
+light_html_draw_top('js/thread_list.js');
 
 light_draw_thread_list($mode, $folder, $page);
 

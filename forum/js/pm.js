@@ -21,6 +21,10 @@ USA
 
 $(beehive).bind('init', function() {
 
+    $('div#page_content select#folder').bind('change', function() {
+        $(this).closest('form').submit();
+    });
+
     $('#pm_delete_messages,#pm_save_messages,#pm_export_messages').bind('click', function() {
 
         if ($('input[name^="process"]:checked').length == 0) {
@@ -62,7 +66,7 @@ $(beehive).bind('init', function() {
         'success' : function(data) {
 
             try {
-                
+
                 $('#pm_message_count').html(data.text);
 
                 if (data.notification && window.confirm(data.notification)) {

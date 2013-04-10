@@ -21,6 +21,10 @@ USA
 
 $(beehive).bind('init', function() {
 
+    $('select#mode').bind('change', function() {
+        $(this).closest('form').submit();
+    });
+
     $('a.threadname').bind('click', function() {
 
         $('img.thread_bullet.current_thread')

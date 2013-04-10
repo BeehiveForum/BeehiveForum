@@ -277,10 +277,6 @@ $(beehive).bind('init', function() {
         return false;
     });
 
-    $('select#mode').bind('change', function() {
-        $(this).closest('form').submit();
-    });
-
     $('a.popup').live('click', function() {
 
         var class_names = $(this).attr('class').split(' ');

@@ -95,7 +95,9 @@ if (isset($_POST) && sizeof($_POST) > 0) {
 
     $page = 1;
 
-    $search_arguments = array();
+    $search_arguments = array(
+        'user_include' => SEARCH_FILTER_USER_POSTS,
+    );
 
     $search_no_matches = false;
 

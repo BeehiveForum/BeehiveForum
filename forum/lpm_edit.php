@@ -100,7 +100,11 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
 
         if (mb_strlen($t_content) >= 65535) {
 
-            $error_msg_array[] = sprintf(gettext("Message length must be under 65,535 characters (currently: %s)"), number_format(mb_strlen($t_content)));
+            $error_msg_array[] = sprintf(
+                gettext("Message length must be under 65,535 characters (currently: %s)"),
+                number_format(mb_strlen($t_content))
+            );
+
             $valid = false;
         }
 

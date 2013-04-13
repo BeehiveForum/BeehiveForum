@@ -196,12 +196,6 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
 
 if (!isset($content)) $content = "";
 
-if (mb_strlen($content) >= 65535) {
-
-    $error_msg_array[] = sprintf(gettext("Message length must be under 65,535 characters (currently: %s)"), number_format(mb_strlen($content)));
-    $valid = false;
-}
-
 if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     list($tid, $reply_to_pid) = explode(".", $_GET['replyto']);
@@ -369,6 +363,16 @@ if ($allow_html == false) {
 
     $content = htmlentities_array($content);
     $sig = htmlentities_array($sig);
+}
+
+if ((mb_strlen($content) + mb_strlen($sig)) >= 65535) {
+
+    $error_msg_array[] = sprintf(
+        gettext("Combined Message and signature length must be less than 65,535 characters (currently: %s)"),
+        number_format(mb_strlen($content) + mb_strlen($sig))
+    );
+
+    $valid = false;
 }
 
 if ($valid && isset($_POST['post'])) {

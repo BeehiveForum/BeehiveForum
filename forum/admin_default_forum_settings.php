@@ -153,7 +153,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['smtp_server'] = '';
     }
 
-    if (isset($_POST['smtp_port']) && is_numeric($_POST['smtp_port']) && $_POST['smtp_port'] > 0 && $_POST['smtp_port'] <= 65535) {
+    if (isset($_POST['smtp_port']) && is_numeric($_POST['smtp_port'])) {
         $new_forum_settings['smtp_port'] = $_POST['smtp_port'];
     } else {
         $new_forum_settings['smtp_port'] = '';

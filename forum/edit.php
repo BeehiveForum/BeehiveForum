@@ -175,6 +175,16 @@ if ($allow_html == false) {
     $t_sig = htmlentities_array($t_sig);
 }
 
+if ((mb_strlen($content) + mb_strlen($sig)) >= 65535) {
+
+    $error_msg_array[] = sprintf(
+        gettext("Combined Message and signature length must be less than 65,535 characters (currently: %s)"),
+        number_format(mb_strlen($content) + mb_strlen($sig))
+    );
+
+    $valid = false;
+}
+
 if ($valid && isset($_POST['preview'])) {
 
     if (sizeof($attachments) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid)) {

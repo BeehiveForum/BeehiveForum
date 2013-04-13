@@ -244,12 +244,7 @@ function message_apply_formatting($message, $ignore_sig = false)
     $signature_parts = array();
 
     if (($signature_offset = array_search("<div class=\"sig\">", $message_parts)) !== false) {
-
-        while (sizeof($message_parts) > 0) {
-
-            $signature_parts = array_merge($signature_parts, array_splice($message_parts, $signature_offset, 1));
-            if (count(explode('<div', implode('', $signature_parts))) == count(explode('</div>', implode('', $signature_parts)))) break;
-        }
+        $signature_parts = array_splice($message_parts, $signature_offset);
     }
 
     $signature = implode('', $signature_parts);

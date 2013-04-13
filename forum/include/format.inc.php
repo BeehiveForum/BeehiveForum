@@ -938,4 +938,11 @@ function print_r_pre($expression, $return = false)
     return $result;
 }
 
+function var_dump_pre()
+{
+    echo '<pre style="text-align: left">';
+    call_user_func_array('var_dump', func_get_args());
+    echo '</pre>';
+}
+
 ?>

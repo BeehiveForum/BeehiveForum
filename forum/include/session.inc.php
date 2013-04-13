@@ -220,6 +220,15 @@ abstract class session
         return $_SESSION['POST_PAGE'];
     }
 
+    public static function show_sigs()
+    {
+        if (!session::logged_in()) {
+            return true;
+        }
+
+        return isset($_SESSION['VIEW_SIGS']) && ($_SESSION['VIEW_SIGS'] == 'Y');
+    }
+
     public static function get_folders_by_perm($perm, $forum_fid = null)
     {
         if (!is_numeric($perm)) return false;

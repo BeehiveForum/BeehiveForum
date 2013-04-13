@@ -36,8 +36,6 @@ require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'thread.inc.php';
 // End Required includes
 
-// Check that required variables are set
-// default to display most recent discussion for user
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $msg = $_GET['msg'];
@@ -76,7 +74,7 @@ if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
     }
 }
 
-$show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
+$show_sigs = session::show_sigs();
 
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";

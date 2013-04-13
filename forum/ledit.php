@@ -108,7 +108,7 @@ if (!$thread_data = thread_get($tid)) {
 
 $error_msg_array = array();
 
-$show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
+$show_sigs = session::show_sigs();
 
 $page_prefs = session::get_post_page_prefs();
 

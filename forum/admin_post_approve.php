@@ -203,7 +203,7 @@ if (isset($msg) && validate_msg($msg)) {
 
         echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Approve Post"), "</h1>\n";
 
-        $show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
+        $show_sigs = session::show_sigs();
 
         if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
             html_display_error_array($error_msg_array, '86%', 'left');

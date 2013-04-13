@@ -327,7 +327,7 @@ function poll_get($tid)
 
     if (!isset($message['IPADDRESS'])) $message['IPADDRESS'] = "";
 
-    if (!isset($message['FROM_RELATIONSHIP'])) $message['FROM_RELATIONSHIP'] = 0;
+    if (!isset($message['RELATIONSHIP'])) $message['RELATIONSHIP'] = 0;
 
     if (!isset($message['FROM_NICKNAME'])) $message['FROM_NICKNAME'] = gettext("Unknown user");
     if (!isset($message['FROM_LOGON'])) $message['FROM_LOGON'] = gettext("Unknown user");
@@ -807,8 +807,6 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $poll_display.= "<br />\n";
 
     $poll_data['CONTENT'] = $poll_display;
-
-    $poll_data['FROM_RELATIONSHIP'] = user_get_relationship($_SESSION['UID'], $poll_data['FROM_UID']);
 
     message_display($tid, $poll_data, $msg_count, $first_msg, $folder_fid, $in_list, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight_array);
 }

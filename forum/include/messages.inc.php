@@ -102,7 +102,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
         if (!isset($message['IPADDRESS'])) $message['IPADDRESS'] = "";
 
-        if (!isset($message['FROM_RELATIONSHIP'])) $message['FROM_RELATIONSHIP'] = 0;
+        if (!isset($message['RELATIONSHIP'])) $message['RELATIONSHIP'] = 0;
 
         if (!isset($message['FROM_NICKNAME'])) $message['FROM_NICKNAME'] = gettext("Unknown user");
         if (!isset($message['FROM_LOGON'])) $message['FROM_LOGON'] = gettext("Unknown user");
@@ -181,6 +181,7 @@ function messages_get_recipients($tid, &$messages_array)
             'UID' => $recipient_data['TO_UID'],
             'LOGON' => $recipient_data['LOGON'],
             'NICKNAME' => $recipient_data['NICKNAME'],
+            'RELATIONSHIP' => $recipient_data['RELATIONSHIP'],
             'VIEWED' => $recipient_data['VIEWED'],
         );
     }
@@ -455,7 +456,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         }
     }
 
-    if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
+    if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
 
         message_display_deleted($tid, $message['PID'], $message, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
         return;
@@ -481,7 +482,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
-        $message['CONTENT'] = message_apply_formatting($message['CONTENT'], (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG)) || !$show_sigs);
+        $message['CONTENT'] = message_apply_formatting($message['CONTENT'], ((isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED_SIG) > 0)) || !$show_sigs);
     }
 
     // Check length of post to see if we should truncate it for display --------
@@ -602,17 +603,17 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     $temp_ignore = false;
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
-    if ($is_poll && isset($message['PID']) && $message['PID'] == 1 && (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED))) {
+    if ($is_poll && isset($message['PID']) && $message['PID'] == 1 && (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED))) {
 
-        $message['FROM_RELATIONSHIP']-= USER_IGNORED;
+        $message['RELATIONSHIP']-= USER_IGNORED;
         $temp_ignore = true;
     }
 
-    if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_FRIEND)) {
+    if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_FRIEND)) {
 
         echo "&nbsp;<img src=\"", html_style_image('friend.png'), "\" alt=\"", gettext("Friend"), "\" title=\"", gettext("Friend"), "\" />";
 
-    } else if ((isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) || $temp_ignore) {
+    } else if ((isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED)) || $temp_ignore) {
 
         echo "&nbsp;<img src=\"", html_style_image('enemy.png'), "\" alt=\"", gettext("Ignored user"), "\" title=\"", gettext("Ignored user"), "\" />";
     }
@@ -620,7 +621,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "</td>\n";
     echo "                <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\">";
 
-    if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $_SESSION['UID'] > 0) {
+    if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED) && $limit_text && $_SESSION['UID'] > 0) {
 
         echo "<b>", gettext("Ignored message"), "</b>";
 
@@ -629,7 +630,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         if ($in_list) {
 
             if ($from_user_permissions & USER_PERM_WORMED) echo "<b>", gettext("Wormed user"), "</b> ";
-            if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED_SIG)) echo "<b>", gettext("Ignored signature"), "</b> ";
+            if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED_SIG)) echo "<b>", gettext("Ignored signature"), "</b> ";
             if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] == 0) echo "<b>", gettext("Approval Required"), "</b> ";
 
             echo format_time($message['CREATED']);
@@ -674,7 +675,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "</span></td>\n";
     echo "                <td align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\">";
 
-    if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && $_SESSION['UID'] > 0) {
+    if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && $_SESSION['UID'] > 0) {
 
         echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">", gettext("Stop ignoring this user"), "</a>&nbsp;&nbsp;&nbsp;";
         echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">", gettext("View Message"), "</a>";
@@ -695,7 +696,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "          </td>\n";
     echo "        </tr>\n";
 
-    if ((isset($message['FROM_RELATIONSHIP']) && !($message['FROM_RELATIONSHIP'] & USER_IGNORED)) || !$limit_text) {
+    if ((isset($message['RELATIONSHIP']) && !($message['RELATIONSHIP'] & USER_IGNORED)) || !$limit_text) {
 
         echo "        <tr>\n";
         echo "          <td align=\"left\">\n";

@@ -127,7 +127,7 @@ if (!$edit_message = messages_get($tid, 1, 1)) {
 
 $post_edit_time = forum_get_setting('post_edit_time', 'is_numeric', 0);
 
-$show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
+$show_sigs = session::show_sigs();
 
 $page_prefs = session::get_post_page_prefs();
 

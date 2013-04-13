@@ -59,7 +59,7 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_POLL_THREAD)) {
 
 $error_msg_array = array();
 
-$show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
+$show_sigs = session::show_sigs();
 
 $page_prefs = session::get_post_page_prefs();
 

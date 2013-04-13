@@ -45,13 +45,10 @@ if (!session::logged_in()) {
     light_html_guest_error();
 }
 
-// Check if the user is viewing signatures.
-$show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
+$show_sigs = session::show_sigs();
 
-// Array to hold error messages
 $error_msg_array = array();
 
-// Submit code.
 if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     $msg = $_POST['msg'];

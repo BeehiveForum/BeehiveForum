@@ -1531,8 +1531,6 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
     $poll_data['CONTENT'] = $poll_display;
 
-    $poll_data['FROM_RELATIONSHIP'] = user_get_relationship($_SESSION['UID'], $poll_data['FROM_UID']);
-
     light_message_display($tid, $poll_data, $msg_count, 1, $folder_fid, $in_list, $closed, $limit_text, true, $is_preview);
 }
 
@@ -1605,7 +1603,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         }
     }
 
-    if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
+    if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
 
         light_message_display_deleted($tid, $message['PID']);
         return;
@@ -1668,21 +1666,21 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     echo "<div class=\"message_from\">\n";
     echo "", gettext("From"), ": ", word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true);
 
-    if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_FRIEND)) {
+    if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_FRIEND)) {
 
         echo "<span class=\"user_friend\" title=\"", gettext("Friend"), "\">", gettext("Friend"), "</span>";
 
-    } else if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
+    } else if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED)) {
 
         echo "<span class=\"user_enemy\" title=\"", gettext("Ignored user"), "\">", gettext("Enemy"), "</span>";
     }
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
-    if ($is_poll && $message['PID'] == 1 && isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED)) {
-        $message['FROM_RELATIONSHIP']-= USER_IGNORED;
+    if ($is_poll && $message['PID'] == 1 && isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED)) {
+        $message['RELATIONSHIP']-= USER_IGNORED;
     }
 
-    if (isset($message['FROM_RELATIONSHIP']) && ($message['FROM_RELATIONSHIP'] & USER_IGNORED) && $limit_text) {
+    if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED) && $limit_text) {
 
         echo gettext("Ignored message");
 

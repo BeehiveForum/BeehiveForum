@@ -57,7 +57,7 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_NORMAL_THREAD)) {
     html_message_type_error();
 }
 
-$show_sigs = (isset($_SESSION['VIEW_SIGS']) && $_SESSION['VIEW_SIGS'] == 'Y');
+$show_sigs = session::show_sigs();
 
 $page_prefs = session::get_post_page_prefs();
 

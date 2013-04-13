@@ -61,7 +61,7 @@ if (!$poll_data = poll_get($tid)) {
     html_draw_error(gettext("The requested thread could not be found or access was denied."));
 }
 
-$show_sigs = (isset($_SESSION['VIEW_SIGS']) && ($_SESSION['VIEW_SIGS'] == 'Y'));
+$show_sigs = session::show_sigs();
 
 $highlight_array = array();
 

@@ -786,7 +786,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\"><h2>", gettext("Thread title"), "</h2></td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_input_text("thread_title", htmlentities_array($thread_title), 30, 64, false, "thread_title"), "</td>\n";
+echo "                        <td align=\"left\">", form_input_text("thread_title", htmlentities_array($thread_title), 30, 64, null, "thread_title"), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 
@@ -804,9 +804,9 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack)) !== false)
     echo "                        <td align=\"left\" class=\"subhead\">", gettext("Emoticons"), "</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
-        echo "                        <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'emots_toggle', 'hide', '', 'button_image toggle_button', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                        <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'emots_toggle', 'hide', null, 'button_image toggle_button', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     } else {
-        echo "                        <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'emots_toggle', 'show', '', 'button_image toggle_button', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                        <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'emots_toggle', 'show', null, 'button_image toggle_button', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     }
 
     echo "                      </tr>\n";
@@ -856,7 +856,7 @@ foreach ($poll_questions_array as $question_id => $question) {
 
     } else {
 
-        echo "                                    <li>", form_input_text("poll_questions[{$question_id}][options][0]", '', 45, 255), "&nbsp;", form_button_html("delete_option[{$question_id}][0]", 'submit', 'button_image delete_option', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), sprintf('title="%s"', gettext("Delete option"))), "</li>\n";
+        echo "                                    <li>", form_input_text("poll_questions[{$question_id}][options][0]", null, 45, 255), "&nbsp;", form_button_html("delete_option[{$question_id}][0]", 'submit', 'button_image delete_option', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), sprintf('title="%s"', gettext("Delete option"))), "</li>\n";
 
         if (isset($_POST['add_option'][$question_id])) {
             echo poll_get_option_html($question_id, 1);
@@ -932,9 +932,9 @@ echo "                                  <tr>\n";
 echo "                                    <td align=\"left\" class=\"subhead\">", gettext("Soft Edit Options"), "</td>\n";
 
 if (($page_prefs & POLL_EDIT_SOFT_DISPLAY) > 0) {
-    echo "                                    <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'poll_soft_edit_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+    echo "                                    <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'poll_soft_edit_toggle', 'hide', null, 'button_image toggle_button'), "&nbsp;</td>\n";
 } else {
-    echo "                                    <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'poll_soft_edit_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+    echo "                                    <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'poll_soft_edit_toggle', 'show', null, 'button_image toggle_button'), "&nbsp;</td>\n";
 }
 
 echo "                                  </tr>";

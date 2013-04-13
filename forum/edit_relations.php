@@ -156,7 +156,7 @@ if (sizeof($user_peers_array['user_array']) > 0) {
     foreach ($user_peers_array['user_array'] as $user_peer) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"center\">", form_checkbox("delete_relationships[{$user_peer['UID']}]", "Y", false), "</td>\n";
+        echo "                  <td align=\"center\">", form_checkbox("delete_relationships[{$user_peer['UID']}]", "Y"), "</td>\n";
         echo "                  <td align=\"left\">&nbsp;<a href=\"user_rel.php?webtag=$webtag&amp;uid={$user_peer['UID']}&amp;ret=edit_relations.php%3Fwebtag%3D$webtag\" target=\"_self\">", word_filter_add_ob_tags(format_user_name($user_peer['LOGON'], $user_peer['PEER_NICKNAME']), true), "</a></td>\n";
 
         if ($user_peer['RELATIONSHIP'] & USER_FRIEND) {

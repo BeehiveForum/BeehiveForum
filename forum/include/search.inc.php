@@ -845,7 +845,7 @@ function folder_search_dropdown($selected_folder)
         gettext("ALL")
     ) + $available_folders;
 
-    return form_dropdown_array("fid", $available_folders, $selected_folder, false, "search_dropdown");
+    return form_dropdown_array("fid", $available_folders, $selected_folder, null, "search_dropdown");
 }
 
 function check_search_frequency()

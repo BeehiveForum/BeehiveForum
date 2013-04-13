@@ -392,7 +392,7 @@ function forum_check_password($forum_fid)
     echo "                <table class=\"posthead\" width=\"90%\">\n";
     echo "                  <tr>\n";
     echo "                    <td align=\"left\">", gettext("Password"), ":</td>\n";
-    echo "                    <td align=\"left\">", form_input_password('forum_password', '', 40, false, ''), "</td>\n";
+    echo "                    <td align=\"left\">", form_input_password('forum_password', null, 40), "</td>\n";
     echo "                  </tr>\n";
     echo "                  <tr>\n";
     echo "                    <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

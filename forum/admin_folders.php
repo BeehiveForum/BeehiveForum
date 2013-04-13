@@ -191,7 +191,7 @@ if (sizeof($folder_array['folder_array']) > 0) {
     foreach ($folder_array['folder_array'] as $key => $folder) {
 
         echo "                <tr>\n";
-        echo "                  <td valign=\"top\" align=\"center\" width=\"1%\">", form_checkbox("t_delete[{$folder['FID']}]", "Y", false), "</td>\n";
+        echo "                  <td valign=\"top\" align=\"center\" width=\"1%\">", form_checkbox("t_delete[{$folder['FID']}]", "Y"), "</td>\n";
         echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"", gettext("Click To Edit Folder"), "\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
         echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$folder['FID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
 

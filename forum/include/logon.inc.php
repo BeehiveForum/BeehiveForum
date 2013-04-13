@@ -140,11 +140,11 @@ function logon_draw_form($logon_options)
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"right\" width=\"90\">", gettext("Username"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text('user_logon', '', 24, 32, '', 'bhinputlogon'), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_text('user_logon', null, 24, 32, null, 'bhinputlogon'), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"right\" width=\"90\">", gettext("Password"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_password('user_password', '', 24, 32, '', 'bhinputlogon'), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_password('user_password', null, 24, 32, null, 'bhinputlogon'), "</td>\n";
     echo "                      </tr>\n";
 
     if (!($logon_options & LOGON_FORM_HIDE_TICKBOX) && !($logon_options & LOGON_FORM_SESSION_EXPIRED)) {
@@ -155,7 +155,7 @@ function logon_draw_form($logon_options)
         echo "                    </table>\n";
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"right\" width=\"90\">", form_checkbox('user_remember', 'Y', '', (html_get_cookie('user_logon') && html_get_cookie('user_token'))), "</td>\n";
+        echo "                        <td align=\"right\" width=\"90\">", form_checkbox('user_remember', 'Y', null, (html_get_cookie('user_logon') && html_get_cookie('user_token'))), "</td>\n";
         echo "                        <td align=\"left\"><label for=\"user_remember\">", gettext("Remember me"), "</label></td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";

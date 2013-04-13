@@ -456,7 +456,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
         foreach ($word_filter_array['word_filter_array'] as $filter_id => $word_filter) {
 
             echo "                <tr>\n";
-            echo "                  <td align=\"center\">", form_checkbox("delete_filters[$filter_id]", "Y", false), "</td>\n";
+            echo "                  <td align=\"center\">", form_checkbox("delete_filters[$filter_id]", "Y"), "</td>\n";
             echo "                  <td align=\"left\"><a href=\"edit_wordfilter.php?webtag=$webtag&amp;filter_id=$filter_id\">", htmlentities_array($word_filter['FILTER_NAME']), "</a></td>\n";
             echo "                  <td align=\"left\">{$word_filter_options[$word_filter['FILTER_TYPE']]}</td>\n";
             echo "                  <td align=\"center\">{$word_filter_enabled[$word_filter['FILTER_ENABLED']]}&nbsp;</td>\n";

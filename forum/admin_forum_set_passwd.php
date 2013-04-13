@@ -197,24 +197,24 @@ if (forum_get_password($forum_settings['fid'])) {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", gettext("Current Password"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_password("current_passwd", "", 27, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_input_password("current_passwd", null, 27, null, "autocomplete=\"off\""), "&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", gettext("New Password"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_password("new_passwd", "", 27, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_input_password("new_passwd", null, 27, null, "autocomplete=\"off\""), "&nbsp;</td>\n";
     echo "                      </tr>\n";
 
 } else {
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">", gettext("Password"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_password("new_passwd", "", 27, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
+    echo "                        <td align=\"left\">", form_input_password("new_passwd", null, 27, null, "autocomplete=\"off\""), "&nbsp;</td>\n";
     echo "                      </tr>\n";
 }
 
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">", gettext("Confirm Password"), ":</td>\n";
-echo "                        <td align=\"left\">", form_input_password("confirm_passwd", "", 27, 0, "autocomplete=\"off\""), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_password("confirm_passwd", null, 27, null, "autocomplete=\"off\""), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

@@ -503,11 +503,11 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">", gettext("Password"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_password("pw", "", 45, 32), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_password("pw", null, 45, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">", gettext("Confirm Password"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_password("cpw", "", 45, 32), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_password("cpw", null, 45, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">", gettext("Nickname"), ":</td>\n";
@@ -682,17 +682,17 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" class=\"posthead\">", gettext("Style"), ":</td>\n";
-        echo "                        <td align=\"left\">", form_dropdown_array("style", htmlentities_array($available_styles), (isset($new_user_prefs['STYLE']) && style_exists($new_user_prefs['STYLE'])) ? htmlentities_array($new_user_prefs['STYLE']) : htmlentities_array(forum_get_setting('default_style', 'strlen', 'default')), "", "register_dropdown"), "</td>\n";
+        echo "                        <td align=\"left\">", form_dropdown_array("style", htmlentities_array($available_styles), (isset($new_user_prefs['STYLE']) && style_exists($new_user_prefs['STYLE'])) ? htmlentities_array($new_user_prefs['STYLE']) : htmlentities_array(forum_get_setting('default_style', 'strlen', 'default')), null, "register_dropdown"), "</td>\n";
         echo "                      </tr>\n";
     }
 
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">", gettext("Forum emoticons"), " [<a href=\"display_emoticons.php?webtag=$webtag\" target=\"_blank\" class=\"popup 500x400\">", gettext("Preview"), "</a>]:</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("emoticons", htmlentities_array($available_emoticons), (isset($new_user_prefs['EMOTICONS']) && in_array($new_user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? htmlentities_array($new_user_prefs['EMOTICONS']) : htmlentities_array(forum_get_setting('default_emoticons', 'strlen', 'default')), "", "register_dropdown"), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("emoticons", htmlentities_array($available_emoticons), (isset($new_user_prefs['EMOTICONS']) && in_array($new_user_prefs['EMOTICONS'], array_keys($available_emoticons))) ? htmlentities_array($new_user_prefs['EMOTICONS']) : htmlentities_array(forum_get_setting('default_emoticons', 'strlen', 'default')), null, "register_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\" width=\"255\">", gettext("Preferred language"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_dropdown_array("language", htmlentities_array($available_langs), (isset($new_user_prefs['LANGUAGE']) ? htmlentities_array($new_user_prefs['LANGUAGE']) : htmlentities_array(forum_get_setting('default_language', 'strlen', 'en'))), "", "register_dropdown"), "</td>\n";
+    echo "                        <td align=\"left\">", form_dropdown_array("language", htmlentities_array($available_langs), (isset($new_user_prefs['LANGUAGE']) ? htmlentities_array($new_user_prefs['LANGUAGE']) : htmlentities_array(forum_get_setting('default_language', 'strlen', 'en'))), null, "register_dropdown"), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -743,7 +743,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo "                        <td align=\"left\" valign=\"top\"><img src=\"", html_style_image('reload.png'), "\" border=\"0\" alt=\"\" class=\"text_captcha_reload\" id=\"text_captcha_reload\" /></td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\" colspan=\"2\">", form_input_text("private_key", "", 20, htmlentities_array($text_captcha->get_num_chars()), "", "text_captcha_input"), form_input_hidden("public_key", htmlentities_array($text_captcha->get_public_key())), "</td>\n";
+            echo "                        <td align=\"left\" colspan=\"2\">", form_input_text("private_key", null, 20, htmlentities_array($text_captcha->get_num_chars()), null, "text_captcha_input"), form_input_hidden("public_key", htmlentities_array($text_captcha->get_public_key())), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

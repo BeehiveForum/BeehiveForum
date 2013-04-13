@@ -172,7 +172,7 @@ if (sizeof($folder_subscriptions['folder_array']) > 0) {
     foreach ($folder_subscriptions['folder_array'] as $folder) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"center\" style=\"white-space: nowrap\">", form_checkbox('set_interest[]', $folder['FID'], ''), "</td>\n";
+        echo "                  <td align=\"center\" style=\"white-space: nowrap\">", form_checkbox('set_interest[]', $folder['FID'], null), "</td>\n";
         echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;folder={$folder['FID']}\" target=\"_blank\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
 
         if (isset($interest_level_array[$folder['INTEREST']])) {

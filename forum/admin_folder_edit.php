@@ -386,7 +386,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"50%\">Reset User Perms:</td>\n";
-echo "                        <td align=\"left\">", form_radio("t_reset_user_perms", "Y", gettext("Yes"), false), "</td>\n";
+echo "                        <td align=\"left\">", form_radio("t_reset_user_perms", "Y", gettext("Yes")), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -394,7 +394,7 @@ echo "                        <td align=\"left\">", form_radio("t_reset_user_per
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_reset_user_perms_con", "Y", gettext("Confirm"), false), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_reset_user_perms_con", "Y", gettext("Confirm")), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

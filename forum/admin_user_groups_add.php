@@ -199,21 +199,21 @@ echo "                    <table class=\"posthead\" width=\"95%\">\n";
 if (session::check_perm(USER_PERM_FORUM_TOOLS, 0)) {
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_checkbox("t_admintools", USER_PERM_ADMIN_TOOLS, gettext("Group can access admin tools"), false), "</td>\n";
+    echo "                        <td align=\"left\">", form_checkbox("t_admintools", USER_PERM_ADMIN_TOOLS, gettext("Group can access admin tools")), "</td>\n";
     echo "                      </tr>\n";
 }
 
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_globalmod", USER_PERM_FOLDER_MODERATE, gettext("Group can moderate all folders"), false), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_globalmod", USER_PERM_FOLDER_MODERATE, gettext("Group can moderate all folders")), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_linksmod", USER_PERM_LINKS_MODERATE, gettext("Group can moderate Links sections"), false), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_linksmod", USER_PERM_LINKS_MODERATE, gettext("Group can moderate Links sections")), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_banned", USER_PERM_BANNED, gettext("Group is banned"), false), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_banned", USER_PERM_BANNED, gettext("Group is banned")), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", form_checkbox("t_wormed", USER_PERM_WORMED, gettext("Group is wormed"), false), "</td>\n";
+echo "                        <td align=\"left\">", form_checkbox("t_wormed", USER_PERM_WORMED, gettext("Group is wormed")), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -306,7 +306,7 @@ if (($folder_array = folder_get_all()) !== false) {
             echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, gettext("Post a signature"), true), "</td>\n";
             echo "                                    </tr>\n";
             echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" colspan=\"2\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, gettext("Moderate folder"), false), "</td>\n";
+            echo "                                      <td align=\"left\" colspan=\"2\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, gettext("Moderate folder")), "</td>\n";
             echo "                                    </tr>\n";
             echo "                                    <tr>\n";
             echo "                                      <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";

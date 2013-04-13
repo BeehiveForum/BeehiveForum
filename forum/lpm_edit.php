@@ -229,7 +229,7 @@ if (isset($message_data['RECIPIENTS']) && sizeof($message_data['RECIPIENTS']) > 
 echo "</div>\n";
 echo "</div>\n";
 
-echo "<div class=\"post_content\">", light_form_textarea("t_content", htmlentities_array(strip_paragraphs($t_content)), 10, 50, false, 'textarea'), "</div>\n";
+echo "<div class=\"post_content\">", light_form_textarea("t_content", htmlentities_array(strip_paragraphs($t_content)), 10, 50, null, 'textarea'), "</div>\n";
 
 echo "<div class=\"post_buttons\">";
 echo light_form_submit("apply", gettext("Apply"));

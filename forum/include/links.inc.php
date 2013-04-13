@@ -693,7 +693,7 @@ function links_folder_dropdown($default_fid, $folders)
         if ($key == $default_fid) $default_value = $key;
     }
 
-    return form_dropdown_array("fid", $labels, $default_value, false, "links_dropdown");
+    return form_dropdown_array("fid", $labels, $default_value, null, "links_dropdown");
 }
 
 function links_delete_comment($cid)

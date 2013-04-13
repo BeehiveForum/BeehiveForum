@@ -404,12 +404,12 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && sizeof($admin_user_array
     if (forum_get_setting('require_user_approval', 'Y')) {
 
         echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\">", gettext("With selected"), ":&nbsp;</td>\n";
-        echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" width=\"100%\">", form_dropdown_array("action", array(-1 => '&nbsp;', ADMIN_USER_OPTION_END_SESSION => gettext("End Session (Kick)"), ADMIN_USER_OPTION_APPROVE => gettext("Approve")), false, false, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", gettext("Go")), "</td>\n";
+        echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" width=\"100%\">", form_dropdown_array("action", array(-1 => '&nbsp;', ADMIN_USER_OPTION_END_SESSION => gettext("End Session (Kick)"), ADMIN_USER_OPTION_APPROVE => gettext("Approve")), null, null, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", gettext("Go")), "</td>\n";
 
     } else {
 
         echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\">", gettext("With selected"), ":&nbsp;</td>\n";
-        echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" width=\"100%\">", form_dropdown_array("action", array(-1 => '&nbsp;', ADMIN_USER_OPTION_END_SESSION => gettext("End Session (Kick)")), false, false, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", gettext("Go")), "</td>\n";
+        echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" width=\"100%\">", form_dropdown_array("action", array(-1 => '&nbsp;', ADMIN_USER_OPTION_END_SESSION => gettext("End Session (Kick)")), null, null, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", gettext("Go")), "</td>\n";
     }
 
     echo "                      </tr>\n";

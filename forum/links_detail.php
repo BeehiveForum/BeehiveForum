@@ -439,7 +439,7 @@ if (session::logged_in()) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", form_textarea("comment", "", 6, 74), "</td>\n";
+    echo "                        <td align=\"left\">", form_textarea("comment", null, 6, 74), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

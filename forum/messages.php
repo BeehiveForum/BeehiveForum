@@ -257,8 +257,8 @@ if (($tracking_data_array = thread_get_tracking_data($tid)) !== false) {
 echo "</div>\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_quote\" action=\"post.php\" method=\"get\" target=\"_parent\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-echo "  ", form_input_hidden('quote_list', ''), "\n";
-echo "  ", form_input_hidden('replyto', ''), "\n";
+echo "  ", form_input_hidden('quote_list', null), "\n";
+echo "  ", form_input_hidden('replyto', null), "\n";
 echo "</form>\n";
 
 echo "<div id=\"quick_reply_container\" class=\"quick_reply_container_closed\">\n";
@@ -267,7 +267,7 @@ echo "<form accept-charset=\"utf-8\" name=\"quick_reply_form\" action=\"post.php
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('replyto', htmlentities_array($msg)), "\n";
 echo "  ", form_input_hidden('post_interest', $high_interest), "\n";
-echo "  ", form_input_hidden('attachment[]', ""), "\n";
+echo "  ", form_input_hidden('attachment[]'), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -292,7 +292,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"center\">", form_textarea("content", "", 7, 75, false, 'editor mobile focus quick_reply'), "</td>\n";
+echo "                        <td align=\"center\">", form_textarea("content", null, 7, 75, null, 'editor mobile focus quick_reply'), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

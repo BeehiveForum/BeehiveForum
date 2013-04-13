@@ -357,7 +357,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);
 }
 
-echo "<div class=\"post_content\">", gettext("Content"), ":", light_form_textarea("content", htmlentities_array(strip_paragraphs($content)), 10, 50, false, 'textarea'), "</div>";
+echo "<div class=\"post_content\">", gettext("Content"), ":", light_form_textarea("content", htmlentities_array(strip_paragraphs($content)), 10, 50, null, 'textarea'), "</div>";
 
 if ($allow_sig == true) {
     echo form_input_hidden("sig", htmlentities_array($sig));

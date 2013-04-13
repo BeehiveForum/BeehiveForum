@@ -547,7 +547,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-    echo "  ", form_input_hidden('addban', ''), "\n";
+    echo "  ", form_input_hidden('addban', null), "\n";
     echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
     echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
@@ -853,7 +853,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
         foreach ($ban_list_array['ban_array'] as $ban_list_id => $ban_list_entry) {
 
             echo "                 <tr>\n";
-            echo "                   <td align=\"center\">", form_checkbox("delete_ban[$ban_list_id]", "Y", false), "</td>\n";
+            echo "                   <td align=\"center\">", form_checkbox("delete_ban[$ban_list_id]", "Y"), "</td>\n";
             echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id&amp;page=$page\">{$ban_list_entry['BANDATA']}</a></td>\n";
             echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id&amp;page=$page\">", (in_array($ban_list_entry['BANTYPE'], array_keys($ban_types_list_array)) ? $ban_types_list_array[$ban_list_entry['BANTYPE']] : gettext("Unknown")), "</a></td>\n";
             echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id&amp;page=$page\">", (($ban_list_entry['EXPIRES'] > 0 && $ban_list_entry['EXPIRES'] > time()) ? format_date($ban_list_entry['EXPIRES']) : gettext("Never")), "</a></td>\n";

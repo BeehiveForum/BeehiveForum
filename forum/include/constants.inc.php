@@ -179,6 +179,7 @@ define('FOLDER_NOINTEREST', 0);
 define('FOLDER_SUBSCRIBED', 1);
 
 // Thread Admin Constants
+define('THREAD_ADMIN_LOCK_DISABLED', 0);
 define('THREAD_ADMIN_LOCK_ENABLED', 1);
 
 // Forum Interest Constants
@@ -432,6 +433,10 @@ define('THREAD_SPLIT_QUERY_ERROR', 6);
 // Thread Delete constants
 define('THREAD_DELETE_PERMENANT', 0);
 define('THREAD_DELETE_NON_PERMENANT', 1);
+
+// Thread Closed constants
+define('THREAD_OPEN', 0);
+define('THREAD_CLOSED', 1);
 
 // Ban type constants
 define('BAN_TYPE_NONE', 0);

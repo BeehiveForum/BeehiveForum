@@ -406,9 +406,9 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack)) !== false)
     echo "                              <td align=\"left\" class=\"subhead\">", gettext("Emoticons"), "</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'emots_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'emots_toggle', 'hide', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     } else {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'emots_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'emots_toggle', 'show', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     }
 
     echo "                            </tr>\n";
@@ -461,9 +461,9 @@ if (forum_get_setting('attachments_enabled', 'Y') && (session::check_perm(USER_P
     echo "                              <td align=\"left\" class=\"subhead\">", gettext("Attachments"), "</td>\n";
 
     if (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'attachment_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'attachment_toggle', 'hide', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     } else {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'attachment_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'attachment_toggle', 'show', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     }
 
     echo "                            </tr>\n";
@@ -491,9 +491,9 @@ if ($allow_sig == true) {
     echo "                              <td align=\"left\" class=\"subhead\">", gettext("Signature"), "</td>\n";
 
     if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'sig_toggle', 'hide', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'sig_toggle', 'hide', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     } else {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'sig_toggle', 'show', '', 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'sig_toggle', 'show', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     }
 
     echo "                            </tr>\n";

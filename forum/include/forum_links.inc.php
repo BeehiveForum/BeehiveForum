@@ -155,7 +155,7 @@ function forum_links_draw_dropdown()
 {
     if (($forum_links_array = forum_links_get_links(false)) !== false) {
 
-        $html = form_dropdown_array('forum_links', $forum_links_array, false, false, "forumlinks");
+        $html = form_dropdown_array('forum_links', $forum_links_array, null, null, "forumlinks");
         return $html;
     }
 

@@ -469,9 +469,9 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);
 }
 
-echo "<div class=\"post_thread_title\">", gettext("Subject"), ":", light_form_input_text("subject", isset($subject) ? htmlentities_array($subject) : "", 30, 64), "</div>\n";
-echo "<div class=\"post_to\">", gettext("To"), ":", light_form_input_text("to_logon", isset($to_logon) ? htmlentities_array($to_logon) : "", 0, 0), "</div>\n";
-echo "<div class=\"post_content\">", light_form_textarea("content", htmlentities_array(strip_paragraphs($content)), 10, 50, false, 'textarea'), "</div>\n";
+echo "<div class=\"post_thread_title\">", gettext("Subject"), ":", light_form_input_text("subject", isset($subject) ? htmlentities_array($subject) : null, 30, 64), "</div>\n";
+echo "<div class=\"post_to\">", gettext("To"), ":", light_form_input_text("to_logon", isset($to_logon) ? htmlentities_array($to_logon) : null), "</div>\n";
+echo "<div class=\"post_content\">", light_form_textarea("content", htmlentities_array(strip_paragraphs($content)), 10, 50, null, 'textarea'), "</div>\n";
 
 echo "<div class=\"post_buttons\">";
 echo light_form_submit("send", gettext("Send"));

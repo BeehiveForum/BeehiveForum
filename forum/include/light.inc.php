@@ -328,22 +328,22 @@ function light_draw_logon_form($error_msg_array = array())
     echo "<div class=\"logon_inner\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
-    echo "  <div class=\"logon_username\"><span>", gettext("Username"), ":</span>", light_form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 20, 15, ''). "</div>\n";
+    echo "  <div class=\"logon_username\"><span>", gettext("Username"), ":</span>", light_form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 20, 15). "</div>\n";
 
     if (isset($password_array[0]) && strlen($password_array[0]) > 0) {
 
         if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
-            echo "  <div class=\"logon_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", htmlentities_array($password_array[0]), 20, 32, ''), form_input_hidden("user_passhash", htmlentities_array($passhash_array[0])), "</div>\n";
+            echo "  <div class=\"logon_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", htmlentities_array($password_array[0]), 20, 32), form_input_hidden("user_passhash", htmlentities_array($passhash_array[0])), "</div>\n";
         } else {
-            echo "  <div class=\"logon_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", "", 20, 32, ''), form_input_hidden("user_passhash", ""), "</div>\n";
+            echo "  <div class=\"logon_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", null, 20, 32), form_input_hidden("user_passhash"), "</div>\n";
         }
 
     } else {
 
-        echo "  <div class=\"logon_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", "", 20, 32, ''), form_input_hidden("user_passhash", ""), "</div>\n";
+        echo "  <div class=\"logon_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", null, 20, 32), form_input_hidden("user_passhash"), "</div>\n";
     }
 
-    echo "  <div class=\"logon_remember\">", light_form_checkbox("user_remember", "Y", gettext("Remember me"), false, ''), "</div>\n";
+    echo "  <div class=\"logon_remember\">", light_form_checkbox("user_remember", "Y", gettext("Remember me")), "</div>\n";
     echo "  <div class=\"logon_buttons\">", light_form_submit('logon', gettext("Logon")), "</div>\n";
     echo "</form>\n";
     echo "</div>\n";
@@ -1443,11 +1443,11 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
                     if ((sizeof($poll_question['OPTIONS_ARRAY']) == 1) || ($poll_question['ALLOW_MULTI'] == 'Y')) {
 
-                        $poll_display.= light_form_checkbox("pollvote[$question_id][$option_id]", 'Y', word_filter_add_ob_tags($option['OPTION_NAME']), false);
+                        $poll_display.= light_form_checkbox("pollvote[$question_id][$option_id]", 'Y', word_filter_add_ob_tags($option['OPTION_NAME']));
 
                     } else {
 
-                        $poll_display.= light_form_radio("pollvote[$question_id]", $option_id, word_filter_add_ob_tags($option['OPTION_NAME']), false);
+                        $poll_display.= light_form_radio("pollvote[$question_id]", $option_id, word_filter_add_ob_tags($option['OPTION_NAME']));
                     }
                 }
             }

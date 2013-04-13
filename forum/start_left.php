@@ -216,7 +216,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("discussion.php", gettext("Start Reading"), false, html_get_frame_name('main')), "</td>\n";
+    echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("discussion.php", gettext("Start Reading"), null, html_get_frame_name('main')), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";

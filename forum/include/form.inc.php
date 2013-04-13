@@ -79,7 +79,7 @@ function form_input_hidden($name, $value = null, $custom_html = null)
     return form_field($name, $value, null, null, "hidden", $custom_html);
 }
 
-function form_input_text_search($name, $value = null, $width = null, $maxchars = null, $type = SEARCH_LOGON, $allow_multi = null, $custom_html = null, $class = null, $placeholder = null)
+function form_input_text_search($name, $value = null, $width = null, $maxchars = null, $type = SEARCH_LOGON, $allow_multi = false, $custom_html = null, $class = null, $placeholder = null)
 {
     $type = ($type == SEARCH_LOGON) ? 'search_logon' : 'search_thread';
 

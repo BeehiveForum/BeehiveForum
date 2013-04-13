@@ -525,7 +525,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"200\">", gettext("Reset password to"), ":</td>\n";
-        echo "                        <td align=\"left\">", form_input_password("t_new_password", "", 32, false, "autocomplete=\"off\""), "</td>\n";
+        echo "                        <td align=\"left\">", form_input_password("t_new_password", null, 32, null, "autocomplete=\"off\""), "</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
@@ -948,7 +948,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", form_checkbox('delete_content', 'Y', gettext("Also delete all of the content created by this user"), false), "</td>\n";
+        echo "                        <td align=\"left\">", form_checkbox('delete_content', 'Y', gettext("Also delete all of the content created by this user")), "</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
@@ -1052,7 +1052,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "                    <table width=\"90%\" class=\"posthead\">\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\" width=\"200\">", gettext("Post Count"), ":</td>\n";
-        echo "                        <td align=\"left\">", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? htmlentities_array($_POST['t_post_count']) : htmlentities_array($user['POST_COUNT']), 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", gettext("Reset Post Count"), false), "</td>\n";
+        echo "                        <td align=\"left\">", form_input_text("t_post_count", (isset($_POST['t_post_count'])) ? htmlentities_array($_POST['t_post_count']) : htmlentities_array($user['POST_COUNT']), 10), "&nbsp;", form_checkbox("t_reset_post_count", "Y", gettext("Reset Post Count")), "</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
         echo "                  </td>\n";
@@ -1346,7 +1346,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
     echo "                  <td align=\"center\">\n";
     echo "                    <table width=\"90%\" class=\"posthead\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"center\">", form_dropdown_array('action', $admin_options_dropdown, false, false, 'admin_options_dropdown'), "&nbsp;", form_submit('action_submit', gettext("Go!")), "</td>\n";
+    echo "                        <td align=\"center\">", form_dropdown_array('action', $admin_options_dropdown, null, null, 'admin_options_dropdown'), "&nbsp;", form_submit('action_submit', gettext("Go!")), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -1488,10 +1488,10 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
         echo "                  <td align=\"center\">\n";
         echo "                    <table width=\"90%\" class=\"posthead\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", form_radio("t_confirm_email", "cancel", gettext("Cancel email confirmation and allow user to start posting"), false), "</td>\n";
+        echo "                        <td align=\"left\">", form_radio("t_confirm_email", "cancel", gettext("Cancel email confirmation and allow user to start posting")), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">", form_radio("t_confirm_email", "resend", gettext("Resend confirmation email to user"), false), "</td>\n";
+        echo "                        <td align=\"left\">", form_radio("t_confirm_email", "resend", gettext("Resend confirmation email to user")), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">", form_radio("t_confirm_email", "nothing", gettext("Do nothing"), true), "</td>\n";
@@ -1656,7 +1656,7 @@ if (forum_check_webtag_available($webtag)) {
         echo "                  <td align=\"center\">\n";
         echo "                    <table width=\"90%\" class=\"posthead\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"center\">", gettext("Add user to group"), ":&nbsp;", form_dropdown_array('add_group', $user_groups_array, false, false, 'admin_options_dropdown'), "&nbsp;", form_submit('add_group_submit', gettext("Add")), "</td>\n";
+        echo "                        <td align=\"center\">", gettext("Add user to group"), ":&nbsp;", form_dropdown_array('add_group', $user_groups_array, null, null, 'admin_options_dropdown'), "&nbsp;", form_submit('add_group_submit', gettext("Add")), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";

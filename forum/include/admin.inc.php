@@ -1756,11 +1756,11 @@ function admin_check_credentials()
     echo "                      <table class=\"posthead\" width=\"95%\">\n";
     echo "                        <tr>\n";
     echo "                          <td align=\"right\" width=\"90\">", gettext("Username"), ":</td>\n";
-    echo "                          <td align=\"left\">", form_input_text('admin_logon', '', 24, 32, '', 'bhinputlogon'), "</td>\n";
+    echo "                          <td align=\"left\">", form_input_text('admin_logon', null, 24, 32, null, 'bhinputlogon'), "</td>\n";
     echo "                        </tr>\n";
     echo "                        <tr>\n";
     echo "                          <td align=\"right\" width=\"90\">", gettext("Password"), ":</td>\n";
-    echo "                          <td align=\"left\">", form_input_password('admin_password', '', 24, 32, '', 'bhinputlogon'), "</td>\n";
+    echo "                          <td align=\"left\">", form_input_password('admin_password', null, 24, 32, null, 'bhinputlogon'), "</td>\n";
     echo "                        </tr>\n";
     echo "                        <tr>\n";
     echo "                          <td align=\"left\">&nbsp;</td>\n";

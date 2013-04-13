@@ -1686,11 +1686,11 @@ function messages_forum_stats($tid, $pid)
 
         } else if (isset($_SESSION['SHOW_STATS']) && ($_SESSION['SHOW_STATS'] == 'Y')) {
 
-            echo "                            ", form_submit_image('hide.png', 'forum_stats_toggle', 'hide', '', 'button_image toggle_button'), "\n";
+            echo "                            ", form_submit_image('hide.png', 'forum_stats_toggle', 'hide', null, 'button_image toggle_button'), "\n";
 
         } else {
 
-            echo "                            ", form_submit_image('show.png', 'forum_stats_toggle', 'show', '', 'button_image toggle_button'), "\n";
+            echo "                            ", form_submit_image('show.png', 'forum_stats_toggle', 'show', null, 'button_image toggle_button'), "\n";
         }
 
         echo "                          </td>\n";

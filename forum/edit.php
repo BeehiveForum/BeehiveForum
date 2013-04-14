@@ -175,11 +175,11 @@ if ($allow_html == false) {
     $t_sig = htmlentities_array($t_sig);
 }
 
-if ((mb_strlen($content) + mb_strlen($sig)) >= 65535) {
+if ((mb_strlen($t_content) + mb_strlen($t_sig)) >= 65535) {
 
     $error_msg_array[] = sprintf(
         gettext("Combined Message and signature length must be less than 65,535 characters (currently: %s)"),
-        number_format(mb_strlen($content) + mb_strlen($sig))
+        number_format(mb_strlen($t_content) + mb_strlen($t_sig))
     );
 
     $valid = false;

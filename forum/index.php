@@ -158,7 +158,7 @@ if (!browser_mobile() && !session::is_search_engine()) {
 
 } else {
 
-    light_html_draw_top();
+    light_html_draw_top('js/thread_list.js');
 }
 
 if (forum_check_webtag_available($webtag)) {

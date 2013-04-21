@@ -271,11 +271,11 @@ function user_get_profile_entries($uid)
     $sql.= "LEFT JOIN `{$table_prefix}PROFILE_ITEM` PROFILE_ITEM ";
     $sql.= "ON (PROFILE_ITEM.PSID = PROFILE_SECTION.PSID) ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PROFILE` USER_PROFILE ";
-    $sql.= "ON (USER_PROFILE.PIID = PROFILE_ITEM.PIID AND USER_PROFILE.UID = '$uid' ";
-    $sql.= "AND (USER_PROFILE.PRIVACY = 0 OR USER_PROFILE.UID = '{$_SESSION['UID']}' ";
-    $sql.= "OR (USER_PROFILE.PRIVACY = 1 AND ($peer_relationship & $user_friend > 0)))) ";
-    $sql.= "WHERE USER_PROFILE.ENTRY IS NOT NULL ORDER BY PROFILE_SECTION.POSITION, ";
-    $sql.= "PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
+    $sql.= "ON (USER_PROFILE.PIID = PROFILE_ITEM.PIID AND USER_PROFILE.UID = '$uid') ";
+    $sql.= "WHERE USER_PROFILE.ENTRY IS NOT NULL AND (USER_PROFILE.PRIVACY = 0 ";
+    $sql.= "OR (USER_PROFILE.PRIVACY = 1 AND ($peer_relationship & $user_friend > 0)) ";
+    $sql.= "OR (USER_PROFILE.PRIVACY = 2 AND USER_PROFILE.UID = '{$_SESSION['UID']}')) ";
+    $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
 
     if (!($result = $db->query($sql))) return false;
 

@@ -222,11 +222,15 @@ ul.ui-autocomplete li a.ui-state-focus {
 }
 
 select.bhinputprofileitem {
-    width: 454px
+    width: 574px
 }
 
 .bhinputprofileitem {
-    width: 450px
+    width: 570px
+}
+
+.bhinputprofileprivacy {
+    width: 80px
 }
 
 .bhinputsearch {
@@ -265,6 +269,7 @@ select.bhinputprofileitem {
 .user_in_thread_dropdown,
 .user_pref_field,
 .bhinputprofileitem,
+.bhinputprofileprivacy,
 .text_captcha_input,
 .user_pref_dob_dropdown,
 .user_pref_dropdown {

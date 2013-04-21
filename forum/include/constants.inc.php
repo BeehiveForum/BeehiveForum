@@ -122,7 +122,8 @@ define('USER_BLOCK_PM', 16);
 
 // Profile Privacy Constants
 define('PROFILE_ITEM_PUBLIC', 0);
-define('PROFILE_ITEM_PRIVATE', 1);
+define('PROFILE_ITEM_FRIENDS', 1);
+define('PROFILE_ITEM_PRIVATE', 2);
 
 // Constants for DOB Display
 define('USER_DOB_DISPLAY_NONE', 0);

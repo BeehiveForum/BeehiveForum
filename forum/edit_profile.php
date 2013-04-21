@@ -114,15 +114,15 @@ if (isset($_POST['save'])) {
 
                 if ($admin_edit) {
 
-                    $privacy = (isset($profile_items_array[$piid]['PRIVACY']) ? $profile_items_array[$piid]['PRIVACY'] : 0);
+                    $privacy = (isset($profile_items_array[$piid]['PRIVACY']) ? $profile_items_array[$piid]['PRIVACY'] : PROFILE_ITEM_PRIVATE);
 
-                } else if (isset($_POST['t_entry_private'][$piid]) && $_POST['t_entry_private'][$piid] == 'Y') {
+                } else if (isset($_POST['t_entry_private'][$piid]) && in_array($_POST['t_entry_private'][$piid], array(PROFILE_ITEM_PUBLIC, PROFILE_ITEM_FRIENDS, PROFILE_ITEM_PRIVATE))) {
 
-                    $privacy = PROFILE_ITEM_PRIVATE;
+                    $privacy = $_POST['t_entry_private'][$piid];
 
                 } else {
 
-                    $privacy = PROFILE_ITEM_PUBLIC;
+                    $privacy = PROFILE_ITEM_PRIVATE;
                 }
 
                 if (!user_profile_update($profile_uid, $piid, $profile_entry, $privacy)) {
@@ -224,14 +224,12 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
                 echo "                    <table class=\"posthead\" width=\"100%\">\n";
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" class=\"subhead\" colspan=\"3\">{$profile_item['SECTION_NAME']}</td>\n";
-                echo "                        <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
                 echo "                      </tr>\n";
 
             } else {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" class=\"subhead\" colspan=\"3\">{$profile_item['SECTION_NAME']}</td>\n";
-                echo "                        <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
                 echo "                      </tr>\n";
             }
         }
@@ -239,8 +237,12 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
         $last_psid = $profile_item['PSID'];
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\">&nbsp;</td>\n";
-        echo "                        <td align=\"left\" width=\"180\">{$profile_item['ITEM_NAME']}</td>\n";
+        echo "                        <td align=\"left\" width=\"1%\"></td>\n";
+        echo "                        <td align=\"left\" colspan=\"2\">{$profile_item['ITEM_NAME']}</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\" width=\"1%\"></td>\n";
+        echo "                        <td align=\"left\" width=\"564\">\n";
 
         if (($profile_item['TYPE'] == PROFILE_ITEM_RADIO) || ($profile_item['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
 
@@ -249,38 +251,26 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
             profile_item_add_clear_entry($profile_item_options_array, $profile_item['TYPE']);
 
             if ($profile_item['TYPE'] == PROFILE_ITEM_RADIO) {
-                echo "                        <td align=\"left\" valign=\"top\">", form_radio_array("t_entry[{$profile_item['PIID']}]", $profile_item_options_array, (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY']))), "</td>\n";
+                echo form_radio_array("t_entry[{$profile_item['PIID']}]", $profile_item_options_array, (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY']))), "\n";
             } else {
-                echo "                        <td align=\"left\" valign=\"top\">", form_dropdown_array("t_entry[{$profile_item['PIID']}]", $profile_item_options_array, (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY'])), null, 'bhinputprofileitem'), "</td>\n";
-            }
-
-            if ($admin_edit === false) {
-                echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", null, (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), sprintf("title=%s", gettext("Friends only?"))), "</td>\n";
-            } else {
-                echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
+                echo form_dropdown_array("t_entry[{$profile_item['PIID']}]", $profile_item_options_array, (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY'])), null, 'bhinputprofileitem'), "\n";
             }
 
         } else if ($profile_item['TYPE'] == PROFILE_ITEM_MULTI_TEXT) {
 
-            echo "                        <td align=\"left\" valign=\"top\">", form_textarea("t_entry[{$profile_item['PIID']}]", (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY'])), null, null, null, 'bhinputprofileitem'), "</td>\n";
-
-            if ($admin_edit === false) {
-                echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", null, (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), sprintf("title=%s", gettext("Friends only?"))), "</td>\n";
-            } else {
-                echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
-            }
-
-            echo "                      </tr>\n";
+            echo form_textarea("t_entry[{$profile_item['PIID']}]", (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY'])), null, null, null, 'bhinputprofileitem'), "\n";
 
         } else {
 
-            echo "                        <td align=\"left\" valign=\"top\">", form_input_text("t_entry[{$profile_item['PIID']}]", (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY'])), null, null, null, 'bhinputprofileitem'), "</td>\n";
+            echo form_input_text("t_entry[{$profile_item['PIID']}]", (isset($t_entry_array[$profile_item['PIID']]) ? htmlentities_array($t_entry_array[$profile_item['PIID']]) : htmlentities_array($profile_item['ENTRY'])), null, null, null, 'bhinputprofileitem'), "\n";
+        }
 
-            if ($admin_edit === false) {
-                echo "                        <td align=\"right\" valign=\"top\">", form_checkbox("t_entry_private[{$profile_item['PIID']}]", "Y", null, (isset($profile_item['PRIVACY']) && $profile_item['PRIVACY'] == PROFILE_ITEM_PRIVATE), sprintf("title=%s", gettext("Friends only?"))), "</td>\n";
-            } else {
-                echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
-            }
+        echo "</td>\n";
+
+        if ($admin_edit === false) {
+            echo "                        <td align=\"left\" valign=\"top\" width=\"100\">", form_dropdown_array("t_entry_private[{$profile_item['PIID']}]", array(gettext("Public"), gettext("Friends"), gettext("Only Me")), $profile_item['PRIVACY'], null, 'bhinputprofileprivacy'), "</td>\n";
+        } else {
+            echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
         }
 
         echo "                      </tr>\n";

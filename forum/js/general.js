@@ -175,7 +175,7 @@ var beehive = $.extend({}, beehive, {
             font_defaultLabel: 'Verdana',
             fontSize_defaultLabel: '12',
             height: $editor.height() - 35,
-            width: $editor.width(),
+            language: 'en',
             removePlugins: 'elementspath,contextmenu,tabletools,liststyle',
             resize_maxWidth: '100%',
             resize_minWidth: '100%',
@@ -223,7 +223,8 @@ var beehive = $.extend({}, beehive, {
                     'Source'
                 ]
             ],
-            toolbar: toolbar
+            toolbar: toolbar,
+            width: $editor.width()
         });
 
         editor.on('focus', function(event) {

@@ -23,10 +23,55 @@ USA
 
     function (editor) {
 
+        checkEmbedCode = function(code, returnElement) {
+
+            console.log(code, returnElement);
+
+            try {
+
+                var element, src, embedCode;
+
+                element = CKEDITOR.dom.element.createFromHtml(code, editor.document);
+
+                if (element && element.type) {
+
+                    if (element.type == 1 && element.getName() == 'iframe' && element.getAttribute('src')) {
+
+                        src = element.getAttribute('src');
+
+                        if (src && src.match(/^http(s)?:\/\/www\.youtube\.com\/embed\//)) {
+                            return returnElement ? element : true;
+                        }
+
+                    } else if (element.type == 3) {
+
+                        src = element.getText();
+
+                        embedCode = src.match(/^http(s)?:\/\/(www\.youtube\.com|youtu\.be)\/(watch\?v=)?(.+)/);
+
+                        if (embedCode && embedCode[4]) {
+
+                            element = CKEDITOR.dom.element.createFromHtml('<iframe>', editor.document),
+
+                            element.setAttribute('src', 'https://www.youtube.com/embed/' + embedCode[4]);
+
+                            return returnElement ? element : true;
+                        }
+                    }
+                }
+
+            } catch (e) {
+
+                console.log(e);
+            }
+
+            return false;
+        };
+
         return {
             title: 'Embed Youtube Video',
-            minHeight: 440,
-            minWidth: 500,
+            minHeight: 480,
+            minWidth: 485,
             onShow: function () {
 
                 var inputElement = this.getContentElement('general', 'contents')
@@ -51,14 +96,14 @@ USA
                     embedCode = this.getContentElement('general', 'contents')
                         .getInputElement()
                         .getValue(),
-                    realElement = CKEDITOR.dom.element.createFromHtml(embedCode, editor.document),
+                    realElement = checkEmbedCode(embedCode, true),
                     fakeElement = editor.createFakeElement(realElement, 'cke_youtube', 'youtube', false),
                     videoCode = realElement.getAttribute('src')
                         .match(/^http(s)?:\/\/www\.youtube\.com\/embed\/(.+)/);
 
                 fakeElement.setAttribute('src', 'http://img.youtube.com/vi/' + videoCode[2] + '/0.jpg');
-                fakeElement.setAttribute('height', realElement.getAttribute('height') || 315);
-                fakeElement.setAttribute('width', realElement.getAttribute('width') || 560);
+                fakeElement.setAttribute('height', realElement.getAttribute('height') || 360);
+                fakeElement.setAttribute('width', realElement.getAttribute('width') || 480);
                 fakeElement.setAttribute('title', 'Youtube Video');
 
                 if (self.fakeImage) {
@@ -81,44 +126,24 @@ USA
                     children: [{
                         id: 'contents',
                         type: 'textarea',
-                        label: 'Youtube Embed Code',
+                        label: 'Youtube Embed Code or URL:',
+                        cols: 15,
                         rows: 3,
                         onLoad: function () {
 
                             var dialog = this.getDialog();
 
-                            dialog.checkEmbedCode = function(code, returnElement) {
-
-                                try {
-
-                                    var element = CKEDITOR.dom.element.createFromHtml(code, editor.document),
-                                        src;
-
-                                    if (element && element.getName() == 'iframe' && element.getAttribute('src')) {
-
-                                        src = element.getAttribute('src');
-
-                                        if (src && src.match(/^http(s)?:\/\/www\.youtube\.com\/embed\//)) {
-                                            return returnElement ? element : true;
-                                        }
-                                    }
-
-                                } catch (e) { }
-
-                                return false;
-                            };
-
                             dialog.showPreview = function(code) {
 
                                 try {
 
-                                    var element = dialog.checkEmbedCode(code, true),
+                                    var element = checkEmbedCode(code, true),
                                         previewContainer = this.getContentElement('general', 'preview').getElement().getChild(2);
 
                                     if (element) {
 
-                                        element.setStyle('width', '560px');
-                                        element.setStyle('height', '315px');
+                                        element.setStyle('width', '480px');
+                                        element.setStyle('height', '360px');
                                         element.removeAttribute('allowfullscreen');
 
                                         previewContainer.setHtml(element.getOuterHtml());
@@ -131,13 +156,13 @@ USA
                                 } catch (e) { }
                             };
 
-                            this.getInputElement().on('change', function () {
+                            this.getInputElement().on('keyup', function () {
                                 dialog.showPreview(this.getValue());
                             }, this);
                         },
                         validate: function () {
                             var dialog = this.getDialog();
-                            return dialog.checkEmbedCode(this.getValue(), false);
+                            return checkEmbedCode(this.getValue(), false);
                         },
                         required: true
                     }]
@@ -146,8 +171,8 @@ USA
                     children: [{
                         type: 'html',
                         id: 'preview',
-                        style: 'width:95%;',
-                        html: '<div>Preview<br /><div id="cke_YoutubePreviewBox' + CKEDITOR.tools.getNextNumber() + '" style="width: 560px; height: 315px; background-color: #000000"></div></div>'
+                        style: 'width:100%;',
+                        html: '<div>Preview:<br /><div id="cke_YoutubePreviewBox' + CKEDITOR.tools.getNextNumber() + '" style="width: 480px; height: 360px; background-color: #000000"></div></div>'
                     }]
                 }]
             }]

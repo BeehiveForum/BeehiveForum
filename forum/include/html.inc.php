@@ -434,7 +434,7 @@ function html_get_top_frame_name()
     return $config['frame_top_target'];
 }
 
-function html_include_javascript($script_filepath)
+function html_include_javascript($script_filepath, $id = null)
 {
     $path_parts = path_info_query($script_filepath);
 
@@ -450,10 +450,14 @@ function html_include_javascript($script_filepath)
 
     $script_filepath = rtrim($path_parts['dirname'], '/'). '/'. $path_parts['basename']. '?'. $path_parts['query'];
 
-    printf("<script type=\"text/javascript\" src=\"%s\"></script>\n", $script_filepath);
+    printf(
+        "<script type=\"text/javascript\" src=\"%s\"%s></script>\n",
+        $script_filepath,
+        isset($id) ? sprintf(" id=\"%s\"", $id) : ''
+    );
 }
 
-function html_include_css($script_filepath, $media = 'screen')
+function html_include_css($script_filepath, $media = 'screen', $id = null)
 {
     $path_parts = path_info_query($script_filepath);
 
@@ -469,7 +473,12 @@ function html_include_css($script_filepath, $media = 'screen')
 
     $script_filepath = rtrim($path_parts['dirname'], '/'). '/'. $path_parts['basename']. '?'. $path_parts['query'];
 
-    printf("<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\" media=\"%s\" />\n", $script_filepath, $media);
+    printf(
+        "<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\" media=\"%s\"%s />\n",
+        $script_filepath,
+        $media,
+        isset($id) ? sprintf(" id=\"%s\"", $id) : ''
+    );
 }
 
 function html_draw_top()
@@ -749,9 +758,9 @@ function html_draw_top()
     html_include_javascript(html_get_forum_file_path('js/jquery.min.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.placeholder.min.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.ui.autocomplete.min.js'));
-    html_include_javascript(html_get_forum_file_path('js/jquery.parsequery.js'));
-    html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.js'));
-    html_include_javascript(html_get_forum_file_path('js/jquery.url.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.parsequery.min.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.min.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.url.min.js'));
     html_include_javascript(html_get_forum_file_path('js/general.js'));
 
     if ($frame_set_html === false) {

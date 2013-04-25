@@ -100,25 +100,25 @@ $(beehive).bind('init', function() {
 
     toggle_delete_buttons();
 
-    $('div.poll_question_input').live('mouseenter', function() {
+    $('body').on('mouseenter', 'div.poll_question_input', function() {
 
         $(this).find('button.delete_question').show();
 
-    }).live('mouseleave', function() {
+    }).on('mouseleave', 'div.poll_question_input', function() {
 
         $(this).find('button.delete_question').hide();
     });
 
-    $('div.poll_options_list ol li').live('mouseenter', function() {
+    $('body').on('mouseenter', 'div.poll_options_list ol li', function() {
 
         $(this).find('button.delete_option').show();
 
-    }).live('mouseleave', function() {
+    }).on('mouseleave', 'div.poll_options_list ol li', function() {
 
         $(this).find('button.delete_option').hide();
     });
 
-    $('button.delete_question').live('click', function() {
+    $('body'). on('click', 'button.delete_question', function() {
 
         if ($(this).hasClass('disabled')) {
             return false;
@@ -140,7 +140,7 @@ $(beehive).bind('init', function() {
        return false;
     });
 
-    $('button.delete_option').live('click', function() {
+    $('body').on('click', 'button.delete_option', function() {
 
         if ($(this).hasClass('disabled')) {
             return false;
@@ -162,7 +162,7 @@ $(beehive).bind('init', function() {
        return false;
     });
 
-    $('button.add_option').live('click', function() {
+    $('body').on('click', 'button.add_option', function() {
 
         if ($(this).hasClass('disabled')) {
             return false;

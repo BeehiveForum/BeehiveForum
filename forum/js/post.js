@@ -125,7 +125,7 @@ $(beehive).bind('init', function() {
         $('#quick_reply_container').hide();
     });
 
-    $('.quick_reply_link').live('click', function() {
+    $('body').on('click', '.quick_reply_link', function() {
 
         $('.post_options_container').hide();
 

@@ -95,9 +95,7 @@ var beehive = $.extend({}, beehive, {
             beehive.reload_user_font(this.contentDocument);
         });
 
-        var $head = $(context).find('head');
-
-        var $user_font = $head.find('link#user_font');
+        var $user_font = $(context.head).find('link#user_font');
 
         $user_font.attr('href', beehive.forum_path + '/font_size.php?webtag=' + beehive.webtag + '&_=' + new Date().getTime() / 1000);
     },
@@ -164,10 +162,10 @@ var beehive = $.extend({}, beehive, {
 
         var editor = CKEDITOR.replace(editor_id, {
             browserContextMenuOnCtrl: true,
-            contentsCss: [
+            /*contentsCss: [
                 emoticons,
                 contents
-            ],
+            ],*/
             customConfig: '',
             disableNativeSpellChecker: false,
             enterMode: CKEDITOR.ENTER_BR,
@@ -278,7 +276,7 @@ $(beehive).bind('init', function() {
         return false;
     });
 
-    $('a.popup').live('click', function() {
+    $('body').on('click', 'a.popup', function() {
 
         var class_names = $(this).attr('class').split(' ');
 
@@ -327,7 +325,7 @@ $(beehive).bind('init', function() {
         $(this).attr('checked') ? $checkboxes.attr('checked', 'checked') : $checkboxes.removeAttr('checked');
     });
 
-    $('a.font_size_larger, a.font_size_smaller').live('click', function() {
+    $('body').on('click', 'a.font_size_larger, a.font_size_smaller', function() {
 
         var $this = $(this);
 

@@ -189,8 +189,9 @@ function light_html_draw_top()
     }
 
     html_include_javascript(html_get_forum_file_path('js/jquery.min.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.mobile.zoom.min.js'));
     html_include_javascript(html_get_forum_file_path('js/jquery.placeholder.min.js'));
-    html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.js'));
+    html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.min.js'));
     html_include_javascript(html_get_forum_file_path('js/general.js'));
     html_include_javascript(html_get_forum_file_path('js/light.js'));
 

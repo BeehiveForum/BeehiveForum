@@ -38,4 +38,10 @@ $(beehive).bind('init', function() {
 
         return false;
     });
+
+    $('body').on('focus', 'input,select', function() {
+        $.mobile.zoom.disable(true);
+    }).on('blur', 'input,select', function() {
+        $.mobile.zoom.enable(true);
+    });
 });

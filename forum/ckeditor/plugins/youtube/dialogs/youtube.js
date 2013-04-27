@@ -25,47 +25,48 @@ USA
 
         checkEmbedCode = function(code, returnElement) {
 
-            console.log(code, returnElement);
+            var element, src, embedCode;
 
             try {
 
-                var element, src, embedCode;
-
                 element = CKEDITOR.dom.element.createFromHtml(code, editor.document);
 
-                if (element && element.type) {
+                if (!element || !element.type) {
+                    return false;
+                }
 
-                    if (element.type == 1 && element.getName() == 'iframe' && element.getAttribute('src')) {
+                if (element.type == 1 && element.getName() == 'iframe' && element.getAttribute('src')) {
 
-                        src = element.getAttribute('src');
+                    src = element.getAttribute('src');
 
-                        if (src && src.match(/^http(s)?:\/\/www\.youtube\.com\/embed\//)) {
-                            return returnElement ? element : true;
-                        }
-
-                    } else if (element.type == 3) {
-
-                        src = element.getText();
-
-                        embedCode = src.match(/^http(s)?:\/\/(www\.youtube\.com|youtu\.be)\/(watch\?v=)?(.+)/);
-
-                        if (embedCode && embedCode[4]) {
-
-                            element = CKEDITOR.dom.element.createFromHtml('<iframe>', editor.document),
-
-                            element.setAttribute('src', 'https://www.youtube.com/embed/' + embedCode[4]);
-
-                            return returnElement ? element : true;
-                        }
+                    if (!src || !src.match(/^http(s)?:\/\/www\.youtube\.com\/embed\//)) {
+                        return false;
                     }
+
+                } else if (element.type == 3) {
+
+                    src = element.getText();
+
+                    embedCode = src.match(/^http(s)?:\/\/(www\.youtube\.com|youtu\.be)\/(watch\?v=)?(.+)/);
+
+                    if (!embedCode || !embedCode[4]) {
+                        return false;
+                    }
+
+                    element = CKEDITOR.dom.element.createFromHtml('<iframe>', editor.document),
+                    element.setAttribute('src', 'https://www.youtube.com/embed/' + embedCode[4]);
                 }
 
             } catch (e) {
 
-                console.log(e);
             }
 
-            return false;
+            element.setStyle('width', '480px');
+            element.setStyle('height', '360px');
+
+            element.removeAttribute('allowfullscreen');
+
+            return returnElement ? element : true;
         };
 
         return {

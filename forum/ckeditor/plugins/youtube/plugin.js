@@ -97,8 +97,8 @@ USA
                                     fakeElement = editor.createFakeParserElement(element, 'cke_youtube', 'youtube', false);
 
                                     fakeElement.attributes.src = 'http://img.youtube.com/vi/' + videoCode[2] + '/0.jpg';
-                                    fakeElement.attributes.height = element.attributes.height || 315;
-                                    fakeElement.attributes.width = element.attributes.width || 560;
+                                    fakeElement.attributes.height = element.attributes.height || 360;
+                                    fakeElement.attributes.width = element.attributes.width || 480;
                                     fakeElement.attributes.title = 'Youtube Video';
 
                                     return fakeElement;

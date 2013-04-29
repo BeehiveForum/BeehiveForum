@@ -162,10 +162,10 @@ var beehive = $.extend({}, beehive, {
 
         var editor = CKEDITOR.replace(editor_id, {
             browserContextMenuOnCtrl: true,
-            /*contentsCss: [
+            contentsCss: [
                 emoticons,
                 contents
-            ],*/
+            ],
             customConfig: '',
             disableNativeSpellChecker: false,
             enterMode: CKEDITOR.ENTER_BR,

@@ -397,7 +397,7 @@ function email_send_pw_reminder($logon)
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_user['UID'], true);
 
-    $change_pw_link = rawurlencode("/change_pw.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
+    $change_pw_link = rawurlencode("change_pw.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
 
     $change_pw_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$change_pw_link");
 
@@ -489,7 +489,7 @@ function email_send_user_confirmation($tuid)
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
-    $confirm_link = rawurlencode("/confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
+    $confirm_link = rawurlencode("confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
 
     $confirm_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$confirm_link");
 
@@ -537,7 +537,7 @@ function email_send_changed_email_confirmation($tuid)
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
-    $confirm_link = rawurlencode("/confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
+    $confirm_link = rawurlencode("confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
 
     $confirm_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$confirm_link");
 
@@ -583,7 +583,7 @@ function email_send_user_approval_notification($tuid)
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
-    $admin_users_link = rawurlencode("/admin_users.php?webtag=$webtag&filter=4");
+    $admin_users_link = rawurlencode("admin_users.php?webtag=$webtag&filter=4");
 
     $admin_users_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_users_link");
 
@@ -629,7 +629,7 @@ function email_send_new_user_notification($tuid, $new_user_uid)
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
-    $admin_user_link = rawurlencode("/admin_user.php?webtag=$webtag&uid=$new_user_uid");
+    $admin_user_link = rawurlencode("admin_user.php?webtag=$webtag&uid=$new_user_uid");
 
     $admin_user_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_user_link");
 
@@ -719,7 +719,7 @@ function email_send_post_approval_notification($tuid)
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
-    $admin_post_approval_link = rawurlencode("/admin_post_approve.php?webtag=$webtag");
+    $admin_post_approval_link = rawurlencode("admin_post_approve.php?webtag=$webtag");
 
     $admin_post_approval_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_post_approval_link");
 
@@ -763,7 +763,7 @@ function email_send_link_approval_notification($tuid)
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
 
-    $admin_post_approval_link = rawurlencode("/admin_link_approve.php?webtag=$webtag");
+    $admin_post_approval_link = rawurlencode("admin_link_approve.php?webtag=$webtag");
 
     $admin_post_approval_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_post_approval_link");
 

@@ -85,7 +85,7 @@ if (isset($_POST['enable'])) {
 }
 
 if (!forum_get_setting('access_level', FORUM_RESTRICTED)) {
-    html_draw_error(gettext("Forum is not set to Restricted Mode. Do you want to enable it now?"), 'admin_forum_access.php', 'post', array('enable' => gettext("Enable"), 'back' => gettext("Back")), array('ret' => $ret), false, 'center');
+    html_draw_error(gettext("Forum is not set to Restricted Mode. Do you want to enable it now?"), 'admin_forum_access.php', 'post', array('enable' => gettext("Enable"), 'back' => gettext("Back")), array('ret' => $ret), '_self', 'center');
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {

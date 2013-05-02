@@ -90,7 +90,7 @@ if (isset($_POST['enable'])) {
 }
 
 if (!forum_get_setting('access_level', FORUM_PASSWD_PROTECTED)) {
-    html_draw_error(gettext("Forum is not set to Password Protected Mode. Do you want to enable it now?"), 'admin_forum_set_passwd.php', 'post', array('enable' => gettext("Enable"), 'back' => gettext("Back")), array('ret' => $ret), false, 'center');
+    html_draw_error(gettext("Forum is not set to Password Protected Mode. Do you want to enable it now?"), 'admin_forum_set_passwd.php', 'post', array('enable' => gettext("Enable"), 'back' => gettext("Back")), array('ret' => $ret), '_self', 'center');
 }
 
 if (isset($_POST['save'])) {

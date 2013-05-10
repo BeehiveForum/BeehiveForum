@@ -1453,7 +1453,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
 
         // Create user permissions for forum leader
-        if (!perm_update_user_forum_permissions($forum_fid, $owner_uid, USER_PERM_ADMIN_TOOLS | USER_PERM_FOLDER_MODERATE)) {
+        if (!perm_update_user_forum_permissions($owner_uid, $forum_fid, USER_PERM_ADMIN_TOOLS | USER_PERM_FOLDER_MODERATE)) {
             throw new Exception('Failed to set owner forum permissions');
         }
 
@@ -1641,7 +1641,21 @@ function forum_delete($fid)
 
     if (!$db->query($sql)) return false;
 
-    $sql = "DELETE QUICK FROM GROUP_PERMS WHERE FORUM = '$fid'";
+    $sql = "DELETE QUICK FROM USER_PERM WHERE FORUM = '$fid'";
+
+    if (!$db->query($sql)) return false;
+
+    $sql = "DELETE QUICK FROM GROUPS WHERE FORUM = '$fid'";
+
+    if (!$db->query($sql)) return false;
+
+    $sql = "DELETE QUICK FROM GROUP_USERS WHERE GID NOT IN (SELECT GID ";
+    $sql.= "FROM GROUP_PERMS)";
+
+    if (!$db->query($sql)) return false;
+
+    $sql = "DELETE QUICK FROM GROUP_PERMS WHERE GID NOT IN (SELECT GID ";
+    $sql.= "FROM GROUP_PERMS)";
 
     if (!$db->query($sql)) return false;
 
@@ -1667,9 +1681,6 @@ function forum_delete_tables($webtag, $database_name)
         'BANNED',
         'FOLDER',
         'FORUM_LINKS',
-        'GROUPS',
-        'GROUP_PERMS',
-        'GROUP_USERS',
         'LINKS',
         'LINKS_COMMENT',
         'LINKS_FOLDERS',
@@ -1697,7 +1708,6 @@ function forum_delete_tables($webtag, $database_name)
         'USER_PROFILE',
         'USER_SIG',
         'USER_THREAD',
-        'VISITOR_LOG',
         'WORD_FILTER'
     );
 

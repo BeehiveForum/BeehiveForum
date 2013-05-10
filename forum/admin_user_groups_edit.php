@@ -167,10 +167,12 @@ if (isset($_POST['save'])) {
                     $new_group_perms = (double) $t_post_read | $t_post_create | $t_thread_create;
                     $new_group_perms = (double) $new_group_perms | $t_post_edit | $t_post_delete;
                     $new_group_perms = (double) $new_group_perms | $t_moderator | $t_post_attach;
-                    $new_group_perms = (double) $new_group_perms | $t_post_html | $t_post_sig | $t_post_approval;;
+                    $new_group_perms = (double) $new_group_perms | $t_post_html | $t_post_sig | $t_post_approval;
 
-                    if ($new_group_perms <> $folder_array[$fid]['STATUS']) {
-                        perm_update_group_folder_perms($gid, $fid, $new_group_perms);
+                    if (!perm_update_group_folder_perms($gid, $fid, $new_group_perms)) {
+
+                        $error_msg_array[] = gettext("Failed to update folder access settings");
+                        $valid = false;
                     }
                 }
             }
@@ -291,6 +293,9 @@ echo "        <br />\n";
 
 if (($folder_array = perm_group_get_folders($gid)) !== false) {
 
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
     echo "            <td align=\"left\" class=\"posthead\">\n";
@@ -308,7 +313,7 @@ if (($folder_array = perm_group_get_folders($gid)) !== false) {
     echo "                        <td align=\"left\" class=\"posthead\">\n";
     echo "                          <table class=\"posthead\" width=\"100%\">\n";
     echo "                            <tr>\n";
-    echo "                              <td align=\"left\" class=\"subhead\" width=\"100\">", gettext("Folders"), "</td>\n";
+    echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">", gettext("Folders"), "</td>\n";
     echo "                              <td align=\"left\" class=\"subhead\">", gettext("Permissions"), "</td>\n";
     echo "                            </tr>\n";
     echo "                            <tr>\n";
@@ -317,66 +322,33 @@ if (($folder_array = perm_group_get_folders($gid)) !== false) {
 
     foreach ($folder_array as $fid => $folder) {
 
-        if ($folder['STATUS'] > 0) {
-
-            echo "                                  ", form_input_hidden("t_update_perms_array[]", htmlentities_array($folder['FID'])), "\n";
-            echo "                                  <table class=\"posthead\" width=\"100%\">\n";
-            echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid=$fid\" target=\"_self\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_read[$fid]", USER_PERM_POST_READ, gettext("Read Posts"), $folder['STATUS'] & USER_PERM_POST_READ), "</td>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_create[$fid]", USER_PERM_POST_CREATE, gettext("Reply to threads"), $folder['STATUS'] & USER_PERM_POST_CREATE), "</td>\n";
-            echo "                                    </tr>\n";
-            echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_thread_create[$fid]", USER_PERM_THREAD_CREATE, gettext("Create new threads"), $folder['STATUS'] & USER_PERM_THREAD_CREATE), "</td>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_edit[$fid]", USER_PERM_POST_EDIT, gettext("Edit posts"), $folder['STATUS'] & USER_PERM_POST_EDIT), "</td>\n";
-            echo "                                    </tr>\n";
-            echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_delete[$fid]", USER_PERM_POST_DELETE, gettext("Delete posts"), $folder['STATUS'] & USER_PERM_POST_DELETE), "</td>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_attach[$fid]", USER_PERM_POST_ATTACHMENTS, gettext("Upload attachments"), $folder['STATUS'] & USER_PERM_POST_ATTACHMENTS), "</td>\n";
-            echo "                                    </tr>\n";
-            echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_html[$fid]", USER_PERM_HTML_POSTING, gettext("Post in HTML"), $folder['STATUS'] & USER_PERM_HTML_POSTING), "</td>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_sig[$fid]", USER_PERM_SIGNATURE, gettext("Post a signature"), $folder['STATUS'] & USER_PERM_SIGNATURE), "</td>\n";
-            echo "                                    </tr>\n";
-            echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_moderator[$fid]", USER_PERM_FOLDER_MODERATE, gettext("Moderate folder"), $folder['STATUS'] & USER_PERM_FOLDER_MODERATE), "</td>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_approval[$fid]", USER_PERM_POST_APPROVAL, gettext("Require Post Approval"), $folder['STATUS'] & USER_PERM_POST_APPROVAL), "</td>\n";
-            echo "                                    </tr>\n";
-            echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
-            echo "                                    </tr>\n";
-            echo "                                  </table>\n";
-
-        } else {
-
-            echo "                                  ", form_input_hidden("t_update_perms_array[]", htmlentities_array($folder['FID'])), "\n";
-            echo "                                  <table class=\"posthead\" width=\"100%\">\n";
-            echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, gettext("Read Posts")), "</td>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, gettext("Reply to threads")), "</td>\n";
-            echo "                                    </tr>\n";
-            echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_thread_create[{$folder['FID']}]", USER_PERM_THREAD_CREATE, gettext("Create new threads")), "</td>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_edit[{$folder['FID']}]", USER_PERM_POST_EDIT, gettext("Edit posts")), "</td>\n";
-            echo "                                    </tr>\n";
-            echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, gettext("Delete posts")), "</td>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, gettext("Upload attachments")), "</td>\n";
-            echo "                                    </tr>\n";
-            echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, gettext("Post in HTML")), "</td>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, gettext("Post a signature")), "</td>\n";
-            echo "                                    </tr>\n";
-            echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, gettext("Moderate folder")), "</td>\n";
-            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_approval[{$folder['FID']}]", USER_PERM_POST_APPROVAL, gettext("Require Post Approval")), "</td>\n";
-            echo "                                    </tr>\n";
-            echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
-            echo "                                    </tr>\n";
-            echo "                                  </table>\n";
-        }
+        echo "                                  ", form_input_hidden("t_update_perms_array[]", htmlentities_array($folder['FID'])), "\n";
+        echo "                                  <table class=\"posthead\" width=\"100%\">\n";
+        echo "                                    <tr>\n";
+        echo "                                      <td align=\"left\" rowspan=\"5\" width=\"150\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
+        echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, gettext("Read Posts"), $folder['STATUS'] & USER_PERM_POST_READ), "</td>\n";
+        echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, gettext("Reply to threads"), $folder['STATUS'] & USER_PERM_POST_CREATE), "</td>\n";
+        echo "                                    </tr>\n";
+        echo "                                    <tr>\n";
+        echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_thread_create[{$folder['FID']}]", USER_PERM_THREAD_CREATE, gettext("Create new threads"), $folder['STATUS'] & USER_PERM_THREAD_CREATE), "</td>\n";
+        echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_edit[{$folder['FID']}]", USER_PERM_POST_EDIT, gettext("Edit posts"), $folder['STATUS'] & USER_PERM_POST_EDIT), "</td>\n";
+        echo "                                    </tr>\n";
+        echo "                                    <tr>\n";
+        echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_delete[{$folder['FID']}]", USER_PERM_POST_DELETE, gettext("Delete posts"), $folder['STATUS'] & USER_PERM_POST_DELETE), "</td>\n";
+        echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_attach[{$folder['FID']}]", USER_PERM_POST_ATTACHMENTS, gettext("Upload attachments"), $folder['STATUS'] & USER_PERM_POST_ATTACHMENTS), "</td>\n";
+        echo "                                    </tr>\n";
+        echo "                                    <tr>\n";
+        echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_html[{$folder['FID']}]", USER_PERM_HTML_POSTING, gettext("Post in HTML"), $folder['STATUS'] & USER_PERM_HTML_POSTING), "</td>\n";
+        echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, gettext("Post a signature"), $folder['STATUS'] & USER_PERM_SIGNATURE), "</td>\n";
+        echo "                                    </tr>\n";
+        echo "                                    <tr>\n";
+        echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, gettext("Moderate folder"), $folder['STATUS'] & USER_PERM_FOLDER_MODERATE), "</td>\n";
+        echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_approval[{$folder['FID']}]", USER_PERM_POST_APPROVAL, gettext("Require Post Approval"), $folder['STATUS'] & USER_PERM_POST_APPROVAL), "</td>\n";
+        echo "                                    </tr>\n";
+        echo "                                    <tr>\n";
+        echo "                                      <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
+        echo "                                    </tr>\n";
+        echo "                                  </table>\n";
     }
 
     echo "                                </div>\n";
@@ -388,13 +360,14 @@ if (($folder_array = perm_group_get_folders($gid)) !== false) {
     echo "                    </table>\n";
     echo "                  </td>\n";
     echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
     echo "              </table>\n";
     echo "            </td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
 }
 
 echo "      </td>\n";

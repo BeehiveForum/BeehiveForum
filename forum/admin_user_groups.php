@@ -57,20 +57,20 @@ if (isset($_POST['add_new'])) {
 // Column sorting stuff
 if (isset($_GET['sort_by'])) {
     if ($_GET['sort_by'] == "GROUP_NAME") {
-        $sort_by = "GROUPS.GROUP_NAME";
+        $sort_by = "GROUP_NAME";
     } else if ($_GET['sort_by'] == "GROUP_DESC") {
-        $sort_by = "GROUPS.GROUP_DESC";
+        $sort_by = "GROUP_DESC";
     } else if ($_GET['sort_by'] == "USER_COUNT") {
         $sort_by = "USER_COUNT";
     } else if ($_GET['sort_by'] == "DEFAULT_GROUP") {
         $sort_by = "DEFAULT_GROUP";
-    } else if ($_GET['sort_by'] == "GROUP_PERMS") {
-        $sort_by = "GROUP_PERMS";
+    } else if ($_GET['sort_by'] == "PERMS") {
+        $sort_by = "PERMS";
     } else {
-        $sort_by = "GROUPS.GROUP_NAME";
+        $sort_by = "GROUP_NAME";
     }
 } else {
-    $sort_by = "GROUPS.GROUP_NAME";
+    $sort_by = "GROUP_NAME";
 }
 
 if (isset($_GET['sort_dir'])) {
@@ -183,9 +183,9 @@ echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
 
-if ($sort_by == 'GROUPS.GROUP_NAME' && $sort_dir == 'ASC') {
+if ($sort_by == 'GROUP_NAME' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=DESC&amp;page=$page\">", gettext("Groups"), "</a></td>\n";
-} else if ($sort_by == 'GROUPS.GROUP_NAME' && $sort_dir == 'DESC') {
+} else if ($sort_by == 'GROUP_NAME' && $sort_dir == 'DESC') {
     echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=ASC&amp;page=$page\">", gettext("Groups"), "</a></td>\n";
 } else if ($sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=ASC&amp;page=$page\">", gettext("Groups"), "</a></td>\n";
@@ -193,9 +193,9 @@ if ($sort_by == 'GROUPS.GROUP_NAME' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=DESC&amp;page=$page\">", gettext("Groups"), "</a></td>\n";
 }
 
-if ($sort_by == 'GROUPS.GROUP_DESC' && $sort_dir == 'ASC') {
+if ($sort_by == 'GROUP_DESC' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=DESC&amp;page=$page\">", gettext("Description"), "</a></td>\n";
-} else if ($sort_by == 'GROUPS.GROUP_DESC' && $sort_dir == 'DESC') {
+} else if ($sort_by == 'GROUP_DESC' && $sort_dir == 'DESC') {
     echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=ASC&amp;page=$page\">", gettext("Description"), "</a></td>\n";
 } else if ($sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=ASC&amp;page=$page\">", gettext("Description"), "</a></td>\n";
@@ -203,14 +203,14 @@ if ($sort_by == 'GROUPS.GROUP_DESC' && $sort_dir == 'ASC') {
     echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=DESC&amp;page=$page\">", gettext("Description"), "</a></td>\n";
 }
 
-if ($sort_by == 'GROUP_PERMS' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_PERMS&amp;sort_dir=DESC&amp;page=$page\">", gettext("Group Status"), "</a></td>\n";
-} else if ($sort_by == 'GROUP_PERMS' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"center\" class=\"header_sort_desc\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_PERMS&amp;sort_dir=ASC&amp;page=$page\">", gettext("Group Status"), "</a></td>\n";
+if ($sort_by == 'PERMS' && $sort_dir == 'ASC') {
+    echo "                   <td class=\"subhead_sort_asc\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=PERMS&amp;sort_dir=DESC&amp;page=$page\">", gettext("Group Status"), "</a></td>\n";
+} else if ($sort_by == 'PERMS' && $sort_dir == 'DESC') {
+    echo "                   <td class=\"subhead_sort_desc\" align=\"center\" class=\"header_sort_desc\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=PERMS&amp;sort_dir=ASC&amp;page=$page\">", gettext("Group Status"), "</a></td>\n";
 } else if ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_PERMS&amp;sort_dir=ASC&amp;page=$page\">", gettext("Group Status"), "</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=PERMS&amp;sort_dir=ASC&amp;page=$page\">", gettext("Group Status"), "</a></td>\n";
 } else {
-    echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_PERMS&amp;sort_dir=DESC&amp;page=$page\">", gettext("Group Status"), "</a></td>\n";
+    echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=PERMS&amp;sort_dir=DESC&amp;page=$page\">", gettext("Group Status"), "</a></td>\n";
 }
 
 if ($sort_by == 'USER_COUNT' && $sort_dir == 'ASC') {
@@ -254,8 +254,8 @@ if (sizeof($user_groups_array['user_groups_array']) > 0) {
             echo "                  <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
         }
 
-        if (isset($user_group['GROUP_PERMS']) && $user_group['GROUP_PERMS'] > 0) {
-            echo "                  <td align=\"center\" valign=\"top\" width=\"15%\">", perm_display_list($user_group['GROUP_PERMS']), "</td>\n";
+        if (isset($user_group['PERMS']) && $user_group['PERMS'] > 0) {
+            echo "                  <td align=\"center\" valign=\"top\" width=\"15%\">", perm_display_list($user_group['PERMS']), "</td>\n";
         } else {
             echo "                  <td align=\"center\" valign=\"top\" width=\"15%\">", gettext("none"), "</td>\n";
         }

@@ -147,7 +147,7 @@ class db extends mysqli
     public function query($sql, $resultmode = MYSQLI_STORE_RESULT)
     {
         if (($result = parent::query($sql, $resultmode)) === false) {
-            throw new Exception($this->error, $this->errno);
+            throw new Exception($sql. ' - '. $this->error, $this->errno);
         }
 
         return $result;

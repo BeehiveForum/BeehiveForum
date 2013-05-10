@@ -421,11 +421,15 @@ abstract class session
             }
         }
 
-        $sql = "SELECT GROUP_PERMS.GID, GROUP_PERMS.FORUM, GROUP_PERMS.FID, ";
-        $sql.= "BIT_OR(GROUP_PERMS.PERM) AS PERM, COUNT(GROUP_PERMS.GID) AS USER_PERM_COUNT ";
-        $sql.= "FROM GROUP_USERS INNER JOIN GROUP_PERMS USING (GID) ";
-        $sql.= "WHERE GROUP_USERS.UID = '$uid' AND GROUP_PERMS.FORUM IN (0, $forum_fid) ";
-        $sql.= "GROUP BY GROUP_PERMS.FORUM, GROUP_PERMS.FID";
+        $sql = "SELECT FORUM, FID, BIT_OR(PERM) AS PERM FROM ((SELECT GROUPS.FORUM, ";
+        $sql.= "GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM, COUNT(GROUP_PERMS.GID) AS PERM_COUNT ";
+        $sql.= "FROM GROUPS INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
+        $sql.= "INNER JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) WHERE GROUP_USERS.UID = '$uid' ";
+        $sql.= "AND GROUPS.FORUM = $forum_fid GROUP BY GROUPS.FORUM, GROUP_PERMS.FID HAVING PERM_COUNT > 0) ";
+        $sql.= "UNION ALL (SELECT USER_PERM.FORUM, USER_PERM.FID, BIT_OR(USER_PERM.PERM) AS PERM, ";
+        $sql.= "COUNT(USER_PERM.UID) AS PERM_COUNT FROM USER_PERM WHERE USER_PERM.UID = '$uid' ";
+        $sql.= "AND USER_PERM.FORUM IN (0, $forum_fid) GROUP BY USER_PERM.FORUM, USER_PERM.FID ";
+        $sql.= "HAVING PERM_COUNT > 0)) AS USER_GROUP_PERMS GROUP BY FORUM, FID";
 
         if (!($result = session::$db->query($sql))) return $user_perm_array;
 
@@ -433,17 +437,14 @@ abstract class session
 
         while (($permission_data = $result->fetch_assoc()) !== null) {
 
-            if ($permission_data['USER_PERM_COUNT'] > 0) {
+            if (isset($user_perm_array[$permission_data['FORUM']][$permission_data['FID']])) {
 
-                if (isset($user_perm_array[$permission_data['FORUM']][$permission_data['FID']])) {
-
-                    if (($user_perm_array[$permission_data['FORUM']][$permission_data['FID']] & USER_PERM_THREAD_MOVE) > 0) {
-                        $permission_data['PERM'] = (double)$permission_data['PERM'] | USER_PERM_THREAD_MOVE;
-                    }
+                if (($user_perm_array[$permission_data['FORUM']][$permission_data['FID']] & USER_PERM_THREAD_MOVE) > 0) {
+                    $permission_data['PERM'] = (double)$permission_data['PERM'] | USER_PERM_THREAD_MOVE;
                 }
-
-                $user_perm_array[$permission_data['FORUM']][$permission_data['FID']] = (double)$permission_data['PERM'];
             }
+
+            $user_perm_array[$permission_data['FORUM']][$permission_data['FID']] = (double)$permission_data['PERM'];
         }
 
         return $user_perm_array;

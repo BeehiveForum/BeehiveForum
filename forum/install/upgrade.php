@@ -45,6 +45,163 @@ if (!($forum_prefix_array = install_get_table_data())) {
     return;
 }
 
+$sql = "CREATE TABLE GROUPS_NEW (";
+$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  GROUP_NAME VARCHAR(32) NOT NULL,";
+$sql.= "  GROUP_DESC VARCHAR(255) DEFAULT NULL,";
+$sql.= "  GID_OLD MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  PRIMARY KEY (GID),";
+$sql.= "  KEY FORUM (FORUM)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE GROUP_PERMS_NEW (";
+$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  PERM INT(32) UNSIGNED NOT NULL,";
+$sql.= "  PRIMARY KEY (GID,FID)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE GROUP_USERS_NEW (";
+$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  PRIMARY KEY (GID,UID)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE USER_PERM (";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  PERM MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  PRIMARY KEY (UID,FORUM,FID)";
+$sql.= ") ENGINE=MYISAM CHARSET=UTF8";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT INTO GROUPS_NEW (FORUM, GROUP_NAME, GROUP_DESC, GID_OLD) ";
+$sql.= "SELECT GROUP_PERMS.FORUM, GROUPS.GROUP_NAME, GROUPS.GROUP_DESC, ";
+$sql.= "GROUPS.GID FROM GROUPS INNER JOIN GROUP_PERMS ";
+$sql.= "ON (GROUP_PERMS.GID = GROUPS.GID) ";
+$sql.= "GROUP BY GROUPS.GID";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT INTO GROUP_PERMS_NEW SELECT DISTINCT GROUPS_NEW.GID, ";
+$sql.= "GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM FROM GROUP_USERS ";
+$sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID) ";
+$sql.= "INNER JOIN GROUPS ON (GROUPS.GID = GROUP_USERS.GID) INNER JOIN GROUPS_NEW ";
+$sql.= "ON (GROUPS_NEW.GID_OLD = GROUPS.GID) GROUP BY GID, FID ";
+$sql.= "ORDER BY GID, FID";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT INTO GROUP_USERS_NEW SELECT GROUPS_NEW.GID, GROUP_USERS.UID ";
+$sql.= "FROM GROUP_USERS INNER JOIN GROUPS_NEW ON (GROUPS_NEW.GID_OLD = GROUP_USERS.GID)";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "INSERT INTO USER_PERM SELECT DISTINCT GROUP_USERS.UID, GROUP_PERMS.FORUM, ";
+$sql.= "GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM FROM GROUP_USERS ";
+$sql.= "INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUP_USERS.GID) ";
+$sql.= "LEFT JOIN GROUPS ON (GROUPS.GID = GROUP_USERS.GID) WHERE GROUPS.GID IS NULL ";
+$sql.= "GROUP BY UID, FORUM, FID ORDER BY UID, FORUM, FID";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "DROP TABLE GROUPS";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "DROP TABLE GROUP_PERMS";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "DROP TABLE GROUP_USERS";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "RENAME TABLE GROUPS_NEW TO GROUPS";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "RENAME TABLE GROUP_PERMS_NEW TO GROUP_PERMS";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "RENAME TABLE GROUP_USERS_NEW TO GROUP_USERS";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "ALTER TABLE GROUPS DROP GID_OLD";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
 $sql = "CREATE TABLE PM_RECIPIENT ( ";
 $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL,";
 $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL,";

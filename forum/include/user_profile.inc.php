@@ -198,16 +198,14 @@ function user_get_profile($uid)
 
     if (user_is_banned($uid)) {
 
-        $user_profile['USER_GROUPS'] = gettext("Banned");
+        $user_profile['GROUPS'] = gettext("Banned");
 
     } else {
 
-        perm_user_get_group_names($uid, $user_groups_array);
-
-        if (sizeof($user_groups_array) > 0) {
-            $user_profile['USER_GROUPS'] = implode(', ', $user_groups_array);
+        if (($user_groups_array = perm_user_get_group_names($uid))) {
+            $user_profile['GROUPS'] = implode(', ', $user_groups_array);
         } else {
-            $user_profile['USER_GROUPS'] = gettext("Registered");
+            $user_profile['GROUPS'] = gettext("Registered");
         }
     }
 

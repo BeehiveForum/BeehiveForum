@@ -521,7 +521,7 @@ if (!($admin_uid = user_create($admin_username, $admin_password, $admin_username
     return;
 }
 
-if (!perm_update_global_perms($admin_uid, USER_PERM_ADMIN_TOOLS | USER_PERM_FORUM_TOOLS)) {
+if (!perm_update_user_global_perms($admin_uid, USER_PERM_ADMIN_TOOLS | USER_PERM_FORUM_TOOLS)) {
 
     $valid = false;
     return;
@@ -539,7 +539,7 @@ if (!forum_update_default($forum_fid)) {
     return;
 }
 
-if (!perm_update_user_forum_permissions($forum_fid, $admin_uid, USER_PERM_ADMIN_TOOLS)) {
+if (!perm_update_user_forum_permissions($admin_uid, $forum_fid, USER_PERM_ADMIN_TOOLS)) {
 
     $valid = false;
     return;

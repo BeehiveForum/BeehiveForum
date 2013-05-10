@@ -388,7 +388,7 @@ if (isset($_POST['action_submit'])) {
 
         if ($valid && ($new_global_user_perms <> $global_user_perm)) {
 
-            if (perm_update_global_perms($uid, $new_global_user_perms)) {
+            if (perm_update_user_global_perms($uid, $new_global_user_perms)) {
 
                 $global_user_perm = perm_get_global_user_permissions($uid);
 
@@ -1537,7 +1537,7 @@ if (forum_check_webtag_available($webtag)) {
         echo "                        <td align=\"left\" class=\"posthead\">\n";
         echo "                          <table class=\"posthead\" width=\"100%\">\n";
         echo "                            <tr>\n";
-        echo "                              <td align=\"left\" class=\"subhead\" width=\"100\">", gettext("Folders"), "</td>\n";
+        echo "                              <td align=\"left\" class=\"subhead\" width=\"150\">", gettext("Folders"), "</td>\n";
         echo "                              <td align=\"left\" class=\"subhead\">", gettext("Permissions"), "</td>\n";
         echo "                            </tr>\n";
         echo "                            <tr>\n";
@@ -1549,7 +1549,7 @@ if (forum_check_webtag_available($webtag)) {
             echo "                                  ", form_input_hidden("t_update_perms_array[]", htmlentities_array($folder['FID'])), "\n";
             echo "                                  <table class=\"posthead\" width=\"100%\">\n";
             echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"100\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
+            echo "                                      <td align=\"left\" rowspan=\"5\" width=\"150\" valign=\"top\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;fid={$folder['FID']}\" target=\"_self\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
             echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_read[{$folder['FID']}]", USER_PERM_POST_READ, gettext("Read Posts"), $folder['STATUS'] & USER_PERM_POST_READ), "</td>\n";
             echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_create[{$folder['FID']}]", USER_PERM_POST_CREATE, gettext("Reply to threads"), $folder['STATUS'] & USER_PERM_POST_CREATE), "</td>\n";
             echo "                                    </tr>\n";

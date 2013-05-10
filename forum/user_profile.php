@@ -171,12 +171,12 @@ echo "                      <tr>\n";
 echo "                        <td>\n";
 echo "                          <table width=\"95%\">\n";
 
-if (isset($user_profile['USER_GROUPS']) && sizeof($user_profile['USER_GROUPS']) > 0) {
+if (isset($user_profile['GROUPS']) && sizeof($user_profile['GROUPS']) > 0) {
 
-    $user_groups_list = (mb_strlen(trim($user_profile['USER_GROUPS'])) > 50) ? mb_substr($user_profile['USER_GROUPS'], 0, 47). "&hellip;" : $user_profile['USER_GROUPS'];
+    $user_groups_list = (mb_strlen(trim($user_profile['GROUPS'])) > 50) ? mb_substr($user_profile['GROUPS'], 0, 47). "&hellip;" : $user_profile['GROUPS'];
 
     echo "                            <tr>\n";
-    echo "                              <td align=\"left\" class=\"subhead\"><div title=\"", gettext("Groups"), ": ", word_filter_add_ob_tags($user_profile['USER_GROUPS'], true), "\"><span class=\"smalltext\">", gettext("Groups"), ": ", word_filter_add_ob_tags($user_groups_list), "</span></div></td>\n";
+    echo "                              <td align=\"left\" class=\"subhead\"><div title=\"", gettext("Groups"), ": ", word_filter_add_ob_tags($user_profile['GROUPS'], true), "\"><span class=\"smalltext\">", gettext("Groups"), ": ", word_filter_add_ob_tags($user_groups_list), "</span></div></td>\n";
     echo "                            </tr>\n";
 }
 

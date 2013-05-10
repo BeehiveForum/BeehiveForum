@@ -76,7 +76,7 @@ echo "                        <td align=\"left\">\n";
 echo "                          <h2>", gettext("Forum leaders:"), "</h2>\n";
 echo "                          <ul>\n";
 
-if (($forum_mods_array = mods_list_get_mods(0)) !== false) {
+if (($forum_mods_array = mods_list_forum_leaders()) !== false) {
 
     foreach ($forum_mods_array as $forum_mod) {
 
@@ -93,7 +93,7 @@ echo "                          </ul>\n";
 echo "                          <h2>", gettext("Folder moderators:"), "</h2>";
 echo "                          <ul>\n";
 
-if (($folder_mods_array = mods_list_get_mods($fid)) !== false) {
+if (($folder_mods_array = mods_list_folder_mods($fid)) !== false) {
 
     foreach ($folder_mods_array as $folder_mod) {
 

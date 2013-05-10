@@ -388,6 +388,7 @@ function install_get_table_names(&$global_tables, &$forum_tables)
             'USER',
             'USER_FORUM',
             'USER_HISTORY',
+            'USER_PERM',
             'USER_PREFS',
             'VISITOR_LOG'
          );

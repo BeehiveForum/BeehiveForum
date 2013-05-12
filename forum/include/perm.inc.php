@@ -350,7 +350,7 @@ function perm_user_get_group_names($uid)
 
     $sql = "SELECT GROUPS.GID, GROUPS.GROUP_NAME FROM GROUPS ";
     $sql.= "INNER JOIN GROUP_PERMS USING (GID) INNER JOIN GROUP_USERS USING (GID) ";
-    $sql.= "INNER JOIN USER USING (UID) WHERE GROUP.FORUM = $forum_fid ";
+    $sql.= "INNER JOIN USER USING (UID) WHERE GROUPS.FORUM = '$forum_fid' ";
     $sql.= "AND GROUP_USERS.UID = '$uid' GROUP BY GROUPS.GID";
 
     if (!($result = $db->query($sql))) return false;

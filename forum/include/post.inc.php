@@ -647,6 +647,29 @@ function post_edit_refuse($tid, $pid)
     html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => "$tid.$pid"));
 }
 
+function post_set_user_rating($tid, $pid, $uid, $rating)
+{
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+    if (!is_numeric($uid)) return false;
+
+    if (!in_array($rating, range(-1, 1))) return false;
+
+    if (!($table_prefix = get_table_prefix())) return false;
+
+    if (!$db = db::get()) return false;
+
+    $sql = "REPLACE INTO `{$table_prefix}POST_RATING` (TID, PID, UID, RATING) SELECT POST.TID, POST.PID, ";
+    $sql.= "USER.UID, IF(COALESCE(POST_RATING.RATING, 0) = $rating, 0, $rating) AS RATING FROM DEFAULT_POST POST ";
+    $sql.= "INNER JOIN USER ON (USER.UID = $uid) LEFT JOIN DEFAULT_POST_RATING POST_RATING ";
+    $sql.= "ON (POST_RATING.TID = POST.TID AND POST_RATING.PID = POST.PID AND POST_RATING.UID = $uid) ";
+    $sql.= "WHERE POST.TID = $tid AND POST.PID = $pid";
+
+    if (!$db->query($sql)) return false;
+
+    return true;
+}
+
 class MessageTextParse
 {
     protected $message;

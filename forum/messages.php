@@ -43,58 +43,57 @@ require_once BH_INCLUDE_PATH. 'thread.inc.php';
 // Message pane caching
 cache_check_messages();
 
-// Check that required variables are set
-// default to display most recent discussion for user
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $msg = $_GET['msg'];
-    list($tid, $pid) = explode('.', $msg);
 
-} else if (($msg = messages_get_most_recent($_SESSION['UID'])) !== false) {
+} else if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
-    list($tid, $pid) = explode('.', $msg);
+    $msg = $_POST['msg'];
 
-} else {
+} else if (($msg = messages_get_most_recent($_SESSION['UID'])) === false) {
 
     html_draw_error(gettext("Invalid Message ID or no Message ID specified."));
 }
 
+list($tid, $pid) = explode('.', $msg);
+
 // Poll stuff
-if (isset($_POST['pollsubmit'])) {
+if (isset($_POST['poll_submit'])) {
 
-    if (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
+    if (isset($_POST['poll_vote']) && is_array($_POST['poll_vote'])) {
 
-        $tid = $_POST['tid'];
+        $poll_votes_array = $_POST['poll_vote'];
 
-        if (isset($_POST['pollvote']) && is_array($_POST['pollvote'])) {
+        if (poll_check_tabular_votes($tid, $poll_votes_array)) {
 
-            $poll_votes_array = $_POST['pollvote'];
+            poll_vote($tid, $poll_votes_array);
 
-            if (poll_check_tabular_votes($tid, $poll_votes_array)) {
-
-                poll_vote($tid, $poll_votes_array);
-
-            } else {
-
-                html_draw_error(gettext("You must pick and answer for every question"));
-            }
+            header_redirect("messages.php?webtag=$webtag&msg=$msg");
 
         } else {
 
-            html_draw_error(gettext("You must select an answer to vote for"));
+            html_draw_error(gettext("You must pick and answer for every question"));
         }
+
+    } else {
+
+        html_draw_error(gettext("You must select an answer to vote for"));
     }
 
-} else if (isset($_POST['pollchangevote'])) {
+} else if (isset($_POST['poll_change_vote'])) {
 
-    if (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
+    poll_delete_vote($tid);
 
-        $tid = $_POST['tid'];
+    header_redirect("messages.php?webtag=$webtag&msg=$msg");
 
-        $pid = 1;
+} else if (isset($_POST['post_vote_down_x']) || isset($_POST['post_vote_up_x'])) {
 
-        poll_delete_vote($tid);
-    }
+    $post_rating = isset($_POST['post_vote_down_x']) ? -1 : 1;
+
+    post_set_user_rating($tid, $pid, $_SESSION['UID'], $post_rating);
+
+    header_redirect("messages.php?webtag=$webtag&msg=$msg");
 }
 
 // Number of posts per page

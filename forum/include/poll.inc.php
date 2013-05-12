@@ -545,7 +545,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $poll_display.= "      <td align=\"center\">\n";
     $poll_display.= "        <form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
     $poll_display.= "          ". form_input_hidden("webtag", htmlentities_array($webtag)). "\n";
-    $poll_display.= "          ". form_input_hidden('tid', htmlentities_array($tid)). "\n";
+    $poll_display.= "          ". form_input_hidden('msg', htmlentities_array("$tid.1")). "\n";
     $poll_display.= "          <table width=\"560\">\n";
 
     if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && ($_SESSION['UID'] > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y')))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
@@ -564,7 +564,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $dropdown_options_array = array_map('poll_dropdown_options_callback', $poll_question['OPTIONS_ARRAY']);
 
                 $poll_display.= "                <tr>\n";
-                $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[$question_id]", $dropdown_options_array). "</td>\n";
+                $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("poll_vote[$question_id]", $dropdown_options_array). "</td>\n";
                 $poll_display.= "                </tr>\n";
 
             } else {
@@ -574,13 +574,13 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                     if ((sizeof($poll_question['OPTIONS_ARRAY']) == 1) || ($poll_question['ALLOW_MULTI'] == 'Y')) {
 
                         $poll_display.= "                <tr>\n";
-                        $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[$question_id][$option_id]", 'Y', word_filter_add_ob_tags($option['OPTION_NAME'])). "</td>\n";
+                        $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("poll_vote[$question_id][$option_id]", 'Y', word_filter_add_ob_tags($option['OPTION_NAME'])). "</td>\n";
                         $poll_display.= "                </tr>\n";
 
                     } else {
 
                         $poll_display.= "                <tr>\n";
-                        $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[$question_id]", $option_id, word_filter_add_ob_tags($option['OPTION_NAME'])). "</td>\n";
+                        $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("poll_vote[$question_id]", $option_id, word_filter_add_ob_tags($option['OPTION_NAME'])). "</td>\n";
                         $poll_display.= "                </tr>\n";
                     }
                 }
@@ -704,7 +704,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 if ($poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) {
 
                     $poll_display.= "            <tr>\n";
-                    $poll_display.= "              <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', gettext("Vote")). "</td>\n";
+                    $poll_display.= "              <td colspan=\"2\" align=\"center\">". form_submit('poll_submit', gettext("Vote")). "</td>\n";
                     $poll_display.= "            </tr>\n";
                 }
 
@@ -725,7 +725,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 if ($poll_data['CHANGEVOTE'] != POLL_VOTE_CANNOT_CHANGE) {
 
                     $poll_display.= "            <tr>\n";
-                    $poll_display.= "              <td colspan=\"2\" align=\"center\">". form_submit('pollchangevote', gettext("Change vote")). "</td>\n";
+                    $poll_display.= "              <td colspan=\"2\" align=\"center\">". form_submit('poll_change_vote', gettext("Change vote")). "</td>\n";
                     $poll_display.= "            </tr>\n";
                     $poll_display.= "            <tr>\n";
                     $poll_display.= "              <td colspan=\"2\" align=\"center\">&nbsp;</td>\n";
@@ -745,7 +745,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
             } else if ($_SESSION['UID'] > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y'))) {
 
                 $poll_display.= "            <tr>\n";
-                $poll_display.= "              <td colspan=\"2\" align=\"center\">". form_submit('pollsubmit', gettext("Vote")). "</td>\n";
+                $poll_display.= "              <td colspan=\"2\" align=\"center\">". form_submit('poll_submit', gettext("Vote")). "</td>\n";
                 $poll_display.= "            </tr>\n";
                 $poll_display.= "            <tr>\n";
                 $poll_display.= "              <td colspan=\"2\" align=\"center\">";
@@ -886,7 +886,7 @@ function poll_voting_form($poll_results, $poll_data)
             $dropdown_options_array = array_map('poll_dropdown_options_callback', $poll_question['OPTIONS_ARRAY']);
 
             $poll_display.= "                <tr>\n";
-            $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("pollvote[$question_id]", $dropdown_options_array). "</td>\n";
+            $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\">". form_dropdown_array("poll_vote[$question_id]", $dropdown_options_array). "</td>\n";
             $poll_display.= "                </tr>\n";
 
         } else {
@@ -896,13 +896,13 @@ function poll_voting_form($poll_results, $poll_data)
                 if ((sizeof($poll_question['OPTIONS_ARRAY']) == 1) || ($poll_question['ALLOW_MULTI'] == 'Y')) {
 
                     $poll_display.= "                <tr>\n";
-                    $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("pollvote[$question_id][$option_id]", 'Y', word_filter_add_ob_tags($option['OPTION_NAME'])). "</td>\n";
+                    $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_checkbox("poll_vote[$question_id][$option_id]", 'Y', word_filter_add_ob_tags($option['OPTION_NAME'])). "</td>\n";
                     $poll_display.= "                </tr>\n";
 
                 } else {
 
                     $poll_display.= "                <tr>\n";
-                    $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("pollvote[$question_id]", $option_id, word_filter_add_ob_tags($option['OPTION_NAME'])). "</td>\n";
+                    $poll_display.= "                  <td align=\"left\" class=\"postbody\" valign=\"top\" width=\"1%\">". form_radio("poll_vote[$question_id]", $option_id, word_filter_add_ob_tags($option['OPTION_NAME'])). "</td>\n";
                     $poll_display.= "                </tr>\n";
                 }
             }

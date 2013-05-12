@@ -1132,6 +1132,10 @@ div.poll_option_list ol li {
     font-size: 90%
 }
 
+.smallertext {
+    font-size: 80%
+}
+
 .spellcheckbodytext {
     background-color: #FFFFFF;
     border-bottom: 1px solid buttonhighlight;

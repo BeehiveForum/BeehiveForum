@@ -63,15 +63,19 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
 
     $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
-    $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY, POST.IPADDRESS, ";
-    $sql.= "POST.MOVED_TID, POST.MOVED_PID, UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, ";
-    $sql.= "POST.APPROVED_BY, USER.LOGON AS FROM_LOGON, COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS FROM_NICKNAME, ";
-    $sql.= "USER_PEER.RELATIONSHIP AS RELATIONSHIP, USER_PREFS_GLOBAL.ANON_LOGON, ";
-    $sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_URL, USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, ";
+    $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY, POST.IPADDRESS, POST.MOVED_TID, POST.MOVED_PID, ";
+    $sql.= "UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, POST.APPROVED_BY, USER.LOGON AS FROM_LOGON, ";
+    $sql.= "COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS FROM_NICKNAME, USER_PEER.RELATIONSHIP AS RELATIONSHIP, ";
+    $sql.= "USER_PREFS_GLOBAL.ANON_LOGON, COALESCE(USER_PREFS_FORUM.AVATAR_URL, USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, ";
     $sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_AID, USER_PREFS_GLOBAL.AVATAR_AID) AS AVATAR_AID, ";
-    $sql.= "(SELECT MAX(SESSIONS.TIME) FROM SESSIONS WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
-    $sql.= "AND SESSIONS.FID = $forum_fid AND SESSIONS.UID = POST.FROM_UID) AS USER_ACTIVE ";
+    $sql.= "COALESCE(USER_POST_RATING.RATING, 0) AS USER_POST_RATING, (SELECT MAX(SESSIONS.TIME) ";
+    $sql.= "FROM SESSIONS WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql.= "AND SESSIONS.FID = $forum_fid AND SESSIONS.UID = POST.FROM_UID) AS USER_ACTIVE, ";
+    $sql.= "(SELECT COALESCE(SUM(POST_RATING.RATING), 0) FROM `{$table_prefix}POST_RATING` POST_RATING ";
+    $sql.= "WHERE POST_RATING.TID = POST.TID AND POST_RATING.PID = POST.PID) AS POST_RATING ";
     $sql.= "FROM `{$table_prefix}POST` POST LEFT JOIN USER ON (POST.FROM_UID = USER.UID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}POST_RATING` USER_POST_RATING ON (USER_POST_RATING.TID = POST.TID ";
+    $sql.= "AND USER_POST_RATING.PID = POST.PID AND USER_POST_RATING.UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.UID = '{$_SESSION['UID']}' ";
     $sql.= "AND USER_PEER.PEER_UID = POST.FROM_UID) LEFT JOIN `{$table_prefix}USER_PREFS` ";
     $sql.= "USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = POST.FROM_UID) LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
@@ -161,12 +165,22 @@ function messages_get_recipients($tid, &$messages_array)
 
     $pid_list = implode("','", array_keys($messages_array));
 
+    $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
+
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
+
     $sql = "SELECT POST_RECIPIENT.PID, POST_RECIPIENT.TO_UID, USER_PEER.RELATIONSHIP, ";
-    $sql.= "UNIX_TIMESTAMP(POST_RECIPIENT.VIEWED) AS VIEWED, ";
-    $sql.= "USER.LOGON, COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS NICKNAME ";
+    $sql.= "UNIX_TIMESTAMP(POST_RECIPIENT.VIEWED) AS VIEWED, USER_PREFS_GLOBAL.ANON_LOGON, ";
+    $sql.= "USER.LOGON, COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS NICKNAME, ";
+    $sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_URL, USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, ";
+    $sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_AID, USER_PREFS_GLOBAL.AVATAR_AID) AS AVATAR_AID, ";
+    $sql.= "(SELECT MAX(SESSIONS.TIME) FROM SESSIONS WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql.= "AND SESSIONS.FID = $forum_fid AND SESSIONS.UID = POST_RECIPIENT.TO_UID) AS USER_ACTIVE ";
     $sql.= "FROM `{$table_prefix}POST_RECIPIENT` POST_RECIPIENT LEFT JOIN USER ";
     $sql.= "ON (USER.UID = POST_RECIPIENT.TO_UID) LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.UID = '{$_SESSION['UID']}' AND USER_PEER.PEER_UID = POST_RECIPIENT.TO_UID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = POST_RECIPIENT.TO_UID) ";
+    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = POST_RECIPIENT.TO_UID) ";
     $sql.= "WHERE POST_RECIPIENT.TID = '$tid' AND POST_RECIPIENT.PID IN ('$pid_list')";
 
     if (!($result = $db->query($sql))) return false;
@@ -183,6 +197,10 @@ function messages_get_recipients($tid, &$messages_array)
             'NICKNAME' => $recipient_data['NICKNAME'],
             'RELATIONSHIP' => $recipient_data['RELATIONSHIP'],
             'VIEWED' => $recipient_data['VIEWED'],
+            'ANON_LOGON' => $recipient_data['ANON_LOGON'],
+            'USER_ACTIVE' => $recipient_data['USER_ACTIVE'],
+            'AVATAR_AID' => $recipient_data['AVATAR_AID'],
+            'AVATAR_URL' => $recipient_data['AVATAR_URL'],
         );
     }
 
@@ -571,18 +589,18 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if ($message['FROM_UID'] > -1) {
 
         echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" class=\"popup 650x500\">";
-        echo word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true), "</a></span>";
+        echo word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true), "</a>&nbsp;</span>";
 
     } else {
 
-        echo word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true), "</span>";
+        echo word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true), "&nbsp;</span>";
     }
 
     if (isset($_SESSION['SHOW_AVATARS']) && ($_SESSION['SHOW_AVATARS'] == 'Y')) {
 
         if (isset($message['AVATAR_URL']) && strlen($message['AVATAR_URL']) > 0) {
 
-            echo "&nbsp;<img src=\"{$message['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true), "\" border=\"0\" width=\"16\" height=\"16\" />";
+            echo "<img src=\"{$message['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true), "\" border=\"0\" style=\"max-height: 16px; max-width: 16px\" />&nbsp;";
 
         } else if (isset($message['AVATAR_AID']) && is_numeric($message['AVATAR_AID'])) {
 
@@ -590,7 +608,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false)) !== false) {
 
-                echo "&nbsp;<img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true), "\" border=\"0\" width=\"16\" height=\"16\" />\n";
+                echo "<img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true), "\" border=\"0\" style=\"max-height: 16px; max-width: 16px\" />&nbsp;";
             }
         }
     }
@@ -606,11 +624,20 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_FRIEND)) {
 
-        echo "&nbsp;<img src=\"", html_style_image('friend.png'), "\" alt=\"", gettext("Friend"), "\" title=\"", gettext("Friend"), "\" />";
+        echo "<img src=\"", html_style_image('friend.png'), "\" alt=\"", gettext("Friend"), "\" title=\"", gettext("Friend"), "\" />&nbsp;";
 
     } else if ((isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED)) || $temp_ignore) {
 
-        echo "&nbsp;<img src=\"", html_style_image('enemy.png'), "\" alt=\"", gettext("Ignored user"), "\" title=\"", gettext("Ignored user"), "\" />";
+        echo "<img src=\"", html_style_image('enemy.png'), "\" alt=\"", gettext("Ignored user"), "\" title=\"", gettext("Ignored user"), "\" />&nbsp;";
+    }
+
+    if ((isset($message['ANON_LOGON']) && $message['ANON_LOGON'] > USER_ANON_DISABLED) || !isset($message['USER_ACTIVE']) || is_null($message['USER_ACTIVE'])) {
+
+        echo "<img src=\"", html_style_image('status_offline.png'), "\" alt=\"\" title=\"", gettext("Inactive / Offline"), "\" />&nbsp;";
+
+    } else {
+
+        echo "<img src=\"", html_style_image('status_online.png'), "\" alt=\"\" title=\"", gettext("Online"), "\" />&nbsp;";
     }
 
     echo "</td>\n";
@@ -636,7 +663,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "              </tr>\n";
     echo "              <tr>\n";
     echo "                <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;", gettext("To"), ":&nbsp;</span></td>\n";
-    echo "                <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
+    echo "                <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\">";
 
     if (isset($message['RECIPIENTS']) && sizeof($message['RECIPIENTS']) > 0) {
 
@@ -646,18 +673,45 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                 continue;
             }
 
-            echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$recipient['UID']}\" target=\"_blank\" class=\"popup 650x500\">";
-            echo word_filter_add_ob_tags(format_user_name($recipient['LOGON'], $recipient['NICKNAME']), true), "</a>\n";
+            echo "<span class=\"posttofrom\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$recipient['UID']}\" target=\"_blank\" class=\"popup 650x500\">";
+            echo word_filter_add_ob_tags(format_user_name($recipient['LOGON'], $recipient['NICKNAME']), true), "</a>&nbsp;</span>\n";
+
+            if (isset($_SESSION['SHOW_AVATARS']) && ($_SESSION['SHOW_AVATARS'] == 'Y')) {
+
+                if (isset($recipient['AVATAR_URL']) && strlen($recipient['AVATAR_URL']) > 0) {
+
+                    echo "<img src=\"{$recipient['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($recipient['LOGON'], $recipient['NICKNAME']), true), "\" border=\"0\" style=\"max-height: 16px; max-width: 16px\" />&nbsp;";
+
+                } else if (isset($recipient['AVATAR_AID']) && is_numeric($recipient['AVATAR_AID'])) {
+
+                    $attachment = attachments_get_by_aid($recipient['AVATAR_AID']);
+
+                    if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false)) !== false) {
+
+                        echo "<img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($recipient['LOGON'], $recipient['NICKNAME']), true), "\" border=\"0\" style=\"max-height: 16px; max-width: 16px\" />&nbsp;";
+                    }
+                }
+            }
+
+            if ((isset($recipient['ANON_LOGON']) && $recipient['ANON_LOGON'] > USER_ANON_DISABLED) || !isset($recipient['USER_ACTIVE']) || is_null($recipient['USER_ACTIVE'])) {
+
+                echo "<img src=\"", html_style_image('status_offline.png'), "\" alt=\"\" title=\"", gettext("Inactive / Offline"), "\" />&nbsp;";
+
+            } else {
+
+                echo "<img src=\"", html_style_image('status_online.png'), "\" alt=\"\" title=\"", gettext("Online"), "\" />&nbsp;";
+            }
 
             if (isset($recipient['VIEWED']) && $recipient['VIEWED'] > 0) {
 
-                echo "<span class=\"smalltext\"><img src=\"", html_style_image('post_read.png'), "\" alt=\"\" title=\"", sprintf(gettext("Read: %s"), format_time($recipient['VIEWED'])), "\" /></span>\n";
+                echo "<img src=\"", html_style_image('post_read.png'), "\" alt=\"\" title=\"", sprintf(gettext("Read: %s"), format_time($recipient['VIEWED'])), "\" />&nbsp;&nbsp;";
 
             } else {
 
                 if ($is_preview == false) {
-
-                    echo "<span class=\"smalltext\"><img src=\"", html_style_image('post_unread.png'), "\" alt=\"\" title=\"", gettext("Unread Message"), "\" /></span>\n";
+                    echo "<img src=\"", html_style_image('post_unread.png'), "\" alt=\"\" title=\"", gettext("Unread Message"), "\" />&nbsp;&nbsp;";
+                } else {
+                    echo "&nbsp;&nbsp;";
                 }
             }
         }
@@ -795,20 +849,33 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "            <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
             echo "              <tr>\n";
+            echo "                <td align=\"left\" width=\"25%\">";
+            echo "                  <form method=\"POST\" action=\"messages.php\" target=\"_self\">\n";
+            echo "                    ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+            echo "                    ", form_input_hidden("msg", htmlentities_array("$tid.{$message['PID']}")), "\n";
+            echo "                    <span class=\"smallertext\">", gettext("Score"), ": ", ($message['POST_RATING'] > 0 ? '+' : ''), $message['POST_RATING'], "</span>";
 
-            if ((isset($message['ANON_LOGON']) && $message['ANON_LOGON'] > USER_ANON_DISABLED) || !isset($message['USER_ACTIVE']) || is_null($message['USER_ACTIVE'])) {
+            if (isset($message['USER_POST_RATING']) && in_array($message['USER_POST_RATING'], array(-1, 1))) {
 
-                echo "                <td width=\"25%\" align=\"left\">";
-                echo "                  <img src=\"", html_style_image('status_offline.png'), "\" alt=\"\" title=\"", gettext("Inactive / Offline"), "\" />";
-                echo "                </td>\n";
+                if ($message['USER_POST_RATING'] > 0) {
+
+                    echo "                    ", form_submit_image(html_style_image('vote_down_off.png'), 'post_vote_down'), "\n";
+                    echo "                    ", form_submit_image(html_style_image('vote_up_on.png'), 'post_vote_up'), "\n";
+
+                } else {
+
+                    echo "                    ", form_submit_image(html_style_image('vote_down_on.png'), 'post_vote_down'), "\n";
+                    echo "                    ", form_submit_image(html_style_image('vote_up_off.png'), 'post_vote_up'), "\n";
+                }
 
             } else {
 
-                echo "                <td width=\"25%\" align=\"left\">";
-                echo "                  <img src=\"", html_style_image('status_online.png'), "\" alt=\"\" title=\"", gettext("Online"), "\" />";
-                echo "                </td>\n";
+                echo "                    ", form_submit_image(html_style_image('vote_down_off.png'), 'post_vote_down'), "\n";
+                echo "                    ", form_submit_image(html_style_image('vote_up_off.png'), 'post_vote_up'), "\n";
             }
 
+            echo "                  </form>\n";
+            echo "                </td>\n";
             echo "                <td width=\"50%\" style=\"white-space: nowrap\">";
 
             if ($msg_count > 0) {
@@ -853,7 +920,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             }
 
             echo "</td>\n";
-            echo "                <td width=\"25%\" align=\"right\" style=\"white-space: nowrap\">\n";
+            echo "                <td align=\"right\" style=\"white-space: nowrap\">\n";
             echo "                  <span class=\"post_options\" id=\"post_options_$tid.{$message['PID']}\"></span>\n";
             echo "                </td>\n";
             echo "              </tr>";

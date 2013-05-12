@@ -36,17 +36,15 @@ require_once BH_INCLUDE_PATH. 'poll.inc.php';
 // Message pane caching
 cache_check_messages();
 
-// Check that required variables are set
-// default to display most recent discussion for user
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    list($tid, $pid) = explode('.', $_GET['msg']);
+    $msg = $_GET['msg'];
 
-} else if (($msg = messages_get_most_recent($_SESSION['UID'])) !== false) {
+} else if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
-    list($tid, $pid) = explode('.', $msg);
+    $msg = $_POST['msg'];
 
-} else {
+} else if (($msg = messages_get_most_recent($_SESSION['UID'])) === false) {
 
     light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
     light_html_display_error_msg(gettext("No Messages"));
@@ -54,48 +52,41 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     exit;
 }
 
-// Poll stuff
-if (isset($_POST['pollsubmit'])) {
+list($tid, $pid) = explode('.', $msg);
 
-    if (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
+if (isset($_POST['poll_submit'])) {
 
-        $tid = $_POST['tid'];
+    if (isset($_POST['poll_vote']) && is_array($_POST['poll_vote'])) {
 
-        if (isset($_POST['pollvote']) && is_array($_POST['pollvote'])) {
+        $poll_votes = $_POST['poll_vote'];
 
-            $poll_votes = $_POST['pollvote'];
+        if (poll_check_tabular_votes($tid, $poll_votes)) {
 
-            if (poll_check_tabular_votes($tid, $poll_votes)) {
+            poll_vote($tid, $poll_votes);
 
-                poll_vote($tid, $poll_votes);
-
-            } else {
-
-                light_html_draw_top(sprintf("title=%s", gettext("Error")));
-                light_html_display_error_msg(gettext("You must vote in every group."));
-                light_html_draw_bottom();
-                exit;
-            }
+            header_redirect("lmessages.php?webtag=$webtag&msg=$msg");
 
         } else {
 
             light_html_draw_top(sprintf("title=%s", gettext("Error")));
-            light_html_display_error_msg(gettext("You must select an option to vote for!"));
+            light_html_display_error_msg(gettext("You must vote in every group."));
             light_html_draw_bottom();
             exit;
         }
+
+    } else {
+
+        light_html_draw_top(sprintf("title=%s", gettext("Error")));
+        light_html_display_error_msg(gettext("You must select an option to vote for!"));
+        light_html_draw_bottom();
+        exit;
     }
 
-} else if (isset($_POST['pollchangevote'])) {
+} else if (isset($_POST['poll_change_vote'])) {
 
-    if (isset($_POST['tid']) && is_numeric($_POST['tid'])) {
+    poll_delete_vote($tid);
 
-        $tid = $_POST['tid'];
-
-        $pid = 1;
-
-        poll_delete_vote($tid);
-    }
+    header_redirect("lmessages.php?webtag=$webtag&msg=$msg");
 }
 
 light_html_draw_top();

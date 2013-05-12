@@ -1424,7 +1424,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
     $poll_display = "<div class=\"poll\">\n";
     $poll_display.= "<form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
     $poll_display.= form_input_hidden('webtag', htmlentities_array($webtag));
-    $poll_display.= form_input_hidden('tid', htmlentities_array($tid));
+    $poll_display.= form_input_hidden('msg', htmlentities_array("$tid.1"));
 
     if (((!is_array($user_poll_votes_array) || $poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) && ($_SESSION['UID'] > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y')))) && ($poll_data['CLOSES'] == 0 || $poll_data['CLOSES'] > time()) && !$is_preview) {
 
@@ -1436,7 +1436,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
                 $dropdown_options_array = array_map('poll_dropdown_options_callback', $poll_question['OPTIONS_ARRAY']);
 
-                $poll_display.= light_form_dropdown_array("pollvote[$question_id]", $dropdown_options_array);
+                $poll_display.= light_form_dropdown_array("poll_vote[$question_id]", $dropdown_options_array);
 
             } else {
 
@@ -1444,11 +1444,11 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
                     if ((sizeof($poll_question['OPTIONS_ARRAY']) == 1) || ($poll_question['ALLOW_MULTI'] == 'Y')) {
 
-                        $poll_display.= light_form_checkbox("pollvote[$question_id][$option_id]", 'Y', word_filter_add_ob_tags($option['OPTION_NAME']));
+                        $poll_display.= light_form_checkbox("poll_vote[$question_id][$option_id]", 'Y', word_filter_add_ob_tags($option['OPTION_NAME']));
 
                     } else {
 
-                        $poll_display.= light_form_radio("pollvote[$question_id]", $option_id, word_filter_add_ob_tags($option['OPTION_NAME']));
+                        $poll_display.= light_form_radio("poll_vote[$question_id]", $option_id, word_filter_add_ob_tags($option['OPTION_NAME']));
                     }
                 }
             }
@@ -1505,11 +1505,11 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
                 $poll_display.= poll_display_user_votes($user_poll_votes_array);
 
                 if ($poll_data['CHANGEVOTE'] == POLL_VOTE_MULTI) {
-                    $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('pollsubmit', gettext("Vote")). "</div>";
+                    $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('poll_submit', gettext("Vote")). "</div>";
                 }
 
                 if ($poll_data['CHANGEVOTE'] != POLL_VOTE_CANNOT_CHANGE) {
-                    $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('pollchangevote', gettext("Change vote")). "</div>\n";
+                    $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('poll_change_vote', gettext("Change vote")). "</div>\n";
                 }
 
                 if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
@@ -1518,7 +1518,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
             } else if ($_SESSION['UID'] > 0 || ($poll_data['ALLOWGUESTS'] == POLL_GUEST_ALLOWED && forum_get_setting('poll_allow_guests', 'Y'))) {
 
-                $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('pollsubmit', gettext("Vote")). "</div>";
+                $poll_display.= "<div class=\"poll_buttons\">". light_form_submit('poll_submit', gettext("Vote")). "</div>";
 
                 if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC && $poll_data['CHANGEVOTE'] < POLL_VOTE_MULTI && $poll_data['POLLTYPE'] <> POLL_TABLE_GRAPH) {
                     $poll_display.= "<div class=\"poll_type_warning\">". gettext("<b>Warning</b>: This is a public ballot. Your name will be visible next to the option you vote for."). "</div>\n";

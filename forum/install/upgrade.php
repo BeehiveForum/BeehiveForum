@@ -817,6 +817,23 @@ if (!($result = $db->query($sql))) {
 
 foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
+    if (!install_table_exists($config['db_database'], "{$table_data['WEBTAG']}_POST_RATING")) {
+
+        $sql = "CREATE TABLE DEFAULT_POST_RATING (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  RATING TINYINT(4) NOT NULL,";
+        $sql.= "  PRIMARY KEY (TID,PID,UID)";
+        $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+
+        if (!($result = $db->query($sql))) {
+
+            $valid = false;
+            return;
+        }
+    }
+
     if (!install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_USER_TRACK", 'USER_KEY')) {
 
         $sql = "CREATE TABLE `{$table_data['PREFIX']}USER_TRACK_NEW` (";

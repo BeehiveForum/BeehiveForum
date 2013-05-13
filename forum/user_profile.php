@@ -223,12 +223,18 @@ echo "                            <tr>\n";
 echo "                              <td class=\"subhead\" align=\"left\"><span class=\"smalltext\">", gettext("Status"), ": {$user_profile['STATUS']}</span></td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
+echo "                              <td class=\"subhead\" align=\"left\"><span class=\"smalltext\">", gettext("Total Post Rating"), ": ", ($user_profile['POST_RATING'] > 0 ? '+' : ''), $user_profile['POST_RATING'], "</span></td>\n";
+echo "                            </tr>\n";
+echo "                            <tr>\n";
+echo "                              <td class=\"subhead\" align=\"left\"><span class=\"smalltext\">", gettext("Votes Cast"), ": ", sprintf(gettext("%d total, %d down - %d up"), $user_profile['POST_VOTE_TOTAL'], $user_profile['POST_VOTE_DOWN'], $user_profile['POST_VOTE_UP']), "</span></td>\n";
+echo "                            </tr>\n";
+echo "                            <tr>\n";
 echo "                              <td>&nbsp;</td>\n";
 echo "                            </tr>\n";
 echo "                          </table>\n";
 echo "                        </td>\n";
-echo "                        <td valign=\"top\">\n";
-echo "                          <table width=\"95%\">\n";
+echo "                        <td valign=\"top\" width=\"110\">\n";
+echo "                          <table width=\"100%\">\n";
 
 if (isset($user_profile['PIC_URL'])) {
 

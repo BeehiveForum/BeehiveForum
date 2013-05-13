@@ -1572,7 +1572,7 @@ function admin_send_user_approval_notification()
     $sql = "SELECT DISTINCT USER_PERM.UID, BIT_OR(USER_PERM.PERM) AS PERM ";
     $sql.= "FROM USER INNER JOIN USER_PERM ON (USER_PERM.UID = USER.UID) ";
     $sql.= "WHERE USER_PERM.FORUM = 0 GROUP BY USER.UID ";
-    $sql.= "HAVING PERM & $user_perm_admin_tools > 0)";
+    $sql.= "HAVING PERM & $user_perm_admin_tools > 0";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1599,7 +1599,7 @@ function admin_send_new_user_notification($new_user_uid)
     $sql = "SELECT DISTINCT USER_PERM.UID, BIT_OR(USER_PERM.PERM) AS PERM ";
     $sql.= "FROM USER INNER JOIN USER_PERM ON (USER_PERM.UID = USER.UID) ";
     $sql.= "WHERE USER_PERM.FORUM = 0 GROUP BY USER.UID ";
-    $sql.= "HAVING PERM & $user_perm_admin_tools > 0)";
+    $sql.= "HAVING PERM & $user_perm_admin_tools > 0";
 
     if (!($result = $db->query($sql))) return false;
 

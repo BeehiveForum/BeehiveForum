@@ -45,7 +45,7 @@ function mods_list_folder_mods($fid)
     $sql.= "AND GROUP_PERMS.FID IN (0, $fid) AND GROUP_PERMS.PERM & $user_perm_folder_moderate) UNION ALL ";
     $sql.= "(SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME FROM USER INNER JOIN USER_PERM ";
     $sql.= "ON (USER_PERM.UID = USER.UID) WHERE USER_PERM.FORUM IN (0, $forum_fid) AND USER_PERM.FID IN (0, $fid) ";
-    $sql.= "AND USER_PERM.PERM & $user_perm_folder_moderate > 0)) AS USERS LEFT JOIN DEFAULT_USER_PEER USER_PEER ";
+    $sql.= "AND USER_PERM.PERM & $user_perm_folder_moderate > 0)) AS USERS LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USERS.UID AND USER_PEER.UID = {$_SESSION['UID']})";
 
     if (!($result = $db->query($sql))) return false;
@@ -78,7 +78,7 @@ function mods_list_forum_leaders()
     $sql.= "AND GROUP_PERMS.FID IN (0) AND GROUP_PERMS.PERM & $user_perm_admin_tools) UNION ALL ";
     $sql.= "(SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME FROM USER INNER JOIN USER_PERM ";
     $sql.= "ON (USER_PERM.UID = USER.UID) WHERE USER_PERM.FORUM IN (0, $forum_fid) AND USER_PERM.FID IN (0) ";
-    $sql.= "AND USER_PERM.PERM & $user_perm_admin_tools > 0)) AS USERS LEFT JOIN DEFAULT_USER_PEER USER_PEER ";
+    $sql.= "AND USER_PERM.PERM & $user_perm_admin_tools > 0)) AS USERS LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql.= "ON (USER_PEER.PEER_UID = USERS.UID AND USER_PEER.UID = {$_SESSION['UID']})";
 
     if (!($result = $db->query($sql))) return false;

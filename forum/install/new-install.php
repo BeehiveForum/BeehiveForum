@@ -103,10 +103,13 @@ if (!($result = $db->query($sql))) {
 }
 
 $sql = "CREATE TABLE GROUPS (";
-$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  GROUP_NAME VARCHAR(32) DEFAULT NULL,";
+$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  GROUP_NAME VARCHAR(32) NOT NULL,";
 $sql.= "  GROUP_DESC VARCHAR(255) DEFAULT NULL,";
-$sql.= "  PRIMARY KEY  (GID)";
+$sql.= "  GID_OLD MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  PRIMARY KEY (GID),";
+$sql.= "  KEY FORUM (FORUM)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 if (!($result = $db->query($sql))) {
@@ -116,11 +119,10 @@ if (!($result = $db->query($sql))) {
 }
 
 $sql = "CREATE TABLE GROUP_PERMS (";
-$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PERM INT(32) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (GID,FORUM,FID)";
+$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  PERM INT(32) UNSIGNED NOT NULL,";
+$sql.= "  PRIMARY KEY (GID,FID)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 if (!($result = $db->query($sql))) {
@@ -130,10 +132,9 @@ if (!($result = $db->query($sql))) {
 }
 
 $sql = "CREATE TABLE GROUP_USERS (";
-$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
-$sql.= "  UID MEDIUMINT(8) NOT NULL DEFAULT '0',";
-$sql.= "  PRIMARY KEY  (GID,UID),";
-$sql.= "  KEY UID (UID)";
+$sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  PRIMARY KEY (GID,UID)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 if (!($result = $db->query($sql))) {
@@ -204,6 +205,19 @@ if (!($result = $db->query($sql))) {
     return;
 }
 
+$sql = "CREATE TABLE PM_RECIPIENT ( ";
+$sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  NOTIFIED CHAR(1) NOT NULL DEFAULT 'N',";
+$sql.= "  PRIMARY KEY (MID,TO_UID)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
 $sql = "CREATE TABLE PM_SEARCH_RESULTS (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
@@ -215,6 +229,19 @@ $sql.= "  RECIPIENTS VARCHAR(255) NOT NULL DEFAULT '', ";
 $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  PRIMARY KEY (UID, MID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE PM_TYPE (";
+$sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  TYPE TINYINT(3) UNSIGNED NOT NULL,";
+$sql.= "  PRIMARY KEY (MID,UID,TYPE)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 if (!($result = $db->query($sql))) {
 
@@ -405,6 +432,20 @@ $sql.= "  EMAIL VARCHAR(80) NOT NULL DEFAULT '', ";
 $sql.= "  MODIFIED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  PRIMARY KEY (HID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+if (!($result = $db->query($sql))) {
+
+    $valid = false;
+    return;
+}
+
+$sql = "CREATE TABLE USER_PERM (";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL,";
+$sql.= "  PERM INT(32) UNSIGNED NOT NULL,";
+$sql.= "  PRIMARY KEY (UID,FORUM,FID)";
+$sql.= ") ENGINE=MYISAM CHARSET=UTF8";
 
 if (!($result = $db->query($sql))) {
 

@@ -92,7 +92,7 @@ if (!install_table_exists($config['db_database'], 'USER_PERM')) {
     $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
     $sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL,";
     $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL,";
-    $sql.= "  PERM MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql.= "  PERM INT(32) UNSIGNED NOT NULL,";
     $sql.= "  PRIMARY KEY (UID,FORUM,FID)";
     $sql.= ") ENGINE=MYISAM CHARSET=UTF8";
 
@@ -817,9 +817,35 @@ if (!($result = $db->query($sql))) {
 
 foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
+    if (!install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_POST", 'INDEXED')) {
+
+        $sql = "ALTER TABLE `{$forum_table_prefix}POST` ADD COLUMN INDEXED DATETIME NULL";
+
+        if (!@$db->query($sql)) {
+            throw new Exception('Failed to create table POST_SEARCH_ID');
+        }
+
+        $sql = "DROP TABLE IF EXISTS `{$forum_table_prefix}POST_SEARCH_ID`";
+
+        if (!@$db->query($sql)) {
+            throw new Exception('Failed to create table POST_SEARCH_ID');
+        }
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}POST_SEARCH_ID` (";
+        $sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  PRIMARY KEY  (SID,TID,PID)";
+        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        if (!@$db->query($sql)) {
+            throw new Exception('Failed to create table POST_SEARCH_ID');
+        }
+    }
+
     if (!install_table_exists($config['db_database'], "{$table_data['WEBTAG']}_POST_RATING")) {
 
-        $sql = "CREATE TABLE DEFAULT_POST_RATING (";
+        $sql = "CREATE TABLE `{$forum_table_prefix}POST_RATING` (";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -1006,7 +1032,23 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         return;
     }
 
+    $sql = "UPDATE `{$table_data['PREFIX']}POST` SET APPROVED = NULL WHERE APPROVED = 0";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
     $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` CHANGE APPROVED_BY APPROVED_BY MEDIUMINT(8) UNSIGNED NULL";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
+    $sql = "UPDATE `{$table_data['PREFIX']}POST` SET APPROVED_BY = NULL WHERE APPROVED_BY = 0";
 
     if (!($result = $db->query($sql))) {
 
@@ -1022,6 +1064,14 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         return;
     }
 
+    $sql = "UPDATE `{$table_data['PREFIX']}POST` SET EDITED_BY = NULL WHERE EDITED_BY = 0";
+
+    if (!($result = $db->query($sql))) {
+
+        $valid = false;
+        return;
+    }
+
     $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` CHANGE IPADDRESS IPADDRESS VARCHAR(255) NULL";
 
     if (!($result = $db->query($sql))) {
@@ -1030,13 +1080,6 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         return;
     }
 
-    $sql = "UPDATE `{$table_data['PREFIX']}POST` SET EDITED_BY = NULL WHERE EDITED_BY = 0";
-
-    if (!($result = $db->query($sql))) {
-
-        $valid = false;
-        return;
-    }
 
     $sql = "UPDATE `{$table_data['PREFIX']}POST` SET IPADDRESS = NULL WHERE LENGTH(IPADDRESS) = 0";
 

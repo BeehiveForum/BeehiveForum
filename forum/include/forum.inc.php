@@ -1058,11 +1058,14 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  IPADDRESS VARCHAR(255) DEFAULT NULL,";
         $sql.= "  MOVED_TID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
         $sql.= "  MOVED_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql.= "  INDEXED DATETIME DEFAULT NULL,";
         $sql.= "  PRIMARY KEY (TID,PID),";
         $sql.= "  KEY FROM_UID (FROM_UID),";
         $sql.= "  KEY IPADDRESS (IPADDRESS,FROM_UID),";
         $sql.= "  KEY APPROVED (APPROVED),";
-        $sql.= "  KEY CREATED (CREATED)";
+        $sql.= "  KEY CREATED (CREATED),";
+        $sql.= "  KEY CREATED (EDITED),";
+        $sql.= "  KEY CREATED (INDEXED)";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
         if (!($result = $db->query($sql))) {
@@ -1081,6 +1084,18 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             throw new Exception('Failed to create table POST_CONTENT');
         }
 
+        $sql = "CREATE TABLE `{$forum_table_prefix}POST_RATING` (";
+        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql.= "  RATING TINYINT(4) NOT NULL,";
+        $sql.= "  PRIMARY KEY (TID,PID,UID)";
+        $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+
+        if (!@$db->query($sql)) {
+            throw new Exception('Failed to create table POST_RATING');
+        }
+
         $sql = "CREATE TABLE `{$forum_table_prefix}POST_RECIPIENT` (";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -1097,7 +1112,6 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  INDEXED DATETIME DEFAULT NULL,";
         $sql.= "  PRIMARY KEY  (SID,TID,PID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 

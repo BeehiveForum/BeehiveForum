@@ -463,7 +463,55 @@ switch ($_GET['action']) {
             exit;
         }
 
+        if (!($message = messages_get($tid, $pid, 1))) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
         if (!($content = message_get_post_options_html($tid, $pid, $thread_data['FID']))) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
+        break;
+
+    case 'post_vote':
+
+        if (!session::logged_in()) break;
+
+        cache_disable();
+
+        if (!isset($_GET['msg']) || !validate_msg($_GET['msg'])) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
+        list($tid, $pid) = explode('.', $_GET['msg']);
+
+        if (!isset($_GET['post_rating']) || !in_array($_GET['post_rating'], array(-1, 1))) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
+        $post_rating = $_GET['post_rating'];
+
+        if (!post_set_user_rating($tid, $pid, $_SESSION['UID'], $post_rating)) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
+        if (!($message = messages_get($tid, $pid, 1))) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
+        if (!($content = message_get_vote_form_html($tid, $pid, $message['POST_RATING'], $message['USER_POST_RATING']))) {
 
             header_status(500, 'Internal Server Error');
             exit;

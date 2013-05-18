@@ -44,6 +44,42 @@ $(beehive).bind('init', function() {
         });
     };
 
+    $('body').on('click', 'input.post_vote_up, input.post_vote_down', function(event) {
+
+        var $button = $(this);
+
+        var $form = $button.closest('form');
+
+        event.preventDefault();
+
+        $.ajax({
+
+            'cache' : true,
+
+            'data' : {
+                'webtag' : beehive.webtag,
+                'ajax' : 'true',
+                'action' : 'post_vote',
+                'post_rating' : $button.hasClass('post_vote_up') ? 1 : -1,
+                'msg' : $form.data('msg')
+            },
+
+            'url' : beehive.forum_path + '/ajax.php',
+
+            'success' : function(data) {
+
+                try {
+
+                    $form.replaceWith($(data));
+
+                } catch (exception) {
+
+                    beehive.ajax_error(exception);
+                }
+            }
+        });
+    });
+
     $('span.post_options').each(function() {
 
         var $link = $(this);

@@ -307,39 +307,42 @@ if (!$new_thread) {
     }
 }
 
-if (isset($_POST['to_logon']) && strlen(trim($_POST['to_logon'])) > 0) {
+if (isset($_POST['to_logon'])) {
 
-    $to_logon_array = preg_split('/,\s*/u', trim($_POST['to_logon'], ', '));
+    if (strlen(trim($_POST['to_logon'])) > 0) {
 
-    $to_logon_array = array_filter(array_map('trim', $to_logon_array), 'strlen');
+        $to_logon_array = preg_split('/,\s*/u', trim($_POST['to_logon'], ', '));
 
-    foreach ($to_logon_array as $key => $recipient) {
+        $to_logon_array = array_filter(array_map('trim', $to_logon_array), 'strlen');
 
-        $to_logon = trim($recipient);
+        foreach ($to_logon_array as $key => $recipient) {
 
-        unset($to_logon_array[$key]);
+            $to_logon = trim($recipient);
 
-        if (($to_user = user_get_by_logon($to_logon)) !== false) {
+            unset($to_logon_array[$key]);
 
-            $to_logon_array[$to_user['UID']] = array(
-                'UID' => $to_user['UID'],
-                'LOGON' => $to_user['LOGON'],
-                'NICKNAME' => $to_user['NICKNAME']
-            );
+            if (($to_user = user_get_by_logon($to_logon)) !== false) {
 
-        } else {
+                $to_logon_array[$to_user['UID']] = array(
+                    'UID' => $to_user['UID'],
+                    'LOGON' => $to_user['LOGON'],
+                    'NICKNAME' => $to_user['NICKNAME']
+                );
 
-            $error_msg_array[] = sprintf(gettext("User %s not found"), $to_logon);
+            } else {
+
+                $error_msg_array[] = sprintf(gettext("User %s not found"), $to_logon);
+                $valid = false;
+            }
+        }
+
+        $to_logon = implode(', ', array_map('user_get_logon_callback', $to_logon_array));
+
+        if ($valid && sizeof($to_logon_array) > 10) {
+
+            $error_msg_array[] = gettext("There is a limit of 10 recipients per message. Please amend your recipient list.");
             $valid = false;
         }
-    }
-
-    $to_logon = implode(', ', array_map('user_get_logon_callback', $to_logon_array));
-
-    if ($valid && sizeof($to_logon_array) > 10) {
-
-        $error_msg_array[] = gettext("There is a limit of 10 recipients per message. Please amend your recipient list.");
-        $valid = false;
     }
 
 } else if (isset($tid) && isset($reply_to_pid) && ($reply_to_pid > 0)) {

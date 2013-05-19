@@ -1824,7 +1824,13 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         }
 
         if (sizeof($links_array) > 0) {
-            echo "<div class=\"message_footer_links\">", implode('&nbsp;&nbsp;', $links_array), "</div>\n";
+
+            echo "<div class=\"message_footer\">\n";
+            echo "  <div class=\"message_footer_links\">", implode('&nbsp;&nbsp;', $links_array), "</div>\n";
+            echo "  <div class=\"message_vote_form\" data-msg=\"$tid.{$message['PID']}\">\n";
+            echo "    ", light_message_get_vote_form_html($tid, $message['PID'], $message['POST_RATING'], $message['USER_POST_RATING']), "\n";
+            echo "  </div>\n";
+            echo "</div>\n";
         }
 
     } else {
@@ -1833,6 +1839,41 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     }
 
     echo "</div>";
+}
+
+function light_message_get_vote_form_html($tid, $pid, $post_rating, $user_post_rating)
+{
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+    if (!is_numeric($post_rating)) return false;
+    if (!is_numeric($user_post_rating)) return false;
+
+    $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
+
+    $html = "  <span>". ($post_rating > 0 ? '+' : ''). $post_rating. "</span>";
+
+    if (isset($user_post_rating) && in_array($user_post_rating, array(-1, 1))) {
+
+        if ($user_post_rating > 0) {
+
+            $html.= "  <img src=\"". html_style_image('vote_down_off.png'). "\" title=\"". gettext('Vote Down'). "\" class=\"post_vote_down\" />\n";
+            $html.= "  <img src=\"". html_style_image('vote_up_on.png'). "\" title=\"". gettext('Clear Vote'). "\" class=\"post_vote_up\" />\n";
+
+        } else {
+
+            $html.= "  <img src=\"". html_style_image('vote_down_on.png'). "\" title=\"". gettext('Clear Vote'). "\" class=\"post_vote_down\" />\n";
+            $html.= "  <img src=\"". html_style_image('vote_up_off.png'). "\" title=\"". gettext('Vote Up'). "\" class=\"post_vote_up\" />\n";
+        }
+
+    } else {
+
+        $html.= "  <img src=\"". html_style_image('vote_down_off.png'). "\" title=\"". gettext('Vote Down'). "\" class=\"post_vote_down\" />\n";
+        $html.= "  <img src=\"". html_style_image('vote_up_off.png'). "\" title=\"". gettext('Vote Up'). "\" class=\"post_vote_up\" />\n";
+    }
+
+    return $html;
 }
 
 function light_spoiler_enable($message)

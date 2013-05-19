@@ -22,17 +22,14 @@ USA
 $(beehive).bind('init', function() {
 
     $('body').bind('click', function(event) {
-
-        var $menu = $('div#menu');
-
-        $menu.hide();
+        $('div#menu').hide();
+        $('.message_vote_form').removeClass('popup');
     });
 
     $('div#nav').bind('click', function(event) {
 
-        var $menu = $('div#menu');
-
-        $menu.show();
+        $('div#menu').show();
+        $('.message_vote_form').removeClass('popup');
 
         event.stopPropagation();
 
@@ -44,4 +41,49 @@ $(beehive).bind('init', function() {
     }).on('blur', 'input,select', function() {
         $.mobile.zoom.enable(true);
     });
+
+    $('body').on('click', '.message_vote_form', function(event) {
+
+        $(this).addClass('popup');
+        event.stopPropagation();
+    });
+
+    $('body').on('click', '.message_vote_form.popup img', function(event) {
+
+        var $button = $(this);
+
+        var $container = $button.closest('.message_vote_form');
+
+        event.preventDefault();
+
+        $.ajax({
+
+            'cache' : true,
+
+            'data' : {
+                'webtag' : beehive.webtag,
+                'ajax' : 'true',
+                'action' : 'post_vote',
+                'post_rating' : $button.hasClass('post_vote_up') ? 1 : -1,
+                'mobile' : 'true',
+                'msg' : $container.data('msg')
+            },
+
+            'url' : beehive.forum_path + '/ajax.php',
+
+            'success' : function(data) {
+
+                try {
+
+                    $container.html(data).show();
+
+                } catch (exception) {
+
+                    beehive.ajax_error(exception);
+                }
+            }
+        });
+    });
+
+    $('.message_vote_form').show();
 });

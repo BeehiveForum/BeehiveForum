@@ -29,6 +29,7 @@ require_once BH_INCLUDE_PATH. 'attachments.inc.php';
 require_once BH_INCLUDE_PATH. 'cache.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH. 'light.inc.php';
 require_once BH_INCLUDE_PATH. 'messages.inc.php';
 require_once BH_INCLUDE_PATH. 'pm.inc.php';
 require_once BH_INCLUDE_PATH. 'poll.inc.php';
@@ -511,10 +512,21 @@ switch ($_GET['action']) {
             exit;
         }
 
-        if (!($content = message_get_vote_form_html($tid, $pid, $message['POST_RATING'], $message['USER_POST_RATING']))) {
+        if (isset($_GET['mobile'])) {
 
-            header_status(500, 'Internal Server Error');
-            exit;
+            if (!($content = light_message_get_vote_form_html($tid, $pid, $message['POST_RATING'], $message['USER_POST_RATING']))) {
+
+                header_status(500, 'Internal Server Error');
+                exit;
+            }
+
+        } else {
+
+            if (!($content = message_get_vote_form_html($tid, $pid, $message['POST_RATING'], $message['USER_POST_RATING']))) {
+
+                header_status(500, 'Internal Server Error');
+                exit;
+            }
         }
 
         break;

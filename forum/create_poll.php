@@ -540,11 +540,11 @@ if (!isset($message_text)) $message_text = "";
 
 if (!isset($sig_text)) $sig_text = "";
 
-if ((mb_strlen($content) + mb_strlen($sig)) >= 65535) {
+if ((mb_strlen($message_text) + mb_strlen($sig)) >= 65535) {
 
     $error_msg_array[] = sprintf(
         gettext("Combined Message and signature length must be less than 65,535 characters (currently: %s)"),
-        number_format(mb_strlen($content) + mb_strlen($sig))
+        number_format(mb_strlen($message_text) + mb_strlen($sig))
     );
 
     $valid = false;

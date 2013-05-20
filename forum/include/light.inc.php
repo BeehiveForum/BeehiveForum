@@ -1828,7 +1828,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
             echo "<div class=\"message_footer\">\n";
             echo "  <div class=\"message_footer_links\">", implode('&nbsp;&nbsp;', $links_array), "</div>\n";
             echo "  <div class=\"message_vote_form\" data-msg=\"$tid.{$message['PID']}\">\n";
-            echo "    ", light_message_get_vote_form_html($tid, $message['PID'], $message['POST_RATING'], $message['USER_POST_RATING']), "\n";
+            echo "    ", light_message_get_vote_form_html($message), "\n";
             echo "  </div>\n";
             echo "</div>\n";
         }
@@ -1841,22 +1841,17 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     echo "</div>";
 }
 
-function light_message_get_vote_form_html($tid, $pid, $post_rating, $user_post_rating)
+function light_message_get_vote_form_html($message)
 {
-    if (!is_numeric($tid)) return false;
-    if (!is_numeric($pid)) return false;
-    if (!is_numeric($post_rating)) return false;
-    if (!is_numeric($user_post_rating)) return false;
-
     $webtag = get_webtag();
 
     forum_check_webtag_available($webtag);
 
-    $html = "  <span>". ($post_rating > 0 ? '+' : ''). $post_rating. "</span>";
+    $html = "  <span>". ($message['POST_RATING'] > 0 ? '+' : ''). $message['POST_RATING']. "</span>";
 
-    if (isset($user_post_rating) && in_array($user_post_rating, array(-1, 1))) {
+    if (isset($message['USER_POST_RATING']) && in_array($message['USER_POST_RATING'], array(-1, 1))) {
 
-        if ($user_post_rating > 0) {
+        if ($message['USER_POST_RATING'] > 0) {
 
             $html.= "  <img src=\"". html_style_image('vote_down_off.png'). "\" title=\"". gettext('Vote Down'). "\" class=\"post_vote_down\" />\n";
             $html.= "  <img src=\"". html_style_image('vote_up_on.png'). "\" title=\"". gettext('Clear Vote'). "\" class=\"post_vote_up\" />\n";

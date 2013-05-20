@@ -458,19 +458,13 @@ switch ($_GET['action']) {
 
         list($tid, $pid) = explode('.', $_GET['msg']);
 
-        if (!($thread_data = thread_get($tid, session::check_perm(USER_PERM_ADMIN_TOOLS, 0)))) {
-
-            header_status(500, 'Internal Server Error');
-            exit;
-        }
-
         if (!($message = messages_get($tid, $pid, 1))) {
 
             header_status(500, 'Internal Server Error');
             exit;
         }
 
-        if (!($content = message_get_post_options_html($tid, $pid, $thread_data['FID']))) {
+        if (!($content = message_get_post_options_html($message))) {
 
             header_status(500, 'Internal Server Error');
             exit;
@@ -514,7 +508,7 @@ switch ($_GET['action']) {
 
         if (isset($_GET['mobile'])) {
 
-            if (!($content = light_message_get_vote_form_html($tid, $pid, $message['POST_RATING'], $message['USER_POST_RATING']))) {
+            if (!($content = light_message_get_vote_form_html($message))) {
 
                 header_status(500, 'Internal Server Error');
                 exit;
@@ -522,7 +516,7 @@ switch ($_GET['action']) {
 
         } else {
 
-            if (!($content = message_get_vote_form_html($tid, $pid, $message['POST_RATING'], $message['USER_POST_RATING']))) {
+            if (!($content = message_get_vote_form_html($message))) {
 
                 header_status(500, 'Internal Server Error');
                 exit;

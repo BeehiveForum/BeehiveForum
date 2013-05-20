@@ -62,7 +62,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
 
-    $sql = "SELECT POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
+    $sql = "SELECT FOLDER.FID, POST.TID, POST.PID, POST.REPLY_TO_PID, POST.FROM_UID, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
     $sql.= "UNIX_TIMESTAMP(POST.EDITED) AS EDITED, POST.EDITED_BY, POST.IPADDRESS, POST.MOVED_TID, POST.MOVED_PID, ";
     $sql.= "UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, POST.APPROVED_BY, USER.LOGON AS FROM_LOGON, ";
     $sql.= "COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS FROM_NICKNAME, USER_PEER.RELATIONSHIP AS RELATIONSHIP, ";
@@ -73,7 +73,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql.= "AND SESSIONS.FID = $forum_fid AND SESSIONS.UID = POST.FROM_UID) AS USER_ACTIVE, ";
     $sql.= "(SELECT COALESCE(SUM(POST_RATING.RATING), 0) FROM `{$table_prefix}POST_RATING` POST_RATING ";
     $sql.= "WHERE POST_RATING.TID = POST.TID AND POST_RATING.PID = POST.PID) AS POST_RATING ";
-    $sql.= "FROM `{$table_prefix}POST` POST LEFT JOIN USER ON (POST.FROM_UID = USER.UID) ";
+    $sql.= "FROM `{$table_prefix}POST` POST LEFT JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) LEFT JOIN USER ON (POST.FROM_UID = USER.UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}POST_RATING` USER_POST_RATING ON (USER_POST_RATING.TID = POST.TID ";
     $sql.= "AND USER_POST_RATING.PID = POST.PID AND USER_POST_RATING.UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.UID = '{$_SESSION['UID']}' ";
@@ -850,7 +851,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             echo "            <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
             echo "              <tr>\n";
             echo "                <td align=\"left\" width=\"25%\">";
-            echo "                  ", message_get_vote_form_html($tid, $message['PID'], $message['POST_RATING'], $message['USER_POST_RATING']), "\n";
+            echo "                  ", message_get_vote_form_html($message), "\n";
             echo "                </td>\n";
             echo "                <td width=\"50%\" style=\"white-space: nowrap\">";
 
@@ -930,7 +931,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo  ($in_list) ? "<br />\n" : '';
 }
 
-function message_get_post_options_html($tid, $pid, $folder_fid)
+function message_get_post_options_html($message)
 {
     $webtag = get_webtag();
 
@@ -938,7 +939,7 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    $perm_is_moderator = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
+    $perm_is_moderator = session::check_perm(USER_PERM_FOLDER_MODERATE, $message['FID']);
     $perm_has_admin_access = session::check_perm(USER_PERM_ADMIN_TOOLS, 0);
 
     if (isset($_SESSION['REPLY_QUICK']) && ($_SESSION['REPLY_QUICK'] == 'Y')) {
@@ -965,51 +966,51 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
 
     if ($quick_reply=='N') {
 
-        $html.= "                        <td align=\"left\"><a href=\"Javascript:void(0)\" data-msg=\"$tid.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\"><img src=\"". html_style_image('quickreply.png'). "\" border=\"0\" alt=\"". gettext("Quick Reply"). "\" title=\"". gettext("Quick Reply"). "\" /></a></td>\n";
-        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"Javascript:void(0)\" data-msg=\"$tid.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\">". gettext("Quick Reply"). "</a></td>\n";
+        $html.= "                        <td align=\"left\"><a href=\"Javascript:void(0)\" data-msg=\"{$message['TID']}.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\"><img src=\"". html_style_image('quickreply.png'). "\" border=\"0\" alt=\"". gettext("Quick Reply"). "\" title=\"". gettext("Quick Reply"). "\" /></a></td>\n";
+        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"Javascript:void(0)\" data-msg=\"{$message['TID']}.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\">". gettext("Quick Reply"). "</a></td>\n";
 
     } else {
 
         $html.= "                        <td align=\"left\"><img src=\"". html_style_image('post.png'). "\" border=\"0\" alt=\"". gettext("Reply"). "\" title=\"". gettext("Reply"). "\" /></td>\n";
-        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\" id=\"reply_{$message['PID']}\">". gettext("Reply"). "</a></td>\n";
+        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"post.php?webtag=$webtag&amp;replyto={$message['TID']}.{$message['PID']}\" target=\"_parent\" id=\"reply_{$message['PID']}\">". gettext("Reply"). "</a></td>\n";
     }
 
     $html.= "                      </tr>\n";
 
-    if (($_SESSION['UID'] == $message['FROM_UID'] && session::check_perm(USER_PERM_POST_DELETE, $folder_fid) && !session::check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
+    if (($_SESSION['UID'] == $message['FROM_UID'] && session::check_perm(USER_PERM_POST_DELETE, $message['FID']) && !session::check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
 
         $html.= "                      <tr>\n";
-        $html.= "                        <td align=\"left\"><a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\"><img src=\"". html_style_image('delete.png'). "\" border=\"0\" alt=\"". gettext("Delete"). "\" title=\"". gettext("Delete"). "\" /></a></td>\n";
-        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"delete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">". gettext("Delete"). "</a></td>\n";
+        $html.= "                        <td align=\"left\"><a href=\"delete.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_parent\"><img src=\"". html_style_image('delete.png'). "\" border=\"0\" alt=\"". gettext("Delete"). "\" title=\"". gettext("Delete"). "\" /></a></td>\n";
+        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"delete.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_parent\">". gettext("Delete"). "</a></td>\n";
         $html.= "                      </tr>\n";
     }
 
     $html.= "                      <tr>\n";
-    $html.= "                        <td align=\"left\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"". gettext("Reply as PM"). "\"><img src=\"". html_style_image('pmunread.png'). "\" border=\"0\" alt=\"". gettext("Reply as PM"). "\" title=\"". gettext("Reply as PM"). "\" /></a></td>\n";
-    $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_parent\" title=\"". gettext("Reply as PM"). "\">". gettext("Reply as PM"). "</a></td>\n";
+    $html.= "                        <td align=\"left\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_parent\" title=\"". gettext("Reply as PM"). "\"><img src=\"". html_style_image('pmunread.png'). "\" border=\"0\" alt=\"". gettext("Reply as PM"). "\" title=\"". gettext("Reply as PM"). "\" /></a></td>\n";
+    $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_parent\" title=\"". gettext("Reply as PM"). "\">". gettext("Reply as PM"). "</a></td>\n";
     $html.= "                      </tr>\n";
     $html.= "                      <tr>\n";
-    $html.= "                        <td align=\"left\"><a href=\"display.php?webtag=$webtag&amp;print_msg=$tid.{$message['PID']}\" target=\"_self\" title=\"". gettext("Print"). "\"><img src=\"". html_style_image('print.png'). "\" border=\"0\" alt=\"". gettext("Print"). "\" title=\"". gettext("Print"). "\" /></a></td>\n";
-    $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"display.php?webtag=$webtag&amp;print_msg=$tid.{$message['PID']}\" target=\"_self\" title=\"". gettext("Print"). "\">". gettext("Print"). "</a></td>\n";
+    $html.= "                        <td align=\"left\"><a href=\"display.php?webtag=$webtag&amp;print_msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"". gettext("Print"). "\"><img src=\"". html_style_image('print.png'). "\" border=\"0\" alt=\"". gettext("Print"). "\" title=\"". gettext("Print"). "\" /></a></td>\n";
+    $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"display.php?webtag=$webtag&amp;print_msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"". gettext("Print"). "\">". gettext("Print"). "</a></td>\n";
     $html.= "                      </tr>\n";
     $html.= "                      <tr>\n";
-    $html.= "                        <td align=\"left\"><a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;markasread=". ($message['PID'] - 1). "\" target=\"_self\" title=\"". gettext("Mark as unread"). "\"><img src=\"". html_style_image('markasunread.png'). "\" border=\"0\" alt=\"". gettext("Mark as unread"). "\" title=\"". gettext("Mark as unread"). "\" /></a></td>\n";
-    $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"thread_options.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;markasread=". ($message['PID'] - 1). "\" target=\"_self\" title=\"". gettext("Mark as unread"). "\">". gettext("Mark as unread"). "</a></td>\n";
+    $html.= "                        <td align=\"left\"><a href=\"thread_options.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;markasread=". ($message['PID'] - 1). "\" target=\"_self\" title=\"". gettext("Mark as unread"). "\"><img src=\"". html_style_image('markasunread.png'). "\" border=\"0\" alt=\"". gettext("Mark as unread"). "\" title=\"". gettext("Mark as unread"). "\" /></a></td>\n";
+    $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"thread_options.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;markasread=". ($message['PID'] - 1). "\" target=\"_self\" title=\"". gettext("Mark as unread"). "\">". gettext("Mark as unread"). "</a></td>\n";
     $html.= "                      </tr>\n";
 
     if ($_SESSION['UID'] != $message['FROM_UID']) {
 
         $html.= "                      <tr>\n";
-        $html.= "                        <td align=\"left\"><a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"". gettext("Relationship"). "\"><img src=\"". html_style_image('enemy.png'). "\" border=\"0\" alt=\"". gettext("Relationship"). "\" title=\"". gettext("Relationship"). "\" /></a></td>\n";
-        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"". gettext("Relationship"). "\">". gettext("Relationship"). "</a></td>\n";
+        $html.= "                        <td align=\"left\"><a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"". gettext("Relationship"). "\"><img src=\"". html_style_image('enemy.png'). "\" border=\"0\" alt=\"". gettext("Relationship"). "\" title=\"". gettext("Relationship"). "\" /></a></td>\n";
+        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"". gettext("Relationship"). "\">". gettext("Relationship"). "</a></td>\n";
         $html.= "                      </tr>\n";
     }
 
     if ($perm_has_admin_access) {
 
         $html.= "                      <tr>\n";
-        $html.= "                        <td align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"". gettext("Privileges"). "\"><img src=\"". html_style_image('admintool.png'). "\" border=\"0\" alt=\"". gettext("Privileges"). "\" title=\"". gettext("Privileges"). "\" /></a></td>\n";
-        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\" title=\"". gettext("Privileges"). "\">". gettext("Privileges"). "</a></td>\n";
+        $html.= "                        <td align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"". gettext("Privileges"). "\"><img src=\"". html_style_image('admintool.png'). "\" border=\"0\" alt=\"". gettext("Privileges"). "\" title=\"". gettext("Privileges"). "\" /></a></td>\n";
+        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"". gettext("Privileges"). "\">". gettext("Privileges"). "</a></td>\n";
         $html.= "                      </tr>\n";
     }
 
@@ -1020,8 +1021,8 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
             if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] == 0) {
 
                 $html.= "                      <tr>\n";
-                $html.= "                        <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D$tid.{$message['PID']}\" target=\"_self\" title=\"". gettext("Approve Post"). "\"><img src=\"". html_style_image('approved.png'). "\" border=\"0\" alt=\"". gettext("Approve Post"). "\" title=\"". gettext("Approve Post"). "\" /></a></td>\n";
-                $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D$tid.{$message['PID']}\" target=\"_self\" title=\"". gettext("Approve Post"). "\">". gettext("Approve Post"). "</a></td>\n";
+                $html.= "                        <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D{$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"". gettext("Approve Post"). "\"><img src=\"". html_style_image('approved.png'). "\" border=\"0\" alt=\"". gettext("Approve Post"). "\" title=\"". gettext("Approve Post"). "\" /></a></td>\n";
+                $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D{$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"". gettext("Approve Post"). "\">". gettext("Approve Post"). "</a></td>\n";
                 $html.= "                      </tr>\n";
             }
         }
@@ -1030,7 +1031,7 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
 
             $html.= "                      <tr>\n";
             $html.= "                        <td align=\"left\"><span class=\"adminipdisplay\"><b>". gettext("IP"). "</b></span></td>\n";
-            $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">". gettext("Ban IP Address"). "</a></td>\n";
+            $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$message['IPADDRESS']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_self\">". gettext("Ban IP Address"). "</a></td>\n";
             $html.= "                      </tr>";
 
         } else {
@@ -1057,25 +1058,20 @@ function message_get_post_options_html($tid, $pid, $folder_fid)
     return $html;
 }
 
-function message_get_vote_form_html($tid, $pid, $post_rating, $user_post_rating)
+function message_get_vote_form_html($message)
 {
-    if (!is_numeric($tid)) return false;
-    if (!is_numeric($pid)) return false;
-    if (!is_numeric($post_rating)) return false;
-    if (!is_numeric($user_post_rating)) return false;
-
     $webtag = get_webtag();
 
     forum_check_webtag_available($webtag);
 
-    $html = "<form method=\"POST\" action=\"messages.php\" target=\"_self\" data-msg=\"$tid.$pid\">\n";
+    $html = "<form method=\"POST\" action=\"messages.php\" target=\"_self\" data-msg=\"{$message['TID']}.{$message['PID']}\">\n";
     $html.= "  ". form_input_hidden("webtag", htmlentities_array($webtag)). "\n";
-    $html.= "  ". form_input_hidden("msg", htmlentities_array("$tid.$pid")). "\n";
-    $html.= "  <span class=\"smallertext\">". gettext("Score"). ": ". ($post_rating > 0 ? '+' : ''). $post_rating. "</span>";
+    $html.= "  ". form_input_hidden("msg", htmlentities_array("{$message['TID']}.{$message['PID']}")). "\n";
+    $html.= "  <span class=\"smallertext\">". gettext("Score"). ": ". ($message['POST_RATING'] > 0 ? '+' : ''). $message['POST_RATING']. "</span>";
 
-    if (isset($user_post_rating) && in_array($user_post_rating, array(-1, 1))) {
+    if (isset($message['USER_POST_RATING']) && in_array($message['USER_POST_RATING'], array(-1, 1))) {
 
-        if ($user_post_rating > 0) {
+        if ($message['USER_POST_RATING'] > 0) {
 
             $html.= "  ". form_submit_image(html_style_image('vote_down_off.png'), 'post_vote_down', null, sprintf('title="%s"', htmlentities_array(gettext('Vote Down'))), 'post_vote_down'). "\n";
             $html.= "  ". form_submit_image(html_style_image('vote_up_on.png'), 'post_vote_up', null, sprintf('title="%s"', htmlentities_array(gettext('Clear Vote'))), 'post_vote_up'). "\n";

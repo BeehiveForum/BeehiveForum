@@ -205,7 +205,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
         'AGE' => '(AGE IS NOT NULL AND AGE > 0)',
         'TIMEZONE' => '(TIMEZONE IS NOT NULL)',
         'LOCAL_TIME' => '(LOCAL_TIME IS NOT NULL)',
-        'USER_RATING' => '(USER_RATING IS NOT NULL)',
+        'USER_RATING' => '(USER_RATING > 0)',
         'POST_SCORES' => '(POST_VOTE_TOTAL > 0)',
     );
 
@@ -232,12 +232,10 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
     $select_sql.= "USER_PREFS_GLOBAL.AVATAR_AID) AS AVATAR_AID, SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, ";
     $select_sql.= "SEARCH_ENGINE_BOTS.URL, IF (USER_PREFS_GLOBAL.ANON_LOGON = 1, NULL, ";
     $select_sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON)) AS LAST_VISIT, ";
-    $select_sql.= "(SELECT COALESCE(SUM(POST_RATING.RATING)) FROM `{$table_prefix}POST` POST ";
-    $select_sql.= "INNER JOIN `{$table_prefix}POST_RATING` POST_RATING ON (POST_RATING.TID = POST.TID ";
-    $select_sql.= "AND POST_RATING.PID = POST.PID) WHERE POST.FROM_UID = USER.UID) AS USER_RATING, ";
-    $select_sql.= "COUNT(POST_USER_RATING.RATING) AS POST_VOTE_TOTAL, ";
-    $select_sql.= "COALESCE(SUM(IF(POST_USER_RATING.RATING > 0, 1, 0)), 0) AS POST_VOTE_UP, ";
-    $select_sql.= "COALESCE(SUM(IF(POST_USER_RATING.RATING < 0, 1, 0)), 0) AS POST_VOTE_DOWN ";
+    $select_sql.= "COALESCE(USER_RATING.USER_RATING, 0) AS USER_RATING, ";
+    $select_sql.= "COALESCE(POST_RATING.POST_VOTE_TOTAL, 0) AS POST_VOTE_TOTAL, ";
+    $select_sql.= "COALESCE(POST_RATING.POST_VOTE_UP, 0) AS POST_VOTE_UP, ";
+    $select_sql.= "COALESCE(POST_RATING.POST_VOTE_DOWN, 0) AS POST_VOTE_DOWN ";
 
     // Include the selected numeric (PIID) profile items
     $profile_entry_array = array();
@@ -265,10 +263,17 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
     $join_sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = USER.UID) ";
     $join_sql.= "LEFT JOIN `{$table_prefix}USER_TRACK` USER_TRACK ON (USER_TRACK.UID = USER.UID AND USER_TRACK.USER_KEY = 'POST_COUNT') ";
     $join_sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $join_sql.= "LEFT JOIN `{$table_prefix}POST_RATING` POST_USER_RATING ON (POST_USER_RATING.UID = USER.UID AND POST_USER_RATING.RATING IN (-1, 1)) ";
     $join_sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
     $join_sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS_GLOBAL.TIMEZONE) ";
-
+    $join_sql.= "LEFT JOIN (SELECT POST_RATING.UID, COUNT(POST_RATING.RATING) AS POST_VOTE_TOTAL, ";
+    $join_sql.= "SUM(IF(POST_RATING.RATING > 0, 1, 0)) AS POST_VOTE_UP, ";
+    $join_sql.= "SUM(IF(POST_RATING.RATING < 0, 1, 0)) AS POST_VOTE_DOWN ";
+    $join_sql.= "FROM DEFAULT_POST_RATING POST_RATING GROUP BY POST_RATING.UID) AS POST_RATING ";
+    $join_sql.= "ON (POST_RATING.UID = VISITOR_LOG.UID) LEFT JOIN (SELECT POST.FROM_UID AS UID, ";
+    $join_sql.= "SUM(POST_RATING.RATING) AS USER_RATING FROM DEFAULT_POST POST ";
+    $join_sql.= "INNER JOIN DEFAULT_POST_RATING POST_RATING ON (POST_RATING.TID = POST.TID ";
+    $join_sql.= "AND POST_RATING.PID = POST.PID) GROUP BY POST.FROM_UID) AS USER_RATING ";
+    $join_sql.= "ON (USER_RATING.UID = VISITOR_LOG.UID) ";
 
     // Joins on the selected numeric (PIID) profile items.
     foreach ($sort_by_array as $column) {

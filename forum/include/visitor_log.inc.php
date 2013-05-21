@@ -130,7 +130,9 @@ function visitor_log_get_profile_items(&$profile_header_array, &$profile_dropdow
         'DOB' => gettext("Birthday"),
         'AGE' => gettext("Age"),
         'TIMEZONE' => gettext("Time Zone"),
-        'LOCAL_TIME' => 'Local Time'
+        'LOCAL_TIME' => gettext("Local Time"),
+        'USER_RATING' => gettext("User Rating"),
+        'POST_SCORES' => gettext("Post Scores"),
     );
 
     // Add the pre-defined profile options to the top of the list
@@ -202,7 +204,14 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
         'DOB' => '(DOB IS NOT NULL)',
         'AGE' => '(AGE IS NOT NULL AND AGE > 0)',
         'TIMEZONE' => '(TIMEZONE IS NOT NULL)',
-        'LOCAL_TIME' => '(LOCAL_TIME IS NOT NULL)'
+        'LOCAL_TIME' => '(LOCAL_TIME IS NOT NULL)',
+        'USER_RATING' => '(USER_RATING IS NOT NULL)',
+        'POST_SCORES' => '(POST_VOTE_TOTAL > 0)',
+    );
+
+    // Column alias to perform sorting against for textual results.
+    $column_sort_alias = array(
+        'POST_SCORES' => 'POST_VOTE_TOTAL',
     );
 
     // Year, Month and Day for Age calculation
@@ -222,7 +231,13 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
     $select_sql.= "USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, COALESCE(USER_PREFS_FORUM.AVATAR_AID, ";
     $select_sql.= "USER_PREFS_GLOBAL.AVATAR_AID) AS AVATAR_AID, SEARCH_ENGINE_BOTS.SID, SEARCH_ENGINE_BOTS.NAME, ";
     $select_sql.= "SEARCH_ENGINE_BOTS.URL, IF (USER_PREFS_GLOBAL.ANON_LOGON = 1, NULL, ";
-    $select_sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON)) AS LAST_VISIT ";
+    $select_sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON)) AS LAST_VISIT, ";
+    $select_sql.= "(SELECT COALESCE(SUM(POST_RATING.RATING)) FROM `{$table_prefix}POST` POST ";
+    $select_sql.= "INNER JOIN `{$table_prefix}POST_RATING` POST_RATING ON (POST_RATING.TID = POST.TID ";
+    $select_sql.= "AND POST_RATING.PID = POST.PID) WHERE POST.FROM_UID = USER.UID) AS USER_RATING, ";
+    $select_sql.= "COUNT(POST_USER_RATING.RATING) AS POST_VOTE_TOTAL, ";
+    $select_sql.= "COALESCE(SUM(IF(POST_USER_RATING.RATING > 0, 1, 0)), 0) AS POST_VOTE_UP, ";
+    $select_sql.= "COALESCE(SUM(IF(POST_USER_RATING.RATING < 0, 1, 0)), 0) AS POST_VOTE_DOWN ";
 
     // Include the selected numeric (PIID) profile items
     $profile_entry_array = array();
@@ -250,8 +265,10 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
     $join_sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = USER.UID) ";
     $join_sql.= "LEFT JOIN `{$table_prefix}USER_TRACK` USER_TRACK ON (USER_TRACK.UID = USER.UID AND USER_TRACK.USER_KEY = 'POST_COUNT') ";
     $join_sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $join_sql.= "LEFT JOIN `{$table_prefix}POST_RATING` POST_USER_RATING ON (POST_USER_RATING.UID = USER.UID AND POST_USER_RATING.RATING IN (-1, 1)) ";
     $join_sql.= "LEFT JOIN SEARCH_ENGINE_BOTS ON (SEARCH_ENGINE_BOTS.SID = VISITOR_LOG.SID) ";
     $join_sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS_GLOBAL.TIMEZONE) ";
+
 
     // Joins on the selected numeric (PIID) profile items.
     foreach ($sort_by_array as $column) {
@@ -323,7 +340,13 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
     }
 
     // Sort direction specified?
-    $order_sql = is_numeric($sort_by) ? "ORDER BY ENTRY_{$sort_by} $sort_dir " : "ORDER BY $sort_by $sort_dir ";
+    if (is_numeric($sort_by)) {
+        $order_sql = "ORDER BY ENTRY_{$sort_by} $sort_dir ";
+    } else if (isset($column_sort_alias[$sort_by])) {
+        $order_sql = "ORDER BY {$column_sort_alias[$sort_by]} $sort_dir ";
+    } else {
+        $order_sql = "ORDER BY $sort_by $sort_dir";
+    }
 
     // Limit the display to 10 per page.
     $limit_sql = "LIMIT $offset, 10";
@@ -402,6 +425,25 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
         if (!isset($user_data['POST_COUNT']) || !is_numeric($user_data['POST_COUNT'])) {
             $user_data['POST_COUNT'] = 0;
         }
+
+        if (!isset($user_data['POST_VOTE_TOTAL']) || !is_numeric($user_data['POST_VOTE_TOTAL'])) {
+            $user_data['POST_VOTE_TOTAL'] = 0;
+        }
+
+        if (!isset($user_data['POST_VOTE_DOWN']) || !is_numeric($user_data['POST_VOTE_DOWN'])) {
+            $user_data['POST_VOTE_DOWN'] = 0;
+        }
+
+        if (!isset($user_data['POST_VOTE_UP']) || !is_numeric($user_data['POST_VOTE_UP'])) {
+            $user_data['POST_VOTE_UP'] = 0;
+        }
+
+        $user_data['POST_SCORES'] = sprintf(
+            gettext("%d total, %d down - %d up"),
+            $user_data['POST_VOTE_TOTAL'],
+            $user_data['POST_VOTE_DOWN'],
+            $user_data['POST_VOTE_UP']
+        );
 
         $user_array[] = $user_data;
     }

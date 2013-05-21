@@ -223,6 +223,8 @@ function form_dropdown_objgroup_array($name, $options_array, $default = null, $c
             $html.= "  <option value=\"{$option_key}\"$selected>$option_text</option>";
         }
     }
+
+    return $html;
 }
 
 function form_unique_id($name)

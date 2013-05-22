@@ -166,12 +166,6 @@ if (isset($_POST['register'])) {
             $valid = false;
         }
 
-        if (mb_strlen($password) > 32) {
-
-            $error_msg_array[] = gettext("Password must be a maximum of 32 characters long");
-            $valid = false;
-        }
-
     } else {
 
         $error_msg_array[] = gettext("A password is required");
@@ -503,11 +497,11 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">", gettext("Password"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_password("pw", null, 45, 32), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_password("pw", null, 45), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">", gettext("Confirm Password"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_password("cpw", null, 45, 32), "</td>\n";
+    echo "                        <td align=\"left\">", form_input_password("cpw", null, 45), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">", gettext("Nickname"), ":</td>\n";

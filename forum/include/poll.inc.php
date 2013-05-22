@@ -310,6 +310,9 @@ function poll_get($tid)
 
     if (!($message = $result->fetch_assoc())) return false;
 
+    $message['POST_RATING'] = 0;
+    $message['USER_POST_RATING'] = 0;
+
     if (!isset($message['CLOSES'])) $message['CLOSES'] = 0;
     if (!isset($message['CHANGEVOTE'])) $message['CHANGEVOTE'] = 1;
     if (!isset($message['POLLTYPE'])) $message['POLLTYPE'] = 0;

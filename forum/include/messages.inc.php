@@ -68,15 +68,10 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql.= "COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS FROM_NICKNAME, USER_PEER.RELATIONSHIP AS RELATIONSHIP, ";
     $sql.= "USER_PREFS_GLOBAL.ANON_LOGON, COALESCE(USER_PREFS_FORUM.AVATAR_URL, USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, ";
     $sql.= "COALESCE(USER_PREFS_FORUM.AVATAR_AID, USER_PREFS_GLOBAL.AVATAR_AID) AS AVATAR_AID, ";
-    $sql.= "COALESCE(USER_POST_RATING.RATING, 0) AS USER_POST_RATING, (SELECT MAX(SESSIONS.TIME) ";
-    $sql.= "FROM SESSIONS WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
-    $sql.= "AND SESSIONS.FID = $forum_fid AND SESSIONS.UID = POST.FROM_UID) AS USER_ACTIVE, ";
-    $sql.= "(SELECT COALESCE(SUM(POST_RATING.RATING), 0) FROM `{$table_prefix}POST_RATING` POST_RATING ";
-    $sql.= "WHERE POST_RATING.TID = POST.TID AND POST_RATING.PID = POST.PID) AS POST_RATING ";
+    $sql.= "(SELECT MAX(SESSIONS.TIME) FROM SESSIONS WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql.= "AND SESSIONS.FID = $forum_fid AND SESSIONS.UID = POST.FROM_UID) AS USER_ACTIVE ";
     $sql.= "FROM `{$table_prefix}POST` POST LEFT JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
     $sql.= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) LEFT JOIN USER ON (POST.FROM_UID = USER.UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}POST_RATING` USER_POST_RATING ON (USER_POST_RATING.TID = POST.TID ";
-    $sql.= "AND USER_POST_RATING.PID = POST.PID AND USER_POST_RATING.UID = '{$_SESSION['UID']}') ";
     $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.UID = '{$_SESSION['UID']}' ";
     $sql.= "AND USER_PEER.PEER_UID = POST.FROM_UID) LEFT JOIN `{$table_prefix}USER_PREFS` ";
     $sql.= "USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = POST.FROM_UID) LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ";
@@ -94,10 +89,10 @@ function messages_get($tid, $pid = 1, $limit = 1)
         $message['CONTENT'] = "";
 
         $message['ATTACHMENTS'] = array();
-
         $message['RECIPIENTS'] = array();
 
-        if (!isset($message['VIEWED'])) $message['VIEWED'] = 0;
+        $message['POST_RATING'] = 0;
+        $message['USER_POST_RATING'] = 0;
 
         if (!isset($message['APPROVED'])) $message['APPROVED'] = 0;
         if (!isset($message['APPROVED_BY'])) $message['APPROVED_BY'] = 0;
@@ -122,6 +117,8 @@ function messages_get($tid, $pid = 1, $limit = 1)
     messages_get_recipients($tid, $messages_array);
 
     messages_have_attachments($tid, $messages_array);
+
+    messages_get_ratings($tid, $messages_array);
 
     return ($limit > 1) ? $messages_array : array_shift($messages_array);
 }
@@ -231,6 +228,43 @@ function messages_have_attachments($tid, &$messages_array)
 
     while (($attachment_data = $result->fetch_assoc()) !== null) {
         $messages_array[$attachment_data['PID']]['ATTACHMENTS'][] = $attachment_data['HASH'];
+    }
+
+    return true;
+}
+
+function messages_get_ratings($tid, &$messages_array)
+{
+    if (!($table_prefix = get_table_prefix())) return false;
+
+    if (!($forum_fid = get_forum_fid())) return false;
+
+    if (!$db = db::get()) return false;
+
+    if (!is_numeric($tid)) return false;
+
+    if (sizeof($messages_array) < 1) return false;
+
+    $pid_list = implode("','", array_keys($messages_array));
+
+    $sql = "SELECT PID, SUM(RATING) AS RATING FROM `{$table_prefix}POST_RATING` ";
+    $sql.= "WHERE TID = $tid AND PID IN ('$pid_list') GROUP BY PID";
+
+    if (($result = $db->query($sql))) {
+
+        while (($rating_data = $result->fetch_assoc()) !== null) {
+            $messages_array[$rating_data['PID']]['POST_RATING'] = $rating_data['RATING'];
+        }
+    }
+
+    $sql = "SELECT PID, RATING FROM `{$table_prefix}POST_RATING` WHERE TID = $tid ";
+    $sql.= "AND PID IN ('$pid_list') AND UID = {$_SESSION['UID']}";
+
+    if (($result = $db->query($sql))) {
+
+        while (($rating_data = $result->fetch_assoc()) !== null) {
+            $messages_array[$rating_data['PID']]['USER_POST_RATING'] = $rating_data['RATING'];
+        }
     }
 
     return true;

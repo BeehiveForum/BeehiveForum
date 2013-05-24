@@ -37,14 +37,14 @@ div.quotetext {
 }
 
 span.spoiler {
-    background: #EEEEEE url('../images/spoiler.png');
+    background: #EEEEEE;
     border: 1px solid #CCCCCC;
     color: #EEEEEE;
     padding: 0px 3px
 }
 
 span.spoiler > span {
-    color: transparent
+    color: #999999
 }
 
 span.emoticon {
@@ -67,4 +67,11 @@ a {
     background-color: transparent;
     color: #000000;
     text-decoration: underline
+}
+
+img.cke_allMedias {
+    background: transparent url('media.png') center center no-repeat;
+    border: 1px solid #a9a9a9;
+    width: 80px;
+    height: 80px;
 }

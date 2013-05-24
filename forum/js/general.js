@@ -136,6 +136,17 @@ var beehive = $.extend({}, beehive, {
                     dialogDefinition.getContents('properties').remove('allowScriptAccess');
                     dialogDefinition.getContents('properties').remove('allowFullScreen');
                     break;
+
+                case 'allMedias':
+
+                    dialogDefinition.getContents('info').remove('hSpace');
+                    dialogDefinition.getContents('info').remove('vSpace');
+                    dialogDefinition.getContents('properties').remove('allowScriptAccess');
+                    dialogDefinition.getContents('properties').remove('scale');
+                    dialogDefinition.getContents('properties').remove('align');
+                    dialogDefinition.getContents('properties').remove('play');
+                    dialogDefinition.removeContents('advanced');
+                    break;
             }
         });
 
@@ -169,7 +180,7 @@ var beehive = $.extend({}, beehive, {
             customConfig: '',
             disableNativeSpellChecker: false,
             enterMode: CKEDITOR.ENTER_BR,
-            extraPlugins: 'beehive,youtube',
+            extraPlugins: 'beehive,youtube,allMedias',
             font_defaultLabel: 'Verdana',
             fontSize_defaultLabel: '12',
             height: $editor.height() - 35,
@@ -212,7 +223,8 @@ var beehive = $.extend({}, beehive, {
                     'Image',
                     'Youtube',
                     'Flash',
-                    'Link'
+                    'Link',
+                    'allMedias'
                 ],
                 [
                     'Font',

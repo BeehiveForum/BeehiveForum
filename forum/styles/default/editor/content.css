@@ -68,3 +68,10 @@ a {
     color: #000000;
     text-decoration: underline
 }
+
+img.cke_allMedias {
+    background: transparent url('media.png') center center no-repeat;
+    border: 1px solid #a9a9a9;
+    width: 80px;
+    height: 80px;
+}

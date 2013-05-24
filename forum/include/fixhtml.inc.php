@@ -62,6 +62,7 @@ function fix_html($html)
          dl,
          dt,
          em,
+         embed[allowfullscreen|flashvars|height|loop|mtype|pluginspage|quality|rsrc|src|type|width|wmode],
          font[size|color|face],
          h1,
          h2,
@@ -72,7 +73,7 @@ function fix_html($html)
          hr[size|width|noshade],
          i,
          iframe[width|height|scrolling|type|src|frameborder],
-         img[src|width|height|alt|border|usemap|longdesc|vspace|hspace|ismap],
+         img[src|width|height|alt|border|usemap|longdesc|vspace|hspace|ismap|data-embed],
          ins[cite|datetime],
          li[type|start],
          map[name],
@@ -165,6 +166,34 @@ function fix_html($html)
     $config->set('HTML.SafeIframe', true);
     $config->set('URI.SafeIframeRegexp', '/^http(s)?:\/\/www\.youtube\.com\/embed\//');
 
+    $config->set('HTML.DefinitionID', 'BeehiveForum');
+    $config->set('HTML.DefinitionRev', 1);
+
+    $definition = $config->getHTMLDefinition(true);
+
+    $embed = $definition->addElement(
+        'embed',
+        'Block',
+        'Flow',
+        'Common',
+        array(
+            'allowfullscreen' => new HTMLPurifier_AttrDef_Enum(array('true', 'false')),
+            'flashvars' => new HTMLPurifier_AttrDef_Text(),
+            'height' => new HTMLPurifier_AttrDef_Integer(false, false),
+            'loop' => new HTMLPurifier_AttrDef_Enum(array('true', 'false')),
+            'mtype' => new HTMLPurifier_AttrDef_Text(),
+            'pluginspage' => new HTMLPurifier_AttrDef_Text(),
+            'quality' => new HTMLPurifier_AttrDef_Enum(array('low', 'medium', 'high', 'autolow', 'autohigh', 'best')),
+            'rsrc' => new HTMLPurifier_AttrDef_Text(),
+            'src' => new HTMLPurifier_AttrDef_Text(),
+            'type' => new HTMLPurifier_AttrDef_Text(),
+            'width' => new HTMLPurifier_AttrDef_Integer(false, false),
+            'wmode' => new HTMLPurifier_AttrDef_Enum(array('window', 'opaque', 'transparent')),
+        )
+    );
+
+    $embed->excludes = array('embed' => true);
+
     $purifier = new HTMLPurifier($config);
 
     $html = $purifier->purify($html);
@@ -173,5 +202,3 @@ function fix_html($html)
 
     return $html;
 }
-
-?>

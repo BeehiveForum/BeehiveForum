@@ -31,7 +31,7 @@ $(beehive).bind('init', function() {
             return false;
         }
 
-        if ($(this).attr('id') == 'pm_delete_messages') {
+        if ($(this).prop('id') == 'pm_delete_messages') {
 
             if (!window.confirm(beehive.lang.deletemessagesconfirmation)) {
                 return false;

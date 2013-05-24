@@ -55,7 +55,7 @@ $(beehive).bind('init', function() {
                 onSubmit: function(id, filename) {
 
                     $option = $('<option value="upload">')
-                        .attr('selected', true)
+                        .prop('selected', true)
                         .text('Uploading&hellip;');
 
                     $select.append($option);
@@ -86,7 +86,7 @@ $(beehive).bind('init', function() {
                             'webtag' : beehive.webtag,
                             'ajax'   : 'true',
                             'action' : 'pref_attachment',
-                            'type'   : $select.attr('id')
+                            'type'   : $select.prop('id')
                         },
                         'dataType' : 'json',
                         'url' : beehive.forum_path + '/ajax.php',
@@ -104,7 +104,7 @@ $(beehive).bind('init', function() {
                                 $select.append($('<option>').val(key).html(data[key]));
                             }
 
-                            $select.find('option[value=' + responseJSON.attachment.aid + ']').attr('selected', true);
+                            $select.find('option[value=' + responseJSON.attachment.aid + ']').prop('selected', true);
                         }
                     });
                 },

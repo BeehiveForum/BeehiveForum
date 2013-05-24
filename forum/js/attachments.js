@@ -23,7 +23,7 @@ $(beehive).bind('init', function() {
 
     $('input#toggle_main').bind('click', function() {
         var $checkboxes = $(this).closest('table.posthead').find('input:checkbox');
-        $(this).attr('checked') ? $checkboxes.attr('checked', 'checked') : $checkboxes.removeAttr('checked');
+        $(this).prop('checked') ? $checkboxes.prop('checked', 'checked') : $checkboxes.removeAttr('checked');
     });
 
     var format_file_size = function(filesize) {

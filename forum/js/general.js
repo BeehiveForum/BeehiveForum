@@ -41,7 +41,7 @@ var beehive = $.extend({}, beehive, {
         var $max_width = $(this).closest('.max_width[width]');
 
         if ($max_width.length > 0) {
-            return $max_width.attr('width');
+            return $max_width.prop('width');
         }
 
         return $('body').prop('clientWidth');
@@ -60,9 +60,9 @@ var beehive = $.extend({}, beehive, {
 
         $(context).find('frame').each(function() {
 
-            if ($(this).attr('name') == frame_name) {
+            if ($(this).prop('name') == frame_name) {
 
-                $(this).attr('src', $(this).attr('src'));
+                $(this).prop('src', $(this).prop('src'));
                 return false;
             }
 
@@ -74,9 +74,9 @@ var beehive = $.extend({}, beehive, {
 
         $(context).find('frame').each(function() {
 
-            if ($(this).attr('name') == beehive.frames.ftop) {
+            if ($(this).prop('name') == beehive.frames.ftop) {
 
-                $(this).attr('src', src);
+                $(this).prop('src', src);
                 return false;
             }
 
@@ -88,7 +88,7 @@ var beehive = $.extend({}, beehive, {
 
         $(context).find('frame').each(function() {
 
-            if (!$.inArray($(this).attr('name'), beehive.frames)) {
+            if (!$.inArray($(this).prop('name'), beehive.frames)) {
                 return true;
             }
 
@@ -97,7 +97,7 @@ var beehive = $.extend({}, beehive, {
 
         var $user_font = $(context.head).find('link#user_font');
 
-        $user_font.attr('href', beehive.forum_path + '/font_size.php?webtag=' + beehive.webtag + '&_=' + new Date().getTime() / 1000);
+        $user_font.prop('href', beehive.forum_path + '/font_size.php?webtag=' + beehive.webtag + '&_=' + new Date().getTime() / 1000);
     },
 
     active_editor : null,
@@ -146,7 +146,7 @@ var beehive = $.extend({}, beehive, {
 
         var $editor = $(this);
 
-        var editor_id = $editor.attr('id');
+        var editor_id = $editor.prop('id');
 
         var skin = beehive.forum_path + '/styles/' + beehive.user_style + '/editor/';
 
@@ -278,7 +278,7 @@ $(beehive).bind('init', function() {
 
     $('body').on('click', 'a.popup', function() {
 
-        var class_names = $(this).attr('class').split(' ');
+        var class_names = $(this).prop('class').split(' ');
 
         var window_options = beehive.window_options;
 
@@ -294,7 +294,7 @@ $(beehive).bind('init', function() {
             }
         }
 
-        window.open($(this).attr('href'), $(this).attr('id'), window_options.join(','));
+        window.open($(this).prop('href'), $(this).prop('id'), window_options.join(','));
 
         return false;
     });
@@ -304,25 +304,23 @@ $(beehive).bind('init', function() {
     });
 
     $('select.user_in_thread_dropdown').bind('change', function() {
-        $('input[name="to_radio"][value="in_thread"]').attr('checked', true);
+        $('input[name="to_radio"][value="in_thread"]').prop('checked', true);
     });
 
     $('select.recent_user_dropdown').bind('change', function() {
-        $('input[name="to_radio"][value="recent"]').attr('checked', true);
+        $('input[name="to_radio"][value="recent"]').prop('checked', true);
     });
 
     $('select.friends_dropdown').bind('change', function() {
-        $('input[name="to_radio"][value="friends"]').attr('checked', true);
+        $('input[name="to_radio"][value="friends"]').prop('checked', true);
     });
 
     $('input.post_to_others').bind('focus', function() {
-        $('input[name="to_radio"][value="others"]').attr('checked', true);
+        $('input[name="to_radio"][value="others"]').prop('checked', true);
     });
 
-    $('input#toggle_all').bind('click', function() {
-
-        var $checkboxes = $(this).closest('form').find('input:checkbox');
-        $(this).attr('checked') ? $checkboxes.attr('checked', 'checked') : $checkboxes.removeAttr('checked');
+    $('input#toggle_all').bind('change', function() {
+        $(this).closest('form').find('input:checkbox').prop('checked', $(this).is(':checked'));
     });
 
     $('body').on('click', 'a.font_size_larger, a.font_size_smaller', function() {
@@ -340,7 +338,7 @@ $(beehive).bind('init', function() {
             'data' : {
                 'webtag' : beehive.webtag,
                 'ajax'   : 'true',
-                'action' : $this.attr('class'),
+                'action' : $this.prop('class'),
                 'msg'    : $this.data('msg')
             },
             'dataType' : 'json',
@@ -355,7 +353,7 @@ $(beehive).bind('init', function() {
 
                     beehive.reload_user_font(top.document);
 
-                    $(top.document).find('frameset#index').attr('rows', '60,' + Math.max(beehive.font_size * 2, 22) + ',*');
+                    $(top.document).find('frameset#index').prop('rows', '60,' + Math.max(beehive.font_size * 2, 22) + ',*');
 
                 } catch (exception) {
 
@@ -390,7 +388,7 @@ $(beehive).bind('init', function() {
 
     $(window).bind('resize', function() {
 
-        var frame_name = $(this).attr('name');
+        var frame_name = $(this).prop('name');
 
         if ((frame_name != beehive.frames.left) && (frame_name != beehive.frames.pm_folders)) {
             return true;
@@ -425,13 +423,13 @@ $(beehive).bind('init', function() {
 
         var $button = $(this);
 
-        var $element = $('.' + $button.attr('id'));
+        var $element = $('.' + $button.prop('id'));
 
         if ($element.is(':visible')) {
 
             $element.slideUp(150, function() {
 
-                $button.attr('src', beehive.images['show.png']);
+                $button.prop('src', beehive.images['show.png']);
 
                 $.ajax({
 
@@ -440,7 +438,7 @@ $(beehive).bind('init', function() {
                     'data' : {
                         'webtag'  : beehive.webtag,
                         'ajax'    : true,
-                        'action'  : $button.attr('id'),
+                        'action'  : $button.prop('id'),
                         'display' : 'false'
                     },
 
@@ -452,7 +450,7 @@ $(beehive).bind('init', function() {
 
             $element.slideDown(150, function() {
 
-                $button.attr('src', beehive.images['hide.png']);
+                $button.prop('src', beehive.images['hide.png']);
 
                 $.ajax({
 
@@ -461,7 +459,7 @@ $(beehive).bind('init', function() {
                     'data' : {
                         'webtag'  : beehive.webtag,
                         'ajax'    : true,
-                        'action'  : $button.attr('id'),
+                        'action'  : $button.prop('id'),
                         'display' : 'true'
                     },
 

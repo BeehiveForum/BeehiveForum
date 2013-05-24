@@ -100,7 +100,7 @@ $(beehive).bind('init', function() {
                         'webtag' : beehive.webtag,
                         'ajax'   : 'true',
                         'action' : 'post_options',
-                        'msg'    : $link.attr('id').match(/post_options_([^\.]+\.[^\.]+)/)[1]
+                        'msg'    : $link.prop('id').match(/post_options_([^\.]+\.[^\.]+)/)[1]
                     },
 
                     'url' : beehive.forum_path + '/ajax.php',
@@ -198,7 +198,7 @@ $(beehive).bind('init', function() {
 
         if ($.inArray(pid, beehive.quote_list) < 0) {
 
-            $('img#quote_img_' + pid).attr('src', beehive.images['quote_enabled.png']);
+            $('img#quote_img_' + pid).prop('src', beehive.images['quote_enabled.png']);
 
             $(this).html(beehive.lang.unquote);
 
@@ -206,7 +206,7 @@ $(beehive).bind('init', function() {
 
         } else {
 
-            $('img#quote_img_' + pid).attr('src', beehive.images['quote_disabled.png']);
+            $('img#quote_img_' + pid).prop('src', beehive.images['quote_disabled.png']);
 
             $(this).html(beehive.lang.quote);
 
@@ -220,11 +220,11 @@ $(beehive).bind('init', function() {
 
         $('a[id^="reply_"]').each(function() {
 
-            var query_string = $.parseQuery($(this).attr('href').split('?')[1]);
+            var query_string = $.parseQuery($(this).prop('href').split('?')[1]);
 
             query_string.quote_list = beehive.quote_list.join(',');
 
-            $(this).attr('href', 'post.php?' + $.param(query_string));
+            $(this).prop('href', 'post.php?' + $.param(query_string));
         });
 
         return false;

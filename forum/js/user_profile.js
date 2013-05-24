@@ -22,7 +22,7 @@ USA
 $(beehive).bind('init', function() {
 
    $('body').bind('click', function(e) {
-       
+
        if ($(e.target).closest('div#profile_options_container').length < 1) {
            $('div#profile_options_container').hide();
        }
@@ -38,7 +38,7 @@ $(beehive).bind('init', function() {
 
        if (window.opener) {
 
-           window.opener.top.document.location.href = $(this).attr('href');
+           window.opener.top.document.location.href = $(this).prop('href');
            window.close();
            return false;
        }

@@ -33,7 +33,7 @@ $(beehive).bind('init', function() {
 
             var popup_query = {
                 'webtag' : beehive.webtag,
-                'obj_id' : $search_input.attr('id'),
+                'obj_id' : $search_input.prop('id'),
                 'type' : $search_input.hasClass('search_logon') ? 1 : 2,
                 'multi' : $search_input.hasClass('allow_multi') ? 'Y' : 'N',
                 'selected' : $search_input.val()

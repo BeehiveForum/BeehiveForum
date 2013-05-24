@@ -41,7 +41,7 @@ $(beehive).bind('init', function() {
 
                     var $resize_icon = $('<img class="image_resize_icon" />');
 
-                    $resize_icon.attr('src', beehive.images['warning.png']);
+                    $resize_icon.prop('src', beehive.images['warning.png']);
 
                     $resize_banner.append($resize_icon);
                     $resize_banner.append($.sprintf(beehive.lang.imageresized, $(this).width(), $(this).height()));
@@ -53,7 +53,7 @@ $(beehive).bind('init', function() {
                     var $image = $(this);
 
                     $resize_banner.bind('click', function() {
-                        window.open($image.attr('src'));
+                        window.open($image.prop('src'));
                     });
                 }
             }

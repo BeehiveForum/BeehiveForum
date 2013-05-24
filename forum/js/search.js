@@ -36,21 +36,21 @@ $(beehive).bind('init', function() {
         var search_query = { 'webtag'    : beehive.webtag,
                              'type'      : '1',
                              'selection' : $search_field.val(),
-                             'obj_name'  : $search_field.attr('name') };
+                             'obj_name'  : $search_field.prop('name') };
 
         if ($(this).hasClass('allow_multi')) {
             search_query.allow_multi = 'Y';
         }
 
-        search_logon = window.open('search_popup.php?' + $.param(search_query), $(this).attr('id'), window_options.join(','));
+        search_logon = window.open('search_popup.php?' + $.param(search_query), $(this).prop('id'), window_options.join(','));
 
         search_logon.return_result = return_result;
     });
 
     $('#search_submit').bind('click', function() {
 
-        $(this).addClass('button_disabled').attr('disabled', 'true').val(beehive.lang.waitdotdotdot);
-        $('#search_reset').addClass('button_disabled').attr('disabled', 'true');
+        $(this).addClass('button_disabled').prop('disabled', true).val(beehive.lang.waitdotdotdot);
+        $('#search_reset').addClass('button_disabled').prop('disabled', true);
         $('#search_form').submit();
     });
 

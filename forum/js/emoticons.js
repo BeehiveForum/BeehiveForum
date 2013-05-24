@@ -38,9 +38,9 @@ $(beehive).bind('init', function() {
             'data-cke-real-node-type': '1',
             'data-cke-realelement' : encodeURIComponent(html),
             'data-cke-resizable' : 'false',
-            'class' : $emoticon.attr('class'),
-            'title' : $emoticon.attr('title'),
-            'alt' : $emoticon.attr('title')
+            'class' : $emoticon.prop('class'),
+            'title' : $emoticon.prop('title'),
+            'alt' : $emoticon.prop('title')
         });
 
         beehive.active_editor.insertText(' ');

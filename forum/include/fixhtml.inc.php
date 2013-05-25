@@ -62,7 +62,7 @@ function fix_html($html)
          dl,
          dt,
          em,
-         embed[allowfullscreen|flashvars|height|loop|mtype|pluginspage|quality|rsrc|src|type|width|wmode],
+         embed[flashvars|height|loop|mtype|pluginspage|quality|rsrc|src|type|width|wmode],
          font[size|color|face],
          h1,
          h2,
@@ -177,7 +177,6 @@ function fix_html($html)
         'Flow',
         'Common',
         array(
-            'allowfullscreen' => new HTMLPurifier_AttrDef_Enum(array('true', 'false')),
             'flashvars' => new HTMLPurifier_AttrDef_Text(),
             'height' => new HTMLPurifier_AttrDef_Integer(false, false),
             'loop' => new HTMLPurifier_AttrDef_Enum(array('true', 'false')),

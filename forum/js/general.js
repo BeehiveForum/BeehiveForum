@@ -139,9 +139,8 @@ var beehive = $.extend({}, beehive, {
 
                 case 'allMedias':
 
-                    dialogDefinition.getContents('info').remove('hSpace');
-                    dialogDefinition.getContents('info').remove('vSpace');
                     dialogDefinition.getContents('properties').remove('allowScriptAccess');
+                    dialogDefinition.getContents('properties').remove('allowFullScreen');
                     dialogDefinition.getContents('properties').remove('scale');
                     dialogDefinition.getContents('properties').remove('align');
                     dialogDefinition.getContents('properties').remove('play');

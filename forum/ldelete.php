@@ -140,14 +140,6 @@ if (($preview_message = messages_get($tid, $pid, 1)) !== false) {
         exit;
     }
 
-    if (forum_get_setting('require_post_approval', 'Y') && isset($preview_message['APPROVED']) && $preview_message['APPROVED'] == 0 && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
-        light_post_edit_refuse();
-        light_html_draw_bottom();
-        exit;
-    }
-
 } else {
 
     light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");

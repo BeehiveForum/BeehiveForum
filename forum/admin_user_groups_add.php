@@ -277,7 +277,8 @@ if (($folder_array = folder_get_all()) !== false) {
             echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, gettext("Post a signature"), $folder['FOLDER_PERMS'] & USER_PERM_SIGNATURE), "</td>\n";
             echo "                                    </tr>\n";
             echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" colspan=\"2\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, gettext("Moderate folder"), $folder['FOLDER_PERMS'] & USER_PERM_FOLDER_MODERATE), "</td>\n";
+            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, gettext("Moderate folder")), "</td>\n";
+            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_approval[{$folder['FID']}]", USER_PERM_POST_APPROVAL, gettext("Require Post Approval")), "</td>\n";
             echo "                                    </tr>\n";
             echo "                                    <tr>\n";
             echo "                                      <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
@@ -306,8 +307,11 @@ if (($folder_array = folder_get_all()) !== false) {
             echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_sig[{$folder['FID']}]", USER_PERM_SIGNATURE, gettext("Post a signature"), true), "</td>\n";
             echo "                                    </tr>\n";
             echo "                                    <tr>\n";
-            echo "                                      <td align=\"left\" colspan=\"2\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, gettext("Moderate folder")), "</td>\n";
+            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_moderator[{$folder['FID']}]", USER_PERM_FOLDER_MODERATE, gettext("Moderate folder")), "</td>\n";
+            echo "                                      <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("t_post_approval[{$folder['FID']}]", USER_PERM_POST_APPROVAL, gettext("Require Post Approval")), "</td>\n";
             echo "                                    </tr>\n";
+
+
             echo "                                    <tr>\n";
             echo "                                      <td align=\"left\" colspan=\"4\">&nbsp;</td>\n";
             echo "                                    </tr>\n";

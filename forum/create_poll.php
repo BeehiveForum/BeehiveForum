@@ -583,30 +583,44 @@ if ($valid && isset($_POST['post'])) {
                 $poll_closes = false;
             }
 
-            $tid = post_create_thread($fid, $_SESSION['UID'], $thread_title, 'Y', 'N');
+            if (($tid = post_create_thread($fid, $_SESSION['UID'], $thread_title, 'Y', 'N'))) {
 
-            $pid = post_create($fid, $tid, 0, $_SESSION['UID'], array(), '');
+                if (($new_pid = post_create($fid, $tid, 0, $_SESSION['UID'], array(), ''))) {
 
-            poll_create($tid, $poll_questions_array, $poll_closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests);
+                    poll_create($tid, $poll_questions_array, $poll_closes, $change_vote, $poll_type, $show_results, $poll_vote_type, $option_type, $allow_guests);
 
-            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments)) !== false) {
+                    email_send_notification($tid, $new_pid);
 
-                foreach ($attachments_array as $attachment) {
+                    email_send_thread_subscription($tid, $new_pid);
 
-                    post_add_attachment($tid, $pid, $attachment['aid']);
+                    email_send_folder_subscription($fid, $tid, $new_pid);
+
+                    if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $_SESSION['UID']) && !perm_is_moderator($_SESSION['UID'], $fid)) {
+                        admin_send_post_approval_notification($fid);
+                    }
+
+                    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments)) !== false) {
+
+                        foreach ($attachments_array as $attachment) {
+
+                            post_add_attachment($tid, $new_pid, $attachment['aid']);
+                        }
+                    }
+
+                    if (strlen($message_text) > 0) {
+
+                        if ($allow_sig == true && strlen(trim($sig_text)) > 0) {
+                            $message_text.= "<div class=\"sig\">$sig_text</div>";
+                        }
+
+                        post_create($fid, $tid, 1, $_SESSION['UID'], array(), $message_text);
+                    }
+
+                    if ($high_interest == "Y") {
+                        thread_set_high_interest($tid);
+                    }
                 }
             }
-
-            if (strlen($message_text) > 0) {
-
-                if ($allow_sig == true && strlen(trim($sig_text)) > 0) {
-                    $message_text.= "<div class=\"sig\">$sig_text</div>";
-                }
-
-                post_create($fid, $tid, 1, $_SESSION['UID'], array(), $message_text);
-            }
-
-            if ($high_interest == "Y") thread_set_high_interest($tid);
         }
 
         if (isset($tid) && $tid > 0) {

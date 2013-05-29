@@ -68,8 +68,8 @@ function post_create($fid, $tid, $reply_pid, $from_uid, $to_user_array, $content
     if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $from_uid) && !perm_is_moderator($from_uid, $fid)) {
 
         $sql = "INSERT INTO `{$table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, ";
-        $sql.= "CREATED, APPROVED, IPADDRESS) VALUES ($tid, $reply_pid, $from_uid, ";
-        $sql.= "CAST('$current_datetime' AS DATETIME), NULL, '$ipaddress')";
+        $sql.= "CREATED, IPADDRESS) VALUES ($tid, $reply_pid, $from_uid, ";
+        $sql.= "CAST('$current_datetime' AS DATETIME), '$ipaddress')";
 
     } else {
 
@@ -104,10 +104,6 @@ function post_create($fid, $tid, $reply_pid, $from_uid, $to_user_array, $content
     post_update_thread_length($tid, $new_pid);
 
     user_increment_post_count($from_uid);
-
-    if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $from_uid) && !perm_is_moderator($from_uid, $fid)) {
-        admin_send_post_approval_notification($fid);
-    }
 
     return $new_pid;
 }
@@ -575,7 +571,7 @@ function post_update($fid, $tid, $pid, $content)
 
     if (session::check_perm(USER_PERM_POST_APPROVAL, $fid) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST` SET APPROVED = 0, APPROVED_BY = 0 ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST` SET APPROVED = NULL, APPROVED_BY = NULL ";
         $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
         if (!$db->query($sql)) return false;

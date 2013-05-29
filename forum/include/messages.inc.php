@@ -579,14 +579,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $message['CONTENT'] = implode("", $message_parts);
     }
 
-    // Little up/down arrows to the left of each message -----------------------
-    if (forum_get_setting('require_post_approval', 'Y') && $message['FROM_UID'] != $_SESSION['UID']) {
+    if (!isset($message['APPROVED']) && !$perm_is_moderator) {
 
-        if (isset($message['APPROVED']) && $message['APPROVED'] == 0 && !$perm_is_moderator) {
-
-            message_display_approval_req($tid, $message['PID'], $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
-            return;
-        }
+        message_display_approval_req($tid, $message['PID'], $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
+        return;
     }
 
     // OUTPUT MESSAGE ----------------------------------------------------------
@@ -688,7 +684,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if ($from_user_permissions & USER_PERM_WORMED) echo "<b>", gettext("Wormed user"), "</b> ";
             if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED_SIG)) echo "<b>", gettext("Ignored signature"), "</b> ";
-            if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] == 0) echo "<b>", gettext("Approval Required"), "</b> ";
+            if (!isset($message['APPROVED'])) echo "<b>", gettext("Approval Required"), "</b> ";
 
             echo format_time($message['CREATED']);
         }
@@ -847,16 +843,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             }
         }
 
-        if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] > 0 && $perm_is_moderator) {
+        if (isset($message['APPROVED']) && isset($message['APPROVED_BY'])) {
 
-            if (isset($message['APPROVED_BY']) && $message['APPROVED_BY'] > 0 && $message['APPROVED_BY'] != $message['FROM_UID']) {
+            if (($message['APPROVED_BY'] != $message['FROM_UID']) && ($approved_user = user_get_logon($message['APPROVED_BY'])) !== false) {
 
-                if (($approved_user = user_get_logon($message['APPROVED_BY'])) !== false) {
-
-                    echo "              <tr>\n";
-                    echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">", sprintf(gettext("APPROVED: %s by %s"), format_time($message['APPROVED']), $approved_user), "</p></td>\n";
-                    echo "              </tr>\n";
-                }
+                echo "              <tr>\n";
+                echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">", sprintf(gettext("APPROVED: %s by %s"), format_time($message['APPROVED']), $approved_user), "</p></td>\n";
+                echo "              </tr>\n";
             }
         }
 
@@ -1050,15 +1043,12 @@ function message_get_post_options_html($message)
 
     if ($perm_is_moderator || $perm_has_admin_access) {
 
-        if ($perm_is_moderator) {
+        if (!isset($message['APPROVED']) && $perm_is_moderator) {
 
-            if (forum_get_setting('require_post_approval', 'Y') && isset($message['APPROVED']) && $message['APPROVED'] == 0) {
-
-                $html.= "                      <tr>\n";
-                $html.= "                        <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D{$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"". gettext("Approve Post"). "\"><img src=\"". html_style_image('approved.png'). "\" border=\"0\" alt=\"". gettext("Approve Post"). "\" title=\"". gettext("Approve Post"). "\" /></a></td>\n";
-                $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D{$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"". gettext("Approve Post"). "\">". gettext("Approve Post"). "</a></td>\n";
-                $html.= "                      </tr>\n";
-            }
+            $html.= "                      <tr>\n";
+            $html.= "                        <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D{$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"". gettext("Approve Post"). "\"><img src=\"". html_style_image('approved.png'). "\" border=\"0\" alt=\"". gettext("Approve Post"). "\" title=\"". gettext("Approve Post"). "\" /></a></td>\n";
+            $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D{$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"". gettext("Approve Post"). "\">". gettext("Approve Post"). "</a></td>\n";
+            $html.= "                      </tr>\n";
         }
 
         if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {

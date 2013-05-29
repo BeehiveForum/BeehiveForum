@@ -258,12 +258,6 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['password_protected_message'] = "";
     }
 
-    if (isset($_POST['require_post_approval']) && $_POST['require_post_approval'] == "Y") {
-        $new_forum_settings['require_post_approval'] = "Y";
-    } else {
-        $new_forum_settings['require_post_approval'] = "N";
-    }
-
     if (isset($_POST['allow_post_editing']) && $_POST['allow_post_editing'] == "Y") {
         $new_forum_settings['allow_post_editing'] = "Y";
     } else {
@@ -691,10 +685,6 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"220\">", gettext("Require Post Approval"), ":</td>\n";
-echo "                        <td align=\"left\">", form_radio("require_post_approval", "Y", gettext("Yes"), (isset($forum_settings['require_post_approval']) && $forum_settings['require_post_approval'] == "Y")), "&nbsp;", form_radio("require_post_approval", "N", gettext("No"), (isset($forum_settings['require_post_approval']) && $forum_settings['require_post_approval'] == "N") || !isset($forum_settings['require_post_approval'])), "</td>\n";
-echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">", gettext("Allow Post Editing"), ":</td>\n";
 echo "                        <td align=\"left\">", form_radio("allow_post_editing", "Y", gettext("Yes"), (isset($forum_settings['allow_post_editing']) && $forum_settings['allow_post_editing'] == "Y")), "&nbsp;", form_radio("allow_post_editing", "N", gettext("No"), (isset($forum_settings['allow_post_editing']) && $forum_settings['allow_post_editing'] == "N") || !isset($forum_settings['allow_post_editing'])), "</td>\n";

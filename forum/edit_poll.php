@@ -135,10 +135,6 @@ if ((forum_get_setting('allow_post_editing', 'N') || (($_SESSION['UID'] != $edit
     html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
 }
 
-if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
-    html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
-}
-
 $poll_data = poll_get($tid);
 
 $poll_questions_array = poll_get_votes($tid);

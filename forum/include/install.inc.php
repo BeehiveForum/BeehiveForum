@@ -573,6 +573,10 @@ function install_set_search_bots()
             'NAME' => 'Alexa',
             'URL' => 'http://www.alexa.com/'
         ),
+        'AhrefsBot' => array(
+            'NAME' => 'Ahrefs',
+            'URL' => 'https://ahrefs.com/'
+        ),
         'Ask Jeeves/Teoma' => array(
             'NAME' => 'Ask.com',
             'URL' => 'http://www.ask.com/'

@@ -232,10 +232,6 @@ if ($valid && isset($_POST['preview'])) {
         html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
     }
 
-    if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-        html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
-    }
-
     if ($valid) {
 
         $t_content_new = $t_content;
@@ -249,6 +245,10 @@ if ($valid && isset($_POST['preview'])) {
             post_add_edit_text($tid, $pid);
 
             post_remove_attachments($tid, $pid);
+
+            if (perm_check_folder_permissions($t_fid, USER_PERM_POST_APPROVAL, $edit_message['FROM_UID']) && !perm_is_moderator($edit_message['FROM_UID'], $t_fid)) {
+                admin_send_post_approval_notification($t_fid);
+            }
 
             if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($edit_message['FROM_UID'], ATTACHMENT_FILTER_BOTH, $attachments))) {
 
@@ -301,10 +301,6 @@ if ($valid && isset($_POST['preview'])) {
         if (($edit_message['CONTENT'] = message_get_content($tid, $pid)) !== false) {
 
             if ((forum_get_setting('allow_post_editing', 'N') || (($_SESSION['UID'] != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-                html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
-            }
-
-            if (forum_get_setting('require_post_approval', 'Y') && isset($edit_message['APPROVED']) && $edit_message['APPROVED'] == 0 && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
                 html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
             }
 

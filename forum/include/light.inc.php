@@ -1621,13 +1621,10 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         }
     }
 
-    if (forum_get_setting('require_post_approval', 'Y') && $message['FROM_UID'] != $_SESSION['UID']) {
+    if (!isset($message['APPROVED']) && !$perm_is_moderator) {
 
-        if (isset($message['APPROVED']) && $message['APPROVED'] == 0 && !$perm_is_moderator) {
-
-            light_message_display_approval_req($tid, $message['PID']);
-            return;
-        }
+        light_message_display_approval_req($tid, $message['PID']);
+        return;
     }
 
     // OUTPUT MESSAGE ----------------------------------------------------------

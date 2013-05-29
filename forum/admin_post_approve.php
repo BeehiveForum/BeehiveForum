@@ -140,7 +140,7 @@ if (isset($msg) && validate_msg($msg)) {
 
     if (($preview_message = messages_get($tid, $pid, 1)) !== false) {
 
-        if (isset($preview_message['APPROVED']) && ($preview_message['APPROVED'] > 0)) {
+        if (isset($preview_message['APPROVED'])) {
             html_draw_error(gettext("Post does not require approval"), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
         }
 

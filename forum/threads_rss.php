@@ -36,6 +36,11 @@ require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'threads.inc.php';
 // End Required includes
 
+// Check that Guests are allowed
+if (!session::logged_in()) {
+    html_guest_error();
+}
+
 // Arrays for our cookie data
 $username_array = array();
 $password_array = array();
@@ -87,25 +92,6 @@ if (isset($_GET['sort_created']) && $_GET['sort_created'] == 'Y') {
     $sort_created = 'Y';
 } else {
     $sort_created = 'N';
-}
-
-// Check to see if the user is banned.
-if (session::user_banned()) {
-
-    html_user_banned();
-    exit;
-}
-
-// Check to see if the user has been approved.
-if (!session::user_approved()) {
-
-    html_user_require_approval();
-    exit;
-}
-
-// Check that Guests are allowed
-if (!session::logged_in()) {
-    html_guest_error();
 }
 
 // Check to see if the user wants a specified list of folders

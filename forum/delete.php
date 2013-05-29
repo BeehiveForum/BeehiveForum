@@ -109,10 +109,6 @@ if (isset($tid) && isset($pid) && is_numeric($tid) && is_numeric($pid)) {
             post_edit_refuse($tid, $pid);
         }
 
-        if (forum_get_setting('require_post_approval', 'Y') && isset($preview_message['APPROVED']) && $preview_message['APPROVED'] == 0 && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-            post_edit_refuse($tid, $pid);
-        }
-
     } else {
 
         html_draw_error(gettext("That post does not exist in this thread!"));

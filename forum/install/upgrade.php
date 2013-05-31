@@ -819,19 +819,19 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     if (!install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_POST", 'INDEXED')) {
 
-        $sql = "ALTER TABLE `{$forum_table_prefix}POST` ADD COLUMN INDEXED DATETIME NULL";
+        $sql = "ALTER TABLE `{$table_data['WEBTAG']}_POST` ADD COLUMN INDEXED DATETIME NULL";
 
         if (!@$db->query($sql)) {
             throw new Exception('Failed to create table POST_SEARCH_ID');
         }
 
-        $sql = "DROP TABLE IF EXISTS `{$forum_table_prefix}POST_SEARCH_ID`";
+        $sql = "DROP TABLE IF EXISTS `{$table_data['WEBTAG']}_POST_SEARCH_ID`";
 
         if (!@$db->query($sql)) {
             throw new Exception('Failed to create table POST_SEARCH_ID');
         }
 
-        $sql = "CREATE TABLE `{$forum_table_prefix}POST_SEARCH_ID` (";
+        $sql = "CREATE TABLE `{$table_data['WEBTAG']}_POST_SEARCH_ID` (";
         $sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -845,7 +845,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     if (!install_table_exists($config['db_database'], "{$table_data['WEBTAG']}_POST_RATING")) {
 
-        $sql = "CREATE TABLE `{$forum_table_prefix}POST_RATING` (";
+        $sql = "CREATE TABLE `{$table_data['WEBTAG']}_POST_RATING` (";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";

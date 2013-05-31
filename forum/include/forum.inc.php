@@ -1063,8 +1063,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY IPADDRESS (IPADDRESS,FROM_UID),";
         $sql.= "  KEY APPROVED (APPROVED),";
         $sql.= "  KEY CREATED (CREATED),";
-        $sql.= "  KEY CREATED (EDITED),";
-        $sql.= "  KEY CREATED (INDEXED)";
+        $sql.= "  KEY EDITED (EDITED),";
+        $sql.= "  KEY INDEXED (INDEXED)";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
         if (!($result = $db->query($sql))) {
@@ -1401,9 +1401,9 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_TRACK` (";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  USER_KEY VARHCAR(255) NOT NULL,";
-        $sql.= "  USER_VALUE TEXT";
-        $sql.= "  PRIMARY KEY  (UID, KEY)";
+        $sql.= "  USER_KEY VARCHAR(255) NOT NULL,";
+        $sql.= "  USER_VALUE TEXT DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY  (UID, USER_KEY)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         if (!@$db->query($sql)) {

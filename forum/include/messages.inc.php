@@ -377,30 +377,12 @@ function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $th
 
     $frame_top_target = html_get_top_frame_name();
 
+    $thread_title = strip_tags($thread_title);
+
     if (is_array($highlight_array) && sizeof($highlight_array) > 0) {
 
-        $highlight_pattern = array();
-        $highlight_replace = array();
-
-        foreach ($highlight_array as $key => $word) {
-
-            $highlight_word = preg_quote($word, "/");
-
-            $highlight_pattern[$key] = "/($highlight_word)/iu";
-            $highlight_replace[$key] = "<span class=\"highlight\">\\1</span>";
-        }
-
-        $thread_parts = preg_split('/([<|>])/u', $thread_title, -1, PREG_SPLIT_DELIM_CAPTURE);
-
-        for ($i = 0; $i < sizeof($thread_parts); $i++) {
-
-            if (!($i % 4)) {
-
-                $thread_parts[$i] = preg_replace($highlight_pattern, $highlight_replace, $thread_parts[$i], 1);
-            }
-        }
-
-        $thread_title = implode('', $thread_parts);
+        $highlight_pattern = sprintf('/(%s)/i', implode('|', array_map('preg_quote_callback', $highlight_array)));
+        $thread_title = preg_replace_callback($highlight_pattern, 'search_highlight_callback', $thread_title);
     }
 
     if ($folder_interest_level == FOLDER_SUBSCRIBED) {
@@ -415,11 +397,11 @@ function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $th
 
         echo "<a href=\"index.php?webtag=$webtag&amp;folder=$folder_fid\" target=\"$frame_top_target\">", word_filter_add_ob_tags($folder_title, true), "</a>";
         echo "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />";
-        echo "<a href=\"index.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"$frame_top_target\" title=\"", gettext("View in Frameset"), "\">", word_filter_add_ob_tags($thread_title, true), "</a>";
+        echo "<a href=\"index.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"$frame_top_target\" title=\"", gettext("View in Frameset"), "\">", word_filter_add_ob_tags($thread_title), "</a>";
 
     } else {
 
-        echo word_filter_add_ob_tags($folder_title, true), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" />", word_filter_add_ob_tags($thread_title, true);
+        echo word_filter_add_ob_tags($folder_title, true), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" />", word_filter_add_ob_tags($thread_title);
     }
 
     if ($closed) echo "&nbsp;<img src=\"", html_style_image('thread_closed.png'), "\" alt=\"", gettext("Closed"), "\" title=\"", gettext("Closed"), "\" />\n";
@@ -555,16 +537,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     // Check for search words to highlight -------------------------------------
     if (is_array($highlight_array) && sizeof($highlight_array) > 0) {
 
-        $highlight_pattern = array();
-        $highlight_replace = array();
-
-        foreach ($highlight_array as $key => $word) {
-
-            $highlight_word = preg_quote($word, "/");
-
-            $highlight_pattern[$key] = "/($highlight_word)/iu";
-            $highlight_replace[$key] = "<span class=\"highlight\">\\1</span>";
-        }
+        $highlight_pattern = sprintf('/(%s)/i', implode('|', array_map('preg_quote_callback', $highlight_array)));
 
         $message_parts = preg_split('/([<|>])/u', $message['CONTENT'], -1, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -572,7 +545,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (!($i % 4)) {
 
-                $message_parts[$i] = preg_replace($highlight_pattern, $highlight_replace, $message_parts[$i], 1);
+                $message_parts[$i] = preg_replace_callback($highlight_pattern, 'search_highlight_callback', $message_parts[$i]);
             }
         }
 

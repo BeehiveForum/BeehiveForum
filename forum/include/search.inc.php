@@ -358,6 +358,14 @@ function search_strip_special_chars($keywords_array, $remove_non_matches = true)
     return $keywords_array;
 }
 
+function search_highlight_callback($match)
+{
+    return sprintf(
+        '<span class="highlight">%s</span>',
+        $match[0]
+    );
+}
+
 function search_get_word_lengths(&$min_length, &$max_length)
 {
     if (!$db = db::get()) return false;
@@ -881,7 +889,7 @@ function check_search_frequency()
 
     } else {
 
-        $last_search_timestamp_array = array(time());
+        $last_search_timestamp_array = array();
     }
 
     foreach ($last_search_timestamp_array as $key => $last_search_timestamp) {

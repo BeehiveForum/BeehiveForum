@@ -558,7 +558,7 @@ function install_set_default_forum_settings()
         $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
         $sql.= "VALUES (0, '$sname', '$svalue')";
 
-        if (!@$db->query($sql)) return false;
+        $db->query($sql);
     }
 
     return true;
@@ -643,7 +643,7 @@ function install_set_search_bots()
         $sql = "INSERT INTO SEARCH_ENGINE_BOTS (NAME, URL, AGENT_MATCH) ";
         $sql.= "VALUES ('$name', '$url', '%$agent%')";
 
-        if (!@$db->query($sql)) return false;
+        $db->query($sql);
     }
 
     return true;
@@ -741,7 +741,7 @@ function install_set_timezones()
         $sql = "INSERT INTO TIMEZONES (TZID, GMT_OFFSET, DST_OFFSET) ";
         $sql.= "VALUES ('$tzid', '{$tz_data[0]}', '{$tz_data[1]}')";
 
-        if (!@$db->query($sql)) return false;
+        $db->query($sql);
     }
 
     return true;

@@ -35,39 +35,29 @@ require_once BH_INCLUDE_PATH. 'install.inc.php';
 require_once BH_INCLUDE_PATH. 'forum.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
 
+$error_str = null;
+
 @set_time_limit(0);
 
 if (!isset($forum_webtag) || strlen(trim($forum_webtag)) < 1) {
-
-    $error_array[] = "<h2>You must specify a forum webtag for your choosen type of installation.</h2>\n";
-    $valid = false;
-    return;
+    throw new Exception("You must specify a forum webtag for your choosen type of installation.");
 }
 
 $remove_conflicts = (isset($remove_conflicts) && $remove_conflicts === true);
 
 if (($conflicting_tables = install_check_table_conflicts($config['db_database'], $forum_webtag, true, true, $remove_conflicts))) {
 
-    $error_str = "<h2>Selected database contains tables which conflict with Beehive Forum. ";
-    $error_str.= "If this database contains an existing Beehive Forum installation please ";
-    $error_str.= "check that you have selected the correct install / upgrade method.</h2>\n";
+    $error_str = "Selected database contains tables which conflict with Beehive Forum. ";
+    $error_str.= "If this database contains an existing Beehive Forum, please check that ";
+    $error_str.= "you have selected the correct install / upgrade method.\n\n";
 
-    $error_array[] = $error_str;
+    $error_str.= "If you continue to encounter errors you may want to consider enabling ";
+    $error_str.= "the remove conflicts option at the bottom of the installer.\n\n";
 
-    $error_str = "<h2>If you continue to encounter errors you may want to consider enabling ";
-    $error_str.= "the remove conflicts option at the bottom of the installer.</h2>\n";
+    $error_str.= "Conflicting tables:\n\n";
+    $error_str.= implode(",\n", $conflicting_tables);
 
-    $error_array[] = $error_str;
-
-    $error_str = "<h2>Conflicting tables</h2>\n";
-    $error_str.= "<div id=\"conflicting_tables\" class=\"install_table_list\">\n";
-    $error_str.= sprintf("<ul><li>%s</li></ul>\n", implode("</li><li>", $conflicting_tables));
-    $error_str.= "</div>\n";
-
-    $error_array[] = $error_str;
-
-    $valid = false;
-    return;
+    throw new Exception($error_str);
 }
 
 $sql = "CREATE TABLE FORUMS (";
@@ -83,11 +73,7 @@ $sql.= "  KEY WEBTAG (WEBTAG), ";
 $sql.= "  KEY DEFAULT_FORUM (DEFAULT_FORUM)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE FORUM_SETTINGS (";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
@@ -96,11 +82,7 @@ $sql.= "  SVALUE TEXT NOT NULL, ";
 $sql.= "  PRIMARY KEY (FID, SNAME) ";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE GROUPS (";
 $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
@@ -112,11 +94,7 @@ $sql.= "  PRIMARY KEY (GID),";
 $sql.= "  KEY FORUM (FORUM)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE GROUP_PERMS (";
 $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -125,11 +103,7 @@ $sql.= "  PERM INT(32) UNSIGNED NOT NULL,";
 $sql.= "  PRIMARY KEY (GID,FID)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE GROUP_USERS (";
 $sql.= "  GID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -137,11 +111,7 @@ $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
 $sql.= "  PRIMARY KEY (GID,UID)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE PM (";
 $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
@@ -161,11 +131,7 @@ $sql.= "  KEY TO_UID (TO_UID), ";
 $sql.= "  FULLTEXT KEY SUBJECT (SUBJECT)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE PM_ATTACHMENT_IDS (";
 $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -173,11 +139,7 @@ $sql.= "  AID MEDIUMINT(8) UNSIGNED NOT NULL,";
 $sql.= "  PRIMARY KEY (MID,AID)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE PM_CONTENT (";
 $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
@@ -186,11 +148,7 @@ $sql.= "  PRIMARY KEY (MID), ";
 $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE PM_FOLDERS (";
 $sql.= "  UID MEDIUMINT(8) NOT NULL,";
@@ -199,11 +157,7 @@ $sql.= "  TITLE VARCHAR(32) NOT NULL,";
 $sql.= "  PRIMARY KEY (UID, FID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE PM_RECIPIENT ( ";
 $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -212,11 +166,7 @@ $sql.= "  NOTIFIED CHAR(1) NOT NULL DEFAULT 'N',";
 $sql.= "  PRIMARY KEY (MID,TO_UID)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE PM_SEARCH_RESULTS (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
@@ -230,11 +180,7 @@ $sql.= "  CREATED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  PRIMARY KEY (UID, MID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE PM_TYPE (";
 $sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -243,11 +189,7 @@ $sql.= "  TYPE TINYINT(3) UNSIGNED NOT NULL,";
 $sql.= "  PRIMARY KEY (MID,UID,TYPE)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE POST_ATTACHMENT_FILES (";
 $sql.= "  AID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
@@ -265,11 +207,7 @@ $sql.= "  KEY UID (UID),";
 $sql.= "  KEY HASH (HASH)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE POST_ATTACHMENT_IDS (";
 $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -279,11 +217,7 @@ $sql.= "  AID MEDIUMINT(8) UNSIGNED NOT NULL,";
 $sql.= "  PRIMARY KEY (FID,TID,PID,AID)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE SEARCH_ENGINE_BOTS (";
 $sql.= "  SID MEDIUMINT(8) NOT NULL AUTO_INCREMENT, ";
@@ -295,11 +229,7 @@ $sql.= "  KEY NAME (NAME), ";
 $sql.= "  KEY AGENT_MATCH (AGENT_MATCH)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE SEARCH_RESULTS (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
@@ -316,11 +246,7 @@ $sql.= "  RELEVANCE FLOAT UNSIGNED NOT NULL DEFAULT '0', ";
 $sql.= "  PRIMARY KEY (UID, FORUM, TID, PID)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE SESSIONS (";
 $sql.= "  ID VARCHAR(40) NOT NULL,";
@@ -339,11 +265,7 @@ $sql.= "  KEY TIME (TIME,FID),";
 $sql.= "  KEY UID (UID,SID,TIME,FID)";
 $sql.= ") ENGINE=INNODB DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE SFS_CACHE (";
 $sql.= "  REQUEST_MD5 varchar(32) NOT NULL, ";
@@ -354,11 +276,7 @@ $sql.= "  PRIMARY KEY (REQUEST_MD5), ";
 $sql.= "  KEY EXPIRES (EXPIRES) ";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE TIMEZONES (";
 $sql.= "  TZID INT(11) NOT NULL DEFAULT '0', ";
@@ -367,11 +285,7 @@ $sql.= "  DST_OFFSET DOUBLE DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (TZID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE USER (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
@@ -389,11 +303,7 @@ $sql.= "  KEY LOGON (LOGON), ";
 $sql.= "  KEY NICKNAME (NICKNAME)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE USER_TOKEN (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -402,11 +312,7 @@ $sql.= "  EXPIRES datetime NOT NULL,";
 $sql.= "  PRIMARY KEY (UID, TOKEN)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE USER_FORUM (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
@@ -417,11 +323,7 @@ $sql.= "  LAST_VISIT DATETIME DEFAULT NULL, ";
 $sql.= "  PRIMARY KEY (UID, FID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE USER_HISTORY (";
 $sql.= "  HID MEDIUMINT(8) NOT NULL AUTO_INCREMENT, ";
@@ -433,11 +335,7 @@ $sql.= "  MODIFIED DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00', ";
 $sql.= "  PRIMARY KEY (HID)";
 $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE USER_PERM (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -447,11 +345,7 @@ $sql.= "  PERM INT(32) UNSIGNED NOT NULL,";
 $sql.= "  PRIMARY KEY (UID,FORUM,FID)";
 $sql.= ") ENGINE=MYISAM CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE USER_PREFS (";
 $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -510,11 +404,7 @@ $sql.= "  KEY DOB (DOB),";
 $sql.= "  KEY DOB_DISPLAY (DOB_DISPLAY)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 $sql = "CREATE TABLE VISITOR_LOG (";
 $sql.= "  VID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
@@ -532,58 +422,38 @@ $sql.= "  KEY FORUM (FORUM),";
 $sql.= "  KEY LAST_LOGON (LAST_LOGON)";
 $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-if (!($result = $db->query($sql))) {
-
-    $valid = false;
-    return;
-}
+$db->query($sql);
 
 if (!install_set_default_forum_settings()) {
-
-    $valid = false;
-    return;
+    throw new Exception('Failed to save forum settings');
 }
 
 if (!install_set_search_bots()) {
-
-    $valid = false;
-    return;
+    throw new Exception('Failed to create search bot entries');
 }
 
 if (!install_set_timezones()) {
-
-    $valid = false;
-    return;
+    throw new Exception('Failed to create timezone entries');
 }
 
 if (!($admin_uid = user_create($admin_username, $admin_password, $admin_username, $admin_email))) {
-
-    $valid = false;
-    return;
+    throw new Exception('Failed to create admin user');
 }
 
 if (!perm_update_user_global_perms($admin_uid, USER_PERM_ADMIN_TOOLS | USER_PERM_FORUM_TOOLS)) {
-
-    $valid = false;
-    return;
+    throw new Exception('Failed to set admin global permissions');
 }
 
-if (!($forum_fid = forum_create($forum_webtag, 'A Beehive Forum', $admin_uid, $config['db_database'], FORUM_UNRESTRICTED))) {
-
-    $valid = false;
-    return;
+if (!($forum_fid = forum_create($forum_webtag, 'A Beehive Forum', $admin_uid, $config['db_database'], FORUM_UNRESTRICTED, false, $error_str))) {
+    throw new Exception($error_str);
 }
 
 if (!forum_update_default($forum_fid)) {
-
-    $valid = false;
-    return;
+    throw new Exception('Failed to set default forum');
 }
 
 if (!perm_update_user_forum_permissions($admin_uid, $forum_fid, USER_PERM_ADMIN_TOOLS)) {
-
-    $valid = false;
-    return;
+    throw new Exception('Failed to set admin forum permissions');
 }
 
 ?>

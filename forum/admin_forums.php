@@ -268,9 +268,9 @@ if (isset($_POST['delete'])) {
 
     if ($valid) {
 
-        $error_str = '';
+        $error_str = null;
 
-        if (($new_fid = forum_create($t_webtag, $t_name, $t_owner_uid, $t_database, $t_access, $error_str)) !== false) {
+        if (($new_fid = forum_create($t_webtag, $t_name, $t_owner_uid, $t_database, $t_access, true, $error_str)) !== false) {
 
             if ($t_default == 1) forum_update_default($new_fid);
             header_redirect("admin_forums.php?webtag=$webtag&page=$page&added=true");

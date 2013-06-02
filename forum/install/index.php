@@ -365,7 +365,7 @@ if (isset($_POST['install_method'])) {
 
             } catch (Exception $e) {
 
-                $error_array[] = "<h2>Could not complete installation. Error was: ". $e->getMessage(). "</h2>\n";
+                $error_array[] = "<h2>Could not complete installation. Error was:<br /><br />". nl2br($e->getMessage()). "</h2>\n";
             }
 
         } catch (Exception $e) {

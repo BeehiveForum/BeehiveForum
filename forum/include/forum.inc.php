@@ -856,7 +856,7 @@ function forum_update_unread_data($unread_cutoff_stamp)
     return true;
 }
 
-function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access, &$error_str = '')
+function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access, $delete_tables_on_error, &$error_str)
 {
     if (!is_numeric($owner_uid)) return false;
 
@@ -872,7 +872,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
     $sql = "SELECT FID FROM FORUMS WHERE WEBTAG = '$webtag'";
 
-    if (!($result = @$db->query($sql))) return false;
+    if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows > 0) {
 
@@ -899,9 +899,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (ID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table ADMIN_LOG');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}BANNED` (";
         $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
@@ -913,9 +911,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY BANTYPE (BANTYPE, BANDATA)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table BANNED');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}FOLDER` (";
         $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
@@ -930,9 +926,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (FID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table FOLDER');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}FORUM_LINKS` (";
         $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
@@ -942,9 +936,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (LID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table FORUM_LINKS');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}LINKS` (";
         $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
@@ -962,9 +954,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY FID (FID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table LINKS');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}LINKS_COMMENT` (";
         $sql.= "  CID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
@@ -975,9 +965,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (CID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table LINKS_COMMENT');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}LINKS_FOLDERS` (";
         $sql.= "  FID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
@@ -988,9 +976,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY PARENT_FID (PARENT_FID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table LINKS_FOLDERS');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}LINKS_VOTE` (";
         $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',";
@@ -1000,9 +986,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (LID,UID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table LINKS_VOTE');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POLL` (";
         $sql.= "  `TID` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -1016,9 +1000,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (`TID`)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table POLL');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POLL_QUESTIONS` (";
         $sql.= "  `TID` MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -1028,9 +1010,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (`TID`,`QUESTION_ID`)";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table POLL_QUESTIONS');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POLL_VOTES` (";
         $sql.= "  `TID` MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -1040,9 +1020,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (`TID`,`QUESTION_ID`,`OPTION_ID`)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table POLL_VOTES');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POST` (";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -1067,9 +1045,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY INDEXED (INDEXED)";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-        if (!($result = $db->query($sql))) {
-            throw new Exception('Failed to create table POST');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POST_CONTENT` (";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -1079,21 +1055,19 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table POST_CONTENT');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POST_RATING` (";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  RATING TINYINT(4) NOT NULL,";
-        $sql.= "  PRIMARY KEY (TID,PID,UID)";
+        $sql.= "  CREATED DATETIME DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY (TID,PID,UID),";
+        $sql.= "  KEY CREATED (CREATED),";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table POST_RATING');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POST_RECIPIENT` (";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -1103,9 +1077,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (TID,PID,TO_UID)";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table POST_RECIPIENT');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POST_SEARCH_ID` (";
         $sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
@@ -1114,9 +1086,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (SID,TID,PID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table POST_SEARCH_ID');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}PROFILE_ITEM` (";
         $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
@@ -1129,49 +1099,37 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY PSID (PSID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table PROFILE_ITEM');
-        }
+        $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
         $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
         $sql.= "VALUES (1, 'Location', 0, '', 1)";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create location profile item');
-        }
+        $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
         $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
         $sql.= "VALUES (1, 'Age', 0, '', 2)";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create age profile item');
-        }
+        $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
         $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) VALUES ";
         $sql.= "(1, 'Gender', 5, 'Male\nFemale\nUnspecified', 3)";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create gender profile item');
-        }
+        $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
         $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
         $sql.= "VALUES (1, 'Quote', 0, '', 4)";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create quote profile item');
-        }
+        $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
         $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
         $sql.= "VALUES (1, 'Occupation', 0, '', 5)";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create occupation profile item');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}PROFILE_SECTION` (";
         $sql.= "  PSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
@@ -1180,16 +1138,12 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (PSID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table PROFILE_SECTION');
-        }
+        $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_SECTION` ";
         $sql.= "(NAME, POSITION) VALUES ('Personal', 1)";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create first profile section.');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}RSS_FEEDS` (";
         $sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
@@ -1204,9 +1158,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (RSSID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table RSS_FEEDS');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}RSS_HISTORY` (";
         $sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -1214,9 +1166,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY RSSID (RSSID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table RSS_HISTORY');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}STATS` (";
         $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
@@ -1229,9 +1179,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY MOST_USERS_COUNT (MOST_USERS_COUNT) ";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table STATS');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}THREAD` (";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
@@ -1254,9 +1202,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  FULLTEXT KEY TITLE (TITLE) ";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table THREAD');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}THREAD_STATS` (";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -1264,9 +1210,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (TID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table THREAD_STATS');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}THREAD_TRACK` (";
         $sql.= "  TID MEDIUMINT(8) NOT NULL DEFAULT '0', ";
@@ -1277,9 +1221,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY NEW_TID (NEW_TID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table THREAD_TRACK');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_FOLDER` (";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
@@ -1288,9 +1230,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (UID, FID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table USER_FOLDER');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_PEER` (";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
@@ -1300,9 +1240,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (UID, PEER_UID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table USER_PEER');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_POLL_VOTES` (";
         $sql.= "  `VOTE_ID` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
@@ -1318,9 +1256,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY `UID` (`UID`)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table USER_POLL_VOTES');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_PREFS` (";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -1356,9 +1292,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (UID)";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=utf8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table USER_PREFS');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_PROFILE` (";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -1368,9 +1302,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (UID,PIID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table USER_PROFILE');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_SIG` (";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -1379,9 +1311,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (UID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table USER_SIG');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_THREAD` (";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',";
@@ -1395,9 +1325,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  KEY INTEREST (INTEREST)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table USER_THREAD');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_TRACK` (";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -1406,9 +1334,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY  (UID, USER_KEY)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table USER_TRACK');
-        }
+        $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}WORD_FILTER` (";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0', ";
@@ -1421,17 +1347,13 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PRIMARY KEY (UID, FID)";
         $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create table WORD_FILTER');
-        }
+        $db->query($sql);
 
         // Save Webtag, Database name and Access Level.
         $sql = "INSERT INTO FORUMS (WEBTAG, OWNER_UID, DATABASE_NAME, ACCESS_LEVEL) ";
         $sql.= "VALUES ('$webtag', '$owner_uid', '$database_name', $access)";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create FORUMS record');
-        }
+        $db->query($sql);
 
         // Get the new FID so we can save the settings
         if (!$forum_fid = $db->insert_id) {
@@ -1442,28 +1364,23 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql = "INSERT INTO `{$forum_table_prefix}FOLDER` (TITLE, CREATED, MODIFIED, ALLOWED_TYPES, POSITION, PERM) ";
         $sql.= "VALUES ('General', NOW(), NOW(), 3, 1, 14588)";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create first folder');
-        }
+        $db->query($sql);
 
         // Add some default forum links
         $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
         $sql.= "VALUES (2, 'Project Beehive Forum Home', 'http://www.beehiveforum.co.uk/')";
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create Beehive Forum link');
-        }
+
+        $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
         $sql.= "VALUES (3, 'Project Beehive Forum on Facebook', 'http://www.facebook.com/pages/Project-Beehive-Forum/100468551205')";
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create Beehive Forum Facebook link');
-        }
+
+        $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
         $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.co.uk/forum/')";
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create Teh Forum forum link');
-        }
+
+        $db->query($sql);
 
         // Create user permissions for forum leader
         if (!perm_update_user_forum_permissions($owner_uid, $forum_fid, USER_PERM_ADMIN_TOOLS | USER_PERM_FOLDER_MODERATE)) {
@@ -1476,9 +1393,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "VALUES (1, '$owner_uid', 'Welcome', 1, 'N', CAST('$current_datetime' AS DATETIME), ";
         $sql.= "CAST('$current_datetime' AS DATETIME), NULL, 'N', NULL, NULL)";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create first thread');
-        }
+        $db->query($sql);
 
         // Get the Thread ID. It should be 1, but just in case.
         if (!$new_tid = $db->insert_id) {
@@ -1492,9 +1407,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "VALUES ('$new_tid', 0, $owner_uid, CAST('$current_datetime' AS DATETIME), ";
         $sql.= "CAST('$current_datetime' AS DATETIME), '$owner_uid', NULL, NULL, NULL)";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create first post');
-        }
+        $db->query($sql);
 
         // Get the Post ID. Again should be 1, but trying to be tidy here.
         if (!$new_pid = $db->insert_id) {
@@ -1505,25 +1418,19 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql = "INSERT INTO `{$forum_table_prefix}POST_CONTENT` (TID, PID, CONTENT) ";
         $sql.= "VALUES ('$new_tid', '$new_pid', 'Welcome to your new Beehive Forum')";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create first post content');
-        }
+        $db->query($sql);
 
         // First Post search ID
         $sql = "INSERT INTO `{$forum_table_prefix}POST_SEARCH_ID` (TID, PID) ";
         $sql.= "VALUES ('$new_tid', '$new_pid')";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create first post search index');
-        }
+        $db->query($sql);
 
         // Create Top Level Links Folder
         $sql = "INSERT INTO `{$forum_table_prefix}LINKS_FOLDERS` ";
         $sql.= "(PARENT_FID, NAME, VISIBLE) VALUES (NULL, 'Top Level', 'Y')";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to create top level links folder');
-        }
+        $db->query($sql);
 
         $forum_settings = array(
             'wiki_integration_uri' => 'http://en.wikipedia.org/wiki/[WikiWord]',
@@ -1558,24 +1465,22 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
             $sql.= "VALUES ($forum_fid, '$setting_name', '$setting_value')";
 
-            if (!@$db->query($sql)) {
-                throw new Exception('Failed to save forum settings');
-            }
+            $db->query($sql);
         }
 
         // Make sure at least the current user can
         // access the forum even if its not protected.
         $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) VALUES('$owner_uid', $forum_fid, 1)";
 
-        if (!@$db->query($sql)) {
-            throw new Exception('Failed to set user access permissions');
-        }
+        $db->query($sql);
 
     } catch (Exception $e) {
 
         $error_str = $e->getMessage();
 
-        forum_delete_tables($webtag, $database_name);
+        if ($delete_tables_on_error) {
+            forum_delete_tables($webtag, $database_name);
+        }
 
         return false;
     }
@@ -1682,8 +1587,6 @@ function forum_delete_tables($webtag, $database_name)
 
     if (!preg_match("/^[A-Z0-9_]+$/Diu", $database_name)) return false;
 
-    if (!session::check_perm(USER_PERM_FORUM_TOOLS, 0)) return false;
-
     if (!$db = db::get()) return false;
 
     $forum_table_prefix = install_format_table_prefix($database_name, $webtag);
@@ -1702,6 +1605,7 @@ function forum_delete_tables($webtag, $database_name)
         'POLL_VOTES',
         'POST',
         'POST_CONTENT',
+        'POST_RATING',
         'POST_RECIPIENT',
         'POST_SEARCH_ID',
         'PROFILE_ITEM',
@@ -1712,7 +1616,6 @@ function forum_delete_tables($webtag, $database_name)
         'THREAD',
         'THREAD_STATS',
         'THREAD_TRACK',
-        'USER_TRACK',
         'USER_FOLDER',
         'USER_PEER',
         'USER_POLL_VOTES',
@@ -1720,6 +1623,7 @@ function forum_delete_tables($webtag, $database_name)
         'USER_PROFILE',
         'USER_SIG',
         'USER_THREAD',
+        'USER_TRACK',
         'WORD_FILTER'
     );
 

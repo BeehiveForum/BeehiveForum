@@ -660,8 +660,11 @@ function post_set_user_rating($tid, $pid, $uid, $rating)
 
     if (!$db = db::get()) return false;
 
-    $sql = "REPLACE INTO `{$table_prefix}POST_RATING` (TID, PID, UID, RATING) SELECT POST.TID, POST.PID, ";
-    $sql.= "USER.UID, IF(COALESCE(POST_RATING.RATING, 0) = $rating, 0, $rating) AS RATING FROM `{$table_prefix}POST` POST ";
+    $current_datetime = date(MYSQL_DATETIME, time());
+
+    $sql = "REPLACE INTO `{$table_prefix}POST_RATING` (TID, PID, UID, RATING, CREATED) ";
+    $sql.= "SELECT POST.TID, POST.PID, USER.UID, IF(COALESCE(POST_RATING.RATING, 0) = $rating, 0, $rating) AS RATING ";
+    $sql.= "CAST('$current_datetime' AS DATETIME) FROM `{$table_prefix}POST` POST ";
     $sql.= "INNER JOIN USER ON (USER.UID = $uid) LEFT JOIN `{$table_prefix}POST_RATING` POST_RATING ";
     $sql.= "ON (POST_RATING.TID = POST.TID AND POST_RATING.PID = POST.PID AND POST_RATING.UID = $uid) ";
     $sql.= "WHERE POST.TID = $tid AND POST.PID = $pid";

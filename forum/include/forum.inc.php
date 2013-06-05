@@ -195,13 +195,17 @@ function forum_check_guest_access_allowed_ignore()
 
 function forum_check_access_level()
 {
-    $result = forum_check_access_level_ignore();
+    $forum_access_ignore_files_preg = implode("|^", array_map('preg_quote_callback', get_forum_access_ignore_files()));
 
-    if (!($db = db::get())) return $result;
+    if (preg_match("/^$forum_access_ignore_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) {
+        return true;
+    }
 
-    if (!($table_prefix = get_table_prefix())) return $result;
+    if (!($db = db::get())) return false;
 
-    if (!($forum_fid = get_forum_fid())) return $result;
+    if (!($table_prefix = get_table_prefix())) return false;
+
+    if (!($forum_fid = get_forum_fid())) return false;
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
@@ -210,11 +214,11 @@ function forum_check_access_level()
     $sql.= "AND USER_FORUM.UID = '{$_SESSION['UID']}') WHERE FORUMS.FID = '$forum_fid' ";
     $sql.= "AND FORUMS.ACCESS_LEVEL < 3";
 
-    if (!($result = $db->query($sql))) return $result;
+    if (!($result = $db->query($sql))) return false;
 
-    if ($result->num_rows == 0) return $result;
+    if ($result->num_rows == 0) return false;
 
-    if (!($forum_data = $result->fetch_assoc())) return $result;
+    if (!($forum_data = $result->fetch_assoc())) return false;
 
     if (!isset($forum_data['ACCESS_LEVEL'])) return true;
 
@@ -232,17 +236,6 @@ function forum_check_access_level()
     }
 
     return true;
-}
-
-function forum_check_access_level_ignore()
-{
-    $forum_access_ignore_files_preg = implode("|^", array_map('preg_quote_callback', get_forum_access_ignore_files()));
-
-    if (preg_match("/^$forum_access_ignore_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) {
-        return true;
-    }
-
-    return false;
 }
 
 function forum_closed_message()
@@ -275,9 +268,9 @@ function forum_restricted_message()
 {
     $final_uri = basename(get_request_uri());
 
-    $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_popup_files()));
+    $available_popup_files_preg = implode("|^", array_map('preg_quote_callback', get_available_popup_files()));
 
-    if (preg_match("/^$available_files_preg/", $final_uri) > 0) {
+    if (preg_match("/^$available_popup_files_preg/", $final_uri) > 0) {
         $forum_owner_link_target = "_blank";
     } else {
         $forum_owner_link_target = html_get_top_frame_name();

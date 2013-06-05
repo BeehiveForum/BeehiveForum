@@ -1171,10 +1171,10 @@ function html_style_image($image, $allow_cdn = true)
     return html_get_forum_file_path(sprintf('styles/%s/images/%s?version=%s', basename($user_style), basename($image), BEEHIVE_VERSION), $allow_cdn);
 }
 
-function html_set_cookie($name, $value, $expires = 0)
+function html_set_cookie($name, $value, $expires = 0, $path = '/')
 {
     $cookie_secure = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on');
-    return setcookie($name, $value, $expires, '/', '', $cookie_secure, true);
+    return setcookie($name, $value, $expires, $path, '', $cookie_secure, true);
 }
 
 function html_get_cookie($cookie_name, $callback = null, $default = null)
@@ -1192,8 +1192,23 @@ function html_get_cookie($cookie_name, $callback = null, $default = null)
 
 function html_remove_all_cookies()
 {
-    foreach (array_keys($_COOKIE) as $name) {
-        html_set_cookie($name, '', time() - YEAR_IN_SECONDS);
+    if (isset($_SERVER['HTTP_COOKIE'])) {
+
+        $cookies = array_map('trim', explode(';', $_SERVER['HTTP_COOKIE']));
+
+        foreach ($cookies as $key => $cookie) {
+            list($cookies[$key]) = explode('=', $cookie, 2);
+        }
+
+    } else {
+
+        $cookies = array_keys($_COOKIE);
+    }
+
+    foreach ($cookies as $cookie) {
+
+        html_set_cookie($cookie, '', time() - YEAR_IN_SECONDS);
+        html_set_cookie($cookie, '', time() - YEAR_IN_SECONDS, '/');
     }
 }
 

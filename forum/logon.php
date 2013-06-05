@@ -61,7 +61,7 @@ if (isset($_GET['final_uri']) && strlen(trim($_GET['final_uri'])) > 0) {
 }
 
 // Delete the user's cookie as requested and send them back to the login form.
-if (isset($_GET['deletecookie']) && ($_GET['deletecookie'] == 'yes')) {
+if (isset($_GET['delete_cookie']) && ($_GET['delete_cookie'] == 'yes')) {
 
     html_remove_all_cookies();
 

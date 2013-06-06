@@ -546,7 +546,7 @@ abstract class session
             $_SESSION['RAND_HASH'] = md5(uniqid(mt_rand()));
         }
 
-        if (!forum_get_last_visit($uid) && ($gid = perm_get_default_group())) {
+        if ($uid > 0 && !forum_get_last_visit($uid) && ($gid = perm_get_default_group())) {
             perm_add_user_to_group($uid, $gid);
         }
 

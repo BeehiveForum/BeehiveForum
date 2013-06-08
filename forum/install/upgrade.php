@@ -510,7 +510,9 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  RATING TINYINT(4) NOT NULL,";
-        $sql.= "  PRIMARY KEY (TID,PID,UID)";
+        $sql.= "  CREATED DATETIME DEFAULT NULL,";
+        $sql.= "  PRIMARY KEY (TID,PID,UID),";
+        $sql.= "  KEY CREATED (CREATED),";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
         $db->query($sql);

@@ -57,14 +57,7 @@ abstract class session
 
         session_name('sess_hash');
 
-        if (!html_get_cookie('sess_hash')) {
-
-            if (!($hash = session::restore())) {
-
-                html_set_cookie('user_logon', '', time() - YEAR_IN_SECONDS);
-                html_set_cookie('user_token', '', time() - YEAR_IN_SECONDS);
-            }
-
+        if (!html_get_cookie('sess_hash') && ($hash = session::restore())) {
             session_id($hash);
         }
 
@@ -459,11 +452,11 @@ abstract class session
 
     public static function restore()
     {
-        if (!($user_logon = html_get_cookie('user_logon'))) return null;
+        if (!($user_logon = html_get_cookie('user_logon'))) return false;
 
-        if (!($user_token = html_get_cookie('user_token'))) return null;
+        if (!($user_token = html_get_cookie('user_token'))) return false;
 
-        if (!($uid = user_logon_token($user_logon, $user_token))) return null;
+        if (!($uid = user_logon_token($user_logon, $user_token))) return false;
 
         $user_logon = session::$db->escape($user_logon);
 
@@ -479,18 +472,21 @@ abstract class session
         $sql.= "AND USER_TOKEN.EXPIRES > '$current_datetime' AND USER.UID = '$uid' ";
         $sql.= "GROUP BY USER.UID";
 
-        if (!($result = session::$db->query($sql))) return null;
+        if (!($result = session::$db->query($sql))) return false;
 
-        if ($result->num_rows == 0) return null;
+        if ($result->num_rows == 0) return false;
 
         list($id) = $result->fetch_row();
 
-        if (!isset($id) || is_null($id)) return null;
+        if (isset($id) && !is_null($id)) {
+	
+	        html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
+	        html_set_cookie('user_token', $user_token, time() + YEAR_IN_SECONDS);
+	
+	        return $id;
+	    }
 
-        html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
-        html_set_cookie('user_token', $user_token, time() + YEAR_IN_SECONDS);
-
-        return $id;
+        return false;
     }
 
     public static function create($uid)

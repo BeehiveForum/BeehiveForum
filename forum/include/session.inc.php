@@ -57,8 +57,17 @@ abstract class session
 
         session_name('sess_hash');
 
-        if (!html_get_cookie('sess_hash') && ($hash = session::restore())) {
-            session_id($hash);
+        if (!html_get_cookie('sess_hash')) {
+
+            if (($hash = session::restore())) {
+
+                session_id($hash);
+
+            } else {
+
+                html_set_cookie('user_logon', '', time() - YEAR_IN_SECONDS);
+                html_set_cookie('user_token', '', time() - YEAR_IN_SECONDS);
+            }
         }
 
         session_start();
@@ -479,12 +488,12 @@ abstract class session
         list($id) = $result->fetch_row();
 
         if (isset($id) && !is_null($id)) {
-	
-	        html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
-	        html_set_cookie('user_token', $user_token, time() + YEAR_IN_SECONDS);
-	
-	        return $id;
-	    }
+
+            html_set_cookie('user_logon', $user_logon, time() + YEAR_IN_SECONDS);
+            html_set_cookie('user_token', $user_token, time() + YEAR_IN_SECONDS);
+
+            return $id;
+        }
 
         return false;
     }

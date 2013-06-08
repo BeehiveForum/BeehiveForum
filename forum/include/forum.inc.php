@@ -1058,6 +1058,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  CREATED DATETIME DEFAULT NULL,";
         $sql.= "  PRIMARY KEY (TID,PID,UID),";
         $sql.= "  KEY CREATED (CREATED),";
+        $sql.= "  KEY RATING (RATING),";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
         $db->query($sql);

@@ -40,7 +40,7 @@ function forum_links_get_links()
     $forum_links_top_link = forum_get_setting('forum_links_top_link', null, gettext("Forum Links"));
 
     $sql = "SELECT LID, TITLE, URI FROM `{$table_prefix}FORUM_LINKS` ";
-    $sql.= "ORDER BY POS ASC";
+    $sql.= "ORDER BY POSITION ASC";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -80,9 +80,9 @@ function forum_links_get_links_by_page($page = 1)
 
     $forum_links_array = array();
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS LID, POS, URI, TITLE ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS LID, POSITION, URI, TITLE ";
     $sql.= "FROM `{$table_prefix}FORUM_LINKS` ";
-    $sql.= "ORDER BY POS ASC LIMIT $offset, 10";
+    $sql.= "ORDER BY POSITION ASC LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -205,14 +205,14 @@ function forum_links_add_link($title, $uri = "")
     $title = $db->escape($title);
     $uri = $db->escape($uri);
 
-    $sql = "SELECT MAX(POS) + 1 FROM `{$table_prefix}FORUM_LINKS` ";
+    $sql = "SELECT MAX(POSITION) + 1 FROM `{$table_prefix}FORUM_LINKS` ";
     $sql.= "LIMIT 0, 1";
 
     if (!($result = $db->query($sql))) return false;
 
     list($new_position) = $result->fetch_row();
 
-    $sql = "INSERT INTO `{$table_prefix}FORUM_LINKS` (POS, TITLE, URI) ";
+    $sql = "INSERT INTO `{$table_prefix}FORUM_LINKS` (POSITION, TITLE, URI) ";
     $sql.= "VALUES ('$new_position', '$title', '$uri')";
 
     if (!($result = $db->query($sql))) return false;
@@ -230,7 +230,7 @@ function forum_links_get_link($lid)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "SELECT LID, POS, URI, TITLE ";
+    $sql = "SELECT LID, POSITION, URI, TITLE ";
     $sql.= "FROM `{$table_prefix}FORUM_LINKS` ";
     $sql.= "WHERE LID = '$lid'";
 
@@ -253,15 +253,15 @@ function forum_links_move_up($lid)
 
     forum_links_positions_update();
 
-    $sql = "SELECT LID, POS FROM `{$table_prefix}FORUM_LINKS` ";
-    $sql.= "ORDER BY POS";
+    $sql = "SELECT LID, POSITION FROM `{$table_prefix}FORUM_LINKS` ";
+    $sql.= "ORDER BY POSITION";
 
     if (!($result = $db->query($sql))) return false;
 
     while (($forum_links_data = $result->fetch_assoc()) !== null) {
 
         $forum_links_order[] = $forum_links_data['LID'];
-        $forum_links_position[$forum_links_data['LID']] = $forum_links_data['POS'];
+        $forum_links_position[$forum_links_data['LID']] = $forum_links_data['POSITION'];
     }
 
     if (($forum_links_order_key = array_search($lid, $forum_links_order)) !== false) {
@@ -274,14 +274,14 @@ function forum_links_move_up($lid)
 
         $new_position = $forum_links_position[$lid];
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FORUM_LINKS` SET POS = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FORUM_LINKS` SET POSITION = '$new_position' ";
         $sql.= "WHERE LID = '{$forum_links_order[$forum_links_order_key]}'";
 
         if (!($result = $db->query($sql))) return false;
 
         $new_position = $forum_links_position[$forum_links_order[$forum_links_order_key]];
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FORUM_LINKS` SET POS = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FORUM_LINKS` SET POSITION = '$new_position' ";
         $sql.= "WHERE LID = '$lid'";
 
         if (!($result = $db->query($sql))) return false;
@@ -302,15 +302,15 @@ function forum_links_move_down($lid)
 
     forum_links_positions_update();
 
-    $sql = "SELECT LID, POS FROM `{$table_prefix}FORUM_LINKS` ";
-    $sql.= "ORDER BY POS";
+    $sql = "SELECT LID, POSITION FROM `{$table_prefix}FORUM_LINKS` ";
+    $sql.= "ORDER BY POSITION";
 
     if (!($result = $db->query($sql))) return false;
 
     while (($forum_links_data = $result->fetch_assoc()) !== null) {
 
         $forum_links_order[] = $forum_links_data['LID'];
-        $forum_links_position[$forum_links_data['LID']] = $forum_links_data['POS'];
+        $forum_links_position[$forum_links_data['LID']] = $forum_links_data['POSITION'];
     }
 
     if (($forum_links_order_key = array_search($lid, $forum_links_order)) !== false) {
@@ -323,14 +323,14 @@ function forum_links_move_down($lid)
 
         $new_position = $forum_links_position[$lid];
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FORUM_LINKS` SET POS = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FORUM_LINKS` SET POSITION = '$new_position' ";
         $sql.= "WHERE LID = '{$forum_links_order[$forum_links_order_key]}'";
 
         if (!($result = $db->query($sql))) return false;
 
         $new_position = $forum_links_position[$forum_links_order[$forum_links_order_key]];
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FORUM_LINKS` SET POS = '$new_position' ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FORUM_LINKS` SET POSITION = '$new_position' ";
         $sql.= "WHERE LID = '$lid'";
 
         if (!($result = $db->query($sql))) return false;
@@ -350,7 +350,7 @@ function forum_links_positions_update()
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT LID FROM `{$table_prefix}FORUM_LINKS` ";
-    $sql.= "ORDER BY POS";
+    $sql.= "ORDER BY POSITION";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -359,7 +359,7 @@ function forum_links_positions_update()
         $new_position++;
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FORUM_LINKS` ";
-        $sql.= "SET POS = '$new_position' WHERE LID = '{$link_data['LID']}'";
+        $sql.= "SET POSITION = '$new_position' WHERE LID = '{$link_data['LID']}'";
 
         if (!$db->query($sql)) return false;
     }

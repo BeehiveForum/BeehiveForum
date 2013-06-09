@@ -262,16 +262,9 @@ if (isset($_POST['register'])) {
     }
 
     if (isset($_POST['sig_content']) && strlen(trim($_POST['sig_content'])) > 0) {
-        $sig_content = trim($_POST['sig_content']);
+        $sig_content = fix_html(emoticons_strip(trim($_POST['sig_content'])));
     } else {
         $sig_content = "";
-    }
-
-    if (isset($_POST['sig_html']) && $_POST['sig_html'] == "Y") {
-        $sig_content = fix_html($sig_content);
-        $sig_html = "Y";
-    } else {
-        $sig_html = "N";
     }
 
     if (isset($_POST['email_notify']) && $_POST['email_notify'] == "Y") {
@@ -406,7 +399,7 @@ if (isset($_POST['register'])) {
             user_update_prefs($new_uid, $new_user_prefs);
 
             // Save the new user signature
-            user_update_sig($new_uid, $sig_content, $sig_html);
+            user_update_sig($new_uid, $sig_content, true);
 
             // Initialise the new user session.
             session::refresh($new_uid);
@@ -460,23 +453,23 @@ if (isset($_POST['register'])) {
     }
 }
 
-html_draw_top(sprintf('title=%s', gettext("User Registration")), 'js/emoticons.js', 'js/register.js', "basetarget=$frame_top_target", 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("User Registration")), 'js/emoticons.js', 'js/register.js', 'ckeditor/ckeditor.js', "basetarget=$frame_top_target", 'class=window_title');
 
 echo "<h1>", gettext("User Registration"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    html_display_error_array($error_msg_array, '600', 'center');
+    html_display_error_array($error_msg_array, '700', 'center');
 }
 
 if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
-    html_display_warning_msg(gettext("More Profile and Preference options are available once you register"), '600', 'center');
+    html_display_warning_msg(gettext("More Profile and Preference options are available once you register"), '700', 'center');
 
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"register.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('user_agree_rules', htmlentities_array($user_agree_rules)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -492,7 +485,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\" width=\"295\">", gettext("Username"), ":</td>\n";
+    echo "                        <td align=\"left\" class=\"posthead\" width=\"250\">", gettext("Username"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_text("logon", (isset($logon) ? htmlentities_array($logon) : ""), 45, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
@@ -502,6 +495,43 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">", gettext("Confirm Password"), ":</td>\n";
     echo "                        <td align=\"left\">", form_input_password("cpw", null, 45), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
+    echo "      </td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "  <br />\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"left\">\n";
+    echo "        <table class=\"box\" width=\"100%\">\n";
+    echo "          <tr>\n";
+    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Profile Information"), "</td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\" width=\"250\">", gettext("First name"), ":</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("firstname", (isset($new_user_prefs['FIRSTNAME']) ? htmlentities_array($new_user_prefs['FIRSTNAME']) : ""), 45, 32), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" class=\"posthead\">", gettext("Last name"), ":</td>\n";
+    echo "                        <td align=\"left\">", form_input_text("lastname", (isset($new_user_prefs['LASTNAME']) ? htmlentities_array($new_user_prefs['LASTNAME']) : ""), 45, 32), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" class=\"posthead\">", gettext("Nickname"), ":</td>\n";
@@ -529,7 +559,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -537,7 +567,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Profile Information (Optional)"), "</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Signature"), "</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -545,23 +575,12 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "                  <td align=\"center\">\n";
     echo "                    <table class=\"posthead\" width=\"95%\">\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\" width=\"295\">", gettext("First name"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("firstname", (isset($new_user_prefs['FIRSTNAME']) ? htmlentities_array($new_user_prefs['FIRSTNAME']) : ""), 45, 32), "</td>\n";
+    echo "                        <td align=\"left\">\n";
+    echo "                          ", form_textarea('sig_content', isset($sig_content) ? htmlentities_array($sig_content) : '', 12, 85, 'tabindex="7"', 'edit_signature_content editor');
+    echo "                        </td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\">", gettext("Last name"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("lastname", (isset($new_user_prefs['LASTNAME']) ? htmlentities_array($new_user_prefs['LASTNAME']) : ""), 45, 32), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" class=\"posthead\" valign=\"top\">", gettext("Signature"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_textarea("sig_content", (isset($sig_content) ? htmlentities_array($sig_content) : ""), 6, 42), "</td>\n";
-    echo "                      </tr>\n";
-    echo "                     <tr>\n";
-    echo "                       <td align=\"left\">&nbsp;</td>\n";
-    echo "                       <td align=\"left\">", form_checkbox("sig_html", "Y", gettext("Signature contains HTML code"), (isset($sig_html) && $sig_html == "Y")), "</td>\n";
-    echo "                     </tr>\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
+    echo "                        <td align=\"left\">&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
@@ -574,7 +593,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -582,7 +601,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Preferences (Optional)"), "</td>\n";
+    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Preferences"), "</td>\n";
     echo "                </tr>\n";
     echo "              </table>\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
@@ -619,7 +638,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -656,7 +675,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
@@ -715,7 +734,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             $forum_owner_link  = sprintf("<a href=\"mailto:%s\">%s</a>", $forum_owner_email, gettext("forum owner"));
 
             echo "  <br />\n";
-            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
             echo "    <tr>\n";
             echo "      <td align=\"left\">\n";
             echo "        <table class=\"box\" width=\"100%\">\n";
@@ -756,7 +775,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     }
 
     echo "  <br />\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"center\">", form_submit('register', gettext("Register")), "&nbsp;", form_submit('cancel', gettext("Cancel")), "</td>\n";
     echo "    </tr>\n";
@@ -777,7 +796,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"register.php\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
+    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";

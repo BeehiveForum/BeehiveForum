@@ -37,13 +37,13 @@ require_once BH_INCLUDE_PATH. 'user.inc.php';
 require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 // End Required includes
 
-function post_create($fid, $tid, $reply_pid, $from_uid, $to_user_array, $content, $hide_ipaddress = false)
+function post_create($fid, $tid, $reply_pid, $from_uid, $to_user_array, $content)
 {
     if (!$db = db::get()) return false;
 
     $post_content = $db->escape($content);
 
-    $ipaddress = ($hide_ipaddress == false) ? get_ip_address() : '';
+    $ipaddress = get_ip_address();
 
     if (!is_numeric($tid)) return false;
 

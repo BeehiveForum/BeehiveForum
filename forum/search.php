@@ -26,6 +26,7 @@ require_once 'boot.php';
 
 // Required includes
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
 require_once BH_INCLUDE_PATH. 'form.inc.php';
 require_once BH_INCLUDE_PATH. 'format.inc.php';
 require_once BH_INCLUDE_PATH. 'forum.inc.php';

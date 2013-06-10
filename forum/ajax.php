@@ -33,10 +33,10 @@ require_once BH_INCLUDE_PATH. 'light.inc.php';
 require_once BH_INCLUDE_PATH. 'messages.inc.php';
 require_once BH_INCLUDE_PATH. 'pm.inc.php';
 require_once BH_INCLUDE_PATH. 'poll.inc.php';
+require_once BH_INCLUDE_PATH. 'post.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'stats.inc.php';
 require_once BH_INCLUDE_PATH. 'text_captcha.inc.php';
-require_once BH_INCLUDE_PATH. 'thread.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
 // End Required includes
 

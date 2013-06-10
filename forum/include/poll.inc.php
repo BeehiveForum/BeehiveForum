@@ -31,7 +31,6 @@ require_once BH_INCLUDE_PATH. 'html.inc.php';
 require_once BH_INCLUDE_PATH. 'messages.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'thread.inc.php';
-require_once BH_INCLUDE_PATH. 'user_rel.inc.php';
 require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 // End Required includes
 

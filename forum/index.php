@@ -39,6 +39,7 @@ require_once BH_INCLUDE_PATH. 'pm.inc.php';
 require_once BH_INCLUDE_PATH. 'server.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'threads.inc.php';
+require_once BH_INCLUDE_PATH. 'user.inc.php';
 // End Required includes
 
 // Don't cache this page

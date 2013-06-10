@@ -27,6 +27,7 @@ require_once 'lboot.php';
 // Required includes
 require_once BH_INCLUDE_PATH. 'cache.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'header.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
 require_once BH_INCLUDE_PATH. 'light.inc.php';
 require_once BH_INCLUDE_PATH. 'messages.inc.php';

@@ -39,11 +39,11 @@ require_once BH_INCLUDE_PATH. 'perm.inc.php';
 require_once BH_INCLUDE_PATH. 'pm.inc.php';
 require_once BH_INCLUDE_PATH. 'poll.inc.php';
 require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH. 'search.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'thread.inc.php';
 require_once BH_INCLUDE_PATH. 'threads.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'user_rel.inc.php';
 require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 // End Required includes
 
@@ -1763,7 +1763,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     echo "<div class=\"message_body\">\n";
 
-    echo $message['CONTENT'];
+    if (!isset($message['RELATIONSHIP']) || !($message['RELATIONSHIP'] & USER_IGNORED) || !$limit_text) {
+        echo $message['CONTENT'];
+    }
 
     if (isset($message['EDITED']) && $message['EDITED'] > 0) {
 
@@ -1844,7 +1846,11 @@ function light_message_get_vote_form_html($message)
 
     forum_check_webtag_available($webtag);
 
-    $html = "  <span>". ($message['POST_RATING'] > 0 ? '+' : ''). $message['POST_RATING']. "</span>";
+    if (isset($message['POST_RATING'])) {
+        $html = "  <span>". ($message['POST_RATING'] > 0 ? '+' : ''). $message['POST_RATING']. "</span>";
+    } else {
+        $html = "  <span>0</span>";
+    }
 
     if (isset($message['USER_POST_RATING']) && in_array($message['USER_POST_RATING'], array(-1, 1))) {
 

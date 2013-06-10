@@ -25,8 +25,10 @@ USA
 require_once 'boot.php';
 
 // Required includes
+require_once BH_INCLUDE_PATH. 'admin.inc.php';
 require_once BH_INCLUDE_PATH. 'attachments.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH. 'email.inc.php';
 require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
 require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
 require_once BH_INCLUDE_PATH. 'folder.inc.php';
@@ -36,6 +38,7 @@ require_once BH_INCLUDE_PATH. 'forum.inc.php';
 require_once BH_INCLUDE_PATH. 'header.inc.php';
 require_once BH_INCLUDE_PATH. 'html.inc.php';
 require_once BH_INCLUDE_PATH. 'messages.inc.php';
+require_once BH_INCLUDE_PATH. 'perm.inc.php';
 require_once BH_INCLUDE_PATH. 'poll.inc.php';
 require_once BH_INCLUDE_PATH. 'post.inc.php';
 require_once BH_INCLUDE_PATH. 'session.inc.php';

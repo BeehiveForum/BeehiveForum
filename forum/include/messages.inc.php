@@ -86,30 +86,13 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
     while (($message = $result->fetch_assoc()) !== null) {
 
-        $message['CONTENT'] = "";
-
+        $message['CONTENT'] = '';
         $message['ATTACHMENTS'] = array();
         $message['RECIPIENTS'] = array();
-
-        $message['POST_RATING'] = 0;
-        $message['USER_POST_RATING'] = 0;
-
-        if (!isset($message['APPROVED'])) $message['APPROVED'] = 0;
-        if (!isset($message['APPROVED_BY'])) $message['APPROVED_BY'] = 0;
-
-        if (!isset($message['EDITED'])) $message['EDITED'] = 0;
-        if (!isset($message['EDITED_BY'])) $message['EDITED_BY'] = 0;
-
-        if (!isset($message['IPADDRESS'])) $message['IPADDRESS'] = "";
-
-        if (!isset($message['RELATIONSHIP'])) $message['RELATIONSHIP'] = 0;
 
         if (!isset($message['FROM_NICKNAME'])) $message['FROM_NICKNAME'] = gettext("Unknown user");
         if (!isset($message['FROM_LOGON'])) $message['FROM_LOGON'] = gettext("Unknown user");
         if (!isset($message['FROM_UID'])) $message['FROM_UID'] = -1;
-
-        if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
-        if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
 
         $messages_array[$message['PID']] = $message;
     }
@@ -559,7 +542,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     }
 
     // OUTPUT MESSAGE ----------------------------------------------------------
-    if (!$is_preview && ($message['MOVED_TID'] > 0) && ($message['MOVED_PID'] > 0)) {
+    if (!$is_preview && isset($message['MOVED_TID']) && isset($message['MOVED_PID'])) {
 
         $post_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_self\">%s</a>";
         $post_link = sprintf($post_link, $message['MOVED_TID'], $message['MOVED_PID'], gettext("here"));
@@ -617,20 +600,16 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         }
     }
 
-    $temp_ignore = false;
-
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
     if ($is_poll && isset($message['PID']) && $message['PID'] == 1 && (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED))) {
-
         $message['RELATIONSHIP']-= USER_IGNORED;
-        $temp_ignore = true;
     }
 
     if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_FRIEND)) {
 
         echo "<img src=\"", html_style_image('friend.png'), "\" alt=\"", gettext("Friend"), "\" title=\"", gettext("Friend"), "\" />&nbsp;";
 
-    } else if ((isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED)) || $temp_ignore) {
+    } else if ((isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED))) {
 
         echo "<img src=\"", html_style_image('enemy.png'), "\" alt=\"", gettext("Ignored user"), "\" title=\"", gettext("Ignored user"), "\" />&nbsp;";
     }
@@ -749,7 +728,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "          </td>\n";
     echo "        </tr>\n";
 
-    if ((isset($message['RELATIONSHIP']) && !($message['RELATIONSHIP'] & USER_IGNORED)) || !$limit_text) {
+    if (!isset($message['RELATIONSHIP']) || !($message['RELATIONSHIP'] & USER_IGNORED) || !$limit_text) {
 
         echo "        <tr>\n";
         echo "          <td align=\"left\">\n";
@@ -803,7 +782,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         echo "                <td class=\"postbody overflow_content\" align=\"left\">{$message['CONTENT']}</td>\n";
         echo "              </tr>\n";
 
-        if (isset($message['EDITED']) && $message['EDITED'] > 0) {
+        if (isset($message['EDITED'])) {
 
             if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
 
@@ -1024,7 +1003,7 @@ function message_get_post_options_html($message)
             $html.= "                      </tr>\n";
         }
 
-        if (isset($message['IPADDRESS']) && strlen($message['IPADDRESS']) > 0) {
+        if (isset($message['IPADDRESS'])) {
 
             $html.= "                      <tr>\n";
             $html.= "                        <td align=\"left\"><span class=\"adminipdisplay\"><b>". gettext("IP"). "</b></span></td>\n";
@@ -1064,7 +1043,12 @@ function message_get_vote_form_html($message)
     $html = "<form method=\"POST\" action=\"messages.php\" target=\"_self\" data-msg=\"{$message['TID']}.{$message['PID']}\">\n";
     $html.= "  ". form_input_hidden("webtag", htmlentities_array($webtag)). "\n";
     $html.= "  ". form_input_hidden("msg", htmlentities_array("{$message['TID']}.{$message['PID']}")). "\n";
-    $html.= "  <span class=\"smallertext\">". gettext("Score"). ": ". ($message['POST_RATING'] > 0 ? '+' : ''). $message['POST_RATING']. "</span>";
+
+    if (isset($message['POST_RATING'])) {
+        $html.= "  <span class=\"smallertext\">". gettext("Score"). ": ". ($message['POST_RATING'] > 0 ? '+' : ''). $message['POST_RATING']. "</span>";
+    } else {
+        $html.= "  <span class=\"smallertext\">". gettext("Score"). ": 0</span>";
+    }
 
     if (isset($message['USER_POST_RATING']) && in_array($message['USER_POST_RATING'], array(-1, 1))) {
 
@@ -1155,7 +1139,7 @@ function message_display_deleted($tid, $pid, $message, $in_list, $is_preview, $f
     echo "            <table class=\"posthead\" width=\"100%\">\n";
     echo "              <tr>\n";
 
-    if (isset($message['EDITED']) && $message['EDITED'] > 0) {
+    if (isset($message['EDITED'])) {
 
         if (($edit_user = user_get_logon($message['EDITED_BY'])) !== false) {
 

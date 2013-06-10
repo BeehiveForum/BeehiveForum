@@ -22,6 +22,7 @@ USA
 ======================================================================*/
 
 // Required includes
+require_once BH_INCLUDE_PATH. 'attachments.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'db.inc.php';
 require_once BH_INCLUDE_PATH. 'email.inc.php';
@@ -309,7 +310,6 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
         'LOGON' => 'USER.LOGON',
         'LAST_VISIT' => 'USER_FORUM.LAST_VISIT',
         'REGISTERED' => 'USER.REGISTERED',
-        'REFERER' => 'SESSIONS.REFERER'
     );
 
     if (!in_array($sort_dir, array('ASC', 'DESC'))) $sort_dir = 'ASC';
@@ -344,14 +344,14 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
 
         case ADMIN_USER_FILTER_ONLINE:
 
-            $user_fetch_sql = "WHERE SESSIONS.ID IS NOT NULL ";
+            $user_fetch_sql = "WHERE ACTIVE_SESSIONS.ID IS NOT NULL ";
             $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
             $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
             break;
 
         case ADMIN_USER_FILTER_OFFLINE:
 
-            $user_fetch_sql = "WHERE SESSIONS.ID IS NULL ";
+            $user_fetch_sql = "WHERE ACTIVE_SESSIONS.ID IS NULL ";
             $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
             $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
             break;
@@ -377,10 +377,11 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
             break;
     }
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.ID, ";
-    $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "ACTIVE_SESSIONS.ID, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
-    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME)) ";
+    $sql.= "LEFT JOIN (SELECT ID, UID FROM SESSIONS WHERE UID > 0 AND TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql.= "GROUP BY UID) AS ACTIVE_SESSIONS ON (ACTIVE_SESSIONS.UID = USER.UID) ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID AND USER_FORUM.FID = $forum_fid) ";
     $sql.= "LEFT JOIN (SELECT UID, BIT_OR(PERM) AS PERM FROM ((SELECT GROUP_USERS.UID, ";
     $sql.= "GROUPS.FORUM, GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM, ";
@@ -426,7 +427,7 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
         'LOGON' => 'USER.LOGON',
         'LAST_VISIT' => 'USER_FORUM.LAST_VISIT',
         'REGISTERED' => 'USER.REGISTERED',
-        'ACTIVE' => 'SESSIONS.ID'
+        'ACTIVE' => 'ACTIVE_SESSIONS.ID'
     );
 
     if (!in_array($sort_dir, array('ASC', 'DESC'))) $sort_dir = 'ASC';
@@ -457,12 +458,12 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     switch ($filter) {
 
         case ADMIN_USER_FILTER_ONLINE:
-            $user_fetch_sql = "WHERE SESSIONS.ID IS NOT NULL";
+            $user_fetch_sql = "WHERE ACTIVE_SESSIONS.ID IS NOT NULL";
 
             break;
 
         case ADMIN_USER_FILTER_OFFLINE:
-            $user_fetch_sql = "WHERE SESSIONS.ID IS NULL";
+            $user_fetch_sql = "WHERE ACTIVE_SESSIONS.ID IS NULL";
 
             break;
 
@@ -482,10 +483,11 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
             break;
     }
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, SESSIONS.ID, ";
-    $sql.= "SESSIONS.REFERER, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql.= "ACTIVE_SESSIONS.ID, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
     $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
-    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME)) ";
+    $sql.= "LEFT JOIN (SELECT ID, UID FROM SESSIONS WHERE UID > 0 AND TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql.= "GROUP BY UID) AS ACTIVE_SESSIONS ON (ACTIVE_SESSIONS.UID = USER.UID) ";
     $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID AND USER_FORUM.FID = $forum_fid) ";
     $sql.= "LEFT JOIN (SELECT UID, BIT_OR(PERM) AS PERM FROM ((SELECT GROUP_USERS.UID, ";
     $sql.= "GROUPS.FORUM, GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM, ";

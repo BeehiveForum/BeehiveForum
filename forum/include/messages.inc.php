@@ -535,7 +535,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $message['CONTENT'] = implode("", $message_parts);
     }
 
-    if (!isset($message['APPROVED']) && !$perm_is_moderator) {
+    if (!isset($message['APPROVED'])) {
 
         message_display_approval_req($tid, $message['PID'], $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
         return;
@@ -636,8 +636,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if ($from_user_permissions & USER_PERM_WORMED) echo "<b>", gettext("Wormed user"), "</b> ";
             if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED_SIG)) echo "<b>", gettext("Ignored signature"), "</b> ";
-            if (!isset($message['APPROVED'])) echo "<b>", gettext("Approval Required"), "</b> ";
-
             echo format_time($message['CREATED']);
         }
     }

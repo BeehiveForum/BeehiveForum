@@ -414,10 +414,15 @@ h3.thread_title {
 }
 
 .message_from .message_time,
-.message_to .message_count {
+.message_to .message_count,
+.message_from .message_ignored {
     display: block;
     float: right;
     white-space: nowrap
+}
+
+.message_from .message_ignored {
+    font-weight: bold
 }
 
 .message_to span.message_read {

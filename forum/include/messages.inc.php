@@ -494,12 +494,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/iu', '[object: <a href="\1">\1</a>]', $message['CONTENT']);
     }
 
-    if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
+    if (!$is_poll || isset($message['PID']) && $message['PID'] > 1) {
         $message['CONTENT'] = message_apply_formatting($message['CONTENT'], ((isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED_SIG) > 0)) || !$show_sigs);
     }
 
     // Check length of post to see if we should truncate it for display --------
-    if ((mb_strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', null, 6226))) && $limit_text) {
+    if ($limit_text && (mb_strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', null, 6226)))) {
 
         $cut_msg = mb_substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', null, 6226)));
         $cut_msg = preg_replace("/(<[^>]+)?$/Du", "", $cut_msg);
@@ -535,7 +535,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $message['CONTENT'] = implode("", $message_parts);
     }
 
-    if (!isset($message['APPROVED'])) {
+    if (!$is_preview && !isset($message['APPROVED'])) {
 
         message_display_approval_req($tid, $message['PID'], $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
         return;
@@ -626,7 +626,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "</td>\n";
     echo "                <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\">";
 
-    if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED) && $limit_text && $_SESSION['UID'] > 0) {
+    if (!$is_preview && $_SESSION['UID'] > 0 && isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED)) {
 
         echo "<b>", gettext("Ignored message"), "</b>";
 
@@ -705,7 +705,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "</span></td>\n";
     echo "                <td align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\">";
 
-    if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED) && $limit_text && $in_list && $_SESSION['UID'] > 0) {
+    if (!$is_preview && $_SESSION['UID'] > 0 && isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED)) {
 
         echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">", gettext("Stop ignoring this user"), "</a>&nbsp;&nbsp;&nbsp;";
         echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">", gettext("View Message"), "</a>";
@@ -713,7 +713,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     } else if ($in_list && $msg_count > 0) {
 
         if ($is_poll) {
-
             echo "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_blank\" class=\"popup 800x600\"><img src=\"", html_style_image('poll.png'), "\" border=\"0\" alt=\"", gettext("This is a poll. Click to view results."), "\" title=\"", gettext("This is a poll. Click to view results."), "\" /></a> ", gettext("Poll"), " ";
         }
 
@@ -726,7 +725,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "          </td>\n";
     echo "        </tr>\n";
 
-    if (!isset($message['RELATIONSHIP']) || !($message['RELATIONSHIP'] & USER_IGNORED) || !$limit_text) {
+    if ($is_preview || !isset($message['RELATIONSHIP']) || !($message['RELATIONSHIP'] & USER_IGNORED)) {
 
         echo "        <tr>\n";
         echo "          <td align=\"left\">\n";
@@ -780,7 +779,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         echo "                <td class=\"postbody overflow_content\" align=\"left\">{$message['CONTENT']}</td>\n";
         echo "              </tr>\n";
 
-        if (isset($message['EDITED'])) {
+        if (!$is_preview && isset($message['EDITED'])) {
 
             if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
 
@@ -793,7 +792,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             }
         }
 
-        if (isset($message['APPROVED']) && isset($message['APPROVED_BY'])) {
+        if (!$is_preview && isset($message['APPROVED']) && isset($message['APPROVED_BY'])) {
 
             if (($message['APPROVED_BY'] != $message['FROM_UID']) && ($approved_user = user_get_logon($message['APPROVED_BY'])) !== false) {
 

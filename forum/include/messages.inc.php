@@ -452,7 +452,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $quick_reply = 'N';
     }
 
-    if ((!isset($message['CONTENT']) || $message['CONTENT'] == "") && !$is_preview) {
+    if ((!isset($message['CONTENT']) || $message['CONTENT'] == '') && !$is_preview) {
 
         message_display_deleted($tid, isset($message['PID']) ? $message['PID'] : 0, $message, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
         return;
@@ -467,6 +467,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             message_display_deleted($tid, $message['PID'], $message, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
             return;
         }
+    }
+
+    if (!$is_preview && !isset($message['APPROVED'])) {
+
+        message_display_approval_req($tid, $message['PID'], $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
+        return;
     }
 
     if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
@@ -486,6 +492,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         }
     }
 
+    if (!$is_preview && isset($message['MOVED_TID']) && isset($message['MOVED_PID'])) {
+
+        message_display_moved($tid, $message['PID'], $message, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
+        return;
+    }
+
     // Add emoticons/WikiLinks and ignore signature ----------------------------
     if (isset($_SESSION['IMAGES_TO_LINKS']) && ($_SESSION['IMAGES_TO_LINKS'] == 'Y')) {
 
@@ -494,22 +506,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/iu', '[object: <a href="\1">\1</a>]', $message['CONTENT']);
     }
 
-    if (!$is_poll || isset($message['PID']) && $message['PID'] > 1) {
+    if (!$is_poll || (isset($message['PID']) && $message['PID'] > 1)) {
         $message['CONTENT'] = message_apply_formatting($message['CONTENT'], ((isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED_SIG) > 0)) || !$show_sigs);
     }
 
-    // Check length of post to see if we should truncate it for display --------
-    if ($limit_text && (mb_strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', null, 6226)))) {
-
-        $cut_msg = mb_substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', null, 6226)));
-        $cut_msg = preg_replace("/(<[^>]+)?$/Du", "", $cut_msg);
-
-        $message['CONTENT'] = fix_html($cut_msg);
-        $message['CONTENT'].= "&hellip;[". gettext("Message Truncated"). "]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">". gettext("View full message"). "</a>";
-    }
-
     // Check for words that should be filtered ---------------------------------
-    if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
+    if (!$is_poll || (isset($message['PID']) && $message['PID'] > 1)) {
         $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT'], false);
     }
 
@@ -533,29 +535,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         }
 
         $message['CONTENT'] = implode("", $message_parts);
-    }
-
-    if (!$is_preview && !isset($message['APPROVED'])) {
-
-        message_display_approval_req($tid, $message['PID'], $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
-        return;
-    }
-
-    // OUTPUT MESSAGE ----------------------------------------------------------
-    if (!$is_preview && isset($message['MOVED_TID']) && isset($message['MOVED_PID'])) {
-
-        $post_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_self\">%s</a>";
-        $post_link = sprintf($post_link, $message['MOVED_TID'], $message['MOVED_PID'], gettext("here"));
-
-        echo "<div align=\"center\">\n";
-        echo "<table class=\"thread_track_notice\" width=\"96%\">\n";
-        echo "  <tr>\n";
-        echo "    <td align=\"left\">", sprintf(gettext("<b>Thread Split:</b> This post has been moved %s"), $post_link), "</td>\n";
-        echo "  </tr>\n";
-        echo "</table>\n";
-        echo "</div>\n";
-        echo  ($in_list) ? "<br />\n" : '';
-        return;
     }
 
     echo "<div align=\"center\">\n";
@@ -1161,6 +1140,48 @@ function message_display_deleted($tid, $pid, $message, $in_list, $is_preview, $f
     echo "    </td>\n";
 
     if ($in_list && !$is_preview) message_display_navigation($tid, $message['PID'], $first_msg, $msg_count, $posts_per_page);
+
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "</div>\n";
+    echo  ($in_list) ? "<br />\n" : '';
+}
+
+function message_display_moved($tid, $pid, $message, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page)
+{
+    $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
+
+    $post_link = sprintf(
+        '<a href="messages.php?webtag=%s&amp;msg=%s.%s" target="_self">%s</a>',
+        $webtag,
+        $message['MOVED_TID'],
+        $message['MOVED_PID'],
+        gettext('here')
+    );
+
+    echo "<div align=\"center\">";
+    echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
+    echo "  <tr>\n";
+
+    if ($in_list && !$is_preview) message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_per_page);
+
+    echo "    <td align=\"left\">\n";
+    echo "      <table width=\"100%\" class=\"box\" cellpadding=\"0\">\n";
+    echo "        <tr>\n";
+    echo "          <td align=\"left\">\n";
+    echo "            <table class=\"posthead\" width=\"100%\">\n";
+    echo "              <tr>\n";
+    echo "                <td align=\"left\">", sprintf(gettext("This message has been moved %s"), $post_link), "</td>\n";
+    echo "              </tr>\n";
+    echo "            </table>\n";
+    echo "          </td>\n";
+    echo "        </tr>\n";
+    echo "      </table>\n";
+    echo "    </td>\n";
+
+    if ($in_list && !$is_preview) message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_per_page);
 
     echo "  </tr>\n";
     echo "</table>\n";

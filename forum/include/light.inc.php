@@ -426,18 +426,10 @@ function light_draw_messages($tid, $pid)
 
         foreach ($messages as $message_number => $message) {
 
-            if (isset($message['RELATIONSHIP'])) {
-
-                if ($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
-                    $message['CONTENT'] = message_get_content($tid, $message['PID']);
-                } else {
-                    $message['CONTENT'] = gettext("Ignored"); // must be set to something or will show as deleted
-                }
-
+            if (isset($message['RELATIONSHIP']) && (($message['RELATIONSHIP'] & USER_IGNORED) || ($message['RELATIONSHIP'] & USER_IGNORED_COMPLETELY))) {
+                $message['CONTENT'] = gettext("Ignored");
             } else {
-
-              $message['CONTENT'] = message_get_content($tid, $message['PID']);
-
+                $message['CONTENT'] = message_get_content($tid, $message['PID']);
             }
 
             if ($thread_data['POLL_FLAG'] == 'Y') {
@@ -1604,6 +1596,12 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         }
     }
 
+    if (!$is_preview && !isset($message['APPROVED'])) {
+
+        light_message_display_approval_req($tid, $message['PID']);
+        return;
+    }
+
     if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED_COMPLETELY)) {
 
         light_message_display_deleted($tid, $message['PID']);
@@ -1621,27 +1619,11 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         }
     }
 
-    if (!isset($message['APPROVED']) && !$perm_is_moderator) {
-
-        light_message_display_approval_req($tid, $message['PID']);
-        return;
-    }
-
-    // OUTPUT MESSAGE ----------------------------------------------------------
     if (!$is_preview && ($message['MOVED_TID'] > 0) && ($message['MOVED_PID'] > 0)) {
 
-        $post_link = "<a href=\"messages.php?webtag=$webtag&amp;msg=%s.%s\" target=\"_self\">%s</a>";
-        $post_link = sprintf($post_link, $message['MOVED_TID'], $message['MOVED_PID'], gettext("here"));
-
-        light_html_display_warning_msg(sprintf(gettext("<b>Thread Split:</b> This post has been moved %s"), $post_link));
+        light_message_display_moved($message);
         return;
     }
-
-    if ($in_list) {
-        echo "<a name=\"a{$tid}_{$message['PID']}\"></a>";
-    }
-
-    echo "<div class=\"message\">\n";
 
     if (isset($_SESSION['IMAGES_TO_LINKS']) && ($_SESSION['IMAGES_TO_LINKS'] == 'Y')) {
 
@@ -1660,6 +1642,11 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         $message['CONTENT'].= "<a href=\"ldisplay.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"message_full_view\">". gettext("View full message"). ".</a>";
     }
 
+    if ($in_list) {
+        echo "<a name=\"a{$tid}_{$message['PID']}\"></a>";
+    }
+
+    echo "<div class=\"message\">\n";
     echo "<div class=\"message_header\">\n";
     echo "<div class=\"message_from\">\n";
     echo "", gettext("From"), ": ", word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true);
@@ -1678,9 +1665,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         $message['RELATIONSHIP']-= USER_IGNORED;
     }
 
-    if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED) && $limit_text) {
+    if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED) && $limit_text && $_SESSION['UID'] > 0) {
 
-        echo gettext("Ignored message");
+        echo "<span class=\"message_ignored\">", gettext("Ignored message"), "</span>\n";
 
     } else {
 
@@ -1730,111 +1717,138 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     echo "<div class=\"clearer\"></div>\n";
     echo "</div>\n";
     echo "</div>\n";
-    echo "<div class=\"message_links\">\n";
 
-    if ($in_list && $msg_count > 0) {
+    if (isset($_SESSION['IMAGES_TO_LINKS']) && ($_SESSION['IMAGES_TO_LINKS'] == 'Y')) {
 
-        echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\">$tid.{$message['PID']}</a>";
-
-        if ($message['REPLY_TO_PID'] > 0) {
-
-            echo " ", gettext("In reply to"), " ";
-
-            if (intval($message['REPLY_TO_PID']) >= intval($first_msg)) {
-
-                echo "<a href=\"#a{$tid}_{$message['REPLY_TO_PID']}\" target=\"_self\">$tid.{$message['REPLY_TO_PID']}</a>";
-
-            } else {
-
-                echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['REPLY_TO_PID']}\">$tid.{$message['REPLY_TO_PID']}</a>";
-            }
-        }
+        $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/iu', '[href: <a\1href="\2"\3>\2</a>][img: <a\1href="\4"\3>\4</a>]', $message['CONTENT']);
+        $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/iu', '[img: <a href="\1">\1</a>]', $message['CONTENT']);
+        $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/iu', '[object: <a href="\1">\1</a>]', $message['CONTENT']);
     }
 
-    echo "</div>\n";
-
-    if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
+    if (!$is_poll || (isset($message['PID']) && $message['PID'] > 1)) {
         $message['CONTENT'] = message_apply_formatting($message['CONTENT'], true);
+    }
+
+    if ($limit_text && (mb_strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', null, 6226)))) {
+
+        $cut_msg = mb_substr($message['CONTENT'], 0, intval(forum_get_setting('maximum_post_length', null, 6226)));
+        $cut_msg = preg_replace("/(<[^>]+)?$/Du", "", $cut_msg);
+
+        $message['CONTENT'] = fix_html($cut_msg);
+        $message['CONTENT'].= "&hellip;[". gettext("Message Truncated"). "]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">". gettext("View full message"). "</a>";
     }
 
     $message['CONTENT'] = light_spoiler_enable($message['CONTENT']);
 
-    if ($is_poll !== true) $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT']);
-
-    echo "<div class=\"message_body\">\n";
-
-    if (!isset($message['RELATIONSHIP']) || !($message['RELATIONSHIP'] & USER_IGNORED) || !$limit_text) {
-        echo $message['CONTENT'];
+    if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
+        $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT'], false);
     }
 
-    if (isset($message['EDITED']) && $message['EDITED'] > 0) {
+    if ($is_preview || !isset($message['RELATIONSHIP']) || !($message['RELATIONSHIP'] & USER_IGNORED)) {
 
-        if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
+        echo "<div class=\"message_links\">\n";
 
-            if (($edit_user = user_get_logon($message['EDITED_BY'])) !== false) {
+        if ($in_list && $msg_count > 0) {
 
-                echo "<div class=\"edit_text\">", sprintf(gettext("EDITED: %s by %s"), format_time($message['EDITED']), $edit_user), "</div>\n";
+            echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\">$tid.{$message['PID']}</a>";
+
+            if ($message['REPLY_TO_PID'] > 0) {
+
+                echo " ", gettext("In reply to"), " ";
+
+                if (intval($message['REPLY_TO_PID']) >= intval($first_msg)) {
+
+                    echo "<a href=\"#a{$tid}_{$message['REPLY_TO_PID']}\" target=\"_self\">$tid.{$message['REPLY_TO_PID']}</a>";
+
+                } else {
+
+                    echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['REPLY_TO_PID']}\">$tid.{$message['REPLY_TO_PID']}</a>";
+                }
             }
         }
-    }
 
-    echo "</div>\n";
+        echo "</div>\n";
+        echo "<div class=\"message_body\">\n";
 
-    if (isset($message['ATTACHMENTS']) && sizeof($message['ATTACHMENTS']) > 0) {
+        echo $message['CONTENT'];
 
-        if (($attachments_array = attachments_get($message['FROM_UID'], ATTACHMENT_FILTER_ASSIGNED, $message['ATTACHMENTS'])) !== false) {
+        if (!$is_preview && isset($message['EDITED'])) {
 
-            echo "<div class=\"message_attachments\">\n";
-            echo "  <span>", gettext("Attachments"), ":</span>\n";
-            echo "  <ul>\n";
+            if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
 
-            foreach ($attachments_array as $attachment) {
+                if (($edit_user = user_get_logon($message['EDITED_BY'])) !== false) {
 
-                if (($attachment_link = light_attachments_make_link($attachment)) !== false) {
-                    echo "<li>", $attachment_link, "</li>\n";
+                    echo "<div class=\"edit_text\">", sprintf(gettext("EDITED: %s by %s"), format_time($message['EDITED']), $edit_user), "</div>\n";
+                }
+            }
+        }
+
+        if (!$is_preview && isset($message['APPROVED']) && isset($message['APPROVED_BY'])) {
+
+            if (($message['APPROVED_BY'] != $message['FROM_UID']) && ($approved_user = user_get_logon($message['APPROVED_BY'])) !== false) {
+
+                echo "<div class=\"edit_text\">", sprintf(gettext("APPROVED: %s by %s"), format_time($message['APPROVED']), $approved_user), "</div>\n";
+            }
+        }
+
+        echo "</div>\n";
+
+        if (isset($message['ATTACHMENTS']) && sizeof($message['ATTACHMENTS']) > 0) {
+
+            if (($attachments_array = attachments_get($message['FROM_UID'], ATTACHMENT_FILTER_ASSIGNED, $message['ATTACHMENTS'])) !== false) {
+
+                echo "<div class=\"message_attachments\">\n";
+                echo "  <span>", gettext("Attachments"), ":</span>\n";
+                echo "  <ul>\n";
+
+                foreach ($attachments_array as $attachment) {
+
+                    if (($attachment_link = light_attachments_make_link($attachment)) !== false) {
+                        echo "<li>", $attachment_link, "</li>\n";
+                    }
+                }
+
+                echo "  </ul>\n";
+                echo "</div>\n";
+            }
+        }
+
+        if (!$is_preview && $msg_count > 0) {
+
+            $links_array = array();
+
+            if (!$closed && session::check_perm(USER_PERM_POST_CREATE, $folder_fid)) {
+
+                $links_array[] = "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" class=\"reply\">". gettext("Reply"). "</a>";
+            }
+
+            if (($_SESSION['UID'] == $message['FROM_UID'] && session::check_perm(USER_PERM_POST_DELETE, $folder_fid) && !session::check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
+
+                $links_array[] = "<a href=\"ldelete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"delete\">". gettext("Delete"). "</a>";
+            }
+
+            if ((!(session::check_perm(USER_PERM_PILLORIED, 0)) && ((($_SESSION['UID'] != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($_SESSION['UID'] == $message['FROM_UID'])) && session::check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
+
+                if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
+
+                    $links_array[] = "<a href=\"ledit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"edit\">". gettext("Edit"). "</a>";
                 }
             }
 
-            echo "  </ul>\n";
-            echo "</div>\n";
-        }
-    }
+            if (sizeof($links_array) > 0) {
 
-    if (!$is_preview && $msg_count > 0) {
-
-        $links_array = array();
-
-        if (!$closed && session::check_perm(USER_PERM_POST_CREATE, $folder_fid)) {
-
-            $links_array[] = "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" class=\"reply\">". gettext("Reply"). "</a>";
-        }
-
-        if (($_SESSION['UID'] == $message['FROM_UID'] && session::check_perm(USER_PERM_POST_DELETE, $folder_fid) && !session::check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
-
-            $links_array[] = "<a href=\"ldelete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"delete\">". gettext("Delete"). "</a>";
-        }
-
-        if ((!(session::check_perm(USER_PERM_PILLORIED, 0)) && ((($_SESSION['UID'] != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($_SESSION['UID'] == $message['FROM_UID'])) && session::check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
-
-            if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
-
-                $links_array[] = "<a href=\"ledit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"edit\">". gettext("Edit"). "</a>";
+                echo "<div class=\"message_footer\">\n";
+                echo "  <div class=\"message_footer_links\">", implode('&nbsp;&nbsp;', $links_array), "</div>\n";
+                echo "  <div class=\"message_vote_form\" data-msg=\"$tid.{$message['PID']}\">\n";
+                echo "    ", light_message_get_vote_form_html($message), "\n";
+                echo "  </div>\n";
+                echo "</div>\n";
             }
+
+        } else {
+
+            echo "<div class=\"message_footer_links\"></div>\n";
         }
-
-        if (sizeof($links_array) > 0) {
-
-            echo "<div class=\"message_footer\">\n";
-            echo "  <div class=\"message_footer_links\">", implode('&nbsp;&nbsp;', $links_array), "</div>\n";
-            echo "  <div class=\"message_vote_form\" data-msg=\"$tid.{$message['PID']}\">\n";
-            echo "    ", light_message_get_vote_form_html($message), "\n";
-            echo "  </div>\n";
-            echo "</div>\n";
-        }
-
-    } else {
-
-        echo "<div class=\"message_footer_links\"></div>\n";
     }
 
     echo "</div>";
@@ -1883,10 +1897,29 @@ function light_spoiler_enable($message)
     return $message;
 }
 
-function light_message_display_deleted($tid,$pid)
+function light_message_display_deleted($tid, $pid)
 {
     echo "<div class=\"message\">\n";
     echo sprintf(gettext("Message %s.%s was deleted"), $tid, $pid);
+    echo "</div>\n";
+}
+
+function light_message_display_moved($message)
+{
+    $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
+
+    $post_link = sprintf(
+        '<a href="lmessages.php?webtag=%s&amp;msg=%s.%s" target="_self">%s</a>',
+        $webtag,
+        $message['MOVED_TID'],
+        $message['MOVED_PID'],
+        gettext('here')
+    );
+
+    echo "<div class=\"message\">\n";
+    echo sprintf(gettext("This message has been moved %s"), $post_link);
     echo "</div>\n";
 }
 

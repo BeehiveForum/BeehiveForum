@@ -321,16 +321,9 @@ if ($msg_count > 0) {
 
     foreach ($messages as $message_number => $message) {
 
-        if (isset($message['RELATIONSHIP'])) {
-
-            if ($message['RELATIONSHIP'] >= 0) { // if we're not ignoring this user
-                $message['CONTENT'] = message_get_content($tid, $message['PID']);
-            } else {
-                $message['CONTENT'] = gettext("Ignored"); // must be set to something or will show as deleted
-            }
-
+        if (isset($message['RELATIONSHIP']) && (($message['RELATIONSHIP'] & USER_IGNORED) || ($message['RELATIONSHIP'] & USER_IGNORED_COMPLETELY))) {
+            $message['CONTENT'] = gettext("Ignored");
         } else {
-
             $message['CONTENT'] = message_get_content($tid, $message['PID']);
         }
 

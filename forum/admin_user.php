@@ -465,9 +465,6 @@ if (isset($_POST['action_submit'])) {
     if (sizeof($group_ids) > 0) {
 
         foreach ($group_ids as $gid) {
-
-            if (!(perm_is_group($gid))) continue;
-
             perm_remove_user_from_group($uid, $gid);
         }
 
@@ -477,7 +474,7 @@ if (isset($_POST['action_submit'])) {
 
 } else if (isset($_POST['add_group']) && is_numeric($_POST['add_group'])) {
 
-    if (perm_is_group($_POST['add_group']) && perm_add_user_to_group($uid, $_POST['add_group'])) {
+    if (perm_add_user_to_group($uid, $_POST['add_group'])) {
 
         header_redirect("admin_user.php?webtag=$webtag&uid=$uid&group_added=true");
         exit;

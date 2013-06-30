@@ -1191,6 +1191,10 @@ function message_display_moved($tid, $pid, $message, $in_list, $is_preview, $fir
 
 function message_display_approval_req($tid, $pid, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page)
 {
+    $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
+
     echo "<div align=\"center\">";
     echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "  <tr>\n";
@@ -1204,6 +1208,7 @@ function message_display_approval_req($tid, $pid, $in_list, $is_preview, $first_
     echo "            <table class=\"posthead\" width=\"100%\">\n";
     echo "              <tr>\n";
     echo "                <td align=\"left\">", sprintf(gettext("Message %s.%s is awaiting approval by a moderator"), $tid, $pid), "</td>\n";
+    echo "                <td align=\"right\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg=$tid.$pid&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D$tid.$pid\" target=\"_self\" title=\"", gettext("Approve Post"), "\">", gettext("Approve Post"), "</a></td>\n";
     echo "              </tr>\n";
     echo "            </table>\n";
     echo "          </td>\n";
@@ -1540,20 +1545,14 @@ function messages_get_most_recent($uid, $fid = false)
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
     $user_ignored = USER_IGNORED;
 
-    $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
-    $sql.= "THREAD.LENGTH, USER_THREAD.LAST_READ, USER_PEER.RELATIONSHIP, ";
-    $sql.= "THREAD.UNREAD_PID FROM `{$table_prefix}THREAD` THREAD ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
-    $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-    $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
-    $sql.= "WHERE THREAD.FID in ($fidlist) AND THREAD.DELETED = 'N' ";
-    $sql.= "AND THREAD.LENGTH > 0 AND (USER_PEER.RELATIONSHIP IS NULL ";
-    $sql.= "OR (USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
+    $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, THREAD.LENGTH, ";
+    $sql.= "USER_THREAD.LAST_READ, USER_PEER.RELATIONSHIP, THREAD.UNREAD_PID FROM `{$table_prefix}THREAD` THREAD ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
+    $sql.= "WHERE THREAD.FID in ($fidlist) AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 AND THREAD.APPROVED IS NOT NULL ";
+    $sql.= "AND (USER_PEER.RELATIONSHIP IS NULL OR (USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0) ";
+    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql.= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql.= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 1";
@@ -1611,20 +1610,14 @@ function messages_get_most_recent_unread($uid, $fid = false)
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
     $user_ignored = USER_IGNORED;
 
-    $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, ";
-    $sql.= "THREAD.LENGTH, USER_THREAD.LAST_READ, USER_PEER.RELATIONSHIP, ";
-    $sql.= "THREAD.UNREAD_PID FROM `{$table_prefix}THREAD` THREAD ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
-    $sql.= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-    $sql.= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
-    $sql.= "WHERE THREAD.FID in ($fidlist) AND THREAD.DELETED = 'N' ";
-    $sql.= "AND THREAD.LENGTH > 0 AND (USER_PEER.RELATIONSHIP IS NULL ";
-    $sql.= "OR (USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
-    $sql.= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
+    $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, THREAD.LENGTH, ";
+    $sql.= "USER_THREAD.LAST_READ, USER_PEER.RELATIONSHIP, THREAD.UNREAD_PID FROM `{$table_prefix}THREAD` THREAD ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
+    $sql.= "WHERE THREAD.FID in ($fidlist) AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 AND THREAD.APPROVED IS NOT NULL ";
+    $sql.= "AND (USER_PEER.RELATIONSHIP IS NULL OR (USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0) ";
+    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
     $sql.= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
     $sql.= "AND THREAD.MODIFIED > CAST('$unread_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";

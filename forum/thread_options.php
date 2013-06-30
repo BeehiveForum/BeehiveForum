@@ -63,13 +63,13 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     html_draw_error(gettext("The requested thread could not be found or access was denied."));
 }
 
-// Get the folder ID for the current message
-if (!$fid = thread_get_folder($tid)) {
-    html_draw_error(gettext("The requested thread could not be found or access was denied."));
+if (!$folder_data = thread_get_folder($tid)) {
+    html_draw_error(gettext("The requested folder could not be found or access was denied."));
 }
 
-// Get the existing thread data.
-if (!$thread_data = thread_get($tid, true)) {
+$perm_folder_moderate = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_data['FID']);
+
+if (!$thread_data = thread_get($tid, $perm_folder_moderate, false, $perm_folder_moderate)) {
     html_draw_error(gettext("The requested thread could not be found or access was denied."));
 }
 
@@ -156,7 +156,7 @@ if (isset($_POST['save'])) {
     }
 
     // Admin Options
-    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['BY_UID'] == $_SESSION['UID']) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', 'is_numeric', 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', 'is_numeric', 0) * MINUTE_IN_SECONDS)))))) {
+    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_data['FID']) || (($thread_data['BY_UID'] == $_SESSION['UID']) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', 'is_numeric', 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', 'is_numeric', 0) * MINUTE_IN_SECONDS)))))) {
 
         if (isset($_POST['rename']) && strlen(trim($_POST['rename'])) > 0) {
 
@@ -168,7 +168,7 @@ if (isset($_POST['save'])) {
 
                     post_add_edit_text($tid, 1);
 
-                    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+                    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_data['FID'])) {
 
                         admin_add_log_entry(RENAME_THREAD, array($tid, $thread_data['TITLE'], $t_rename));
                     }
@@ -194,7 +194,7 @@ if (isset($_POST['save'])) {
 
                     post_add_edit_text($tid, 1);
 
-                    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+                    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_data['FID'])) {
 
                         admin_add_log_entry(MOVED_THREAD, array($tid, $thread_data['TITLE'], $old_folder_title, $new_folder_title));
                     }
@@ -208,7 +208,7 @@ if (isset($_POST['save'])) {
         }
     }
 
-    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_data['FID'])) {
 
         if (isset($_POST['closed']) && is_numeric($_POST['closed'])) {
 
@@ -528,7 +528,7 @@ if ($thread_data['DELETED'] == 'N') {
     echo "          </tr>\n";
     echo "        </table>\n";
 
-    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid) || (($thread_data['BY_UID'] == $_SESSION['UID']) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', 'is_numeric', 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', 'is_numeric', 0) * MINUTE_IN_SECONDS)))))) {
+    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_data['FID']) || (($thread_data['BY_UID'] == $_SESSION['UID']) && ($thread_data['ADMIN_LOCK'] != THREAD_ADMIN_LOCK_ENABLED) && forum_get_setting('allow_post_editing', 'Y') && ((intval(forum_get_setting('post_edit_time', 'is_numeric', 0)) == 0) || ((time() - $thread_data['CREATED']) < (intval(forum_get_setting('post_edit_time', 'is_numeric', 0) * MINUTE_IN_SECONDS)))))) {
 
         if (!thread_is_poll($tid)) {
 
@@ -593,7 +593,7 @@ if ($thread_data['DELETED'] == 'N') {
             echo "        </table>\n";
         }
 
-        if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+        if (session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_data['FID'])) {
 
             $thread_available_pids = thread_get_unmoved_posts($tid);
 
@@ -925,7 +925,7 @@ if ($thread_data['DELETED'] == 'N') {
 
     html_draw_bottom();
 
-} else if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
+} else if (session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_data['FID'])) {
 
     html_draw_top(sprintf('title=%s', sprintf(gettext("Thread Options - %s"), $thread_data['TITLE'])), "basetarget=_blank", 'class=window_title');
 

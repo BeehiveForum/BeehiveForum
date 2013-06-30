@@ -201,7 +201,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     list($tid, $reply_to_pid) = explode(".", $_GET['replyto']);
 
-    if (!($fid = thread_get_folder($tid, $reply_to_pid))) {
+    if (!($fid = thread_get_folder_fid($tid))) {
         light_html_draw_error(gettext("The requested thread could not be found or access was denied."));
     }
 
@@ -221,7 +221,7 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     list($tid, $reply_to_pid) = explode(".", $_POST['replyto']);
 
-    if (!($fid = thread_get_folder($tid, $reply_to_pid))) {
+    if (!($fid = thread_get_folder_fid($tid))) {
         light_html_draw_error(gettext("The requested thread could not be found or access was denied."));
     }
 

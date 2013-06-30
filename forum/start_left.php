@@ -59,22 +59,22 @@ $folder_info = threads_get_folders();
 
 if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"subhead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">", gettext("Recent threads"), "</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"center\">\n";
-
     if (($thread_array = threads_get_most_recent()) !== false) {
+
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"subhead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\">", gettext("Recent threads"), "</td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">\n";
 
         foreach ($thread_array as $thread) {
 
@@ -189,37 +189,29 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
             echo "                    </table>\n";
         }
 
-    } else {
-
         echo "                    <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"center\">", gettext("No Messages"), "</td>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
         echo "                      </tr>\n";
         echo "                    </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">&nbsp;</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("discussion.php", gettext("Start Reading"), null, html_get_frame_name('main')), "</td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "  <br />\n";
     }
 
-    // Display "Start Reading" button
-    echo "                    <table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
-    echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
-    echo "                      </tr>\n";
-    echo "                    </table>\n";
-    echo "                  </td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"center\" colspan=\"2\">", form_quick_button("discussion.php", gettext("Start Reading"), null, html_get_frame_name('main')), "</td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";

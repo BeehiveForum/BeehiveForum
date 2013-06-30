@@ -51,15 +51,17 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     html_draw_error(gettext("Invalid Message ID or no Message ID specified."));
 }
 
-if (!$thread_data = thread_get($tid, session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-    html_draw_error(gettext("The requested thread could not be found or access was denied."));
-}
-
-if (!$folder_data = folder_get($thread_data['FID'])) {
+if (!$folder_data = thread_get_folder($tid)) {
     html_draw_error(gettext("The requested folder could not be found or access was denied."));
 }
 
-if (!$message = messages_get($tid, $pid, 1)) {
+$perm_folder_moderate = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_data['FID']);
+
+if (!$thread_data = thread_get($tid, $perm_folder_moderate, false, $perm_folder_moderate)) {
+    html_draw_error(gettext("The requested thread could not be found or access was denied."));
+}
+
+if (!$messages = messages_get($tid, $pid, 1)) {
     html_draw_error(gettext("That post does not exist in this thread!"));
 }
 

@@ -483,6 +483,25 @@ $db->query($sql);
 
 foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
+    if (!install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_THREAD", 'APPROVED')) {
+
+        $sql = "ALTER TABLE `{$table_data['WEBTAG']}_THREAD` ADD COLUMN APPROVED DATETIME NULL AFTER POLL_FLAG";
+
+        $db->query($sql);
+
+        $sql = "ALTER TABLE `{$table_data['WEBTAG']}_THREAD` ADD COLUMN APPROVED_BY MEDIUMINT(8) UNSIGNED NULL AFTER APPROVED";
+
+        $db->query($sql);
+
+        $sql = "UPDATE `{$table_data['WEBTAG']}_THREAD` INNER JOIN `{$table_data['WEBTAG']}_POST` ";
+        $sql.= "ON (`{$table_data['WEBTAG']}_POST`.TID = `{$table_data['WEBTAG']}_THREAD`.TID ";
+        $sql.= "AND `{$table_data['WEBTAG']}_POST`.PID = 1) ";
+        $sql.= "SET `{$table_data['WEBTAG']}_THREAD`.APPROVED = `{$table_data['WEBTAG']}_POST`.APPROVED, ";
+        $sql.= "`{$table_data['WEBTAG']}_THREAD.APPROVED_BY = `{$table_data['WEBTAG']}_POST`.APPROVED_BY";
+
+        $db->query($sql);
+    }
+
     if (!install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_POST", 'INDEXED')) {
 
         $sql = "ALTER TABLE `{$table_data['WEBTAG']}_POST` ADD COLUMN INDEXED DATETIME NULL";

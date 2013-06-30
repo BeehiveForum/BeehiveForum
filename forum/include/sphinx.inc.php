@@ -191,7 +191,7 @@ function sphinx_search_execute($search_arguments, &$error)
         $sql.= "{$search_result['weight']} AS RELEVANCE FROM `{$table_prefix}POST` ";
         $sql.= "POST INNER JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
         $sql.= "WHERE THREAD.TID = '{$search_result['tid']}' AND POST.PID = '{$search_result['pid']}' ";
-        $sql.= "AND THREAD.LENGTH > 0 AND THREAD.DELETED = 'N'";
+        $sql.= "AND THREAD.LENGTH > 0 AND THREAD.DELETED = 'N' AND THREAD.APPROVED IS NOT NULL";
 
         if (!$db->query($sql)) return false;
     }

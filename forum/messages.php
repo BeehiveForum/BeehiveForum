@@ -107,17 +107,16 @@ if (isset($_SESSION['POSTS_PER_PAGE']) && is_numeric($_SESSION['POSTS_PER_PAGE']
 
 $high_interest = (isset($_SESSION['MARK_AS_OF_INT']) && $_SESSION['MARK_AS_OF_INT'] == 'Y') ? 'Y' : 'N';
 
-// Check the thread exists.
-if (!$thread_data = thread_get($tid, session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-    html_draw_error(gettext("The requested thread could not be found or access was denied."));
-}
-
-// Check it's in a folder we can view.
-if (!$folder_data = folder_get($thread_data['FID'])) {
+if (!$folder_data = thread_get_folder($tid)) {
     html_draw_error(gettext("The requested folder could not be found or access was denied."));
 }
 
-// Get the messages.
+$perm_folder_moderate = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_data['FID']);
+
+if (!$thread_data = thread_get($tid, $perm_folder_moderate, false, $perm_folder_moderate)) {
+    html_draw_error(gettext("The requested thread could not be found or access was denied."));
+}
+
 if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
     html_draw_error(gettext("That post does not exist in this thread!"));
 }

@@ -40,7 +40,7 @@ if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
 
     $tid = $_GET['tid'];
 
-    if (!$t_fid = thread_get_folder($tid, 1)) {
+    if (!$t_fid = thread_get_folder_fid($tid)) {
         html_draw_error(gettext("The requested thread could not be found or access was denied."));
     }
 
@@ -49,12 +49,14 @@ if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
     html_draw_error(gettext("You must specify a poll to view."));
 }
 
-if (!$thread_data = thread_get($tid, session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-    html_draw_error(gettext("The requested thread could not be found or access was denied."));
+if (!$folder_data = thread_get_folder($tid)) {
+    html_draw_error(gettext("The requested folder could not be found or access was denied."));
 }
 
-if (!$folder_data = folder_get($thread_data['FID'])) {
-    html_draw_error(gettext("The requested folder could not be found or access was denied."));
+$perm_folder_moderate = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_data['FID']);
+
+if (!$thread_data = thread_get($tid, $perm_folder_moderate, false, $perm_folder_moderate)) {
+    html_draw_error(gettext("The requested thread could not be found or access was denied."));
 }
 
 if (!$poll_data = poll_get($tid)) {

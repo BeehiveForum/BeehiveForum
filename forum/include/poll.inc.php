@@ -1263,7 +1263,7 @@ function poll_close($tid)
 
     if (!($result = $db->query($sql))) return false;
 
-    if (($t_fid = thread_get_folder($tid, 1)) && ($result->num_rows > 0)) {
+    if (($t_fid = thread_get_folder_fid($tid)) && ($result->num_rows > 0)) {
 
         $poll_data = $result->fetch_assoc();
 

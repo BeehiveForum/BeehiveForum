@@ -63,20 +63,24 @@ function post_create($fid, $tid, $reply_pid, $from_uid, $to_user_array, $content
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    // Check that the post needs approval. If the user is a moderator their posts are self-approved.
-    if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $from_uid) && !perm_is_moderator($from_uid, $fid)) {
+    $approved_by = 'NULL';
 
-        $sql = "INSERT INTO `{$table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, ";
-        $sql.= "CREATED, IPADDRESS) VALUES ($tid, $reply_pid, $from_uid, ";
-        $sql.= "CAST('$current_datetime' AS DATETIME), '$ipaddress')";
+    $approved_datetime = 'NULL';
 
-    } else {
+    if (!perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $uid) || perm_is_moderator($uid, $fid)) {
 
-        $sql = "INSERT INTO `{$table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, ";
-        $sql.= "CREATED, APPROVED, APPROVED_BY, IPADDRESS) VALUES ($tid, $reply_pid, ";
-        $sql.= "$from_uid, CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "CAST('$current_datetime' AS DATETIME), $from_uid, '$ipaddress')";
+        $approved_by = $uid;
+
+        $approved_datetime = sprintf(
+            "CAST('%s' AS DATETIME)",
+            date(MYSQL_DATETIME, time())
+        );
     }
+
+    $sql = "INSERT INTO `{$table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, ";
+    $sql.= "CREATED, APPROVED, APPROVED_BY, IPADDRESS) VALUES ($tid, $reply_pid, ";
+    $sql.= "$from_uid, CAST('$current_datetime' AS DATETIME), $approved_datetime, ";
+    $sql.= "$approved_by, '$ipaddress')";
 
     if (!$db->query($sql)) return false;
 
@@ -126,6 +130,15 @@ function post_approve($tid, $pid)
     $sql.= "AND PID = '$pid'";
 
     if (!$db->query($sql)) return false;
+
+    if ($pid == 1) {
+
+        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
+        $sql.= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "APPROVED_BY = '{$_SESSION['UID']}' WHERE TID = '$tid'";
+
+        if (!$db->query($sql)) return false;
+    }
 
     return true;
 }
@@ -190,13 +203,27 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
 
     $deleted = ($deleted === true) ? 'Y' : 'N';
 
-    // Current datetime
     $current_datetime = date(MYSQL_DATETIME, time());
 
+    $approved_by = 'NULL';
+
+    $approved_datetime = 'NULL';
+
+    if (!perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $uid) || perm_is_moderator($uid, $fid)) {
+
+        $approved_by = $uid;
+
+        $approved_datetime = sprintf(
+            "CAST('%s' AS DATETIME)",
+            date(MYSQL_DATETIME, time())
+        );
+    }
+
     $sql = "INSERT INTO `{$table_prefix}THREAD` (FID, BY_UID, TITLE, LENGTH, POLL_FLAG, ";
-    $sql.= "STICKY, CREATED, MODIFIED, CLOSED, DELETED) VALUES ('$fid', '$uid', '$title', 0, '$poll', ";
-    $sql.= "'$sticky', CAST('$current_datetime' AS DATETIME), CAST('$current_datetime' AS DATETIME), ";
-    $sql.= "$closed, '$deleted')";
+    $sql.= "APPROVED, APPROVED_BY, STICKY, CREATED, MODIFIED, CLOSED, DELETED) ";
+    $sql.= "VALUES ('$fid', '$uid', '$title', 0, '$poll', $approved_datetime, ";
+    $sql.= "$approved_by, '$sticky', CAST('$current_datetime' AS DATETIME), ";
+    $sql.= "CAST('$current_datetime' AS DATETIME), $closed, '$deleted')";
 
     if (!$db->query($sql)) return false;
 

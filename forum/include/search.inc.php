@@ -136,7 +136,7 @@ function search_mysql_execute($search_arguments, &$error)
     $where_sql = "WHERE THREAD.FID IN ({$search_arguments['fid']}) ";
 
     // Can't search for deleted threads nor threads with no posts
-    $where_sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
+    $where_sql.= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 AND THREAD.APPROVED IS NOT NULL ";
 
     // Where query needs to limit the search results to the user specified date range.
     $where_sql.= search_date_range($search_arguments['date_from'], $search_arguments['date_to'], SEARCH_DATE_RANGE_SQL);

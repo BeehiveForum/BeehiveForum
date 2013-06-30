@@ -55,7 +55,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     list($tid, $pid) = explode(".", $msg);
 
-    if (!$t_fid = thread_get_folder($tid, $pid)) {
+    if (!$t_fid = thread_get_folder_fid($tid)) {
         html_draw_error(gettext("The requested thread could not be found or access was denied."));
     }
 
@@ -65,7 +65,7 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     list($tid, $pid) = explode(".", $msg);
 
-    if (!$t_fid = thread_get_folder($tid, $pid)) {
+    if (!$t_fid = thread_get_folder_fid($tid)) {
         html_draw_error(gettext("The requested thread could not be found or access was denied."));
     }
 

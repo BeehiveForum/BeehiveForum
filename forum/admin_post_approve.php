@@ -122,7 +122,7 @@ if (isset($msg) && validate_msg($msg)) {
 
     list($tid, $pid) = explode('.', $msg);
 
-    if (!$t_fid = thread_get_folder($tid, $pid)) {
+    if (!$t_fid = thread_get_folder_fid($tid)) {
         html_draw_error(gettext("The requested thread could not be found or access was denied."), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
     }
 

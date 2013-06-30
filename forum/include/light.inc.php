@@ -357,15 +357,23 @@ function light_draw_messages($tid, $pid)
 
     forum_check_webtag_available($webtag);
 
-    if (!$thread_data = thread_get($tid, session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
+    if (!$folder_data = thread_get_folder($tid)) {
+
+        light_html_display_error_msg(gettext("The requested folder could not be found or access was denied."));
+        return;
+    }
+
+    $perm_folder_moderate = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_data['FID']);
+
+    if (!$thread_data = thread_get($tid, $perm_folder_moderate, false, $perm_folder_moderate)) {
 
         light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
         return;
     }
 
-    if (!folder_get($thread_data['FID'])) {
+    if (!$thread_data = thread_get($tid, session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 
-        light_html_display_error_msg(gettext("The requested folder could not be found or access was denied."));
+        light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
         return;
     }
 

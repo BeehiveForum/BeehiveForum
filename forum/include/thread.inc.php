@@ -50,7 +50,7 @@ function thread_get_title($tid)
     return $thread_title;
 }
 
-function thread_get($tid, $inc_deleted = false, $inc_empty = false)
+function thread_get($tid, $inc_deleted = false, $inc_empty = false, $inc_unapproved = false)
 {
     if (!$db = db::get()) return false;
 
@@ -84,6 +84,8 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false)
     $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
     $sql.= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
     $sql.= "WHERE THREAD.TID = '$tid' AND THREAD.FID IN ($fidlist) ";
+
+    if ($inc_unapproved === false) $sql.= "AND THREAD.APPROVED IS NOT NULL ";
 
     if ($inc_deleted === false) $sql.= "AND THREAD.DELETED = 'N' ";
 
@@ -160,24 +162,43 @@ function thread_get_by_uid($tid)
     return $by_uid;
 }
 
-function thread_get_folder($tid)
+function thread_get_folder($tid, $thread_count = true)
 {
     if (!$db = db::get()) return false;
 
-    if (!($table_prefix = get_table_prefix())) return false;
-
     if (!is_numeric($tid)) return false;
 
-    $sql = "SELECT FID FROM `{$table_prefix}THREAD` THREAD ";
-    $sql.= "WHERE TID = '$tid'";
+    if (!($table_prefix = get_table_prefix())) return false;
+
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.POSITION, FOLDER.PREFIX, ";
+    $sql.= "FOLDER.ALLOWED_TYPES, FOLDER.PERM, USER_FOLDER.INTEREST FROM `{$table_prefix}FOLDER` FOLDER ";
+    $sql.= "INNER JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.FID = FOLDER.FID) ";
+    $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON (USER_FOLDER.FID = FOLDER.FID ";
+    $sql.= "AND USER_FOLDER.UID = '{$_SESSION['UID']}') WHERE THREAD.TID = '$tid' ";
+    $sql.= "GROUP BY FOLDER.FID, FOLDER.TITLE";
 
     if (!($result = $db->query($sql))) return false;
 
     if ($result->num_rows == 0) return false;
 
-    list($folder) = $result->fetch_row();
+    $folder_data = $result->fetch_assoc();
 
-    return $folder;
+    if ($thread_count) {
+        $folder_data['THREAD_COUNT'] = folder_get_thread_count($folder_data['FID']);
+    }
+
+    return $folder_data;
+}
+
+function thread_get_folder_fid($tid)
+{
+    if (!($folder_data = thread_get_folder($tid, false))) {
+        return false;
+    }
+
+    return $folder_data['FID'];
 }
 
 function thread_get_length($tid)
@@ -917,7 +938,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
         return false;
     }
 
-    if (!($thread_new = thread_get($new_tid, true, true))) {
+    if (!($thread_new = thread_get($new_tid, false, true))) {
 
         thread_split_error(THREAD_SPLIT_CREATE_ERROR, $error_str);
         thread_set_closed($tid, ($thread_data['CLOSED'] > 0));

@@ -61,7 +61,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     list($tid, $pid) = explode('.', $edit_msg);
 
-    if (!($fid = thread_get_folder($tid, $pid))) {
+    if (!($fid = thread_get_folder_fid($tid))) {
         html_draw_error(gettext("The requested thread could not be found or access was denied."));
     }
 
@@ -71,7 +71,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     list($tid, $pid) = explode('.', $_POST['msg']);
 
-    if (!($fid = thread_get_folder($tid, $pid))) {
+    if (!($fid = thread_get_folder_fid($tid))) {
         html_draw_error(gettext("The requested thread could not be found or access was denied."));
     }
 
@@ -99,7 +99,7 @@ if (!folder_get_by_type_allowed(FOLDER_ALLOW_POLL_THREAD)) {
     exit;
 }
 
-if (!($fid = thread_get_folder($tid))) {
+if (!($fid = thread_get_folder_fid($tid))) {
     html_draw_error(gettext("The requested thread could not be found or access was denied."));
 }
 

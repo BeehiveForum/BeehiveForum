@@ -32,7 +32,7 @@ class db extends mysqli
 
     protected static $connection;
 
-    protected function __construct($host = null, $username = null, $password = null, $database = null, $port = null, $socket = null)
+    public function __construct($host = null, $username = null, $password = null, $database = null, $port = null, $socket = null)
     {
         parent::__construct($host, $username, $password, $database, $port, $socket);
     }

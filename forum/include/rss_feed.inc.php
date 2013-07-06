@@ -80,7 +80,7 @@ function rss_feed_read_stream($filename)
 
     if (($fp = @fsockopen($url_array['host'], $url_array['port'], $errno, $errstr, 30)) !== false) {
 
-        @socket_set_timeout($fp, 2);
+        @socket_set_timeout($fp, 2, 0);
         @socket_set_blocking($fp, false);
 
         $header = "GET {$url_array['path']}{$url_array['query']} HTTP/1.0\r\n";

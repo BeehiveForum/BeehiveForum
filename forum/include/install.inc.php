@@ -458,7 +458,7 @@ function install_check_table_conflicts($database_name, $webtag, $check_forum_tab
 
     if (($remove_conflicts === true) && (sizeof($conflicting_tables_array) > 0)) {
 
-        $sql = sprintf('DROP TABLE IF EXISTS `%s`', implode('`, `', array_map(array($db, 'escape', $conflicting_tables_array))));
+        $sql = sprintf('DROP TABLE IF EXISTS `%s`', implode('`, `', array_map(array($db, 'escape'), $conflicting_tables_array)));
         $db->query($sql);
     }
 

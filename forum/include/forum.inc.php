@@ -1857,7 +1857,7 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
 
     list($forums_count) = $result_count->fetch_row();
 
-    if (($result->num_rows == 0) && ($forums_count > 0) && ($page > 1)) {
+    if (($result_forums->num_rows == 0) && ($forums_count > 0) && ($page > 1)) {
         return forum_search($forum_search, $page - 1, $sort_by, $sort_dir);
     }
 
@@ -1924,7 +1924,7 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
         $sql.= "FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
         $sql.= "LEFT JOIN `{$forum_data['PREFIX']}POST` POST ";
         $sql.= "ON (POST.TID = THREAD.TID) WHERE THREAD.FID IN ($folders) ";
-        $sql.= "LEFT JOIN `{$table_prefix}POST_RECIPIENT` POST_RECIPIENT ";
+        $sql.= "LEFT JOIN `{$forum_data['PREFIX']}POST_RECIPIENT` POST_RECIPIENT ";
         $sql.= "ON (POST_RECIPIENT.TID = POST.TID AND POST_RECIPIENT.PID = POST.PID) ";
         $sql.= "AND POST_RECIPIENT.TO_UID = '{$_SESSION['UID']}' ";
         $sql.= "AND POST_RECIPIENT.VIEWED IS NULL ";

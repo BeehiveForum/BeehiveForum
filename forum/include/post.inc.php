@@ -67,9 +67,9 @@ function post_create($fid, $tid, $reply_pid, $from_uid, $to_user_array, $content
 
     $approved_datetime = 'NULL';
 
-    if (!perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $uid) || perm_is_moderator($uid, $fid)) {
+    if (!perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $from_uid) || perm_is_moderator($from_uid, $fid)) {
 
-        $approved_by = $uid;
+        $approved_by = $from_uid;
 
         $approved_datetime = sprintf(
             "CAST('%s' AS DATETIME)",

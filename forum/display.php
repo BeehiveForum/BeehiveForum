@@ -61,7 +61,7 @@ if (!$thread_data = thread_get($tid, $perm_folder_moderate, false, $perm_folder_
     html_draw_error(gettext("The requested thread could not be found or access was denied."));
 }
 
-if (!$messages = messages_get($tid, $pid, 1)) {
+if (!$message = messages_get($tid, $pid, 1)) {
     html_draw_error(gettext("That post does not exist in this thread!"));
 }
 

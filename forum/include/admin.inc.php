@@ -1668,12 +1668,12 @@ function admin_send_link_approval_notification()
     $sql.= "FROM GROUPS INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
     $sql.= "INNER JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
     $sql.= "INNER JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
-    $sql.= "WHERE GROUPS.FORUM = $forum_fid AND GROUP_PERMS.FID = $fid ";
-    $sql.= "GROUP BY GROUP_USERS.UID HAVING PERM & $user_perm_links_moderate > 0) ";
+    $sql.= "WHERE GROUPS.FORUM = $forum_fid GROUP BY GROUP_USERS.UID ";
+    $sql.= "HAVING PERM & $user_perm_links_moderate > 0) ";
     $sql.= "UNION (SELECT DISTINCT USER_PERM.UID, BIT_OR(USER_PERM.PERM) AS PERM ";
     $sql.= "FROM USER INNER JOIN USER_PERM ON (USER_PERM.UID = USER.UID) ";
-    $sql.= "WHERE USER_PERM.FORUM IN (0, $forum_fid) AND USER_PERM.FID = $fid ";
-    $sql.= "GROUP BY USER.UID HAVING PERM & $user_perm_links_moderate > 0)";
+    $sql.= "WHERE USER_PERM.FORUM IN (0, $forum_fid) GROUP BY USER.UID ";
+    $sql.= "HAVING PERM & $user_perm_links_moderate > 0)";
 
     if (!($result = $db->query($sql))) return false;
 

@@ -672,6 +672,23 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     $sql = "DELETE FROM `{$table_data['PREFIX']}POST_RECIPIENT` WHERE TO_UID = 0";
 
     $db->query($sql);
+
+    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` CHANGE IPADDRESS IPADDRESS VARCHAR(255) NULL";
+
+    $db->query($sql);
+
+    if (!install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_FORUM_LINKS", 'POSITION')) {
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}FORUM_LINKS` ADD COLUMN POSITION MEDIUMINT(8) UNSIGNED NULL AFTER LID";
+
+        $db->query($sql);
+
+        $sql = "UPDATE `{$table_data['PREFIX']}FORUM_LINKS` SET POSITION = POS";
+
+        $db->query($sql);
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}FORUM_LINKS` DROP COLUMN POS";
+    }
 }
 
 $sql = "UPDATE USER_PREFS INNER JOIN POST_ATTACHMENT_FILES ";

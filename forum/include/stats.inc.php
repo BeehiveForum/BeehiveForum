@@ -1180,8 +1180,8 @@ function stats_get_inactive_user_count()
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COUNT(UID) AS USER_COUNT FROM USER ";
-    $sql.= "LEFT JOIN `{$table_prefix}POST` POST ON (POST.FROM_UID = USER.UID) ";
-    $sql.= "WHERE POST.TID IS NULL ";
+    $sql.= "WHERE UID NOT IN (SELECT DISTINCT FROM_UID ";
+    $sql.= "FROM `{$table_prefix}POST`)";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1196,7 +1196,7 @@ function stats_get_active_user_count()
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "SELECT COUNT(DISTINCT FROM_UID) AS USER_COUNT FROM `{$table_prefix}POST` ";
+    $sql = "SELECT COUNT(DISTINCT FROM_UID) AS USER_COUNT FROM `{$table_prefix}POST`";
 
     if (!($result = $db->query($sql))) return false;
 

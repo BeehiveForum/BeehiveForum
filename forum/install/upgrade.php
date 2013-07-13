@@ -497,7 +497,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $sql.= "ON (`{$table_data['WEBTAG']}_POST`.TID = `{$table_data['WEBTAG']}_THREAD`.TID ";
         $sql.= "AND `{$table_data['WEBTAG']}_POST`.PID = 1) ";
         $sql.= "SET `{$table_data['WEBTAG']}_THREAD`.APPROVED = `{$table_data['WEBTAG']}_POST`.APPROVED, ";
-        $sql.= "`{$table_data['WEBTAG']}_THREAD.APPROVED_BY = `{$table_data['WEBTAG']}_POST`.APPROVED_BY";
+        $sql.= "`{$table_data['WEBTAG']}_THREAD`.APPROVED_BY = `{$table_data['WEBTAG']}_POST`.APPROVED_BY";
 
         $db->query($sql);
     }

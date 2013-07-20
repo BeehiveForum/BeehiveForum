@@ -34,7 +34,7 @@ define("BEEHIVEMODE_LIGHT", true);
 
 // Constant to define where the include files are
 if (!defined('BH_INCLUDE_PATH')) {
-    define('BH_INCLUDE_PATH', 'include/');
+    define('BH_INCLUDE_PATH', __DIR__. '/include/');
 }
 
 // Set the default timezone

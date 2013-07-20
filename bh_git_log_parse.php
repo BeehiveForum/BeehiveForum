@@ -22,7 +22,7 @@ USA
 ======================================================================*/
 
 // Include path
-define('BH_INCLUDE_PATH', 'forum/include/');
+define('BH_INCLUDE_PATH', __DIR__. '/forum/include/');
 
  // Bootstrap
 require_once 'forum/boot.php';

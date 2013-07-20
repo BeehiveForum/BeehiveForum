@@ -23,7 +23,7 @@ USA
 
 date_default_timezone_set('UTC');
 
-define("BH_INCLUDE_PATH", "./forum/include/");
+define("BH_INCLUDE_PATH", __DIR__. "/forum/include/");
 
 define("BEEHIVEMODE_LIGHT", true);
 

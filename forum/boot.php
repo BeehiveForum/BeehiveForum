@@ -31,7 +31,7 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 
 // Constant to define where the include files are
 if (!defined('BH_INCLUDE_PATH')) {
-    define('BH_INCLUDE_PATH', 'include/');
+    define('BH_INCLUDE_PATH', __DIR__. '/include/');
 }
 
 // Set the default timezone

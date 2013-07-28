@@ -42,6 +42,7 @@ if (!($forum_prefix_array = install_get_table_data())) {
     throw new Exception("Could not locate any previous Beehive Forum installations");
 }
 
+/** @noinspection PhpUndefinedVariableInspection */
 if (!install_table_exists($config['db_database'], 'USER_PERM')) {
 
     $sql = "CREATE TABLE GROUPS_NEW (";
@@ -548,14 +549,15 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     if (!install_table_exists($config['db_database'], "{$table_data['WEBTAG']}_POST_RATING")) {
 
-        $sql = "CREATE TABLE `{$table_data['WEBTAG']}_POST_RATING` (";
+        $sql = "CREATE TABLE `{$table_data['PREFIX']}POST_RATING` (";
         $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  RATING TINYINT(4) NOT NULL,";
-        $sql.= "  CREATED DATETIME DEFAULT NULL,";
+        $sql.= "  CREATED DATETIME NOT NULL,";
         $sql.= "  PRIMARY KEY (TID,PID,UID),";
         $sql.= "  KEY CREATED (CREATED),";
+        $sql.= "  KEY RATING (RATING)";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
@@ -802,5 +804,3 @@ if (($attachment_dir = forum_get_global_setting('attachment_dir', null, false)) 
 
     $db->query($sql);
 }
-
-?>

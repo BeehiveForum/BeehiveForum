@@ -48,6 +48,11 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 // Perform additional admin login.
 admin_check_credentials();
 
+$t_name = null;
+$t_description = null;
+$t_prefix = null;
+$t_allowed_types = null;
+
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
@@ -265,5 +270,3 @@ echo "  </form>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

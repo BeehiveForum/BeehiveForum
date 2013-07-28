@@ -112,5 +112,3 @@ $http_cache_enabled = true;
 // disabling it may increase your forum's bandwidth usage.
 
 // ---------------------------------------------------------------------
-
-?>

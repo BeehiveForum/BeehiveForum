@@ -195,5 +195,3 @@ if (($threads_array = threads_get_most_recent($limit, $fid, ($sort_created == 'Y
 echo "<atom:link href=\"{$forum_location}/threads_rss.php?webtag=$webtag\" rel=\"self\" type=\"application/rss+xml\" />\n";
 echo "</channel>\n";
 echo "</rss>\n";
-
-?>

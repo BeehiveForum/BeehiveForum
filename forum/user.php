@@ -79,5 +79,3 @@ $frameset->html_frame("edit_prefs.php?webtag=$webtag", html_get_frame_name('righ
 $frameset->output_html();
 
 html_draw_bottom(true);
-
-?>

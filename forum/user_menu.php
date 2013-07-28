@@ -84,5 +84,3 @@ echo "  </tr>\n";
 echo "</table>\n";
 
 html_draw_bottom();
-
-?>

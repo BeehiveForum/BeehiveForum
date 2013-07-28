@@ -304,12 +304,14 @@ if (isset($lid) && is_numeric($lid)) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_link_approve.php?webtag=$webtag&ret=$ret", $page, $link_approval_array['link_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">";
+
+    html_page_links("admin_link_approve.php?webtag=$webtag&ret=$ret", $page, $link_approval_array['link_count'], 10);
+
+    echo "      </td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";
 
     html_draw_bottom();
 }
-
-?>

@@ -47,5 +47,3 @@ function ipv6_to_ipv4($ipv6)
 
     return $ipv6;
 }
-
-?>

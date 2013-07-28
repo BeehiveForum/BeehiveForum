@@ -36,6 +36,9 @@ require_once BH_INCLUDE_PATH. 'user_rel.inc.php';
 require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 // End Required includes
 
+$uid = null;
+$logon = null;
+
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
     $uid = $_GET['uid'];
@@ -401,5 +404,3 @@ echo "  </table>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

@@ -100,8 +100,10 @@ $allowed_image_types_array = array(
 
 $allowed_image_types = "*.". implode(", *.", $allowed_image_types_array);
 
-// Initialise the global prefs array
 $user_prefs_global = array();
+
+$attachment_details = null;
+$attachment_dir = null;
 
 if (isset($_POST['save'])) {
 
@@ -722,5 +724,3 @@ echo "</form>\n";
 if ($admin_edit === true) echo "</div>\n";
 
 html_draw_bottom();
-
-?>

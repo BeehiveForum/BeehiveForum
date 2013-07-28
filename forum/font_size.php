@@ -63,5 +63,3 @@ $css_selectors = array(
 foreach ($css_selectors as $css_selector => $css_font_ratio) {
     printf("%s {\n    font-size: %d%%;\n}\n\n", $css_selector, $font_size * $css_font_ratio * 10);
 }
-
-?>

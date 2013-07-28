@@ -273,5 +273,3 @@ echo "</div>";
 echo "</form>";
 
 light_html_draw_bottom();
-
-?>

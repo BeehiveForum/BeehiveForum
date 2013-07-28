@@ -404,7 +404,11 @@ echo "      <td align=\"left\">\n";
 echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" width=\"40%\">&nbsp;</td>\n";
-echo "            <td align=\"center\" style=\"white-space: nowrap\" width=\"20%\">", html_page_links("visitor_log.php?webtag=$webtag&page=$page&profile_selection=$profile_items_selected_encoded_string&user_search=$user_search&sort_by=$sort_by&sort_dir=$sort_dir&hide_empty=$hide_empty&hide_guests=$hide_guests", $page, $user_profile_array['user_count'], 10), "</td>\n";
+echo "            <td align=\"center\" style=\"white-space: nowrap\" width=\"20%\">";
+
+html_page_links("visitor_log.php?webtag=$webtag&page=$page&profile_selection=$profile_items_selected_encoded_string&user_search=$user_search&sort_by=$sort_by&sort_dir=$sort_dir&hide_empty=$hide_empty&hide_guests=$hide_guests", $page, $user_profile_array['user_count'], 10);
+
+echo "            </td>\n";
 echo "            <td align=\"right\" style=\"white-space: nowrap\" width=\"40%\">", form_dropdown_array('add_column', $profile_dropdown_array), "&nbsp;", form_submit('add', gettext("Add")), "</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
@@ -511,5 +515,3 @@ echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

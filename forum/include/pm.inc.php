@@ -437,7 +437,7 @@ function pms_get_recipients(&$message_array)
     return true;
 }
 
-function pm_process_result($result, $message_count)
+function pm_process_result(mysqli_result $result, $message_count)
 {
     $message_array = array();
 
@@ -498,11 +498,6 @@ function pm_search_execute($search_string, &$error)
     $pm_max_user_messages = abs(forum_get_setting('pm_max_user_messages', null, 100));
     $limit = ($pm_max_user_messages > 1000) ? 1000 : $pm_max_user_messages;
 
-    $pm_inbox_items = PM_INBOX_ITEMS;
-    $pm_saved_items = PM_SAVED_ITEMS;
-    $pm_draft_items = PM_DRAFT_ITEMS;
-    $pm_outbox_items = PM_OUTBOX;
-
     $sql = "INSERT INTO PM_SEARCH_RESULTS (UID, MID, RELEVANCE) SELECT '{$_SESSION['UID']}', PM.MID, ";
     $sql.= "MATCH(PM_CONTENT.CONTENT, PM.SUBJECT) AGAINST('$search_string_checked' IN BOOLEAN MODE) AS RELEVANCE ";
     $sql.= "FROM PM INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = {$_SESSION['UID']})";
@@ -548,8 +543,6 @@ function pm_fetch_search_results($sort_by = 'CREATED', $sort_dir = 'DESC', $page
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
-
-    $message_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM_TYPE.TYPE, ";
     $sql.= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
@@ -1115,8 +1108,6 @@ function pm_update_saved_message($mid, $from_uid, $to_user_array, $subject, $con
 
     $reply_mid = is_numeric($reply_mid) ? $reply_mid : 'NULL';
 
-    $pm_saved_draft = PM_SAVED_DRAFT;
-
     $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject', ";
     $sql.= "REPLY_TO_MID = $reply_mid, FROM_UID = '$from_uid' ";
     $sql.= "WHERE MID = '$mid'";
@@ -1319,7 +1310,6 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
     // PM folder types we'll be using.
     $pm_unread = PM_UNREAD;
     $pm_outbox = PM_OUTBOX;
-    $pm_sent_item = PM_SENT;
 
     // Get the user's free space.
     $pm_free_space = pm_get_free_space($_SESSION['UID']);
@@ -1738,6 +1728,8 @@ function pm_export_html($message_array, ZipArchive $zip, $options_array = array(
         }
     }
 
+    $pm_display = '';
+
     if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_SINGLE) {
         $pm_display = pm_export_html_top();
     }
@@ -1806,7 +1798,7 @@ function pm_export_xml($message_array, ZipArchive $zip, $options_array = array()
 
     if (sizeof($message_array) == 0) return false;
 
-    $root_xml = new SimpleXMLElement('<beehiveforum/>');
+    $root_xml = new SimpleXMLElement('<beehiveforum>');
     $messages_xml = $root_xml->addChild('messages');
 
     foreach ($message_array as $message) {
@@ -1849,7 +1841,7 @@ function pm_export_xml($message_array, ZipArchive $zip, $options_array = array()
 
             $zip->addFromString(sprintf("message_%s.xml", $message['MID']), $root_xml->asXML());
 
-            $root_xml = new SimpleXMLElement('<beehiveforum/>');
+            $root_xml = new SimpleXMLElement('<beehiveforum>');
             $messages_xml = $root_xml->addChild('messages');
         }
     }
@@ -1978,5 +1970,3 @@ function pm_reset_folder_name($folder)
 
     return $db->affected_rows > 0;
 }
-
-?>

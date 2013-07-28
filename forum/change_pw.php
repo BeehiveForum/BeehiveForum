@@ -35,6 +35,9 @@ require_once BH_INCLUDE_PATH. 'user.inc.php';
 // Array to hold error messages
 $error_msg_array = array();
 
+$pw = null;
+$cpw = null;
+
 // Submit code.
 if (isset($_POST['save'])) {
 
@@ -191,5 +194,3 @@ echo "  </form>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

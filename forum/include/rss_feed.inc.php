@@ -154,14 +154,16 @@ function rss_feed_read_database($filename)
    return $rss_data;
 }
 
-function rss_feed_parse_item($ivalues)
+function rss_feed_parse_item($item_values)
 {
-   for ($i = 0; $i < count($ivalues); $i++) {
+    $item = array();
 
-       if (isset($ivalues[$i]["value"])) {
-           $item[$ivalues[$i]["tag"]] = $ivalues[$i]["value"];
+    for ($i = 0; $i < count($item_values); $i++) {
+
+       if (isset($item_values[$i]["value"])) {
+           $item[$item_values[$i]["tag"]] = $item_values[$i]["value"];
        } else {
-           $item[$ivalues[$i]["tag"]] = " ";
+           $item[$item_values[$i]["tag"]] = " ";
        }
    }
 
@@ -472,5 +474,3 @@ function rss_feed_remove($rssid)
 
     return ($db->affected_rows > 0);
 }
-
-?>

@@ -426,7 +426,7 @@ function messages_bottom()
     echo "<p align=\"right\">Beehive Forum 2002</p>\n";
 }
 
-function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight_array = array())
+function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $is_poll = false, $show_sigs = true, $is_preview = false, $highlight_array = array())
 {
     $perm_is_moderator = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid);
 
@@ -438,7 +438,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     forum_check_webtag_available($webtag);
 
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return;
 
     if (isset($_SESSION['POSTS_PER_PAGE']) && is_numeric($_SESSION['POSTS_PER_PAGE'])) {
         $posts_per_page = max(min($_SESSION['POSTS_PER_PAGE'], 30), 10);
@@ -1847,5 +1847,3 @@ function messages_forum_stats($tid, $pid)
         echo "</div>\n";
     }
 }
-
-?>

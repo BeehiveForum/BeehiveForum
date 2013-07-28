@@ -49,6 +49,11 @@ $show_sigs = session::show_sigs();
 
 $valid = true;
 
+$tid = null;
+$pid = null;
+$t_fid = null;
+$preview_message = null;
+
 if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     $msg = $_POST['msg'];
@@ -168,11 +173,11 @@ echo "                  <td align=\"left\"><br />";
 
 if (thread_is_poll($tid) && $pid == 1) {
 
-    poll_display($tid, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, $thread_data['CLOSED'], false, $show_sigs, true);
+    poll_display($tid, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, $thread_data['CLOSED'], $show_sigs, true);
 
 } else {
 
-    message_display($tid, $preview_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, false, false, false, $show_sigs, true);
+    message_display($tid, $preview_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, false, false, $show_sigs, true);
 }
 
 echo "                  </td>\n";
@@ -196,5 +201,3 @@ echo "  </table>\n";
 echo "</form>\n";
 
 html_draw_bottom();
-
-?>

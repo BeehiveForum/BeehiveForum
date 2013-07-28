@@ -146,5 +146,3 @@ if (!forum_check_webtag_available($webtag) || !forum_check_access_level()) {
 if (!forum_check_guest_access_allowed()) {
     header_redirect("llogon.php?webtag=$webtag");
 }
-
-?>

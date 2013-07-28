@@ -35,5 +35,3 @@ light_html_draw_top();
 light_draw_my_forums();
 
 light_html_draw_bottom();
-
-?>

@@ -141,6 +141,12 @@ function search_mysql_execute($search_arguments, &$error)
     // Where query needs to limit the search results to the user specified date range.
     $where_sql.= search_date_range($search_arguments['date_from'], $search_arguments['date_to'], SEARCH_DATE_RANGE_SQL);
 
+    // No select, joins, from or having clauses by default.
+    $select_sql = null;
+    $join_sql = null;
+    $from_sql = null;
+    $having_sql = null;
+
     // Username based search.
     if (isset($search_arguments['user_uid_array']) && sizeof($search_arguments['user_uid_array']) > 0) {
 
@@ -939,9 +945,7 @@ function search_output_opensearch_xml()
         printf("<Image height=\"16\" width=\"16\" type=\"image/x-icon\">%s</Image>\n", html_get_forum_uri(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
     }
 
-    echo "<Url type=\"text/html\" method=\"get\" template=\"$forum_opensearch_uri\"/>\n";
+    echo "<Url type=\"text/html\" method=\"get\" template=\"$forum_opensearch_uri\"></Url>\n";
     echo "</OpenSearchDescription>\n";
     exit;
 }
-
-?>

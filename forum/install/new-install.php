@@ -45,6 +45,7 @@ if (!isset($forum_webtag) || strlen(trim($forum_webtag)) < 1) {
 
 $remove_conflicts = (isset($remove_conflicts) && $remove_conflicts === true);
 
+/** @noinspection PhpUndefinedVariableInspection */
 if (($conflicting_tables = install_check_table_conflicts($config['db_database'], $forum_webtag, true, true, $remove_conflicts))) {
 
     $error_str = "Selected database contains tables which conflict with Beehive Forum. ";
@@ -438,5 +439,3 @@ if (!forum_update_default($forum_fid)) {
 if (!perm_update_user_forum_permissions($admin_uid, $forum_fid, USER_PERM_ADMIN_TOOLS)) {
     throw new Exception('Failed to set admin forum permissions');
 }
-
-?>

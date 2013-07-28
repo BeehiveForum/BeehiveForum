@@ -45,6 +45,8 @@ require_once BH_INCLUDE_PATH. 'thread.inc.php';
 // Message pane caching
 cache_check_messages();
 
+$last_pid = null;
+
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $msg = $_GET['msg'];
@@ -147,8 +149,16 @@ if (isset($_GET['highlight'])) {
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_data['TITLE'], $thread_data['TITLE'], $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'), true, $highlight_array), "</td>\n";
-echo "    <td align=\"right\">", messages_social_links($tid), "</td>\n";
+echo "    <td align=\"left\">";
+
+messages_top($tid, $pid, $thread_data['FID'], $folder_data['TITLE'], $thread_data['TITLE'], $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'), true, $highlight_array);
+
+echo "    </td>\n";
+echo "    <td align=\"right\">";
+
+messages_social_links($tid);
+
+echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 
@@ -271,7 +281,9 @@ echo "  ", form_input_hidden('attachment[]'), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
-echo "        ", html_display_warning_msg(gettext("Press Ctrl+Enter to quickly submit your post"), '100%', 'center');
+
+html_display_warning_msg(gettext("Press Ctrl+Enter to quickly submit your post"), '100%', 'center');
+
 echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
@@ -330,18 +342,18 @@ if ($msg_count > 0) {
 
             if ($message['PID'] == 1) {
 
-                poll_display($tid, $thread_data['LENGTH'], $pid, $thread_data['FID'], true, $thread_data['CLOSED'], false, $show_sigs, false, $highlight_array);
+                poll_display($tid, $thread_data['LENGTH'], $pid, $thread_data['FID'], true, $thread_data['CLOSED'], $show_sigs, false, $highlight_array);
                 $last_pid = $message['PID'];
 
             } else {
 
-                message_display($tid, $message, $thread_data['LENGTH'], $pid, $thread_data['FID'], true, $thread_data['CLOSED'], true, true, $show_sigs, false, $highlight_array);
+                message_display($tid, $message, $thread_data['LENGTH'], $pid, $thread_data['FID'], true, $thread_data['CLOSED'], true, $show_sigs, false, $highlight_array);
                 $last_pid = $message['PID'];
             }
 
         } else {
 
-            message_display($tid, $message, $thread_data['LENGTH'], $pid, $thread_data['FID'], true, $thread_data['CLOSED'], true, false, $show_sigs, false, $highlight_array);
+            message_display($tid, $message, $thread_data['LENGTH'], $pid, $thread_data['FID'], true, $thread_data['CLOSED'], false, $show_sigs, false, $highlight_array);
             $last_pid = $message['PID'];
         }
 
@@ -449,5 +461,3 @@ messages_end_panel();
 messages_forum_stats($tid, $pid);
 
 html_draw_bottom();
-
-?>

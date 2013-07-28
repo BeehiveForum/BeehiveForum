@@ -378,7 +378,6 @@ function poll_get_votes($tid, $include_votes = true)
     if (!($result = $db->query($sql))) return false;
 
     $poll_votes_array = array();
-    $poll_votes_sort = array();
 
     while (($poll_votes_data = $result->fetch_assoc()) !== null) {
 
@@ -520,7 +519,7 @@ function poll_get_user_votes($tid)
     return $user_poll_votes_array;
 }
 
-function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $limit_text = true, $show_sigs = true, $is_preview = false, $highlight_array = array())
+function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true, $closed = false, $show_sigs = true, $is_preview = false, $highlight_array = array())
 {
     $webtag = get_webtag();
 
@@ -607,7 +606,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
             } else {
 
-                foreach ($poll_results as $question_id => $poll_question) {
+                foreach ($poll_results as $poll_question) {
 
                     $poll_display.= "           <tr>\n";
                     $poll_display.= "               <td align=\"left\"><h2>". word_filter_add_ob_tags($poll_question['QUESTION'], true). "</h2></td>\n";
@@ -637,7 +636,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
         } else {
 
-            foreach ($poll_results as $question_id => $poll_question) {
+            foreach ($poll_results as $poll_question) {
 
                 $poll_display.= "            <tr>\n";
                 $poll_display.= "              <td align=\"left\"><h2>". word_filter_add_ob_tags($poll_question['QUESTION'], true). "</h2></td>\n";
@@ -646,7 +645,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 $poll_display.= "              <td align=\"left\">\n";
                 $poll_display.= "                <table width=\"100%\">\n";
 
-                foreach ($poll_question['OPTIONS_ARRAY'] as $option_id => $option) {
+                foreach ($poll_question['OPTIONS_ARRAY'] as $option) {
 
                     $poll_display.= "                  <tr>\n";
                     $poll_display.= "                    <td align=\"left\" class=\"postbody\">". word_filter_add_ob_tags($option['OPTION_NAME']). "</td>\n";
@@ -812,7 +811,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
     $poll_data['CONTENT'] = $poll_display;
 
-    message_display($tid, $poll_data, $msg_count, $first_msg, $folder_fid, $in_list, $closed, $limit_text, true, $show_sigs, $is_preview, $highlight_array);
+    message_display($tid, $poll_data, $msg_count, $first_msg, $folder_fid, $in_list, $closed, true, $show_sigs, $is_preview, $highlight_array);
 }
 
 function poll_display_user_votes($user_poll_votes_array)
@@ -1386,5 +1385,3 @@ function thread_is_poll($tid)
 
     return ($result->num_rows > 0);
 }
-
-?>

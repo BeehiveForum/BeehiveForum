@@ -36,6 +36,9 @@ require_once BH_INCLUDE_PATH. 'session.inc.php';
 require_once BH_INCLUDE_PATH. 'thread.inc.php';
 // End Required includes
 
+$tid = null;
+$pid = null;
+
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $msg = $_GET['msg'];
@@ -81,8 +84,16 @@ $show_sigs = session::show_sigs();
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($tid, $pid, $thread_data['FID'], $folder_data['TITLE'], $thread_data['TITLE'], $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'), true), "</td>\n";
-echo "    <td align=\"right\">", messages_social_links($tid), "</td>\n";
+echo "    <td align=\"left\">";
+
+messages_top($tid, $pid, $thread_data['FID'], $folder_data['TITLE'], $thread_data['TITLE'], $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'), true);
+
+echo "    </td>\n";
+echo "    <td align=\"right\">";
+
+messages_social_links($tid);
+
+echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";
@@ -102,16 +113,16 @@ if ($message) {
 
         if ($message['PID'] == 1) {
 
-            poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, $show_sigs, true);
+            poll_display($tid, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], $show_sigs, true);
 
         } else {
 
-            message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, true, $show_sigs, true);
+            message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], true, $show_sigs, true);
         }
 
     } else {
 
-        message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, false, $show_sigs, true);
+        message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], true, $thread_data['CLOSED'], false, $show_sigs, true);
     }
 
     echo "    </td>\n";
@@ -136,5 +147,3 @@ echo "  </tr>\n";
 echo "</table>\n";
 
 html_draw_bottom();
-
-?>

@@ -232,5 +232,3 @@ function image_check_gd_info_key($image_types_array)
 
     return false;
 }
-
-?>

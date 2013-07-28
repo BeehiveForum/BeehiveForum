@@ -224,7 +224,11 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_folders.php?webtag=$webtag", $page, $folder_array['folder_count'], 10), "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\">";
+
+html_page_links("admin_folders.php?webtag=$webtag", $page, $folder_array['folder_count'], 10);
+
+echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -318,5 +322,3 @@ echo "</table>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

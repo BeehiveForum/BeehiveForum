@@ -172,7 +172,10 @@ if (!session::logged_in()) {
             unset($_REQUEST['mark_read_submit'], $_REQUEST['mark_read_confirm']);
 
             light_html_draw_top();
-            light_html_display_msg(gettext("Confirm"), gettext("Are you sure you want to mark the selected threads as read?"), 'lthread_list.php', 'post', array('mark_read_submit' => gettext("Confirm"), 'cancel' => gettext("Cancel")), array_merge($_REQUEST, array('mark_read_confirm' => 'Y')));
+            light_html_display_msg(gettext("Confirm"), gettext("Are you sure you want to mark the selected threads as read?"), 'lthread_list.php', 'post', array(
+                                                                                                                                                                'mark_read_submit' => gettext("Confirm"),
+                                                                                                                                                                'cancel'           => gettext("Cancel")
+                                                                                                                                                           ), array_merge($_REQUEST, array('mark_read_confirm' => 'Y')));
             light_html_draw_bottom();
             exit;
         }
@@ -184,5 +187,3 @@ light_html_draw_top('js/thread_list.js');
 light_draw_thread_list($mode, $folder, $page);
 
 light_html_draw_bottom();
-
-?>

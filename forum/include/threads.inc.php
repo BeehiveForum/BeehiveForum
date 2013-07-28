@@ -1839,5 +1839,3 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
         'thread_array' => $thread_subscriptions_array
     );
 }
-
-?>

@@ -51,6 +51,13 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 // Perform additional admin login.
 admin_check_credentials();
 
+// Array to hold error messages
+$error_msg_array = array();
+
+$t_top_link_title = null;
+$t_title = null;
+$t_title = null;
+
 // Get page number and offset for SQL queries.
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
@@ -59,9 +66,6 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 } else {
     $page = 1;
 }
-
-// Array to hold error messages
-$error_msg_array = array();
 
 // Cancel was clicked
 if (isset($_POST['cancel'])) {
@@ -487,7 +491,11 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_forum_links.php?webtag=$webtag", $page, $forum_links_array['forum_links_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">";
+
+    html_page_links("admin_forum_links.php?webtag=$webtag", $page, $forum_links_array['forum_links_count'], 10);
+
+    echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -543,5 +551,3 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
     html_draw_bottom();
 }
-
-?>

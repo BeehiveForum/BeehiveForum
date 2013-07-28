@@ -41,5 +41,3 @@ if (!session::logged_in()) {
 } else {
     header_redirect("llogon.php?webtag=$webtag&logout_success=true");
 }
-
-?>

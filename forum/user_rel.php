@@ -44,6 +44,11 @@ if (!session::logged_in()) {
     html_guest_error();
 }
 
+// Array to hold error messages.
+$error_msg_array = array();
+
+$user_peer = null;
+
 // Are we returning somewhere?
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";
@@ -105,9 +110,6 @@ if (($peer_uid == $_SESSION['UID'])) {
 
 // Fetch the perms of the peer
 $peer_perms = perm_get_user_permissions($peer_uid);
-
-// Array to hold error messages.
-$error_msg_array = array();
 
 // Form submt code
 if (isset($_POST['save'])) {
@@ -208,7 +210,11 @@ if (isset($_POST['preview_signature'])) {
         echo "                        <td align=\"left\">\n";
         echo "                          <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
         echo "                            <tr>\n";
-        echo "                              <td align=\"left\"><br />", message_display(0, $preview_message, 0, 0, 0, false, false, false, false, true, true), "</td>\n";
+        echo "                              <td align=\"left\"><br />";
+
+        message_display(0, $preview_message, 0, 0, 0, false, false, false, true, true);
+
+        echo "                              </td>\n";
         echo "                            </tr>\n";
         echo "                          </table>\n";
         echo "                        </td>\n";
@@ -389,5 +395,3 @@ echo "  </table>\n";
 echo "</form>\n";
 
 html_draw_bottom();
-
-?>

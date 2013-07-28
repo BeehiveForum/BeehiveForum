@@ -163,5 +163,3 @@ function sfs_cache_put($request_md5, $response)
 
     return $db->affected_rows > 0;
 }
-
-?>

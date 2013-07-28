@@ -252,7 +252,11 @@ if (sizeof($user_permissions_array['user_array']) > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_forum_access.php?webtag=$webtag&user_search=$user_search&search_page=$search_page", $main_page, $user_permissions_array['user_count'], 10, "main_page"), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">";
+
+    html_page_links("admin_forum_access.php?webtag=$webtag&user_search=$user_search&search_page=$search_page", $main_page, $user_permissions_array['user_count'], 10, "main_page");
+
+    echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -331,7 +335,11 @@ if (isset($user_search) && strlen(trim($user_search)) > 0) {
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
-        echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_forum_access.php?webtag=$webtag&user_search=$user_search&main_page=$main_page", $search_page, $user_search_array['user_count'], 10, "search_page"), "</td>\n";
+        echo "      <td class=\"postbody\" align=\"center\">";
+
+        html_page_links("admin_forum_access.php?webtag=$webtag&user_search=$user_search&main_page=$main_page", $search_page, $user_search_array['user_count'], 10, "search_page");
+
+        echo "      </td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -391,5 +399,3 @@ echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

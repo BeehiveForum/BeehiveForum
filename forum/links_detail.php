@@ -42,6 +42,12 @@ if (!forum_get_setting('show_links', 'Y')) {
     html_draw_error(gettext("You may not access this section."));
 }
 
+$error_msg_array = array();
+
+$success_msg = null;
+
+$title = null;
+
 if (isset($_POST['lid']) && is_numeric($_POST['lid'])) {
 
     $lid = $_POST['lid'];
@@ -75,9 +81,6 @@ $user_perm_links_moderate = session::check_perm(USER_PERM_LINKS_MODERATE, 0);
 if (!$link = links_get_single($lid, !$user_perm_links_moderate)) {
     html_draw_error(gettext("Invalid link ID!"));
 }
-
-$error_msg_array = array();
-$success_msg = "";
 
 if (isset($_POST['cancel'])) {
 
@@ -530,5 +533,3 @@ if ($user_perm_links_moderate || $link['UID'] == $_SESSION['UID']) {
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

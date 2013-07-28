@@ -86,14 +86,22 @@ function convert_shorthand_filesize($size)
 
     switch (strtoupper($unit)) {
 
+        /** @noinspection PhpMissingBreakStatementInspection */
         case 'P':
             $result*= 1024;
+
+        /** @noinspection PhpMissingBreakStatementInspection */
         case 'T':
             $result*= 1024;
+
+        /** @noinspection PhpMissingBreakStatementInspection */
         case 'G':
             $result*= 1024;
+
+        /** @noinspection PhpMissingBreakStatementInspection */
         case 'M':
             $result*= 1024;
+
         case 'K':
             $result*= 1024;
     }
@@ -944,5 +952,3 @@ function var_dump_pre()
     call_user_func_array('var_dump', func_get_args());
     echo '</pre>';
 }
-
-?>

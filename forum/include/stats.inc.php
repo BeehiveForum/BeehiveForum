@@ -33,6 +33,11 @@ require_once BH_INCLUDE_PATH. 'user.inc.php';
 require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
 // End Required includes
 
+/**
+ * @param $session_count
+ * @param $recent_post_count
+ * @return bool
+ */
 function stats_update($session_count, $recent_post_count)
 {
     if (!$db = db::get()) return false;
@@ -76,6 +81,9 @@ function stats_update($session_count, $recent_post_count)
     return true;
 }
 
+/**
+ * @return string
+ */
 function stats_get_html()
 {
     // Get webtag
@@ -101,6 +109,8 @@ function stats_get_html()
 
     // Search Engine Bot link
     $search_engine_bot_link = '<a href="%s" target="_blank"><span class="user_stats_normal">%s</span></a>';
+
+    $html = '';
 
     // Output the HTML.
     if (($user_stats = stats_get_active_user_list()) !== false) {
@@ -154,10 +164,6 @@ function stats_get_html()
             $active_users_array = array();
 
             foreach ($user_stats['USERS'] as $user) {
-
-                $active_user_title = '';
-
-                $active_user_class = '';
 
                 $active_user_avatar = '';
 
@@ -413,63 +419,75 @@ function stats_get_html()
     return $html;
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_active_session_count()
 {
-    if (!$db = db::get()) return 0;
+    if (!$db = db::get()) return false;
 
-    if (!($table_prefix = get_table_prefix())) return 0;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    if (!($forum_fid = get_forum_fid())) return 0;
+    if (!($forum_fid = get_forum_fid())) return false;
 
-    $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
+    /** @noinspection SpellCheckingInspection */
+    $session_gc_max_lifetime = ini_get('session.gc_maxlifetime');
 
-    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_max_lifetime);
 
     $sql = "SELECT COUNT(UID) AS USER_COUNT FROM SESSIONS ";
     $sql.= "WHERE TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND FID = '$forum_fid'";
 
-    if (!($result = $db->query($sql))) return 0;
+    if (!($result = $db->query($sql))) return false;
 
     list($user_count) = $result->fetch_row();
 
     return $user_count;
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_active_registered_user_count()
 {
-    if (!$db = db::get()) return 0;
+    if (!$db = db::get()) return false;
 
-    if (!($table_prefix = get_table_prefix())) return 0;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    if (!($forum_fid = get_forum_fid())) return 0;
+    if (!($forum_fid = get_forum_fid())) return false;
 
-    $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
+    /** @noinspection SpellCheckingInspection */
+    $session_gc_max_lifetime = ini_get('session.gc_maxlifetime');
 
-    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_max_lifetime);
 
     $sql = "SELECT COUNT(UID) AS REGISTERED_USER_COUNT FROM SESSIONS ";
     $sql.= "WHERE TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql.= "AND FID = '$forum_fid' AND UID > 0";
 
-    if (!($result = $db->query($sql))) return 0;
+    if (!($result = $db->query($sql))) return false;
 
     list($registered_user_count) = $result->fetch_row();
 
     return $registered_user_count;
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_active_guest_count()
 {
-    if (!$db = db::get()) return 0;
+    if (!$db = db::get()) return false;
 
-    if (!($table_prefix = get_table_prefix())) return 0;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    if (!($forum_fid = get_forum_fid())) return 0;
+    if (!($forum_fid = get_forum_fid())) return false;
 
-    $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
+    /** @noinspection SpellCheckingInspection */
+    $session_gc_max_lifetime = ini_get('session.gc_maxlifetime');
 
-    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
+    $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_max_lifetime);
 
     $sql = "SELECT COUNT(UID) AS GUEST_COUNT FROM SESSIONS ";
     $sql.= "WHERE TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
@@ -482,6 +500,9 @@ function stats_get_active_guest_count()
     return $guest_count;
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_active_user_list()
 {
     $stats = array(
@@ -491,8 +512,6 @@ function stats_get_active_user_list()
         'USER_COUNT' => 0,
         'USERS' => array()
     );
-
-    $search_engine_bots = array();
 
     $user_sort = array();
 
@@ -630,11 +649,14 @@ function stats_get_active_user_list()
     return $stats;
 }
 
+/**
+ * @return bool|int
+ */
 function stats_get_thread_count()
 {
     if (!$db = db::get()) return false;
 
-    if (!($table_prefix = get_table_prefix())) return 0;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COUNT(THREAD.TID) AS THREAD_COUNT ";
     $sql.= "FROM `{$table_prefix}THREAD` THREAD";
@@ -646,11 +668,14 @@ function stats_get_thread_count()
     return $thread_count;
 }
 
+/**
+ * @return bool|int
+ */
 function stats_get_post_count()
 {
     if (!$db = db::get()) return false;
 
-    if (!($table_prefix = get_table_prefix())) return 0;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COUNT(POST.PID) AS POST_COUNT FROM `{$table_prefix}POST` POST";
 
@@ -661,11 +686,14 @@ function stats_get_post_count()
     return $post_count;
 }
 
+/**
+ * @return bool|int
+ */
 function stats_get_recent_post_count()
 {
     if (!$db = db::get()) return false;
 
-    if (!($table_prefix = get_table_prefix())) return 0;
+    if (!($table_prefix = get_table_prefix())) return false;
 
     $recent_post_datetime = date(MYSQL_DATETIME, time() - HOUR_IN_SECONDS);
 
@@ -679,6 +707,9 @@ function stats_get_recent_post_count()
     return $post_count;
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_longest_thread()
 {
     if (!$db = db::get()) return false;
@@ -709,6 +740,9 @@ function stats_get_longest_thread()
     return $result->fetch_assoc();
 }
 
+/**
+ * @return bool
+ */
 function stats_get_user_count()
 {
    if (!$db = db::get()) return false;
@@ -722,6 +756,9 @@ function stats_get_user_count()
    return $user_count;
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_most_users()
 {
     if (!$db = db::get()) return false;
@@ -738,6 +775,9 @@ function stats_get_most_users()
     return $result->fetch_assoc();
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_most_posts()
 {
     if (!$db = db::get()) return false;
@@ -754,6 +794,9 @@ function stats_get_most_posts()
     return $result->fetch_assoc();
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_newest_user()
 {
     if (!$db = db::get()) return false;
@@ -791,6 +834,11 @@ function stats_get_newest_user()
     return $user_data;
 }
 
+/**
+ * @param $start_timestamp
+ * @param $end_timestamp
+ * @return array|bool
+ */
 function stats_get_post_tallys($start_timestamp, $end_timestamp)
 {
     if (!$db = db::get()) return false;
@@ -852,6 +900,9 @@ function stats_get_post_tallys($start_timestamp, $end_timestamp)
     return $post_tallys;
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_top_poster()
 {
     if (!$db = db::get()) return false;
@@ -871,6 +922,9 @@ function stats_get_top_poster()
     return $result->fetch_assoc();
 }
 
+/**
+ * @return bool|int
+ */
 function stats_get_folder_count()
 {
     if (!$db = db::get()) return false;
@@ -886,6 +940,9 @@ function stats_get_folder_count()
     return $folder_count;
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_folder_with_most_threads()
 {
     if (!$db = db::get()) return false;
@@ -905,6 +962,9 @@ function stats_get_folder_with_most_threads()
     return $result->fetch_assoc();
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_folder_with_most_posts()
 {
     if (!$db = db::get()) return false;
@@ -925,6 +985,9 @@ function stats_get_folder_with_most_posts()
     return $result->fetch_assoc();
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_most_read_thread()
 {
     if (!$db = db::get()) return false;
@@ -945,6 +1008,9 @@ function stats_get_most_read_thread()
     return $result->fetch_assoc();
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_thread_subscription_count()
 {
     if (!$db = db::get()) return false;
@@ -960,6 +1026,9 @@ function stats_get_thread_subscription_count()
     return $subscription_count;
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_most_subscribed_thread()
 {
     if (!$db = db::get()) return false;
@@ -981,6 +1050,9 @@ function stats_get_most_subscribed_thread()
     return $result->fetch_assoc();
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_poll_count()
 {
     if (!$db = db::get()) return false;
@@ -996,6 +1068,9 @@ function stats_get_poll_count()
     return $poll_count;
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_poll_option_count()
 {
     if (!$db = db::get()) return false;
@@ -1011,6 +1086,9 @@ function stats_get_poll_option_count()
     return $poll_option_count;
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_poll_vote_count()
 {
     if (!$db = db::get()) return false;
@@ -1026,6 +1104,9 @@ function stats_get_poll_vote_count()
     return $poll_vote_count;
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_attachment_count()
 {
     if (!$db = db::get()) return false;
@@ -1045,6 +1126,9 @@ function stats_get_attachment_count()
     return $attachment_count;
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_most_downloaded_attachment()
 {
     if (!$db = db::get()) return false;
@@ -1100,6 +1184,9 @@ function stats_get_most_downloaded_attachment()
     return false;
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_most_popular_forum_style()
 {
     if (!$db = db::get()) return false;
@@ -1119,6 +1206,9 @@ function stats_get_most_popular_forum_style()
     return $style_data;
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_most_popular_emoticon_pack()
 {
     if (!$db = db::get()) return false;
@@ -1138,6 +1228,9 @@ function stats_get_most_popular_emoticon_pack()
     return $emoticon_data;
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_most_popular_language()
 {
     if (!$db = db::get()) return false;
@@ -1157,6 +1250,9 @@ function stats_get_most_popular_language()
     return $language_data;
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_most_popular_timezone()
 {
     if (!$db = db::get()) return false;
@@ -1173,6 +1269,9 @@ function stats_get_most_popular_timezone()
     return $timezone_data;
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_inactive_user_count()
 {
     if (!$db = db::get()) return false;
@@ -1190,6 +1289,9 @@ function stats_get_inactive_user_count()
     return $user_count;
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_active_user_count()
 {
     if (!$db = db::get()) return false;
@@ -1205,6 +1307,9 @@ function stats_get_active_user_count()
     return $user_count;
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_visitor_counts()
 {
     if (!$db = db::get()) return false;
@@ -1269,6 +1374,9 @@ function stats_get_visitor_counts()
     );
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_average_age()
 {
     if (!$db = db::get()) return false;
@@ -1287,6 +1395,9 @@ function stats_get_average_age()
     return is_numeric($average_age) ? $average_age : false;
 }
 
+/**
+ * @return array|bool
+ */
 function stats_get_most_popular_birthday()
 {
     if (!$db = db::get()) return false;
@@ -1302,6 +1413,9 @@ function stats_get_most_popular_birthday()
     return $dob_data;
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_users_without_profile_count()
 {
     if (!$db = db::get()) return false;
@@ -1320,6 +1434,9 @@ function stats_get_users_without_profile_count()
     return $user_count;
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_users_with_profile_count()
 {
     if (!$db = db::get()) return false;
@@ -1335,6 +1452,9 @@ function stats_get_users_with_profile_count()
     return $user_count;
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_users_without_signature_count()
 {
     if (!$db = db::get()) return false;
@@ -1352,6 +1472,9 @@ function stats_get_users_without_signature_count()
     return $user_count;
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_users_with_signature_count()
 {
     if (!$db = db::get()) return false;
@@ -1367,6 +1490,9 @@ function stats_get_users_with_signature_count()
     return $user_count;
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_relationships_count()
 {
     if (!$db = db::get()) return false;
@@ -1382,6 +1508,9 @@ function stats_get_relationships_count()
     return $relationship_count;
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_users_without_word_filter_count()
 {
     if (!$db = db::get()) return false;
@@ -1399,6 +1528,9 @@ function stats_get_users_without_word_filter_count()
     return $user_count;
 }
 
+/**
+ * @return bool|number
+ */
 function stats_get_users_with_word_filter_count()
 {
     if (!$db = db::get()) return false;
@@ -1416,6 +1548,11 @@ function stats_get_users_with_word_filter_count()
     return $user_count;
 }
 
+/**
+ * @param mixed &$week_start
+ * @param mixed &$week_end
+ * @return bool
+ */
 function stats_get_mysql_week(&$week_start, &$week_end)
 {
     if (!$db = db::get()) return false;
@@ -1429,5 +1566,3 @@ function stats_get_mysql_week(&$week_start, &$week_end)
 
     return true;
 }
-
-?>

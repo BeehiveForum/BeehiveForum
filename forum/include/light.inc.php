@@ -385,6 +385,8 @@ function light_draw_messages($tid, $pid)
 
     $msg_count = count($messages);
 
+    $last_pid = null;
+
     light_messages_top($tid, $pid, $thread_data['TITLE'], $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'));
 
     if (($tracking_data_array = thread_get_tracking_data($tid)) !== false) {
@@ -505,7 +507,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
     $visible_threads_array = array();
 
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return;
 
     light_thread_list_draw_top($mode, $folder);
 
@@ -843,9 +845,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
                     }
 
                     if ($folder_list_end === false && $folder_list_start === true) {
-
                         echo "</ul>\n";
-                        $folder_list_end = true;
                     }
 
                     if (is_numeric($folder) && ($folder_number == $folder) && ($thread_count >= 50)) {
@@ -964,8 +964,6 @@ function light_draw_pm_inbox()
     $current_folder = PM_FOLDER_INBOX;
 
     pm_get_message_count($new_count, $outbox_count, $unread_count);
-
-    $error_msg_array = array();
 
     if (!($folder_names_array = pm_get_folder_names())) {
 
@@ -1266,7 +1264,7 @@ function light_draw_my_forums()
                 echo "</div>\n";
             }
 
-            echo html_page_links("lforums.php?webtag=$webtag", $page, $forums_array['forums_count'], 10);
+            html_page_links("lforums.php?webtag=$webtag", $page, $forums_array['forums_count'], 10);
 
         } else {
 
@@ -1287,7 +1285,7 @@ function light_draw_my_forums()
                 echo "</div>\n";
             }
 
-            echo html_page_links("lforums.php?webtag=$webtag", $page, $forums_array['forums_count'], 10);
+            html_page_links("lforums.php?webtag=$webtag", $page, $forums_array['forums_count'], 10);
 
         } else {
 
@@ -1460,7 +1458,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
             $poll_display.= "<div class=\"poll_results\">\n";
 
-            foreach ($poll_results as $question_id => $poll_question) {
+            foreach ($poll_results as $poll_question) {
 
                 $poll_display.= "<h3>". word_filter_add_ob_tags($poll_question['QUESTION'], true). "</h3>\n";
                 $poll_display.= light_poll_graph_display($poll_question['OPTIONS_ARRAY']);
@@ -1472,11 +1470,11 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
             $poll_display.= "<div class=\"poll_results\">\n";
 
-            foreach ($poll_results as $question_id => $poll_question) {
+            foreach ($poll_results as $poll_question) {
 
                 $poll_display.= "<h3>". word_filter_add_ob_tags($poll_question['QUESTION'], true). "</h3>\n";
 
-                foreach ($poll_question['OPTIONS_ARRAY'] as $option_id => $option) {
+                foreach ($poll_question['OPTIONS_ARRAY'] as $option) {
 
                     $poll_display.= word_filter_add_ob_tags($option['OPTION_NAME']);
                 }
@@ -1585,7 +1583,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     forum_check_webtag_available($webtag);
 
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return;
 
     if ((!isset($message['CONTENT']) || $message['CONTENT'] == "") && !$is_preview) {
 
@@ -2254,7 +2252,7 @@ function light_post_edit_refuse()
     light_html_draw_error(gettext("You are not permitted to edit this message."));
 }
 
-function light_html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
+function light_html_display_msg($header, $message, $href = null, $method = 'get', array $buttons = array(), array $vars = array(), $target = "_self")
 {
     $webtag = get_webtag();
 
@@ -2272,23 +2270,23 @@ function light_html_display_msg($header_text, $string_msg, $href = false, $metho
         echo "<form accept-charset=\"utf-8\" action=\"$href\" method=\"$method\" target=\"$target\">\n";
         echo form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
-        if (is_array($var_array)) {
+        if (is_array($vars)) {
 
-            echo form_input_hidden_array($var_array), "\n";
+            echo form_input_hidden_array($vars), "\n";
         }
     }
 
     echo "<div class=\"message_box message_question\">\n";
-    echo "  <h3>", $header_text, "</h3>\n";
-    echo "  <p>", $string_msg, "</p>\n";
+    echo "  <h3>", $header, "</h3>\n";
+    echo "  <p>", $message, "</p>\n";
 
     if (is_string($href) && strlen(trim($href)) > 0) {
 
         $button_html_array = array();
 
-        if (is_array($button_array) && sizeof($button_array) > 0) {
+        if (is_array($buttons) && sizeof($buttons) > 0) {
 
-            foreach ($button_array as $button_name => $button_label) {
+            foreach ($buttons as $button_name => $button_label) {
                 $button_html_array[] = form_submit(htmlentities_array($button_name), htmlentities_array($button_label));
             }
         }
@@ -2336,10 +2334,10 @@ function light_html_display_error_msg($string_msg)
     echo "</div>\n";
 }
 
-function light_html_draw_error($error_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self")
+function light_html_draw_error($message, $href = null, $method = 'get', array $buttons = array(), array $vars = array(), $target = "_self")
 {
     light_html_draw_top();
-    light_html_display_msg(gettext('Error'), $error_msg, $href, $method, $button_array, $var_array, $target);
+    light_html_display_msg(gettext('Error'), $message, $href, $method, $buttons, $vars, $target);
     light_html_draw_bottom();
     exit;
 }
@@ -2357,7 +2355,7 @@ function light_html_user_require_approval()
 
 function light_html_email_confirmation_error()
 {
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return;
 
     $user_array = user_get($_SESSION['UID']);
 
@@ -2606,5 +2604,3 @@ function light_folder_search_dropdown($selected_folder)
 
     return light_form_dropdown_array("fid", $available_folders, $selected_folder);
 }
-
-?>

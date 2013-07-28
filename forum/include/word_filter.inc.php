@@ -212,5 +212,3 @@ function word_filter_apply_limit_preg($matches)
 {
     return preg_replace("/e/iu", "", $matches[0]);
 }
-
-?>

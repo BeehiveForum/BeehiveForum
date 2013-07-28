@@ -83,5 +83,3 @@ function style_exists($style_path)
     // Check if a style.css exists in the path.
     return file_exists("styles/$style_path/style.css");
 }
-
-?>

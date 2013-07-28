@@ -92,5 +92,3 @@ printf(
     $minimum_version,
     implode(", ", $extensions_array)
 );
-
-?>

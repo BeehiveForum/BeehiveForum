@@ -53,7 +53,7 @@ function sphinx_search_execute($search_arguments, &$error)
 
     if (!($forum_fid = get_forum_fid())) return false;
 
-    // Swift connection.
+    /** @var mysqli $sphinx */
     if (!($sphinx = sphinx_search_connect())) {
 
         $error = SEARCH_SPHINX_UNAVAILABLE;
@@ -181,9 +181,6 @@ function sphinx_search_execute($search_arguments, &$error)
         return false;
     }
 
-    // Iterate over the results returned by Swift and save them
-    // into the SEARCH_RESULTS table in the MySQL database along
-    // with the Sphinx weight as our relevance.
     while (($search_result = $result->fetch_assoc()) !== null) {
 
         $sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, TID, PID, RELEVANCE) ";
@@ -215,5 +212,3 @@ function sphinx_search_date_range($from, $to)
 
     return $range;
 }
-
-?>

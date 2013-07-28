@@ -69,11 +69,13 @@ function html_guest_error($final_uri = null)
 
     } else {
 
-        html_draw_error(gettext("Sorry, you need to be logged in to use this feature."), html_get_forum_file_path('logout.php'), 'post', array('submit' => gettext("Login now"), 'register' => gettext("Register")), array('final_uri' => $final_uri), $frame_top_target);
+        html_draw_error(gettext("Sorry, you need to be logged in to use this feature."), html_get_forum_file_path('logout.php'), 'post', array('submit'  => gettext("Login now"),
+                                                                                                                                              'register' => gettext("Register")
+                                                                                                                                         ), array('final_uri' => $final_uri), $frame_top_target);
     }
 }
 
-function html_display_msg($header_text, $string_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left", $id = false)
+function html_display_msg($header_text, $string_msg, $href = false, $method = 'get', array $buttons = array(), array $vars = array(), $target = "_self", $align = "left", $id = null)
 {
     $webtag = get_webtag();
 
@@ -105,9 +107,9 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
         echo "<form accept-charset=\"utf-8\" action=\"$href\" method=\"$method\" target=\"$target\">\n";
         echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
-        if (is_array($var_array)) {
+        if (is_array($vars)) {
 
-            echo "  ", form_input_hidden_array($var_array), "\n";
+            echo "  ", form_input_hidden_array($vars), "\n";
         }
     }
 
@@ -148,9 +150,9 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
 
         $button_html_array = array();
 
-        if (is_array($button_array) && sizeof($button_array) > 0) {
+        if (is_array($buttons) && sizeof($buttons) > 0) {
 
-            foreach ($button_array as $button_name => $button_label) {
+            foreach ($buttons as $button_name => $button_label) {
                 $button_html_array[] = form_submit(htmlentities_array($button_name), htmlentities_array($button_label));
             }
         }
@@ -171,17 +173,17 @@ function html_display_msg($header_text, $string_msg, $href = false, $method = 'g
     }
 }
 
-function html_display_error_array($error_list_array, $width = '600', $align = 'center', $id = false)
+function html_display_error_array(array $error_list, $width = '600', $align = 'center', $id = null)
 {
     if (!preg_match('/^[0-9]+%?$/u', $width)) $width = '600';
 
-    $error_list_array = array_filter($error_list_array, 'is_string');
+    $error_list = array_filter($error_list, 'is_string');
 
-    if (sizeof($error_list_array) == 0) return;
+    if (sizeof($error_list) == 0) return;
 
-    if (sizeof($error_list_array) == 1) {
+    if (sizeof($error_list) == 1) {
 
-        html_display_error_msg(array_shift($error_list_array), $width, $align, $id);
+        html_display_error_msg(array_shift($error_list), $width, $align, $id);
         return;
     }
 
@@ -202,7 +204,7 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
     echo "    <tr>\n";
     echo "      <td>\n";
     echo "        <ul>\n";
-    echo "          <li>", implode("</li>\n        <li>", $error_list_array), "</li>\n";
+    echo "          <li>", implode("</li>\n        <li>", $error_list), "</li>\n";
     echo "        </ul>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
@@ -210,11 +212,11 @@ function html_display_error_array($error_list_array, $width = '600', $align = 'c
     echo "</div>\n";
 }
 
-function html_display_success_msg($string_msg, $width = '600', $align = 'center', $id = false)
+function html_display_success_msg($message, $width = '600', $align = 'center', $id = null)
 {
     if (!preg_match('/^[0-9]+%?$/u', $width)) $width = '600';
 
-    if (!is_string($string_msg)) return;
+    if (!is_string($message)) return;
 
     $available_alignments = array(
         'left',
@@ -228,17 +230,17 @@ function html_display_success_msg($string_msg, $width = '600', $align = 'center'
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"success_msg\">\n";
     echo "    <tr>\n";
     echo "      <td valign=\"top\" width=\"25\" class=\"success_msg_icon\"><img src=\"", html_style_image('success.png'), "\" alt=\"", gettext("Success"), "\" title=\"", gettext("Success"), "\" /></td>\n";
-    echo "      <td valign=\"top\" class=\"success_msg_text\">$string_msg</td>\n";
+    echo "      <td valign=\"top\" class=\"success_msg_text\">$message</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";
 }
 
-function html_display_error_msg($string_msg, $width = '600', $align = 'center', $id = false)
+function html_display_error_msg($message, $width = '600', $align = 'center', $id = null)
 {
     if (!preg_match('/^[0-9]+%?$/u', $width)) $width = '600';
 
-    if (!is_string($string_msg)) return;
+    if (!is_string($message)) return;
 
     $available_alignments = array(
         'left',
@@ -252,17 +254,17 @@ function html_display_error_msg($string_msg, $width = '600', $align = 'center', 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
     echo "      <td valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", html_style_image('error.png'), "\" alt=\"", gettext("Error"), "\" title=\"", gettext("Error"), "\" /></td>\n";
-    echo "      <td valign=\"top\" class=\"error_msg_text\">$string_msg</td>\n";
+    echo "      <td valign=\"top\" class=\"error_msg_text\">$message</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";
 }
 
-function html_display_warning_msg($string_msg, $width = '600', $align = 'center', $id = false)
+function html_display_warning_msg($message, $width = '600', $align = 'center', $id = null)
 {
     if (!preg_match('/^[0-9]+%?$/u', $width)) $width = '600';
 
-    if (!is_string($string_msg)) return;
+    if (!is_string($message)) return;
 
     $available_alignments = array(
         'left',
@@ -276,7 +278,7 @@ function html_display_warning_msg($string_msg, $width = '600', $align = 'center'
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"warning_msg\">\n";
     echo "    <tr>\n";
     echo "      <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", html_style_image('warning.png'), "\" alt=\"", gettext("Warning"), "\" title=\"", gettext("Warning"), "\" /></td>\n";
-    echo "      <td valign=\"top\" class=\"warning_msg_text\">$string_msg</td>\n";
+    echo "      <td valign=\"top\" class=\"warning_msg_text\">$message</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</div>\n";
@@ -295,12 +297,11 @@ function html_user_require_approval()
 
 function html_email_confirmation_error()
 {
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return;
 
     $user_array = user_get($_SESSION['UID']);
 
-    html_draw_error(gettext("Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details"), 'confirm_email.php', 'get', array('resend' => gettext("Resend Confirmation")), array('uid' => $user_array['UID'], 'resend' => 'Y'));
-}
+    html_draw_error(gettext("Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details"), 'confirm_email.php', 'get', array('resend' => gettext("Resend Confirmation")), array('uid' => $user_array['UID'], 'resend' => 'Y'));}
 
 function html_message_type_error()
 {
@@ -952,10 +953,10 @@ function html_draw_bottom($frame_set_html = false)
     echo "</html>\n";
 }
 
-function html_draw_error($error_msg, $href = false, $method = 'get', $button_array = false, $var_array = false, $target = "_self", $align = "left", $id = false)
+function html_draw_error($message, $href = false, $method = 'get', array $buttons = array(), array $vars = array(), $target = "_self", $align = "left", $id = null)
 {
     html_draw_top(gettext('Error'));
-    html_display_msg(gettext("Error"), $error_msg, $href, $method, $button_array, $var_array, $target, $align, $id);
+    html_display_msg(gettext("Error"), $message, $href, $method, $buttons, $vars, $target, $align, $id);
     html_draw_bottom();
     exit;
 }
@@ -1004,6 +1005,7 @@ class html_frameset_rows extends html_frameset
     {
         echo sprintf("<frameset id=\"%s\" rows=\"%s\" framespacing=\"%s\" border=\"%s\"%s>\n", $this->id, $this->rows, $this->framespacing, $this->frameborder, $this->allowtransparency);
 
+        /** @var html_frame[] $frames_array */
         $frames_array = parent::get_frames();
 
         foreach ($frames_array as $frame) {
@@ -1038,6 +1040,7 @@ class html_frameset_cols extends html_frameset
     {
         echo sprintf("<frameset id=\"%s\" cols=\"%s\" framespacing=\"%s\" border=\"%s\"%s>\n", $this->id, $this->cols, $this->framespacing, $this->frameborder, $this->allowtransparency);
 
+        /** @var html_frame[] $frames_array */
         $frames_array = parent::get_frames();
 
         foreach ($frames_array as $frame) {
@@ -1469,5 +1472,3 @@ function html_get_forum_file_path($file_path, $allow_cdn = true)
     // Return the cached entry.
     return $file_path_cache_array[$file_path];
 }
-
-?>

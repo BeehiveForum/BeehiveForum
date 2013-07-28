@@ -148,5 +148,3 @@ if (!forum_check_guest_access_allowed()) {
     $request_uri = rawurlencode(get_request_uri(false));
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
-
-?>

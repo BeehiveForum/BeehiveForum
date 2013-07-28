@@ -749,5 +749,3 @@ class MessageTextParse
         return $this->original;
     }
 }
-
-?>

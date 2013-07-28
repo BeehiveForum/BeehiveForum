@@ -48,10 +48,14 @@ abstract class Swift_TransportFactory
             $transport = Swift_SmtpTransportSingleton::getInstance($smtp_server, $smtp_port);
 
             if (($smtp_username = forum_get_global_setting('smtp_username', 'strlen', false)) !== false) {
+
+                /** @noinspection PhpUndefinedMethodInspection */
                 $transport->setUsername($smtp_username);
             }
 
             if (($smtp_password = forum_get_global_setting('smtp_password', 'strlen', false)) !== false) {
+
+                /** @noinspection PhpUndefinedMethodInspection */
                 $transport->setPassword($smtp_password);
             }
 
@@ -63,6 +67,17 @@ abstract class Swift_TransportFactory
         }
 
         return Swift_MailTransportSingleton::getInstance();
+    }
+
+    public static function check_mail_vars()
+    {
+        if (server_os_mswin()) {
+            if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP')) return false;
+        } else {
+            if (!(bool)@ini_get('sendmail_path')) return false;
+        }
+
+        return true;
     }
 }
 
@@ -92,24 +107,13 @@ class Swift_MailTransportSingleton
 
     public static function getInstance()
     {
-        if (!self::check_mail_vars()) return false;
+        if (!Swift_TransportFactory::check_mail_vars()) return false;
 
         if (is_null(self::$instance)) {
             self::$instance = Swift_MailTransport::newInstance();
         }
 
         return self::$instance;
-    }
-
-    private static function check_mail_vars()
-    {
-        if (server_os_mswin()) {
-            if (!(bool)ini_get('sendmail_from') || !(bool)ini_get('SMTP')) return false;
-        } else {
-            if (!(bool)@ini_get('sendmail_path')) return false;
-        }
-
-        return true;
     }
 }
 
@@ -122,7 +126,7 @@ class Swift_SendmailTransportSingleton
 
     public static function getInstance($sendmail_path)
     {
-        if (!self::check_mail_vars()) return false;
+        if (!Swift_TransportFactory::check_mail_vars()) return false;
 
         if (is_null(self::$instance)) {
             self::$instance = Swift_SendmailTransport::newInstance($sendmail_path);
@@ -185,5 +189,3 @@ class Swift_MessageBeehive extends Swift_Message
         $this->setReturnPath($forum_email);
     }
 }
-
-?>

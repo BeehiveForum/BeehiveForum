@@ -76,8 +76,6 @@ function user_get_profile($uid)
 
     if (!($forum_fid = get_forum_fid())) return false;
 
-    $user_groups_array = array();
-
     $user_prefs = user_get_prefs($uid);
 
     $session_gc_maxlifetime = ini_get('session.gc_maxlifetime');
@@ -366,5 +364,3 @@ function user_profile_popup_callback($logon)
 
     return "<a href=\"user_profile.php?webtag=$webtag&amp;logon=$logon\" class=\"popup 650x500\" target=\"_blank\">$logon</a>";
 }
-
-?>

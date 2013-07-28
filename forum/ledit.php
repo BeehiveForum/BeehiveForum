@@ -51,6 +51,10 @@ if (!session::logged_in()) {
     light_html_guest_error();
 }
 
+$tid = null;
+$pid = null;
+$fid = null;
+
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $msg = $_GET['msg'];
@@ -390,5 +394,3 @@ echo "</div>";
 echo "</form>\n";;
 
 light_html_draw_bottom();
-
-?>

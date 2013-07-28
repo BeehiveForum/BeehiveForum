@@ -586,5 +586,3 @@ define('BROWSER_MSIE7', 1024);
 define('BROWSER_KONQUEROR', 2048);
 define('BROWSER_WEBKIT', 4096);
 define('BROWSER_AOL', 8192);
-
-?>

@@ -63,6 +63,13 @@ $valid = true;
 // Array to hold error messages
 $error_msg_array = array();
 
+$add_new_match_text = null;
+$add_new_filter_option = null;
+$add_new_filter_name = null;
+$match_text = null;
+$filter_option = null;
+$filter_name = null;
+
 // User click cancel
 if (isset($_POST['cancel']) || isset($_POST['delete'])) {
     unset($_POST['addfilter'], $_POST['filter_id'], $_GET['addfilter'], $_GET['filter_id']);
@@ -477,7 +484,11 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", html_page_links("edit_wordfilter.php?webtag=$webtag", $page, $word_filter_array['word_filter_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">";
+
+    html_page_links("edit_wordfilter.php?webtag=$webtag", $page, $word_filter_array['word_filter_count'], 10);
+
+    echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -539,5 +550,3 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     html_draw_bottom();
 }
-
-?>

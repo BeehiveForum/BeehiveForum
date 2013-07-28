@@ -25,7 +25,7 @@ USA
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 // End Required includes
 
-function header_redirect($uri, $reason = false)
+function header_redirect($uri)
 {
     header("Request-URI: $uri");
     header("Content-Location: $uri");
@@ -45,5 +45,3 @@ function header_status($status, $message)
         header(sprintf('HTTP/1.1 %s %s', $status, $message), true);
     }
 }
-
-?>

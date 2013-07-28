@@ -47,6 +47,10 @@ $username_array = array();
 $password_array = array();
 $passhash_array = array();
 
+$t_new_pass = null;
+$t_confirm_pass = null;
+$t_old_pass = null;
+
 // Submit code
 if (isset($_POST['save'])) {
 
@@ -193,5 +197,3 @@ echo "  </table>\n";
 echo "</form>\n";
 
 html_draw_bottom();
-
-?>

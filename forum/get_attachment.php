@@ -124,5 +124,3 @@ header("Content-disposition: inline; filename=\"$file_name\"");
 
 // Output the file directly to the browser.
 readfile($file_path);
-
-?>

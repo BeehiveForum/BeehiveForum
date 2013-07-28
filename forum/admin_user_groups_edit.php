@@ -49,6 +49,9 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 // Perform additional admin login.
 admin_check_credentials();
 
+$gid = null;
+$t_name = null;
+
 // Are we returning somewhere?
 if (isset($_GET['ret']) && strlen(trim($_GET['ret'])) > 0) {
     $ret = rawurldecode(trim($_GET['ret']));
@@ -383,5 +386,3 @@ echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

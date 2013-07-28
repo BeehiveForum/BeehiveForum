@@ -39,7 +39,6 @@ class captcha {
     private $prv_key_done = false;
 
     private $num_chars;
-    private $image_filename;
 
     private $max_char_size;
     private $min_char_size;
@@ -369,5 +368,3 @@ class captcha {
         $this->color_blue = intval(mt_rand($min, $max));
     }
 }
-
-?>

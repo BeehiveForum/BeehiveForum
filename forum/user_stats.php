@@ -62,5 +62,3 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     html_draw_error(gettext("Invalid Message ID or no Message ID specified."));
 }
-
-?>

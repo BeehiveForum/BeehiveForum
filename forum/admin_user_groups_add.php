@@ -50,15 +50,17 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 // Perform additional admin login.
 admin_check_credentials();
 
+// Array to hold error messages
+$error_msg_array = array();
+
+$t_name = null;
+
 // Cancel button clicked.
 if (isset($_POST['cancel'])) {
 
     header_redirect("admin_user_groups.php?webtag=$webtag");
     exit;
 }
-
-// Array to hold error messages
-$error_msg_array = array();
 
 // Do updates
 if (isset($_POST['add_group']) || isset($_POST['add_users'])) {
@@ -350,5 +352,3 @@ echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

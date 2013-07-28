@@ -80,5 +80,3 @@ function user_get_relationship($uid, $peer_uid)
 
     return $peer_relationship;
 }
-
-?>

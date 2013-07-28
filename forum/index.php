@@ -252,5 +252,3 @@ if (!browser_mobile() && !session::is_search_engine()) {
 
     light_html_draw_bottom();
 }
-
-?>

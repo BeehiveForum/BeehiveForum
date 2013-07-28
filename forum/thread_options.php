@@ -995,5 +995,3 @@ if ($thread_data['DELETED'] == 'N') {
 
     html_draw_error(gettext("You cannot edit posts in this folder"));
 }
-
-?>

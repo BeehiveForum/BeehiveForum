@@ -61,5 +61,3 @@ $emoticon[':-C'] = "grumpy";
 $emoticon[':{)'] = "tache";
 $emoticon[':-{)'] = "tache";
 $emoticon['(99)'] = "rolleyes";
-
-?>

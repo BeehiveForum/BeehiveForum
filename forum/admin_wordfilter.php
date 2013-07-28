@@ -49,6 +49,16 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 // Perform additional admin login.
 admin_check_credentials();
 
+// Array to hold error messages
+$error_msg_array = array();
+
+$add_new_match_text = null;
+$add_new_filter_option = null;
+$add_new_filter_name = null;
+$match_text = null;
+$filter_option = null;
+$filter_name = null;
+
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
 } else {
@@ -69,9 +79,6 @@ $admin_word_filter_enabled = array(
 
 // Form validation
 $valid = true;
-
-// Array to hold error messages
-$error_msg_array = array();
 
 // Submit code
 if (isset($_POST['cancel']) || isset($_POST['delete'])) {
@@ -492,7 +499,11 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_wordfilter.php?webtag=$webtag", $page, $word_filter_array['word_filter_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">";
+
+    html_page_links("admin_wordfilter.php?webtag=$webtag", $page, $word_filter_array['word_filter_count'], 10);
+
+    echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -545,5 +556,3 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     html_draw_bottom();
 }
-
-?>

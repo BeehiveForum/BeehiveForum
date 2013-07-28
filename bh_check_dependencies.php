@@ -181,5 +181,3 @@ foreach ($update_files_array as $source_file => $filename) {
         )
     );
 }
-
-?>

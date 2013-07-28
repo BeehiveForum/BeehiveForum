@@ -115,151 +115,115 @@ function timezone_id_to_string($timezone_id)
     return gettext("Unknown");
 }
 
-function timestamp_is_dst($timezoneid, $gmt_offset)
+function timestamp_is_dst($timezone_id, $gmt_offset)
 {
     $gmt_minute = gmdate("i");
     $gmt_hour = gmdate("H");
     $gmt_month = gmdate("m");
     $gmt_day = gmdate("d");
     $gmt_year = gmdate("Y");
+
+    /** @noinspection PhpWrongStringConcatenationInspection */
     $cur_year = date("Y", mktime($gmt_hour + $gmt_offset, $gmt_minute, 0, $gmt_month, $gmt_day, $gmt_year));
 
-    switch ($timezoneid) {
+    switch ($timezone_id) {
 
-        case 4:     /*    Alaska */
-        case 5:     /*    Pacific Time (US & Canada); Tijuana */
-        case 8:     /*    Mountain Time (US & Canada) */
-        case 10:    /*    Central Time (US & Canada) */
-        case 11:    /*    Guadalajara, Mexico City, Monterrey */
-        case 14:    /*    Eastern Time (US & Canada) */
-        case 16:    /*    Atlantic Time (Canada) */
-        case 19:    /*    Newfoundland */
-            if (afterSecondDayInMonth($cur_year, $cur_year, 3, "Sun", $gmt_offset) &&
-            beforeFirstDayInMonth($cur_year, $cur_year, 11, "Sun", $gmt_offset))
-                return true;
-            else
-                return false;
+        case 4:  /* Alaska */
+        case 5:  /* Pacific Time (US & Canada); Tijuana */
+        case 8:  /* Mountain Time (US & Canada) */
+        case 10: /* Central Time (US & Canada) */
+        case 11: /* Guadalajara, Mexico City, Monterrey */
+        case 14: /* Eastern Time (US & Canada) */
+        case 16: /* Atlantic Time (Canada) */
+        case 19: /* Newfoundland */
+
+            return (afterSecondDayInMonth($cur_year, $cur_year, 3, "Sun", $gmt_offset) && beforeFirstDayInMonth($cur_year, $cur_year, 11, "Sun", $gmt_offset));
             break;
 
-        case 7:        /*    Chihuahua, La Paz, Mazatlan */
-            if (afterFirstDayInMonth($cur_year, $cur_year, 5, "Sun", $gmt_offset) &&
-            beforeLastDayInMonth($cur_year, $cur_year, 9, "Sun", $gmt_offset))
-                return true;
-            else
-                return false;
+        case 7: /* Chihuahua, La Paz, Mazatlan */
+
+            return (afterFirstDayInMonth($cur_year, $cur_year, 5, "Sun", $gmt_offset) && beforeLastDayInMonth($cur_year, $cur_year, 9, "Sun", $gmt_offset));
             break;
 
-        case 18:    /*    Santiago, Chile */
-            if (afterSecondDayInMonth($cur_year, $cur_year, 10, "Sat", $gmt_offset) &&
-            beforeSecondDayInMonth($cur_year + 1, $cur_year, 3, "Sat", $gmt_offset))
-                return true;
+        case 18: /* Santiago, Chile */
 
-            else
-                return false;
+            return (afterSecondDayInMonth($cur_year, $cur_year, 10, "Sat", $gmt_offset) && beforeSecondDayInMonth($cur_year + 1, $cur_year, 3, "Sat", $gmt_offset));
             break;
 
-        case 20:    /*    Brasilia, Brazil */
-            if (afterFirstDayInMonth($cur_year, $cur_year, 11, "Sun", $gmt_offset) &&
-            beforeThirdDayInMonth($cur_year, $cur_year, 2, "Sun", $gmt_offset))
-                return true;
-            else
-                return false;
+        case 20: /* Brasilia, Brazil */
+
+            return (afterFirstDayInMonth($cur_year, $cur_year, 11, "Sun", $gmt_offset) && beforeThirdDayInMonth($cur_year, $cur_year, 2, "Sun", $gmt_offset));
             break;
 
-        case 23:    /*    Mid-Atlantic */
-            if (afterLastDayInMonth($cur_year, $cur_year, 3, "Sun") &&
-            beforeLastDayInMonth($cur_year, $cur_year, 9, "Sun", $gmt_offset))
-                return true;
-            else
-                return false;
+        case 23: /* Mid-Atlantic */
+
+            return (afterLastDayInMonth($cur_year, $cur_year, 3, "Sun") && beforeLastDayInMonth($cur_year, $cur_year, 9, "Sun", $gmt_offset));
             break;
 
-        case 22:    /*    Greenland */
-        case 24:    /*    Azores */
-        case 27:    /*    Greenwich Mean Time : Dublin, Edinburgh, Lisbon, London */
-        case 28:    /*    Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna */
-        case 29:    /*    Belgrade, Bratislava, Budapest, Ljubljana, Prague */
-        case 30:    /*    Brussels, Copenhagen, Madrid, Paris */
-        case 31:    /*    Sarajevo, Skopje, Warsaw, Zagreb */
-        case 33:    /*    Athens, Istanbul, Minsk */
-        case 34:    /*    Bucharest */
-        case 37:    /*    Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius */
-        case 41:    /*    Moscow, St. Petersburg, Volgograd */
-        case 47:    /*    Ekaterinburg */
-        case 45:    /*    Baku, Tbilisi, Yerevan */
-        case 51:    /*    Almaty, Novosibirsk */
-        case 56:    /*    Krasnoyarsk */
-        case 58:    /*    Irkutsk, Ulaan Bataar */
-        case 64:    /*    Yakutsk, Sibiria */
-        case 71:    /*    Vladivostok */
-            if (afterLastDayInMonth($cur_year, $cur_year, 3, "Sun") &&
-            beforeLastDayInMonth($cur_year, $cur_year, 10, "Sun", $gmt_offset))
-                return true;
-            else
-                return false;
+        case 22: /* Greenland */
+        case 24: /* Azores */
+        case 27: /* Greenwich Mean Time : Dublin, Edinburgh, Lisbon, London */
+        case 28: /* Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna */
+        case 29: /* Belgrade, Bratislava, Budapest, Ljubljana, Prague */
+        case 30: /* Brussels, Copenhagen, Madrid, Paris */
+        case 31: /* Sarajevo, Skopje, Warsaw, Zagreb */
+        case 33: /* Athens, Istanbul, Minsk */
+        case 34: /* Bucharest */
+        case 37: /* Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius */
+        case 41: /* Moscow, St. Petersburg, Volgograd */
+        case 47: /* Ekaterinburg */
+        case 45: /* Baku, Tbilisi, Yerevan */
+        case 51: /* Almaty, Novosibirsk */
+        case 56: /* Krasnoyarsk */
+        case 58: /* Irkutsk, Ulaan Bataar */
+        case 64: /* Yakutsk, Sibiria */
+        case 71: /* Vladivostok */
+
+            return (afterLastDayInMonth($cur_year, $cur_year, 3, "Sun") && beforeLastDayInMonth($cur_year, $cur_year, 10, "Sun", $gmt_offset));
             break;
 
-        case 35:    /*    Cairo, Egypt */
-            if (afterLastDayInMonth($cur_year, $cur_year, 4, "Fri") &&
-            beforeLastDayInMonth($cur_year, $cur_year, 9, "Thu", $gmt_offset))
-                return true;
-            else
-                return false;
+        case 35: /* Cairo, Egypt */
+
+            return (afterLastDayInMonth($cur_year, $cur_year, 4, "Fri") && beforeLastDayInMonth($cur_year, $cur_year, 9, "Thu", $gmt_offset));
             break;
 
-        case 39:    /*    Baghdad, Iraq */
-            if (afterFirstOfTheMonth($cur_year, $cur_year, 4, $gmt_offset) &&
-            beforeFirstOfTheMonth($cur_year, $cur_year, 10, $gmt_offset))
-                return true;
-            else
-                return false;
+        case 39: /* Baghdad, Iraq */
+
+            return (afterFirstOfTheMonth($cur_year, $cur_year, 4, $gmt_offset) && beforeFirstOfTheMonth($cur_year, $cur_year, 10, $gmt_offset));
             break;
 
-        case 43:    /*    Tehran, Iran - Note: This is an approximation to
-                        the actual DST dates since Iran goes by the Persian
-                        calendar.  There are tools for converting between
-                        Gregorian and Persian calendars at www.farsiweb.info.
-                        This may be added at a later date for better accuracy */
-            if (afterLastDayInMonth($cur_year, $cur_year, 3, "Sun") &&
-            beforeLastDayInMonth($cur_year, $cur_year, 9, "Sun", $gmt_offset))
-                return true;
-            else
-                return false;
+        case 43: /* Tehran, Iran */
+
+            return (afterLastDayInMonth($cur_year, $cur_year, 3, "Sun") && beforeLastDayInMonth($cur_year, $cur_year, 9, "Sun", $gmt_offset));
             break;
 
-        case 65:    /*    Adelaide */
-        case 68:    /*    Canberra, Melbourne, Sydney */
-            if (beforeFirstDayInMonth($cur_year, $cur_year, 4, "Sun", $gmt_offset) ||
-            afterFirstDayInMonth($cur_year, $cur_year, 10, "Sun", $gmt_offset))
-                return true;
-            else
-                return false;
+        case 65: /* Adelaide */
+        case 68: /* Canberra, Melbourne, Sydney */
+
+            return (beforeFirstDayInMonth($cur_year, $cur_year, 4, "Sun", $gmt_offset) || afterFirstDayInMonth($cur_year, $cur_year, 10, "Sun", $gmt_offset));
             break;
 
-        case 70:    /*    Hobart */
-            if (beforeFirstDayInMonth($cur_year, $cur_year, 4, "Sun", $gmt_offset) ||
-            afterFirstDayInMonth($cur_year, $cur_year, 10, "Sun", $gmt_offset))
-                return true;
-            else
-                return false;
+        case 70: /* Hobart */
+
+            return (beforeFirstDayInMonth($cur_year, $cur_year, 4, "Sun", $gmt_offset) || afterFirstDayInMonth($cur_year, $cur_year, 10, "Sun", $gmt_offset));
             break;
 
-        case 73:    /*    Auckland, Wellington */
-            if (beforeFirstDayInMonth($cur_year, $cur_year, 4, "Sun", $gmt_offset) ||
-            afterLastDayInMonth($cur_year, $cur_year, 9, "Sun"))
-                return true;
-            else
-                return false;
+        case 73: /* Auckland, Wellington */
+
+            return (beforeFirstDayInMonth($cur_year, $cur_year, 4, "Sun", $gmt_offset) || afterLastDayInMonth($cur_year, $cur_year, 9, "Sun"));
             break;
 
         default:
+
+            return false;
             break;
     }
-    return false;
 }
 
 function afterFirstDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 {
+    $first_day = 1;
+
     for ($i = 1; $i < 8; $i++) {
 
         if (date("D", mktime(0, 0, 0, $month, $i)) == $day) {
@@ -271,6 +235,8 @@ function afterFirstDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 
     $curDay = gmdate("d");
     $curMonth = gmdate("m");
+
+    /** @noinspection PhpWrongStringConcatenationInspection */
     $curHour = gmdate("H") + $gmt_offset;
 
     $cur_stamp = mktime($curHour, 0, 0, $curMonth, $curDay, $curYear);
@@ -286,6 +252,8 @@ function beforeLastDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 {
     $days_in_month = getDaysInMonth($month);
 
+    $last_day = $days_in_month;
+
     for ($i = $days_in_month; $i > ($days_in_month - 8); $i--) {
 
         if (date("D", mktime(0, 0, 0, $month, $i)) == $day) {
@@ -297,6 +265,8 @@ function beforeLastDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 
     $curDay = gmdate("d");
     $curMonth = gmdate("m");
+
+    /** @noinspection PhpWrongStringConcatenationInspection */
     $curHour = gmdate("H") + $gmt_offset;
 
     $cur_stamp = mktime($curHour, 0, 0, $curMonth, $curDay, $curYear);
@@ -311,6 +281,8 @@ function beforeLastDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 function afterLastDayInMonth($curYear, $year, $month, $day)
 {
     $days_in_month = getDaysInMonth($month);
+
+    $last_day = $days_in_month;
 
     for ($i = $days_in_month; $i > ($days_in_month - 8); $i--) {
 
@@ -339,6 +311,8 @@ function afterFirstOfTheMonth($curYear, $year, $month, $gmt_offset)
 {
     $curDay = gmdate("d");
     $curMonth = gmdate("m");
+
+    /** @noinspection PhpWrongStringConcatenationInspection */
     $curHour = gmdate("H") + $gmt_offset;
 
     $cur_stamp = mktime($curHour, 0, 0, $curMonth, $curDay, $curYear);
@@ -354,6 +328,8 @@ function beforeFirstOfTheMonth($curYear, $year, $month, $gmt_offset)
 {
     $curDay = gmdate("d");
     $curMonth = gmdate("m");
+
+    /** @noinspection PhpWrongStringConcatenationInspection */
     $curHour = gmdate("H") + $gmt_offset;
 
     $cur_stamp = mktime($curHour, 0, 0, $curMonth, $curDay, $curYear);
@@ -368,6 +344,8 @@ function beforeFirstOfTheMonth($curYear, $year, $month, $gmt_offset)
 function beforeThirdDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 {
     $count = 0;
+
+    $third_day = 1;
 
     for ($i = 1; $i < 22; $i++) {
 
@@ -385,6 +363,8 @@ function beforeThirdDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 
     $curDay = gmdate("d");
     $curMonth = gmdate("m");
+
+    /** @noinspection PhpWrongStringConcatenationInspection */
     $curHour = gmdate("H") + $gmt_offset;
 
     $cur_stamp = mktime($curHour, 0, 0, $curMonth, $curDay, $curYear);
@@ -400,6 +380,8 @@ function beforeSecondDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 {
     $count = 0;
 
+    $second_day = 1;
+
     for ($i = 1; $i < 15; $i++) {
 
         if (date("D", mktime(0, 0, 0, $month, $i)) == $day) {
@@ -416,6 +398,8 @@ function beforeSecondDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 
     $curDay = gmdate("d");
     $curMonth = gmdate("m");
+
+    /** @noinspection PhpWrongStringConcatenationInspection */
     $curHour = gmdate("H") + $gmt_offset;
 
     $cur_stamp = mktime($curHour, 0, 0, $curMonth, $curDay, $curYear);
@@ -429,6 +413,8 @@ function beforeSecondDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 
 function beforeFirstDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 {
+    $first_day = 1;
+
     for ($i = 1; $i < 8; $i++) {
 
         if (date("D", mktime(0, 0, 0, $month, $i)) == $day) {
@@ -440,6 +426,8 @@ function beforeFirstDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 
     $curDay = gmdate("d");
     $curMonth = gmdate("m");
+
+    /** @noinspection PhpWrongStringConcatenationInspection */
     $curHour = gmdate("H") + $gmt_offset;
 
     $cur_stamp = mktime($curHour, 0, 0, $curMonth, $curDay, $curYear);
@@ -455,6 +443,8 @@ function afterSecondDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 {
     $count = 0;
 
+    $second_day = 1;
+
     for ($i = 1; $i < 15; $i++) {
 
         if (date("D", mktime(0, 0, 0, $month, $i)) == $day) {
@@ -471,6 +461,8 @@ function afterSecondDayInMonth($curYear, $year, $month, $day, $gmt_offset)
 
     $curDay = gmdate("d");
     $curMonth = gmdate("m");
+
+    /** @noinspection PhpWrongStringConcatenationInspection */
     $curHour = gmdate("H") + $gmt_offset;
 
     $cur_stamp = mktime($curHour, 0, 0, $curMonth, $curDay, $curYear);
@@ -503,5 +495,3 @@ function getDaysInMonth($month)
             break;
     }
 }
-
-?>

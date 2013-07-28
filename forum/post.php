@@ -70,6 +70,16 @@ $new_thread = false;
 
 $to_logon_array = array();
 
+$reply_to_pid = null;
+
+$reply_message = null;
+
+$threadtitle = null;
+
+$fid = null;
+
+$folder_dropdown = null;
+
 if (($sig = user_get_sig($_SESSION['UID'])) !== false) {
     $sig = fix_html($sig);
 }
@@ -642,7 +652,11 @@ if ($valid && isset($_POST['preview'])) {
     $preview_message['ATTACHMENTS'] = $attachments;
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\"><br />", message_display(0, $preview_message, 0, 0, 0, false, false, false, false, $show_sigs, true), "</td>\n";
+    echo "                  <td align=\"left\"><br />";
+
+    message_display(0, $preview_message, 0, 0, 0, false, false, false, $show_sigs, true);
+
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -884,13 +898,21 @@ if (!$new_thread && $reply_to_pid > 0) {
     if (($thread_data['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\"><br />", poll_display($tid, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, false, $show_sigs, true), "</td>\n";
+        echo "                  <td align=\"left\"><br />";
+
+        poll_display($tid, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, $show_sigs, true);
+
+        echo "                  </td>\n";
         echo "                </tr>\n";
 
     } else {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\"><br />", message_display($tid, $reply_message, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, false, false, $show_sigs, true), "</td>\n";
+        echo "                  <td align=\"left\"><br />";
+
+        message_display($tid, $reply_message, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, false, $show_sigs, true);
+
+        echo "                  </td>\n";
         echo "                </tr>\n";
     }
 
@@ -920,5 +942,3 @@ if (!$new_thread) {
 echo "</form>\n";
 
 html_draw_bottom();
-
-?>

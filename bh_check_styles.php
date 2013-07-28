@@ -94,6 +94,7 @@ function get_css_styles($path, $pattern, $exclude_dirs_array, $exclude_files_arr
 
     foreach ($directory_iterator as $fileinfo) {
 
+        /** @var DirectoryIterator $fileinfo */
         if ($fileinfo->isDir() && !$fileinfo->isDot() && !in_array($fileinfo->getBasename(), $exclude_dirs_array)) {
 
             $style_name = $fileinfo->getBasename();
@@ -220,5 +221,3 @@ foreach ($style_css_files_array as $style_name => $style_css_files) {
         );
     }
 }
-
-?>

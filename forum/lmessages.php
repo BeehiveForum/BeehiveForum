@@ -95,5 +95,3 @@ light_html_draw_top();
 light_draw_messages($tid, $pid);
 
 light_html_draw_bottom();
-
-?>

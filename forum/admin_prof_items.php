@@ -81,6 +81,12 @@ if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
 // Array to hold error messages
 $error_msg_array = array();
 
+$t_type_new = null;
+$t_new_name = null;
+$t_options_new = null;
+$t_section_new = null;
+$t_name_new = null;
+
 // Array of valid profile item types
 $profile_item_valid_types = array(
     PROFILE_ITEM_LARGE_TEXT,
@@ -637,7 +643,11 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_prof_items.php?webtag=$webtag&psid=$psid&sect_page=$sect_page", $page, $profile_items['profile_items_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">";
+
+    html_page_links("admin_prof_items.php?webtag=$webtag&psid=$psid&sect_page=$sect_page", $page, $profile_items['profile_items_count'], 10);
+
+    echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -651,5 +661,3 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     html_draw_bottom();
 }
-
-?>

@@ -89,5 +89,3 @@ $emoticon['X)'] = "smile_dead";
 $emoticon['X-)'] = "smile_dead";
 $emoticon['XD'] = "grin_dead";
 $emoticon['X-D'] = "grin_dead";
-
-?>

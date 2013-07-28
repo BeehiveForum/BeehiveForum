@@ -50,13 +50,15 @@ if (!($attachment_dir = attachments_check_dir())) {
     exit;
 }
 
-$error = null;
-
-$attachment_details = null;
-
 $valid = true;
 
+$error = null;
+$attachment_details = null;
 $content = null;
+$file_type = null;
+$temp_file = null;
+$file_size = null;
+$file_name = null;
 
 $content_type = 'text/html; charset=UTF-8';
 
@@ -238,5 +240,3 @@ if (isset($_POST['summary'])) {
 header(sprintf('Content-type: %s', $content_type));
 
 echo $content;
-
-?>

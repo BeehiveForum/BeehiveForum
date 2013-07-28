@@ -92,5 +92,3 @@ if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
 // Redirect back to the messages.
 header_redirect("messages.php?webtag=$webtag&msg=$msg&font_resize=1");
-
-?>

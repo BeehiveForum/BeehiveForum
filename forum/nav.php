@@ -88,5 +88,3 @@ echo "</div>\n";
 echo "<div style=\"clear: both\"></div>\n";
 
 html_draw_bottom();
-
-?>

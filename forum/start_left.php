@@ -470,5 +470,3 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
 }
 
 html_draw_bottom();
-
-?>

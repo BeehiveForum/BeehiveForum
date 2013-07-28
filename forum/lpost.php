@@ -71,6 +71,14 @@ $new_thread = false;
 
 $to_logon_array = array();
 
+$reply_to_pid = null;
+
+$reply_message = null;
+
+$fid = null;
+
+$threadtitle = null;
+
 if (($sig = user_get_sig($_SESSION['UID'])) !== false) {
     $sig = fix_html($sig);
 }
@@ -612,5 +620,3 @@ if (!$new_thread && $reply_to_pid > 0) {
 }
 
 light_html_draw_bottom();
-
-?>

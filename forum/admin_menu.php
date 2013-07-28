@@ -166,5 +166,3 @@ if (forum_check_webtag_available($webtag)) {
 }
 
 html_draw_bottom();
-
-?>

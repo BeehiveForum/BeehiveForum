@@ -231,7 +231,11 @@ if (isset($_POST['preview'])) {
         echo "                        <td align=\"left\">\n";
         echo "                          <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
         echo "                            <tr>\n";
-        echo "                              <td align=\"left\"><br />", message_display(0, $preview_message, 0, 0, 0, false, false, false, false, true, true), "</td>\n";
+        echo "                              <td align=\"left\"><br />";
+
+        message_display(0, $preview_message, 0, 0, 0, false, false, false, true, true);
+
+        echo "                              </td>\n";
         echo "                            </tr>\n";
         echo "                          </table>\n";
         echo "                        </td>\n";
@@ -329,5 +333,3 @@ echo "</form>\n";
 if ($admin_edit === true) echo "</div>\n";
 
 html_draw_bottom();
-
-?>

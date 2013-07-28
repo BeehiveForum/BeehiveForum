@@ -49,7 +49,7 @@ class Error extends Exception
     }
 }
 
-function bh_error_handler($errno, $errstr, $errfile, $errline, $errcontext)
+function bh_error_handler($errno, $errstr, $errfile, $errline)
 {
     if (error_reporting() == 0) {
         return;
@@ -306,8 +306,6 @@ function bh_error_process(Exception $exception)
         $version_strings[] = mb_strtoupper($php_sapi);
     }
 
-    $mysql_version = '';
-
     if (!in_array($exception->getCode(), array(MYSQL_CONNECT_ERROR, MYSQL_ACCESS_DENIED, MYSQL_PERMISSION_DENIED))) {
 
         if (($mysql_version = db::get_version()) !== false) {
@@ -431,5 +429,3 @@ function bh_error_send_email(Exception $exception)
         @mail($error_report_email_addr_to, "Beehive Forum Error Report", $error_log_email_message, $headers);
     }
 }
-
-?>

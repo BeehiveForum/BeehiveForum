@@ -809,6 +809,8 @@ function admin_get_post_approval_queue($page = 1)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
+    $fidlist = array();
+
     if (($folder_list = session::get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) !== false) {
         $fidlist = implode(',', $folder_list);
     }
@@ -1299,14 +1301,6 @@ function admin_delete_user($uid, $delete_content = false)
 
     if (!is_numeric($uid)) return false;
     if (!is_bool($delete_content)) $delete_content = false;
-
-    // Constants for deleting PM data
-    $pm_inbox_items = PM_INBOX_ITEMS;
-    $pm_outbox = PM_OUTBOX;
-    $pm_sent_items = PM_SENT_ITEMS;
-    $pm_saved_out = PM_SAVED_OUT;
-    $pm_saved_in = PM_SAVED_IN;
-    $pm_draft_items = PM_DRAFT_ITEMS;
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
@@ -1803,5 +1797,3 @@ function admin_check_credentials()
     html_draw_bottom();
     exit;
 }
-
-?>

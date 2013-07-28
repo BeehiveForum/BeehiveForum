@@ -486,5 +486,3 @@ function visitor_log_clean_up()
 
     return true;
 }
-
-?>

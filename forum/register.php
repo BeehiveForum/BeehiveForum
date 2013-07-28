@@ -77,6 +77,13 @@ $text_captcha = new captcha(6, 15, 25, 9, 30);
 // Array to hold error messages
 $error_msg_array = array();
 
+$logon = null;
+$nickname = null;
+$email = null;
+$private_key = null;
+$password = null;
+$check_password = null;
+
 // Top frame target
 $frame_top_target = html_get_top_frame_name();
 
@@ -841,5 +848,3 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 }
 
 html_draw_bottom();
-
-?>

@@ -351,6 +351,8 @@ function profile_section_dropdown($default_psid, $field_name = 't_psid')
 
     if ($result->num_rows == 0) return '';
 
+    $profile_sections_array = array();
+
     while (($profile_section_data = $result->fetch_assoc()) !== null) {
         $profile_sections_array[$profile_section_data['PSID']] = htmlentities_array($profile_section_data['NAME']);
     }
@@ -408,6 +410,7 @@ function profile_section_move_up($psid)
     if (!($result = $db->query($sql))) return false;
 
     $profile_section_order = array();
+    $profile_section_position = array();
 
     while (($profile_data = $result->fetch_assoc()) !== null) {
 
@@ -459,6 +462,7 @@ function profile_section_move_down($psid)
     if (!($result = $db->query($sql))) return false;
 
     $profile_section_order = array();
+    $profile_section_position = array();
 
     while (($profile_data = $result->fetch_assoc()) !== null) {
 
@@ -514,6 +518,7 @@ function profile_item_move_up($psid, $piid)
     if (!($result = $db->query($sql))) return false;
 
     $profile_item_order = array();
+    $profile_item_position = array();
 
     while (($profile_data = $result->fetch_assoc()) !== null) {
 
@@ -567,6 +572,7 @@ function profile_item_move_down($psid, $piid)
     if (!($result = $db->query($sql))) return false;
 
     $profile_item_order = array();
+    $profile_item_position = array();
 
     while (($profile_data = $result->fetch_assoc()) !== null) {
 
@@ -733,5 +739,3 @@ function profile_item_add_clear_entry(&$profile_item_options_array, $type)
 
     return true;
 }
-
-?>

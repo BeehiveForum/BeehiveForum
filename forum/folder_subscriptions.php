@@ -207,7 +207,11 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
-echo "      <td class=\"postbody\" align=\"center\">", html_page_links("folder_subscriptions.php?webtag=$webtag&search_keyword=$search_keyword&view=$view", $page, $folder_subscriptions['folder_count'], 20, "main_page"), "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\">";
+
+html_page_links("folder_subscriptions.php?webtag=$webtag&search_keyword=$search_keyword&view=$view", $page, $folder_subscriptions['folder_count'], 20, "main_page");
+
+echo "      </td>\n";
 echo "      <td align=\"right\" width=\"33%\">", gettext("View"), ":&nbsp;", form_dropdown_array('view', array(FOLDER_IGNORED => gettext("Ignored"), FOLDER_SUBSCRIBED => gettext("Subscribed")), $view), "&nbsp;", form_submit("view_submit", gettext("Go!")), "</td>\n";
 echo "    </tr>\n";
 
@@ -264,5 +268,3 @@ echo "  </table>\n";
 echo "</form>\n";
 
 html_draw_bottom();
-
-?>

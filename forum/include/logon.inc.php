@@ -233,5 +233,3 @@ function logon_draw_form($logon_options)
         echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;view=mobile\" target=\"", html_get_top_frame_name(), "\">", gettext("Mobile version"), "</a></p>\n";
     }
 }
-
-?>

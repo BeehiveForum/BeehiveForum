@@ -42,6 +42,9 @@ if (!session::logged_in()) {
     html_guest_error();
 }
 
+$type = null;
+$obj_id = null;
+
 // Check if we're allowed multiple-select.
 if (isset($_POST['multi']) && $_POST['multi'] == 'Y') {
     $multi = 'Y';
@@ -329,5 +332,3 @@ echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

@@ -99,8 +99,9 @@ $emoticon = array();
 $emoticon_text = array();
 
 // Include the emoticon pack.
-if (@file_exists("emoticons/$emoticon_set/definitions.php")) {
-    include("emoticons/$emoticon_set/definitions.php");
+if (@file_exists(__DIR__ . "/emoticons/$emoticon_set/definitions.php")) {
+    /** @noinspection PhpIncludeInspection */
+    include(__DIR__ . "/emoticons/$emoticon_set/definitions.php");
 }
 
 // Group emoticons by text
@@ -152,5 +153,3 @@ echo "</table>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

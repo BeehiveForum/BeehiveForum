@@ -155,5 +155,3 @@ cache_check_last_modified(time(), md5($_SESSION['UID']. $_SESSION['LOGON']. $con
 
 // Output the content
 echo $content;
-
-?>

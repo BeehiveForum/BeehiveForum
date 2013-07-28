@@ -829,5 +829,3 @@ echo "  </table>\n";
 echo "  </div>\n";
 
 html_draw_bottom();
-
-?>

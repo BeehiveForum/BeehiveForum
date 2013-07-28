@@ -48,5 +48,3 @@ light_html_draw_top('js/pm.js');
 light_draw_pm_inbox();
 
 light_html_draw_bottom();
-
-?>

@@ -30,6 +30,9 @@ require_once BH_INCLUDE_PATH. 'ip.inc.php';
 require_once BH_INCLUDE_PATH. 'timezone.inc.php';
 // End Required includes
 
+/**
+ * @return bool|number
+ */
 function user_count()
 {
    if (!$db = db::get()) return false;
@@ -765,17 +768,17 @@ function user_get_prefs($uid)
     return array_merge($global_prefs_array, $forum_prefs_array);
 }
 
-function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = false)
+function user_update_prefs($uid, array $prefs, array $prefs_global = array())
 {
     if (!$db = db::get()) return false;
 
     if (!is_numeric($uid)) return false;
 
-    if (!is_array($prefs_array)) return false;
+    if (!is_array($prefs)) return false;
 
     // Check that $prefs_global_setting_array is an array
-    if (!is_array($prefs_global_setting_array)) {
-        $prefs_global_setting_array = array();
+    if (!is_array($prefs_global)) {
+        $prefs_global = array();
     }
 
     // Arrays to hold preferences
@@ -874,7 +877,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
     // global USER_PREFS table regardless, otherwise the preference will
     // be checked against to see if the user wants it setting globally
     // or only on the current forum.
-    foreach ($prefs_array as $pref_name => $pref_setting) {
+    foreach ($prefs as $pref_name => $pref_setting) {
 
         if (!user_check_pref($pref_name, $pref_setting)) {
             continue;
@@ -884,7 +887,7 @@ function user_update_prefs($uid, $prefs_array, $prefs_global_setting_array = fal
 
             $global_prefs_array[$pref_name] = $pref_setting;
 
-        } else if (in_array($pref_name, $global_pref_names) && isset($prefs_global_setting_array[$pref_name]) && ($prefs_global_setting_array[$pref_name] == true)) {
+        } else if (in_array($pref_name, $global_pref_names) && isset($prefs_global[$pref_name]) && ($prefs_global[$pref_name] == true)) {
 
             $global_prefs_array[$pref_name] = $pref_setting;
 
@@ -1046,9 +1049,12 @@ function user_check_pref($name, $value)
 
             return is_numeric($value);
             break;
-    }
 
-    return false;
+        default:
+
+            return false;
+            break;
+    }
 }
 
 function user_update_sig($uid, $content, $global_update = false)
@@ -1757,5 +1763,3 @@ function user_get_posts($uid)
 
     return false;
 }
-
-?>

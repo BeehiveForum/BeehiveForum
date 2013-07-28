@@ -205,5 +205,3 @@ function browser_mobile()
 
     return $mobile_browser > 0;
 }
-
-?>

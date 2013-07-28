@@ -305,5 +305,3 @@ function cache_check_last_modified($last_modified, $etag, $expires = null)
 
     return true;
 }
-
-?>

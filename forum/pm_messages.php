@@ -194,7 +194,16 @@ if (isset($_POST['pm_delete_messages'])) {
         } else {
 
             html_draw_top(sprintf("title=%s", gettext("Delete Message")), 'class=window_title');
-            html_display_msg(gettext("Delete"), gettext("Are you sure you want to delete all of the selected messages?"), "pm_messages.php", 'post', array('pm_option_submit' => gettext("Yes"), 'back' => gettext("No")), array('folder' => $current_folder, 'page' => $page, 'process' => $process_messages, 'pm_delete_messages' => gettext("Delete"), 'pm_delete_confirm' => 'Y'), '_self', 'center');
+            html_display_msg(gettext("Delete"), gettext("Are you sure you want to delete all of the selected messages?"), "pm_messages.php", 'post', array(
+                                                                                                                                                          'pm_option_submit' => gettext("Yes"),
+                                                                                                                                                          'back'             => gettext("No")
+                                                                                                                                                     ), array(
+                                                                                                                                                             'folder'             => $current_folder,
+                                                                                                                                                             'page'               => $page,
+                                                                                                                                                             'process'            => $process_messages,
+                                                                                                                                                             'pm_delete_messages' => gettext("Delete"),
+                                                                                                                                                             'pm_delete_confirm'  => 'Y'
+                                                                                                                                                        ), '_self', 'center');
             html_draw_bottom();
             exit;
         }
@@ -492,7 +501,11 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
-echo "      <td class=\"postbody\" align=\"center\" width=\"33%\">", html_page_links("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder&sort_by=$sort_by&sort_dir=$sort_dir", $page, $messages_array['message_count'], 10), "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\" width=\"33%\">";
+
+html_page_links("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder&sort_by=$sort_by&sort_dir=$sort_dir", $page, $messages_array['message_count'], 10);
+
+echo "      </td>\n";
 
 if (isset($messages_array['message_array']) && sizeof($messages_array['message_array']) > 0) {
 
@@ -532,7 +545,11 @@ if (isset($message_data) && is_array($message_data)) {
     echo "      <td>\n";
     echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td align=\"left\">", pm_display($message_data), "</td>\n";
+    echo "            <td align=\"left\">";
+
+    pm_display($message_data);
+
+    echo "            </td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
     echo "      </td>\n";
@@ -544,5 +561,3 @@ echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

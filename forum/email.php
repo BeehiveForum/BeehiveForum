@@ -47,6 +47,8 @@ $forum_name = forum_get_setting('forum_name', 'strlen', 'A Beehive Forum');
 // Array to hold error messages
 $error_msg_array = array();
 
+$to_uid = null;
+
 // User UID to send email to.
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
@@ -64,6 +66,9 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 $to_user = user_get($to_uid);
 
 $from_user = user_get($_SESSION['UID']);
+
+$subject = null;
+$message = null;
 
 if (isset($_POST['send'])) {
 
@@ -189,5 +194,3 @@ echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

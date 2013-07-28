@@ -105,5 +105,3 @@ foreach ($file_list_array as $css_filepath) {
         ));
     }
 }
-
-?>

@@ -198,7 +198,11 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"center\">", html_page_links("admin_visitor_log.php?webtag=$webtag", $page, $admin_visitor_log_array['user_count'], 10), "</td>\n";
+echo "      <td align=\"center\">";
+
+html_page_links("admin_visitor_log.php?webtag=$webtag", $page, $admin_visitor_log_array['user_count'], 10);
+
+echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -246,5 +250,3 @@ echo "  </form>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

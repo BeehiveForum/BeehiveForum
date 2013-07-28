@@ -58,9 +58,10 @@ function emoticons_initialise()
 
                     if (($file != '.' && $file != '..' && @is_dir("emoticons/$file"))) {
 
-                        if (@file_exists("emoticons/$file/definitions.php")) {
+                        if (@file_exists(__DIR__ . "/../emoticons/$file/definitions.php")) {
 
-                            include("emoticons/$file/definitions.php");
+                            /** @noinspection PhpIncludeInspection */
+                            include(__DIR__ . "/../emoticons/$file/definitions.php");
                         }
                     }
                 }
@@ -68,8 +69,10 @@ function emoticons_initialise()
 
         } else {
 
-            if (@file_exists("emoticons/$user_emoticon_pack/definitions.php")) {
-                include ("emoticons/$user_emoticon_pack/definitions.php");
+            if (@file_exists(__DIR__ . "/../emoticons/$user_emoticon_pack/definitions.php")) {
+
+                /** @noinspection PhpIncludeInspection */
+                include (__DIR__ . "/../emoticons/$user_emoticon_pack/definitions.php");
             }
         }
 
@@ -115,6 +118,9 @@ function emoticons_apply($content)
 
     // HTML code for emoticons.
     $emoticon_html_code = "<span class=\"emoticon e_%1\$s\" title=\"%2\$s\"><span class=\"e__\">%2\$s</span></span>";
+
+    $pattern_array = array();
+    $replace_array = array();
 
     // Generate the HTML required for each emoticon.
     foreach ($emoticons_array as $key => $emoticon) {
@@ -215,8 +221,10 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100)
     $emoticon = array();
 
     // Include the emoticon pack.
-    if (@file_exists("emoticons/$emoticon_set/definitions.php")) {
-        include("emoticons/$emoticon_set/definitions.php");
+    if (@file_exists(__DIR__ . "/../emoticons/$emoticon_set/definitions.php")) {
+
+        /** @noinspection PhpIncludeInspection */
+        include(__DIR__ . "/../emoticons/$emoticon_set/definitions.php");
     }
 
     // Check it has some emoticons in it!
@@ -245,5 +253,3 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100)
     // Return the HTML.
     return $html;
 }
-
-?>

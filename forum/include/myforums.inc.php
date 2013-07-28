@@ -151,6 +151,10 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
         $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '{$_SESSION['UID']}') ";
         $sql.= "WHERE FORUMS.ACCESS_LEVEL > -1 AND FORUMS.ACCESS_LEVEL < 3 AND USER_FORUM.INTEREST = -1 ";
         $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
+
+    } else {
+
+        return false;
     }
 
     if (!($result = $db->query($sql))) return false;
@@ -281,5 +285,3 @@ function forums_any_favourites()
 
     return $fav_count > 0;
 }
-
-?>

@@ -96,12 +96,12 @@ function git_mysql_parse($git_log_temp_file)
 
 function git_mysql_output_log($log_filename = null)
 {
-    if (!$db = db::get()) return false;
+    if (!$db = db::get()) return;
 
     $sql = "SELECT UNIX_TIMESTAMP(DATE) AS DATE, AUTHOR, COMMENTS ";
     $sql.= "FROM BEEHIVE_GIT_LOG ORDER BY DATE DESC";
 
-    if (!$result = $db->query($sql)) return false;
+    if (!$result = $db->query($sql)) return;
 
     if ($result->num_rows == 0) {
 
@@ -278,5 +278,3 @@ if (isset($modified_date)) {
     echo "Subsequent runs using the date argument will truncate the database\n";
     echo "table before generating the changelog.\n";
 }
-
-?>

@@ -65,5 +65,3 @@ if (isset($_GET['show']) && $_GET['show'] == "visitors") {
 $frameset->output_html();
 
 html_draw_bottom(true);
-
-?>

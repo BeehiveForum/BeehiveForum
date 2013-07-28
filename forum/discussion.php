@@ -191,5 +191,3 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
         html_draw_error(gettext("No Messages"));
     }
 }
-
-?>

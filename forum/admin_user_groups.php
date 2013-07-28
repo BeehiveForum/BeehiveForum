@@ -288,7 +288,11 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_user_groups.php?webtag=$webtag&sort_dir=$sort_dir&sort_by=$sort_by", $page, $user_groups_array['user_groups_count'], 10), "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\">";
+
+html_page_links("admin_user_groups.php?webtag=$webtag&sort_dir=$sort_dir&sort_by=$sort_by", $page, $user_groups_array['user_groups_count'], 10);
+
+echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -358,5 +362,3 @@ echo "</table>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

@@ -33,6 +33,7 @@ require_once BH_INCLUDE_PATH. 'user.inc.php';
 
 abstract class session
 {
+    /** @var db */
     protected static $db;
 
     public static function init()
@@ -510,10 +511,6 @@ abstract class session
 
     public static function refresh($uid)
     {
-        $ip_address = get_ip_address();
-
-        $http_referer = session::get_http_referer();
-
         if (!($forum_fid = get_forum_fid())) $forum_fid = 0;
 
         if (!($user = user_get($uid))) {
@@ -569,5 +566,3 @@ abstract class session
         return isset($_SESSION['UID']) && is_numeric($_SESSION['UID']) && ($_SESSION['UID'] > 0);
     }
 }
-
-?>

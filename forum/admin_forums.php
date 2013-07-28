@@ -50,6 +50,16 @@ if (!(session::check_perm(USER_PERM_FORUM_TOOLS, 0, 0))) {
 // Perform additional admin login.
 admin_check_credentials();
 
+// Array to hold error messages
+$error_msg_array = array();
+
+$forum_delete_array = null;
+$t_webtag = null;
+$t_name = null;
+$t_owner_uid = null;
+$t_database = null;
+$t_access = null;
+
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
@@ -69,9 +79,6 @@ $forum_access_level_array = array(
 
 // Array of available databases
 $available_databases = forums_get_available_dbs();
-
-// Array to hold error messages
-$error_msg_array = array();
 
 // Cancel button clicked.
 if (isset($_POST['cancel'])) {
@@ -706,7 +713,11 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_forums.php?webtag=$webtag", $page, $forums_array['forums_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">";
+
+    html_page_links("admin_forums.php?webtag=$webtag", $page, $forums_array['forums_count'], 10);
+
+    echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -720,5 +731,3 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     html_draw_bottom();
 }
-
-?>

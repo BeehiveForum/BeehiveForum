@@ -91,8 +91,6 @@ function form_input_text_search($name, $value = null, $width = null, $maxchars =
 
     if ($allow_multi) $classes[] = 'allow_multi';
 
-    if (!in_array($type, array(SEARCH_LOGON, SEARCH_THREAD))) $type = SEARCH_LOGON;
-
     return form_input_text($name, $value, $width, $maxchars, $custom_html, implode(' ', $classes), $placeholder);
 }
 
@@ -487,5 +485,3 @@ function form_date_dropdowns($year = null, $month = null, $day = null, $prefix =
 
     return $output;
 }
-
-?>

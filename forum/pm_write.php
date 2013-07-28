@@ -61,6 +61,10 @@ $edit_mid = null;
 
 $reply_all = false;
 
+$subject = null;
+
+$to_logon_array = array();
+
 if (isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
 
     $reply_mid = $_GET['replyto'];
@@ -519,7 +523,11 @@ if ($valid && isset($_POST['preview'])) {
     $pm_preview_array['ATTACHMENTS'] = $attachments;
 
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"100%\"><br />", pm_display($pm_preview_array, true), "</td>\n";
+    echo "                  <td align=\"left\" width=\"100%\"><br />";
+
+    pm_display($pm_preview_array, true);
+
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
@@ -689,7 +697,11 @@ if (isset($pm_data) && is_array($pm_data) && isset($reply_mid) && is_numeric($re
     echo "                  <td align=\"left\" class=\"subhead\" colspan=\"3\">", gettext("In reply to"), "</td>\n";
     echo "                </tr>";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" width=\"100%\"><br />", pm_display($pm_data, true), "</td>\n";
+    echo "                  <td align=\"left\" width=\"100%\"><br />";
+
+    pm_display($pm_data, true);
+
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
@@ -706,5 +718,3 @@ echo "  </table>\n";
 echo "</form>\n";
 
 html_draw_bottom();
-
-?>

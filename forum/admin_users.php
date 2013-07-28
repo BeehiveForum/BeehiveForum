@@ -367,7 +367,11 @@ echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
-echo "      <td class=\"postbody\" align=\"center\" width=\"50%\">", html_page_links("admin_users.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir&user_search=$user_search&filter=$filter", $page, $admin_user_array['user_count'], 10), "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\" width=\"50%\">";
+
+html_page_links("admin_users.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir&user_search=$user_search&filter=$filter", $page, $admin_user_array['user_count'], 10);
+
+echo "      </td>\n";
 
 if (forum_get_setting('require_user_approval', 'Y') && (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0))) {
 
@@ -468,5 +472,3 @@ echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

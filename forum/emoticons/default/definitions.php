@@ -69,5 +69,3 @@ $emoticon['I)'] = "sleepyhead";
 $emoticon[':-/'] = "unsure";
 $emoticon[':/'] = "unsure";
 $emoticon['8-O'] = "eek";
-
-?>

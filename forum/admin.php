@@ -93,5 +93,3 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 $frameset->output_html();
 
 html_draw_bottom(true);
-
-?>

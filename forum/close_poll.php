@@ -51,6 +51,10 @@ $show_sigs = session::show_sigs();
 
 $valid = true;
 
+$tid = null;
+$pid = null;
+$t_fid = null;
+
 if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     $msg = $_POST['msg'];
@@ -192,7 +196,7 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\"><br />";
 
-poll_display($tid, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, $thread_data['CLOSED'], false, $show_sigs, true);
+poll_display($tid, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, $thread_data['CLOSED'], $show_sigs, true);
 
 echo "                  </td>\n";
 echo "                </tr>\n";
@@ -215,5 +219,3 @@ echo "  </table>\n";
 echo "</form>\n";
 
 html_draw_bottom();
-
-?>

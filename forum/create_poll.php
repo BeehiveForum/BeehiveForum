@@ -66,6 +66,10 @@ $show_sigs = session::show_sigs();
 
 $page_prefs = session::get_post_page_prefs();
 
+$message_text = null;
+$thread_title = null;
+$poll_closes = null;
+
 $valid = true;
 
 $high_interest = (isset($_SESSION['MARK_AS_OF_INT']) && $_SESSION['MARK_AS_OF_INT'] == 'Y') ? 'Y' : 'N';
@@ -778,7 +782,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     echo "                <tr>\n";
     echo "                  <td align=\"center\"><br />\n";
 
-    message_display(0, $poll_data, 0, 0, 0, false, false, false, true, $show_sigs, true);
+    message_display(0, $poll_data, 0, 0, 0, false, false, true, $show_sigs, true);
 
     echo "                  </td>\n";
     echo "                </tr>\n";
@@ -792,7 +796,11 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
         }
 
         echo "                <tr>\n";
-        echo "                  <td align=\"center\"><br />", message_display(0, $poll_data, 0, 0, 0, false, false, false, false, $show_sigs, true), "</td>\n";
+        echo "                  <td align=\"center\"><br />";
+
+        message_display(0, $poll_data, 0, 0, 0, false, false, false, $show_sigs, true);
+
+        echo "                  </td>\n";
         echo "                </tr>\n";
     }
 
@@ -1251,5 +1259,3 @@ echo "  </table>\n";
 echo "</form>\n";
 
 html_draw_bottom();
-
-?>

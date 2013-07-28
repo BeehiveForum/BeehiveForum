@@ -49,6 +49,12 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 // Perform additional admin login.
 admin_check_credentials();
 
+// Array for holding error messages
+$error_msg_array = array();
+
+$t_name_new = null;
+$t_new_name = null;
+
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
@@ -56,9 +62,6 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 } else {
     $page = 1;
 }
-
-// Array for holding error messages
-$error_msg_array = array();
 
 // Cancel button clicked.
 if (isset($_POST['cancel'])) {
@@ -382,7 +385,11 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_prof_sect.php?webtag=$webtag", $page, $profile_sections['profile_sections_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">";
+
+    html_page_links("admin_prof_sect.php?webtag=$webtag", $page, $profile_sections['profile_sections_count'], 10);
+
+    echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -396,5 +403,3 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
     html_draw_bottom();
 }
-
-?>

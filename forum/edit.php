@@ -50,6 +50,10 @@ if (!session::logged_in()) {
     html_guest_error();
 }
 
+$tid = null;
+$pid = null;
+$t_fid = null;
+
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     $msg = $_GET['msg'];
@@ -347,7 +351,7 @@ if ($valid && isset($_POST['preview'])) {
     echo "                  <td align=\"left\" class=\"subhead\">", gettext("Message Preview"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\"><br />", message_display($tid, $edit_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, false, false, false, $show_sigs, true), "</td>\n";
+    echo "                  <td align=\"left\"><br />", message_display($tid, $edit_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, false, false, $show_sigs, true), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";
@@ -531,5 +535,3 @@ echo "  </table>\n";
 echo "</form>";
 
 html_draw_bottom();
-
-?>

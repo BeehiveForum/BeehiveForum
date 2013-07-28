@@ -551,5 +551,3 @@ function user_is_banned($uid)
 
     return $ban_count > 0;
 }
-
-?>

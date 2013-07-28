@@ -55,6 +55,8 @@ if (isset($_POST['cancel'])) {
     exit;
 }
 
+$name = null;
+
 if (isset($_POST['update'])) {
 
     $valid = true;
@@ -153,5 +155,3 @@ echo "  </table>\n";
 echo "</form>\n";
 
 html_draw_bottom();
-
-?>

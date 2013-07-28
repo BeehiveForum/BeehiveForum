@@ -59,6 +59,15 @@ $user_stats_array = array(
     'user_stats' => array()
 );
 
+$stats_start = null;
+$stats_end = null;
+$from_day = null;
+$from_month = null;
+$from_year = null;
+$to_day = null;
+$to_month = null;
+$to_year = null;
+
 // Submit code
 if (isset($_POST['update'])) {
 
@@ -249,5 +258,3 @@ echo "  </form>\n";
 echo "  </div>\n";
 
 html_draw_bottom();
-
-?>

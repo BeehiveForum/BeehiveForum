@@ -49,6 +49,10 @@ if (!session::logged_in()) {
     html_guest_error();
 }
 
+$tid = null;
+$pid = null;
+$edit_msg = null;
+
 $error_msg_array = array();
 
 if (forum_get_setting('allow_polls', 'N')) {
@@ -755,7 +759,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     echo "                <tr>\n";
     echo "                  <td align=\"center\"><br />\n";
 
-    message_display(0, $poll_data, 0, 0, 0, false, false, false, true, $show_sigs, true);
+    message_display(0, $poll_data, 0, 0, 0, false, false, true, $show_sigs, true);
 
     echo "                  </td>\n";
     echo "                </tr>\n";
@@ -1092,5 +1096,3 @@ echo "  </table>\n";
 echo "</form>\n";
 
 html_draw_bottom();
-
-?>

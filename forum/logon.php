@@ -125,5 +125,3 @@ logon_draw_form(LOGON_FORM_DEFAULT);
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

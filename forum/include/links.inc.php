@@ -122,6 +122,10 @@ function links_get_in_folder($fid, $invisible = false, $sort_by = "TITLE", $sort
     );
 }
 
+/**
+ * @param bool $visible
+ * @return bool|array
+ */
 function links_folders_get($visible = true)
 {
     if (!$db = db::get()) return false;
@@ -375,23 +379,23 @@ function links_change_visibility($lid, $visible = true)
 
 function links_click($lid)
 {
-    if (!is_numeric($lid)) return false;
+    if (!is_numeric($lid)) return;
 
-    if (!$db = db::get()) return false;
+    if (!$db = db::get()) return;
 
-    if (!($table_prefix = get_table_prefix())) return false;
+    if (!($table_prefix = get_table_prefix())) return;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}LINKS` ";
     $sql.= "SET CLICKS = CLICKS + 1 WHERE LID = '$lid'";
 
-    if (!$db->query($sql)) return false;
+    if (!$db->query($sql)) return;
 
     $sql = "SELECT URI FROM `{$table_prefix}LINKS` ";
     $sql.= "WHERE LID = '$lid'";
 
-    if (!($result = $db->query($sql))) return false;
+    if (!($result = $db->query($sql))) return;
 
-    if ($result->num_rows == 0) return false;
+    if ($result->num_rows == 0) return;
 
     list($link_uri) = $result->fetch_row();
 
@@ -687,6 +691,8 @@ function links_folder_dropdown($default_fid, $folders)
 {
     $default_value = 0;
 
+    $labels = array();
+
     foreach (array_keys($folders) as $key) {
 
         $labels[$key] = links_get_folder_path_links($key, $folders, false);
@@ -831,5 +837,3 @@ function links_get_comment_uid($cid)
 
     return $comment_uid;
 }
-
-?>

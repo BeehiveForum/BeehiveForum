@@ -310,8 +310,6 @@ function email_send_pm_notification($mid)
 
     forum_check_webtag_available($webtag);
 
-    $user_ignored_completely = USER_IGNORED_COMPLETELY;
-
     $sql = "SELECT PM.SUBJECT, TO_USER.LOGON, TO_USER.NICKNAME, TO_USER.EMAIL, ";
     $sql.= "FROM_USER.LOGON AS FROM_LOGON, FROM_USER.NICKNAME AS FROM_NICKNAME, ";
     $sql.= "COALESCE(USER_PREFS.PM_NOTIFY_EMAIL, 'N') AS PM_NOTIFY_EMAIL FROM PM ";
@@ -844,5 +842,3 @@ function email_is_unique($email_address, $user_uid = 0)
 
     return ($user_count == 0);
 }
-
-?>

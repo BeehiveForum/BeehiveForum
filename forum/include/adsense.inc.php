@@ -228,5 +228,3 @@ function adsense_output_html()
         }
     }
 }
-
-?>

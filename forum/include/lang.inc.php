@@ -145,5 +145,3 @@ function lang_get_available($inc_browser_negotiation = true)
 
     return $available_langs;
 }
-
-?>

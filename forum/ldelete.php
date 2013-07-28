@@ -196,5 +196,3 @@ echo "</div>\n";
 echo "</form>\n";
 
 light_html_draw_bottom();
-
-?>

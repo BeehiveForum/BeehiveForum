@@ -214,7 +214,11 @@ if (sizeof($user_peers_array['user_array']) > 0) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", html_page_links("edit_relations.php?webtag=$webtag&search_keyword=$search_keyword", $page, $user_peers_array['user_count'], 10, "page"), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">";
+
+    html_page_links("edit_relations.php?webtag=$webtag&search_keyword=$search_keyword", $page, $user_peers_array['user_count'], 10, "page");
+
+    echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -264,5 +268,3 @@ echo "  </table>\n";
 echo "</form>\n";
 
 html_draw_bottom();
-
-?>

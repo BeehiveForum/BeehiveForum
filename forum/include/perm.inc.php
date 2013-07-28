@@ -995,5 +995,3 @@ function perm_display_list($perms)
         return gettext("none");
     }
 }
-
-?>

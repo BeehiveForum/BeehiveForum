@@ -32,6 +32,9 @@ require_once BH_INCLUDE_PATH. 'perm.inc.php';
 require_once BH_INCLUDE_PATH. 'user.inc.php';
 // End Required includes
 
+$uid = null;
+$key = null;
+
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
     $uid = $_GET['uid'];
 } else if (isset($_GET['u']) && is_numeric($_GET['u'])) {
@@ -81,5 +84,3 @@ if (($user = user_get_by_passhash($uid, $key)) !== false) {
 
     html_draw_error(gettext("Required information not found"));
 }
-
-?>

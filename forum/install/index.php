@@ -291,7 +291,7 @@ if (isset($_POST['install_method'])) {
                     echo "    <td align=\"left\">&nbsp;</td>\n";
                     echo "  </tr>\n";
                     echo "  <tr>\n";
-                    echo "    <td align=\"center\"><a class=\"button\" href=\"../index.php\"><span>Continue</span</a></td>\n";
+                    echo "    <td align=\"center\"><a class=\"button\" href=\"../index.php\"><span>Continue</span></a></td>\n";
                     echo "  </tr>\n";
                     echo "</table>\n";
 
@@ -750,5 +750,3 @@ echo "  </table>\n";
 echo "</form>\n";
 
 install_draw_bottom();
-
-?>

@@ -397,7 +397,11 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
 }
 
 echo "            </td>\n";
-echo "            <td align=\"center\" valign=\"top\" width=\"33%\">", html_page_links("links.php?webtag=$webtag&fid=$fid&viewmode=$viewmode&sort_by=$sort_by&sort_dir=$sort_dir", $page, $links['links_count'], 20), "</td>\n";
+echo "            <td align=\"center\" valign=\"top\" width=\"33%\">";
+
+html_page_links("links.php?webtag=$webtag&fid=$fid&viewmode=$viewmode&sort_by=$sort_by&sort_dir=$sort_dir", $page, $links['links_count'], 20);
+
+echo "            </td>\n";
 echo "            <td align=\"right\" valign=\"top\" width=\"33%\">&nbsp;</td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
@@ -407,5 +411,3 @@ echo "  </table>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

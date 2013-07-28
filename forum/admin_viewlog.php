@@ -48,6 +48,11 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 // Perform additional admin login.
 admin_check_credentials();
 
+// Array to hold our error messages
+$error_msg_array = array();
+
+$remove_type = null;
+
 // Types of admin log entries
 $admin_log_type_array = array(
     ALL_LOG_ENTIES => gettext("All Log Entries"),
@@ -170,9 +175,6 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 } else {
     $page = 1;
 }
-
-// Array to hold our error messages
-$error_msg_array = array();
 
 // Clear the admin log.
 if (isset($_POST['prune_log'])) {
@@ -832,7 +834,11 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_viewlog.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir&group_by=$group_by", $page, $admin_log_array['admin_log_count'], 20), "</td>\n";
+echo "      <td class=\"postbody\" align=\"center\">";
+
+html_page_links("admin_viewlog.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir&group_by=$group_by", $page, $admin_log_array['admin_log_count'], 20);
+
+echo "      </td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -919,5 +925,3 @@ echo "  </form>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

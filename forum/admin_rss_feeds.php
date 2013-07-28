@@ -51,6 +51,24 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 // Perform additional admin login.
 admin_check_credentials();
 
+// Array to hold error messages
+$error_msg_array = array();
+
+$t_name_new = null;
+$t_new_name = null;
+$t_user_uid = null;
+$t_fid_new = null;
+$t_new_fid = null;
+$t_url_new = null;
+$t_new_url = null;
+$t_user_new = null;
+$t_new_user = null;
+$t_frequency_new = null;
+$t_new_frequency = null;
+$t_max_item_count_new = null;
+$t_max_item_count = null;
+$t_url = null;
+
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
@@ -68,9 +86,6 @@ $update_frequencies_array = array(
     RSS_FEED_UPDATE_ONCE_A_DAY => gettext("Once a day"),
     RSS_FEED_UPDATE_ONCE_A_WEEK => gettext("Once a Week")
 );
-
-// Array to hold error messages
-$error_msg_array = array();
 
 // Cancel clicked.
 if (isset($_POST['cancel'])) {
@@ -727,7 +742,11 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_rss_feeds.php?webtag=$webtag", $page, $rss_feeds['rss_feed_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">";
+
+    html_page_links("admin_rss_feeds.php?webtag=$webtag", $page, $rss_feeds['rss_feed_count'], 10);
+
+    echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -746,5 +765,3 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     html_draw_bottom();
 }
-
-?>

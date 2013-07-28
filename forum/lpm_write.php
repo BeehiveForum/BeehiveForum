@@ -60,6 +60,10 @@ $forward_mid = null;
 
 $edit_mid = null;
 
+$to_logon_array = null;
+
+$subject = null;
+
 $reply_all = false;
 
 if (isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
@@ -514,5 +518,3 @@ if (isset($pm_data) && is_array($pm_data) && isset($reply_mid) && is_numeric($re
 }
 
 light_html_draw_bottom();
-
-?>

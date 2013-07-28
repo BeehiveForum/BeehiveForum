@@ -359,6 +359,8 @@ function folder_get_all_by_page($page = 1)
         return folder_get_all_by_page($page - 1);
     }
 
+    $fid_array = array();
+
     while (($folder_data = $result->fetch_assoc()) !== null) {
 
         $folder_array[$folder_data['FID']] = $folder_data;
@@ -580,6 +582,9 @@ function folder_move_up($fid)
 
     if (!($result = $db->query($sql))) return false;
 
+    $folder_order = array();
+    $folder_position = array();
+
     while (($folder_data = $result->fetch_assoc()) !== null) {
 
         $folder_order[] = $folder_data['FID'];
@@ -625,6 +630,9 @@ function folder_move_down($fid)
     $sql.= "ORDER BY POSITION";
 
     if (!($result = $db->query($sql))) return false;
+
+    $folder_order = array();
+    $folder_position = array();
 
     while (($folder_data = $result->fetch_assoc()) !== null) {
 
@@ -810,5 +818,3 @@ function folders_search_user_subscriptions($folder_search, $interest_type = FOLD
         'folder_array' => $folder_subscriptions_array
     );
 }
-
-?>

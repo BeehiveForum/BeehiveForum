@@ -225,15 +225,15 @@ function forum_check_access_level()
 
     if ($forum_data['ACCESS_LEVEL'] == FORUM_CLOSED) {
 
-        return forum_closed_message();
+        forum_closed_message();
 
     } else if (($forum_data['ACCESS_LEVEL'] == FORUM_RESTRICTED) && ($forum_data['ALLOWED'] != FORUM_USER_ALLOWED)) {
 
-        return forum_restricted_message();
+        forum_restricted_message();
 
     } else if ($forum_data['ACCESS_LEVEL'] == FORUM_PASSWD_PROTECTED) {
 
-        return forum_check_password($forum_data['FID']);
+        forum_check_password($forum_data['FID']);
     }
 
     return true;
@@ -295,7 +295,13 @@ function forum_restricted_message()
 
         $forum_owner_pm_link = sprintf('pm_write.php?webtag=%s&uid=%s', $webtag, $forum_owner_uid);
 
-        $forum_owner_link = sprintf('<a href="index.php?webtag=%s&amp;final_uri=%s">%s</a>', $webtag, rawurlencode($forum_owner_pm_link), gettext('Forum Owner'));
+        $forum_owner_link = sprintf(
+            '<a href="index.php?webtag=%s&amp;final_uri=%s" target="%s">%s</a>',
+            $webtag,
+            rawurlencode($forum_owner_pm_link),
+            $forum_owner_link_target,
+            gettext('Forum Owner')
+        );
 
         $apply_for_access_text = sprintf(gettext("To apply for access please contact the %s."), $forum_owner_link);
 
@@ -322,13 +328,13 @@ function forum_get_password($forum_fid)
 
 function forum_check_password($forum_fid)
 {
-    if (!is_numeric($forum_fid)) return false;
+    if (!is_numeric($forum_fid)) return;
 
     $webtag = get_webtag();
 
-    if (!forum_check_webtag_available($webtag)) return false;
+    if (!forum_check_webtag_available($webtag)) return;
 
-    if (!($forum_passhash = forum_get_password($forum_fid))) return true;
+    if (!($forum_passhash = forum_get_password($forum_fid))) return;
 
     if (isset($_SESSION["{$webtag}_PASSWORD"]) && is_md5($_SESSION["{$webtag}_PASSWORD"])) {
         $forum_passhash_check = $_SESSION["{$webtag}_PASSWORD"];
@@ -343,7 +349,7 @@ function forum_check_password($forum_fid)
     if ($forum_passhash == $forum_passhash_check) {
 
         $_SESSION["{$webtag}_PASSWORD"] = $forum_passhash_check;
-        return true;
+        return;
     }
 
     html_draw_top(sprintf("title=%s", gettext("Password Protected Forum")));
@@ -413,7 +419,6 @@ function forum_check_password($forum_fid)
     echo "</div>\n";
 
     html_draw_bottom();
-
     exit;
 }
 
@@ -445,8 +450,6 @@ function forum_get_global_settings()
 function forum_get_settings_by_fid($forum_fid, $callback = null)
 {
     if (!$db = db::get()) return false;
-
-    $forum_settings = array();
 
     $forum_fid = $db->escape($forum_fid);
 
@@ -2190,5 +2193,3 @@ function forum_check_maintenance()
 
     forum_save_global_settings($new_forum_settings);
 }
-
-?>

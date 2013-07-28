@@ -127,5 +127,3 @@ if (isset($_GET['message_sent'])) {
 $frameset->output_html();
 
 html_draw_bottom(true);
-
-?>

@@ -78,13 +78,21 @@ html_draw_top("title={$thread_data['TITLE']}", 'pm_popup_disabled', 'class=windo
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">", messages_top($tid, 1, $thread_data['FID'], $folder_data['TITLE'], $thread_data['TITLE'], $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'), false, array()), "</td>\n";
+echo "    <td align=\"left\">";
+
+messages_top($tid, 1, $thread_data['FID'], $folder_data['TITLE'], $thread_data['TITLE'], $thread_data['INTEREST'], $folder_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'), false, array());
+
+echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<table width=\"100%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td width=\"2%\">&nbsp;</td>\n";
-echo "    <td align=\"left\">", poll_display($tid, $thread_data['LENGTH'], 1, $thread_data['FID'], false, $thread_data['CLOSED'], false, $show_sigs, true, $highlight_array), "</td>\n";
+echo "    <td align=\"left\">";
+
+poll_display($tid, $thread_data['LENGTH'], 1, $thread_data['FID'], false, $thread_data['CLOSED'], $show_sigs, true, $highlight_array);
+
+echo "    </td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "<br />\n";
@@ -95,5 +103,3 @@ echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

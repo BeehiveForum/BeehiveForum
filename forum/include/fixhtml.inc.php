@@ -37,6 +37,7 @@ function fix_html($html)
 {
     $bh_error_handler = set_error_handler('html_purifier_error');
 
+    /** @var HTMLPurifier_Config $config */
     $config = HTMLPurifier_Config::createDefault();
 
     $config->set('HTML.Allowed',
@@ -191,8 +192,10 @@ function fix_html($html)
         )
     );
 
+    /** @noinspection PhpUndefinedFieldInspection */
     $embed->excludes = array('embed' => true);
 
+    /** @noinspection PhpParamsInspection */
     $purifier = new HTMLPurifier($config);
 
     $html = $purifier->purify($html);

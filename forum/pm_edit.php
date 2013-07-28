@@ -55,6 +55,9 @@ $page_prefs = session::get_post_page_prefs();
 // Prune old messages for the current user
 pm_user_prune_folders($_SESSION['UID']);
 
+$t_subject = null;
+$t_content = null;
+
 // Get the Message ID (MID)
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
@@ -124,8 +127,6 @@ if (isset($_POST['apply']) || isset($_POST['preview'])) {
         $attachments = array();
     }
 }
-
-if (!isset($t_content)) $t_content = "";
 
 if ($valid && isset($_POST['preview'])) {
 
@@ -231,7 +232,11 @@ if ($valid && isset($_POST['preview'])) {
     echo "                  <td align=\"left\" class=\"subhead\">", gettext("Message Preview"), "</td>\n";
     echo "                </tr>";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\"><br />", pm_display($message_data, true), "</td>\n";
+    echo "                  <td align=\"left\"><br />";
+
+    pm_display($message_data, true);
+
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -371,5 +376,3 @@ echo "  </table>\n";
 echo "</form>\n";
 
 html_draw_bottom();
-
-?>

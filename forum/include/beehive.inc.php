@@ -42,5 +42,3 @@ function draw_beehive_bar()
     echo "</table>\n";
     echo "</div>\n";
 }
-
-?>

@@ -609,5 +609,3 @@ switch ($_GET['action']) {
 }
 
 echo $content;
-
-?>

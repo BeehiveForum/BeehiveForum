@@ -105,5 +105,3 @@ if ($thread_data['POLL_FLAG'] == 'Y') {
 echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$msg\">", gettext("Back"), "</a>\n";
 
 light_html_draw_bottom();
-
-?>

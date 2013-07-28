@@ -590,6 +590,8 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
     if (!isset($attachment['downloads'])) return false;
     if (!is_md5($attachment['hash'])) return false;
 
+    $thumbnail_max_size = 100;
+
     $webtag = get_webtag();
 
     forum_check_webtag_available($webtag);
@@ -691,5 +693,3 @@ function attachments_get_mime_types()
 
     return array();
 }
-
-?>

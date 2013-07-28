@@ -687,7 +687,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     }
 
     // Execute the query to copy the posts.
-    if (!$db->query($sql)) {
+    if (!isset($sql) || !$db->query($sql)) {
 
         // Unlock the threads if they weren't originally locked.
         thread_set_closed($tida, ($threada['CLOSED'] > 0));
@@ -1339,5 +1339,3 @@ function thread_has_attachments(&$thread_data)
 
     return true;
 }
-
-?>

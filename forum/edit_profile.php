@@ -316,5 +316,3 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
     html_draw_error(gettext("The forum owner has not set up Profiles."));
 }
-
-?>

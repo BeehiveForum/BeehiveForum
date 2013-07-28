@@ -263,5 +263,3 @@ function sitemap_create_file()
     // Hurrah!
     return true;
 }
-
-?>

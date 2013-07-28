@@ -48,6 +48,10 @@ if (!forum_get_setting('show_links', 'Y')) {
 // Array to hold error messages
 $error_msg_array = array();
 
+$name = null;
+$uri = null;
+$description = null;
+
 // User pressed cancel
 if (isset($_POST['cancel'])) {
 
@@ -329,5 +333,3 @@ if ($mode == LINKS_ADD_LINK) {
 
     html_draw_bottom();
 }
-
-?>

@@ -153,5 +153,3 @@ class db extends mysqli
         return $result;
     }
 }
-
-?>

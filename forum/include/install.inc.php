@@ -298,9 +298,9 @@ function install_format_table_prefix($database_name, $webtag)
     return sprintf('%s`.`%s_', $database_name, $webtag);
 }
 
-function install_prefix_webtag(&$table_name, $key, $webtag)
+function install_prefix_webtag($table_name, $webtag)
 {
-    $table_name = sprintf('%s_%s', $webtag, $table_name);
+    return sprintf('%s_%s', $webtag, $table_name);
 }
 
 function install_table_exists($database_name, $table_name)
@@ -444,13 +444,17 @@ function install_check_table_conflicts($database_name, $webtag, $check_forum_tab
 
     if ($result->num_rows < 1) return false;
 
+    $existing_tables = array();
+
     while (($table_data = $result->fetch_row()) !== null) {
         $existing_tables[] = $table_data[0];
     }
 
     install_get_table_names($global_tables, $forum_tables);
 
-    array_walk($forum_tables, 'install_prefix_webtag', $webtag);
+    foreach ($forum_tables as $key => $forum_table) {
+        $forum_tables[$key] = install_prefix_webtag( $forum_table, $webtag );
+    }
 
     $check_tables_array = array_merge($check_global_tables ? $global_tables : array(), $check_forum_tables ? $forum_tables : array());
 
@@ -781,5 +785,3 @@ function install_draw_bottom()
     echo "</body>\n";
     echo "</html>\n";
 }
-
-?>

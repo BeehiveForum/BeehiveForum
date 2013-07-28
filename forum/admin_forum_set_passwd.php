@@ -55,6 +55,13 @@ $forum_settings = forum_get_settings();
 // Get forum fid
 $forum_fid = get_forum_fid();
 
+// Array to hold error messages
+$error_msg_array = array();
+
+$t_confirm_passwd = null;
+$t_new_passwd = null;
+$t_current_passhash = null;
+
 if (isset($_GET['ret']) && strlen(trim($_GET['ret'])) > 0) {
     $ret = rawurldecode(trim($_GET['ret']));
 } else if (isset($_POST['ret']) && strlen(trim($_POST['ret'])) > 0) {
@@ -62,9 +69,6 @@ if (isset($_GET['ret']) && strlen(trim($_GET['ret'])) > 0) {
 } else {
     $ret = "admin_forums.php?webtag=$webtag";
 }
-
-// Array to hold error messages
-$error_msg_array = array();
 
 // validate the return to page
 if (isset($ret) && strlen(trim($ret)) > 0) {
@@ -239,5 +243,3 @@ echo "</form>\n";
 echo "</div>\n";
 
 html_draw_bottom();
-
-?>

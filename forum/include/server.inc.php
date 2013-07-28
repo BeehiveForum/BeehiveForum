@@ -405,5 +405,3 @@ function server_get_forum_path()
 
     return rtrim(dirname($_SERVER['PHP_SELF']), '/');
 }
-
-?>

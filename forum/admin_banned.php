@@ -53,6 +53,22 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 // Perform additional admin login.
 admin_check_credentials();
 
+// Form Validation
+$valid = true;
+
+// Array to hold error messages
+$error_msg_array = array();
+
+$new_ban_type = null;
+$new_ban_data = null;
+$new_ban_expires = null;
+$ban_type = null;
+$ban_data = null;
+$ban_expires = null;
+$add_new_ban_type = null;
+$add_new_ban_data = null;
+$add_new_ban_expires = null;
+
 // Column sorting stuff
 if (isset($_GET['sort_by'])) {
     if ($_GET['sort_by'] == "BANTYPE") {
@@ -85,12 +101,6 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 } else {
     $page = 1;
 }
-
-// Form Validation
-$valid = true;
-
-// Array to hold error messages
-$error_msg_array = array();
 
 // Constant translation of adding and removing bans to log entries and string display for Ban Type column.
 $admin_log_add_types = array(
@@ -874,7 +884,11 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">", html_page_links("admin_banned.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir&ret=$ret", $page, $ban_list_array['ban_count'], 10), "</td>\n";
+    echo "      <td class=\"postbody\" align=\"center\">";
+
+    html_page_links("admin_banned.php?webtag=$webtag&sort_by=$sort_by&sort_dir=$sort_dir&ret=$ret", $page, $ban_list_array['ban_count'], 10);
+
+    echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -888,5 +902,3 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     html_draw_bottom();
 }
-
-?>

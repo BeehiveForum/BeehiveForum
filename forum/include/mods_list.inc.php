@@ -91,5 +91,3 @@ function mods_list_forum_leaders()
 
     return $mod_list_array;
 }
-
-?>

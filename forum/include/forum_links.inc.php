@@ -253,6 +253,9 @@ function forum_links_move_up($lid)
 
     forum_links_positions_update();
 
+    $forum_links_order = array();
+    $forum_links_position = array();
+
     $sql = "SELECT LID, POSITION FROM `{$table_prefix}FORUM_LINKS` ";
     $sql.= "ORDER BY POSITION";
 
@@ -301,6 +304,9 @@ function forum_links_move_down($lid)
     if (!($table_prefix = get_table_prefix())) return false;
 
     forum_links_positions_update();
+
+    $forum_links_order = array();
+    $forum_links_position = array();
 
     $sql = "SELECT LID, POSITION FROM `{$table_prefix}FORUM_LINKS` ";
     $sql.= "ORDER BY POSITION";
@@ -366,5 +372,3 @@ function forum_links_positions_update()
 
     return true;
 }
-
-?>

@@ -61,5 +61,3 @@ if (($start_page = forum_get_setting('start_page', 'strlen', false)) !== false) 
     echo "<h1>", gettext("You can edit this page from the admin interface"), "</h1>\n";
     html_draw_bottom();
 }
-
-?>

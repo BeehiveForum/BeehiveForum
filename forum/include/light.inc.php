@@ -1625,7 +1625,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         }
     }
 
-    if (!$is_preview && ($message['MOVED_TID'] > 0) && ($message['MOVED_PID'] > 0)) {
+    if (!$is_preview && isset($message['MOVED_TID']) && isset($message['MOVED_PID'])) {
 
         light_message_display_moved($message);
         return;

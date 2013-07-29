@@ -309,34 +309,13 @@ function poll_get($tid)
 
     if (!($message = $result->fetch_assoc())) return false;
 
-    $message['POST_RATING'] = 0;
-    $message['USER_POST_RATING'] = 0;
-
-    if (!isset($message['CLOSES'])) $message['CLOSES'] = 0;
-    if (!isset($message['CHANGEVOTE'])) $message['CHANGEVOTE'] = 1;
-    if (!isset($message['POLLTYPE'])) $message['POLLTYPE'] = 0;
-    if (!isset($message['SHOWRESULTS'])) $message['SHOWRESULTS'] = 1;
-    if (!isset($message['VOTETYPE'])) $message['VOTETYPE'] = 0;
-    if (!isset($message['OPTIONTYPE'])) $message['OPTIONTYPE'] = 0;
-
-    if (!isset($message['VIEWED'])) $message['VIEWED'] = 0;
-
-    if (!isset($message['APPROVED'])) $message['APPROVED'] = 0;
-    if (!isset($message['APPROVED_BY'])) $message['APPROVED_BY'] = 0;
-
-    if (!isset($message['EDITED'])) $message['EDITED'] = 0;
-    if (!isset($message['EDITED_BY'])) $message['EDITED_BY'] = 0;
-
-    if (!isset($message['IPADDRESS'])) $message['IPADDRESS'] = "";
-
-    if (!isset($message['RELATIONSHIP'])) $message['RELATIONSHIP'] = 0;
+    $message['CONTENT'] = '';
+    $message['ATTACHMENTS'] = array();
+    $message['RECIPIENTS'] = array();
 
     if (!isset($message['FROM_NICKNAME'])) $message['FROM_NICKNAME'] = gettext("Unknown user");
     if (!isset($message['FROM_LOGON'])) $message['FROM_LOGON'] = gettext("Unknown user");
     if (!isset($message['FROM_UID'])) $message['FROM_UID'] = -1;
-
-    if (!isset($message['MOVED_TID'])) $message['MOVED_TID'] = 0;
-    if (!isset($message['MOVED_PID'])) $message['MOVED_PID'] = 0;
 
     $messages_array = array(
         $message['PID'] => $message

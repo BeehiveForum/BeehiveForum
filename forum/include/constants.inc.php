@@ -28,7 +28,7 @@ define('BEEHIVE_VERSION', "1.4.0-GIT");
 define('BEEHIVE_DOB', 1018220400);
 
 // Minimum requirements.
-define('BEEHIVE_PHP_MIN_VERSION', '5.2.1');
+define('BEEHIVE_PHP_MIN_VERSION', '5.3.0');
 define('BEEHIVE_MYSQL_MIN_VERSION', '5.1.41');
 
 // Constants for date / time.

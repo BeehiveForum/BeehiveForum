@@ -23,7 +23,7 @@ USA
 
     function (editor) {
 
-        checkEmbedCode = function(code, returnElement) {
+        var checkEmbedCode = function(code, returnElement) {
 
             var element, src, embedCode;
 
@@ -47,14 +47,14 @@ USA
 
                     src = element.getText();
 
-                    embedCode = src.match(/^http(s)?:\/\/(www\.youtube\.com|youtu\.be)\/(watch\?v=)?(.+)/);
+                    embedCode = src.match(/^http(s)?:\/\/(www\.)?(youtube\.com\/watch\/?.*(\?|&)v=([^&]+)|youtu.be\/(.+))/);
 
-                    if (!embedCode || !embedCode[4]) {
+                    if (!embedCode || !embedCode[6]) {
                         return false;
                     }
 
                     element = CKEDITOR.dom.element.createFromHtml('<iframe>', editor.document),
-                    element.setAttribute('src', 'https://www.youtube.com/embed/' + embedCode[4]);
+                    element.setAttribute('src', 'https://www.youtube.com/embed/' + embedCode[6]);
                 }
 
             } catch (e) {

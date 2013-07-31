@@ -49,12 +49,17 @@ USA
 
                     embedCode = src.match(/^http(s)?:\/\/(www\.)?(youtube\.com\/watch\/?.*(\?|&)v=([^&]+)|youtu.be\/(.+))/);
 
-                    if (!embedCode || !embedCode[6]) {
+                    if (!embedCode) {
                         return false;
                     }
 
-                    element = CKEDITOR.dom.element.createFromHtml('<iframe>', editor.document),
-                    element.setAttribute('src', 'https://www.youtube.com/embed/' + embedCode[6]);
+                    element = CKEDITOR.dom.element.createFromHtml('<iframe>', editor.document);
+
+                    if (embedCode[6]) {
+                        element.setAttribute('src', 'https://www.youtube.com/embed/' + embedCode[6]);
+                    } else if (embedCode[5]) {
+                        element.setAttribute('src', 'https://www.youtube.com/embed/' + embedCode[5]);
+                    }
                 }
 
             } catch (e) {
@@ -162,7 +167,6 @@ USA
                             }, this);
                         },
                         validate: function () {
-                            var dialog = this.getDialog();
                             return checkEmbedCode(this.getValue(), false);
                         },
                         required: true

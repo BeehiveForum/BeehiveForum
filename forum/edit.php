@@ -351,7 +351,11 @@ if ($valid && isset($_POST['preview'])) {
     echo "                  <td align=\"left\" class=\"subhead\">", gettext("Message Preview"), "</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\"><br />", message_display($tid, $edit_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, false, false, $show_sigs, true), "</td>\n";
+    echo "                  <td align=\"left\"><br />";
+
+    message_display($tid, $edit_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, false, false, $show_sigs, true);
+
+    echo "                  </td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";

@@ -117,7 +117,7 @@ if (isset($_POST['send'])) {
         if (email_send_message_to_user($to_uid, $_SESSION['UID'], $subject, $message, $use_email_addr)) {
 
             html_draw_top(sprintf('title=%s', gettext("Email result")), 'pm_popup_disabled', 'class=window_title');
-            html_display_msg(gettext("Message sent"), gettext("Message sent successfully."), 'email.php', 'post', array('close' => gettext("Close")), array('to_uid' => $to_uid), false, 'center');
+            html_display_msg(gettext("Message sent"), gettext("Message sent successfully."), 'email.php', 'post', array('close' => gettext("Close")), array('to_uid' => $to_uid), '_self', 'center');
             html_draw_bottom();
             exit;
 

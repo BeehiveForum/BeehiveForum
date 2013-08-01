@@ -44,7 +44,7 @@ if (isset($_POST['request'])) {
         if (email_send_pw_reminder($logon)) {
 
             html_draw_top(sprintf('title=%s', gettext("Password reset e-mail sent")), 'class=window_title');
-            html_display_msg(gettext("Password reset e-mail sent"), gettext("You should shortly receive an e-mail containing instructions for resetting your password."), 'logon.php', 'get', array('back' => gettext("Back")), false, '_self', 'center');
+            html_display_msg(gettext("Password reset e-mail sent"), gettext("You should shortly receive an e-mail containing instructions for resetting your password."), 'logon.php', 'get', array('back' => gettext("Back")), array(), '_self', 'center');
             html_draw_bottom();
             exit;
 

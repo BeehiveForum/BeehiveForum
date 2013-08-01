@@ -264,7 +264,7 @@ if (isset($_POST['action_submit'])) {
                 email_send_new_pw_notification($uid, $_SESSION['UID'], $t_new_password);
 
                 html_draw_top("title=$page_title", 'class=window_title');
-                html_display_msg(gettext("Change Password"), gettext("Successfully Changed Password"), 'admin_user.php', 'get', array('back' => gettext("Back")), false, '_self', 'center');
+                html_display_msg(gettext("Change Password"), gettext("Successfully Changed Password"), 'admin_user.php', 'get', array('back' => gettext("Back")), array(), '_self', 'center');
                 html_draw_bottom();
                 exit;
             }
@@ -283,7 +283,7 @@ if (isset($_POST['action_submit'])) {
     if (admin_delete_user($uid, $delete_content)) {
 
         html_draw_top("title=$page_title", 'class=window_title');
-        html_display_msg(gettext("Delete User"), gettext("User Successfully Deleted"), 'admin_users.php', 'get', array('back' => gettext("Back")), false, '_self', 'center');
+        html_display_msg(gettext("Delete User"), gettext("User Successfully Deleted"), 'admin_users.php', 'get', array('back' => gettext("Back")), array(), '_self', 'center');
         html_draw_bottom();
         exit;
 
@@ -301,7 +301,7 @@ if (isset($_POST['action_submit'])) {
             admin_add_log_entry(DELETE_ALL_USER_POSTS, array($user_logon));
 
             html_draw_top("title=$page_title", 'class=window_title');
-            html_display_msg(gettext("Delete posts"), gettext("Posts were successfully deleted"), 'admin_user.php', 'get', array('back' => gettext("Back")), false, '_self', 'center');
+            html_display_msg(gettext("Delete posts"), gettext("Posts were successfully deleted"), 'admin_user.php', 'get', array('back' => gettext("Back")), array(), '_self', 'center');
             html_draw_bottom();
             exit;
 

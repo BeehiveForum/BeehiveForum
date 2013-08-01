@@ -419,14 +419,14 @@ if (isset($_POST['save'])) {
                             perm_user_apply_email_confirmation($profile_uid);
 
                             html_draw_top(sprintf('title=%s', gettext("My Controls - User Details - Email address has been changed")), 'class=window_title');
-                            html_display_msg(gettext("Email address has been changed"), gettext("Your email address has been changed and a new confirmation email has been sent. Please check and read the email for further instructions."), 'index.php', 'get', array('continue' => gettext("Continue")), false, '_top');
+                            html_display_msg(gettext("Email address has been changed"), gettext("Your email address has been changed and a new confirmation email has been sent. Please check and read the email for further instructions."), 'index.php', 'get', array('continue' => gettext("Continue")), array(), '_top');
                             html_draw_bottom();
                             exit;
 
                         } else {
 
                             html_draw_top(sprintf("title=%s", gettext("Error")));
-                            html_display_msg(gettext("Email address has been changed"), gettext("You have changed your email address, but we were unable to send a confirmation request. Please contact the forum owner for assistance."), 'index.php', 'get', array('continue' => gettext("Continue")), false, '_top');
+                            html_display_msg(gettext("Email address has been changed"), gettext("You have changed your email address, but we were unable to send a confirmation request. Please contact the forum owner for assistance."), 'index.php', 'get', array('continue' => gettext("Continue")), array(), '_top');
                             html_draw_bottom();
                             exit;
                         }

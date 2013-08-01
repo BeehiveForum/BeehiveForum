@@ -416,7 +416,7 @@ if (isset($_POST['save'])) {
                     admin_add_log_entry(DELETE_THREAD, array($tid, $thread_data['TITLE']));
 
                     html_draw_top(sprintf('title=%s', gettext("Delete Thread")), 'class=window_title');
-                    html_display_msg(gettext("Delete Thread"), gettext("Thread was successfully deleted"), 'discussion.php', 'get', array('continue' => gettext("Continue")), false, html_get_frame_name('main'), 'center');
+                    html_display_msg(gettext("Delete Thread"), gettext("Thread was successfully deleted"), 'discussion.php', 'get', array('continue' => gettext("Continue")), array(), html_get_frame_name('main'), 'center');
                     html_draw_bottom();
                     exit;
 

@@ -109,7 +109,7 @@ if (isset($_POST['save'])) {
         if (user_reset_password($uid, $pw, $key)) {
 
             html_draw_top(sprintf('title=%s', gettext("Password changed")), 'class=window_title');
-            html_display_msg(gettext("Password changed"), gettext("Your password has been changed."), 'index.php', 'get', array('continue' => gettext("Continue")), false, '_top');
+            html_display_msg(gettext("Password changed"), gettext("Your password has been changed."), 'index.php', 'get', array('continue' => gettext("Continue")), array(), '_top');
             html_draw_bottom();
             exit;
 

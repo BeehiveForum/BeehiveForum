@@ -61,7 +61,7 @@ function html_guest_error($final_uri = null)
 
     if (preg_match("/^$available_popup_files_preg/", $final_uri) > 0) {
 
-        html_draw_error(gettext("Sorry, you need to be logged in to use this feature."), false, 'post', array('close_popup' => gettext("Close")));
+        html_draw_error(gettext("Sorry, you need to be logged in to use this feature."), null, 'post', array('close_popup' => gettext("Close")));
 
     } else if (preg_match("/^$available_support_pages_preg/", $final_uri) > 0) {
 
@@ -69,13 +69,11 @@ function html_guest_error($final_uri = null)
 
     } else {
 
-        html_draw_error(gettext("Sorry, you need to be logged in to use this feature."), html_get_forum_file_path('logout.php'), 'post', array('submit'  => gettext("Login now"),
-                                                                                                                                              'register' => gettext("Register")
-                                                                                                                                         ), array('final_uri' => $final_uri), $frame_top_target);
+        html_draw_error(gettext("Sorry, you need to be logged in to use this feature."), html_get_forum_file_path('logout.php'), 'post', array('submit'   => gettext("Login now"), 'register' => gettext("Register")), array('final_uri' => $final_uri), $frame_top_target);
     }
 }
 
-function html_display_msg($header_text, $string_msg, $href = false, $method = 'get', array $buttons = array(), array $vars = array(), $target = "_self", $align = "left", $id = null)
+function html_display_msg($header_text, $string_msg, $href = null, $method = 'get', array $buttons = array(), array $vars = array(), $target = "_self", $align = "left", $id = null)
 {
     $webtag = get_webtag();
 
@@ -301,7 +299,9 @@ function html_email_confirmation_error()
 
     $user_array = user_get($_SESSION['UID']);
 
-    html_draw_error(gettext("Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details"), 'confirm_email.php', 'get', array('resend' => gettext("Resend Confirmation")), array('uid' => $user_array['UID'], 'resend' => 'Y'));}
+    html_draw_error(gettext("Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details"), 'confirm_email.php', 'get', array('resend' => gettext("Resend Confirmation")), array('uid'   => $user_array['UID'],
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        'resend' => 'Y'
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ));}
 
 function html_message_type_error()
 {
@@ -953,7 +953,7 @@ function html_draw_bottom($frame_set_html = false)
     echo "</html>\n";
 }
 
-function html_draw_error($message, $href = false, $method = 'get', array $buttons = array(), array $vars = array(), $target = "_self", $align = "left", $id = null)
+function html_draw_error($message, $href = null, $method = 'get', array $buttons = array(), array $vars = array(), $target = "_self", $align = "left", $id = null)
 {
     html_draw_top(gettext('Error'));
     html_display_msg(gettext("Error"), $message, $href, $method, $buttons, $vars, $target, $align, $id);

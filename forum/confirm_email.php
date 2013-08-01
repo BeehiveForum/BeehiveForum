@@ -68,13 +68,13 @@ if (($user = user_get_by_passhash($uid, $key)) !== false) {
     if (perm_user_cancel_email_confirmation($uid)) {
 
         html_draw_top(sprintf('title=%s', gettext("Email confirmation")), 'class=window_title');
-        html_display_msg(gettext("Email confirmation"), gettext("Thank you for confirming your email address. You may now login and start posting immediately."), 'index.php', 'post', array('submit' => gettext("Continue")), false, $frame_top_target, 'center');
+        html_display_msg(gettext("Email confirmation"), gettext("Thank you for confirming your email address. You may now login and start posting immediately."), 'index.php', 'post', array('submit' => gettext("Continue")), array(), $frame_top_target, 'center');
         html_draw_bottom();
 
     } else {
 
         html_draw_top(sprintf("title=%s", gettext("Error")));
-        html_display_msg(gettext("Email confirmation"), gettext("Email confirmation has failed, please try again later. If you encounter this error multiple times please contact the forum owner or a moderator for assistance."), 'index.php', 'post', array('submit' => gettext("Continue")), false, $frame_top_target, 'center');
+        html_display_msg(gettext("Email confirmation"), gettext("Email confirmation has failed, please try again later. If you encounter this error multiple times please contact the forum owner or a moderator for assistance."), 'index.php', 'post', array('submit' => gettext("Continue")), array(), $frame_top_target, 'center');
         html_draw_bottom();
     }
 

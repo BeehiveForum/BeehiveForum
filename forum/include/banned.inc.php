@@ -198,9 +198,12 @@ function ban_check_process_data($ban_result)
 
             return (isset($ban_result['REFERER'])) ? array($ban_result['ID'], $ban_result['REFERER'], $ban_result['BANDATA']) : false;
             break;
-    }
 
-    return false;
+        default:
+
+            return false;
+            break;
+    }
 }
 
 function ip_is_banned($ipaddress)

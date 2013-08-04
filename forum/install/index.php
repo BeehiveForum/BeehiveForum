@@ -41,6 +41,12 @@ require_once BH_INCLUDE_PATH. 'cache.inc.php';
 
 require_once BH_INCLUDE_PATH. 'install.inc.php';
 
+$install_method = null;
+
+$admin_password = null;
+
+$admin_cpassword = null;
+
 $error_html = null;
 
 unregister_globals();

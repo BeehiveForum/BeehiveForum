@@ -332,56 +332,50 @@ function bh_error_process(Exception $exception)
 
     if (isset($_GET)) {
 
-        $error_msg_array[] = '<p><b>$_GET:</b></p>';
-
-        $get_vars = htmlentities_array(print_r($_GET, true));
-
-        $error_msg_array[] = sprintf('<pre>%s</pre>', $get_vars);
+        $error_msg_array[] = sprintf(
+            '<pre><b>$_GET</b> = %s;</pre>',
+            htmlentities_array(var_export($_GET, true))
+        );
     }
 
     if (isset($_POST)) {
 
-        $error_msg_array[] = '<p><b>$_POST:</b></p>';
-
-        $post_vars = htmlentities_array(print_r($_POST, true));
-
-        $error_msg_array[] = sprintf('<pre>%s</pre>', $post_vars);
+        $error_msg_array[] = sprintf(
+            '<pre><b>$_POST</b> = %s;</pre>',
+            htmlentities_array(var_export($_POST, true))
+        );
     }
 
     if (isset($_COOKIE)) {
 
-        $error_msg_array[] = '<p><b>$_COOKIE:</b></p>';
-
-        $cookie_vars = htmlentities_array(print_r($_COOKIE, true));
-
-        $error_msg_array[] = sprintf('<pre>%s</pre>', $cookie_vars);
+        $error_msg_array[] = sprintf(
+            '<pre><b>$_COOKIE</b> = %s;</pre>',
+            htmlentities_array(var_export($_COOKIE, true))
+        );
     }
 
     if (isset($_SESSION)) {
 
-        $error_msg_array[] = '<p><b>$_SESSION:</b></p>';
-
-        $session_vars = htmlentities_array(print_r($_SESSION, true));
-
-        $error_msg_array[] = sprintf('<pre>%s</pre>', $session_vars);
+        $error_msg_array[] = sprintf(
+            '<pre><b>$_SESSION</b> = %s;</pre>',
+            htmlentities_array(var_export($_SESSION, true))
+        );
     }
 
     if (isset($_ENV)) {
 
-        $error_msg_array[] = '<p><b>$_ENV:</b></p>';
-
-        $environment_vars = htmlentities_array(print_r($_ENV, true));
-
-        $error_msg_array[] = sprintf('<pre>%s</pre>', $environment_vars);
+        $error_msg_array[] = sprintf(
+            '<pre><b>$_ENV</b> = %s;</pre>',
+            htmlentities_array(var_export($_ENV, true))
+        );
     }
 
     if (isset($_SERVER)) {
 
-        $error_msg_array[] = '<p><b>$_SERVER:</b></p>';
-
-        $server_vars = htmlentities_array(print_r($_SERVER, true));
-
-        $error_msg_array[] = sprintf('<pre>%s</pre>', $server_vars);
+        $error_msg_array[] = sprintf(
+            '<pre><b>$_SERVER</b> = %s;</pre>',
+            htmlentities_array(var_export($_SERVER, true))
+        );
     }
 
     return $error_msg_array;

@@ -70,13 +70,13 @@ p {
 
 .button, .dictionary_button {
     font-size: 9pt;
-    padding: 0px 0px 1px;
+    padding: 0 0 1px;
 }
 
 a.button {
     display: inline-block;
     font-size: 9pt;
-    margin: 0px;
+    margin: 0;
     padding: 1px 6px 3px;
     vertical-align: top;
 }

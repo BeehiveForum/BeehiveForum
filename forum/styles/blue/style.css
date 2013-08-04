@@ -7,8 +7,8 @@ body {
 
 body.top_banner {
     background-color: #999999;
-    margin: 0px;
-    padding: 0px
+    margin: 0;
+    padding: 0
 }
 
 a {
@@ -25,7 +25,7 @@ a.button {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
     font-weight: bold;
-    margin: 0px;
+    margin: 0;
     outline: none;
     padding: 1px 6px;
     text-align: center;
@@ -39,31 +39,28 @@ a.button.delete {
 }
 
 input::-moz-focus-inner {
-    border: 0px
+    border: 0
 }
 
 input:focus {
-    outline: 0px
+    outline: 0
 }
 
 form {
-    margin: 0px;
-    padding: 0px
+    margin: 0;
+    padding: 0
 }
 
 frame {
-    border-color: #000000;
-    border-style: none;
-    border-width: 0px;
-    margin: 0px 0px 0px 0px;
-    padding: 0px 0px 0px 0px
+    border: 0 none #000000;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0
 }
 
 frameset {
-    border-style: none;
-    border-width: 0px;
-    margin: 0px;
-    padding: 0px
+    border: 0 none;
+    margin: 0;
+    padding: 0
 }
 
 h1 {
@@ -72,7 +69,7 @@ h1 {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
     font-weight: bold;
-    margin: 0px;
+    margin: 0;
     padding: 2px;
     text-decoration: none
 }
@@ -83,10 +80,7 @@ h2 {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
     font-weight: bold;
-    margin-bottom: 05px;
-    margin-left: 0px;
-    margin-right: 05px;
-    margin-top: 05px;
+    margin: 05px 05px 05px 0;
     text-decoration: none
 }
 
@@ -211,10 +205,9 @@ ul.ui-autocomplete li a.ui-state-focus {
 }
 
 .bhseparatorlogon {
-    border-color: #508AC5;
-    border-style: solid;
-    border-width: 1px 0px 0px;
-    margin: 10px 0px 5px
+    border: 0 solid #508ac5;
+    border-top-width: 1px;
+    margin: 10px 0 5px
 }
 
 .bhinputlogon_warning {
@@ -235,10 +228,9 @@ select.bhinputprofileitem {
 
 .bhinputsearch {
     background-color: #FFFFFF;
-    border-bottom: 1px solid #F9F9F6;
-    border-left: 1px solid #82827E;
-    border-right: 1px solid #F9F9F6;
-    border-top: 1px solid #82827E;
+    border: 1px solid #82827e;
+    border-right-color: #f9f9f6;
+    border-bottom-color: #f9f9f6;
     float: left
 }
 
@@ -274,11 +266,7 @@ select.bhinputprofileitem {
 .user_pref_dob_dropdown,
 .user_pref_dropdown {
     background-color: #FFFFFF;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-style: inset;
-    border-top-width: 1px;
+    border: 1px inset;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
@@ -317,10 +305,8 @@ select.bhinputprofileitem {
 
 .box {
     background-color: #FFFEF9;
-    border-color: #000000;
-    border-style: solid;
-    border-width: 1px;
-    padding: 0px
+    border: 1px solid #000000;
+    padding: 0
 }
 
 .button,
@@ -332,7 +318,7 @@ select.bhinputprofileitem {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
     font-weight: bold;
-    margin: 0px;
+    margin: 0;
     padding: 1px 6px;
     text-align: center;
     text-decoration: none
@@ -340,16 +326,15 @@ select.bhinputprofileitem {
 
 .button_disabled {
     background-color: #EBEBE4;
-    border-bottom: 1px solid buttonshadow;
-    border-left: 1px solid buttonhighlight;
-    border-right: 1px solid buttonshadow;
-    border-top: 1px solid buttonhighlight;
+    border: 1px solid buttonhighlight;
+    border-right-color: buttonshadow;
+    border-bottom-color: buttonshadow;
     color: #808080;
     cursor: pointer;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
     font-weight: bold;
-    margin: 0px;
+    margin: 0;
     padding: 1px 6px;
     text-align: center;
     text-decoration: none
@@ -360,13 +345,13 @@ select.bhinputprofileitem {
     border: none;
     cursor: pointer;
     overflow: visible;
-    padding: 0px;
+    padding: 0;
     width: auto
 }
 
 .button_image span {
     display: block;
-    margin: 0px
+    margin: 0
 }
 
 .button_image.disabled {
@@ -390,10 +375,7 @@ select.bhinputprofileitem {
     border: 1px solid #CCCCCC;
     font-family: monospace;
     font-size: 120%;
-    margin-bottom: 10px;
-    margin-left: 40px;
-    margin-right: 10px;
-    margin-top: 0px;
+    margin: 0 10px 10px 40px;
     overflow: auto;
     padding: 3px
 }
@@ -407,12 +389,12 @@ pre.code span.emoticon span {
 }
 
 fieldset.poll_question {
-    margin: 5px 0px;
+    margin: 5px 0;
     width: 680px
 }
 
 fieldset.poll_question + fieldset.poll_question {
-    margin: 10px 0px 5px
+    margin: 10px 0 5px
 }
 
 div.sig {
@@ -424,7 +406,7 @@ div.poll_option_list ol {
 }
 
 div.poll_option_list ol li {
-    margin: 5px 0px
+    margin: 5px 0
 }
 
 .create_poll_display {
@@ -438,8 +420,8 @@ div.poll_option_list ol li {
 
 .dictionary_best_selection {
     height: 85px;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     width: 330px
 }
 
@@ -488,17 +470,13 @@ div.poll_option_list ol li {
 
 .error_handler_details {
     background-color: #FFFFFF;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-style: inset;
-    border-top-width: 1px;
+    border: 1px inset;
     color: #000000;
     font-family: monospace;
     font-size: 125%;
     height: 400px;
     overflow: auto;
-    padding: 10px 10px 0px;
+    padding: 10px 10px 0;
     text-align: left;
     white-space: nowrap;
     width: 745px
@@ -513,7 +491,7 @@ div.poll_option_list ol li {
     border: 1px solid #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
-    margin: 10px 0px 10px 0px;
+    margin: 10px 0 10px 0;
     max-width: 100%;
     padding: 10px;
     text-align: left
@@ -525,11 +503,11 @@ div.poll_option_list ol li {
 }
 
 .error_msg_icon {
-    padding-right: 0px
+    padding-right: 0
 }
 
 .error_msg_text {
-    padding-left: 0px
+    padding-left: 0
 }
 
 .fix_html_help {
@@ -556,10 +534,7 @@ div.poll_option_list ol li {
     font-size: 100%;
     font-style: normal;
     font-weight: bold;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 2px;
+    padding: 2px;
     text-decoration: none
 }
 
@@ -572,17 +547,13 @@ div.poll_option_list ol li {
 
 .forum_rules_box {
     background-color: #FFFFFF;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-style: inset;
-    border-top-width: 1px;
+    border: 1px inset;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
     height: 200px;
     overflow: auto;
-    padding: 0px 10px 0px 10px;
+    padding: 0 10px 0 10px;
     text-align: left;
     width: 95%
 }
@@ -661,7 +632,7 @@ div.poll_option_list ol li {
 
 .merge_thread_id {
     background-color: #FFFFFF;
-    border: 0px;
+    border: 0;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%
@@ -673,7 +644,7 @@ div.poll_option_list ol li {
 
 .messagefoot {
     background-color: #709FCF;
-    border-width: 0px;
+    border-width: 0;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
     font-style: normal
@@ -737,12 +708,11 @@ div.poll_option_list ol li {
 }
 
 .navpage {
-    background-color: #336699;
-    background-image: url('images/menu.png');
+    background: #336699 url('images/menu.png');
     color: #FFFFFF;
     font-size: 65%;
     font-weight: bold;
-    margin: 0px;
+    margin: 0;
     text-decoration: none
 }
 
@@ -772,9 +742,7 @@ div.poll_option_list ol li {
 }
 
 .pmbar {
-    background-color: transparent;
-    background-image: url('images/pbar.png');
-    background-repeat: repeat-x;
+    background: transparent url('images/pbar.png') repeat-x;
     height: 11px
 }
 
@@ -890,7 +858,7 @@ div.poll_option_list ol li {
 
 .post_to_others {
     background-color: #FFFFFF;
-    border: 0px;
+    border: 0;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
@@ -900,17 +868,14 @@ div.poll_option_list ol li {
 .postbody {
     border: none;
     font-size: 100%;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 2px
+    padding: 2px;
 }
 
 .posthead {
     background-color: #709FCF;
     border: none;
     font-size: 100%;
-    padding: 0px
+    padding: 0
 }
 
 .postinfo {
@@ -997,7 +962,7 @@ div.poll_option_list ol li {
 }
 
 .profile_items_section {
-    border-bottom: 0px solid #FFFFFF;
+    border-bottom: 0 solid #FFFFFF;
     border-top: 1px solid #FFFFFF;
     padding-bottom: 5px;
     padding-top: 10px
@@ -1039,10 +1004,7 @@ div.poll_option_list ol li {
     background-color: #EEEEEE;
     border: 1px solid #CCCCCC;
     font-family: verdana, arial, helvetica, sans-serif;
-    margin-bottom: 10px;
-    margin-left: 40px;
-    margin-right: 10px;
-    margin-top: 0px;
+    margin: 0 10px 10px 40px;
     padding: 3px
 }
 
@@ -1083,7 +1045,7 @@ div.poll_option_list ol li {
 
 .search_input {
     background-color: #FFFFFF;
-    border: 0px;
+    border: 0;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
@@ -1113,16 +1075,15 @@ div.poll_option_list ol li {
 
 .smallbutton {
     background-color: #004E9B;
-    border-bottom: 1px solid buttonshadow;
-    border-left: 1px solid buttonhighlight;
-    border-right: 1px solid buttonshadow;
-    border-top: 1px solid buttonhighlight;
+    border: 1px solid buttonhighlight;
+    border-right-color: buttonshadow;
+    border-bottom-color: buttonshadow;
     color: #FFFFFF;
     cursor: pointer;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 90%;
     font-weight: bold;
-    margin: 0px;
+    margin: 0;
     padding: 1px 6px;
     text-align: center;
     text-decoration: none
@@ -1138,13 +1099,12 @@ div.poll_option_list ol li {
 
 .spellcheckbodytext {
     background-color: #FFFFFF;
-    border-bottom: 1px solid buttonhighlight;
-    border-left: 1px solid buttonshadow;
-    border-right: 1px solid buttonhighlight;
-    border-top: 1px solid buttonshadow;
+    border: 1px solid buttonshadow;
+    border-right-color: buttonhighlight;
+    border-bottom-color: buttonhighlight;
     font-size: 100%;
     height: 85px;
-    padding: 0px;
+    padding: 0;
     width: 100%
 }
 
@@ -1156,7 +1116,7 @@ span.spoiler {
     font-family: verdana, arial, helvetica, sans-serif;
     min-height: 16px;
     min-width: 55px;
-    padding: 0px 3px
+    padding: 0 3px
 }
 
 span.spoiler > span {
@@ -1185,10 +1145,7 @@ div.spoiler {
     border: 1px solid #CCCCCC;
     color: #EEEEEE;
     font-family: verdana, arial, helvetica, sans-serif;
-    margin-bottom: 10px;
-    margin-left: 40px;
-    margin-right: 10px;
-    margin-top: 0px;
+    margin: 0 10px 10px 40px;
     padding: 3px
 }
 
@@ -1201,10 +1158,7 @@ div.spoiler_light {
     border: 1px solid #CCCCCC;
     color: #CCCCCC;
     font-family: Verdana, Arial, Helvetica, sans-serif;
-    margin-bottom: 10px;
-    margin-left: 40px;
-    margin-right: 10px;
-    margin-top: 0px;
+    margin: 0 10px 10px 40px;
     padding: 3px
 }
 
@@ -1213,23 +1167,17 @@ div.spoiler_reveal {
     border: 1px solid #CCCCCC;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    margin-bottom: 10px;
-    margin-left: 40px;
-    margin-right: 10px;
-    margin-top: 0px;
+    margin: 0 10px 10px 40px;
     padding: 3px
 }
 
 div.spoiler_reveal * {
-    margin-left: 0px
+    margin-left: 0
 }
 
 .subhead {
     background-color: #508AC5;
-    border-bottom-width: 0px;
-    border-left-width: 0px;
-    border-right-width: 0px;
-    border-top-width: 0px;
+    border-width: 0;
     color: #FFFFFF;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
@@ -1238,24 +1186,15 @@ div.spoiler_reveal * {
 
 .subhead_checkbox {
     background-color: #508AC5;
-    border-bottom-width: 0px;
-    border-left-width: 0px;
-    border-right-width: 0px;
-    border-top-width: 0px;
+    border-width: 0;
     color: #FFFFFF;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%
 }
 
 .subhead_sort_asc {
-    background-color: #508AC5;
-    background-image: url('images/sort_asc.png');
-    background-position: 98% 50%;
-    background-repeat: no-repeat;
-    border-bottom-width: 0px;
-    border-left-width: 0px;
-    border-right-width: 0px;
-    border-top-width: 0px;
+    background: #508ac5 url('images/sort_asc.png') no-repeat 98% 50%;
+    border-width: 0;
     color: #FFFFFF;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
@@ -1263,14 +1202,8 @@ div.spoiler_reveal * {
 }
 
 .subhead_sort_desc {
-    background-color: #508AC5;
-    background-image: url('images/sort_desc.png');
-    background-position: 98% 50%;
-    background-repeat: no-repeat;
-    border-bottom-width: 0px;
-    border-left-width: 0px;
-    border-right-width: 0px;
-    border-top-width: 0px;
+    background: #508ac5 url('images/sort_desc.png') no-repeat 98% 50%;
+    border-width: 0;
     color: #FFFFFF;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
@@ -1282,18 +1215,18 @@ div.spoiler_reveal * {
     border: 1px solid #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
-    margin: 10px 0px 10px 0px;
+    margin: 10px 0 10px 0;
     max-width: 100%;
     padding: 10px;
     text-align: left
 }
 
 .success_msg_icon {
-    padding-right: 0px
+    padding-right: 0
 }
 
 .success_msg_text {
-    padding-left: 0px
+    padding-left: 0
 }
 
 .text_captcha_input {
@@ -1306,24 +1239,15 @@ div.spoiler_reveal * {
 
 .thread_list_folder {
     background-color: #CCCCCC;
+    border: 00px solid #ffffff;
     border-bottom-width: 01px;
-    border-color: #FFFFFF;
-    border-left-width: 00px;
-    border-right-width: 00px;
-    border-style: solid;
-    border-top-width: 00px;
     height: 20px;
     vertical-align: middle
 }
 
 .thread_list_mode {
     background-color: #EEEEEE;
-    border-bottom-width: 01px;
-    border-color: #999999;
-    border-left-width: 01px;
-    border-right-width: 01px;
-    border-style: solid;
-    border-top-width: 01px;
+    border: 01px solid #999999;
     font-size: 100%;
     margin-left: 05px;
     margin-right: 05px
@@ -1339,248 +1263,137 @@ div.spoiler_reveal * {
 }
 
 .thread_track_notice {
-    border-bottom-width: 1px;
-    border-color: #000000;
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-style: dashed;
-    border-top-width: 1px;
+    border: 1px dashed #000000;
     padding: 5px
 }
 
 .threadname {
     font-size: 100%;
-    padding-left: 0px
+    padding-left: 0
 }
 
 .threads {
     background-color: #709FCF;
-    border: #000000;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-style: solid;
-    border-top-width: 1px;
+    border: 1px solid #000000;
     font-size: 100%;
     font-style: normal;
-    margin-bottom: 4px;
-    margin-left: 4px;
-    margin-right: 4px;
-    margin-top: 4px;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 2px
+    margin: 4px;
+    padding: 2px;
 }
 
 .threads_bottom_left {
     background-color: #709FCF;
-    border: #000000;
+    border: 0 none #000000;
     border-bottom-width: 1px;
     border-left-width: 1px;
-    border-right-width: 0px;
-    border-style: none;
-    border-top-width: 0px;
     font-size: 100%;
     font-style: normal;
-    margin-bottom: 4px;
-    margin-left: 4px;
-    margin-right: 4px;
-    margin-top: 4px;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 2px
+    margin: 4px;
+    padding: 2px;
 }
 
 .threads_bottom_right {
     background-color: #709FCF;
-    border: #000000;
-    border-bottom-width: 1px;
-    border-left-width: 0px;
+    border: 0 none #000000;
     border-right-width: 1px;
-    border-style: none;
-    border-top-width: 0px;
+    border-bottom-width: 1px;
     font-size: 100%;
     font-style: normal;
-    margin-bottom: 4px;
-    margin-left: 4px;
-    margin-right: 4px;
-    margin-top: 4px;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 2px
+    margin: 4px;
+    padding: 2px;
 }
 
 .threads_left {
     background-color: #709FCF;
-    border: #000000;
-    border-bottom-width: 0px;
+    border: 0 solid #000000;
     border-left-width: 1px;
-    border-right-width: 0px;
-    border-style: solid;
-    border-top-width: 0px;
     font-size: 100%;
     font-style: normal;
-    margin-bottom: 4px;
-    margin-left: 4px;
-    margin-right: 4px;
-    margin-top: 4px;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 2px
+    margin: 4px;
+    padding: 2px;
 }
 
 .threads_left_right {
     background-color: #709FCF;
-    border: #000000;
-    border-bottom-width: 0px;
-    border-left-width: 1px;
+    border: 0 none #000000;
     border-right-width: 1px;
-    border-style: none;
-    border-top-width: 0px;
+    border-left-width: 1px;
     font-size: 100%;
     font-style: normal;
-    margin-bottom: 4px;
-    margin-left: 4px;
-    margin-right: 4px;
-    margin-top: 4px;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 2px
+    margin: 4px;
+    padding: 2px;
 }
 
 .threads_left_right_bottom {
     background-color: #709FCF;
-    border: #000000;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-style: none;
-    border-top-width: 0px;
+    border: 1px none #000000;
+    border-top-width: 0;
     font-size: 100%;
     font-style: normal;
-    margin-bottom: 4px;
-    margin-left: 4px;
-    margin-right: 4px;
-    margin-top: 4px;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 2px
+    margin: 4px;
+    padding: 2px;
 }
 
 .threads_right {
     background-color: #709FCF;
-    border: #000000;
-    border-bottom-width: 0px;
-    border-left-width: 0px;
+    border: 0 solid #000000;
     border-right-width: 1px;
-    border-style: solid;
-    border-top-width: 0px;
     font-size: 100%;
     font-style: normal;
-    margin-bottom: 4px;
-    margin-left: 4px;
-    margin-right: 4px;
-    margin-top: 4px;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 2px
+    margin: 4px;
+    padding: 2px;
 }
 
 .threads_top_left {
     background-color: #709FCF;
-    border: #000000;
-    border-bottom-width: 0px;
-    border-left-width: 1px;
-    border-right-width: 0px;
-    border-style: none;
-    border-top-width: 1px;
+    border: 1px none #000000;
+    border-right-width: 0;
+    border-bottom-width: 0;
     font-size: 100%;
     font-style: normal;
-    margin-bottom: 4px;
-    margin-left: 4px;
-    margin-right: 4px;
-    margin-top: 4px;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 2px
+    margin: 4px;
+    padding: 2px;
 }
 
 .threads_top_left_bottom {
     background-color: #709FCF;
-    border: #000000;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    border-right-width: 0px;
-    border-style: none;
-    border-top-width: 1px;
+    border: 1px none #000000;
+    border-right-width: 0;
     font-size: 100%;
     font-style: normal;
-    margin-bottom: 4px;
-    margin-left: 4px;
-    margin-right: 4px;
-    margin-top: 4px;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 2px
+    margin: 4px;
+    padding: 2px;
 }
 
 .threads_top_right {
     background-color: #709FCF;
-    border: #000000;
-    border-bottom-width: 0px;
-    border-left-width: 0px;
-    border-right-width: 1px;
-    border-style: none;
-    border-top-width: 1px;
+    border: 1px none #000000;
+    border-bottom-width: 0;
+    border-left-width: 0;
     font-size: 100%;
     font-style: normal;
-    margin-bottom: 4px;
-    margin-left: 4px;
-    margin-right: 4px;
-    margin-top: 4px;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 2px
+    margin: 4px;
+    padding: 2px;
 }
 
 .threads_top_right_bottom {
     background-color: #709FCF;
-    border: #000000;
-    border-bottom-width: 1px;
-    border-left-width: 0px;
-    border-right-width: 1px;
-    border-style: none;
-    border-top-width: 1px;
+    border: 1px none #000000;
+    border-left-width: 0;
     font-size: 100%;
     font-style: normal;
-    margin-bottom: 4px;
-    margin-left: 4px;
-    margin-right: 4px;
-    margin-top: 4px;
-    padding-bottom: 2px;
-    padding-left: 2px;
-    padding-right: 2px;
-    padding-top: 2px
+    margin: 4px;
+    padding: 2px;
 }
 
 .threadtime {
     font-size: 85%;
-    padding-left: 0px
+    padding-left: 0
 }
 
 .threadxnewofy {
     font-size: 85%;
-    padding-left: 0px;
+    padding-left: 0;
     white-space: nowrap
 }
 
@@ -1626,26 +1439,23 @@ div.spoiler_reveal * {
     border: 1px solid #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
-    margin: 10px 0px 10px 0px;
+    margin: 10px 0 10px 0;
     max-width: 100%;
     padding: 10px;
     text-align: left
 }
 
 .warning_msg_icon {
-    padding-right: 0px
+    padding-right: 0
 }
 
 .warning_msg_text {
-    padding-left: 0px
+    padding-left: 0
 }
 
 .wikiword {
+    border: 0 dashed;
     border-bottom-width: 1px;
-    border-left-width: 0px;
-    border-right-width: 0px;
-    border-style: dashed;
-    border-top-width: 0px;
     text-decoration: none
 }
 

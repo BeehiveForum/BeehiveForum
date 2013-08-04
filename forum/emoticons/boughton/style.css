@@ -5,8 +5,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/smile.png");
-    background-repeat: no-repeat;
+    background: url("./images/smile.png") no-repeat;
 }
 .e_smile span {
 	display: none;
@@ -19,8 +18,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/wink.png");
-    background-repeat: no-repeat;
+    background: url("./images/wink.png") no-repeat;
 }
 .e_wink span {
 	display: none;
@@ -33,8 +31,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/sad.png");
-    background-repeat: no-repeat;
+    background: url("./images/sad.png") no-repeat;
 }
 .e_sad span {
 	display: none;
@@ -47,8 +44,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/tears.png");
-    background-repeat: no-repeat;
+    background: url("./images/tears.png") no-repeat;
 }
 .e_cry span {
 	display: none;
@@ -61,8 +57,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/tease.png");
-    background-repeat: no-repeat;
+    background: url("./images/tease.png") no-repeat;
 }
 .e_tongue span {
 	display: none;
@@ -75,8 +70,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/grin.png");
-    background-repeat: no-repeat;
+    background: url("./images/grin.png") no-repeat;
 }
 .e_grin span {
 	display: none;
@@ -89,8 +83,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/confused.png");
-    background-repeat: no-repeat;
+    background: url("./images/confused.png") no-repeat;
 }
 .e_confused span {
 	display: none;
@@ -103,8 +96,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/plain.png");
-    background-repeat: no-repeat;
+    background: url("./images/plain.png") no-repeat;
 }
 .e_plain span {
 	display: none;
@@ -117,8 +109,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/unsure.png");
-    background-repeat: no-repeat;
+    background: url("./images/unsure.png") no-repeat;
 }
 .e_unsure span {
 	display: none;
@@ -131,8 +122,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/shock.png");
-    background-repeat: no-repeat;
+    background: url("./images/shock.png") no-repeat;
 }
 .e_shock span {
 	display: none;
@@ -145,8 +135,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/angry.png");
-    background-repeat: no-repeat;
+    background: url("./images/angry.png") no-repeat;
 }
 .e_angry span {
 	display: none;
@@ -159,8 +148,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/sidelook.png");
-    background-repeat: no-repeat;
+    background: url("./images/sidelook.png") no-repeat;
 }
 .e_sidelook span {
 	display: none;
@@ -173,8 +161,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/cringe.png");
-    background-repeat: no-repeat;
+    background: url("./images/cringe.png") no-repeat;
 }
 .e_cringe span {
 	display: none;
@@ -187,8 +174,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/cheeky.png");
-    background-repeat: no-repeat;
+    background: url("./images/cheeky.png") no-repeat;
 }
 .e_cheeky span {
 	display: none;
@@ -204,8 +190,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/evil_cheeky.png");
-    background-repeat: no-repeat;
+    background: url("./images/evil_cheeky.png") no-repeat;
 }
 
 .e_happy { /* ^.^ */
@@ -215,8 +200,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/happy.png");
-    background-repeat: no-repeat;
+    background: url("./images/happy.png") no-repeat;
 }
 .e_happy span {
 	display: none;
@@ -229,8 +213,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/shades.png");
-    background-repeat: no-repeat;
+    background: url("./images/shades.png") no-repeat;
 }
 .e_shades span {
 	display: none;
@@ -243,8 +226,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/smile_big_nose.png");
-    background-repeat: no-repeat;
+    background: url("./images/smile_big_nose.png") no-repeat;
 }
 .e_smile_big_nose span {
 	display: none;
@@ -257,8 +239,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/beer.png");
-    background-repeat: no-repeat;
+    background: url("./images/beer.png") no-repeat;
 }
 .e_beer span {
 	display: none;
@@ -271,8 +252,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/boy.png");
-    background-repeat: no-repeat;
+    background: url("./images/boy.png") no-repeat;
 }
 .e_boy span {
 	display: none;
@@ -285,8 +265,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/brokenheart.png");
-    background-repeat: no-repeat;
+    background: url("./images/brokenheart.png") no-repeat;
 }
 .e_brokenheart span {
 	display: none;
@@ -299,8 +278,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/cat.png");
-    background-repeat: no-repeat;
+    background: url("./images/cat.png") no-repeat;
 }
 .e_cat span {
 	display: none;
@@ -313,8 +291,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/cheer.gif");
-    background-repeat: no-repeat;
+    background: url("./images/cheer.gif") no-repeat;
 }
 .e_cheering span {
 	display: none;
@@ -327,8 +304,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/cig.png");
-    background-repeat: no-repeat;
+    background: url("./images/cig.png") no-repeat;
 }
 .e_cig span {
 	display: none;
@@ -341,8 +317,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/clock.png");
-    background-repeat: no-repeat;
+    background: url("./images/clock.png") no-repeat;
 }
 .e_clock span {
 	display: none;
@@ -355,8 +330,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/cow.png");
-    background-repeat: no-repeat;
+    background: url("./images/cow.png") no-repeat;
 }
 .e_cow span {
 	display: none;
@@ -369,8 +343,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/cowboy.png");
-    background-repeat: no-repeat;
+    background: url("./images/cowboy.png") no-repeat;
 }
 .e_cowboy span {
 	display: none;
@@ -383,8 +356,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/drink.png");
-    background-repeat: no-repeat;
+    background: url("./images/drink.png") no-repeat;
 }
 .e_drink span {
 	display: none;
@@ -397,8 +369,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/envelope.png");
-    background-repeat: no-repeat;
+    background: url("./images/envelope.png") no-repeat;
 }
 .e_envelope span {
 	display: none;
@@ -411,8 +382,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/fail2.gif");
-    background-repeat: no-repeat;
+    background: url("./images/fail2.gif") no-repeat;
 }
 .e_fail span {
 	display: none;
@@ -425,8 +395,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/fish.png");
-    background-repeat: no-repeat;
+    background: url("./images/fish.png") no-repeat;
 }
 .e_fish span {
 	display: none;
@@ -439,8 +408,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/flower.png");
-    background-repeat: no-repeat;
+    background: url("./images/flower.png") no-repeat;
 }
 .e_flower span {
 	display: none;
@@ -453,8 +421,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/girl.png");
-    background-repeat: no-repeat;
+    background: url("./images/girl.png") no-repeat;
 }
 .e_girl span {
 	display: none;
@@ -467,8 +434,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/heart.png");
-    background-repeat: no-repeat;
+    background: url("./images/heart.png") no-repeat;
 }
 .e_heartbeat span {
 	display: none;
@@ -481,8 +447,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/kiss.png");
-    background-repeat: no-repeat;
+    background: url("./images/kiss.png") no-repeat;
 }
 .e_kiss span {
 	display: none;
@@ -495,8 +460,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/lightbulb.png");
-    background-repeat: no-repeat;
+    background: url("./images/lightbulb.png") no-repeat;
 }
 .e_lightbulb span {
 	display: none;
@@ -509,8 +473,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/monkey.png");
-    background-repeat: no-repeat;
+    background: url("./images/monkey.png") no-repeat;
 }
 .e_monkey span {
 	display: none;
@@ -523,8 +486,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/musicnote.png");
-    background-repeat: no-repeat;
+    background: url("./images/musicnote.png") no-repeat;
 }
 .e_musicnote span {
 	display: none;
@@ -537,8 +499,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/nosmoke.png");
-    background-repeat: no-repeat;
+    background: url("./images/nosmoke.png") no-repeat;
 }
 .e_nosmoke span {
 	display: none;
@@ -551,8 +512,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/rainbow.png");
-    background-repeat: no-repeat;
+    background: url("./images/rainbow.png") no-repeat;
 }
 .e_rainbow span {
 	display: none;
@@ -565,8 +525,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/smoke.png");
-    background-repeat: no-repeat;
+    background: url("./images/smoke.png") no-repeat;
 }
 .e_pipe span {
 	display: none;
@@ -579,8 +538,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/star.png");
-    background-repeat: no-repeat;
+    background: url("./images/star.png") no-repeat;
 }
 .e_star span {
 	display: none;
@@ -593,8 +551,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/tea.png");
-    background-repeat: no-repeat;
+    background: url("./images/tea.png") no-repeat;
 }
 .e_tea span {
 	display: none;
@@ -607,8 +564,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/cry.png");
-    background-repeat: no-repeat;
+    background: url("./images/cry.png") no-repeat;
 }
 .e_crying span {
 	display: none;
@@ -621,8 +577,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/eek.png");
-    background-repeat: no-repeat;
+    background: url("./images/eek.png") no-repeat;
 }
 .e_eek span {
 	display: none;
@@ -635,8 +590,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/bounce.gif");
-    background-repeat: no-repeat;
+    background: url("./images/bounce.gif") no-repeat;
 }
 .e_bounce span {
 	display: none;
@@ -649,8 +603,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/woot.gif");
-    background-repeat: no-repeat;
+    background: url("./images/woot.gif") no-repeat;
 }
 .e_woot span {
 	display: none;
@@ -663,8 +616,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/dance.gif");
-    background-repeat: no-repeat;
+    background: url("./images/dance.gif") no-repeat;
 }
 .e_dance span {
 	display: none;
@@ -677,8 +629,7 @@
     width:  15px;
     height: 13px;
 	font-size: 13px;
-    background-image: url("./images/horror.png");
-    background-repeat: no-repeat;
+    background: url("./images/horror.png") no-repeat;
 }
 .e_horror span {
 	display: none;

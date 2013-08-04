@@ -223,9 +223,7 @@ body .cke_dialog {
 }
 
 .cke_skin_beehive .cke_dialog a.cke_btn_reset {
-    background-image: url(images/mini.gif);
-    background-position: 0 -32px;
-    background-repeat: no-repeat;
+    background: url(images/mini.gif) no-repeat 0 -32px;
     border: 1px none;
     float: right;
     font-size: 1px;
@@ -235,9 +233,7 @@ body .cke_dialog {
 
 .cke_skin_beehive .cke_dialog a.cke_btn_locked,
 .cke_skin_beehive .cke_dialog a.cke_btn_unlocked {
-    background-image: url(images/mini.gif);
-    background-position: 0 0;
-    background-repeat: no-repeat;
+    background: url(images/mini.gif) no-repeat 0 0;
     border: none 1px;
     float: left;
     font-size: 1px;
@@ -250,8 +246,7 @@ body .cke_dialog {
 }
 
 .cke_skin_beehive .cke_dialog a.cke_btn_unlocked {
-    background-image: url(images/mini.gif);
-    background-position: 0 -16px
+    background: url(images/mini.gif) 0 -16px;
 }
 
 .cke_skin_beehive .cke_dialog .cke_btn_over {

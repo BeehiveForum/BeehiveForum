@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 <!-- We Like Bees -->
-<body style="margin: 0px; background-color: rgb(36,55,74);">
+<body style="margin: 0; background-color: rgb(36,55,74);">
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
   <tr>
     <td align="left" valign="middle"><a href="http://www.beehiveforum.co.uk/" target="_blank"><img src="./images/beehive_logo.png" border="0" alt="Beehive Logo" /></a></td>

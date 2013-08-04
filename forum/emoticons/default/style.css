@@ -5,8 +5,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/smile.png");
-    background-repeat: no-repeat;
+    background: url("./images/smile.png") no-repeat;
 }
 .e_smile span {
 	display: none;
@@ -19,8 +18,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/wink.png");
-    background-repeat: no-repeat;
+    background: url("./images/wink.png") no-repeat;
 }
 .e_wink span {
 	display: none;
@@ -33,8 +31,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/sad.png");
-    background-repeat: no-repeat;
+    background: url("./images/sad.png") no-repeat;
 }
 .e_sad span {
 	display: none;
@@ -47,8 +44,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/cry.png");
-    background-repeat: no-repeat;
+    background: url("./images/cry.png") no-repeat;
 }
 .e_cry span {
 	display: none;
@@ -61,8 +57,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/cringe.png");
-    background-repeat: no-repeat;
+    background: url("./images/cringe.png") no-repeat;
 }
 .e_cringe span {
 	display: none;
@@ -75,8 +70,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/tease.png");
-    background-repeat: no-repeat;
+    background: url("./images/tease.png") no-repeat;
 }
 .e_tongue span {
 	display: none;
@@ -89,8 +83,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/grin.png");
-    background-repeat: no-repeat;
+    background: url("./images/grin.png") no-repeat;
 }
 .e_grin span {
 	display: none;
@@ -103,8 +96,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/confused.png");
-    background-repeat: no-repeat;
+    background: url("./images/confused.png") no-repeat;
 }
 .e_confused span {
 	display: none;
@@ -117,8 +109,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/plain.png");
-    background-repeat: no-repeat;
+    background: url("./images/plain.png") no-repeat;
 }
 .e_plain span {
 	display: none;
@@ -131,8 +122,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/shock.png");
-    background-repeat: no-repeat;
+    background: url("./images/shock.png") no-repeat;
 }
 .e_shock span {
 	display: none;
@@ -145,8 +135,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/angry.png");
-    background-repeat: no-repeat;
+    background: url("./images/angry.png") no-repeat;
 }
 .e_angry span {
 	display: none;
@@ -159,8 +148,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/embarrassed.png");
-    background-repeat: no-repeat;
+    background: url("./images/embarrassed.png") no-repeat;
 }
 .e_embarrassed span {
 	display: none;
@@ -173,8 +161,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/shades.png");
-    background-repeat: no-repeat;
+    background: url("./images/shades.png") no-repeat;
 }
 .e_shades span {
 	display: none;
@@ -187,8 +174,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/angel.png");
-    background-repeat: no-repeat;
+    background: url("./images/angel.png") no-repeat;
 }
 .e_angel span {
 	display: none;
@@ -201,8 +187,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/devil.png");
-    background-repeat: no-repeat;
+    background: url("./images/devil.png") no-repeat;
 }
 .e_devil span {
 	display: none;
@@ -215,8 +200,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/alien.png");
-    background-repeat: no-repeat;
+    background: url("./images/alien.png") no-repeat;
 }
 .e_alien span {
 	display: none;
@@ -229,8 +213,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/anglesad.png");
-    background-repeat: no-repeat;
+    background: url("./images/anglesad.png") no-repeat;
 }
 .e_anglesad span {
 	display: none;
@@ -243,8 +226,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/anglesmile.png");
-    background-repeat: no-repeat;
+    background: url("./images/anglesmile.png") no-repeat;
 }
 .e_cheeky span {
 	display: none;
@@ -257,8 +239,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/bignose.png");
-    background-repeat: no-repeat;
+    background: url("./images/bignose.png") no-repeat;
 }
 .e_smile_big_nose span {
 	display: none;
@@ -271,8 +252,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/bunnyteeth.png");
-    background-repeat: no-repeat;
+    background: url("./images/bunnyteeth.png") no-repeat;
 }
 .e_rabbit span {
 	display: none;
@@ -285,8 +265,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/crylaugh.png");
-    background-repeat: no-repeat;
+    background: url("./images/crylaugh.png") no-repeat;
 }
 .e_happycry span {
 	display: none;
@@ -299,8 +278,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/fail.gif");
-    background-repeat: no-repeat;
+    background: url("./images/fail.gif") no-repeat;
 }
 .e_fail span {
 	display: none;
@@ -313,8 +291,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/fear.png");
-    background-repeat: no-repeat;
+    background: url("./images/fear.png") no-repeat;
 }
 .e_horror span {
 	display: none;
@@ -327,8 +304,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/nod.gif");
-    background-repeat: no-repeat;
+    background: url("./images/nod.gif") no-repeat;
 }
 .e_nod span {
 	display: none;
@@ -341,8 +317,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/sleep.png");
-    background-repeat: no-repeat;
+    background: url("./images/sleep.png") no-repeat;
 }
 .e_sleepyhead span {
 	display: none;
@@ -355,8 +330,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/unsure.png");
-    background-repeat: no-repeat;
+    background: url("./images/unsure.png") no-repeat;
 }
 .e_unsure span {
 	display: none;
@@ -369,8 +343,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/veryshocked.png");
-    background-repeat: no-repeat;
+    background: url("./images/veryshocked.png") no-repeat;
 }
 .e_eek span {
 	display: none;
@@ -383,8 +356,7 @@
     width:  19px;
     height: 19px;
 	font-size: 19px;
-    background-image: url("./images/wrong.gif");
-    background-repeat: no-repeat;
+    background: url("./images/wrong.gif") no-repeat;
 }
 .e_wrong span {
 	display: none;

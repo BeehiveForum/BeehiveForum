@@ -73,7 +73,7 @@
 
 .cke_skin_beehive textarea.cke_source {
     background-color: #FFFFFF;
-    font-family: 'Courier New', Monospace;
+    font-family: 'Courier New', monospace;
     font-size: small;
     white-space: pre
 }
@@ -122,7 +122,7 @@
     width: 100%
 }
 
-cke_skin_beehive .cke_panel_frame .cke_label {
+.cke_skin_beehive .cke_panel_frame .cke_label {
     display: none
 }
 
@@ -247,9 +247,7 @@ a:active.cke_colormore {
 
 .cke_skin_beehive a.cke_toolbox_collapser,
 .cke_skin_beehive a:hover.cke_toolbox_collapser {
-    background-image: url(sprites.png);
-    background-position: 3px -1026px;
-    background-repeat: no-repeat;
+    background: url(sprites.png) no-repeat 3px -1026px;
     border: outset 1px;
     cursor: pointer;
     float: right;
@@ -264,16 +262,14 @@ a:active.cke_colormore {
 
 .cke_skin_beehive .cke_hc a.cke_toolbox_collapser span {
     display: inline;
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     font-size: 10px;
     font-weight: bold
 }
 
 .cke_skin_beehive a.cke_toolbox_collapser_min,
 .cke_skin_beehive a:hover.cke_toolbox_collapser_min {
-    background-image: url(sprites.png);
-    background-position: 4px -1047px;
-    background-repeat: no-repeat;
+    background: url(sprites.png) no-repeat 4px -1047px;
     margin: 2px
 }
 
@@ -374,9 +370,7 @@ a:active.cke_colormore {
 }
 
 .cke_skin_beehive .cke_button .cke_buttonarrow {
-    background-image: url(sprites.png);
-    background-position: 2px -1004px;
-    background-repeat: no-repeat;
+    background: url(sprites.png) no-repeat 2px -1004px;
     cursor: default;
     display: inline-block;
     height: 18px;
@@ -418,10 +412,7 @@ a:active.cke_colormore {
 }
 
 .cke_skin_beehive .cke_menuitem .cke_icon {
-    background-color: transparent;
-    background-image: url(icons.png);
-    background-position: 100px;
-    background-repeat: no-repeat;
+    background: transparent url(icons.png) no-repeat 100px;
     float: left;
     height: 16px;
     margin: 1px 2px;
@@ -453,9 +444,7 @@ a:active.cke_colormore {
 }
 
 .cke_skin_beehive .cke_menuarrow {
-    background-image: url(sprites.png);
-    background-position: 0 -1071px;
-    background-repeat: no-repeat;
+    background: url(sprites.png) no-repeat 0 -1071px;
     float: right;
     height: 5px;
     margin-right: 2px;

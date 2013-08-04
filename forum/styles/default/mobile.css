@@ -15,10 +15,10 @@ input,
 }
 
 select {
-    border-radius: 0px;
+    border-radius: 0;
     height: 24px;
     line-height: 24px;
-    margin: 0px
+    margin: 0
 }
 
 .button {
@@ -81,7 +81,7 @@ span.spoiler {
     display: inline-block;
     min-height: 16px;
     min-width: 55px;
-    padding: 0px 3px
+    padding: 0 3px
 }
 
 span.spoiler > span {
@@ -134,7 +134,7 @@ div.spoiler_reveal {
 }
 
 div.spoiler_reveal * {
-    margin-left: 0px
+    margin-left: 0
 }
 
 .clearer {
@@ -198,15 +198,14 @@ body {
 }
 
 #nav.menu_open {
-    box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.2)
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2)
 }
 
 #menu {
     background-color: #5483B1;
+    border-style: none;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     border-left: 1px solid rgba(0, 0, 0, 0.1);
-    border-right: none;
-    border-top: none;
     box-shadow: -2px 10px 10px rgba(0, 0, 0, 0.2);
     display: none;
     position: fixed;
@@ -778,12 +777,12 @@ a.folder_list_link {
 }
 
 .post_html label {
-    margin: 0px 3px
+    margin: 0 3px
 }
 
 .post_buttons .button,
 .search_buttons .button {
-    margin: 0px 3px
+    margin: 0 3px
 }
 
 .pm_folder_usage {
@@ -855,7 +854,7 @@ span.thread_deleted,
 span.user_friend,
 span.user_enemy {
     display: inline-block;
-    margin: 0px 2px;
+    margin: 0 2px;
     padding-left: 16px;
     text-indent: -9999px
 }

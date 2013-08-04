@@ -8,10 +8,7 @@ pre.code {
     border: 1px solid #CCCCCC;
     font-family: monospace;
     font-size: 120%;
-    margin-bottom: 10px;
-    margin-left: 40px;
-    margin-right: 10px;
-    margin-top: 0px;
+    margin: 0 10px 10px 40px;
     min-height: 16px;
     overflow: auto;
     padding: 3px
@@ -20,10 +17,7 @@ pre.code {
 div.quote {
     background-color: #EEEEEE;
     border: 1px solid #CCCCCC;
-    margin-bottom: 10px;
-    margin-left: 40px;
-    margin-right: 10px;
-    margin-top: 0px;
+    margin: 0 10px 10px 40px;
     min-height: 16px;
     padding: 3px
 }
@@ -40,7 +34,7 @@ span.spoiler {
     background: #EEEEEE;
     border: 1px solid #CCCCCC;
     color: #EEEEEE;
-    padding: 0px 3px
+    padding: 0 3px
 }
 
 span.spoiler > span {

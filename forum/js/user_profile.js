@@ -42,5 +42,7 @@ $(beehive).bind('init', function() {
            window.close();
            return false;
        }
+
+       return true;
    });
 });

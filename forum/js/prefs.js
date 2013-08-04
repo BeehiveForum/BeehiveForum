@@ -52,7 +52,7 @@ $(beehive).bind('init', function() {
 
             callbacks: {
 
-                onSubmit: function(id, filename) {
+                onSubmit: function() {
 
                     $option = $('<option value="upload">')
                         .prop('selected', true)
@@ -65,7 +65,7 @@ $(beehive).bind('init', function() {
                     $cancel_button.show();
                 },
 
-                onCancel: function(id, filename) {
+                onCancel: function() {
 
                     $option.remove();
 
@@ -101,9 +101,12 @@ $(beehive).bind('init', function() {
                             $select.find('option').remove();
 
                             for (var key in data) {
-                                $select.append($('<option>').val(key).html(data[key]));
+                                if (data.hasOwnProperty(key)){
+                                    $select.append($('<option>').val(key).html(data[key]));
+                                }
                             }
 
+                            //noinspection JSUnresolvedVariable
                             $select.find('option[value=' + responseJSON.attachment.aid + ']').prop('selected', true);
                         }
                     });

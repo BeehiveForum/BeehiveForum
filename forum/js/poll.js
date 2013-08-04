@@ -49,6 +49,7 @@ $(beehive).bind('init', function() {
 
     var option_html = function(question_id, option_id)
     {
+        //noinspection JSUnresolvedVariable
         return $.vsprintf(
             '<li><input type="text" dir="ltr" maxlength="255" size="45" value="" class="bhinputtext" name="poll_questions[%(0)d][options][%(1)d]">&nbsp;\
                <button title="%(2)s" class="button_image delete_option disabled" name="delete_option[%(0)d][%(1)d]" type="submit">\
@@ -63,6 +64,7 @@ $(beehive).bind('init', function() {
 
     var question_html = function(question_id)
     {
+        //noinspection JSUnresolvedVariable
         return $.vsprintf(
             '<fieldset class="poll_question">\
                <div>\
@@ -96,11 +98,13 @@ $(beehive).bind('init', function() {
                            ]]);
     };
 
-    hide_delete_buttons.call($('body'));
+    var $body = $('body');
+
+    hide_delete_buttons.call($body);
 
     toggle_delete_buttons();
 
-    $('body').on('mouseenter', 'div.poll_question_input', function() {
+    $body.on('mouseenter', 'div.poll_question_input', function() {
 
         $(this).find('button.delete_question').show();
 
@@ -109,7 +113,7 @@ $(beehive).bind('init', function() {
         $(this).find('button.delete_question').hide();
     });
 
-    $('body').on('mouseenter', 'div.poll_options_list ol li', function() {
+    $body.on('mouseenter', 'div.poll_options_list ol li', function() {
 
         $(this).find('button.delete_option').show();
 
@@ -118,7 +122,7 @@ $(beehive).bind('init', function() {
         $(this).find('button.delete_option').hide();
     });
 
-    $('body'). on('click', 'button.delete_question', function() {
+    $body. on('click', 'button.delete_question', function() {
 
         if ($(this).hasClass('disabled')) {
             return false;
@@ -140,7 +144,7 @@ $(beehive).bind('init', function() {
        return false;
     });
 
-    $('body').on('click', 'button.delete_option', function() {
+    $body.on('click', 'button.delete_option', function() {
 
         if ($(this).hasClass('disabled')) {
             return false;
@@ -162,7 +166,7 @@ $(beehive).bind('init', function() {
        return false;
     });
 
-    $('body').on('click', 'button.add_option', function() {
+    $body.on('click', 'button.add_option', function() {
 
         if ($(this).hasClass('disabled')) {
             return false;

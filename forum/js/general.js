@@ -21,13 +21,15 @@ USA
 
 var beehive = $.extend({}, beehive, {
 
-    window_options : [ 'toolbox=0',
-                       'location=0',
-                       'directories=0',
-                       'status=0',
-                       'menubar=0',
-                       'resizeable=yes',
-                       'scrollbars=yes' ],
+    window_options : [
+        'toolbox=0',
+        'location=0',
+        'directories=0',
+        'status=0',
+        'menubar=0',
+        'resizeable=yes',
+        'scrollbars=yes'
+    ],
 
     ajax_error : function(message) {
 
@@ -47,15 +49,6 @@ var beehive = $.extend({}, beehive, {
         return $('body').prop('clientWidth');
     },
 
-    get_frame_name : function(frame_name) {
-
-        for(var key in beehive.frames) {
-            if (beehive.frames[key] == frame_name) {
-                return key;
-            }
-        }
-    },
-
     reload_frame : function(context, frame_name) {
 
         $(context).find('frame').each(function() {
@@ -66,7 +59,7 @@ var beehive = $.extend({}, beehive, {
                 return false;
             }
 
-            beehive.reload_frame(this.contentDocument, frame_name);
+            return beehive.reload_frame(this.contentDocument, frame_name);
         });
     },
 
@@ -74,13 +67,14 @@ var beehive = $.extend({}, beehive, {
 
         $(context).find('frame').each(function() {
 
+            //noinspection JSUnresolvedVariable
             if ($(this).prop('name') == beehive.frames.ftop) {
 
                 $(this).prop('src', src);
                 return false;
             }
 
-            beehive.reload_top_frame(this.contentDocument, src);
+            return beehive.reload_top_frame(this.contentDocument, src);
         });
     },
 
@@ -92,7 +86,7 @@ var beehive = $.extend({}, beehive, {
                 return true;
             }
 
-            beehive.reload_user_font(this.contentDocument);
+            return beehive.reload_user_font(this.contentDocument);
         });
 
         var $user_font = $(context.head).find('link#user_font');
@@ -158,8 +152,10 @@ var beehive = $.extend({}, beehive, {
 
         var editor_id = $editor.prop('id');
 
+        //noinspection JSUnresolvedVariable
         var skin = beehive.forum_path + '/styles/' + beehive.user_style + '/editor/';
 
+        //noinspection JSUnresolvedVariable
         var emoticons = beehive.forum_path + '/emoticons/' + beehive.emoticons + '/style.css';
 
         var contents = skin + 'content.css';
@@ -168,6 +164,7 @@ var beehive = $.extend({}, beehive, {
 
         beehive.init_editor();
 
+        //noinspection JSCheckFunctionSignatures
         $('<div id="toolbar">').insertBefore($editor);
 
         var editor = CKEDITOR.replace(editor_id, {
@@ -261,7 +258,15 @@ var beehive = $.extend({}, beehive, {
         }
     },
 
-    mobile_version : false
+    mobile_version : false,
+
+    use_mover_spoiler: 'N',
+
+    forum_path: null,
+
+    lang: {
+
+    }
 });
 
 $.ajaxSetup({
@@ -287,7 +292,7 @@ $(beehive).bind('init', function() {
         return false;
     });
 
-    $('body').on('click', 'a.popup', function() {
+    var $body = $('body').on('click', 'a.popup', function() {
 
         var class_names = $(this).prop('class').split(' ');
 
@@ -334,12 +339,13 @@ $(beehive).bind('init', function() {
         $(this).closest('form').find('input:checkbox').prop('checked', $(this).is(':checked'));
     });
 
-    $('body').on('click', 'a.font_size_larger, a.font_size_smaller', function() {
+    $body.on('click', 'a.font_size_larger, a.font_size_smaller', function() {
 
         var $this = $(this);
 
         var $parent = $this.closest('td');
 
+        //noinspection JSUnresolvedVariable
         if (beehive.uid == 0) {
             return true;
         }
@@ -378,8 +384,13 @@ $(beehive).bind('init', function() {
 
     $('#preferences_updated').each(function() {
 
+        //noinspection JSUnresolvedVariable
         beehive.reload_frame(top.document, beehive.frames.fnav);
+
+        //noinspection JSUnresolvedVariable
         beehive.reload_frame(top.document, beehive.frames.left);
+
+        //noinspection JSUnresolvedVariable
         beehive.reload_top_frame(top.document, beehive.top_frame);
     });
 
@@ -393,7 +404,7 @@ $(beehive).bind('init', function() {
         $(this).css('border', '1px outset');
     });
 
-    if ($('body').hasClass('window_title')) {
+    if ($body.hasClass('window_title')) {
         top.document.title = document.title;
     }
 
@@ -401,12 +412,14 @@ $(beehive).bind('init', function() {
 
         var frame_name = $(this).prop('name');
 
+        //noinspection JSUnresolvedVariable
         if ((frame_name != beehive.frames.left) && (frame_name != beehive.frames.pm_folders)) {
-            return true;
+            return;
         }
 
+        //noinspection JSUnresolvedVariable
         if (beehive.uid == 0) {
-            return true;
+            return;
         }
 
         window.clearTimeout(frame_resize_timeout);
@@ -490,6 +503,7 @@ $(beehive).bind('init', function() {
 
     $('input, textarea').placeholder();
 
+    //noinspection JSUnresolvedVariable
     if (beehive.show_share_links == 'Y') {
 
         $.getScript(document.location.protocol + '//apis.google.com/js/plusone.js');

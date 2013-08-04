@@ -67,5 +67,5 @@ CKEDITOR.skins.add('beehive', (function () {
                 k.setSize('height', e);
             }, 100);
         });
-    };
+    }
 })();

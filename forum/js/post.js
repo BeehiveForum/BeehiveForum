@@ -44,7 +44,7 @@ $(beehive).bind('init', function() {
         });
     };
 
-    $('body').on('click', 'input.post_vote_up, input.post_vote_down', function(event) {
+    var $body = $('body').on('click', 'input.post_vote_up, input.post_vote_down', function(event) {
 
         var $button = $(this);
 
@@ -135,6 +135,7 @@ $(beehive).bind('init', function() {
 
             var container_offset = $post_options_container.offset();
 
+            //noinspection JSValidateTypes
             if (((container_offset.top - $(window).scrollTop()) + $post_options_container.height()) > $(window).height()) {
                 $post_options_container.css('top', Math.floor(link_offset.top - $post_options_container.height()));
             } else {
@@ -143,16 +144,14 @@ $(beehive).bind('init', function() {
 
             $post_options_container.find('*').css('margin-left', 0);
             $post_options_container.css('left', Math.floor(link_offset.left - ($post_options_container.width() - $link.width())));
-
-            return false;
         });
     });
 
-    $('body').bind('click', function() {
+    $body.bind('click', function() {
         hide_post_options_containers();
     });
 
-    $('#quick_reply_container input#cancel').bind('click', function() {
+    $('#quick_reply_container').find('input#cancel').bind('click', function() {
 
         if (CKEDITOR.instances.content) {
             CKEDITOR.instances.content.destroy();
@@ -161,11 +160,11 @@ $(beehive).bind('init', function() {
         $('#quick_reply_container').hide();
     });
 
-    $('body').on('click', '.quick_reply_link', function() {
+    $body.on('click', '.quick_reply_link', function() {
 
-        $('.post_options_container').hide();
+        var $post_options_container = $('.post_options_container').hide();
 
-        $('.post_options_container').find('*').css('margin-left', -9999);
+        $post_options_container.find('*').css('margin-left', -9999);
 
         var quick_reply_data = /^([0-9]+)\.([0-9]+)$/.exec($(this).data('msg'));
 
@@ -200,6 +199,7 @@ $(beehive).bind('init', function() {
 
             $('img#quote_img_' + pid).prop('src', beehive.images['quote_enabled.png']);
 
+            //noinspection JSUnresolvedVariable
             $(this).html(beehive.lang.unquote);
 
             beehive.quote_list.push(pid);
@@ -212,8 +212,11 @@ $(beehive).bind('init', function() {
 
             for (var check_post_id in beehive.quote_list) {
 
-                if (beehive.quote_list[check_post_id] == pid) {
-                    beehive.quote_list.splice(check_post_id, 1);
+                if (beehive.quote_list.hasOwnProperty(check_post_id)) {
+
+                    if (beehive.quote_list[check_post_id] == pid) {
+                        beehive.quote_list.splice(check_post_id, 1);
+                    }
                 }
             }
         }

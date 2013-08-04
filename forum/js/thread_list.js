@@ -38,6 +38,7 @@ $(beehive).bind('init', function() {
 
     $('#mark_read_submit').bind('click', function() {
 
+        //noinspection JSUnresolvedVariable
         if (window.confirm(beehive.lang.confirmmarkasread)) {
 
             $('#mark_read_confirm').val('Y');

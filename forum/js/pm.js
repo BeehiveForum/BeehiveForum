@@ -33,6 +33,7 @@ $(beehive).bind('init', function() {
 
         if ($(this).prop('id') == 'pm_delete_messages') {
 
+            //noinspection JSUnresolvedVariable
             if (!window.confirm(beehive.lang.deletemessagesconfirmation)) {
                 return false;
             }
@@ -46,8 +47,10 @@ $(beehive).bind('init', function() {
     $('#pm_rename_success,#pm_delete_success,#pm_archive_success').each(function() {
 
         if (top.document.body.rows) {
+            //noinspection JSUnresolvedVariable
             top.frames[beehive.frames.main].frames[beehive.frames.pm_folders].location.reload();
         }else if (top.document.body.cols) {
+            //noinspection JSUnresolvedVariable
             top.frames[beehive.frames.pm_folders].location.reload();
         }
 
@@ -69,7 +72,10 @@ $(beehive).bind('init', function() {
 
                 $('#pm_message_count').html(data.text);
 
+                //noinspection JSUnresolvedVariable
                 if (data.notification && window.confirm(data.notification)) {
+
+                    //noinspection JSUnresolvedVariable
                     top.frames[beehive.frames.main].location.replace('pm.php?webtag=' + beehive.webtag);
                 }
 

@@ -30,7 +30,10 @@ $(beehive).bind('init', function() {
 
         var b = -1;
 
-        do filesize /= 1024, b++; while(99 < filesize);
+        while (99 < filesize) {
+            filesize /= 1024;
+            b++;
+        }
 
         return (Math.floor(filesize * 100) / 100).toFixed(2) + "kB MB GB TB PB EB".split(" ")[b];
     };
@@ -80,8 +83,13 @@ $(beehive).bind('init', function() {
                 url: 'attachments.php',
                 success: function(response) {
 
+                    //noinspection JSUnresolvedVariable
                     $used_post_space.text(response.used_post_space);
+
+                    //noinspection JSUnresolvedVariable
                     $free_post_space.text(response.free_post_space);
+
+                    //noinspection JSUnresolvedVariable
                     $free_upload_space.text(response.free_upload_space);
                 }
             });
@@ -91,6 +99,7 @@ $(beehive).bind('init', function() {
             $delete_button.show();
         }
 
+        //noinspection JSUnresolvedVariable
         var uploader = new qq.FineUploaderBasic({
 
             button: $upload_button[0],
@@ -134,14 +143,14 @@ $(beehive).bind('init', function() {
                     ));
                 },
 
-                onUpload: function(id, filename) {
+                onUpload: function(id) {
 
                     $attachment_list.find('li.attachment[data-hash="' + id + '"]')
                         .removeClass('error')
                         .addClass('uploading');
                 },
 
-                onCancel: function(id, filename) {
+                onCancel: function(id) {
 
                     $attachment_list.find('li.attachment[data-hash="' + id + '"]')
                         .removeClass('error')
@@ -162,20 +171,21 @@ $(beehive).bind('init', function() {
 
                 onComplete: function(id, filename, responseJSON) {
 
-                    var $attachment = $attachment_list.find('li.attachment[data-hash="' + id + '"]')
+                    var $attachment = $attachment_list.find('li.attachment[data-hash="' + id + '"]');
 
                     var $input = $attachment.find('input:checkbox');
 
                     var $filename = $attachment.find('span.filename');
 
-                    var $selected;
-
+                    //noinspection JSUnresolvedVariable
                     $attachment.data('hash', responseJSON.attachment.hash)
                         .removeClass('uploading')
                         .addClass(responseJSON.success ? 'complete' : 'error');
 
+                    //noinspection JSUnresolvedVariable
                     $input.val(responseJSON.attachment.hash);
 
+                    //noinspection JSUnresolvedVariable
                     $filename.html(
                         '<a href="'
                         + beehive.forum_path
@@ -237,6 +247,7 @@ $(beehive).bind('init', function() {
                 return;
             }
 
+            //noinspection JSUnresolvedVariable
             if (!window.confirm(beehive.lang.deleteattachmentconfirmation)) {
                 return;
             }
@@ -252,7 +263,7 @@ $(beehive).bind('init', function() {
                 },
                 type: 'POST',
                 url: 'attachments.php',
-                success: function(response) {
+                success: function() {
 
                     $selected.remove();
 

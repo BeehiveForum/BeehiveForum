@@ -37,6 +37,8 @@ $(beehive).bind('init', function() {
                 try {
 
                     $('#captcha_img').prop('src', data.image);
+
+                    //noinspection JSUnresolvedVariable
                     $('#public_key').val(data.key).prop('maxLength', data.chars);
                     $('#private_key').val('');
 

@@ -19,9 +19,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-$(beehive).bind('init', function() {
+$(window.beehive).bind('init', function() {
 
-    beehive = $.extend({}, beehive, {
+    window.beehive = $.extend({}, window.beehive, {
 
         resize_image : function() {
 
@@ -44,6 +44,8 @@ $(beehive).bind('init', function() {
                     $resize_icon.prop('src', beehive.images['warning.png']);
 
                     $resize_banner.append($resize_icon);
+
+                    //noinspection JSUnresolvedVariable
                     $resize_banner.append($.sprintf(beehive.lang.imageresized, $(this).width(), $(this).height()));
 
                     $(this).wrap($parent_div).css('width', '100%');

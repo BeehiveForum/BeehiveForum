@@ -21,7 +21,7 @@ USA
 
 $(beehive).bind('init', function() {
 
-    $('body').bind('click', function(event) {
+    var $body = $('body').bind('click', function() {
         $('div#menu').hide();
         $('.message_vote_form').removeClass('popup');
     });
@@ -36,19 +36,19 @@ $(beehive).bind('init', function() {
         return false;
     });
 
-    $('body').on('focus', 'input,select,textarea', function() {
+    $body.on('focus', 'input,select,textarea', function() {
         $.mobile.zoom.disable(true);
     }).on('blur', 'input,select', function() {
         $.mobile.zoom.enable(true);
     });
 
-    $('body').on('click', '.message_vote_form', function(event) {
+    $body.on('click', '.message_vote_form', function(event) {
 
         $(this).addClass('popup');
         event.stopPropagation();
     });
 
-    $('body').on('click', '.message_vote_form.popup img', function(event) {
+    $body.on('click', '.message_vote_form.popup img', function(event) {
 
         var $button = $(this);
 

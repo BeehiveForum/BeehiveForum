@@ -49,6 +49,7 @@ $(beehive).bind('init', function() {
 
     $('#search_submit').bind('click', function() {
 
+        //noinspection JSUnresolvedVariable
         $(this).addClass('button_disabled').prop('disabled', true).val(beehive.lang.waitdotdotdot);
         $('#search_reset').addClass('button_disabled').prop('disabled', true);
         $('#search_form').submit();
@@ -59,11 +60,13 @@ $(beehive).bind('init', function() {
     $('div#search_success').each(function() {
 
         if (top.document.body.rows) {
+            //noinspection JSUnresolvedVariable
             top.frames[beehive.frames.main].frames[beehive.frames.left].location.replace('search.php?webtag=' + beehive.webtag + '&page=1');
         } else if (top.document.body.cols) {
             top.frames[beehive.frames.left].location.replace('search.php?webtag=$webtag&page=1');
         }
 
+        //noinspection JSUnresolvedVariable
         $(this).find('.success_msg_text').html($.sprintf(beehive.lang.searchsuccessfullycompleted, ''));
     });
 });

@@ -81,7 +81,10 @@ $(beehive).bind('init', function() {
                         'url' : beehive.forum_path + '/ajax.php',
                         'success': function(data) {
 
+                            //noinspection JSUnresolvedVariable
                             response($.map(data.results_array, function(item) {
+
+                                //noinspection JSUnresolvedVariable
                                 return {
                                     'label': item.NICKNAME + ' (' + item.LOGON + ')',
                                     'value': item.LOGON
@@ -131,7 +134,7 @@ $(beehive).bind('init', function() {
             var $search_container = $search_input.closest('div.bhinputsearch');
 
             if ($search_container.length != 1) {
-                 return false;
+                 return;
             }
 
             var result_array = [];

@@ -308,11 +308,16 @@ function bh_error_process(Exception $exception)
 
     if (!in_array($exception->getCode(), array(MYSQL_CONNECT_ERROR, MYSQL_ACCESS_DENIED, MYSQL_PERMISSION_DENIED))) {
 
-        if (($mysql_version = db::get_version()) !== false) {
-            $version_strings[] = sprintf('MySQL/%s', $mysql_version);
-        } else {
-            $version_strings[] = sprintf('MySQL Version Unknown');
+        try {
+
+            $mysql_version = db::get_version();
+
+        } catch (Exception $e){
+
+            $mysql_version = 'MySQL Version Unknown';
         }
+
+        $version_strings[] = $mysql_version;
     }
 
     if (isset($version_strings) && sizeof($version_strings) > 0) {

@@ -107,7 +107,7 @@ function bh_exception_handler(Exception $exception)
 
         $forum_path = server_get_forum_path();
 
-        echo "<!DOCTYPE html>\n";
+        echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
         echo "<html lang=\"en-gb\" dir=\"ltr\">\n";
         echo "<head>\n";
         echo "<title>Beehive Forum - Error Handler</title>\n";
@@ -306,19 +306,16 @@ function bh_error_process(Exception $exception)
         $version_strings[] = mb_strtoupper($php_sapi);
     }
 
-    if (!in_array($exception->getCode(), array(MYSQL_CONNECT_ERROR, MYSQL_ACCESS_DENIED, MYSQL_PERMISSION_DENIED))) {
+    try {
 
-        try {
+        $mysql_version = db::get_version();
 
-            $mysql_version = db::get_version();
+    } catch (Exception $e){
 
-        } catch (Exception $e){
-
-            $mysql_version = 'MySQL Version Unknown';
-        }
-
-        $version_strings[] = $mysql_version;
+        $mysql_version = 'MySQL Version Unknown';
     }
+
+    $version_strings[] = $mysql_version;
 
     if (isset($version_strings) && sizeof($version_strings) > 0) {
 

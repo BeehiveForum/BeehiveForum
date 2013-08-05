@@ -100,7 +100,7 @@ function light_html_draw_top()
     $meta_keywords = html_get_forum_keywords();
     $meta_description = html_get_forum_description();
 
-    echo "<!DOCTYPE html>\n";
+    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html lang=\"en\" dir=\"", gettext("ltr"), "\">\n";
     echo "<head>\n";
 

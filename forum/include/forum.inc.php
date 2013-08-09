@@ -679,6 +679,7 @@ function forum_check_global_setting_name($setting_name)
         'sendmail_path',
         'smtp_server',
         'smtp_port',
+        'smtp_ssl',
         'smtp_username',
         'smtp_password',
         'sphinx_search_enabled',

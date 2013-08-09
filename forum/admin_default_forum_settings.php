@@ -159,6 +159,12 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['smtp_port'] = '';
     }
 
+    if (isset($_POST['smtp_ssl']) && $_POST['smtp_ssl'] == "Y") {
+        $new_forum_settings['smtp_ssl'] = "Y";
+    } else {
+        $new_forum_settings['smtp_ssl'] = "N";
+    }
+
     if (isset($_POST['smtp_username']) && strlen(trim($_POST['smtp_username'])) > 0) {
         $new_forum_settings['smtp_username'] = trim($_POST['smtp_username']);
     } else {
@@ -721,6 +727,10 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">", gettext("SMTP Server Password"), ":</td>\n";
 echo "                        <td align=\"left\">", form_input_password("smtp_password", (isset($forum_global_settings['smtp_password']) ? htmlentities_array($forum_global_settings['smtp_password']) : ''), 25, null, 'autocomplete="off"'), "&nbsp;</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">", gettext("SMTP use SSL"), ":</td>\n";
+echo "                        <td align=\"left\">", form_radio("smtp_ssl", "Y", gettext("Yes"), (isset($forum_global_settings['smtp_ssl']) && $forum_global_settings['smtp_ssl'] == 'Y')), "&nbsp;", form_radio("smtp_ssl", "N", gettext("No"), (isset($forum_global_settings['smtp_ssl']) && $forum_global_settings['smtp_ssl'] == 'N') || !isset($forum_global_settings['smtp_ssl'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

@@ -34,15 +34,22 @@ function sphinx_search_connect()
 
     if (!($sphinx_search_port = forum_get_setting('sphinx_search_port', 'is_numeric', false))) return false;
 
-    if (!($sphinx = mysqli_init())) return false;
+    try {
 
-    if (!$sphinx->options(MYSQLI_OPT_CONNECT_TIMEOUT, 2)) return false;
+        if (!($sphinx = mysqli_init())) return false;
 
-    if (!$sphinx->real_connect($sphinx_search_host, null, null, null, $sphinx_search_port)) return false;
+        if (!$sphinx->options(MYSQLI_OPT_CONNECT_TIMEOUT, 2)) return false;
 
-    if (mysqli_connect_error()) return false;
+        if (!$sphinx->real_connect($sphinx_search_host, null, null, null, $sphinx_search_port)) return false;
 
-    return $sphinx;
+        if (mysqli_connect_error()) return false;
+
+        return $sphinx;
+
+    } catch (Exception $e){
+
+        return false;
+    }
 }
 
 function sphinx_search_execute($search_arguments, &$error)

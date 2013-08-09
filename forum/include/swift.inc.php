@@ -45,7 +45,9 @@ abstract class Swift_TransportFactory
 
             $smtp_port = forum_get_global_setting('smtp_port', null, '25');
 
-            $transport = Swift_SmtpTransportSingleton::getInstance($smtp_server, $smtp_port);
+            $smtp_ssl = forum_get_global_setting('smtp_ssl', 'Y');
+
+            $transport = Swift_SmtpTransportSingleton::getInstance($smtp_server, $smtp_port, $smtp_ssl);
 
             if (($smtp_username = forum_get_global_setting('smtp_username', 'strlen', false)) !== false) {
 
@@ -82,16 +84,14 @@ abstract class Swift_TransportFactory
 }
 
 // Swift Mailer SMTP Transport Singleton wrapper
-class Swift_SmtpTransportSingleton
+class Swift_SmtpTransportSingleton extends Swift_SmtpTransport
 {
     private static $instance;
 
-    private function __construct() { }
-
-    public static function getInstance($smtp_server, $smtp_port)
+    public static function getInstance($smtp_server, $smtp_port, $smtp_ssl = false)
     {
         if (is_null(self::$instance)) {
-            self::$instance = Swift_SmtpTransport::newInstance($smtp_server, $smtp_port);
+            self::$instance = Swift_SmtpTransport::newInstance($smtp_server, $smtp_port, $smtp_ssl ? 'ssl' : null);
         }
 
         return self::$instance;
@@ -99,11 +99,9 @@ class Swift_SmtpTransportSingleton
 }
 
 // Swift Mailer Mail Transport Singleton wrapper
-class Swift_MailTransportSingleton
+class Swift_MailTransportSingleton extends Swift_MailTransport
 {
     private static $instance;
-
-    private function __construct() { }
 
     public static function getInstance()
     {
@@ -118,11 +116,9 @@ class Swift_MailTransportSingleton
 }
 
 // Swift Mailer SendMail Transport Singleton wrapper
-class Swift_SendmailTransportSingleton
+class Swift_SendmailTransportSingleton extends Swift_SendmailTransport
 {
     private static $instance;
-
-    private function __construct() { }
 
     public static function getInstance($sendmail_path)
     {

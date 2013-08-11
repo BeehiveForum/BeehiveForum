@@ -26,7 +26,6 @@ require_once BH_INCLUDE_PATH. 'attachments.inc.php';
 require_once BH_INCLUDE_PATH. 'constants.inc.php';
 require_once BH_INCLUDE_PATH. 'db.inc.php';
 require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
-require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
 require_once BH_INCLUDE_PATH. 'folder.inc.php';
 require_once BH_INCLUDE_PATH. 'form.inc.php';
 require_once BH_INCLUDE_PATH. 'format.inc.php';

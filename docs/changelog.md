@@ -1,925 +1,748 @@
-# Beehive Forum Change Log (Generated: Sun, 18 Nov 2012 11:55:40)
+# Beehive Forum Change Log (Generated: Sun, 11 Aug 2013 19:21:46)
 
-## Date: Sun, 18 Nov 2012
+## Date: Sun, 11 Aug 2013
 
-- Changed: Page titles on ledit.php and ldelete.php were clumsly
-           generated.
-- Changed: Complete English British language pack.
-- Changed: User's local time display in User Profile is now formatted
-           using strftime.
+- Changed: Use mysqli\_connect for Sphinxsearch, as it doesn't seem to
+           work with mysqlnd.
 
-## Date: Sat, 17 Nov 2012
+## Date: Fri, 09 Aug 2013
 
-- Changed: Updated documentation for 1.3.0 release.
-- Fixed: bh\_git\_log\_parse.php not including all log entries.
+- Changed: Enabled SSL support in SwiftMailer with an option in Global
+           Forum Settings.
+- Fixed: Global Forum Settings inaccessible if Sphinx functionality
+         enabled without Sphinxsearch running.
 
-## Date: Fri, 16 Nov 2012
+## Date: Mon, 05 Aug 2013
 
-- Changed: Sync stylesheets with default style.
-- Fixed: Missing MD5 column when upgrading from 1.2.0 to 1.3.0.
-- Changed: Bump version numbers for upgrade to 1.2.0 to 1.3.0.
-- Changed: Updated documentation for 1.3.0 release.
+- Changed: Always attempt to get the MySQL version in Error Handler.
+- Changed: Go back to XHTML doctype.
 
-## Date: Thu, 15 Nov 2012
+## Date: Sun, 04 Aug 2013
 
-- Fixed: High Interest not working with Quick Reply.
-- Fixed: StopForumSpam Admin log entry wasn't being recorded
+- Changed: Error handler now uses var\_export instead of print\_r to
+           aid quick copy-paste of super-globals for debugging.
+- Changed: JavaScript tidy up.
+- Changed: Code optimisation.
+- Changed: Optimised CSS.
+- Fixed: Uncaught exception in exception handler when querying for
+         MySQL version.
+
+## Date: Thu, 01 Aug 2013
+
+- Fixed: Arguments to functions changes.
+
+## Date: Wed, 31 Jul 2013
+
+- Changed: Regex for Youtube CKEditor plugin changed to match extra
+           query params in URL (version 2)
+- Changed: Regex for Youtube CKEditor plugin changed to match extra
+           query params in URL.
+- Fixed: Edit using void result from message\_display.
+- Changed: Increase minimum PHP version to 5.3.0 as 5.2.x is long
+           discontinued and no longer supported by the PHP group.
+
+## Date: Mon, 29 Jul 2013
+
+- Fixed: Polls not displaying due to changes to MOVED\_TID and
+         MOVED\_PID.
+
+## Date: Sun, 28 Jul 2013
+
+- Changed: Code clean-up using PhpStorm's code inspection.
+- Fixed: Error in SQL when creating POST\_RATING table during upgrade.
+
+## Date: Sat, 20 Jul 2013
+
+- Changed: Use \_\_DIR\_\_ constant to prefix the BH\_INCLUDE\_PATH
+           constant.
+
+## Date: Fri, 19 Jul 2013
+
+- Changed: Drop and recreate SESSIONS table on upgrade to add unique
+           key to SID column.
+
+## Date: Sat, 13 Jul 2013
+
+- Fixed: Upgrade not creating new POSITION column in FORUM\_LINKS
+         table.
+- Fixed: Upgrade process wasn't correctly updating DEFAULT\_THREAD
+         with approved / approved\_by state.
+- Changed: Use a NOT IN clause to find non-contributing users for
+           forum stats.
+
+## Date: Sat, 06 Jul 2013
+
+- Fixed: Undefined variable $fid in
+         admin\_send\_link\_approval\_notification() in admin.inc.php.
+- Fixed: Cannot change mysqli's constructor to protected. This might
+         fix Beehive running on older PHP5 versions?
+- Fixed: Undefined variable $result and $table\_prefix in
+         forum\_search() in forum.inc.php.
+- Fixed: Invalid arguments to array\_map in
+         install\_check\_table\_conflicts() in install.inc.php.
+- Fixed: Undefined variable $uid in post\_create() in post.inc.php.
+- Fixed: Missing 3rd argument to socket\_create() in
+         rss\_feed.inc.php.
+- Fixed: Undefined variable $message in display.php.
+
+## Date: Wed, 12 Jun 2013
+
+- Fixed: Call to undefined function perm\_is\_group()
+
+## Date: Tue, 11 Jun 2013
+
+- Changed: Added styling to message ignored notification on Mobile
+           mode.
+- Fixed: Don't fetch message content if the sender has been ignored.
+- Changed: Optimise the order in which the deleted/moved/approval and
+           message manipulation is performed.
+- Changed: Output of message moved has changed to match
+           deleted/approval.
+- Changed: Mobile mode message display now reacts the same was the
+           full-fat mode does.
+- Changed: Use is\_preview flag to determine what parts of a message
+           to show. Fixes broken preview.
+
+## Date: Mon, 10 Jun 2013
+
+- Changed: Reduce size of approved messages notification on posts.
+- Changed: Don't automatically show unapproved messages to moderators,
+           it's confusing and means messages get missed.
+- Changed: Updated dependencies.
+- Changed: Upgraded SwiftMailer (although, not exactly many changes!)
+- Fixed: Mobile mode displaying posts that should be ignored.
+- Fixed: User query in Admin &gt; Users was forcing MySQL to use a
+         temporary table.
+- Changed: APPROVED, RELATIONSHIP AND EDITED are now null by default.
+
+## Date: Sun, 09 Jun 2013
+
+- Changed: Removed hide\_ip\_address argument to post\_create.
+- Fixed: Errors in SQL caused by previously commited column default
+         changes.
+- Changed: Register form now allows CKEditor for signature.
+- Changed: More default column type changes.
+
+## Date: Sat, 08 Jun 2013
+
+- Changed: Reimplement remove user\_logon and user\_token cookie if
+           session::restore fails.
+- Changed: Removed all default values from columns where they are 0 or
+           an empty string.
+- Changed: Remove FID column from SEARCH\_RESULTS as it's not being
+           used any more.
+- Changed: Added index to POST\_RATING.RATING column.
+- Changed: Removed all the old columns we don't need from the
+           installer.
+- Fixed: Installer not adding CREATED column to POST\_RATING table for
+         upgrades.
+- Fixed: SQL error with CREATED column on POST\_RATING.
+
+## Date: Thu, 06 Jun 2013
+
+- Fixed: Guest user (UID 0) would be added to the default user group.
+
+## Date: Wed, 05 Jun 2013
+
+- Changed: Always allow access to support files - ajax.php, json.php,
+           etc.
+- Changed: Always allow access to PMs and admin area if forum is set
+           to restricted.
+- Changed: Remove user\_logon and user\_token cookie if
+           session::restore fails.
+- Changed: Use HTTP\_COOKIE in $\_SERVER to unset cookies if
+           available.
+
+## Date: Sun, 02 Jun 2013
+
+- Fixed: forum\_delete\_tables wasn't working correctly due to
+         permissions check.
+- Changed: Installer is now exception happy and throws them if
+           anything goes wrong during installation / upgrade.
+- Changed: Added CREATED column to POST\_RATING table.
+
+## Date: Sat, 01 Jun 2013
+
+- Fixed: Search was not allowed if you hadn't searched before.
+- Fixed: Thread title not being highlighted with search keywords.
+
+## Date: Fri, 31 May 2013
+
+- Fixed: SQL errors in installer preventing installer from completing
          correctly.
-- Changed: StopForumSpam doesn't play nice with some IPV6 addresses.
-           Work around it by extracting the IPV4 address if available.
 
-## Date: Sat, 10 Nov 2012
+## Date: Wed, 29 May 2013
 
-- Changed: Don't hide menu when clicking button again. Fixes issues
-           with mobile browsers that send two clicks due to touch
-           screen issues.
-- Fixed: Broken images in Error Handler output when it is triggered by
-         3rd-party code.
-- Changed: Increased width of Error Handler output and improved
-           readability of stacktrace.
+- Changed: Removed require\_post\_approval setting and always just use
+           the folder permission.
+- Changed: Allow posts to be edited and deleted while pending
+           approval.
 
-## Date: Fri, 09 Nov 2012
+## Date: Sat, 25 May 2013
 
-- Fixed: Text selection for Code, Quote and Spoiler tags was showing
-         [object MSSelection] or [Object Selection] in Internet
-         Explorer.
+- Changed: Disallow fullscreen mode in embed tag. Allow hSpace and
+           vSpace.
 
-## Date: Thu, 08 Nov 2012
+## Date: Fri, 24 May 2013
 
-- Changed: Added empty paragraphs after quote. Would prefer br but
-           ckeditor insists on continusing to use p tags everywhere.
-- Changed: Made spoilers readable in editor and added styling for
-           anchor tags.
+- Added: CKEditor allMedias plugin (backported to work with CKEditor
+         3.x)
+- Changed: Allow embed tag in HTMLPurifier to support allMedias
+           plugin.
+- Changed: Switch attr calls to prop to make the JavaScript work
+           correctly. Fixes the select all checkboxes.
+- Changed: Reduce complexity of PM search query by only joining on
+           PM\_TYPE to ensure user owns the PM.
 
-## Date: Sat, 03 Nov 2012
+## Date: Wed, 22 May 2013
 
-- Fixed: Editor breaking if you click Quick Reply after having already
-         clicked Quick Reply on another post.
-- Changed: Increase padding / margin around pagination links in Mobile
-           thread list.
-- Changed: Increase padding / margin around pagination links in Mobile
-           thread list.
-- Fixed: e Mobile mode thread pagination wasn't working correctly.
+- Fixed: Undefined index POST\_RATING and USER\_POST\_RATING when
+         displaying a poll in Mobile mode.
+- Changed: Remove max length restriction on passwords.
+- Changed: Move post rating calculation into separate queries for
+           better reuse.
 
-## Date: Fri, 02 Nov 2012
+## Date: Tue, 21 May 2013
 
-- Fixed: Some Javascript got disabled while trying and failing to make
-         it work with IE7.
-- Changed: Disable CKEditor context menu.
+- Fixed: Query for Visitor log user rating didn't function correctly.
+- Fixed: form\_dropdown\_objgroup\_array wasn't returning the rendered
+         HTML.
+- Added: Visitor log allows adding user score and post votes.
 
-## Date: Wed, 31 Oct 2012
+## Date: Mon, 20 May 2013
 
-- Changed: Increased width of Create Poll and Edit Poll to match Post
-           and Edit.
-- Changed: Put Create and Edit Poll pages radio butons on separate
-           lines for easier use.
-- Changed: Prevent left frame from being less than 100px.
-- Changed: Increase width of editor to 720px to fit new wider Post and
-           Edit pages.
-- Changed: Increase width of Post, Edit and PM Write and Edit to 920px
+- Fixed: More undefined variables in create\_poll.php.
+- Fixed: Post menu not displaying due to AJAX error.
+- Changed: Added folder FID to message\_get result.
+- Changed: Simplified vote form and menu functions
 
-## Date: Tue, 30 Oct 2012
+## Date: Sun, 19 May 2013
 
-- Added: Readme for root of repository with links to the other docs.
+- Added: Mobile mode post voting styles.
+- Added: Mobile mode post voting with popup for easier tapping.
+- Fixed: Undefined variable $content
 
-## Date: Fri, 26 Oct 2012
+## Date: Sat, 18 May 2013
 
-- Changed: Removed dictionary functionality. Please use browser
-           specific add-ons / plugins.
-- Fixed: JavaScript errors causing problems for IE8.
+- Changed: Add ajax handling of post voting.
+- Fixed: Unable to reply to a specific post and change the recipient
+         to all.
 
-## Date: Thu, 25 Oct 2012
+## Date: Thu, 16 May 2013
 
-- Changed: Removed hidden t\_sig field in lpost.php. No need to submit
-           it if it's can't be edited.
-- Fixed: Admins unable to edit user's signature.
-- Fixed: Removed invalid CSS in editor/editor.css.
-- Fixed: Double bind of CKEDITOR dialogDefinition event.
+- Changed: Reduced the contrast the vote icons off state.
+- Changed: More optimisation of the Sphinx configuration.
+- Changed: New higher contrast vote icons courtesy of Andrew
+- Changed: Make sure Sphinx only updates posts which were indexed in
+           the last run.
 
-## Date: Wed, 24 Oct 2012
+## Date: Wed, 15 May 2013
 
-- Changed: Added margin to div.sig. Needed now we don't use paragraphs
-           in CKEditor.
-- Fixed: Trim white-space on each line in strip\_paragraphs.
-- Changed: Disable CKEditor on Mobile mode. Use soft-enter (always add
-           &lt;br&gt; in Mobile mode)
-- Changed: Use ENTER\_BR mode in CKEditor and disable Auto.Paragraphs
-           in htmlpurifier.
+- Fixed: Hardcoded DEFAULT webtag in a few queries added during
+         permissions changes.
+- Fixed: Installer not creating new tables added recently.
+- Changed: Moved INDEXED column into POST table for query speed and
+           have it be nulled when editing a post.
 
-## Date: Tue, 23 Oct 2012
+## Date: Mon, 13 May 2013
 
-- Fixed: Sorting of CSS selectors wasn't working in
-         bh\_check\_styles.php.
-- Changed: Removed margins from paragraph tags for CKEditor enter
-           press functionality.
+- Fixed: Broken SQL not sending new user approval / notification to
+         admins.
+- Added: Profile now includes total votes cast and current total user
+         score.
 
-## Date: Sun, 21 Oct 2012
+## Date: Sun, 12 May 2013
 
-- Fixed: Missing space in favicon tag in Mobile pages.
-- Fixed: Cancel button height in Mobile Post / Edit wasn't the same as
-         the other buttons.
-- Changed: Updated styles so they all match the default.
-- Changed: Set htmlpurifier's cache dir to sys\_get\_temp\_dir value.
-- Changed: Added Bing, Google Adsense and MJ12 bots to
-           SEARCH\_ENGINE\_BOTS.
-- Changed: Exclude some already classified includes from
-           bh\_check\_function\_names.php.
-- Changed: Removed accidentally commited htmlpurifier cache files.
+- Fixed: Post rating was broken on polls.
+- Added: Post voting with positive and negative voting.
+- Changed: Allow repeated upgrade attempts by making upgrade.php check
+           for tables it has already modified.
+- Fixed: Broken SQL query preventing user profile popup from fetching
+         list of groups a user is in.
 
-## Date: Fri, 19 Oct 2012
+## Date: Fri, 10 May 2013
 
-- Fixed: Ctrl + Enter on Quick Reply wasn't working with CKEditor.
-- Changed: Don't use CKEditor jQuery adaptor as it's not as flexible
-           as straight up CKEDITOR.replace().
-- Changed: Don't cache the cached response from StopForumSpam.
+- Changed: Move user permissions into their own table and keep only
+           groups and group permissions in the existing tables.
 
-## Date: Wed, 17 Oct 2012
+## Date: Thu, 02 May 2013
 
-- Fixed: Quick Reply Open, Cancel and Reopen would break CKEditor
-         because we weren't destroying the old instance.
-- Changed: Always run User's signature through fix\_html when loading
-           it.
-- Changed: Hide the elementPath on CKEditor.
+- Fixed: Emails containing final\_uri, including email confirmation,
+         had a proceeding slash that caused the link to not work.
+- Fixed: Calls to html\_draw\_error had the wrong arguments in some
+         cases.
 
-## Date: Tue, 16 Oct 2012
+## Date: Mon, 29 Apr 2013
 
-- Fixed: Beehive CKEditor plugin not working correctly in IE8.
-- Fixed: Youtube Preview not working due to incorrect child reference.
-- Changed: bh\_check\_styles is now capable of checking and updating
-           CSS files in style sub-directories (i.e. CKEditor theme)
-- Changed: Remove top margin from first paragraph in CKEditor and
-           Mobile mode.
+- Fixed: Uncomment contentsCSS in CKEditor setup that was setting
+         wrong default font and disabling emoticons.
 
-## Date: Mon, 15 Oct 2012
+## Date: Sat, 27 Apr 2013
 
-- Fixed: Cancel buttons not working on lpost.php and ledit.php.
-- Fixed: bh\_check\_styles.php wasn't sorting the modified CSS file to
-         match the defaults.
-- Changed: Added CSS selector to a.button to mobile.css.
-- Fixed: Old pseudo-quote tag was still being used by pm\_wite.php and
-         post.php.
-- Fixed: Global-only user prefs didn't save unless flag was set in
-         global settings array.
-- Changed: Removed quote functionality from lpm\_write.php as it's not
-           accessible.
-- Changed: Removed redudant $emoticons argument in
-           message\_apply\_formatting.
-- Changed: Force CKEditor to obey enter mode to allow escaping
-           &quot;Quote&quot; elements.
-- Fixed: Allow HTML check wasn't being performed early enough when
-         editing a message.
-- Fixed: Double-encoded emoticons due to missing emoticons\_strip.
-- Changed: Removed redudant arguments from fix\_html.
+- Changed: Added textareas to zoom disable on mobile mode.
+- Fixed: CKEditor Youtube plugin not setting height and width when
+         using URL.
 
-## Date: Sun, 14 Oct 2012
+## Date: Thu, 25 Apr 2013
 
-- Changed: bh\_check\_styles now ignore rules containing colour codes
-           (#[0-9A-F]|rgba?) as well as rules containing the world
-           color.
-- Changed: bh\_git\_log\_parse.php now uses UNIX line endings for
-           everything.
-- Changed: Remove top margin from first paragraph tag (using
-           first-child pseudo selector)
-- Fixed: Reply to link to lpost.php didn't correctly set the to user.
-- Added: HTML source button added to CKEditor toolbar.
-- Fixed: Undefined variable $to\_uid when editing a post.
-- Changed: ADMIN\_LOG table now uses longblob same as SESSIONS and
-           SFS\_CACHE.
-- Added: Themes for CKEditor for each of Beehive's main styles.
-- Changed: bh\_check\_styles.php is now more readable and easier to
-           understand.
-- Fixed: Toolbar button state change when in youtube element.
-- Changed: Added preview to Youtube CKEditor plugin.
-- Changed: Allow frameborder attribute on iframe tag.
-- Fixed: CKEditor doesn't initialise correctly on hidden textareas.
-- Changed: Create Poll, Post, Edit and PM Write pages should now all
-           be the same width.
+- Fixed: Font resize ajax event not reloading CSS file.
+- Added: jQuery.mobile.zoom added from jQuery.mobile project to
+         prevent zoom on input field focus.
+- Changed: Upgrade jQuery and plugins to latest available versions.
+- Changed: Google Closure Compiled all the 3rd part JavaScript files.
 
-## Date: Sat, 13 Oct 2012
+## Date: Sun, 21 Apr 2013
 
-- Fixed: Width of Signature box was too small when collapsed.
-- Fixed: Changing Signature Ignore option trashed other post page
+- Changed: Youtube CKEditor plugin now allows embed code or URL.
+- Changed: Upgrade Swiftmailer to 4.3.1
+- Changed: Upgrade HTMLPurifier to 4.5.0
+- Changed: Upgrade CKEditor to 3.6.6.1.
+- Changed: Added &quot;Me Only&quot; privacy level to profile items.
+- Changed: Layout of Edit Profile changed to better fit long profile
+           item texts.
+
+## Date: Sat, 20 Apr 2013
+
+- Fixed: Mobile mode thread list discussion type select box didn't
+         auto-submit form when accessed from index.php.
+
+## Date: Sun, 14 Apr 2013
+
+- Fixed: Wrong data being passed to admin\_add\_log\_entry()
+- Fixed: Undefined variable $t\_content when editing a post.
+
+## Date: Sat, 13 Apr 2013
+
+- Fixed: Broken HTML could cause message\_apply\_formatting to get
+         stuck in an infinite loop.
+- Fixed: Maximum post length should be checked against the combined
+         length of content and signature.
+- Fixed: Arguments to form functions were using false or 0 when they
+         should be using null if they have no argument.
+- Fixed: Signatures not showing for guests and showing when they
+         shouldn't for registered users.
+
+## Date: Wed, 10 Apr 2013
+
+- Fixed: Mobile mode PM folder select box didn't automatically submit
+         form.
+- Fixed: Mobile mode search didn't work correctly for searching for
+         posts by user.
+- Fixed: Thread list mode select showing &quot;Search Results&quot; if
+         you click on Messages in nav.php after performing a search.
+- Changed: Moved JavaScript that controls thread list mode change into
+           js/thread\_list.js.
+
+## Date: Tue, 09 Apr 2013
+
+- Fixed: PM search results were being counted towards used PM space.
+- Fixed: Menu not working on Mobile mode since adding placeholder.
+- Changed: Added Search to Mobile mode menu.
+- Added: Mobile mode search page.
+
+## Date: Mon, 08 Apr 2013
+
+- Added: Form input fields now have placeholder support via native
+         attribute and jQuery plugin for older browsers.
+- Changed: Tidy up the Mobile mode post page a little.
+
+## Date: Sat, 06 Apr 2013
+
+- Fixed: Thread list icon wasn't changing correctly since
+         #24342c87ccb04e1e9f59a0cb0275a332788f3e2c
+
+## Date: Fri, 05 Apr 2013
+
+- Fixed: Sphinx search was checking variable that didn't exist.
+- Added: Ability to specify default user group for new users, applied
+         the first time they visit a forum.
+- Changed: New greyed out icons for set\_default\_forum.png.
+- Changed: Allow no default forum to exist. Redirects users to My
+           Forums page and shows link in navigation bar.
+
+## Date: Sun, 31 Mar 2013
+
+- Changed: Insert a space before each emoticon as well as after.
+
+## Date: Sat, 30 Mar 2013
+
+- Fixed: Guests could access forums despite access being restricted in
+         forum settings.
+- Fixed: Upgrade method wasn't creating new USER\_TRACK table format.
+- Fixed: Undefined variable $error\_html under some circumstances when
+         performing an upgrade.
+- Changed: Bump master branch version number to 1.4.0.
+- Changed: Make bh\_check\_style.php reformat and save the default css
+           files.
+
+## Date: Thu, 21 Mar 2013
+
+- Fixed: Post count ordering was performing string not numeric
+         comparison.
+
+## Date: Wed, 20 Mar 2013
+
+- Fixed: Content overflow wasn't working for pm\_display.
+
+## Date: Sat, 16 Mar 2013
+
+- Changed: Updated English British translation.
+- Fixed: Typo in Admin Forum Settings.
+- Changed: Replaced \r\n with \n in gettext calls as required for
+           correct internationalisation.
+- Fixed: Email confirmation link 2nd part is not an md5 sum any more.
+
+## Date: Fri, 08 Mar 2013
+
+- Fixed: Bitwise bit disable in
+         perm\_user\_cancel\_email\_confirmation and
+         perm\_folder\_reset\_user\_permissions was incorrect.
+- Fixed: Some bitwise comparisions didn't make sense or were hard to
+         read.
+
+## Date: Wed, 06 Mar 2013
+
+- Changed: Add version string to CSS, JavaScript and Images added to
+           page using the methods in html.inc.php.
+
+## Date: Sun, 03 Mar 2013
+
+- Fixed: Incorrect use of fetch\_row and using assoc array keys.
+- Fixed: Broken User Profile popup search redirect handling.
+
+## Date: Sat, 02 Mar 2013
+
+- Fixed: Register link not visible on logon page.
+- Fixed: Logout redirect wasn't correctly passing the webtag to
+         index.php.
+- Changed: Allow user to be added to and removed from groups form
+           admin user page.
+
+## Date: Fri, 01 Mar 2013
+
+- Changed: Remove GeSHi as we don't use it any more. To be replaced
+           with client-side implementation.
+
+## Date: Thu, 28 Feb 2013
+
+- Changed: Allow searches to be limitd to  n searches every y minutes,
+           instead of just every n minutes.
+
+## Date: Wed, 27 Feb 2013
+
+- Fixed: Undefined index POST\_PAGE in forum\_options.php when saving
          preferences.
-- Fixed: Post user was not being correctly populated when clicking on
-         Reply link in messages.php.
-- Changed: user\_update\_prefs logic changed so global prefs are set
-           only if entry set in global setting array.
-- Changed: Allow div and pre tag to have class attribute.
-- Changed: Disabled emoticons using CSS instead of with PHP code in
-           message\_apply\_formatting.
 
-## Date: Fri, 12 Oct 2012
+## Date: Tue, 26 Feb 2013
 
-- Fixed: Missing CSS for autocomplete.
-- Fixed: Emoticons in CKEditor were not being created correctly after
-         preview.
-- Changed: Removed auto links, disable emoticons and check spelling
-           post prefs.
-- Changed: Made Post, Edit, PM Write and PM Edit pages wider.
-- Changed: Removed recent user dropdown and thread users. Replaced
-           with single autocomplete.
+- Changed: Turn USER\_TRACK table into a key value store to allow
+           easier expansion.
+- Changed: Removed User total tme and user best time calculations as
+           they don't work.
+- Fixed: Checking wrong User Preference for PM email notification.
+- Fixed: Age and User's local time calculation were using static
+         dates, not the current date / time.
 
-## Date: Thu, 11 Oct 2012
+## Date: Sun, 24 Feb 2013
 
-- Fixed: html\_get\_cookie and forum\_get\_setting 2nd argument should
-         be null for it to be ignored.
-- Changed: Always add emoticon class name to emoticon HTML.
-- Changed: Use spans for emoticons in CKEditor, not fakeElements.
+- Fixed: Search results display blank page if mb\_substr-ing the
+         content resulted in broken HTML.
+- Changed: Increased preview of search result to 70 characters and
+           removed signature.
+- Changed: Changed layout of installer, moved help into the HTML so
+           that JavaScript isn't required to view it. Embed CSS inline
+           in the HTML output.
+- Changed: Supress errors caused by suPHP and ini\_set.
 
-## Date: Sun, 07 Oct 2012
+## Date: Wed, 20 Feb 2013
 
-- Changed: Show emoticons as user's selected pack in CKEditor.
-- Fixed: Set default font and font-size in CKEditor.
+- Fixed: It was possible to read other user's PMs while they remained
+         undeleted by all parties.
+- Fixed: Mobile Mode PM display was broken due to undefined variables.
+- Fixed: PMs weren't being marked as read in Mobile Mode.
 
-## Date: Sat, 06 Oct 2012
+## Date: Sun, 17 Feb 2013
 
-- Fixed: Switching off spoiler didn't remove the outer span.
-- Fixed: minHeight on link dialog isn't required now we've removed
-         some elements.
-- Changed: Context menu wasn't styled in Beehive skin for CKEditor.
-- Changed: Added editor.css which contains styles for Beehive Code,
-           Quote and Spoiler elements.
-- Added: Code, Quote and Spoiler buttons and functionality for
-         CKEditor in beehive plugin.
-- Fixed: Youtube plugin should only listen for resize events on
-         youtube dialog.
-- Fixed: Emoticons didn't always insert because CKEditor
-         currentInstance could be null.
-- Changed: Removed some controls from the CKEditor dialogs that aren't
-           neccesary.
+- Fixed: Light mode thread split notification was missing call to
+         sprintf.
 
-## Date: Tue, 02 Oct 2012
+## Date: Thu, 14 Feb 2013
 
-- Changed: Removed all remaining references to htmltools.
-- Changed: Removed emoticons 'More' link.
-- Changed: Emoticons preview box now uses CKEDITOR.currentInstance
-           (seems to be buggy though!)
-- Fixed: Broken emots\_disable checkbox would automatically tick on
-         preview / post.
-- Fixed: Don't check LOGON, EMAIL or NICKNAME for bans if user is a
-         Guest.
+- Changed: Require both Etag and Last-Modified header to be the same
+           before sending 304 not modified header.
+- Changed: Added Etag checking to cache routines and removed all the
+           duplicate code.
 
-## Date: Sun, 30 Sep 2012
+## Date: Tue, 12 Feb 2013
 
-- Fixed: Only use youtube plugin for iframes with src matching
-         youtube.com/embed
-- Changed: Validation on youtube plugin dialog box input now checks we
-           have an iframe with the src set correctly.
-- Changed: Add thumbnail to fakeElement created by youtube plugin.
-- Fixed: Dialogs couldn't be resized with beehive ckeditor skin.
-- Fixed: Iframes being stripped by HTML purifier due to use of
-         RemoveEmpty.
-- Changed: Added resize listener to youtube plugin to resize textarea
-           when dialog is resized.
-- Changed: Improvements to youtube ckeditor plugin complete with
-           dataProcessor for converting real iframe back into editable
-           content.
-- Changed: Ran jshint over Beehive's Javascript files.
+- Changed: Updated Sphinx configuration with proper stale index
+           checking, kill-list and word stemming via libstemmer.
 
-## Date: Sat, 29 Sep 2012
+## Date: Sun, 10 Feb 2013
 
-- Added: Work in progress Youtube Embed Plugin for ckeditor. Creates a
-         fake element, but gets mangled on preview due to iframe being
-         returned.
+- Fixed: Sphinx query for fetching posts wasn't returning a unique id.
+         Removed to\_uid as it's not used.
+- Changed: Old School MSN Type R Emoticon pack updated to work with
+           Beehive 1.3.x.
+- Fixed: Mistake in search\_popup.php checking wrong field in GET
+         request.
 
-## Date: Sun, 23 Sep 2012
+## Date: Sat, 09 Feb 2013
 
-- Changed: Auto focus the editor on page load for edit.php,
-           pm\_edit.php and pm\_write.php.
-- Fixed: Edit Signature was missing ckeditor toolbar
-- Fixed: Quick Reply ckeditor toolbar wasn't working correctly.
-- Fixed: Redirecting to forums.php got stuck in a loop.
-- Fixed: Links got stuck in a loop trying to create the Top Level
-         link.
-- Changed: Quick Reply uses Mobile ckeditor toolbar with reduced set
-           of options.
-- Changed: DB class overloads query method to catch failed queries.
-- Added: First draft Beehive ckeditor theme. Only available on default
-         style at the moment.
+- Fixed: Session garbage collection was deleting sessions linked to
+         non-expired login tokens.
 
-## Date: Sat, 22 Sep 2012
+## Date: Tue, 05 Feb 2013
 
-- Fixed: Installer not creating APPROVED and APPROVED\_BY in LINKS and
-         MD5 in SESSIONS table.
-- Fixed: Incorrect column name - LINKS\_VOTE column TSTAMP should be
-         VOTED.
-- Changed: Added method set\_config to db class to allow overriding
-           the values in config.inc.php.
-- Changed: Installer now uses db::set\_config.
-- Changed: Completely remove Beehive's HTML toolbar in favour of
-           ckeditor.
-- Added: ckeditor and HTML purifier added to repository as these are
-         now required modules.
-- Changed: Switch from TinyMCE to ckeditor.
-- Changed: Replaced fix\_html with HTML Purifier.
+- Fixed: Search Popup didn't work with allow\_multi set to true.
+- Changed: List of allowed mime-type to a textarea and new-line
+           separated for easier editing.
+- Changed: Allow inputs now use comma and not semi-colon separators.
 
-## Date: Thu, 20 Sep 2012
+## Date: Mon, 04 Feb 2013
 
-- Fixed: Undefined variable $text\_captcha\_image
+- Fixed: Deleting a user didn't complete successfully due to broken
+         query when deleting PMs.
 
-## Date: Sat, 15 Sep 2012
+## Date: Sun, 03 Feb 2013
 
-- Fixed: Missing back-tick in query results in error when resetting
-         permissions from Admin area.
+- Fixed: RSS feeds not working due to call to depreciated function.
+- Changed: Remove unused message\_get\_recipients and add
+           message\_get\_author.
+- Fixed: Quick Reply was broken since most recent changes to post
+         page.
 
-## Date: Wed, 05 Sep 2012
+## Date: Sat, 02 Feb 2013
 
-- Fixed: TinyMCE .js files not being included if a CDN is enabled.
+- Changed: Don't garbage collect session if there is a logon token
+           that hasn't yet expired.
+- Changed: Don't garbage collect session if there is a logon token
+           that hasn't yet expired.
+- Fixed: Query didn't return enough columns to sort result in
+         search\_get\_first\_result\_msg. Improved query to obey user
+         relation for ignored users.
+- Fixed: Broken query when using Sphinxsearch.
+- Changed: Restore functionality that checks Beehive is installed
+           correctly.
+- Changed: Updated Sphinx configuration for new POST\_RECIPIENT table.
 
-## Date: Sun, 02 Sep 2012
+## Date: Fri, 01 Feb 2013
 
-- Changed: Don't catch fatal errors at all. Turn them off and don't
-           output anything. Fixed SFS timeout preventing forum from
-           loading.
-- Changed: Error Handler is back to using Exception and new Error
-           class as a replacement for broken ErrorException.
-- Changed: Add timeout to SFS integration to speed up initial
-           connection.
+- Changed: Tidy up following merge from 1.3.x branch.
+- Changed: Remove check\_install and don't call it in boot.php.
+- Changed: Refined installer to remove duplicate HTML output and
+           specify required includes.
+- Changed: Installer should now work for PHP 5.2.x.
 
-## Date: Sat, 01 Sep 2012
+## Date: Fri, 25 Jan 2013
 
-- Fixed: Transparency issue with GD image resizing.
-- Changed: Attachment thumbnails are now resized to shortest size and
-           cropped into the final dimensions requested.
-- Changed: Require GD 2.0 support in image\_resize\_gd.
+- Changed: Improve the fatal error shutdown handler. Wrap Exception
+           Handler in try catch to trap exceptions thrown in the
+           handler itself.
+- Changed: Normalised PM database structure to allow storing single
+           message with multiple recipients without duplication of
+           data.
+- Changed: Email post to, thread and folder subscriptions
+           notifications now use queries and not the other functions
+           to get results.
+- Changed: Allow multiple recipients in posts.
+- Changed: Reset session.gc\_probability and session.gc\_divisor to
+           their defaults if not set or 0.
 
-## Date: Thu, 30 Aug 2012
+## Date: Mon, 21 Jan 2013
 
-- Fixed: Registering was trying to create a second session. It should
-         be calling session::refresh with the new UID instead.
+- Fixed: More broken includes discovered by changes to
+         bh\_check\_dependencies.php.
+- Fixed: Autocomplete wasn't working correctly for multi-user input
+         fields (Part 2).
+- Changed: bh\_check\_dependencies.php can now scan for object class
+           and static method usage.
+- Fixed: Lots of broken includes discovered by changes to
+         bh\_check\_dependencies.php.
+- Fixed: Autocomplete wasn't working correctly for multi-user input
+         fields.
+- Added: Option to disable sending emails by use of the SwiftMailer
+         NullTransport.
+- Fixed: Attachments not working in IE8.
 
-## Date: Wed, 29 Aug 2012
+## Date: Sun, 06 Jan 2013
 
-- Fixed: Call to undefined method get\_referer() in register.php.
-         Should be get\_http\_referer().
-- Changed: Don't parse stack trace around in function arguments, only
-           get it when we need to use it.
-
-## Date: Tue, 28 Aug 2012
-
-- Fixed: Trying to use db-&gt;escape without getting instance of db.
-- Changed: Revert back to passing arguments directly from
-           bh\_error\_handler instead of throwing an exception.
-- Fixed: Exception email reporting was attempting to call an undefined
-         function and failing silently.
-- Changed: Removed bh\_error\_handler and setup as it seems to
-           conflict with bh\_shutdown\_handler.
-- Changed: Added bh\_error\_exception class to replace broken
-           ErrorException in PHP 5.2.x.
-- Fixed: Trying to escape variables before having initialised database
-         connection.
-
-## Date: Mon, 27 Aug 2012
-
-- Fixed: Forum maintenance functions weren't being run due to recent
-         bootstrap changes.
-- Fixed: Adsense ads were always showing wide adverts on Mobile Mode.
-         Switched to always show smaller ads.
-- Changed: Mobile Mode Menu changed to place drop down menu outside of
-           header. Makes it work correctly on Blackberry devices.
-- Changed: Removed deprecated settings from config.inc.php.
-- Fixed: Sphinx Search was broken due to recent database changes.
-- Changed: Search frequency check is now done sooner.
-- Fixed: Pagination wasn't working on Search Results.
-- Fixed: Saving Global Forum Settings was broken.
-- Fixed: Exception handler was broken by change of method name in
-         database object.
-- Fixed: Forum Stats had some debug code left in the output.
-- Fixed: Polls were accessible to Guests even if the forum setting was
-         disabled.
-- Changed: Database functionality is now provided via an object that
-           extends MySqli.
-- Changed: Forum Settings are no longer loaded into a variable and
-           accessed via $GLOBALS.
-- Changed: forum\_get\_setting allows comparison against a scalar not
-           just a callback or string.
-- Changed: forum\_get\_settings and forum\_get\_global\_settings now
-           use common code to get data from database.
-- Changed: config.inc.php is loaded via server\_get\_config() and
-           returned as an array.
-
-## Date: Tue, 21 Aug 2012
-
-- Changed: Unset sess\_uid cookie if if working with a guest session /
-           logging out.
-- Changed: Made the invalid webtag message more welcoming.
-- Changed: Always use PHP's session cookie handling instead of trying
-           to manage it ourselves.
-- Changed: Call date\_default\_timezone\_set earlier so session
-           garbage collection has the correct timezone.
-- Changed: Removed redudant calls to
-           forum\_check\_webtag\_available().
-
-## Date: Mon, 20 Aug 2012
-
-- Fixed: Wrong column name in gc method.
-- Changed: Removed Session expiry logging. Doesn't appear to be
-           anything happening other than sesisons genuinely expiring.
-
-## Date: Sun, 19 Aug 2012
-
-- Changed: Add some logging to session class to see if we can work out
-           why sessions keep expiring prematurely.
-
-## Date: Sat, 18 Aug 2012
-
-- Changed: SESSIONS table is now INNODB and has a maximum ID length of
-           40 chars to allow for SHA-1 session IDs.
-- Fixed: Nav bar not display correctly on Opera Mobile / Mini due to
-         floated divs.
-- Changed: Each style can now have it's own style\_ie6.css.
-- Changed: Updated stylesheets to be common accept for colours.
-- Changed: Moved image resize functionality into it's own include and
-           made it more universal.
-- Fixed: Check if BH\_INCLUDE\_PATH is already defined in boot.php and
-         lboot.php before setting it.
-
-## Date: Wed, 15 Aug 2012
-
-- Fixed: Stats AJAX request not sending correct cache headers.
-- Fixed: Cannot vote in poll unless it is a tabular poll.
-
-## Date: Tue, 14 Aug 2012
-
-- Fixed: Search not redirect to the correct page after it has
-         completed.
-- Changed: Exception handler is now in easy to manage chunks that can
-           be called independently to the main function.
-- Fixed: Duplicate relationship icons in start\_left.php.
-- Fixed: Guests should be able to access lmessages.php.
-- Changed: session::restore will now work if token is valid but
-           session has been deleted.
-
-## Date: Mon, 13 Aug 2012
-
-- Changed: Added call to register\_shutdown\_function to see if it
-           helps with premature session expiry
-- Fixed: Thread List and Recent Threads were showing High Interest
-         icons to guests.
-- Changed: Stats display uses verbose period names.
-
-## Date: Sun, 12 Aug 2012
-
-- Changed: Allow Javascript files to be loaded via CDN URI.
-- Fixed: Stats were not displaying correct Guest count. Restored old
-         Guest count query to perform this corretly.
-- Changed: Session::end no longer deletes the session from the
-           database, but simply replaces it with a guest session.
-- Fixed: Function light\_html\_guest\_error() was passing incorrect
-         number of arguments to light\_html\_draw\_error().
-- Fixed: Function light\_html\_draw\_error() was not exiting script.
-- Changed: Only add user prefs to session for logged in users.
-- Fixed: Attachments not downloading and gettng stuck in a loop.
-- Fixed: Not posisble to log in/out on a password protected forum due
-         to logon.php/logout.php not being in white-list.
-- Changed: Forum Password is now captured inline like the admin area
-           reauthentication.
-- Fixed: It wasn't possible to login to a password protected forum as
-         forum\_password.php wasn't in the white-list.
-- Fixed: Mobile mode thread list wasn't using the specified mode and
-         was defaulting to Unread / All Discussions.
-- Fixed: Active user stats not showing Search Engine Bots or Guest
-         count correctly.
-- Changed: Removed active\_sess\_cutoff and session\_cutoff forum
-           settings as they no longer apply now we're using PHP native
-           sessions.
-- Changed: Removed db\_unbuffered\_query as it doesn't exist in
-           MySQLi.
-- Changed: Forum password and thread list mode are now stored in
-           session instead of cookies.
-- Changed: Admin reauthentication session value is now uppercase to be
-           consistent with rest of Beehive.
-- Changed: Added unset\_value method to session.
-- Changed: Removed old user\_passhash cookie references.
-- Fixed: SQL error in session::write
-- Fixed: Call to session\_get\_value() should be session::get\_value()
-- Fixed: Missing call to light\_html\_draw\_top() in index.php.
-- Fixed: User word filter not applying if the admin word filter was
-         empty.
-- Fixed: Word filter not removing empty placeholder tags.
-- Fixed: Reinstate ban\_check() but do it in boot.php/lboot.php
-         instead of within session::init()
-- Changed: Functions light\_html\_draw\_top() and
-           light\_html\_draw\_bottom() may now only be called once per
-           page.
-- Changed: Code in session::restore is only called if a session cookie
-           doesn't already exist, which are only sent when you login.
-- Changed: Don't put the entire USER record in the session, only the
-           data we need to perform a ban\_check.
-
-## Date: Sat, 11 Aug 2012
-
-- Fixed: Broken session::logged\_in() check wqas preventing messages
-         from being marked as read.
-- Fixed: Removed duplicated session::logged\_in() check in
-         font\_size.php.
-- Fixed: lboot.php was not up to date when compared to boot.php.
-- Fixed: Remove debug code from session.inc.php. Always send cookie
-         with every response if logged in.
-- Fixed: Undefined variable session.inc.php
-- Added: Additional authentication for admin access is now required.
-         Must match the current logged in user to validate.
-- Added: session::set\_value method for setting a value in the
+- Fixed: mysql\_big\_selects config option not working.
+- Fixed: Couldn't select a folder to view in lthread\_list.php.
+- Fixed: Missing include placeholders in Mobile mode scripts.
+- Changed: Increased width of some pages. Target 1280x960.
+- Fixed: Broken includes for HTMLPurifier.
+- Fixed: User timezone selection not working due to missing keys in
          session.
-- Changed: Version bump to 1.3.0-GIT.
-
-## Date: Fri, 10 Aug 2012
-
-- Fixed: All calls to db\_fetch\_array passing into list now uses
-         DB\_RESULT\_NUM.
-- Fixed: All html\_draw\_top calls now use sprintf and gettext
-         correctly to set the window / page title.
-- Changed: More pages in admin area now use wider layouts and display
-           more data for ease of use.
-- Changed: Sessions no longer use base64\_encode/decode as it seems
-           sometimes the data gets corrupted.
-
-## Date: Mon, 06 Aug 2012
-
-- Fixed: forum\_check\_access now has a white-list that it allows to
-         proceed.
-- Changed: All arrays are now cleanly formatted for easy reading.
-- Changed: Autocomplete now includes logon in brackets.
-- Changed: Removed stripslashes\_array and implement
-           disable\_magic\_quotes function.
-- Changed: bhsearchinput no longer uses a container div in the HTML.
-           This is now added by Javascript.
-
-## Date: Sun, 05 Aug 2012
-
-- Changed: Introduced boot.php and lboot.php for bootstrapping the
-           individual files into a common state.
-- Changed: Massive code overhaul, formatting, etc. Probably lots of
-           broken things, but they'll get fixed eventually.
-- Changed: Removed all phpdocumentor comment blocks. Will re-do them
-           properly at a later date.
-- Changed: Switched to jQueryUI autocomplete.
-
-## Date: Wed, 01 Aug 2012
-
-- Fixed: User E-mail message footer missing line breaks.
-- Fixed: TinyMCE editor not auto focusing after initialisation.
-
-## Date: Sun, 29 Jul 2012
-
-- Changed: License changed from GNU GPL v2 to v3 to bring us inline
-           with some of the libraries we distribute with Beehive.
-- Changed: All our documentation is now in markdown for easy export to
-           HTML and other formats.
-- Changed: bh\_git\_log\_parse.php now generates markdown
-           changelog.md.
-
-## Date: Sat, 28 Jul 2012
-
-- Fixed: Updated bh\_check\_php\_version.php to work with latest
-         Bartlett/PHP/CompatInfo.php.
-- Fixed: Lots of broken sprintf statements due to change to GNU
-         gettext.
-- Changed: Updated dependencies in all scripts.
-- Changed: Updated stylesheets to be consistent with default style.
-- Changed: Upgraded bundled version fo SwiftMailer.
-
-## Date: Fri, 27 Jul 2012
-
-- Fixed: TinyMCE seems to remove empty paragraph tags, switched to
-         using &lt;br /&gt; instead.
-- Fixed: Allow style attribute on span tag. TinyMCE seems to have
-         disabled / broken the inline\_styles option they have.
-- Changed: Compress white-space when quoting a post in a reply.
-
-## Date: Thu, 26 Jul 2012
-
-- Fixed: Incorrect uses of format strings in strftime
-
-## Date: Tue, 24 Jul 2012
-
-- Fixed: Incorrect table name VISITOR\_LOG\_NEW and missing
-         USER\_AGENT column in SESSION table in new installs.
-
-## Date: Mon, 23 Jul 2012
-
-- Fixed: html\_draw\_top was not clearing additional arguments if they
-         were already set.
-- Fixed: inline\_css argument to html\_draw\_top was not matching the
-         CSS after the argument correctly.
-- Changed: Applied same modifications to html\_draw\_top to
-           light\_html\_draw\_top.
-- Fixed: Bad pattern matching in html\_draw\_top meant that thread
-         title containing special characters would cause an exception
-         to be thrown.
-
-## Date: Sun, 22 Jul 2012
-
-- Changed: Updated Beehive TinyMCE plugin to work with 3.5.5 minimum.
-- Changed: Updated readme.txt to indicate minimum TinyMCE version
-           required.
-- Fixed: Height and width on Youtube and Flash plugins.
-
-## Date: Sat, 21 Jul 2012
-
-- Fixed: Display of languages in Forum Options included the full path
-         to the locale file.
-
-## Date: Thu, 19 Jul 2012
-
-- Fixed: Empty Visitor log prevented page from loading due to infinite
-         loop occuring.
-- Fixed: Mobile mode drop down menu needs a high z-index to show above
-         Google Ads.
-
-## Date: Wed, 18 Jul 2012
-
-- Changed: Added some branding to the top banner on Mobile mode and
-           move menu items into a drop down structure.
-- Fixed: DOB\_DISPLAY wasn't being obeyed in User Profile popup since
-         changes to USER\_PREFS tables.
-- Fixed: Upgrade script now copies USER\_PREFS from forum to global
-         before we remove the columns.
-
-## Date: Tue, 17 Jul 2012
-
-- Fixed: Broken HTML in start\_left.php
-- Fixed: Broken upgrade script not escaping table names correctly.
-
-## Date: Sat, 14 Jul 2012
-
-- Fixed: Broken page titles caused by title argument not being passed
-         correctly.
-- Changed: Forum user preferences are now nullable so that they can
-           correctly inherit from global user preferences.
-
-## Date: Tue, 10 Jul 2012
-
-- Changed: Only add entry to ADMIN\_LOG if SFS response is not cached.
-
-## Date: Mon, 09 Jul 2012
-
-- Fixed: Language strings in JSON response were missing keys.
-- Fixed: SQL\_CALC\_FOUND\_ROWS missing from visitor\_log.inc.php.
-- Fixed: Image Resize code being called too early, changed to use
-         event delegation on img load event.
-- Fixed: jQuery.attr('clientWidth') is no longer valid, changed to
-         prop('clientWidth')
-
-## Date: Sat, 07 Jul 2012
-
-- Fixed: Calls to gettext as an argument to forum\_submit\_image was
-         creating broken HTML in forums.php, user\_rel.php and
-         visitor\_log.php.
-- Changed: Revert back to old visitor\_log\_get\_recent() function for
-           displaying the recent visitors in start\_left.php
-- Changed: New schema for VISITOR\_LOG table that makes use of
-           MYISAM's relaxed NULL unique constraint to make querying it
-           easier.
-
-## Date: Tue, 03 Jul 2012
-
-- Fixed: Date dropdown functions were trying to translate the text
-         &quot;Array&quot;.
-- Changed: Added lang\_get\_month\_names function for use in date
-           dropdown functions.
-- Changed: Switched to GNU gettext for translations.
-- Changed: Use strftime for proper localisation of dates and times.
-
-## Date: Fri, 22 Jun 2012
-
-- Fixed: Broken links when searching for posts by a user.
-
-## Date: Thu, 21 Jun 2012
-
-- Fixed: Hard-coded DEFAULT webtag in poll.inc.php
-- Fixed: Missing comma in SQL statement in stats.inc.php
-- Changed: Revert back to word filter appying to whole message instead
-           of non-HTML parts.
-
-## Date: Wed, 20 Jun 2012
-
-- Fixed: Not escaping filter name in display of filters.
-
-## Date: Thu, 14 Jun 2012
-
-- Changed: All coookies are now marked as HTTP only.
-
-## Date: Sun, 10 Jun 2012
-
-- Changed: Function admin\_add\_log\_entry now accepts only array as
-           it's second argument.
-- Changed: ADMIN\_LOG table ENTRY column is now a longblob and stores
-           base64 encoded serialized array.
-
-## Date: Sat, 09 Jun 2012
-
-- Changed: Allow session\_check\_banned to check global ban state of
-           user.
-
-## Date: Fri, 08 Jun 2012
-
-- Fixed: Prevent HTML in word filter from breaking HTML in messages.
-
-## Date: Thu, 07 Jun 2012
-
-- Fixed: Reimplement nested tag checking in add\_paragraphs and fix
-         infinite loop when HTML with code tags.
-
-## Date: Wed, 06 Jun 2012
-
-- Changed: Allow HTML to be used in word filter correctly. HTML is
-           stripped if it would cause problems with validation.
-
-## Date: Tue, 05 Jun 2012
-
-- Fixed: Link details shows stale data after submitting edit form.
-- Fixed: Links page was sending page URL query var that we don't use.
-- Fixed: Missing language string nolinksawaitingapproval.
-- Changed: Updated helper scripts to output something even if nothing
-           found.
-
-## Date: Mon, 04 Jun 2012
-
-- Changed: Remove $init\_guest\_session argument of session\_check.
-           Now always intitialise Guest session. Fixes problems with
-           Light mode embedded in index.php.
-- Changed: Always show RSS feed links for available folders.
-
-## Date: Sun, 03 Jun 2012
-
-- Added: Link Approval Email Notification for Link Moderators.
-- Added: Approval by moderator for links section, including approval
-         queue in Admin section.
-
-## Date: Fri, 01 Jun 2012
-
-- Changed: Session Restore will now look for a session to reuse before
-           creating a new one.
-- Changed: Prune sessions more frequently upon each user's session
-           cutoff being triggered.
-- Changed: Removed remove\_stale\_sessions call from forum maintenance
-           calls.
-
-## Date: Tue, 29 May 2012
-
-- Fixed: Undefined index when editing a post with complicated mix of
-         HTML and auto-paragraphs.
-
-## Date: Mon, 28 May 2012
-
-- Fixed: Checking wrong POST data for PM\_EXPORT\_TYPE user
-         preference.
-
-## Date: Sat, 26 May 2012
-
-- Changed: Prevent some XSS vulnerabilities in the cookies we use.
-
-## Date: Thu, 24 May 2012
-
-- Fixed: Social links were cropped badly. Moved code into common
-         function in messages.inc.php.
-
-## Date: Wed, 23 May 2012
-
-- Changed: Don't escape frameset attribute values. Make calling code
-           escape them.
-- Changed: Function href\_cleanup\_query\_keys now always uses &amp;
-           separator. Use built-in PHP code to build query string.
-- Changed: Removed redudant URL query checks in index.php.
-
-## Date: Tue, 22 May 2012
-
-- Fixed: XSS / HTML inection flaws involving final\_uri URL query
-         parameter and frameset tags.
-- Fixed: Removed call to text\_captcha-&gt;delete\_image().
-- Fixed: Session not correctly restoring if user\_token cookie was
-         set.
-- Changed: Removed session\_expired functionality as it's not needed
-           any more.
-- Changed: Added ban\_check call to register.php so we don't create
-           banned user accounts.
-- Changed: sfs\_check\_banned to take an array of data.
-
-## Date: Sun, 20 May 2012
-
-- Fixed: Meta Keywords and Meta Description were being passed through
-         word filter twice if no msg URL query param.
-- Fixed: Multiple calls to session\_check() initialised multiple
-         sessions if the user used Remember Me functionality.
-- Changed: Function get\_request\_uri() now returns relative URL.
-- Changed: Added optional argument html\_guest\_error to specify which
-           page to redirect back to after logon instead of guessing
-           it.
-- Changed: HTML head now uses relative URLs. Fixes 3rd Party
-           integration.
-- Changed: Removed $use\_full\_path argument from
-           html\_get\_forum\_file\_path method.
-- Added: Record user\_agent in SESSION and VISITOR\_LOG tables.
-
-## Date: Sat, 19 May 2012
-
-- Fixed: SFS Ban Admin Log entries were showing Unknown User for
-         Guests.
-- Fixed: Query to fetch threads for Sitemap was querying permissions
-         incorrectly.
-- Changed: Optimised how sitemap functionality works by not copying
-           the MySQL result set into an array.
-- Fixed: Width of unapproved messages was less than that of visible
-         messages.
-
-## Date: Thu, 17 May 2012
-
-- Fixed: Incorrectly using Javascript redirect if web-server didn't
-         add SERVER\_SOFTWARE in $\_SERVER.
-- Changed: Text-captcha now writes images to system temp directory.
-- Changed: Added AJAX Chat global forum setting (no UI yet) which
-           shows a 'Chat' link in nav.php.
-
-## Date: Tue, 15 May 2012
-
-- Changed: Always allow Google AdSense Crawler.
-- Changed: Removed some files from robots.txt to aid Google Adsense
-           Robot in finding content for Ads.
-
-## Date: Mon, 14 May 2012
-
-- Changed: Allow final\_uri to be a full path.
-- Changed: All final\_uri parameters now check against
-           get\_available\_files() list as a minimum.
-
-## Date: Sun, 13 May 2012
-
-- Added: Option to place text-captcha directory outside of the forum
-         directory.
-- Changed: Text-captcha image is now sent as base64 encoded data which
-           allows the text-captcha directory to be placed outside the
-           web root.
-- Changed: TinyMCE youtube plugin source files were different in the
-           minified target file and the original source file.
-- Fixed: Huge mess of .gitignore files moved into one file. Correctly
-         excluded TinyMCE files except our own plugins.
-
-## Date: Sat, 12 May 2012
-
-- Changed: Updated installer / upgrader to use new VISITOR\_LOG table
-           schema.
-- Fixed: Not showing most recent last visit time on Visitor Log.
-- Changed: Removed UNION from visitor log and added grouping of
-           visitors.
-- Fixed: Removed duplicate visitors from Visitor log display.
-- Changed: Recent Visitors in start\_left.php now uses the same
-           functionality as visitor\_log.php.
-- Changed: Added line break before Adsense Advert at bottom of page.
-- Fixed: Broken automatic login in recent session changes.
-- Changed: Allow Adsense on Logon and Logout pages.
-- Fixed: Guests that don't send session cookie (looking at you,
-         GoogleBot), kept initialising multiple sessions.
-- Changed: Session no longer differentiates between guests and logged
-           in users.
-
-## Date: Thu, 10 May 2012
-
-- Changed: Adsense options now have more flexability about where you
-           can place adverts.
-
-## Date: Mon, 07 May 2012
-
-- Changed: Added tehforum style to .gitignore
-
-## Date: Sun, 06 May 2012
-
-- Fixed: Highlighting search results wasn't working due to changes in
-         how the keywords are matched.
-- Changed: Beehive now uses delta+main indexing in Sphinx. Beehive
-           will look for indexes named [WEBTAG] and [WEBTAG]\_DELTA.
-
-## Date: Sat, 05 May 2012
-
-- Fixed: SFS cache was not repopulating cache after it had expired,
-         causing 100% misses all the time.
-- Changed: Sphinx examples changed to reference Ubuntu 12.04 LTS
-           sphinxsearch package.
-- Changed: Sphinx integration now uses forum's WEBTAG as the index and
-           source names.
-- Changed: Installer now drops and recreates SFS\_CACHE table every
-           time it is run.
-
-## Date: Thu, 26 Apr 2012
-
-- Added: Admin Log Record Grouping to help reduce SFS log pollution.
-- Fixed: Admin log prune didn't remember column sorting and direction.
-- Changed: Removed forum\_uri setting as it's causing too many
-           problems for people.
-
-## Date: Thu, 19 Apr 2012
-
-- Fixed: StopForumSpam hit was causing error and not logging ban to
-         admin log.
-- Changed: Added display of StopForumSpam admin log entries.
-
-## Date: Wed, 18 Apr 2012
-
-- Fixed: Missing sfs global forum settings added to
-         global\_forum\_settings array.
-- Changed: Added option to disable StopForumSpam integration.
-- Changed: Updated Sphinx documentation. Added example sphinx.conf
-- Fixed: Text Captcha was case-sensitive and would only use files with
-         lowercase ttf extension.
-- Changed: Sphinx integration is now handled via Sphinx's own indexer.
+- Changed: More improvements to bh\_check\_dependencies.php.
+- Changed: Updated dependencies using new bh\_check\_dependencies.php.
+
+## Date: Sat, 05 Jan 2013
+
+- Changed: New and improved bh\_check\_dependencies.php which can
+           automatically update the source files.
+- Changed: Added placeholder for require lines to scripts.
+- Changed: Updated bh\_check\_dependencies.php to ignore files loaded
+           by boot.php.
+- Changed: Updated dependencies,
+- Changed: Removed redudant bh\_check\_function\_names.php and
+           zip\_lib.inc.php.
+
+## Date: Fri, 04 Jan 2013
+
+- Fixed: user\_get\_pref\_names should always return an array.
+- Changed: Add $\_COOKIE and $\_SESSION to error reporting output.
+
+## Date: Tue, 01 Jan 2013
+
+- Changed: Removed invalid webtag final\_uri check from index.php.
+           This is handled in boot.php.
+- Changed: Ensure webtag is validated before using it.
+
+## Date: Mon, 31 Dec 2012
+
+- Changed: Always send charset=UTF-8 for Content-type.
+- Fixed: Locale not being initialised correctly in all scripts.
+- Fixed: Chrome likes to send &amp;nbsp; between emoticons.
+- Fixed: Complete implementation of fake-emoticons.
+- Changed: Removed browser-hacks from editor.css.
+
+## Date: Sun, 30 Dec 2012
+
+- Changed: Use CKEditor createFakeElement to insert emoticons. Allows
+           them to be more easily deleted in the editor.
+
+## Date: Sat, 29 Dec 2012
+
+- Added: New caching method that throttles requests per-user to the
+         specified number of seconds.
+
+## Date: Thu, 27 Dec 2012
+
+- Fixed: Broken Light mode thread list.
+- Changed: Removed redudant helper scripts that are no longer needed.
+- Changed: Increase width of Admin area tables and forms to better
+           suit hi-res displays. Target 1280x??? screen width. (part
+           2)
+- Fixed: Initialise word filter after starting the session so
+         RAND\_HASH is correctly populated.
+- Changed: Increase width of Admin area tables and forms to better
+           suit hi-res displays. Target 1280x??? screen width.
+- Changed: Added support for Apple retina display touch-icons at
+           144x144px.
+- Changed: Store dimensions of images in POST\_ATTACHMENT\_FILES
+           instead of using getimagesize to work it out every time.
+- Changed: Add confirmation when deleting attachments.
+- Changed: Updated installer to set WIDTH, HEIGHT and THUMBNAIL on
+           POST\_ATTACHMENT\_FILES table.
+
+## Date: Wed, 26 Dec 2012
+
+- Fixed: Layout of attachments for wasn't quite right in some
+         browsers.
+- Changed: Allow html\_draw\_top to load CSS files and JS files not in
+           /js.
+- Changed: Don't load CKEditor and FineUploader on every page, only
+           those pages we use them on.
+- Changed: Re-enabled Youtube CKEditor plugin.
+- Changed: Removed forum\_style cookie and allow STYLE preference to
+           persist in session when user logs out instead.
+- Changed: Even more code clean-up and bug fixing.
+- Fixed: Undefined variable $start\_page in index.php.
+- Fixed: PHP error in poll\_results.php.
+- Changed: Some more code tidying.
+
+## Date: Mon, 24 Dec 2012
+
+- Fixed: Undefined variable max\_post\_attachment\_space.
+- Changed: Fixed some minor issues including assignment in comparison
+           statement.
+- Changed: Don't use session::get/set\_value, use $\_SESSION
+           super-global instead.
+- Fixed: Undefined variable max\_post\_attachment\_space.
+- Fixed: Undefined variable new\_thread.
+- Changed: Fixed some minor issues including assignment in comparison
+           statement.
+- Changed: Don't use session::get/set\_value, use $\_SESSION
+           super-global instead.
+- Fixed: Undefined variable max\_post\_attachment\_space.
+- Changed: Fixed some minor issues including assignment in comparison
+           statement.
+- Changed: Don't use session::get/set\_value, use $\_SESSION
+           super-global instead.
+- Changed: Fixed some minor issues including assignment in comparison
+           statement.
+- Changed: Don't use session::get/set\_value, use $\_SESSION
+           super-global instead.
+- Changed: Fixed some minor issues including assignment in comparison
+           statement.
+
+## Date: Sun, 23 Dec 2012
+
+- Added: Forum Setting for overriding PHP's upload\_max\_size
+         directive.
+- Fixed: Error in User Details if the user doesn't have any
+         attachments uploaded.
+
+## Date: Sat, 22 Dec 2012
+
+- Fixed: Creating new Post or PM would always attach all uploads if no
+         checkboxes were ticked!
+- Fixed: Quick Reply attaching all unattached files to every post.
+- Fixed: Missing / broken CSS for Attachments form.
+- Changed: Put attachment form buttons in a floated div to allow the
+           summary to position better.
+- Changed: Bump version number to 1.3.1.
+- Changed: Embed warning.png in errorhandler.inc.php so we don't need
+           html\_style\_image.
+- Changed: Fix border misplacement on CKEditor mock-dropdowns.
+- Changed: Simplify output from bh\_check\_php\_version.php and make
+           it compatible with latest PHP-CompatInfo.
+
+## Date: Fri, 21 Dec 2012
+
+- Changed: Bump minimum version required for upgrade to 1.3.0.
+- Changed: Updated Installer and Forum creation code to correctly
+           handle new attachment tables.
+
+## Date: Wed, 19 Dec 2012
+
+- Fixed: User online/offline status not displaying correctly on Polls.
+
+## Date: Tue, 18 Dec 2012
+
+- Fixed: Inverted test when getting avatar image link for stats
+         output.
+- Fixed: Polls not animating in post.php when replying directly to
+         poll.
+- Changed: Upgraded jQuery, jQueryUI and fineUploader.
+- Changed: Load Twitter, Facebook and G+ JavaScript libs using
+           jQuery.getScript().
+- Changed: Updated styles and images for fineUploader.
+
+## Date: Mon, 17 Dec 2012
+
+- Changed: Add attachments directory to .gitignore.
+- Changed: More attachment improvements using FineUploader.js. Lots
+           and lots of changes here.
+- Changed: PM Export now uses built-in PHP zip support. Probably needs
+           PHP 5.3.x.
+- Changed: Use HTML5 doctype for non-frame pages.
+- Changed: Don't use gettext short \_() function.
+- Changed: Use JavaScript window.location.reload() instead of form
+           post for retry button on error output.
+- Changed: Removed unneeded constants and renumbered post page
+           constants.
+- Fixed: Guest votes not displaying in poll graphs.
+
+## Date: Wed, 28 Nov 2012
+
+- Fixed: Always trim trailing slash off directory name when appending
+         filename. Fixes double slash in email notifications and HTML
+         output.
+
+## Date: Tue, 27 Nov 2012
+
+- Changed: Implement FineUploaderBasic for handling attachment
+           uploads.
 

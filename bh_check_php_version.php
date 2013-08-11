@@ -74,7 +74,7 @@ if (isset($_SERVER['argc']) && ($_SERVER['argc'] > 1)) {
 
 $results = $pci->toArray();
 
-foreach ($results['extensions'] as $extension_name => $extension_info) {
+foreach ($results[0]['extensions'] as $extension_name => $extension_info) {
 
     if (in_array($extension_name, array('Core', 'standard'))) {
         continue;
@@ -83,7 +83,7 @@ foreach ($results['extensions'] as $extension_name => $extension_info) {
     $extensions_array[] = $extension_name;
 }
 
-$minimum_version = $results['versions'][0];
+$minimum_version = $results[0]['versions'][0];
 
 sort($extensions_array);
 

@@ -36,15 +36,7 @@ function sphinx_search_connect()
 
     try {
 
-        if (!($sphinx = mysqli_init())) return false;
-
-        if (!$sphinx->options(MYSQLI_OPT_CONNECT_TIMEOUT, 2)) return false;
-
-        if (!$sphinx->real_connect($sphinx_search_host, null, null, null, $sphinx_search_port)) return false;
-
-        if (mysqli_connect_error()) return false;
-
-        return $sphinx;
+        return mysqli_connect($sphinx_search_host, null, null, null, $sphinx_search_port);
 
     } catch (Exception $e){
 

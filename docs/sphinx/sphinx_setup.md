@@ -5,7 +5,7 @@
 To enable searching via Sphinx on your Beehive Forum you are going 
 to need:
 
- - Sphinx Search version 2.0.4
+ - Sphinx Search version 2.0.4 (please see note below)
  - Beehive Forum 1.2.0.
  - The ability to edit sphinx.conf and add new sources and indexes.
 
@@ -15,6 +15,11 @@ Beehive Forum requires Sphinx 2.0.4 or newer. If your package manager
 doesn't provide a new enough version of Sphinx (or your OS doesn't 
 provide a package manager) you can download the source or binaries 
 from: <http://sphinxsearch.com/downloads/release/>
+
+Note: Due to a bug in Sphinx 2.0.4, if using the php-mysqlnd
+extension for MySQL, Beehive Forum will not be able to connect to
+the Sphinx server. You must either install php-mysql or upgrade
+to Sphinx 2.0.8 or newer.
 
 Once you have downloaded Sphinx follow the instructions for 
 compiling and installing it for your OS.

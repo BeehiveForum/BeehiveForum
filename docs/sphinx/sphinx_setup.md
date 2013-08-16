@@ -78,9 +78,9 @@ up these two sources (and two indexes), with one main index
 being used for the older posts and a delta for the new posts 
 created today.
 
-This allows the delta index to be reindexed very frequently and
+This allows the delta index to be re-indexed very frequently and
 at a reduced cost (search downtime, resources consumed, etc.) 
-compared to reindexing the entire forum every time which would 
+compared to re-indexing the entire forum every time which would
 take significantly longer.
 
 When searching Sphinx, Beehive looks for indexes named with the 
@@ -90,12 +90,12 @@ appended to the end of it for the delta index. By doing this,
 your Beehive Forum requires less configuration in order to get it 
 to work with Sphinx.
 
-For the sake of simplicity, although it is not neccesary to do so,
+For the sake of simplicity, although it is not necessary to do so,
 we also name the sources the same.
 
 In this example below the WEBTAG used is DEFAULT, so the sources
 are named DEFAULT and DEFAULT_DELTA. If your WEBTAG is different 
-be sure to substitue it where applicable. Also note, if you have 
+be sure to substitute it where applicable. Also note, if you have
 more than one forum (WEBTAG) you will need to create a main and
 delta source for each of them:
 
@@ -233,7 +233,7 @@ Sphinx daemon or service as per the Sphinx documentation for your OS.
 ## 5. Filling the Sphinx index
 
 The first time you try to start Sphinx it will complain that the 
-index cannot be loaded. It is therefore neccesary to run the indexer 
+index cannot be loaded. It is therefore necessary to run the indexer
 tool with the name of the indexes to populate:
 
         indexer DEFAULT DEFAULT_DELTA
@@ -256,7 +256,7 @@ and add relevant crontab / scheduler entries for each of their
 indexes.
 
 Note: In older versions of Beehive Forum we used a real-time 
-Sphinx index, but this caused problems with performance on heavilly 
+Sphinx index, but this caused problems with performance on heavily
 visited sites. Now we recommend running the indexer periodically to 
 have it update the indexes.
 
@@ -279,7 +279,7 @@ ask for help. Please help us to help you by indicating any error
 messages you received and how far along this guide you've manage 
 to get. 
 
-Please be paitient in getting a reply, we'll try to get to you ASAP,
+Please be patient in getting a reply, we'll try to get to you ASAP,
 but please be aware that we don't monitor the forum 24/7 (it's our 
 hobby, not our job), so you might have to wait for someone to reply.
 

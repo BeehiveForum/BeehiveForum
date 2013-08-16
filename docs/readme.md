@@ -216,7 +216,7 @@ root of your web space or into another folder of your choosing.
 
 ##### 1.2.5 Installing the forum
 
-Once everything's uploaded, you will need to run the forum's install
+Once everything is uploaded, you will need to run the forum's install
 script. This is located in the /install subdirectory of your forum.
 To access it, you will need to load the file in your browser from
 the web space you just uploaded to, e.g.:

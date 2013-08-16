@@ -70,6 +70,7 @@ USA
                         quoteTextElement,
                         codeElement,
                         selection,
+                        selectedText,
                         range;
 
                     if (state == CKEDITOR.TRISTATE_ON) {
@@ -88,9 +89,22 @@ USA
 
                     } else {
 
-                        selection = (CKEDITOR.env.ie) ? editor.getSelection().getNative().createRange().text : editor.getSelection().getNative();
+                        selection = editor.getSelection();
+
+                        if (CKEDITOR.env.ie) {
+
+                            selection.unlock();
+                            selectedText = selection.getNative().createRange().text;
+
+                        } else {
+
+                            selectedText = selection.getNative();
+                        }
+
                         quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><b>' + beehive.lang.code + ':</b>&nbsp;</div>');
-                        codeElement = CKEDITOR.dom.element.createFromHtml('<pre class="code">' + selection + '</pre>');
+                        codeElement = CKEDITOR.dom.element.createFromHtml('<pre class="code">' + selectedText + '</pre>');
+
+                        selection.getRanges()[0].deleteContents();
                         range = new CKEDITOR.dom.range(editor.document);
 
                         editor.insertElement(quoteTextElement);
@@ -118,6 +132,7 @@ USA
                         quoteTextElement,
                         quoteElement,
                         selection,
+                        selectedText,
                         range;
 
                     if (state == CKEDITOR.TRISTATE_ON) {
@@ -136,13 +151,25 @@ USA
 
                     } else {
 
-                        selection = (CKEDITOR.env.ie) ? editor.getSelection().getNative().createRange().text : editor.getSelection().getNative();
+                        selection = editor.getSelection();
+
+                        if (CKEDITOR.env.ie) {
+
+                            selection.unlock();
+                            selectedText = selection.getNative().createRange().text;
+
+                        } else {
+
+                            selectedText = selection.getNative();
+                        }
+
                         quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><b>' + beehive.lang.quote + ':</b>&nbsp;</div>');
-                        quoteElement = CKEDITOR.dom.element.createFromHtml('<div class="quote">' + selection + '</div>');
+                        quoteElement = CKEDITOR.dom.element.createFromHtml('<div class="quote">' + selectedText + '</div>');
+
+                        selection.getRanges()[0].deleteContents();
                         range = new CKEDITOR.dom.range(editor.document);
 
                         editor.insertElement(quoteTextElement);
-
                         editor.insertElement(quoteElement);
 
                         range.moveToPosition(quoteElement, CKEDITOR.POSITION_AFTER_END);
@@ -166,6 +193,7 @@ USA
                         spoilerElement,
                         spoilerContainer,
                         selection,
+                        selectedText,
                         range;
 
                     if (state == CKEDITOR.TRISTATE_ON) {
@@ -178,8 +206,21 @@ USA
 
                     } else if (editor.getSelection().getSelectedText().length > 0) {
 
-                        selection = (CKEDITOR.env.ie) ? editor.getSelection().getNative().createRange().text : editor.getSelection().getNative();
-                        spoilerElement = CKEDITOR.dom.element.createFromHtml('<span class="spoiler"><span>' + selection + '</span></span>');
+                        selection = editor.getSelection();
+
+                        if (CKEDITOR.env.ie) {
+
+                            selection.unlock();
+                            selectedText = selection.getNative().createRange().text;
+
+                        } else {
+
+                            selectedText = selection.getNative();
+                        }
+
+                        spoilerElement = CKEDITOR.dom.element.createFromHtml('<span class="spoiler"><span>' + selectedText + '</span></span>');
+
+                        selection.getRanges()[0].deleteContents();
                         range = new CKEDITOR.dom.range(editor.document);
 
                         editor.insertElement(spoilerElement);

@@ -134,7 +134,7 @@ if (isset($msg) && validate_msg($msg)) {
         html_draw_error(gettext("You cannot edit posts in this folder"), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
     }
 
-    if (!$thread_data = thread_get($tid)) {
+    if (!$thread_data = thread_get($tid, false, false, true)) {
         html_draw_error(gettext("The requested thread could not be found or access was denied."), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
     }
 

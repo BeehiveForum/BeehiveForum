@@ -714,28 +714,28 @@ function profile_get_item($piid)
 
 function profile_item_add_clear_entry(&$profile_item_options_array, $type)
 {
-    $valid_item_types_aray = array(
+    $valid_item_types_array = array(
         PROFILE_ITEM_RADIO,
         PROFILE_ITEM_DROPDOWN
     );
 
     if (!is_array($profile_item_options_array)) return false;
-    if (!in_array($type, $valid_item_types_aray)) return false;
+    if (!in_array($type, $valid_item_types_array)) return false;
 
     $profile_item_options_array_keys = array_keys($profile_item_options_array);
 
-    array_unshift($profile_item_options_array_keys, '-1');
+    array_unshift($profile_item_options_array_keys, -1);
 
     if ($type == PROFILE_ITEM_RADIO) {
-
-        array_unshift($profile_item_options_array, "<i>[", gettext("Clear"), "]</i>");
-        $profile_item_options_array = array_combine($profile_item_options_array_keys, $profile_item_options_array);
-
+        array_unshift($profile_item_options_array, gettext("Clear"));
     } else {
-
         array_unshift($profile_item_options_array, "&nbsp;");
-        $profile_item_options_array = array_combine($profile_item_options_array_keys, $profile_item_options_array);
     }
+
+    $profile_item_options_array = array_combine(
+        $profile_item_options_array_keys,
+        $profile_item_options_array
+    );
 
     return true;
 }

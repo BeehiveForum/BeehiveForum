@@ -308,7 +308,7 @@ function bh_error_process(Exception $exception)
 
     try {
 
-        $mysql_version = db::get_version();
+        $mysql_version = sprintf('MySQL/%s', db::get_version());
 
     } catch (Exception $e){
 

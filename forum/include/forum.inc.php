@@ -1391,10 +1391,11 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         }
 
         // Create 'Welcome' Thread
-        $sql = "INSERT INTO `{$forum_table_prefix}THREAD` (FID, BY_UID, TITLE, LENGTH, ";
-        $sql.= "POLL_FLAG, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
+        $sql = "INSERT INTO `{$forum_table_prefix}THREAD` (FID, BY_UID, TITLE, LENGTH, POLL_FLAG, ";
+        $sql.= "APPROVED, APPROVED_BY, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
         $sql.= "VALUES (1, '$owner_uid', 'Welcome', 1, 'N', CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "CAST('$current_datetime' AS DATETIME), NULL, 'N', NULL, NULL)";
+        $sql.= "'$owner_uid', CAST('$current_datetime' AS DATETIME), CAST('$current_datetime' AS DATETIME), ";
+        $sql.= "NULL, 'N', NULL, NULL)";
 
         $db->query($sql);
 

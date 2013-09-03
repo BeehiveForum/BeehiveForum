@@ -1075,7 +1075,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL,";
         $sql.= "  VIEWED DATETIME DEFAULT NULL,";
-        $sql.= "  PRIMARY KEY (TID,PID,TO_UID)";
+        $sql.= "  PRIMARY KEY (TID,PID,TO_UID),";
+        $sql.= "  KEY VIEWED (VIEWED)";
         $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
@@ -1190,6 +1191,8 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED NOT NULL, ";
 		$sql.= "  UNREAD_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
         $sql.= "  POLL_FLAG CHAR(1) DEFAULT 'N', ";
+        $sql.= "  APPROVED DATETIME DEFAULT NULL,";
+        $sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
         $sql.= "  CREATED DATETIME NOT NULL, ";
         $sql.= "  MODIFIED DATETIME DEFAULT NULL, ";
         $sql.= "  CLOSED DATETIME DEFAULT NULL, ";

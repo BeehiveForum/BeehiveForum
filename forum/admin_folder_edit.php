@@ -162,7 +162,7 @@ if (isset($_POST['save'])) {
 
         if (folder_update($fid, $folder_data)) {
 
-            admin_add_log_entry(EDIT_THREAD_OPTIONS, $folder_data['TITLE']);
+            admin_add_log_entry(EDIT_THREAD_OPTIONS, array($folder_data['TITLE']));
 
             if (isset($_POST['move_confirm']) && $_POST['move_confirm'] == "Y") {
 

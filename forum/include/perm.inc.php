@@ -848,7 +848,7 @@ function perm_folder_get_permissions($fid)
 
     if (!($table_prefix = get_table_prefix())) return 0;
 
-    $sql = "SELECT PERM FROM `{$table_prefix}FOLDER` FID = '$fid'";
+    $sql = "SELECT PERM FROM `{$table_prefix}FOLDER` WHERE FID = '$fid'";
 
     if (!($result = $db->query($sql))) return false;
 

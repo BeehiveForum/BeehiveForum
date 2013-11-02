@@ -22,7 +22,7 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
 // End Required includes
 
 function lang_init()
@@ -31,7 +31,7 @@ function lang_init()
         throw new Exception('Could not initialise language.');
     }
 
-    bindtextdomain('messages', BH_INCLUDE_PATH. 'locale/');
+    bindtextdomain('messages', BH_INCLUDE_PATH . 'locale/');
 
     textdomain('messages');
 
@@ -43,7 +43,7 @@ function lang_detect()
     if (isset($_SESSION['LANGUAGE'])) {
 
         if (lang_set($_SESSION['LANGUAGE'])) {
-            return $_SESSION['LANGUAGE'];
+            return true;
         }
     }
 
@@ -70,11 +70,11 @@ function lang_detect()
             $region = array_shift($countries2);
 
             foreach ($countries as $country) {
-                $languages[$region. '_'. mb_strtoupper($country)] = $quality;
+                $languages[$region . '_' . mb_strtoupper($country)] = $quality;
             }
 
             foreach ($countries2 as $country) {
-                $languages[$region. '_'. mb_strtoupper($country)] = $quality;
+                $languages[$region . '_' . mb_strtoupper($country)] = $quality;
             }
 
             if (!isset($languages[$region]) || ($languages[$region] < $quality)) {
@@ -86,28 +86,33 @@ function lang_detect()
     foreach (array_keys($languages) as $language) {
 
         if (lang_set($language)) {
-            return $language;
+
+            return true;
         }
     }
 
-    return lang_set('en_GB');
+    if (lang_set('en_GB')) {
+        return true;
+    }
+
+    return lang_set('');
 }
 
 function lang_set($language)
 {
-    putenv('LANG='. $language);
-    putenv('LANGUAGE='. $language);
+    putenv('LANG=' . $language);
+    putenv('LANGUAGE=' . $language);
 
     $languages = array(
-        $language. '.utf8',
-        $language. '.UTF8',
-        $language. '.utf-8',
-        $language. '.UTF-8',
+        $language . '.utf8',
+        $language . '.UTF8',
+        $language . '.utf-8',
+        $language . '.UTF-8',
         $language
     );
 
     if (setlocale(LC_ALL, $languages)) {
-        return $language;
+        return true;
     }
 
     return false;
@@ -126,11 +131,11 @@ function lang_get_month_names()
 
 function lang_get_available($inc_browser_negotiation = true)
 {
-    $include_path = BH_INCLUDE_PATH. 'locale/';
+    $include_path = BH_INCLUDE_PATH . 'locale/';
 
     $available_langs = ($inc_browser_negotiation) ? array('' => gettext("Browser negotiated")) : array();
 
-    foreach (glob($include_path. '*/messages.po') as $lang) {
+    foreach (glob($include_path . '*/messages.po') as $lang) {
 
         $lang = preg_replace(
             sprintf('/%s([^\/]+)\/messages.po/', preg_quote($include_path, '/')),

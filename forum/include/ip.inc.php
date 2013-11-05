@@ -27,11 +27,11 @@ require_once BH_INCLUDE_PATH. 'constants.inc.php';
 
 function get_ip_address()
 {
-    if (isset($_SERVER['REMOTE_ADDR']) && filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) {
+    if (isset($_SERVER['REMOTE_ADDR']) && !empty($_SERVER['REMOTE_ADDR'])) {
         return $_SERVER['REMOTE_ADDR'];
     }
 
-    return false;
+    return '';
 }
 
 function check_ip_address($ip)

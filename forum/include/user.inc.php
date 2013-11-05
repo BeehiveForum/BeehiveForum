@@ -74,7 +74,7 @@ function user_create($logon, $password, $nickname, $email)
 {
     if (!$db = db::get()) return false;
 
-    if (!$ipaddress = get_ip_address()) return false;
+    $ipaddress = get_ip_address();
 
     $logon = $db->escape($logon);
     $nickname = $db->escape($nickname);
@@ -329,7 +329,7 @@ function user_logon($logon, $password)
 
     $logon = $db->escape(mb_strtoupper($logon));
 
-    if (!$ipaddress = get_ip_address()) return false;
+    $ipaddress = get_ip_address();
 
     $ipaddress = $db->escape($ipaddress);
 
@@ -363,7 +363,7 @@ function user_logon_token($logon, $token)
 {
     if (!$db = db::get()) return false;
 
-    if (!$ipaddress = get_ip_address()) return false;
+    $ipaddress = get_ip_address();
 
     if (!is_md5($token)) return false;
 

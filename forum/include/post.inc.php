@@ -40,10 +40,6 @@ function post_create($fid, $tid, $reply_pid, $from_uid, $to_user_array, $content
 {
     if (!$db = db::get()) return false;
 
-    $post_content = $db->escape($content);
-
-    $ipaddress = get_ip_address();
-
     if (!is_numeric($tid)) return false;
 
     if (!is_numeric($reply_pid)) return false;
@@ -51,6 +47,10 @@ function post_create($fid, $tid, $reply_pid, $from_uid, $to_user_array, $content
     if (!is_numeric($from_uid)) return false;
 
     if (!is_array($to_user_array)) return false;
+
+    $post_content = $db->escape($content);
+
+    $ipaddress = get_ip_address();
 
     foreach ($to_user_array as $to_user) {
 

@@ -474,7 +474,7 @@ function light_draw_messages($tid, $pid)
     echo "<ul>\n";
 
     if (($thread_data['CLOSED'] == 0 && session::check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || session::check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
-        echo "<li><a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.0\" class=\"reply_all\">", gettext("Reply to All"), "</a></li>\n";
+        echo "<li><a href=\"lpost.php?webtag=$webtag&amp;reply_to=$tid.0&amp;return_msg=$tid.$pid\" class=\"reply_all\">", gettext("Reply to All"), "</a></li>\n";
     }
 
     if ($last_pid < $thread_data['LENGTH']) {
@@ -1645,7 +1645,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
         $message['CONTENT'] = fix_html($cut_msg);
         $message['CONTENT'].= "&hellip;[". gettext("Message Truncated"). "]\n";
-        $message['CONTENT'].= "<a href=\"ldisplay.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"message_full_view\">". gettext("View full message"). ".</a>";
+        $message['CONTENT'].= "<a href=\"ldisplay.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;return_msg=$tid.$first_msg\" class=\"message_full_view\">". gettext("View full message"). ".</a>";
     }
 
     if ($in_list) {
@@ -1741,7 +1741,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         $cut_msg = preg_replace("/(<[^>]+)?$/Du", "", $cut_msg);
 
         $message['CONTENT'] = fix_html($cut_msg);
-        $message['CONTENT'].= "&hellip;[". gettext("Message Truncated"). "]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">". gettext("View full message"). "</a>";
+        $message['CONTENT'].= "&hellip;[". gettext("Message Truncated"). "]\n<p align=\"center\"><a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;return_msg=$tid.$first_msg\" target=\"_self\">". gettext("View full message"). "</a>";
     }
 
     $message['CONTENT'] = light_spoiler_enable($message['CONTENT']);
@@ -1825,19 +1825,19 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
             if (!$closed && session::check_perm(USER_PERM_POST_CREATE, $folder_fid)) {
 
-                $links_array[] = "<a href=\"lpost.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" class=\"reply\">". gettext("Reply"). "</a>";
+                $links_array[] = "<a href=\"lpost.php?webtag=$webtag&amp;reply_to=$tid.{$message['PID']}&return_msg=$tid.$first_msg\" class=\"reply\">". gettext("Reply"). "</a>";
             }
 
             if (($_SESSION['UID'] == $message['FROM_UID'] && session::check_perm(USER_PERM_POST_DELETE, $folder_fid) && !session::check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
 
-                $links_array[] = "<a href=\"ldelete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"delete\">". gettext("Delete"). "</a>";
+                $links_array[] = "<a href=\"ldelete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;return_msg=$tid.$first_msg\" class=\"delete\">". gettext("Delete"). "</a>";
             }
 
             if ((!(session::check_perm(USER_PERM_PILLORIED, 0)) && ((($_SESSION['UID'] != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($_SESSION['UID'] == $message['FROM_UID'])) && session::check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
                 if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
 
-                    $links_array[] = "<a href=\"ledit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" class=\"edit\">". gettext("Edit"). "</a>";
+                    $links_array[] = "<a href=\"ledit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;return_msg=$tid.$first_msg\" class=\"edit\">". gettext("Edit"). "</a>";
                 }
             }
 
@@ -2457,7 +2457,7 @@ function light_pm_display($message_data, $preview = false)
 
         if (($message_data['TYPE'] & PM_INBOX_ITEMS) > 0) {
 
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;replyto={$message_data['MID']}\" class=\"reply\">". gettext("Reply"). "</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;reply_to={$message_data['MID']}\" class=\"reply\">". gettext("Reply"). "</a>";
 
             if (isset($message_data['RECIPIENTS']) && sizeof($message_data['RECIPIENTS']) > 1) {
                 $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;replyall={$message_data['MID']}\" class=\"replyall\">". gettext("Reply All"). "</a>";

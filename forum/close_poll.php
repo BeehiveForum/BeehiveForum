@@ -80,9 +80,17 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
     html_draw_error(gettext("No message specified for deletion"));
 }
 
+if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
+    $return_msg = $_POST['return_msg'];
+} else if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
+    $return_msg = $_GET['return_msg'];
+} else {
+    $return_msg = $msg;
+}
+
 if (isset($_POST['cancel'])) {
 
-    header_redirect("discussion.php?webtag=$webtag&msg=$msg");
+    header_redirect("discussion.php?webtag=$webtag&msg=$return_msg");
     exit;
 }
 
@@ -102,15 +110,8 @@ if (!$thread_data = thread_get($tid)) {
 
 if (!thread_is_poll($tid) || ($pid != 1)) {
 
-    $uri = "discussion.php?webtag=$webtag";
-
-    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-        $uri.= "&msg=". $_GET['msg'];
-    } else if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
-        $uri.= "&msg=". $_POST['msg'];
-    }
-
-    header_redirect($uri);
+    header_redirect("discussion.php?webtag=$webtag&msg=$return_msg");
+    exit;
 }
 
 if (!$edit_message = messages_get($tid, 1, 1)) {
@@ -124,7 +125,7 @@ if (!$edit_message = messages_get($tid, 1, 1)) {
 $post_edit_time = forum_get_setting('post_edit_time', 'is_numeric', 0);
 
 if ((forum_get_setting('allow_post_editing', 'N') || (($_SESSION['UID'] != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-    html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_message));
+    html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $return_msg));
 }
 
 if (($preview_message = messages_get($tid, $pid, 1)) !== false) {
@@ -159,16 +160,8 @@ if (isset($_POST['endpoll'])) {
         }
     }
 
-    if ($thread_data['LENGTH'] > 1) {
-
-        header_redirect("discussion.php?webtag=$webtag&msg=$msg&edit_success=$msg");
-        exit;
-
-    } else {
-
-        header_redirect("discussion.php?webtag=$webtag&edit_success=$msg");
-        exit;
-    }
+    header_redirect("discussion.php?webtag=$webtag&msg=$return_msg&edit_success=$msg");
+    exit;
 }
 
 html_draw_top(sprintf("title=%s", gettext("Close Poll")), "js/post.js", "resize_width=720", "basetarget=_blank", 'class=window_title');
@@ -183,6 +176,7 @@ echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"close_poll.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('msg', htmlentities_array($msg)), "\n";
+echo "  ", form_input_hidden('return_msg', htmlentities_array($return_msg)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

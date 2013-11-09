@@ -93,10 +93,7 @@ abstract class session
     {
         $id = session::$db->escape($id);
 
-        $user_agent = session::$db->escape(session::get_user_agent());
-
         $sql = "SELECT DATA, MD5 FROM SESSIONS WHERE ID = '$id' ";
-        $sql.= "AND USER_AGENT = '$user_agent'";
 
         if (!($result = session::$db->query($sql))) return '';
 
@@ -127,13 +124,11 @@ abstract class session
 
         $http_referer = session::$db->escape(session::get_http_referer());
 
-        $user_agent = session::$db->escape(session::get_user_agent());
-
         if (!($search_id = session::is_search_engine())) $search_id = 'NULL';
 
-        $sql = "REPLACE INTO SESSIONS (ID, UID, FID, DATA, MD5, TIME, IPADDRESS, REFERER, USER_AGENT, SID) ";
+        $sql = "REPLACE INTO SESSIONS (ID, UID, FID, DATA, MD5, TIME, IPADDRESS, REFERER, SID) ";
         $sql.= "VALUES ('$id', '$uid', '$forum_fid', '$data', '$md5', CAST('$time' AS DATETIME), ";
-        $sql.= "'$ip_address', '$http_referer', '$user_agent', $search_id)";
+        $sql.= "'$ip_address', '$http_referer', $search_id)";
 
         if (!(session::$db->query($sql))) return false;
 
@@ -183,7 +178,6 @@ abstract class session
     public static function get_user_agent()
     {
         if (!isset($_SERVER['HTTP_USER_AGENT']) || strlen(trim($_SERVER['HTTP_USER_AGENT'])) == 0) return '';
-
         return $_SERVER['HTTP_USER_AGENT'];
     }
 
@@ -473,15 +467,12 @@ abstract class session
 
         $user_token = session::$db->escape($user_token);
 
-        $user_agent = session::$db->escape(session::get_user_agent());
-
         $current_datetime = date(MYSQL_DATETIME, time());
 
         $sql = "SELECT SESSIONS.ID FROM USER_TOKEN INNER JOIN USER ON (USER.UID = USER_TOKEN.UID) ";
-        $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER_TOKEN.UID AND SESSIONS.USER_AGENT = '$user_agent') ";
-        $sql.= "WHERE USER.LOGON = '$user_logon' AND USER_TOKEN.TOKEN = '$user_token' ";
-        $sql.= "AND USER_TOKEN.EXPIRES > '$current_datetime' AND USER.UID = '$uid' ";
-        $sql.= "GROUP BY USER.UID";
+        $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER_TOKEN.UID) WHERE USER.LOGON = '$user_logon'";
+        $sql.= "AND USER_TOKEN.TOKEN = '$user_token' AND USER_TOKEN.EXPIRES > '$current_datetime' ";
+        $sql.= "AND USER.UID = '$uid' GROUP BY USER.UID";
 
         if (!($result = session::$db->query($sql))) return false;
 

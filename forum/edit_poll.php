@@ -84,17 +84,18 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     html_draw_error(gettext("No message specified for editing"));
 }
 
+if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
+    $return_msg = $_POST['return_msg'];
+} else if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
+    $return_msg = $_GET['return_msg'];
+} else {
+    $return_msg = $msg;
+}
+
 if (!thread_is_poll($tid) || ($pid != 1)) {
 
-    $uri = "edit.php?webtag=$webtag";
-
-    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-        $uri.= "&msg=". $_GET['msg'];
-    } else if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
-        $uri.= "&msg=". $_POST['msg'];
-    }
-
-    header_redirect($uri);
+    header_redirect("edit.php?webtag=$webtag&msg=$msg&return_msg=$return_msg");
+    exit;
 }
 
 if (!folder_get_by_type_allowed(FOLDER_ALLOW_POLL_THREAD)) {
@@ -136,7 +137,7 @@ $show_sigs = session::show_sigs();
 $page_prefs = session::get_post_page_prefs();
 
 if ((forum_get_setting('allow_post_editing', 'N') || (($_SESSION['UID'] != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
-    html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $edit_msg));
+    html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $return_msg));
 }
 
 $poll_data = poll_get($tid);
@@ -618,7 +619,7 @@ if ($valid && isset($_POST['apply'])) {
         post_add_edit_text($tid, 1);
     }
 
-    header_redirect("discussion.php?webtag=$webtag&msg=$tid.1&edit_success=$tid.1");
+    header_redirect("discussion.php?webtag=$webtag&msg=$return_msg&edit_success=$tid.1");
 }
 
 if (!$folder_dropdown = folder_draw_dropdown($fid, "fid", "", FOLDER_ALLOW_POLL_THREAD, USER_PERM_POST_EDIT, "", "post_folder_dropdown")) {
@@ -637,6 +638,7 @@ echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_poll\" action=\"edit_poll.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("msg", htmlentities_array($edit_msg)), "\n";
+echo "  ", form_input_hidden('return_msg', htmlentities_array($return_msg)), "\n";
 echo "  ", form_input_hidden('dedupe', htmlentities_array($dedupe)), "\n";
 echo "  <table width=\"960\" class=\"max_width\">\n";
 echo "    <tr>\n";
@@ -1073,7 +1075,7 @@ echo "                            <tr>\n";
 echo "                              <td align=\"left\">\n";
 echo "                                ", form_submit("apply", gettext("Apply")), "&nbsp;", form_submit("preview_poll", gettext("Preview")), "&nbsp;", form_submit("preview_form", gettext("Preview Voting Form"));
 
-echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&msg=$tid.1\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
+echo "&nbsp;<a href=\"discussion.php?webtag=$webtag&msg=$return_msg\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>";
 
 echo "                              </td>\n";
 echo "                            </tr>\n";

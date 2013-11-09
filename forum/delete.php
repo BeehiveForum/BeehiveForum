@@ -79,9 +79,17 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
     html_draw_error(gettext("No message specified for deletion"));
 }
 
+if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
+    $return_msg = $_POST['return_msg'];
+} else if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
+    $return_msg = $_GET['return_msg'];
+} else {
+    $return_msg = $msg;
+}
+
 if (isset($_POST['cancel'])) {
 
-    header_redirect("discussion.php?webtag=$webtag&msg=$msg");
+    header_redirect("discussion.php?webtag=$webtag&msg=$return_msg");
     exit;
 }
 
@@ -129,16 +137,8 @@ if (isset($_POST['delete']) && is_numeric($tid) && is_numeric($pid)) {
             admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
         }
 
-        if ($thread_data['LENGTH'] > 1) {
-
-            header_redirect("discussion.php?webtag=$webtag&msg=$msg&delete_success=$msg");
-            exit;
-
-        } else {
-
-            header_redirect("discussion.php?webtag=$webtag&delete_success=$msg");
-            exit;
-        }
+        header_redirect("discussion.php?webtag=$webtag&msg=$return_msg&delete_success=$msg");
+        exit;
 
     } else {
 
@@ -158,6 +158,7 @@ echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"delete.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('msg', htmlentities_array($msg)), "\n";
+echo "  ", form_input_hidden('return_msg', htmlentities_array($return_msg)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"720\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

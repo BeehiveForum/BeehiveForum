@@ -446,8 +446,6 @@ switch ($_GET['action']) {
 
     case 'post_options':
 
-        if (!session::logged_in()) break;
-
         cache_disable();
 
         if (!isset($_GET['msg']) || !validate_msg($_GET['msg'])) {
@@ -458,13 +456,19 @@ switch ($_GET['action']) {
 
         list($tid, $pid) = explode('.', $_GET['msg']);
 
-        if (!($message = messages_get($tid, $pid, 1))) {
+        if (!isset($_GET['pid']) || !is_numeric($_GET['pid'])) {
 
             header_status(500, 'Internal Server Error');
             exit;
         }
 
-        if (!($content = message_get_post_options_html($message))) {
+        if (!($message = messages_get($tid, $_GET['pid'], 1))) {
+
+            header_status(500, 'Internal Server Error');
+            exit;
+        }
+
+        if (!($content = message_get_post_options_html($tid, $pid, $message))) {
 
             header_status(500, 'Internal Server Error');
             exit;

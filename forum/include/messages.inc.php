@@ -686,7 +686,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if (!$is_preview && $_SESSION['UID'] > 0 && isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED)) {
 
         echo "<a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg=$tid.{$message['PID']}\" target=\"_self\">", gettext("Stop ignoring this user"), "</a>&nbsp;&nbsp;&nbsp;";
-        echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_self\">", gettext("View Message"), "</a>";
+        echo "<a href=\"display.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;return_msg=$tid.$first_msg\" target=\"_self\">", gettext("View Message"), "</a>";
 
     } else if ($in_list && $msg_count > 0) {
 
@@ -821,11 +821,11 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                     } else {
 
                         echo "<img src=\"", html_style_image('post.png'), "\" border=\"0\" alt=\"", gettext("Reply"), "\" title=\"", gettext("Reply"), "\" />";
-                        echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}\" target=\"_parent\" id=\"reply_{$message['PID']}\">", gettext("Reply"), "</a>";
+                        echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;reply_to=$tid.{$message['PID']}&amp;return_msg=$tid.$first_msg\" target=\"_parent\" id=\"reply_{$message['PID']}\">", gettext("Reply"), "</a>";
                     }
 
                     echo "&nbsp;&nbsp;<img src=\"", html_style_image('quote_disabled.png'), "\" border=\"0\" alt=\"", gettext("Quote"), "\" title=\"", gettext("Quote"), "\" id=\"quote_img_{$message['PID']}\" />";
-                    echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;replyto=$tid.{$message['PID']}&amp;quote_list={$message['PID']}\" target=\"_parent\" title=\"", gettext("Quote"), "\" id=\"quote_{$message['PID']}\" data-pid=\"{$message['PID']}\">", gettext("Quote"), "</a>";
+                    echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;reply_to=$tid.{$message['PID']}&amp;quote_list={$message['PID']}&amp;return_msg=$tid.$first_msg\" target=\"_parent\" title=\"", gettext("Quote"), "\" id=\"quote_{$message['PID']}\" data-pid=\"{$message['PID']}\">", gettext("Quote"), "</a>";
 
                     if ((!(session::check_perm(USER_PERM_PILLORIED, 0)) && ((($_SESSION['UID'] != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($_SESSION['UID'] == $message['FROM_UID'])) && session::check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
@@ -834,13 +834,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                             if (!poll_is_closed($tid) || $perm_is_moderator) {
 
                                 echo "&nbsp;&nbsp;<img src=\"", html_style_image('edit.png'), "\" border=\"0\" alt=\"", gettext("Edit Poll"), "\" title=\"", gettext("Edit Poll"), "\" />";
-                                echo "&nbsp;<a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">", gettext("Edit Poll"), "</a>\n";
+                                echo "&nbsp;<a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;return_msg=$tid.$first_msg\" target=\"_parent\">", gettext("Edit Poll"), "</a>\n";
                             }
 
                         } else {
 
                             echo "&nbsp;&nbsp;<img src=\"", html_style_image('edit.png'), "\" border=\"0\" alt=\"", gettext("Edit"), "\" title=\"", gettext("Edit"), "\" />";
-                            echo "&nbsp;<a href=\"edit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\" target=\"_parent\">", gettext("Edit"), "</a>";
+                            echo "&nbsp;<a href=\"edit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;return_msg=$tid.$first_msg\" target=\"_parent\">", gettext("Edit"), "</a>";
                         }
                     }
                 }
@@ -852,7 +852,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "</td>\n";
             echo "                <td align=\"right\" style=\"white-space: nowrap\">\n";
-            echo "                  <span class=\"post_options\" id=\"post_options_$tid.{$message['PID']}\"></span>\n";
+            echo "                  <span class=\"post_options\" id=\"post_options_{$tid}_{$first_msg}_{$message['PID']}\"></span>\n";
             echo "                </td>\n";
             echo "              </tr>";
             echo "            </table>\n";
@@ -885,7 +885,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo  ($in_list) ? "<br />\n" : '';
 }
 
-function message_get_post_options_html($message)
+function message_get_post_options_html($tid, $pid, $message)
 {
     $webtag = get_webtag();
 
@@ -926,7 +926,7 @@ function message_get_post_options_html($message)
     } else {
 
         $html.= "                        <td align=\"left\"><img src=\"". html_style_image('post.png'). "\" border=\"0\" alt=\"". gettext("Reply"). "\" title=\"". gettext("Reply"). "\" /></td>\n";
-        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"post.php?webtag=$webtag&amp;replyto={$message['TID']}.{$message['PID']}\" target=\"_parent\" id=\"reply_{$message['PID']}\">". gettext("Reply"). "</a></td>\n";
+        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"post.php?webtag=$webtag&amp;reply_to={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\" id=\"reply_{$message['PID']}\">". gettext("Reply"). "</a></td>\n";
     }
 
     $html.= "                      </tr>\n";
@@ -934,28 +934,28 @@ function message_get_post_options_html($message)
     if (($_SESSION['UID'] == $message['FROM_UID'] && session::check_perm(USER_PERM_POST_DELETE, $message['FID']) && !session::check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
 
         $html.= "                      <tr>\n";
-        $html.= "                        <td align=\"left\"><a href=\"delete.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_parent\"><img src=\"". html_style_image('delete.png'). "\" border=\"0\" alt=\"". gettext("Delete"). "\" title=\"". gettext("Delete"). "\" /></a></td>\n";
-        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"delete.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_parent\">". gettext("Delete"). "</a></td>\n";
+        $html.= "                        <td align=\"left\"><a href=\"delete.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\"><img src=\"". html_style_image('delete.png'). "\" border=\"0\" alt=\"". gettext("Delete"). "\" title=\"". gettext("Delete"). "\" /></a></td>\n";
+        $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"delete.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\">". gettext("Delete"). "</a></td>\n";
         $html.= "                      </tr>\n";
     }
 
     $html.= "                      <tr>\n";
-    $html.= "                        <td align=\"left\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_parent\" title=\"". gettext("Reply as PM"). "\"><img src=\"". html_style_image('pmunread.png'). "\" border=\"0\" alt=\"". gettext("Reply as PM"). "\" title=\"". gettext("Reply as PM"). "\" /></a></td>\n";
-    $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_parent\" title=\"". gettext("Reply as PM"). "\">". gettext("Reply as PM"). "</a></td>\n";
+    $html.= "                        <td align=\"left\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\" title=\"". gettext("Reply as PM"). "\"><img src=\"". html_style_image('pmunread.png'). "\" border=\"0\" alt=\"". gettext("Reply as PM"). "\" title=\"". gettext("Reply as PM"). "\" /></a></td>\n";
+    $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\" title=\"". gettext("Reply as PM"). "\">". gettext("Reply as PM"). "</a></td>\n";
     $html.= "                      </tr>\n";
     $html.= "                      <tr>\n";
-    $html.= "                        <td align=\"left\"><a href=\"display.php?webtag=$webtag&amp;print_msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"". gettext("Print"). "\"><img src=\"". html_style_image('print.png'). "\" border=\"0\" alt=\"". gettext("Print"). "\" title=\"". gettext("Print"). "\" /></a></td>\n";
-    $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"display.php?webtag=$webtag&amp;print_msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"". gettext("Print"). "\">". gettext("Print"). "</a></td>\n";
+    $html.= "                        <td align=\"left\"><a href=\"display.php?webtag=$webtag&amp;print_msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"". gettext("Print"). "\"><img src=\"". html_style_image('print.png'). "\" border=\"0\" alt=\"". gettext("Print"). "\" title=\"". gettext("Print"). "\" /></a></td>\n";
+    $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"display.php?webtag=$webtag&amp;print_msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"". gettext("Print"). "\">". gettext("Print"). "</a></td>\n";
     $html.= "                      </tr>\n";
     $html.= "                      <tr>\n";
-    $html.= "                        <td align=\"left\"><a href=\"thread_options.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;markasread=". ($message['PID'] - 1). "\" target=\"_self\" title=\"". gettext("Mark as unread"). "\"><img src=\"". html_style_image('markasunread.png'). "\" border=\"0\" alt=\"". gettext("Mark as unread"). "\" title=\"". gettext("Mark as unread"). "\" /></a></td>\n";
-    $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"thread_options.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;markasread=". ($message['PID'] - 1). "\" target=\"_self\" title=\"". gettext("Mark as unread"). "\">". gettext("Mark as unread"). "</a></td>\n";
+    $html.= "                        <td align=\"left\"><a href=\"thread_options.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;markasread=". ($message['PID'] - 1). "&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"". gettext("Mark as unread"). "\"><img src=\"". html_style_image('markasunread.png'). "\" border=\"0\" alt=\"". gettext("Mark as unread"). "\" title=\"". gettext("Mark as unread"). "\" /></a></td>\n";
+    $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"thread_options.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;markasread=". ($message['PID'] - 1). "&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"". gettext("Mark as unread"). "\">". gettext("Mark as unread"). "</a></td>\n";
     $html.= "                      </tr>\n";
 
     if ($_SESSION['UID'] != $message['FROM_UID']) {
 
         $html.= "                      <tr>\n";
-        $html.= "                        <td align=\"left\"><a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"". gettext("Relationship"). "\"><img src=\"". html_style_image('enemy.png'). "\" border=\"0\" alt=\"". gettext("Relationship"). "\" title=\"". gettext("Relationship"). "\" /></a></td>\n";
+        $html.= "                        <td align=\"left\"><a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"". gettext("Relationship"). "\"><img src=\"". html_style_image('enemy.png'). "\" border=\"0\" alt=\"". gettext("Relationship"). "\" title=\"". gettext("Relationship"). "\" /></a></td>\n";
         $html.= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"". gettext("Relationship"). "\">". gettext("Relationship"). "</a></td>\n";
         $html.= "                      </tr>\n";
     }

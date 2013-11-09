@@ -53,6 +53,12 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     html_draw_error(gettext("Invalid Message ID or no Message ID specified."));
 }
 
+if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
+    $return_msg = $_GET['return_msg'];
+} else {
+    $return_msg = $msg;
+}
+
 if (!$folder_data = thread_get_folder($tid)) {
     html_draw_error(gettext("The requested folder could not be found or access was denied."));
 }
@@ -139,7 +145,7 @@ if ($message) {
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"center\">\n";
-echo "      <a href=\"messages.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"_self\" class=\"button\"><span>", gettext("Back"), "</span></a>\n";
+echo "      <a href=\"messages.php?webtag=$webtag&amp;msg=$return_msg\" target=\"_self\" class=\"button\"><span>", gettext("Back"), "</span></a>\n";
 echo "      ", form_button("print", gettext("Print")), "\n";
 echo "    </td>\n";
 echo "  </tr>\n";

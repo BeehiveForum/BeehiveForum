@@ -115,7 +115,7 @@ if (isset($_POST['newthread']) && (isset($_POST['post']) || isset($_POST['previe
         $valid = false;
     }
 
-} else if (!isset($_POST['replyto'])) {
+} else if (!isset($_POST['reply_to'])) {
 
     $valid = false;
 }
@@ -205,9 +205,15 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
 
 if (!isset($content)) $content = "";
 
-if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
+if (isset($_GET['reply_to']) && validate_msg($_GET['reply_to'])) {
 
-    list($tid, $reply_to_pid) = explode(".", $_GET['replyto']);
+    list($tid, $reply_to_pid) = explode(".", $_GET['reply_to']);
+
+    if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
+        $return_msg = $_GET['return_msg'];
+    } else {
+        $return_msg = $_GET['reply_to'];
+    }
 
     if (!($fid = thread_get_folder_fid($tid))) {
         light_html_draw_error(gettext("The requested thread could not be found or access was denied."));
@@ -225,9 +231,15 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     $new_thread = false;
 
-} else if (isset($_POST['replyto']) && validate_msg($_POST['replyto'])) {
+} else if (isset($_POST['reply_to']) && validate_msg($_POST['reply_to'])) {
 
-    list($tid, $reply_to_pid) = explode(".", $_POST['replyto']);
+    list($tid, $reply_to_pid) = explode(".", $_POST['reply_to']);
+
+    if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
+        $return_msg = $_POST['return_msg'];
+    } else {
+        $return_msg = $_POST['reply_to'];
+    }
 
     if (!($fid = thread_get_folder_fid($tid))) {
         light_html_draw_error(gettext("The requested thread could not be found or access was denied."));
@@ -442,6 +454,14 @@ if ($valid && isset($_POST['post'])) {
 
             $uri = "lmessages.php?webtag=$webtag&msg=$tid.1";
 
+        } else if (isset($return_msg)) {
+
+            if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
+                $uri = "lmessages.php?webtag=$webtag&msg=$return_msg&post_success=$tid.$reply_to_pid";
+            } else {
+                $uri = "lmessages.php?webtag=$webtag&msg=$return_msg";
+            }
+
         } else {
 
             if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
@@ -569,7 +589,8 @@ if ($new_thread) {
 
         echo "<h3>", gettext("Post Reply"), ": ", word_filter_add_ob_tags(thread_get_title($tid), true), "</h3>\n";
         echo "<div class=\"post_inner\">\n";
-        echo form_input_hidden("replyto", htmlentities_array("$tid.$reply_to_pid"));
+        echo form_input_hidden("reply_to", htmlentities_array("$tid.$reply_to_pid"));
+        echo form_input_hidden('return_msg', htmlentities_array($return_msg)), "\n";
     }
 }
 
@@ -579,16 +600,11 @@ echo "<div class=\"post_buttons\">";
 echo light_form_submit("post", gettext("Post"));
 echo light_form_submit("preview", gettext("Preview"));
 
-if (isset($_POST['replyto']) && validate_msg($_POST['replyto'])) {
-
-    echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$_POST['replyto']}\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
-
-} else if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
-
-    echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$_GET['replyto']}\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
-
+if (isset($return_msg)) {
+    echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$return_msg\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+} else if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
+    echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$reply_to_pid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 } else {
-
     echo "<a href=\"lmessages.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 }
 

@@ -1,50 +1,47 @@
 /*======================================================================
-Copyright Project Beehive Forum 2002
+ Copyright Project Beehive Forum 2002
 
-This file is part of Beehive Forum.
+ This file is part of Beehive Forum.
 
-Beehive Forum is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+ Beehive Forum is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-Beehive Forum is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ Beehive Forum is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-USA
-======================================================================*/
+ You should have received a copy of the GNU General Public License
+ along with Beehive; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+ USA
+ ======================================================================*/
 
-$(beehive).bind('init', function() {
+$(beehive).bind('init', function () {
 
     beehive.quote_list = [];
 
-    var hide_post_options_containers = function() {
+    var hide_post_options_containers = function () {
 
-        $('.post_options_container').each(function() {
+        $('.post_options_container').each(function () {
 
             var $post_options_container = $(this);
 
             var $link = $(this).prev('span.post_options');
 
-            if ($link.length == 1) {
+            var link_offset = $link.offset();
 
-                var link_offset = $link.offset();
+            $post_options_container.hide();
 
-                $post_options_container.hide();
+            $post_options_container.css('top', Math.floor(link_offset.top + $link.height()));
 
-                $post_options_container.css('top', link_offset.top + $link.height());
-
-                $post_options_container.find('*').css('margin-left', -9999);
-            }
+            $post_options_container.find('table').css('margin-left', -9999);
         });
     };
 
-    var $body = $('body').on('click', 'input.post_vote_up, input.post_vote_down', function(event) {
+    var $body = $('body').on('click', 'input.post_vote_up, input.post_vote_down', function (event) {
 
         var $button = $(this);
 
@@ -54,19 +51,19 @@ $(beehive).bind('init', function() {
 
         $.ajax({
 
-            'cache' : true,
+            'cache': true,
 
-            'data' : {
-                'webtag' : beehive.webtag,
-                'ajax' : 'true',
-                'action' : 'post_vote',
-                'post_rating' : $button.hasClass('post_vote_up') ? 1 : -1,
-                'msg' : $form.data('msg')
+            'data': {
+                'webtag': beehive.webtag,
+                'ajax': 'true',
+                'action': 'post_vote',
+                'post_rating': $button.hasClass('post_vote_up') ? 1 : -1,
+                'msg': $form.data('msg')
             },
 
-            'url' : beehive.forum_path + '/ajax.php',
+            'url': beehive.forum_path + '/ajax.php',
 
-            'success' : function(data) {
+            'success': function (data) {
 
                 try {
 
@@ -80,32 +77,38 @@ $(beehive).bind('init', function() {
         });
     });
 
-    $('span.post_options').each(function() {
+    $('span.post_options').each(function () {
 
         var $link = $(this);
 
-        $link.html(beehive.lang.more +'&nbsp;<img class="post_options" src="' + beehive.images['post_options.png'] + '" border="0" />');
+        $link.html(beehive.lang.more + '&nbsp;<img class="post_options" src="' + beehive.images['post_options.png'] + '" border="0" />');
 
-        $link.bind('click', function() {
+        $link.bind('click', function (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
 
             hide_post_options_containers();
 
             if ($link.next('.post_options_container').length < 1) {
 
+                var options = $link.prop('id').match(/post_options_(\d)_(\d)_(\d)/);
+
                 $.ajax({
 
-                    'cache' : true,
+                    'cache': true,
 
-                    'data' : {
-                        'webtag' : beehive.webtag,
-                        'ajax'   : 'true',
-                        'action' : 'post_options',
-                        'msg'    : $link.prop('id').match(/post_options_([^\.]+\.[^\.]+)/)[1]
+                    'data': {
+                        'webtag': beehive.webtag,
+                        'ajax': 'true',
+                        'action': 'post_options',
+                        'msg': options[1] + '.' + options[2],
+                        'pid': options[2]
                     },
 
-                    'url' : beehive.forum_path + '/ajax.php',
+                    'url': beehive.forum_path + '/ajax.php',
 
-                    'success' : function(data) {
+                    'success': function (data) {
 
                         try {
 
@@ -120,38 +123,33 @@ $(beehive).bind('init', function() {
                     }
                 });
 
-                return;
-            }
-
-            var $post_options_container = $link.next('.post_options_container');
-
-            if ($post_options_container.length != 1) {
-                 return;
-            }
-
-            var link_offset = $link.offset();
-
-            $post_options_container.show();
-
-            var container_offset = $post_options_container.offset();
-
-            //noinspection JSValidateTypes
-            if (((container_offset.top - $(window).scrollTop()) + $post_options_container.height()) > $(window).height()) {
-                $post_options_container.css('top', Math.floor(link_offset.top - $post_options_container.height()));
             } else {
-                $post_options_container.css('top', Math.floor(link_offset.top + $link.height()));
-            }
 
-            $post_options_container.find('*').css('margin-left', 0);
-            $post_options_container.css('left', Math.floor(link_offset.left - ($post_options_container.width() - $link.width())));
+                var $post_options_container = $link.next('.post_options_container');
+
+                var container_offset = $post_options_container.offset();
+
+                var link_offset = $link.offset();
+
+                //noinspection JSValidateTypes
+                if (((container_offset.top - $(window).scrollTop()) + $post_options_container.height()) > $(window).height()) {
+                    $post_options_container.css('top', Math.floor(link_offset.top - $post_options_container.height()));
+                } else {
+                    $post_options_container.css('top', Math.floor(link_offset.top + $link.height()));
+                }
+
+                $post_options_container.find('*').css('margin-left', 0);
+                $post_options_container.css('left', Math.floor(link_offset.left - ($post_options_container.width() - $link.width())));
+                $post_options_container.show();
+            }
         });
     });
 
-    $body.bind('click', function() {
+    $body.bind('click', function () {
         hide_post_options_containers();
     });
 
-    $('#quick_reply_container').find('input#cancel').bind('click', function() {
+    $('#quick_reply_container').find('input#cancel').bind('click', function () {
 
         if (CKEDITOR.instances.content) {
             CKEDITOR.instances.content.destroy();
@@ -160,7 +158,7 @@ $(beehive).bind('init', function() {
         $('#quick_reply_container').hide();
     });
 
-    $body.on('click', '.quick_reply_link', function() {
+    $body.on('click', '.quick_reply_link', function () {
 
         var $post_options_container = $('.post_options_container').hide();
 
@@ -180,7 +178,7 @@ $(beehive).bind('init', function() {
 
             if ($quick_reply_location.length == 1) {
 
-                $quick_reply_container.find('input[name="replyto"]').val(quick_reply_data[0]);
+                $quick_reply_container.find('input[name="reply_to"]').val(quick_reply_data[0]);
 
                 $quick_reply_container.appendTo($quick_reply_location).show();
 
@@ -191,7 +189,7 @@ $(beehive).bind('init', function() {
         }
     });
 
-    $('a[id^="quote_"]').bind('click', function() {
+    $('a[id^="quote_"]').bind('click', function () {
 
         var pid = $(this).data('pid');
 
@@ -221,7 +219,7 @@ $(beehive).bind('init', function() {
             }
         }
 
-        $('a[id^="reply_"]').each(function() {
+        $('a[id^="reply_"]').each(function () {
 
             var query_string = $.parseQuery($(this).prop('href').split('?')[1]);
 

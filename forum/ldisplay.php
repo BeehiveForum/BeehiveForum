@@ -49,6 +49,12 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     exit;
 }
 
+if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
+    $return_msg = $_GET['return_msg'];
+} else {
+    $return_msg = $msg;
+}
+
 if (!$folder_data = thread_get_folder($tid)) {
 
     light_html_draw_top(sprintf("title=%s", gettext("Error")));
@@ -101,6 +107,6 @@ if ($thread_data['POLL_FLAG'] == 'Y') {
     $last_pid = $message['PID'];
 }
 
-echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$msg\">", gettext("Back"), "</a>\n";
+echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$return_msg\">", gettext("Back"), "</a>\n";
 
 light_html_draw_bottom();

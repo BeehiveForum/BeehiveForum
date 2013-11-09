@@ -84,17 +84,18 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
     exit;
 }
 
+if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
+    $return_msg = $_POST['return_msg'];
+} else if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
+    $return_msg = $_GET['return_msg'];
+} else {
+    $return_msg = $msg;
+}
+
 if (isset($_POST['cancel'])) {
 
-    $uri = "lmessages.php?webtag=$webtag";
-
-    if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
-        $uri.= "&msg={$_GET['msg']}";
-    } else if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
-        $uri.= "&msg={$_POST['msg']}";
-    }
-
-    header_redirect($uri);
+    header_redirect("lmessages.php?webtag=$webtag&msg=$return_msg");
+    exit;
 }
 
 if (session::check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
@@ -157,7 +158,7 @@ if (isset($_POST['delete'])) {
             admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
         }
 
-        header_redirect("lmessages.php?webtag=$webtag&msg=$msg");
+        header_redirect("lmessages.php?webtag=$webtag&msg=$return_msg&delete_success=$msg");
         exit;
 
     } else {
@@ -179,6 +180,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"ldelete.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('msg', htmlentities_array($msg)), "\n";
+echo "  ", form_input_hidden('return_msg', htmlentities_array($return_msg)), "\n";
 
 if (thread_is_poll($tid) && $pid == 1) {
 

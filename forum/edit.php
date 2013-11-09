@@ -79,6 +79,14 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     html_draw_error(gettext("No message specified for editing"), 'discussion.php', 'get', array('back' => gettext("Back")));
 }
 
+if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
+    $return_msg = $_POST['return_msg'];
+} else if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
+    $return_msg = $_GET['return_msg'];
+} else {
+    $return_msg = $msg;
+}
+
 if (!($edit_message = messages_get($tid, $pid, 1))) {
 
     html_draw_top(sprintf("title=%s", gettext("Error")));
@@ -89,7 +97,7 @@ if (!($edit_message = messages_get($tid, $pid, 1))) {
 
 if (thread_is_poll($tid) && $pid == 1) {
 
-    header_redirect("edit_poll.php?webtag=$webtag&msg=$msg");
+    header_redirect("edit_poll.php?webtag=$webtag&msg=$msg&return_msg=$return_msg");
     exit;
 }
 
@@ -233,7 +241,7 @@ if ($valid && isset($_POST['preview'])) {
     }
 
     if ((forum_get_setting('allow_post_editing', 'N') || (($_SESSION['UID'] != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-        html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
+        html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $return_msg));
     }
 
     if ($valid) {
@@ -266,7 +274,7 @@ if ($valid && isset($_POST['preview'])) {
                 admin_add_log_entry(EDIT_POST, array($t_fid, $tid, $pid));
             }
 
-            header_redirect("discussion.php?webtag=$webtag&msg=$msg&edit_success=$msg");
+            header_redirect("discussion.php?webtag=$webtag&msg=$return_msg&edit_success=$msg");
             exit;
 
         } else {
@@ -305,7 +313,7 @@ if ($valid && isset($_POST['preview'])) {
         if (($edit_message['CONTENT'] = message_get_content($tid, $pid)) !== false) {
 
             if ((forum_get_setting('allow_post_editing', 'N') || (($_SESSION['UID'] != $edit_message['FROM_UID']) && !(perm_get_user_permissions($edit_message['FROM_UID']) & USER_PERM_PILLORIED)) || (session::check_perm(USER_PERM_PILLORIED, 0)) || ($post_edit_time > 0 && (time() - $edit_message['CREATED']) >= ($post_edit_time * HOUR_IN_SECONDS))) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
-                html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
+                html_draw_error(gettext("You are not permitted to edit this message."), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $return_msg));
             }
 
             $parsed_message = new MessageTextParse($edit_message['CONTENT']);
@@ -316,11 +324,11 @@ if ($valid && isset($_POST['preview'])) {
 
         } else {
 
-            html_draw_error(sprintf(gettext("Message %s was not found"), $msg), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
+            html_draw_error(sprintf(gettext("Message %s was not found"), $msg), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $return_msg));
         }
 
     } else{
-        html_draw_error(sprintf(gettext("Message %s was not found"), $msg), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $msg));
+        html_draw_error(sprintf(gettext("Message %s was not found"), $msg), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $return_msg));
     }
 }
 
@@ -337,6 +345,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br /><form accept-charset=\"utf-8\" name=\"f_post\" action=\"edit.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('msg', htmlentities_array($msg)), "\n";
+echo "  ", form_input_hidden('return_msg', htmlentities_array($return_msg)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"960\" class=\"max_width\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -459,7 +468,7 @@ echo form_submit('apply',gettext("Apply"), "tabindex=\"2\""), "\n";
 
 echo form_submit("preview", gettext("Preview"), "tabindex=\"3\""), "\n";
 
-echo "<a href=\"discussion.php?webtag=$webtag&amp;msg=$msg\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+echo "<a href=\"discussion.php?webtag=$webtag&amp;msg=$return_msg\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 
 if (forum_get_setting('attachments_enabled', 'Y') && (session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid))) {
 

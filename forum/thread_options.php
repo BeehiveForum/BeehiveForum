@@ -63,6 +63,14 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     html_draw_error(gettext("The requested thread could not be found or access was denied."));
 }
 
+if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
+    $return_msg = $_POST['return_msg'];
+} else if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
+    $return_msg = $_GET['return_msg'];
+} else {
+    $return_msg = $msg;
+}
+
 if (!$folder_data = thread_get_folder($tid)) {
     html_draw_error(gettext("The requested folder could not be found or access was denied."));
 }
@@ -85,7 +93,7 @@ $thread_delete_valid_types = array(
 // Back button clicked.
 if (isset($_POST['back'])) {
 
-    header_redirect("messages.php?webtag=$webtag&msg=$msg");
+    header_redirect("messages.php?webtag=$webtag&msg=$return_msg");
     exit;
 }
 
@@ -98,12 +106,12 @@ if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
 
         if (messages_set_read($tid, $mark_as_read, $thread_data['MODIFIED'])) {
 
-            header_redirect("messages.php?webtag=$webtag&msg=$msg&markasread=1");
+            header_redirect("messages.php?webtag=$webtag&msg=$return_msg&markasread=1");
             exit;
         }
     }
 
-    header_redirect("messages.php?webtag=$webtag&msg=$msg&markasread=0");
+    header_redirect("messages.php?webtag=$webtag&msg=$return_msg&markasread=0");
     exit;
 
 } else if (isset($_POST['setinterest']) && is_numeric($_POST['setinterest'])) {
@@ -112,11 +120,11 @@ if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
 
     if (thread_set_interest($tid, $thread_interest)) {
 
-        header_redirect("messages.php?webtag=$webtag&msg=$msg&setinterest=1");
+        header_redirect("messages.php?webtag=$webtag&msg=$return_msg&setinterest=1");
         exit;
     }
 
-    header_redirect("messages.php?webtag=$webtag&msg=$msg&setinterest=0");
+    header_redirect("messages.php?webtag=$webtag&msg=$return_msg&setinterest=0");
     exit;
 }
 
@@ -454,7 +462,7 @@ if (isset($_POST['save'])) {
 
     if ($valid) {
 
-        header_redirect("thread_options.php?webtag=$webtag&msg=$msg&updated=true");
+        header_redirect("thread_options.php?webtag=$webtag&msg=$msg&return_msg=$return_msg&updated=true");
         exit;
     }
 }
@@ -463,7 +471,7 @@ if ($thread_data['DELETED'] == 'N') {
 
     html_draw_top(sprintf('title=%s', sprintf(gettext("Thread Options - %s"), $thread_data['TITLE'])), "basetarget=_blank", 'js/search_popup.js', 'class=window_title');
 
-    echo "<h1>", gettext("Thread Options"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">", word_filter_add_ob_tags($thread_data['TITLE'], true), "</a></h1>\n";
+    echo "<h1>", gettext("Thread Options"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"messages.php?webtag=$webtag&amp;msg=$return_msg\" target=\"_self\">", word_filter_add_ob_tags($thread_data['TITLE'], true), "</a></h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -929,7 +937,7 @@ if ($thread_data['DELETED'] == 'N') {
 
     html_draw_top(sprintf('title=%s', sprintf(gettext("Thread Options - %s"), $thread_data['TITLE'])), "basetarget=_blank", 'class=window_title');
 
-    echo "<h1>", gettext("Thread Options"), ": <a href=\"messages.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags($thread_data['TITLE'], true), "</a></h1>\n";
+    echo "<h1>", gettext("Thread Options"), ": <a href=\"messages.php?webtag=$webtag&amp;msg=$return_msg\" target=\"_self\">#{$tid} ", word_filter_add_ob_tags($thread_data['TITLE'], true), "</a></h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

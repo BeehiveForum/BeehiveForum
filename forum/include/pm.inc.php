@@ -866,7 +866,7 @@ function pm_display($message_data, $preview = false, $export_html = false)
 
         if (($message_data['TYPE'] & PM_INBOX_ITEMS)) {
 
-            echo "<img src=\"", html_style_image('post.png'), "\" border=\"0\" alt=\"", gettext("Reply"), "\" title=\"", gettext("Reply"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyto={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Reply"), "</a>&nbsp;\n";
+            echo "<img src=\"", html_style_image('post.png'), "\" border=\"0\" alt=\"", gettext("Reply"), "\" title=\"", gettext("Reply"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;reply_to={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Reply"), "</a>&nbsp;\n";
 
             if (isset($message_data['RECIPIENTS']) && sizeof($message_data['RECIPIENTS']) > 1) {
                 echo "<img src=\"", html_style_image('reply_all.png'), "\" border=\"0\" alt=\"", gettext("Reply All"), "\" title=\"", gettext("Reply All"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyall={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Reply All"), "</a>&nbsp;\n";

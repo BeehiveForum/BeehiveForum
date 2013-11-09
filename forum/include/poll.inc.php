@@ -698,7 +698,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 }
 
                 if ($_SESSION['UID'] == $poll_data['FROM_UID'] || session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
-                    $poll_display.= "&nbsp;<a href=\"close_poll.php?webtag=$webtag&msg=$tid.1\" class=\"button\" target=\"_parent\">". gettext("End Poll"). "</a>";
+                    $poll_display.= "&nbsp;<a href=\"close_poll.php?webtag=$webtag&msg=$tid.1&amp;return_msg=$tid.$first_msg\" class=\"button\" target=\"_parent\">". gettext("End Poll"). "</a>";
                 }
 
                 $poll_display.= "              </td>\n";
@@ -737,7 +737,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
                 }
 
                 if ($_SESSION['UID'] == $poll_data['FROM_UID'] || session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_fid)) {
-                    $poll_display.= "&nbsp;<a href=\"close_poll.php?webtag=$webtag&msg=$tid.1\" class=\"button\" target=\"_parent\">". gettext("End Poll"). "</a>";
+                    $poll_display.= "&nbsp;<a href=\"close_poll.php?webtag=$webtag&msg=$tid.1&amp;return_msg=$tid.$first_msg\" class=\"button\" target=\"_parent\">". gettext("End Poll"). "</a>";
                 }
 
                 $poll_display.= "              </td>\n";

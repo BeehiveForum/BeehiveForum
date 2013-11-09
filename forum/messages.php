@@ -267,14 +267,14 @@ echo "</div>\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_quote\" action=\"post.php\" method=\"get\" target=\"_parent\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('quote_list', null), "\n";
-echo "  ", form_input_hidden('replyto', null), "\n";
+echo "  ", form_input_hidden('reply_to', null), "\n";
 echo "</form>\n";
 
 echo "<div id=\"quick_reply_container\" class=\"quick_reply_container_closed\">\n";
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"quick_reply_form\" action=\"post.php\" method=\"post\" target=\"_parent\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-echo "  ", form_input_hidden('replyto', htmlentities_array($msg)), "\n";
+echo "  ", form_input_hidden('reply_to', htmlentities_array($msg)), "\n";
 echo "  ", form_input_hidden('post_interest', $high_interest), "\n";
 echo "  ", form_input_hidden('attachment[]'), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
@@ -376,7 +376,7 @@ if (($thread_data['CLOSED'] == 0 && session::check_perm(USER_PERM_POST_CREATE, $
 
     echo "    <td width=\"33%\" align=\"left\" style=\"white-space: nowrap\" class=\"postbody\">";
     echo "      <img src=\"". html_style_image('reply_all.png') ."\" alt=\"", gettext("Reply to All"), "\" title=\"", gettext("Reply to All"), "\" border=\"0\" /> ";
-    echo "      <a href=\"post.php?webtag=$webtag&amp;replyto=$tid.0\" target=\"_parent\" id=\"reply_0\"><b>", gettext("Reply to All"), "</b></a>\n";
+    echo "      <a href=\"post.php?webtag=$webtag&amp;reply_to=$tid.0&amp;return_msg=$tid.$pid\" target=\"_parent\" id=\"reply_0\"><b>", gettext("Reply to All"), "</b></a>\n";
     echo "    </td>\n";
 
 } else {
@@ -388,11 +388,11 @@ if (session::logged_in()) {
 
     if ($thread_data['LENGTH'] > 0) {
 
-        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"". html_style_image('thread_options.png') ."\" alt=\"", gettext("Edit Thread Options"), "\" title=\"", gettext("Edit Thread Options"), "\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>", gettext("Edit Thread Options"), "</b></a></td>\n";
+        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"". html_style_image('thread_options.png') ."\" alt=\"", gettext("Edit Thread Options"), "\" title=\"", gettext("Edit Thread Options"), "\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg&amp;return_msg=$tid.$pid\" target=\"_self\"><b>", gettext("Edit Thread Options"), "</b></a></td>\n";
 
     } else {
 
-        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"". html_style_image('thread_options.png') ."\" alt=\"", gettext("Undelete Thread"), "\" title=\"", gettext("Undelete Thread"), "\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg\" target=\"_self\"><b>", gettext("Undelete Thread"), "</b></a></td>\n";
+        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"". html_style_image('thread_options.png') ."\" alt=\"", gettext("Undelete Thread"), "\" title=\"", gettext("Undelete Thread"), "\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg&amp;return_msg=$tid.$pid\" target=\"_self\"><b>", gettext("Undelete Thread"), "</b></a></td>\n";
     }
 
 } else {

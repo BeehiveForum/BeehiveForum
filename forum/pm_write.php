@@ -65,13 +65,13 @@ $subject = null;
 
 $to_logon_array = array();
 
-if (isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
+if (isset($_GET['reply_to']) && is_numeric($_GET['reply_to'])) {
 
-    $reply_mid = $_GET['replyto'];
+    $reply_mid = $_GET['reply_to'];
 
-} else if (isset($_POST['replyto']) && is_numeric($_POST['replyto'])) {
+} else if (isset($_POST['reply_to']) && is_numeric($_POST['reply_to'])) {
 
-    $reply_mid = $_POST['replyto'];
+    $reply_mid = $_POST['reply_to'];
 
 } else if (isset($_GET['replyall']) && is_numeric($_GET['replyall'])) {
 
@@ -120,6 +120,14 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
             $subject = "RE:$thread_title $thread_index";
         }
     }
+}
+
+if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
+    $return_msg = $_POST['return_msg'];
+} else if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
+    $return_msg = $_GET['return_msg'];
+} else {
+    $return_msg = $msg;
 }
 
 $folder = PM_FOLDER_INBOX;
@@ -439,8 +447,16 @@ if ($valid && isset($_POST['send'])) {
 
     if ($valid) {
 
-        header_redirect("pm.php?webtag=$webtag&message_sent=true");
-        exit;
+        if (isset($return_msg)) {
+
+            header_redirect("discussion.php?webtag=$webtag&msg=$return_msg&message_sent=true");
+            exit;
+
+        } else {
+
+            header_redirect("pm.php?webtag=$webtag&message_sent=true");
+            exit;
+        }
     }
 
 } else if ($valid && isset($_POST['save'])) {
@@ -449,8 +465,16 @@ if ($valid && isset($_POST['send'])) {
 
         if (pm_update_saved_message($edit_mid, $_SESSION['UID'], $to_logon_array, $subject, $content, $reply_mid)) {
 
-            header_redirect("pm.php?webtag=$webtag&mid=$edit_mid&message_saved=true");
-            exit;
+            if (isset($return_msg)) {
+
+                header_redirect("discussion.php?webtag=$webtag&msg=$return_msg&message_saved=true");
+                exit;
+
+            } else {
+
+                header_redirect("pm.php?webtag=$webtag&mid=$edit_mid&message_saved=true");
+                exit;
+            }
 
         } else {
 
@@ -470,8 +494,16 @@ if ($valid && isset($_POST['send'])) {
                 }
             }
 
-            header_redirect("pm.php?webtag=$webtag&mid=$saved_mid&message_saved=true");
-            exit;
+            if (isset($return_msg)) {
+
+                header_redirect("discussion.php?webtag=$webtag&msg=$return_msg&message_saved=true");
+                exit;
+
+            } else {
+
+                header_redirect("pm.php?webtag=$webtag&mid=$saved_mid&message_saved=true");
+                exit;
+            }
 
         } else {
 
@@ -494,6 +526,7 @@ echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"pm_write.php\" met
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
 echo "  ", form_input_hidden("dedupe", htmlentities_array($dedupe));
+echo "  ", form_input_hidden('return_msg', htmlentities_array($return_msg)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"960\" class=\"max_width\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
@@ -679,7 +712,7 @@ echo "                </tr>\n";
 echo "              </table>\n";
 
 if (isset($reply_mid) && is_numeric($reply_mid) && $reply_mid > 0) {
-    echo form_input_hidden("replyto", htmlentities_array($reply_mid)), "\n";
+    echo form_input_hidden("reply_to", htmlentities_array($reply_mid)), "\n";
 }
 
 if (isset($forward_mid) && is_numeric($forward_mid) && $forward_mid > 0) {

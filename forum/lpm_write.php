@@ -66,13 +66,13 @@ $subject = null;
 
 $reply_all = false;
 
-if (isset($_GET['replyto']) && is_numeric($_GET['replyto'])) {
+if (isset($_GET['reply_to']) && is_numeric($_GET['reply_to'])) {
 
-    $reply_mid = $_GET['replyto'];
+    $reply_mid = $_GET['reply_to'];
 
-} else if (isset($_POST['replyto']) && is_numeric($_POST['replyto'])) {
+} else if (isset($_POST['reply_to']) && is_numeric($_POST['reply_to'])) {
 
-    $reply_mid = $_POST['replyto'];
+    $reply_mid = $_POST['reply_to'];
 
 } else if (isset($_GET['replyall']) && is_numeric($_GET['replyall'])) {
 
@@ -121,6 +121,14 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
             $subject = "RE:$thread_title $thread_index";
         }
     }
+}
+
+if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
+    $return_msg = $_POST['return_msg'];
+} else if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
+    $return_msg = $_GET['return_msg'];
+} else {
+    $return_msg = $msg;
 }
 
 $valid = true;
@@ -399,8 +407,16 @@ if ($valid && isset($_POST['send'])) {
 
     if ($valid) {
 
-        header_redirect("lpm.php?webtag=$webtag&message_sent=true");
-        exit;
+        if (isset($return_msg)) {
+
+            header_redirect("lmessages.php?webtag=$webtag&msg=$return_msg&message_sent=true");
+            exit;
+
+        } else {
+
+            header_redirect("lpm.php?webtag=$webtag&message_sent=true");
+            exit;
+        }
     }
 
 } else if ($valid && isset($_POST['save'])) {
@@ -409,8 +425,16 @@ if ($valid && isset($_POST['send'])) {
 
         if (pm_update_saved_message($edit_mid, $_SESSION['UID'], $to_logon_array, $subject, $content, $reply_mid)) {
 
-            header_redirect("lpm.php?webtag=$webtag&mid=$edit_mid&message_saved=true");
-            exit;
+            if (isset($return_msg)) {
+
+                header_redirect("lmessages.php?webtag=$webtag&msg=$return_msg&message_saved=true");
+                exit;
+
+            } else {
+
+                header_redirect("lpm.php?webtag=$webtag&mid=$edit_mid&message_saved=true");
+                exit;
+            }
 
         } else {
 
@@ -431,8 +455,17 @@ if ($valid && isset($_POST['send'])) {
             }
 
             $pm_folder_drafts = PM_FOLDER_DRAFTS;
-            header_redirect("lpm.php?webtag=$webtag&folder=$pm_folder_drafts&mid=$saved_mid&message_saved=true");
-            exit;
+
+            if (isset($return_msg)) {
+
+                header_redirect("lmessages.php?webtag=$webtag&msg=$return_msg&message_saved=true");
+                exit;
+
+            } else {
+
+                header_redirect("lpm.php?webtag=$webtag&folder=$pm_folder_drafts&mid=$saved_mid&message_saved=true");
+                exit;
+            }
 
         } else {
 
@@ -489,7 +522,7 @@ echo light_form_submit("cancel", gettext("Cancel"));
 echo "</div>";
 
 if (isset($reply_mid) && is_numeric($reply_mid) && $reply_mid > 0) {
-    echo form_input_hidden("replyto", htmlentities_array($reply_mid)), "\n";
+    echo form_input_hidden("reply_to", htmlentities_array($reply_mid)), "\n";
 }
 
 if (isset($forward_mid) && is_numeric($forward_mid) && $forward_mid > 0) {

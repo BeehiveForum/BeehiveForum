@@ -145,7 +145,7 @@ if (($longest_thread = stats_get_longest_thread()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"40%\">", gettext("Longest thread"), ":&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$longest_thread['TID']}.1\">", word_filter_add_ob_tags($longest_thread['TITLE'], true), "</a> (", number_format($longest_thread['LENGTH'], 0, '.', ','), " ", gettext("Posts"), ")</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;msg={$longest_thread['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags($longest_thread['TITLE'], true), "</a> (", number_format($longest_thread['LENGTH'], 0, '.', ','), " ", gettext("Posts"), ")</td>\n";
     echo "                </tr>\n";
 }
 
@@ -153,7 +153,7 @@ if (($most_read_thread = stats_get_most_read_thread()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"40%\">", gettext("Most read thread"), ":&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$most_read_thread['TID']}.1\">", word_filter_add_ob_tags($most_read_thread['TITLE'], true), "</a> (", number_format($most_read_thread['VIEWCOUNT'], 0, '.', ','), " ", gettext("Views"), ")</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;msg={$most_read_thread['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags($most_read_thread['TITLE'], true), "</a> (", number_format($most_read_thread['VIEWCOUNT'], 0, '.', ','), " ", gettext("Views"), ")</td>\n";
     echo "                </tr>\n";
 }
 
@@ -169,7 +169,7 @@ if (($most_subscribed_thread = stats_get_most_subscribed_thread()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"40%\">", gettext("Most popular thread by subscription"), ":&nbsp;</td>\n";
-    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=discussion.php%3Fwebtag%3D$webtag%26msg={$most_subscribed_thread['TID']}.1\">", word_filter_add_ob_tags($most_subscribed_thread['TITLE'], true), "</a> (", number_format($most_subscribed_thread['SUBSCRIBERS'], 0, '.', ','), " ", gettext("Subscribers"), ")</td>\n";
+    echo "                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;msg={$most_subscribed_thread['TID']}.1\" target=\"_blank\">", word_filter_add_ob_tags($most_subscribed_thread['TITLE'], true), "</a> (", number_format($most_subscribed_thread['SUBSCRIBERS'], 0, '.', ','), " ", gettext("Subscribers"), ")</td>\n";
     echo "                </tr>\n";
 
 } else {

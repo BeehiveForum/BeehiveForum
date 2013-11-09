@@ -116,7 +116,7 @@ if (isset($_POST['newthread']) && (isset($_POST['post']) || isset($_POST['previe
         $valid = false;
     }
 
-} else if (!isset($_POST['replyto'])) {
+} else if (!isset($_POST['reply_to'])) {
 
     $valid = false;
 }
@@ -266,9 +266,15 @@ if (!isset($content)) $content = "";
 
 if (!isset($sig)) $sig = "";
 
-if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
+if (isset($_GET['reply_to']) && validate_msg($_GET['reply_to'])) {
 
-    list($tid, $reply_to_pid) = explode(".", $_GET['replyto']);
+    list($tid, $reply_to_pid) = explode(".", $_GET['reply_to']);
+
+    if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
+        $return_msg = $_GET['return_msg'];
+    } else {
+        $return_msg = $_GET['reply_to'];
+    }    
 
     if (!($fid = thread_get_folder_fid($tid))) {
         html_draw_error(gettext("The requested thread could not be found or access was denied."));
@@ -323,9 +329,15 @@ if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
 
     $new_thread = false;
 
-} else if (isset($_POST['replyto']) && validate_msg($_POST['replyto'])) {
+} else if (isset($_POST['reply_to']) && validate_msg($_POST['reply_to'])) {
 
-    list($tid, $reply_to_pid) = explode(".", $_POST['replyto']);
+    list($tid, $reply_to_pid) = explode(".", $_POST['reply_to']);
+
+    if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
+        $return_msg = $_POST['return_msg'];
+    } else {
+        $return_msg = $_POST['reply_to'];
+    }    
 
     if (!($fid = thread_get_folder_fid($tid))) {
         html_draw_error(gettext("The requested thread could not be found or access was denied."));
@@ -511,6 +523,7 @@ if ($valid && isset($_POST['post'])) {
                 }
 
                 $tid = post_create_thread($fid, $_SESSION['UID'], $threadtitle, "N", $sticky, $closed);
+
                 $reply_to_pid = 0;
 
             } else{
@@ -574,6 +587,14 @@ if ($valid && isset($_POST['post'])) {
         if ($new_thread && isset($tid) && is_numeric($tid)) {
 
             $uri = "discussion.php?webtag=$webtag&msg=$tid.1";
+
+        } else if (isset($return_msg)) {
+
+            if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
+                $uri = "discussion.php?webtag=$webtag&msg=$return_msg&post_success=$tid.$reply_to_pid";
+            } else {
+                $uri = "discussion.php?webtag=$webtag&msg=$return_msg";
+            }
 
         } else {
 
@@ -712,7 +733,7 @@ if ($new_thread) {
     echo "                        <td align=\"left\"><h2>", gettext("Thread title"), "</h2></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">", word_filter_add_ob_tags($thread_data['TITLE'], true), form_input_hidden("replyto", htmlentities_array("$tid.$reply_to_pid")), "</td>\n";
+    echo "                        <td align=\"left\">", word_filter_add_ob_tags($thread_data['TITLE'], true), form_input_hidden("reply_to", htmlentities_array("$tid.$reply_to_pid")), form_input_hidden('return_msg', htmlentities_array($return_msg)), "</td>\n";
     echo "                      </tr>\n";
 }
 
@@ -805,16 +826,11 @@ echo form_submit("post", gettext("Post"), "tabindex=\"2\""), "\n";
 
 echo form_submit("preview", gettext("Preview"), "tabindex=\"3\""), "\n";
 
-if (isset($_POST['replyto']) && validate_msg($_POST['replyto'])) {
-
-    echo "<a href=\"discussion.php?webtag=$webtag&amp;msg={$_POST['replyto']}\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
-
-} else if (isset($_GET['replyto']) && validate_msg($_GET['replyto'])) {
-
-    echo "<a href=\"discussion.php?webtag=$webtag&amp;msg={$_GET['replyto']}\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
-
+if (isset($return_msg)) {
+    echo "<a href=\"discussion.php?webtag=$webtag&amp;msg=$return_msg\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+} else if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
+    echo "<a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$reply_to_pid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 } else {
-
     echo "<a href=\"discussion.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 }
 

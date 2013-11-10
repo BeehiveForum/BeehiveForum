@@ -357,7 +357,7 @@ if (isset($_POST['install_method'])) {
                     echo "            </form>\n";
                     echo "          </td>\n";
                     echo "          <td align=\"left\" width=\"45%\">\n";
-                    echo "            <a class=\"button\" href=\"../index.php\" /><span>Continue</span></a>\n";
+                    echo "            <a class=\"button\" href=\"../index.php\"><span>Continue</span></a>\n";
                     echo "          </td>\n";
                     echo "        </tr>\n";
                     echo "      </table>\n";
@@ -511,7 +511,7 @@ if (isset($_POST['install_method'])) {
             echo "    </tr>\n";
             echo "    <tr>\n";
             echo "      <td align=\"center\">\n";
-            echo "        <a class=\"button\" href=\"../index.php\" /><span>Continue</span></a>\n";
+            echo "        <a class=\"button\" href=\"../index.php\"><span>Continue</span></a>\n";
             echo "      </td>\n";
             echo "    </tr>\n";
             echo "  </table>\n";

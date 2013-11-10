@@ -454,20 +454,23 @@ if ($valid && isset($_POST['post'])) {
 
             $uri = "lmessages.php?webtag=$webtag&msg=$tid.1";
 
-        } else if (isset($return_msg)) {
-
-            if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
-                $uri = "lmessages.php?webtag=$webtag&msg=$return_msg&post_success=$tid.$reply_to_pid";
-            } else {
-                $uri = "lmessages.php?webtag=$webtag&msg=$return_msg";
-            }
-
         } else {
 
-            if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
+            if (isset($return_msg)) {
+
+                $uri = "lmessages.php?webtag=$webtag&msg=$return_msg";
+
+            } else if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
+
                 $uri = "lmessages.php?webtag=$webtag&msg=$tid.$reply_to_pid";
+
             } else{
+
                 $uri = "lmessages.php?webtag=$webtag";
+            }
+
+            if (isset($tid) && is_numeric($tid) && isset($new_pid) && is_numeric($new_pid)) {
+                $uri.= "&post_success=$tid.$new_pid";
             }
         }
 

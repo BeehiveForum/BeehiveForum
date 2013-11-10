@@ -185,6 +185,10 @@ if (isset($_GET['relupdated'])) {
 
     html_display_success_msg(gettext("Stats Display Changed"), '96%', 'center');
 
+} else if (isset($_GET['post_success']) && validate_msg($_GET['post_success'])) {
+
+    html_display_success_msg(sprintf(gettext("Successfully created post %s"), $_GET['post_success']), '96%', 'center');
+
 } else if (isset($_GET['edit_success']) && validate_msg($_GET['edit_success'])) {
 
     html_display_success_msg(sprintf(gettext("Successfully edited post %s"), $_GET['edit_success']), '96%', 'center');

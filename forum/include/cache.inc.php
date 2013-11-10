@@ -196,6 +196,7 @@ function cache_check_messages()
 
     if (headers_sent()) return false;
 
+    if (isset($_GET['post_success'])) return false;
     if (isset($_GET['delete_success'])) return false;
     if (isset($_GET['edit_success'])) return false;
     if (isset($_GET['font_resize'])) return false;

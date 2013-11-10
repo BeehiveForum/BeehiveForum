@@ -179,7 +179,7 @@ class Swift_MessageBeehive extends Swift_Message
         $this->setFrom($forum_email, $forum_name);
 
         // Set the Message Reply-To Header
-        $this->setreply_to($forum_email, $forum_name);
+        $this->setReplyTo($forum_email, $forum_name);
 
         // Set the Message Return-path Header
         $this->setReturnPath($forum_email);

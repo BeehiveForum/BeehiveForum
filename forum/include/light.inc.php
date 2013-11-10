@@ -389,6 +389,27 @@ function light_draw_messages($tid, $pid)
 
     light_messages_top($tid, $pid, $thread_data['TITLE'], $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'));
 
+    if (isset($_GET['post_success']) && validate_msg($_GET['post_success'])) {
+
+        light_html_display_success_msg(sprintf(gettext("Successfully created post %s"), $_GET['post_success']));
+
+    } else if (isset($_GET['edit_success']) && validate_msg($_GET['edit_success'])) {
+
+        light_html_display_success_msg(sprintf(gettext("Successfully edited post %s"), $_GET['edit_success']));
+
+    } else if (isset($_GET['delete_success']) && validate_msg($_GET['delete_success'])) {
+
+        light_html_display_success_msg(sprintf(gettext("Successfully deleted post %s"), $_GET['delete_success']));
+
+    } else if (isset($_GET['delete_success']) && validate_msg($_GET['delete_success'])) {
+
+        light_html_display_success_msg(sprintf(gettext("Successfully deleted post %s"), $_GET['delete_success']));
+
+    } else if (isset($_GET['post_approve_success']) && validate_msg($_GET['post_approve_success'])) {
+
+        light_html_display_success_msg(sprintf(gettext("Successfully approved post %s"), $_GET['post_approve_success']));
+    }
+
     if (($tracking_data_array = thread_get_tracking_data($tid)) !== false) {
 
         foreach ($tracking_data_array as $tracking_data) {

@@ -31,11 +31,11 @@ function lang_init()
 
     if (isset($_SESSION['LANGUAGE']) && in_array($_SESSION['LANGUAGE'], $available_languages)) {
         $language = $_SESSION['LANGUAGE'];
-    } else {
+    } else if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
         $language = locale_accept_from_http($_SERVER['HTTP_ACCEPT_LANGUAGE']);
     }
 
-    if (!$language) {
+    if (!isset($language)) {
         $language = forum_get_setting('default_language', 'strlen', 'en_GB');
     }
 

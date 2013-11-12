@@ -313,7 +313,7 @@ if (isset($_POST['register'])) {
     if (isset($_POST['language']) && in_array($_POST['language'], $available_langs)) {
         $new_user_prefs['LANGUAGE'] = $_POST['language'];
     } else {
-        $new_user_prefs['LANGUAGE'] = forum_get_setting('default_language', 'strlen', 'en');
+        $new_user_prefs['LANGUAGE'] = forum_get_setting('default_language', 'strlen', 'en_GB');
     }
 
     if (isset($_POST['style']) && style_exists(trim($_POST['style']))) {

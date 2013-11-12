@@ -27,81 +27,17 @@ require_once BH_INCLUDE_PATH . 'constants.inc.php';
 
 function lang_init()
 {
-    if (!lang_detect()) {
-        throw new Exception('Could not initialise language.');
+    $available_languages = lang_get_available(false);
+
+    if (isset($_SESSION['LANGUAGE']) && in_array($_SESSION['LANGUAGE'], $available_languages)) {
+        $language = $_SESSION['LANGUAGE'];
+    } else {
+        $language = locale_accept_from_http($_SERVER['HTTP_ACCEPT_LANGUAGE']);
     }
 
-    bindtextdomain('messages', BH_INCLUDE_PATH . 'locale/');
-
-    textdomain('messages');
-
-    bind_textdomain_codeset('messages', 'UTF-8');
-}
-
-function lang_detect()
-{
-    if (isset($_SESSION['LANGUAGE'])) {
-
-        if (lang_set($_SESSION['LANGUAGE'])) {
-            return true;
-        }
+    if (!$language) {
+        $language = forum_get_setting('default_language', 'strlen', 'en_GB');
     }
-
-    $languages = array();
-
-    if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-
-        $accepted = preg_split('/,\s*/', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-
-        foreach ($accepted as $accept) {
-
-            $matches_array = array();
-
-            if (!preg_match('/^([a-z]{1,8}(?:[-_][a-z]{1,8})*)(?:;\s*q=(0(?:\.[0-9]{1,3})?|1(?:\.0{1,3})?))?$/i', $accept, $matches_array)) {
-                continue;
-            }
-
-            $quality = isset($matches_array[2]) ? (float)$matches_array[2] : 1.0;
-
-            $countries = explode('-', $matches_array[1]);
-            $region = array_shift($countries);
-
-            $countries2 = explode('_', $region);
-            $region = array_shift($countries2);
-
-            foreach ($countries as $country) {
-                $languages[$region . '_' . mb_strtoupper($country)] = $quality;
-            }
-
-            foreach ($countries2 as $country) {
-                $languages[$region . '_' . mb_strtoupper($country)] = $quality;
-            }
-
-            if (!isset($languages[$region]) || ($languages[$region] < $quality)) {
-                $languages[$region] = $quality;
-            }
-        }
-    }
-
-    foreach (array_keys($languages) as $language) {
-
-        if (lang_set($language)) {
-
-            return true;
-        }
-    }
-
-    if (lang_set('en_GB')) {
-        return true;
-    }
-
-    return lang_set('');
-}
-
-function lang_set($language)
-{
-    putenv('LANG=' . $language);
-    putenv('LANGUAGE=' . $language);
 
     $languages = array(
         $language . '.utf8',
@@ -111,11 +47,17 @@ function lang_set($language)
         $language
     );
 
-    if (setlocale(LC_ALL, $languages)) {
-        return true;
-    }
+    setlocale(LC_ALL, $languages);
 
-    return false;
+    putenv('LC_ALL=' . $language);
+    putenv('LANG=' . $language);
+    putenv('LANGUAGE=' . $language);
+
+    bindtextdomain('messages', realpath(BH_INCLUDE_PATH . 'locale'));
+
+    bind_textdomain_codeset('messages', 'UTF-8');
+
+    textdomain('messages');
 }
 
 function lang_get_month_names()
@@ -135,10 +77,10 @@ function lang_get_available($inc_browser_negotiation = true)
 
     $available_langs = ($inc_browser_negotiation) ? array('' => gettext("Browser negotiated")) : array();
 
-    foreach (glob($include_path . '*/messages.po') as $lang) {
+    foreach (glob($include_path . '*/LC_MESSAGES/messages.po') as $lang) {
 
         $lang = preg_replace(
-            sprintf('/%s([^\/]+)\/messages.po/', preg_quote($include_path, '/')),
+            sprintf('/%s([^\/]+)\/LC_MESSAGES\/messages.po/', preg_quote($include_path, '/')),
             '\\1',
             $lang
         );

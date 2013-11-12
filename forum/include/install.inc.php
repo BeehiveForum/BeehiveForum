@@ -143,6 +143,7 @@ function install_check_php_extensions()
             'fileinfo',
             'gd',
             'gettext',
+            'intl',
             'json',
             'mbstring',
             'mysqli',

@@ -1223,6 +1223,34 @@ function message_display_approval_req($tid, $pid, $in_list, $is_preview, $first_
     echo  ($in_list) ? "<br />\n" : '';
 }
 
+function message_display_success_msg($tid, $pid, $first_msg, $message, $posts_per_page)
+{
+    $webtag = get_webtag();
+
+    if (($pid + 1) > (($first_msg + $posts_per_page) - 1)) {
+
+        html_display_success_msg(
+            sprintf(
+                $message,
+                "<a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.{$pid}\" target=\"_self\">{$tid}.{$pid}</a>"
+            ),
+            '96%',
+            'center'
+        );
+
+    } else {
+
+        html_display_success_msg(
+            sprintf(
+                $message,
+                "<a href=\"#a{$tid}_{$pid}\" target=\"_self\">{$tid}.{$pid}</a>"
+            ),
+            '96%',
+            'center'
+        );
+    }
+}
+
 function messages_start_panel()
 {
     echo "<div align=\"center\">\n";

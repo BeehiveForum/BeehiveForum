@@ -187,23 +187,23 @@ if (isset($_GET['relupdated'])) {
 
 } else if (isset($_GET['post_success']) && validate_msg($_GET['post_success'])) {
 
-    html_display_success_msg(sprintf(gettext("Successfully created post %s"), $_GET['post_success']), '96%', 'center');
+    list($return_tid, $return_pid) = explode(".", $_GET['post_success']);
+    message_display_success_msg($return_tid, $return_pid, $pid, gettext("Successfully created post %s"), $posts_per_page);
 
 } else if (isset($_GET['edit_success']) && validate_msg($_GET['edit_success'])) {
 
-    html_display_success_msg(sprintf(gettext("Successfully edited post %s"), $_GET['edit_success']), '96%', 'center');
+    list($return_tid, $return_pid) = explode(".", $_GET['edit_success']);
+    message_display_success_msg($return_tid, $return_pid, $pid, gettext("Successfully edited post %s"), $posts_per_page);
 
 } else if (isset($_GET['delete_success']) && validate_msg($_GET['delete_success'])) {
 
-    html_display_success_msg(sprintf(gettext("Successfully deleted post %s"), $_GET['delete_success']), '96%', 'center');
-
-} else if (isset($_GET['delete_success']) && validate_msg($_GET['delete_success'])) {
-
-    html_display_success_msg(sprintf(gettext("Successfully deleted post %s"), $_GET['delete_success']), '96%', 'center');
+    list($return_tid, $return_pid) = explode(".", $_GET['delete_success']);
+    message_display_success_msg($return_tid, $return_pid, $pid, gettext("Successfully deleted post %s"), $posts_per_page);
 
 } else if (isset($_GET['post_approve_success']) && validate_msg($_GET['post_approve_success'])) {
 
-    html_display_success_msg(sprintf(gettext("Successfully approved post %s"), $_GET['post_approve_success']), '96%', 'center');
+    list($return_tid, $return_pid) = explode(".", $_GET['post_approve_success']);
+    message_display_success_msg($return_tid, $return_pid, $pid, gettext("Successfully approved post %s"), $posts_per_page);
 }
 
 if (isset($_GET['font_resize'])) {

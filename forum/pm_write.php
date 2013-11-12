@@ -126,8 +126,6 @@ if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
     $return_msg = $_POST['return_msg'];
 } else if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
     $return_msg = $_GET['return_msg'];
-} else {
-    $return_msg = $msg;
 }
 
 $folder = PM_FOLDER_INBOX;
@@ -526,7 +524,11 @@ echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"pm_write.php\" met
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
 echo "  ", form_input_hidden("dedupe", htmlentities_array($dedupe));
-echo "  ", form_input_hidden('return_msg', htmlentities_array($return_msg)), "\n";
+
+if (isset($return_msg)){
+    echo "  ", form_input_hidden('return_msg', htmlentities_array($return_msg)), "\n";
+}
+
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"960\" class=\"max_width\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

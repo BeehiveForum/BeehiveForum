@@ -71,6 +71,7 @@ $json_data = array(
     'webtag' => $webtag,
     'uid' => $_SESSION['UID'],
     'lang' => array(
+        'loadingdotdotdot' => gettext("Loading..."),
         'imageresized' => gettext("This image has been resized (original size %dx%d). To view the full-size image click here."),
         'deleteattachmentconfirmation' => gettext("Are you sure you want to delete the selected attachments?"),
         'deletemessagesconfirmation' => gettext("Are you sure you want to delete all of the selected messages?"),
@@ -118,7 +119,7 @@ $json_data = array(
     )
 );
 
-if (($images_array = glob("styles/$user_style/images/*.png")) !== false) {
+if (($images_array = glob("styles/$user_style/images/*")) !== false) {
 
     foreach ($images_array as $image_filename) {
 

@@ -7,6 +7,4 @@
 /forum/styles/tehforum/
 /forum/text_captcha/
 /website/
-/.buildpath
-/.project
-/.settings/
+/.idea/

@@ -10,7 +10,7 @@ input,
 .select,
 .textarea,
 .text {
-    font-size: 13px;
+    font-size: 11pt;
     font-weight: normal
 }
 
@@ -152,7 +152,7 @@ body {
 
 #header {
     background-color: #568000;
-    font-size: 13px;
+    font-size: 11pt;
     height: 31px;
     margin: 0;
     padding: 0;
@@ -167,17 +167,18 @@ body {
 }
 
 #footer {
-    font-size: 13px;
+    font-size: 11pt;
     text-align: center
 }
 
 #footer > #footer_links {
+    font-size: 10pt;
     font-weight: bold;
     margin: 20px 0
 }
 
 #footer h6 {
-    font-size: 11px;
+    font-size: 9pt;
     margin: 20px 0
 }
 
@@ -203,9 +204,9 @@ body {
 
 #menu {
     background-color: #568000;
-    border-style: none;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     border-left: 1px solid rgba(0, 0, 0, 0.1);
+    border-style: none;
     box-shadow: -2px 10px 10px rgba(0, 0, 0, 0.2);
     display: none;
     position: fixed;
@@ -217,7 +218,7 @@ body {
 
 #menu ul {
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: 11pt;
     list-style: none;
     margin: 0;
     padding: 0
@@ -243,7 +244,7 @@ body {
 }
 
 #page_content {
-    font-size: 13px;
+    font-size: 11pt;
     margin: 45px 10px 5px;
     padding-bottom: 5px
 }
@@ -278,7 +279,7 @@ body {
 }
 
 #thread_mark_read h3 {
-    font-size: 13px;
+    font-size: 11pt;
     margin: 0;
     padding: 0
 }
@@ -291,7 +292,7 @@ body {
 .forum h3,
 .folder h3 {
     background: url('images/folder.png') transparent no-repeat scroll 0 0;
-    font-size: 13px;
+    font-size: 11pt;
     line-height: 150%;
     margin: 0;
     padding: 0 0 0 20px
@@ -308,7 +309,8 @@ body {
 .folder_info,
 .folder_pagination {
     background-color: #A5D149;
-    border: 1px solid #A5D149
+    border: 1px solid #A5D149;
+    font-size: 10pt
 }
 
 .forum_info,
@@ -336,7 +338,7 @@ body {
 
 .forum ul li,
 .folder ul li {
-    background: url('images/bullet.png') transparent no-repeat scroll 0 4px;
+    background: url('images/bullet.png') transparent no-repeat scroll 0 4pt;
     display: table;
     line-height: 200%;
     padding: 0;
@@ -361,6 +363,7 @@ body {
 
 .folder ul li > span.thread_time,
 .folder ul li > span.pm_time {
+    font-size: 10pt;
     padding: 0 3px;
     text-align: right;
     white-space: nowrap
@@ -384,7 +387,7 @@ body {
 }
 
 h3.thread_title {
-    font-size: 13px;
+    font-size: 11pt;
     line-height: 150%
 }
 
@@ -473,7 +476,7 @@ h3.thread_title {
 }
 
 .message .edit_text {
-    font-size: 10px;
+    font-size: 8pt;
     margin: 10px 0
 }
 
@@ -623,7 +626,7 @@ a.folder_list_link {
 }
 
 .poll h3 {
-    font-size: 13px;
+    font-size: 11pt;
     line-height: 200%;
     margin: 0
 }
@@ -705,7 +708,7 @@ a.folder_list_link {
 .search h3 {
     background-color: #8CB92F;
     color: #FFFFFF;
-    font-size: 13px;
+    font-size: 11pt;
     font-weight: normal;
     margin: 0;
     padding: 2px 3px
@@ -813,7 +816,7 @@ a.folder_list_link {
 .logon h3 {
     background-color: #8CB92F;
     color: #FFFFFF;
-    font-size: 13px;
+    font-size: 11pt;
     font-weight: normal;
     margin: 0;
     padding: 2px 3px
@@ -860,55 +863,59 @@ span.user_enemy {
 }
 
 span.thread_high_interest {
-    background: url('images/high_interest.png') transparent no-repeat scroll 0 2px
+    background: url('images/high_interest.png') transparent no-repeat scroll 0 4pt
 }
 
 span.thread_subscribed {
-    background: url('images/subscribe.png') transparent no-repeat scroll 0 2px
+    background: url('images/subscribe.png') transparent no-repeat scroll 0 4pt
 }
 
 span.thread_poll {
-    background: url('images/poll.png') transparent no-repeat scroll 0 2px
+    background: url('images/poll.png') transparent no-repeat scroll 0 4pt
 }
 
 span.thread_sticky {
-    background: url('images/sticky.png') transparent no-repeat scroll 0 2px
+    background: url('images/sticky.png') transparent no-repeat scroll 0 4pt
 }
 
 span.thread_friend {
-    background: url('images/friend.png') transparent no-repeat scroll 0 2px
+    background: url('images/friend.png') transparent no-repeat scroll 0 4pt
 }
 
 span.thread_split {
-    background: url('images/split_thread.png') transparent no-repeat scroll 0 2px
+    background: url('images/split_thread.png') transparent no-repeat scroll 0 4pt
 }
 
 span.thread_merge {
-    background: url('images/merge_thread.png') transparent no-repeat scroll 0 2px
+    background: url('images/merge_thread.png') transparent no-repeat scroll 0 4pt
 }
 
 span.thread_attachment {
-    background: url('images/attach.png') transparent no-repeat scroll 0 2px
+    background: url('images/attach.png') transparent no-repeat scroll 0 4pt
 }
 
 span.thread_closed {
-    background: url('images/thread_closed.png') transparent no-repeat scroll 0 2px
+    background: url('images/thread_closed.png') transparent no-repeat scroll 0 4pt
 }
 
 span.thread_locked {
-    background: url('images/admin_locked.png') transparent no-repeat scroll 0 2px
+    background: url('images/admin_locked.png') transparent no-repeat scroll 0 4pt
 }
 
 span.thread_deleted {
-    background: url('images/delete.png') transparent no-repeat scroll 0 2px
+    background: url('images/delete.png') transparent no-repeat scroll 0 4pt
 }
 
 span.user_friend {
-    background: url('images/friend.png') transparent no-repeat scroll 0 2px
+    background: url('images/friend.png') transparent no-repeat scroll 0 4pt
 }
 
 span.user_enemy {
-    background: url('images/enemy.png') transparent no-repeat scroll 0 2px
+    background: url('images/enemy.png') transparent no-repeat scroll 0 4pt
+}
+
+span.thread_length {
+    font-size: 10pt
 }
 
 .thread_pagination,
@@ -926,7 +933,7 @@ span.user_enemy {
 .message_box h3 {
     color: #000000;
     display: inline-block;
-    font-size: 13px;
+    font-size: 11pt;
     line-height: 160%;
     margin: 0;
     padding-left: 25px
@@ -943,22 +950,22 @@ span.user_enemy {
 
 .message_question h3 {
     background: url('images/help.png') transparent no-repeat scroll 0 50%;
-    font-size: 13px
+    font-size: 11pt
 }
 
 .message_error h3 {
     background: url('images/error.png') transparent no-repeat scroll 0 50%;
-    font-size: 13px
+    font-size: 11pt
 }
 
 .message_success h3 {
     background: url('images/success.png') transparent no-repeat scroll 0 50%;
-    font-size: 13px
+    font-size: 11pt
 }
 
 .message_warning h3 {
     background: url('images/warning.png') transparent no-repeat scroll 0 50%;
-    font-size: 13px
+    font-size: 11pt
 }
 
 .attachments {

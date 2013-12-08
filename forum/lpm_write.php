@@ -127,8 +127,6 @@ if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
     $return_msg = $_POST['return_msg'];
 } else if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
     $return_msg = $_GET['return_msg'];
-} else {
-    $return_msg = $msg;
 }
 
 $valid = true;
@@ -501,6 +499,10 @@ if ($valid && isset($_POST['preview'])) {
 echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"lpm_write.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("dedupe", htmlentities_array($dedupe));
+
+if (isset($return_msg)){
+    echo "  ", form_input_hidden('return_msg', htmlentities_array($return_msg)), "\n";
+}
 
 echo "<div class=\"post\">\n";
 echo "<h3>", gettext("Send New PM"), "</h3>\n";

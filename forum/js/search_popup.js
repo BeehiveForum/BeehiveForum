@@ -32,11 +32,11 @@ $(beehive).bind('init', function() {
         $search_button.bind('click', function() {
 
             var popup_query = {
-                'webtag' : beehive.webtag,
-                'obj_id' : $search_input.prop('id'),
-                'type' : $search_input.hasClass('search_logon') ? 1 : 2,
-                'multi' : $search_input.hasClass('allow_multi') ? 'Y' : 'N',
-                'selected' : $search_input.val()
+                webtag: beehive.webtag,
+                obj_id: $search_input.prop('id'),
+                type: $search_input.hasClass('search_logon') ? 1 : 2,
+                multi: $search_input.hasClass('allow_multi') ? 'Y' : 'N',
+                selected: $search_input.val()
             };
 
             window.open('search_popup.php?' + $.param(popup_query), null, beehive.window_options.join(','));
@@ -45,8 +45,8 @@ $(beehive).bind('init', function() {
         $search_button.load(function() {
 
             $search_input.css({
-                'border' : 'none',
-                'width' : $search_input.width() - ($(this).width())
+                border: 'none',
+                width: $search_input.width() - ($(this).width())
             });
         });
 
@@ -60,9 +60,9 @@ $(beehive).bind('init', function() {
 
             $search_input.autocomplete({
 
-                'minLength': 2,
+                minLength: 2,
 
-                'source': function(request, response) {
+                source: function(request, response) {
 
                     var term = request.term;
 
@@ -71,35 +71,35 @@ $(beehive).bind('init', function() {
                     }
 
                     $.ajax({
-                        'cache' : false,
-                        'data' : {
-                            'webtag' : beehive.webtag,
-                            'ajax' : true,
-                            'action' : 'user_autocomplete',
-                            'term' : term
+                        cache: false,
+                        data: {
+                            webtag: beehive.webtag,
+                            ajax: true,
+                            action: 'user_autocomplete',
+                            term: term
                         },
-                        'url' : beehive.forum_path + '/ajax.php',
-                        'success': function(data) {
+                        url: beehive.forum_path + '/ajax.php',
+                        success: function(data) {
 
                             //noinspection JSUnresolvedVariable
                             response($.map(data.results_array, function(item) {
 
                                 //noinspection JSUnresolvedVariable
                                 return {
-                                    'label': item.NICKNAME + ' (' + item.LOGON + ')',
-                                    'value': item.LOGON
+                                    label: item.NICKNAME + ' (' + item.LOGON + ')',
+                                    value: item.LOGON
                                 };
                             }));
                         }
                     });
                 },
-                'open': function(){
+                open: function(){
                     $('.ui-autocomplete').width($search_input.width() + 30);
                 },
-                'focus': function() {
+                focus: function() {
                     return false;
                 },
-                'select': function(event, ui) {
+                select: function(event, ui) {
 
                     if (!$search_input.hasClass('multiple')) {
 

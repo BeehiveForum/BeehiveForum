@@ -453,6 +453,8 @@ function light_draw_messages($tid, $pid)
         }
     }
 
+    echo "<div id=\"messages\">\n";
+
     if ($msg_count > 0) {
 
         foreach ($messages as $message_number => $message) {
@@ -491,6 +493,7 @@ function light_draw_messages($tid, $pid)
 
     unset($messages, $message);
 
+    echo "</div>\n";
     echo "<div class=\"message_page_footer\">\n";
     echo "<ul>\n";
 
@@ -501,7 +504,7 @@ function light_draw_messages($tid, $pid)
     if ($last_pid < $thread_data['LENGTH']) {
 
         $npid = $last_pid + 1;
-        echo "<li class=\"right_col\">", light_form_quick_button("lmessages.php", gettext("Keep reading&hellip;"), array('msg' => "$tid.$npid")), "</li>\n";
+        echo "<li class=\"right_col\">", light_form_quick_button("lmessages.php", gettext("Keep reading&hellip;"), array('msg' => "$tid.$npid"), '_self', 'keep_reading'), "</li>\n";
     }
 
     echo "</ul>\n";
@@ -1340,9 +1343,9 @@ function light_form_dropdown_array($name, $options_array, $default = null, $cust
     return $html;
 }
 
-function light_form_submit($name = "submit", $value = "Submit", $custom_html = null)
+function light_form_submit($name = 'submit', $value = 'Submit', $custom_html = null, $id = null)
 {
-    $id = form_unique_id($name);
+    $id = $id ? $id : form_unique_id($name);
 
     $html = "<input type=\"submit\" name=\"$name\" id=\"$id\" value=\"$value\" class=\"button\" ";
 
@@ -1354,7 +1357,7 @@ function light_form_submit($name = "submit", $value = "Submit", $custom_html = n
     return $html;
 }
 
-function light_messages_top($tid, $pid, $thread_title, $thread_interest_level = THREAD_NOINTEREST, $sticky = "N", $closed = false, $locked = false, $deleted = false)
+function light_messages_top($tid, $pid, $thread_title, $thread_interest_level = THREAD_NOINTEREST, $sticky = 'N', $closed = false, $locked = false, $deleted = false)
 {
     $webtag = get_webtag();
 
@@ -1392,7 +1395,7 @@ function light_form_radio($name, $value, $text, $checked = false, $custom_html =
     return $html;
 }
 
-function light_form_quick_button($href, $label, $var_array = null, $target = "_self")
+function light_form_quick_button($href, $label, $var_array = null, $target = '_self', $button_id = null)
 {
     $webtag = get_webtag();
 
@@ -1412,7 +1415,7 @@ function light_form_quick_button($href, $label, $var_array = null, $target = "_s
         }
     }
 
-    $html.= light_form_submit(form_unique_id('submit'), $label);
+    $html.= light_form_submit(form_unique_id('submit'), $label, null, $button_id);
     $html.= "</form>";
 
     return $html;
@@ -1957,32 +1960,34 @@ function light_message_display_approval_req($tid, $pid)
     echo "</div>\n";
 }
 
-function light_messages_nav_strip($tid, $pid, $length, $ppp)
+function light_messages_nav_strip($tid, $pid, $length, $posts_per_page)
 {
     $webtag = get_webtag();
 
     forum_check_webtag_available($webtag);
 
-    if ($pid < 2 && $length < $ppp) {
+    if ($pid < 2 && $length < $posts_per_page) {
         return;
     } else if ($pid < 1) {
         $pid = 1;
     }
 
-    $c = 0;
+    $current = 0;
 
-    $spid = $pid % $ppp;
+    $start_pid = $pid % $posts_per_page;
 
-    if ($spid > 1) {
+    $navigation = array();
+
+    if ($start_pid > 1) {
 
         if ($pid > 1) {
 
-            $navbits[0] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">". mess_nav_range(1, $spid - 1). "</a>";
+            $navigation[0] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">" . mess_nav_range(1, $start_pid - 1) . "</a>";
 
         } else {
 
-            $c = 0;
-            $navbits[0] = mess_nav_range(1,$spid-1);
+            $current = 0;
+            $navigation[0] = mess_nav_range(1, $start_pid - 1);
         }
 
         $i = 1;
@@ -1992,33 +1997,33 @@ function light_messages_nav_strip($tid, $pid, $length, $ppp)
         $i = 0;
     }
 
-    while ($spid + ($ppp - 1) < $length) {
+    while ($start_pid + ($posts_per_page - 1) < $length) {
 
-        if ($spid == $pid) {
+        if ($start_pid == $pid) {
 
-            $c = $i;
-            $navbits[$i] = mess_nav_range($spid, $spid + ($ppp - 1));
+            $current = $i;
+            $navigation[$i] = mess_nav_range($start_pid, $start_pid + ($posts_per_page - 1));
 
         } else {
 
-            $navbits[$i] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.". ($spid == 0 ? 1 : $spid). "\">". mess_nav_range($spid == 0 ? 1 : $spid, $spid + ($ppp - 1)). "</a>";
+            $navigation[$i] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid." . ($start_pid == 0 ? 1 : $start_pid) . "\">" . mess_nav_range($start_pid == 0 ? 1 : $start_pid, $start_pid + ($posts_per_page - 1)) . "</a>";
         }
 
-        $spid += $ppp;
+        $start_pid += $posts_per_page;
 
         $i++;
     }
 
-    if ($spid <= $length) {
+    if ($start_pid <= $length) {
 
-        if ($spid == $pid) {
+        if ($start_pid == $pid) {
 
-            $c = $i;
-            $navbits[$i] = mess_nav_range($spid,$length);
+            $current = $i;
+            $navigation[$i] = mess_nav_range($start_pid, $length);
 
         } else {
 
-            $navbits[$i] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$spid\">". mess_nav_range($spid,$length). "</a>";
+            $navigation[$i] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$start_pid\">" . mess_nav_range($start_pid, $length) . "</a>";
         }
     }
 
@@ -2026,28 +2031,28 @@ function light_messages_nav_strip($tid, $pid, $length, $ppp)
 
     $html = "<span>". gettext("Show messages"). ":</span>";
 
-    if ($length <= $ppp) {
-        $html.= " <a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">". gettext("All"). "</a>\n";
+    if ($length <= $posts_per_page) {
+        $html .= " <a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">" . gettext("All") . "</a>\n";
     }
 
     for ($i = 0; $i <= $max; $i++) {
 
-        if (isset($navbits[$i])) {
+        if (isset($navigation[$i])) {
 
-            if ((abs($c - $i) < 4) || $i == 0 || $i == $max) {
+            if ((abs($current - $i) < 4) || $i == 0 || $i == $max) {
 
-                $html.= "\n&nbsp;". $navbits[$i];
+                $html .= "\n&nbsp;" . $navigation[$i];
 
-            } else if (abs($c - $i) == 4) {
+            } else if (abs($current - $i) == 4) {
 
-                $html.= "\n&nbsp;&hellip;";
+                $html .= "\n&nbsp;&hellip;";
             }
         }
     }
 
-    unset($navbits);
+    unset($navigation);
 
-    echo "<div class=\"message_pagination\">$html</div>\n";
+    echo "<div class=\"message_pagination navigation\" id=\"navigation_{$tid}_{$pid}_{$length}_{$posts_per_page}\">{$html}</div>";
 }
 
 function light_html_guest_error()
@@ -2055,7 +2060,7 @@ function light_html_guest_error()
     light_html_draw_error(gettext("Sorry, you need to be logged in to use this feature."), 'llogout.php', 'get', array('login' => gettext("Login now")));
 }
 
-function light_folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="")
+function light_folder_draw_dropdown($default_fid, $field_name='t_fid', $suffix='')
 {
     if (!$db = db::get()) return false;
 
@@ -2143,7 +2148,7 @@ function light_form_checkbox($name, $value, $text, $checked = false, $custom_htm
     return $html;
 }
 
-function light_form_field($name, $value = null, $width = null, $maxchars = null, $type = "text", $custom_html = null, $placeholder = null)
+function light_form_field($name, $value = null, $width = null, $maxchars = null, $type = 'text', $custom_html = null, $placeholder = null)
 {
     $id = form_unique_id($name);
 
@@ -2273,7 +2278,7 @@ function light_post_edit_refuse()
     light_html_draw_error(gettext("You are not permitted to edit this message."));
 }
 
-function light_html_display_msg($header, $message, $href = null, $method = 'get', array $buttons = array(), array $vars = array(), $target = "_self")
+function light_html_display_msg($header, $message, $href = null, $method = 'get', array $buttons = array(), array $vars = array(), $target = '_self')
 {
     $webtag = get_webtag();
 
@@ -2355,7 +2360,7 @@ function light_html_display_error_msg($string_msg)
     echo "</div>\n";
 }
 
-function light_html_draw_error($message, $href = null, $method = 'get', array $buttons = array(), array $vars = array(), $target = "_self")
+function light_html_draw_error($message, $href = null, $method = 'get', array $buttons = array(), array $vars = array(), $target = '_self')
 {
     light_html_draw_top();
     light_html_display_msg(gettext('Error'), $message, $href, $method, $buttons, $vars, $target);

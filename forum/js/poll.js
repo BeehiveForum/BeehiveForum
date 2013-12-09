@@ -237,10 +237,10 @@ $(beehive).bind('init', function() {
     });
 
     $('.poll_bar_vertical .poll_bar_inner').animate({
-        'bottom' : 0
+        bottom: 0
     }, 2000);
 
     $('.poll_bar_horizontal .poll_bar_inner').animate({
-        'left' : 0
+        left: 0
     }, 2000);
 });

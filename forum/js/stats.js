@@ -23,17 +23,17 @@ $(beehive).bind('init', function() {
 
     $.ajax({
 
-        'cache' : true,
+        cache: true,
 
-        'data' : {
-            'webtag' : beehive.webtag,
-            'ajax'   : 'true',
-            'action' : 'get_forum_stats'
+        data: {
+            webtag: beehive.webtag,
+            ajax: 'true',
+            action: 'get_forum_stats'
         },
 
-        'url' : beehive.forum_path + '/ajax.php',
+        url: beehive.forum_path + '/ajax.php',
 
-        'success' : function(data) {
+        success: function(data) {
 
             $('#forum_stats').html(data);
         }

@@ -41,7 +41,31 @@ $(beehive).bind('init', function () {
         });
     };
 
-    var $body = $('body').on('click', 'input.post_vote_up, input.post_vote_down', function (event) {
+    var show_post_options_container = function () {
+
+        var $link = $(this);
+
+        var $post_options_container = $link.next('.post_options_container');
+
+        var container_offset = $post_options_container.offset();
+
+        var link_offset = $link.offset();
+
+        //noinspection JSValidateTypes
+        if (((container_offset.top - $(window).scrollTop()) + $post_options_container.height()) > $(window).height()) {
+            $post_options_container.css('top', Math.floor(link_offset.top - $post_options_container.height()));
+        } else {
+            $post_options_container.css('top', Math.floor(link_offset.top + $link.height()));
+        }
+
+        $post_options_container.find('*').css('margin-left', 0);
+        $post_options_container.css('left', Math.floor(link_offset.left - ($post_options_container.width() - $link.width())));
+        $post_options_container.show();
+    };
+
+    var $body = $('body');
+
+    $body.on('click', 'input.post_vote_up, input.post_vote_down', function (event) {
 
         var $button = $(this);
 
@@ -51,19 +75,19 @@ $(beehive).bind('init', function () {
 
         $.ajax({
 
-            'cache': true,
+            cache: true,
 
-            'data': {
-                'webtag': beehive.webtag,
-                'ajax': 'true',
-                'action': 'post_vote',
-                'post_rating': $button.hasClass('post_vote_up') ? 1 : -1,
-                'msg': $form.data('msg')
+            data: {
+                webtag: beehive.webtag,
+                ajax: 'true',
+                action: 'post_vote',
+                post_rating: $button.hasClass('post_vote_up') ? 1 : -1,
+                msg: $form.data('msg')
             },
 
-            'url': beehive.forum_path + '/ajax.php',
+            url: beehive.forum_path + '/ajax.php',
 
-            'success': function (data) {
+            success: function (data) {
 
                 try {
 
@@ -77,85 +101,64 @@ $(beehive).bind('init', function () {
         });
     });
 
-    $('span.post_options').each(function () {
+    $body.on('click', 'span.post_options', function (event) {
 
-        var $link = $(this);
+        var link = this,
+            $link = $(link);
 
-        $link.html(beehive.lang.more + '&nbsp;<img class="post_options" src="' + beehive.images['post_options.png'] + '" border="0" />');
+        event.preventDefault();
+        event.stopPropagation();
 
-        $link.bind('click', function (event) {
+        hide_post_options_containers();
 
-            event.preventDefault();
-            event.stopPropagation();
+        if ($link.next('.post_options_container').length > 0) {
 
-            hide_post_options_containers();
+            show_post_options_container.call(this);
+            return;
+        }
 
-            if ($link.next('.post_options_container').length < 1) {
+        var options = $link.prop('id').match(/post_options_(\d+)_(\d+)_(\d+)/);
 
-                var options = $link.prop('id').match(/post_options_(\d)_(\d)_(\d)/);
+        $.ajax({
 
-                $.ajax({
+            cache: true,
 
-                    'cache': true,
+            data: {
+                webtag: beehive.webtag,
+                ajax: 'true',
+                action: 'post_options',
+                msg: options[1] + '.' + options[2],
+                pid: options[2]
+            },
 
-                    'data': {
-                        'webtag': beehive.webtag,
-                        'ajax': 'true',
-                        'action': 'post_options',
-                        'msg': options[1] + '.' + options[2],
-                        'pid': options[2]
-                    },
+            url: beehive.forum_path + '/ajax.php',
 
-                    'url': beehive.forum_path + '/ajax.php',
+            success: function (data) {
 
-                    'success': function (data) {
+                try {
 
-                        try {
+                    $link.after(data);
+                    show_post_options_container.call(link);
 
-                            $link.after(data);
+                } catch (exception) {
 
-                            $link.triggerHandler('click');
-
-                        } catch (exception) {
-
-                            beehive.ajax_error(exception);
-                        }
-                    }
-                });
-
-            } else {
-
-                var $post_options_container = $link.next('.post_options_container');
-
-                var container_offset = $post_options_container.offset();
-
-                var link_offset = $link.offset();
-
-                //noinspection JSValidateTypes
-                if (((container_offset.top - $(window).scrollTop()) + $post_options_container.height()) > $(window).height()) {
-                    $post_options_container.css('top', Math.floor(link_offset.top - $post_options_container.height()));
-                } else {
-                    $post_options_container.css('top', Math.floor(link_offset.top + $link.height()));
+                    beehive.ajax_error(exception);
                 }
-
-                $post_options_container.find('*').css('margin-left', 0);
-                $post_options_container.css('left', Math.floor(link_offset.left - ($post_options_container.width() - $link.width())));
-                $post_options_container.show();
             }
         });
     });
 
-    $body.bind('click', function () {
+    $body.on('click', function () {
         hide_post_options_containers();
     });
 
-    $('#quick_reply_container').find('input#cancel').bind('click', function () {
+    $body.on('click', '#quick_reply_container', function () {
 
         if (CKEDITOR.instances.content) {
             CKEDITOR.instances.content.destroy();
         }
 
-        $('#quick_reply_container').hide();
+        $(this).hide();
     });
 
     $body.on('click', '.quick_reply_link', function () {
@@ -189,7 +192,9 @@ $(beehive).bind('init', function () {
         }
     });
 
-    $('a[id^="quote_"]').bind('click', function () {
+    $body.on('click', 'a[id^="quote_"]', function () {
+
+        var $link = $(this);
 
         var pid = $(this).data('pid');
 
@@ -198,7 +203,7 @@ $(beehive).bind('init', function () {
             $('img#quote_img_' + pid).prop('src', beehive.images['quote_enabled.png']);
 
             //noinspection JSUnresolvedVariable
-            $(this).html(beehive.lang.unquote);
+            $link.html(beehive.lang.unquote);
 
             beehive.quote_list.push(pid);
 
@@ -206,7 +211,7 @@ $(beehive).bind('init', function () {
 
             $('img#quote_img_' + pid).prop('src', beehive.images['quote_disabled.png']);
 
-            $(this).html(beehive.lang.quote);
+            $link.html(beehive.lang.quote);
 
             for (var check_post_id in beehive.quote_list) {
 
@@ -219,7 +224,7 @@ $(beehive).bind('init', function () {
             }
         }
 
-        $('a[id^="reply_"]').each(function () {
+        $link.each(function () {
 
             var query_string = $.parseQuery($(this).prop('href').split('?')[1]);
 

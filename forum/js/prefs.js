@@ -81,16 +81,16 @@ $(beehive).bind('init', function() {
                 onComplete: function(id, filename, responseJSON) {
 
                     $.ajax({
-                        'cache' : true,
-                        'data' : {
-                            'webtag' : beehive.webtag,
-                            'ajax'   : 'true',
-                            'action' : 'pref_attachment',
-                            'type'   : $select.prop('id')
+                        cache: true,
+                        data: {
+                            webtag: beehive.webtag,
+                            ajax: 'true',
+                            action: 'pref_attachment',
+                            type: $select.prop('id')
                         },
-                        'dataType' : 'json',
-                        'url' : beehive.forum_path + '/ajax.php',
-                        'success' : function(data) {
+                        dataType: 'json',
+                        url: beehive.forum_path + '/ajax.php',
+                        success: function(data) {
 
                             $option.remove();
 

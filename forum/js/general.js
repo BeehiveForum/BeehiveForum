@@ -1,27 +1,27 @@
 /*======================================================================
-Copyright Project Beehive Forum 2002
+ Copyright Project Beehive Forum 2002
 
-This file is part of Beehive Forum.
+ This file is part of Beehive Forum.
 
-Beehive Forum is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+ Beehive Forum is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-Beehive Forum is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ Beehive Forum is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-USA
-======================================================================*/
+ You should have received a copy of the GNU General Public License
+ along with Beehive; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+ USA
+ ======================================================================*/
 
 var beehive = $.extend({}, beehive, {
 
-    window_options : [
+    window_options: [
         'toolbox=0',
         'location=0',
         'directories=0',
@@ -31,14 +31,14 @@ var beehive = $.extend({}, beehive, {
         'scrollbars=yes'
     ],
 
-    ajax_error : function(message) {
+    ajax_error: function (message) {
 
         if ((typeof(console) !== 'undefined') && (typeof(console.log) !== 'undefined')) {
             console.log('AJAX ERROR', message);
         }
     },
 
-    get_resize_width : function() {
+    get_resize_width: function () {
 
         var $max_width = $(this).closest('.max_width[width]');
 
@@ -49,9 +49,9 @@ var beehive = $.extend({}, beehive, {
         return $('body').prop('clientWidth');
     },
 
-    reload_frame : function(context, frame_name) {
+    reload_frame: function (context, frame_name) {
 
-        $(context).find('frame').each(function() {
+        $(context).find('frame').each(function () {
 
             if ($(this).prop('name') == frame_name) {
 
@@ -63,9 +63,9 @@ var beehive = $.extend({}, beehive, {
         });
     },
 
-    reload_top_frame : function(context, src) {
+    reload_top_frame: function (context, src) {
 
-        $(context).find('frame').each(function() {
+        $(context).find('frame').each(function () {
 
             //noinspection JSUnresolvedVariable
             if ($(this).prop('name') == beehive.frames.ftop) {
@@ -78,9 +78,9 @@ var beehive = $.extend({}, beehive, {
         });
     },
 
-    reload_user_font : function(context) {
+    reload_user_font: function (context) {
 
-        $(context).find('frame').each(function() {
+        $(context).find('frame').each(function () {
 
             if (!$.inArray($(this).prop('name'), beehive.frames)) {
                 return true;
@@ -94,11 +94,11 @@ var beehive = $.extend({}, beehive, {
         $user_font.prop('href', beehive.forum_path + '/font_size.php?webtag=' + beehive.webtag + '&_=' + new Date().getTime() / 1000);
     },
 
-    active_editor : null,
+    active_editor: null,
 
-    init_editor : function() {
+    init_editor: function () {
 
-        CKEDITOR.on('dialogDefinition', function(event) {
+        CKEDITOR.on('dialogDefinition', function (event) {
 
             var dialogName = event.data.name;
             var dialogDefinition = event.data.definition;
@@ -143,10 +143,11 @@ var beehive = $.extend({}, beehive, {
             }
         });
 
-        beehive.init_editor = function() {};
+        beehive.init_editor = function () {
+        };
     },
 
-    editor : function() {
+    editor: function () {
 
         var $editor = $(this);
 
@@ -187,7 +188,7 @@ var beehive = $.extend({}, beehive, {
             shiftEnterMode: CKEDITOR.ENTER_BR,
             skin: 'beehive,' + skin,
             startupFocus: $editor.hasClass('focus'),
-            sharedSpaces : {
+            sharedSpaces: {
                 top: 'toolbar'
             },
             toolbarCanCollapse: false,
@@ -233,7 +234,7 @@ var beehive = $.extend({}, beehive, {
             width: $editor.width()
         });
 
-        editor.on('focus', function(event) {
+        editor.on('focus', function (event) {
             beehive.active_editor = event.editor;
         });
 
@@ -241,7 +242,7 @@ var beehive = $.extend({}, beehive, {
 
             var $post_button = $editor.closest('form').find('input#post');
 
-            editor.on('key', function(event) {
+            editor.on('key', function (event) {
 
                 if (event.data.keyCode != CKEDITOR.CTRL + 13) {
                     return;
@@ -258,7 +259,7 @@ var beehive = $.extend({}, beehive, {
         }
     },
 
-    mobile_version : false,
+    mobile_version: false,
 
     use_mover_spoiler: 'N',
 
@@ -271,14 +272,14 @@ var beehive = $.extend({}, beehive, {
 
 $.ajaxSetup({
 
-    'cache' : true,
+    cache: true,
 
-    'error' : function(data) {
+    error: function (data) {
         beehive.ajax_error(data);
     }
 });
 
-$(beehive).bind('init', function() {
+$(beehive).bind('init', function () {
 
     var frame_resize_timeout;
 
@@ -288,11 +289,11 @@ $(beehive).bind('init', function() {
         $('<input type="hidden" name="_">').val((new Date()).getTime())
     );
 
-    $('.move_up_ctrl_disabled, .move_down_ctrl_disabled').bind('click', function() {
+    $('.move_up_ctrl_disabled, .move_down_ctrl_disabled').bind('click', function () {
         return false;
     });
 
-    var $body = $('body').on('click', 'a.popup', function() {
+    var $body = $('body').on('click', 'a.popup', function () {
 
         var class_names = $(this).prop('class').split(' ');
 
@@ -315,31 +316,31 @@ $(beehive).bind('init', function() {
         return false;
     });
 
-    $('input#close_popup').bind('click', function() {
+    $('input#close_popup').bind('click', function () {
         window.close();
     });
 
-    $('select.user_in_thread_dropdown').bind('change', function() {
+    $('select.user_in_thread_dropdown').bind('change', function () {
         $('input[name="to_radio"][value="in_thread"]').prop('checked', true);
     });
 
-    $('select.recent_user_dropdown').bind('change', function() {
+    $('select.recent_user_dropdown').bind('change', function () {
         $('input[name="to_radio"][value="recent"]').prop('checked', true);
     });
 
-    $('select.friends_dropdown').bind('change', function() {
+    $('select.friends_dropdown').bind('change', function () {
         $('input[name="to_radio"][value="friends"]').prop('checked', true);
     });
 
-    $('input.post_to_others').bind('focus', function() {
+    $('input.post_to_others').bind('focus', function () {
         $('input[name="to_radio"][value="others"]').prop('checked', true);
     });
 
-    $('input#toggle_all').bind('change', function() {
+    $('input#toggle_all').bind('change', function () {
         $(this).closest('form').find('input:checkbox').prop('checked', $(this).is(':checked'));
     });
 
-    $body.on('click', 'a.font_size_larger, a.font_size_smaller', function() {
+    $body.on('click', 'a.font_size_larger, a.font_size_smaller', function () {
 
         var $this = $(this);
 
@@ -351,16 +352,16 @@ $(beehive).bind('init', function() {
         }
 
         $.ajax({
-            'cache' : true,
-            'data' : {
-                'webtag' : beehive.webtag,
-                'ajax'   : 'true',
-                'action' : $this.prop('class'),
-                'msg'    : $this.data('msg')
+            cache: true,
+            data: {
+                webtag: beehive.webtag,
+                ajax: 'true',
+                action: $this.prop('class'),
+                msg: $this.data('msg')
             },
-            'dataType' : 'json',
-            'url' : beehive.forum_path + '/ajax.php',
-            'success' : function(data) {
+            dataType: 'json',
+            url: beehive.forum_path + '/ajax.php',
+            success: function (data) {
 
                 try {
 
@@ -382,7 +383,7 @@ $(beehive).bind('init', function() {
         return false;
     });
 
-    $('#preferences_updated').each(function() {
+    $('#preferences_updated').each(function () {
 
         //noinspection JSUnresolvedVariable
         beehive.reload_frame(top.document, beehive.frames.fnav);
@@ -394,21 +395,21 @@ $(beehive).bind('init', function() {
         beehive.reload_top_frame(top.document, beehive.top_frame);
     });
 
-    $('input#print').bind('click', function() {
+    $('input#print').bind('click', function () {
         window.print();
     });
 
-    $('a.button').bind('mousedown', function() {
+    $('a.button').bind('mousedown',function () {
         $(this).css('border', '1px inset');
-    }).bind('mouseup mouseout', function() {
-        $(this).css('border', '1px outset');
-    });
+    }).bind('mouseup mouseout', function () {
+            $(this).css('border', '1px outset');
+        });
 
     if ($body.hasClass('window_title')) {
         top.document.title = document.title;
     }
 
-    $(window).bind('resize', function() {
+    $(window).bind('resize', function () {
 
         var frame_name = $(this).prop('name');
 
@@ -424,26 +425,26 @@ $(beehive).bind('init', function() {
 
         window.clearTimeout(frame_resize_timeout);
 
-        frame_resize_timeout = window.setTimeout(function() {
+        frame_resize_timeout = window.setTimeout(function () {
 
             $.ajax({
 
-                'cache' : true,
+                cache: true,
 
-                'data' : {
-                    'webtag' : beehive.webtag,
-                    'ajax'   : true,
-                    'action' : 'frame_resize',
-                    'size'   : Math.max(100, this.innerWidth)
+                data: {
+                    webtag: beehive.webtag,
+                    ajax: true,
+                    action: 'frame_resize',
+                    size: Math.max(100, this.innerWidth)
                 },
 
-                'url' : beehive.forum_path + '/ajax.php'
+                url: beehive.forum_path + '/ajax.php'
             });
 
         }, 500);
     });
 
-    $('.toggle_button').bind('click', function() {
+    $('.toggle_button').bind('click', function () {
 
         var $button = $(this);
 
@@ -451,45 +452,45 @@ $(beehive).bind('init', function() {
 
         if ($element.is(':visible')) {
 
-            $element.slideUp(150, function() {
+            $element.slideUp(150, function () {
 
                 $button.prop('src', beehive.images['show.png']);
 
                 $.ajax({
 
-                    'cache' : true,
+                    cache: true,
 
-                    'data' : {
-                        'webtag'  : beehive.webtag,
-                        'ajax'    : true,
-                        'action'  : $button.prop('id'),
-                        'display' : 'false'
+                    data: {
+                        webtag: beehive.webtag,
+                        ajax: true,
+                        action: $button.prop('id'),
+                        display: 'false'
                     },
 
-                    'url' : beehive.forum_path + '/ajax.php'
+                    url: beehive.forum_path + '/ajax.php'
                 });
             });
 
         } else {
 
-            $element.slideDown(150, function() {
+            $element.slideDown(150, function () {
 
                 $button.prop('src', beehive.images['hide.png']);
 
                 $.ajax({
 
-                    'cache' : true,
+                    cache: true,
 
-                    'data' : {
-                        'webtag'  : beehive.webtag,
-                        'ajax'    : true,
-                        'action'  : $button.prop('id'),
-                        'display' : 'true'
+                    data: {
+                        webtag: beehive.webtag,
+                        ajax: true,
+                        action: $button.prop('id'),
+                        display: 'true'
                     },
 
-                    'url' : beehive.forum_path + '/ajax.php',
+                    url: beehive.forum_path + '/ajax.php',
 
-                    'success' : function() {
+                    success: function () {
                         $element.find('textarea.editor:visible').each(beehive.editor);
                     }
                 });

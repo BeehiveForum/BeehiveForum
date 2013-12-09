@@ -58,15 +58,15 @@ $(beehive).bind('init', function() {
     });
 
     $.ajax({
-        'cache' : true,
-        'data' : {
-            'webtag' : beehive.webtag,
-            'ajax'   : true,
-            'action' : 'pm_check_messages'
+        cache: true,
+        data: {
+            webtag: beehive.webtag,
+            ajax: true,
+            action: 'pm_check_messages'
         },
-        'dataType' : 'json',
-        'url' : beehive.forum_path + '/ajax.php',
-        'success' : function(data) {
+        dataType: 'json',
+        url: beehive.forum_path + '/ajax.php',
+        success: function(data) {
 
             try {
 

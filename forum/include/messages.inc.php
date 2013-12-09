@@ -536,7 +536,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $message['CONTENT'] = implode("", $message_parts);
     }
 
-    echo "<div align=\"center\">\n";
+    echo "<div align=\"center\" class=\"message\">\n";
     echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "  <tr>\n";
 
@@ -852,7 +852,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             echo "</td>\n";
             echo "                <td align=\"right\" style=\"white-space: nowrap\">\n";
-            echo "                  <span class=\"post_options\" id=\"post_options_{$tid}_{$first_msg}_{$message['PID']}\"></span>\n";
+            echo "                  <span class=\"post_options\" id=\"post_options_{$tid}_{$first_msg}_{$message['PID']}\">\n";
+            echo "                    ", gettext("More"), "&nbsp;<img class=\"post_options\" src=\"", html_style_image("post_options.png"), "\" border=\"0\" />\n";
+            echo "                  </span>\n";
             echo "                </td>\n";
             echo "              </tr>";
             echo "            </table>\n";
@@ -1274,32 +1276,34 @@ function messages_end_panel()
     echo "</div>\n";
 }
 
-function messages_nav_strip($tid, $pid, $length, $ppp)
+function messages_nav_strip($tid, $pid, $length, $posts_per_page)
 {
     $webtag = get_webtag();
 
     forum_check_webtag_available($webtag);
 
-    if ($pid < 2 && $length < $ppp) {
+    if ($pid < 2 && $length < $posts_per_page) {
         return;
     } else if ($pid < 1) {
         $pid = 1;
     }
 
-    $c = 0;
+    $current = 0;
 
-    $spid = $pid % $ppp;
+    $start_pid = $pid % $posts_per_page;
 
-    if ($spid > 1) {
+    $navigation = array();
+
+    if ($start_pid > 1) {
 
         if ($pid > 1) {
 
-            $navbits[0] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\">". mess_nav_range(1, $spid - 1). "</a>";
+            $navigation[0] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\">" . mess_nav_range(1, $start_pid - 1) . "</a>";
 
         } else {
 
-            $c = 0;
-            $navbits[0] = mess_nav_range(1,$spid-1);
+            $current = 0;
+            $navigation[0] = mess_nav_range(1, $start_pid - 1);
         }
 
         $i = 1;
@@ -1309,33 +1313,33 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
         $i = 0;
     }
 
-    while ($spid + ($ppp - 1) < $length) {
+    while ($start_pid + ($posts_per_page - 1) < $length) {
 
-        if ($spid == $pid) {
+        if ($start_pid == $pid) {
 
-            $c = $i;
-            $navbits[$i] = mess_nav_range($spid, $spid + ($ppp - 1));
+            $current = $i;
+            $navigation[$i] = mess_nav_range($start_pid, $start_pid + ($posts_per_page - 1));
 
         } else {
 
-            $navbits[$i] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.". ($spid == 0 ? 1 : $spid). "\" target=\"_self\">". mess_nav_range($spid == 0 ? 1 : $spid, $spid + ($ppp - 1)). "</a>";
+            $navigation[$i] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid." . ($start_pid == 0 ? 1 : $start_pid) . "\" target=\"_self\">" . mess_nav_range($start_pid == 0 ? 1 : $start_pid, $start_pid + ($posts_per_page - 1)) . "</a>";
         }
 
-        $spid += $ppp;
+        $start_pid += $posts_per_page;
 
         $i++;
     }
 
-    if ($spid <= $length) {
+    if ($start_pid <= $length) {
 
-        if ($spid == $pid) {
+        if ($start_pid == $pid) {
 
-            $c = $i;
-            $navbits[$i] = mess_nav_range($spid,$length);
+            $current = $i;
+            $navigation[$i] = mess_nav_range($start_pid, $length);
 
         } else {
 
-            $navbits[$i] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.$spid\" target=\"_self\">". mess_nav_range($spid,$length). "</a>";
+            $navigation[$i] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.$start_pid\" target=\"_self\">" . mess_nav_range($start_pid, $length) . "</a>";
         }
     }
 
@@ -1343,33 +1347,33 @@ function messages_nav_strip($tid, $pid, $length, $ppp)
 
     $html = gettext("Show messages:");
 
-    if ($length <= $ppp) {
-        $html.= " <a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\">". gettext("All"). "</a>\n";
+    if ($length <= $posts_per_page) {
+        $html .= " <a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\">" . gettext("All") . "</a>\n";
     }
 
     for ($i = 0; $i <= $max; $i++) {
 
-        if (isset($navbits[$i])) {
+        if (isset($navigation[$i])) {
 
-            if ((abs($c - $i) < 4) || $i == 0 || $i == $max) {
+            if ((abs($current - $i) < 4) || $i == 0 || $i == $max) {
 
-                $html.= "\n&nbsp;". $navbits[$i];
+                $html .= "\n&nbsp;" . $navigation[$i];
 
-            } else if (abs($c - $i) == 4) {
+            } else if (abs($current - $i) == 4) {
 
-                $html.= "\n&nbsp;&hellip;";
+                $html .= "\n&nbsp;&hellip;";
             }
         }
     }
 
-    unset($navbits);
+    unset($navigation);
 
-    echo "            <table class=\"posthead\" width=\"100%\">\n";
-    echo "              <tr>\n";
-    echo "                <td align=\"center\">$html</td>\n";
-    echo "              </tr>\n";
-    echo "            </table>\n";
-    echo "            <br />\n";
+    echo "<table class=\"posthead navigation\" width=\"100%\" id=\"navigation_{$tid}_{$pid}_{$length}_{$posts_per_page}\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"center\">$html</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "<br />\n";
 }
 
 function mess_nav_range($from,$to)

@@ -122,7 +122,7 @@ if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
     html_draw_error(gettext("That post does not exist in this thread!"));
 }
 
-html_draw_top("title={$thread_data['TITLE']}", "class=window_title", "js/post.js", "js/poll.js", 'ckeditor/ckeditor.js', "basetarget=_blank");
+html_draw_top("title={$thread_data['TITLE']}", "class=window_title", "js/post.js", "js/poll.js", "js/messages.js", 'ckeditor/ckeditor.js', "basetarget=_blank");
 
 if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 
@@ -330,6 +330,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
 echo "</div>\n";
+echo "<div id=\"messages\">\n";
 
 if ($msg_count > 0) {
 
@@ -372,6 +373,7 @@ if ($msg_count > 0 && session::logged_in() && !isset($_GET['markasread'])) {
     messages_update_read($tid, $last_pid, $thread_data['LAST_READ'], $thread_data['LENGTH'], $thread_data['MODIFIED']);
 }
 
+echo "</div>\n";
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";
 echo "  <tr>\n";
@@ -408,7 +410,7 @@ if ($last_pid < $thread_data['LENGTH']) {
 
     $next_pid = $last_pid + 1;
 
-    echo "    <td width=\"33%\" align=\"right\" style=\"white-space: nowrap\" class=\"postbody\">", form_quick_button("messages.php", gettext("Keep reading&hellip;"), array('msg' => "$tid.$next_pid")), "</td>\n";
+    echo "    <td width=\"33%\" align=\"right\" style=\"white-space: nowrap\" class=\"postbody\">", form_quick_button("messages.php", gettext("Keep reading&hellip;"), array('msg' => "$tid.$next_pid"), '_self', null, 'button', 'keep_reading'), "</td>\n";
 
 } else {
 

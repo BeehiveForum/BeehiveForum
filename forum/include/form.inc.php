@@ -22,53 +22,53 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'lang.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'lang.inc.php';
 // End Required includes
 
 // Create a form field
-function form_field($name, $value = null, $width = null, $maxchars = null, $type = "text", $custom_html = null, $class = "bhinputtext", $placeholder = null)
+function form_field($name, $value = null, $width = null, $maxchars = null, $type = 'text', $custom_html = null, $class = 'bhinputtext', $placeholder = null, $id = null)
 {
-    $id = form_unique_id($name);
+    $id = $id ? $id : form_unique_id($name);
 
     $html = "<input type=\"$type\" name=\"$name\" id=\"$id\" class=\"$class\" value=\"$value\"";
 
     if (isset($custom_html) && is_string($custom_html)) {
-        $html.= sprintf(" %s", trim($custom_html));
+        $html .= sprintf(" %s", trim($custom_html));
     }
 
     if (is_numeric($width)) {
-        $html.= " size=\"$width\"";
+        $html .= " size=\"$width\"";
     }
 
     if (is_numeric($maxchars)) {
-        $html.= " maxlength=\"$maxchars\"";
+        $html .= " maxlength=\"$maxchars\"";
     }
 
     if (isset($placeholder) && is_string($placeholder)) {
-        $html.= " placeholder=\"$placeholder\"";
+        $html .= " placeholder=\"$placeholder\"";
     }
 
-    return $html. " dir=\"". gettext("ltr"). "\" />";
+    return $html . " dir=\"" . gettext("ltr") . "\" />";
 }
 
 // Creates a text input field
-function form_input_text($name, $value = null, $width = null, $maxchars = null, $custom_html = null, $class = "bhinputtext", $placeholder = null)
+function form_input_text($name, $value = null, $width = null, $maxchars = null, $custom_html = null, $class = 'bhinputtext', $placeholder = null)
 {
     return form_field($name, $value, $width, $maxchars, "text", $custom_html, $class, $placeholder);
 }
 
 // Creates a password input field
-function form_input_password($name, $value = null, $width = null, $maxchars = null, $custom_html = null, $class = "bhinputtext", $placeholder = null)
+function form_input_password($name, $value = null, $width = null, $maxchars = null, $custom_html = null, $class = 'bhinputtext', $placeholder = null)
 {
     return form_field($name, $value, $width, $maxchars, "password", $custom_html, $class, $placeholder);
 }
 
 // Creates a file upload field
-function form_input_file($name, $value = null, $width = null, $maxchars = null, $custom_html = null, $class = "bhinputtext", $placeholder = null)
+function form_input_file($name, $value = null, $width = null, $maxchars = null, $custom_html = null, $class = 'bhinputtext', $placeholder = null)
 {
     return form_field($name, $value, $width, $maxchars, "file", $custom_html, $class, $placeholder);
 }
@@ -103,13 +103,13 @@ function form_input_hidden_array($array)
 
     flatten_array($array, $array_keys, $array_values);
 
-    $result_var = "";
+    $result_var = '';
 
     foreach ($array_keys as $key => $key_name) {
 
         if (($key_name != 'webtag') && isset($array_values[$key])) {
 
-            $result_var.= form_input_hidden(htmlentities_array($key_name), htmlentities_array($array_values[$key]));
+            $result_var .= form_input_hidden(htmlentities_array($key_name), htmlentities_array($array_values[$key]));
         }
     }
 
@@ -117,43 +117,43 @@ function form_input_hidden_array($array)
 }
 
 // Create a textarea input field
-function form_textarea($name, $value, $rows, $cols, $custom_html = null, $class = "bhtextarea", $placeholder = null)
+function form_textarea($name, $value, $rows, $cols, $custom_html = null, $class = 'bhtextarea', $placeholder = null, $id = null)
 {
-    $id = form_unique_id($name);
+    $id = $id ? $id : form_unique_id($name);
 
     $html = "<textarea name=\"$name\" id=\"$id\" class=\"$class\"";
 
     if (isset($custom_html) && is_string($custom_html)) {
-        $html.= sprintf(" %s", trim($custom_html));
+        $html .= sprintf(" %s", trim($custom_html));
     }
 
     if (is_numeric($rows)) {
-        $html.= " rows=\"$rows\"";
+        $html .= " rows=\"$rows\"";
     }
 
     if (is_numeric($cols)) {
-        $html.= " cols=\"$cols\"";
+        $html .= " cols=\"$cols\"";
     }
 
     if (isset($placeholder) && is_string($placeholder)) {
-        $html.= " placeholder=\"$placeholder\"";
+        $html .= " placeholder=\"$placeholder\"";
     }
 
-    return $html. " dir=\"". gettext("ltr"). "\">$value</textarea>";
+    return $html . " dir=\"" . gettext("ltr") . "\">$value</textarea>";
 }
 
 // Creates a dropdown with values from array(s)
-function form_dropdown_array($name, $options_array, $default = null, $custom_html = null, $class = "bhselect", $group_class = "bhselectoptgroup")
+function form_dropdown_array($name, $options_array, $default = null, $custom_html = null, $class = 'bhselect', $group_class = 'bhselectoptgroup', $id = null)
 {
-    $id = form_unique_id($name);
+    $id = $id ? $id : form_unique_id($name);
 
     $html = "<select name=\"$name\" id=\"$id\" class=\"$class\"";
 
     if (isset($custom_html) && is_string($custom_html)) {
-        $html.= sprintf(" %s", trim($custom_html));
+        $html .= sprintf(" %s", trim($custom_html));
     }
 
-    $html.= ">";
+    $html .= ">";
 
     if (is_array($options_array)) {
 
@@ -161,7 +161,7 @@ function form_dropdown_array($name, $options_array, $default = null, $custom_htm
 
             if (is_array($option_text) && isset($option_text['subitems']) && sizeof($option_text['subitems']) > 0) {
 
-                $html.= form_dropdown_objgroup_array($option_key, $option_text['subitems'], $default, $group_class);
+                $html .= form_dropdown_objgroup_array($option_key, $option_text['subitems'], $default, $group_class);
 
             } else if (is_array($option_text) && isset($option_text['name']) && is_string($option_text['name'])) {
 
@@ -174,21 +174,21 @@ function form_dropdown_array($name, $options_array, $default = null, $custom_htm
                 }
 
                 $selected = (mb_strtolower($option_key) == mb_strtolower($default)) ? " selected=\"selected\"" : "";
-                $html.= "  <option value=\"{$option_key}\" class=\"$option_text_class\"$selected>$option_text_name</option>";
+                $html .= "  <option value=\"{$option_key}\" class=\"$option_text_class\"$selected>$option_text_name</option>";
 
             } else if (!is_array($option_text)) {
 
                 $selected = (mb_strtolower($option_key) == mb_strtolower($default)) ? " selected=\"selected\"" : "";
-                $html.= "  <option value=\"{$option_key}\"$selected>$option_text</option>";
+                $html .= "  <option value=\"{$option_key}\"$selected>$option_text</option>";
             }
         }
     }
 
-    return $html. "</select>";
+    return $html . "</select>";
 }
 
 // Creates a optgroup to be used in a dropdown.
-function form_dropdown_objgroup_array($name, $options_array, $default = null, $class = "bhselectoptgroup")
+function form_dropdown_objgroup_array($name, $options_array, $default = null, $class = 'bhselectoptgroup')
 {
     if (!is_array($options_array)) {
         return null;
@@ -200,7 +200,7 @@ function form_dropdown_objgroup_array($name, $options_array, $default = null, $c
 
         if (is_array($option_text) && isset($option_text['subitems']) && sizeof($option_text['subitems']) > 0) {
 
-            $html.= form_dropdown_objgroup_array($option_key, $option_text['subitems'], $default, $class);
+            $html .= form_dropdown_objgroup_array($option_key, $option_text['subitems'], $default, $class);
 
         } else if (is_array($option_text) && isset($option_text['name']) && is_string($option_text['name'])) {
 
@@ -213,12 +213,12 @@ function form_dropdown_objgroup_array($name, $options_array, $default = null, $c
             }
 
             $selected = (mb_strtolower($option_key) == mb_strtolower($default)) ? " selected=\"selected\"" : "";
-            $html.= "  <option value=\"{$option_key}\" class=\"$option_text_class\"$selected>$option_text_name</option>";
+            $html .= "  <option value=\"{$option_key}\" class=\"$option_text_class\"$selected>$option_text_name</option>";
 
         } else if (!is_array($option_text)) {
 
             $selected = (mb_strtolower($option_key) == mb_strtolower($default)) ? " selected=\"selected\"" : "";
-            $html.= "  <option value=\"{$option_key}\"$selected>$option_text</option>";
+            $html .= "  <option value=\"{$option_key}\"$selected>$option_text</option>";
         }
     }
 
@@ -234,7 +234,7 @@ function form_unique_id($name)
     if (isset($form_name_array[$name])) {
 
         $form_name_array[$name]++;
-        return $name. $form_name_array[$name];
+        return $name . $form_name_array[$name];
     }
 
     $form_name_array[$name] = 0;
@@ -243,103 +243,103 @@ function form_unique_id($name)
 }
 
 // Creates a checkbox field
-function form_checkbox($name, $value, $text = null, $checked = false, $custom_html = null, $class = "bhinputcheckbox")
+function form_checkbox($name, $value, $text = null, $checked = false, $custom_html = null, $class = 'bhinputcheckbox', $id = null)
 {
-    $id = form_unique_id($name);
+    $id = $id ? $id : form_unique_id($name);
 
     $html = "<span class=\"$class\">";
-    $html.= "<input type=\"checkbox\" name=\"$name\" id=\"$id\" value=\"$value\"";
+    $html .= "<input type=\"checkbox\" name=\"$name\" id=\"$id\" value=\"$value\"";
 
     if ($checked) {
-        $html.= " checked=\"checked\"";
+        $html .= " checked=\"checked\"";
     }
 
     if (isset($custom_html) && is_string($custom_html)) {
-        $html.= sprintf(" %s", trim($custom_html));
+        $html .= sprintf(" %s", trim($custom_html));
     }
 
-    $html.= " />";
+    $html .= " />";
 
     if (is_array($text) && sizeof($text) > 0) {
 
-        $html.= "<label for=\"$id\">";
+        $html .= "<label for=\"$id\">";
 
         foreach ($text as $text_part) {
 
             if (!strstr($text_part, "<")) {
 
-                $html.= $text_part;
+                $html .= $text_part;
 
             } else {
 
-                $html.= "</label>$text_part<label for=\"$id\">";
+                $html .= "</label>$text_part<label for=\"$id\">";
             }
         }
 
-        $html.= "</label>";
+        $html .= "</label>";
 
     } else if (isset($text) && is_string($text)) {
 
-        $html.= "<label for=\"$id\">$text</label>";
+        $html .= "<label for=\"$id\">$text</label>";
     }
 
-    return $html. "</span>";
+    return $html . "</span>";
 }
 
 // Create a radio field
-function form_radio($name, $value, $text = null, $checked = false, $custom_html = null, $class = "bhinputradio")
+function form_radio($name, $value, $text = null, $checked = false, $custom_html = null, $class = 'bhinputradio', $id = null)
 {
-    $id = form_unique_id($name);
+    $id = $id ? $id : form_unique_id($name);
 
     $html = "<span class=\"$class\">";
-    $html.= "<input type=\"radio\" name=\"$name\" id=\"$id\" value=\"$value\"";
+    $html .= "<input type=\"radio\" name=\"$name\" id=\"$id\" value=\"$value\"";
 
     if ($checked) {
-        $html.= " checked=\"checked\"";
+        $html .= " checked=\"checked\"";
     }
 
     if (isset($custom_html) && is_string($custom_html)) {
-        $html.= sprintf(" %s", trim($custom_html));
+        $html .= sprintf(" %s", trim($custom_html));
     }
 
-    $html.= " />";
+    $html .= " />";
 
     if (is_array($text) && sizeof($text) > 0) {
 
-        $html.= "<label for=\"$id\">";
+        $html .= "<label for=\"$id\">";
 
         foreach ($text as $text_part) {
 
             if (!strstr($text_part, "<")) {
 
-                $html.= $text_part;
+                $html .= $text_part;
 
             } else {
 
-                $html.= "</label>$text_part<label for=\"$id\">";
+                $html .= "</label>$text_part<label for=\"$id\">";
             }
         }
 
-        $html.= "</label>";
+        $html .= "</label>";
 
     } else if (isset($text) && is_string($text)) {
 
-        $html.= "<label for=\"$id\">$text</label>";
+        $html .= "<label for=\"$id\">$text</label>";
     }
 
-    return $html. "</span>";
+    return $html . "</span>";
 }
 
 // Create an array of radio fields.
 function form_radio_array($name, $options_array, $checked = false, $custom_html = null)
 {
-    $html = "";
+    $html = '';
 
     foreach ($options_array as $option_key => $option_text) {
 
         if (!is_array($option_text)) {
 
-            $html.= form_radio($name, $option_key, $option_text, ($checked == $option_key), $custom_html);
+            $html .= form_radio($name, $option_key, $option_text, ($checked == $option_key), $custom_html);
         }
     }
 
@@ -347,9 +347,9 @@ function form_radio_array($name, $options_array, $checked = false, $custom_html 
 }
 
 // Creates a form submit button
-function form_submit($name = "submit", $value = "Submit", $custom_html = "", $class = "button")
+function form_submit($name = "submit", $value = 'Submit', $custom_html = null, $class = 'button', $id = null)
 {
-    $id = form_unique_id($name);
+    $id = $id ? $id : form_unique_id($name);
 
     if (isset($custom_html) && is_string($custom_html)) {
         $custom_html = sprintf(" %s", trim($custom_html));
@@ -361,9 +361,9 @@ function form_submit($name = "submit", $value = "Submit", $custom_html = "", $cl
 }
 
 // Creates a form submit button using an image
-function form_submit_image($image, $name = "submit", $value = "Submit", $custom_html = "", $class = "button_image")
+function form_submit_image($image, $name = "submit", $value = 'Submit', $custom_html = null, $class = 'button_image', $id = null)
 {
-    $id = form_unique_id($name);
+    $id = $id ? $id : form_unique_id($name);
 
     if (isset($custom_html) && is_string($custom_html)) {
         $custom_html = sprintf(" %s", trim($custom_html));
@@ -375,9 +375,9 @@ function form_submit_image($image, $name = "submit", $value = "Submit", $custom_
 }
 
 // Creates a button with custom HTML, for onclick methods, etc.
-function form_button($name, $value, $custom_html = "", $class="button")
+function form_button($name, $value, $custom_html = null, $class = 'button', $id = null)
 {
-    $id = form_unique_id($name);
+    $id = $id ? $id : form_unique_id($name);
 
     if (isset($custom_html) && is_string($custom_html)) {
         $custom_html = sprintf(" %s", trim($custom_html));
@@ -389,9 +389,9 @@ function form_button($name, $value, $custom_html = "", $class="button")
 }
 
 // Creates a HTML <button> with custom innerHTML
-function form_button_html($name, $type, $class, $inner_html, $custom_html = "")
+function form_button_html($name, $type, $class, $inner_html, $custom_html = null, $id = null)
 {
-    $id = form_unique_id($name);
+    $id = $id ? $id : form_unique_id($name);
 
     if (isset($custom_html) && is_string($custom_html)) {
         $custom_html = sprintf(" %s", trim($custom_html));
@@ -404,14 +404,14 @@ function form_button_html($name, $type, $class, $inner_html, $custom_html = "")
 // $var_array is an array (key, value pairs) containing names
 // and values to be used for hidden form fields. Multi-dimensional
 // arrays will be ignored.
-function form_quick_button($href, $label, $var_array = null, $target = "_self")
+function form_quick_button($href, $button_label, $var_array = null, $target = '_self', $button_custom_html = null, $button_class = 'button', $button_id = null)
 {
     $webtag = get_webtag();
 
     forum_check_webtag_available($webtag);
 
     $html = "<form accept-charset=\"utf-8\" method=\"get\" action=\"$href\" target=\"$target\">";
-    $html.= form_input_hidden("webtag", htmlentities_array($webtag));
+    $html .= form_input_hidden("webtag", htmlentities_array($webtag));
 
     if (is_array($var_array)) {
 
@@ -419,40 +419,40 @@ function form_quick_button($href, $label, $var_array = null, $target = "_self")
 
             if (!is_array($var_value)) {
 
-                $html.= form_input_hidden($var_name, htmlentities_array($var_value));
+                $html .= form_input_hidden($var_name, htmlentities_array($var_value));
             }
         }
     }
 
-    $html.= form_submit(form_unique_id('submit'), $label);
+    $html .= form_submit(form_unique_id('submit'), $button_label, $button_custom_html, $button_class, $button_id);
 
-    return $html. "</form>";
+    return $html . "</form>";
 }
 
 // create the date of birth dropdowns for prefs. $show_blank controls whether to show
 // a blank option in each box for backwards compatibility with 0.3 and below,
 // where the DOB was not required information
-function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true, $custom_html = "", $class = "bhselect")
+function form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true, $custom_html = null, $class = 'bhselect')
 {
     if ($show_blank) {
 
-        $birthday_days   = array_merge(array('&nbsp;'), range(1, 31));
+        $birthday_days = array_merge(array('&nbsp;'), range(1, 31));
         $birthday_months = array_merge(array('&nbsp;'), lang_get_month_names());
 
-        $birthday_years  = array(
-            '&nbsp;'
-        ) + range_keys(1900, date('Y', time()));
+        $birthday_years = array(
+                '&nbsp;'
+            ) + range_keys(1900, date('Y', time()));
 
     } else {
 
-        $birthday_days   = range_keys(1, 31);
+        $birthday_days = range_keys(1, 31);
         $birthday_months = lang_get_month_names();
-        $birthday_years  = range_keys(1900, date('Y', time()));
+        $birthday_years = range_keys(1900, date('Y', time()));
     }
 
-    $output = form_dropdown_array("dob_day", $birthday_days, $dob_day, $custom_html, $class). "&nbsp;";
-    $output.= form_dropdown_array("dob_month", $birthday_months, $dob_month, $custom_html, $class). "&nbsp;";
-    $output.= form_dropdown_array("dob_year", $birthday_years, $dob_year, $custom_html, $class). "&nbsp;";
+    $output = form_dropdown_array("dob_day", $birthday_days, $dob_day, $custom_html, $class) . "&nbsp;";
+    $output .= form_dropdown_array("dob_month", $birthday_months, $dob_month, $custom_html, $class) . "&nbsp;";
+    $output .= form_dropdown_array("dob_year", $birthday_years, $dob_year, $custom_html, $class) . "&nbsp;";
 
     return $output;
 }
@@ -466,22 +466,22 @@ function form_date_dropdowns($year = null, $month = null, $day = null, $prefix =
     if (is_numeric($start_year)) {
 
         $years = array(
-            '&nbsp;'
-        ) + range_keys($start_year, 2037);
+                '&nbsp;'
+            ) + range_keys($start_year, 2037);
 
     } else {
 
         $years = array(
-            '&nbsp;'
-        ) + range_keys(date('Y', time()), 2037);
+                '&nbsp;'
+            ) + range_keys(date('Y', time()), 2037);
     }
 
-    $days   = array_merge(array('&nbsp;'), range(1, 31));
+    $days = array_merge(array('&nbsp;'), range(1, 31));
     $months = array_merge(array('&nbsp;'), lang_get_month_names());
 
-    $output = form_dropdown_array("{$prefix}day", $days, $day). "&nbsp;";
-    $output.= form_dropdown_array("{$prefix}month", $months, $month). "&nbsp;";
-    $output.= form_dropdown_array("{$prefix}year", $years, $year). "&nbsp;";
+    $output = form_dropdown_array("{$prefix}day", $days, $day) . "&nbsp;";
+    $output .= form_dropdown_array("{$prefix}month", $months, $month) . "&nbsp;";
+    $output .= form_dropdown_array("{$prefix}year", $years, $year) . "&nbsp;";
 
     return $output;
 }

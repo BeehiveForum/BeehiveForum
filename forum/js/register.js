@@ -24,15 +24,15 @@ $(beehive).bind('init', function() {
     $('#text_captcha_reload').bind('click', function() {
 
         $.ajax({
-            'cache' : true,
-            'data' : {
-                'webtag' : beehive.webtag,
-                'ajax'   : 'true',
-                'action' : 'reload_captcha'
+            cache: true,
+            data: {
+                webtag: beehive.webtag,
+                ajax: 'true',
+                action: 'reload_captcha'
             },
-            'dataType' : 'json',
-            'url' : beehive.forum_path + '/ajax.php',
-            'success' : function(data) {
+            dataType: 'json',
+            url: beehive.forum_path + '/ajax.php',
+            success: function(data) {
 
                 try {
 

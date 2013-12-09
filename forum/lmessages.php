@@ -90,7 +90,7 @@ if (isset($_POST['poll_submit'])) {
     header_redirect("lmessages.php?webtag=$webtag&msg=$msg");
 }
 
-light_html_draw_top();
+light_html_draw_top("js/messages.js");
 
 light_draw_messages($tid, $pid);
 

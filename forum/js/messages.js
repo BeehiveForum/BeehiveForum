@@ -34,7 +34,6 @@ $(beehive).bind('init', function () {
             return parseInt(option, 10);
         });
 
-    $navigation.hide();
     $keep_reading.hide();
 
     $window.on('scroll', function () {

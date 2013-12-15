@@ -52,7 +52,6 @@ function get_available_files()
         'admin_forum_stats.php',
         'admin_link_approve.php',
         'admin_menu.php',
-        'admin.php',
         'admin_post_approve.php',
         'admin_post_stats.php',
         'admin_prof_items.php',
@@ -98,7 +97,6 @@ function get_available_files()
         'forum_options.php',
         'forums.php',
         'get_attachment.php',
-        'index.php',
         'json.php',
         'lboot.php',
         'ldelete.php',
@@ -156,7 +154,6 @@ function get_available_files()
 function get_available_admin_files()
 {
     return array(
-        'admin.php',
         'admin_banned.php',
         'admin_default_forum_settings.php',
         'admin_folder_add.php',

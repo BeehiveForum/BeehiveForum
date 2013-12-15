@@ -1557,7 +1557,7 @@ function admin_prepare_affected_sessions($affected_session)
     return $affected_session_text;
 }
 
-function admin_send_user_approval_notification()
+function admin_send_user_approval_notification($new_user_uid)
 {
     if (!$db = db::get()) return false;
 
@@ -1574,7 +1574,7 @@ function admin_send_user_approval_notification()
 
     while (($admin_data = $result->fetch_assoc()) !== null) {
 
-        if (email_send_user_approval_notification($admin_data['UID'])) {
+        if (email_send_user_approval_notification($admin_data['UID'], $new_user_uid)) {
             $notification_success = true;
         }
     }

@@ -416,7 +416,7 @@ if (isset($_POST['register'])) {
 
             // If User Confirmation is enabled send the forum owners an email.
             if (forum_get_setting('require_user_approval', 'Y')) {
-                admin_send_user_approval_notification();
+                admin_send_user_approval_notification($new_uid);
             }
 
             // If New User Notification is enabled send the forum owners an email.

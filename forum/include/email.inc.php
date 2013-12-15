@@ -415,17 +415,17 @@ function email_send_pw_reminder($logon)
     return $mailer->send($message);
 }
 
-function email_send_new_pw_notification($tuid, $fuid, $new_password)
+function email_send_new_pw_notification($to_uid, $from_uid, $new_password)
 {
-    if (!is_numeric($tuid)) return false;
+    if (!is_numeric($to_uid)) return false;
 
-    if (!is_numeric($fuid)) return false;
+    if (!is_numeric($from_uid)) return false;
 
     if (!is_string($new_password)) return false;
 
-    if (!($to_user = user_get($tuid))) return false;
+    if (!($to_user = user_get($to_uid))) return false;
 
-    if (!($from_user = user_get($fuid))) return false;
+    if (!($from_user = user_get($from_uid))) return false;
 
     if (!($transport = Swift_TransportFactory::get())) return false;
 
@@ -435,13 +435,13 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
 
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $subject = word_filter_apply(sprintf(gettext("Password change notification from %s"), $forum_name), $tuid, true);
+    $subject = word_filter_apply(sprintf(gettext("Password change notification from %s"), $forum_name), $to_uid, true);
 
-    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
+    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
-    $passwd_changed_by = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid, true);
+    $passwd_changed_by = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $to_uid, true);
 
     $message_body = wordwrap(sprintf(
         gettext("Hello %s,\n\nThis a notification email to inform you that your password on %s has been changed.\n\nIt has been changed to: %s and was changed by: %s.\n\nIf you have received this email in error or were not expecting a change to your password please contact the forum owner or a moderator on %s immediately to correct it."),
@@ -461,11 +461,11 @@ function email_send_new_pw_notification($tuid, $fuid, $new_password)
     return $mailer->send($message);
 }
 
-function email_send_user_confirmation($tuid)
+function email_send_user_confirmation($to_uid)
 {
-    if (!is_numeric($tuid)) return false;
+    if (!is_numeric($to_uid)) return false;
 
-    if (!($to_user = user_get($tuid))) return false;
+    if (!($to_user = user_get($to_uid))) return false;
 
     if (!($transport = Swift_TransportFactory::get())) return false;
 
@@ -481,11 +481,11 @@ function email_send_user_confirmation($tuid)
 
     $forum_email = forum_get_setting('forum_email', null, 'admin@beehiveforum.co.uk');
 
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $subject = word_filter_apply(sprintf(gettext("Email confirmation required for %s"), $forum_name), $tuid, true);
+    $subject = word_filter_apply(sprintf(gettext("Email confirmation required for %s"), $forum_name), $to_uid, true);
 
-    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
+    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
     $confirm_link = rawurlencode("confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
 
@@ -509,11 +509,11 @@ function email_send_user_confirmation($tuid)
     return $mailer->send($message);
 }
 
-function email_send_changed_email_confirmation($tuid)
+function email_send_changed_email_confirmation($to_uid)
 {
-    if (!is_numeric($tuid)) return false;
+    if (!is_numeric($to_uid)) return false;
 
-    if (!($to_user = user_get($tuid))) return false;
+    if (!($to_user = user_get($to_uid))) return false;
 
     if (!($transport = Swift_TransportFactory::get())) return false;
 
@@ -529,11 +529,11 @@ function email_send_changed_email_confirmation($tuid)
 
     $forum_email = forum_get_setting('forum_email', null, 'admin@beehiveforum.co.uk');
 
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $subject = word_filter_apply(sprintf(gettext("Email confirmation required for %s"), $forum_name), $tuid, true);
+    $subject = word_filter_apply(sprintf(gettext("Email confirmation required for %s"), $forum_name), $to_uid, true);
 
-    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
+    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
     $confirm_link = rawurlencode("confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
 
@@ -557,11 +557,13 @@ function email_send_changed_email_confirmation($tuid)
     return $mailer->send($message);
 }
 
-function email_send_user_approval_notification($tuid)
+function email_send_user_approval_notification($to_uid, $new_user_uid)
 {
-    if (!is_numeric($tuid)) return false;
+    if (!is_numeric($to_uid)) return false;
 
-    if (!($to_user = user_get($tuid))) return false;
+    if (!($to_user = user_get($to_uid))) return false;
+
+    if (!($new_user = user_get($new_user_uid))) return false;
 
     if (!($transport = Swift_TransportFactory::get())) return false;
 
@@ -575,19 +577,22 @@ function email_send_user_approval_notification($tuid)
 
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $subject = word_filter_apply(sprintf(gettext("New User Approval Notification for %s"), $forum_name), $tuid, true);
+    $subject = word_filter_apply(sprintf(gettext("New User Approval Notification for %s"), $forum_name), $to_uid, true);
 
-    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
+    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
+
+    $new_user_logon = word_filter_apply(format_user_name($new_user['LOGON'], $new_user['NICKNAME']), $to_uid, true);
 
     $admin_users_link = rawurlencode("admin_users.php?webtag=$webtag&filter=4");
 
     $admin_users_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_users_link");
 
     $message_body = wordwrap(sprintf(gettext(
-        "Hello %s,\n\nA new user account has been created on %s.\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."),
+        "Hello %s,\n\nA new user account has been created on %s.\n\nThe name of the new user account is: %s\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."),
         $recipient,
+        $new_user_logon,
         $forum_name,
         $admin_users_link
     ));
@@ -601,13 +606,15 @@ function email_send_user_approval_notification($tuid)
     return $mailer->send($message);
 }
 
-function email_send_new_user_notification($tuid, $new_user_uid)
+function email_send_new_user_notification($to_uid, $new_user_uid)
 {
-    if (!is_numeric($tuid)) return false;
+    if (!is_numeric($to_uid)) return false;
 
     if (!is_numeric($new_user_uid)) return false;
 
-    if (!($to_user = user_get($tuid))) return false;
+    if (!($to_user = user_get($to_uid))) return false;
+
+    if (!($new_user = user_get($new_user_uid))) return false;
 
     if (!($transport = Swift_TransportFactory::get())) return false;
 
@@ -621,19 +628,22 @@ function email_send_new_user_notification($tuid, $new_user_uid)
 
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $subject = word_filter_apply(sprintf(gettext("New User Account Notification for %s"), $forum_name), $tuid, true);
+    $subject = word_filter_apply(sprintf(gettext("New User Account Notification for %s"), $forum_name), $to_uid, true);
 
-    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
+    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
+
+    $new_user_logon = word_filter_apply(format_user_name($new_user['LOGON'], $new_user['NICKNAME']), $to_uid, true);
 
     $admin_user_link = rawurlencode("admin_user.php?webtag=$webtag&uid=$new_user_uid");
 
     $admin_user_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_user_link");
 
     $message_body = wordwrap(sprintf(gettext(
-        "Hello %s,\n\nA new user account has been created on %s.\n\nTo view this user account please visit the Admin Users section and click on the new user or click the link below:\n\n%s"),
+        "Hello %s,\n\nA new user account has been created on %s.\n\nThe name of the new user account is: %s\n\nTo view this user account please visit the Admin Users section and click on the new user or click the link below:\n\n%s"),
         $recipient,
+        $new_user_logon,
         $forum_name,
         $admin_user_link
     ));
@@ -647,11 +657,11 @@ function email_send_new_user_notification($tuid, $new_user_uid)
     return $mailer->send($message);
 }
 
-function email_send_user_approved_notification($tuid)
+function email_send_user_approved_notification($to_uid)
 {
-    if (!is_numeric($tuid)) return false;
+    if (!is_numeric($to_uid)) return false;
 
-    if (!($to_user = user_get($tuid))) return false;
+    if (!($to_user = user_get($to_uid))) return false;
 
     if (!($transport = Swift_TransportFactory::get())) return false;
 
@@ -667,11 +677,11 @@ function email_send_user_approved_notification($tuid)
 
     $forum_email = forum_get_setting('forum_email', null, 'admin@beehiveforum.co.uk');
 
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $subject = word_filter_apply(sprintf(gettext("User approval notification for %s"), $forum_name), $tuid, true);
+    $subject = word_filter_apply(sprintf(gettext("User approval notification for %s"), $forum_name), $to_uid, true);
 
-    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
+    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
     $forum_link = html_get_forum_uri("index.php?webtag=$webtag");
 
@@ -693,11 +703,11 @@ function email_send_user_approved_notification($tuid)
     return $mailer->send($message);
 }
 
-function email_send_post_approval_notification($tuid)
+function email_send_post_approval_notification($to_uid)
 {
-    if (!is_numeric($tuid)) return false;
+    if (!is_numeric($to_uid)) return false;
 
-    if (!($to_user = user_get($tuid))) return false;
+    if (!($to_user = user_get($to_uid))) return false;
 
     if (!($transport = Swift_TransportFactory::get())) return false;
 
@@ -711,11 +721,11 @@ function email_send_post_approval_notification($tuid)
 
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $subject = word_filter_apply(sprintf(gettext("Post Approval Notification for %s"), $forum_name), $tuid, true);
+    $subject = word_filter_apply(sprintf(gettext("Post Approval Notification for %s"), $forum_name), $to_uid, true);
 
-    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
+    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
     $admin_post_approval_link = rawurlencode("admin_post_approve.php?webtag=$webtag");
 
@@ -737,11 +747,11 @@ function email_send_post_approval_notification($tuid)
     return $mailer->send($message);
 }
 
-function email_send_link_approval_notification($tuid)
+function email_send_link_approval_notification($to_uid)
 {
-    if (!is_numeric($tuid)) return false;
+    if (!is_numeric($to_uid)) return false;
 
-    if (!($to_user = user_get($tuid))) return false;
+    if (!($to_user = user_get($to_uid))) return false;
 
     if (!($transport = Swift_TransportFactory::get())) return false;
 
@@ -755,11 +765,11 @@ function email_send_link_approval_notification($tuid)
 
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $subject = word_filter_apply(sprintf(gettext("Link Approval Notification for %s"), $forum_name), $tuid, true);
+    $subject = word_filter_apply(sprintf(gettext("Link Approval Notification for %s"), $forum_name), $to_uid, true);
 
-    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
+    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
     $admin_post_approval_link = rawurlencode("admin_link_approve.php?webtag=$webtag");
 
@@ -781,15 +791,15 @@ function email_send_link_approval_notification($tuid)
     return $mailer->send($message);
 }
 
-function email_send_message_to_user($tuid, $fuid, $subject, $message_body, $use_email_addr)
+function email_send_message_to_user($to_uid, $from_uid, $subject, $message_body, $use_email_addr)
 {
-    if (!is_numeric($tuid)) return false;
+    if (!is_numeric($to_uid)) return false;
 
-    if (!is_numeric($fuid)) return false;
+    if (!is_numeric($from_uid)) return false;
 
-    if (!($to_user = user_get($tuid))) return false;
+    if (!($to_user = user_get($to_uid))) return false;
 
-    if (!($from_user = user_get($fuid))) return false;
+    if (!($from_user = user_get($from_uid))) return false;
 
     if (!($transport = Swift_TransportFactory::get())) return false;
 
@@ -799,13 +809,13 @@ function email_send_message_to_user($tuid, $fuid, $subject, $message_body, $use_
 
     if (!email_address_valid($to_user['EMAIL'])) return false;
 
-    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $tuid, true);
+    $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $tuid, true);
+    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
-    $sent_from  = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $tuid, true);
+    $sent_from  = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $to_uid, true);
 
-    $message_body = word_filter_apply($message_body, $tuid, true);
+    $message_body = word_filter_apply($message_body, $to_uid, true);
 
     $message_body.= "\n\n". wordwrap(sprintf(gettext("This message was sent from %s by %s"), $forum_name, $sent_from));
 

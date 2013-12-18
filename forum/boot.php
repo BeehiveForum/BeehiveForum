@@ -144,6 +144,6 @@ if (!forum_check_webtag_available($webtag) || !forum_check_access_level()) {
 
 // Check guest access is available.
 if (!forum_check_guest_access_allowed()) {
-    $request_uri = rawurlencode(get_request_uri(false));
+    $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }

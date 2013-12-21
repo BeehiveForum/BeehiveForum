@@ -26,9 +26,14 @@ $(beehive).bind('init', function () {
         $messages = $('div#messages'),
         $navigation = $('.navigation'),
         $keep_reading = $('input#keep_reading.button'),
-        loading_messages = false;
+        loading_messages = false,
+        navigation_options;
 
-    var navigation_options = $navigation.prop("id")
+    if ($navigation.length === 0) {
+        return;
+    }
+
+    navigation_options = $navigation.prop("id")
         .match(/^navigation_(\d+)_(\d+)_(\d+)_(\d+)$/)
         .map(function (option) {
             return parseInt(option, 10);
@@ -47,14 +52,18 @@ $(beehive).bind('init', function () {
             return;
         }
 
-        if ($messages.find('.message').length == navigation_options[3]) {
-            return;
-        }
-
         loading_messages = true;
 
         var pid = navigation_options[2] + navigation_options[4],
-            msg = navigation_options[1] + "." + Math.min(navigation_options[3] + 1, pid);
+            msg = navigation_options[1] + "." + Math.min(navigation_options[3] + 1, pid),
+            last_pid;
+
+        last_pid = $messages.find('.message').last()
+            .prop('id').match(/^message_(\d+)_(\d+)$/)[2];
+
+        if (last_pid >= navigation_options[3]) {
+            return;
+        }
 
         $.ajax({
 

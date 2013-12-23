@@ -229,8 +229,8 @@ select.bhinputprofileitem {
 .bhinputsearch {
     background-color: #FFFFFF;
     border: 1px solid #82827e;
-    border-right-color: #f9f9f6;
     border-bottom-color: #f9f9f6;
+    border-right-color: #f9f9f6;
     float: left
 }
 
@@ -327,8 +327,8 @@ select.bhinputprofileitem {
 .button_disabled {
     background-color: #EBEBE4;
     border: 1px solid buttonhighlight;
-    border-right-color: buttonshadow;
     border-bottom-color: buttonshadow;
+    border-right-color: buttonshadow;
     color: #808080;
     cursor: pointer;
     font-family: verdana, arial, helvetica, sans-serif;
@@ -868,7 +868,7 @@ div.poll_option_list ol li {
 .postbody {
     border: none;
     font-size: 100%;
-    padding: 2px;
+    padding: 2px
 }
 
 .posthead {
@@ -1076,8 +1076,8 @@ div.poll_option_list ol li {
 .smallbutton {
     background-color: #B91330;
     border: 1px solid buttonhighlight;
-    border-right-color: buttonshadow;
     border-bottom-color: buttonshadow;
+    border-right-color: buttonshadow;
     color: #FFFFFF;
     cursor: pointer;
     font-family: verdana, arial, helvetica, sans-serif;
@@ -1100,8 +1100,8 @@ div.poll_option_list ol li {
 .spellcheckbodytext {
     background-color: #FFFFFF;
     border: 1px solid buttonshadow;
-    border-right-color: buttonhighlight;
     border-bottom-color: buttonhighlight;
+    border-right-color: buttonhighlight;
     font-size: 100%;
     height: 85px;
     padding: 0;
@@ -1278,7 +1278,7 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px;
+    padding: 2px
 }
 
 .threads_bottom_left {
@@ -1289,18 +1289,18 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px;
+    padding: 2px
 }
 
 .threads_bottom_right {
     background-color: #FF6C6C;
     border: 0 none #000000;
-    border-right-width: 1px;
     border-bottom-width: 1px;
+    border-right-width: 1px;
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px;
+    padding: 2px
 }
 
 .threads_left {
@@ -1310,18 +1310,18 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px;
+    padding: 2px
 }
 
 .threads_left_right {
     background-color: #FF6C6C;
     border: 0 none #000000;
-    border-right-width: 1px;
     border-left-width: 1px;
+    border-right-width: 1px;
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px;
+    padding: 2px
 }
 
 .threads_left_right_bottom {
@@ -1331,7 +1331,7 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px;
+    padding: 2px
 }
 
 .threads_right {
@@ -1341,18 +1341,18 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px;
+    padding: 2px
 }
 
 .threads_top_left {
     background-color: #FF6C6C;
     border: 1px none #000000;
-    border-right-width: 0;
     border-bottom-width: 0;
+    border-right-width: 0;
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px;
+    padding: 2px
 }
 
 .threads_top_left_bottom {
@@ -1362,7 +1362,7 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px;
+    padding: 2px
 }
 
 .threads_top_right {
@@ -1373,7 +1373,7 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px;
+    padding: 2px
 }
 
 .threads_top_right_bottom {
@@ -1383,7 +1383,7 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px;
+    padding: 2px
 }
 
 .threadtime {

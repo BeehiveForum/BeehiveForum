@@ -1,5 +1,24 @@
 # Beehive Forum Release Notes
 
+## What's new in 1.4.0 (Released 23rd December 2013)
+
+- Changes from 1.3.0
+
+    - Require PHP 5.3.0 minimum.
+    - Use native PHP $_SESSION super-global
+    - Youtube and AllMedia plugins for CKEditor
+    - Added FineUploaderBasic for much improved
+      attachment uploading.
+    - Use native PHP zip handling support for PM
+      export.
+    - Added ability to add new user's to a group.
+    - Added search to Mobile mode.
+    - Fixed double-slashes in email links causing
+      404 errors on some web-server configurations.
+    - Fixed language pack not initialising on IIS.
+
+    For more detail please see changelog.
+
 ## What's new in 1.3.0 (Released 18th November 2012)
 
 - Changes from 1.2.0

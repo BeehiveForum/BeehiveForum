@@ -1,7 +1,65 @@
-# Beehive Forum Change Log (Generated: Sun, 11 Aug 2013 19:21:46)
+# Beehive Forum Change Log (Generated: Mon, 23 Dec 2013 15:12:43)
+
+## Date: Mon, 23 Dec 2013
+
+- Changed: Updated stylesheets to match default.
+- Changed: Move required PHP extensions into a comma-separated
+           constant.
+- Fixed: Missing include in lang.inc.php.
+- Changed: Navigation links now link back to ajax loaded messages if
+           available on the current page.
+
+## Date: Sat, 21 Dec 2013
+
+- Fixed: Infinite scroll kept trying to load last message + 1 when you
+         scrolled down.
+
+## Date: Mon, 30 Sep 2013
+
+- Fixed: Missing WHERE keyword in SQL query!
+
+## Date: Sun, 15 Sep 2013
+
+- Fixed: Incorrect call to admin\_add\_log\_entry() - 2nd argument
+         should be an array, not a string.
+
+## Date: Tue, 03 Sep 2013
+
+- Changed: Automatically approved welcome thread created in new
+           forums.
+- Fixed: Add missing APPROVED and APPROVED\_BY columns to THREAD.
+- Changed: Add index to VIEWED column of POST\_RECIPIENT.
+- Changed: Prefix MySQL version with some identifiable text.
+
+## Date: Sun, 01 Sep 2013
+
+- Fixed: Drop-downs and radio buttons were causing errors on profile
+         edit page.
+
+## Date: Tue, 27 Aug 2013
+
+- Changed: Don't take USER\_TOKEN into consideration when garbage
+           collecting sessions.
+
+## Date: Wed, 21 Aug 2013
+
+- Fixed: Unable to see posts in approval queue.
+
+## Date: Fri, 16 Aug 2013
+
+- Fixed: Quote, Code and Spoiler buttons not working correctly in
+         Chrome.
+- Changed: Spelling
+
+## Date: Thu, 15 Aug 2013
+
+- Changed: Added note about php-mysqlnd and Sphinxsearch 2.0.4.
 
 ## Date: Sun, 11 Aug 2013
 
+- Changed: Updates bh\_check\_php\_version.php to use
+           Bartlett/PHP/CompatInfo new result structure.
+- Changed: Updated dependencies and Changelog.md
 - Changed: Use mysqli\_connect for Sphinxsearch, as it doesn't seem to
            work with mysqlnd.
 
@@ -397,7 +455,7 @@
 - Fixed: Bitwise bit disable in
          perm\_user\_cancel\_email\_confirmation and
          perm\_folder\_reset\_user\_permissions was incorrect.
-- Fixed: Some bitwise comparisions didn't make sense or were hard to
+- Fixed: Some bitwise comparisons didn't make sense or were hard to
          read.
 
 ## Date: Wed, 06 Mar 2013
@@ -425,7 +483,7 @@
 
 ## Date: Thu, 28 Feb 2013
 
-- Changed: Allow searches to be limitd to  n searches every y minutes,
+- Changed: Allow searches to be limited to n searches every y minutes,
            instead of just every n minutes.
 
 ## Date: Wed, 27 Feb 2013
@@ -620,7 +678,7 @@
 ## Date: Thu, 27 Dec 2012
 
 - Fixed: Broken Light mode thread list.
-- Changed: Removed redudant helper scripts that are no longer needed.
+- Changed: Removed redundant helper scripts that are no longer needed.
 - Changed: Increase width of Admin area tables and forms to better
            suit hi-res displays. Target 1280x??? screen width. (part
            2)

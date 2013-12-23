@@ -22,15 +22,15 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'browser.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'browser.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
 // End Required includes
 
 function install_check()
 {
-    if (!file_exists(BH_INCLUDE_PATH. "config.inc.php")) {
+    if (!file_exists(BH_INCLUDE_PATH . "config.inc.php")) {
         header_redirect('./install/index.php');
     }
 
@@ -134,25 +134,9 @@ function install_check_mysql_version()
 
 function install_check_php_extensions()
 {
-    static $required_extensions = false;
-
-    if (!is_array($required_extensions)) {
-
-        $required_extensions = array(
-            'date',
-            'fileinfo',
-            'gd',
-            'gettext',
-            'intl',
-            'json',
-            'mbstring',
-            'mysqli',
-            'pcre',
-            'xml'
-        );
-    }
-
     $loaded_extensions = get_loaded_extensions();
+
+    $required_extensions = explode(',', BEEHIVE_PHP_REQUIRED_EXT);
 
     $missing_extensions = array_diff($required_extensions, $loaded_extensions);
 
@@ -279,7 +263,7 @@ function install_get_table_data()
     if (!$db = db::get()) return false;
 
     $sql = "SELECT FID, CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX, ";
-    $sql.= "DATABASE_NAME, WEBTAG FROM FORUMS";
+    $sql .= "DATABASE_NAME, WEBTAG FROM FORUMS";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -391,7 +375,7 @@ function install_get_table_names(&$global_tables, &$forum_tables)
             'USER_PERM',
             'USER_PREFS',
             'VISITOR_LOG'
-         );
+        );
     }
 
     if (!is_array($forum_tables_store)) {
@@ -454,7 +438,7 @@ function install_check_table_conflicts($database_name, $webtag, $check_forum_tab
     install_get_table_names($global_tables, $forum_tables);
 
     foreach ($forum_tables as $key => $forum_table) {
-        $forum_tables[$key] = install_prefix_webtag( $forum_table, $webtag );
+        $forum_tables[$key] = install_prefix_webtag($forum_table, $webtag);
     }
 
     $check_tables_array = array_merge($check_global_tables ? $global_tables : array(), $check_forum_tables ? $forum_tables : array());
@@ -560,7 +544,7 @@ function install_set_default_forum_settings()
         $svalue = $db->escape($svalue);
 
         $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-        $sql.= "VALUES (0, '$sname', '$svalue')";
+        $sql .= "VALUES (0, '$sname', '$svalue')";
 
         $db->query($sql);
     }
@@ -641,11 +625,11 @@ function install_set_search_bots()
     foreach ($bots_array as $agent => $details) {
 
         $agent = $db->escape($agent);
-        $name  = $db->escape($details['NAME']);
-        $url   = $db->escape($details['URL']);
+        $name = $db->escape($details['NAME']);
+        $url = $db->escape($details['URL']);
 
         $sql = "INSERT INTO SEARCH_ENGINE_BOTS (NAME, URL, AGENT_MATCH) ";
-        $sql.= "VALUES ('$name', '$url', '%$agent%')";
+        $sql .= "VALUES ('$name', '$url', '%$agent%')";
 
         $db->query($sql);
     }
@@ -743,7 +727,7 @@ function install_set_timezones()
         if (!isset($tz_data[1]) || !is_numeric($tz_data[1])) return false;
 
         $sql = "INSERT INTO TIMEZONES (TZID, GMT_OFFSET, DST_OFFSET) ";
-        $sql.= "VALUES ('$tzid', '{$tz_data[0]}', '{$tz_data[1]}')";
+        $sql .= "VALUES ('$tzid', '{$tz_data[0]}', '{$tz_data[1]}')";
 
         $db->query($sql);
     }
@@ -762,7 +746,7 @@ function install_draw_top()
     echo "<style type=\"text/css\">\n";
     echo "<!--\n";
 
-    readfile(__DIR__. "/../styles/install.css");
+    readfile(__DIR__ . "/../styles/install.css");
 
     echo "//-->\n";
     echo "</style>\n";

@@ -22,6 +22,7 @@
 $(beehive).bind('init', function () {
 
     var $window = $(window),
+        $body = $('body'),
         $document = $(document),
         $messages = $('div#messages'),
         $navigation = $('.navigation'),
@@ -95,5 +96,18 @@ $(beehive).bind('init', function () {
                 loading_messages = false;
             }
         })
+    });
+
+    $body.on('click', '.navigation a', function (event) {
+
+        var $anchor = $('a[name="a' + $.url($(this).attr('href')).param('msg').replace('.', '_') + '"]');
+
+        if ($anchor.length > 0) {
+
+            event.preventDefault();
+
+            //noinspection JSValidateTypes
+            $window.scrollTop(Math.floor($anchor.offset().top));
+        }
     });
 });

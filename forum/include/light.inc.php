@@ -1672,11 +1672,16 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         $message['CONTENT'].= "<a href=\"ldisplay.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;return_msg=$tid.$first_msg\" class=\"message_full_view\">". gettext("View full message"). ".</a>";
     }
 
-    if ($in_list) {
+    if ($in_list && isset($message['PID'])) {
         echo "<a name=\"a{$tid}_{$message['PID']}\"></a>";
     }
 
-    echo "<div class=\"message\" id=\"message_{$tid}_{$message['PID']}\">\n";
+    if ($in_list && isset($message['PID'])) {
+        echo "<div class=\"message\" id=\"message_{$tid}_{$message['PID']}\">\n";
+    } else {
+        echo "<div class=\"message\">\n";
+    }
+
     echo "<div class=\"message_header\">\n";
     echo "<div class=\"message_from\">\n";
     echo "", gettext("From"), ": ", word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true);

@@ -536,7 +536,12 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         $message['CONTENT'] = implode("", $message_parts);
     }
 
-    echo "<div align=\"center\" class=\"message\" id=\"message_{$tid}_{$message['PID']}\">\n";
+    if ($in_list && isset($message['PID'])) {
+        echo "<div align=\"center\" class=\"message\" id=\"message_{$tid}_{$message['PID']}\">\n";
+    } else {
+        echo "<div align=\"center\" class=\"message\">\n";
+    }
+
     echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
     echo "  <tr>\n";
 

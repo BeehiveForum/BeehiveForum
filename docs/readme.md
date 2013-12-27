@@ -2,7 +2,7 @@
 
 <http://www.beehiveforum.co.uk/>
 
-Version 1.4.0 / 23rd December 2013
+Version 1.4.1 / 23rd December 2013
 
 A list of changes since previous Beehive Forum versions can be found
 in release.txt.
@@ -453,7 +453,7 @@ Since release 1.3.0, Beehive Forum uses CKEditor to provide it's
 HTML WYSIWYG editor. This replaces the built-in HTML editor and
 TinyMCE that was used in older releases.
 
-CKEditor version 3.6.6.1 is included with Beehive Forum 1.4.0.
+CKEditor version 3.6.6.1 is included with Beehive Forum 1.4.1.
 You DO NOT need to download and install any additional software
 for it to work.
 

@@ -1,7 +1,17 @@
-# Beehive Forum Change Log (Generated: Mon, 23 Dec 2013 15:12:43)
+# Beehive Forum Change Log (Generated: Fri, 27 Dec 2013 12:36:34)
+
+## Date: Fri, 27 Dec 2013
+
+- Fixed: Incorrect order of sprintf arguments in new user notification
+         email.
+
+## Date: Wed, 25 Dec 2013
+
+- Fixed: Broken preview due to message not having a PID
 
 ## Date: Mon, 23 Dec 2013
 
+- Changed: Documentation update for 1.4.0.
 - Changed: Updated stylesheets to match default.
 - Changed: Move required PHP extensions into a comma-separated
            constant.
@@ -455,7 +465,7 @@
 - Fixed: Bitwise bit disable in
          perm\_user\_cancel\_email\_confirmation and
          perm\_folder\_reset\_user\_permissions was incorrect.
-- Fixed: Some bitwise comparisons didn't make sense or were hard to
+- Fixed: Some bitwise comparisions didn't make sense or were hard to
          read.
 
 ## Date: Wed, 06 Mar 2013
@@ -483,7 +493,7 @@
 
 ## Date: Thu, 28 Feb 2013
 
-- Changed: Allow searches to be limited to n searches every y minutes,
+- Changed: Allow searches to be limitd to  n searches every y minutes,
            instead of just every n minutes.
 
 ## Date: Wed, 27 Feb 2013
@@ -678,7 +688,7 @@
 ## Date: Thu, 27 Dec 2012
 
 - Fixed: Broken Light mode thread list.
-- Changed: Removed redundant helper scripts that are no longer needed.
+- Changed: Removed redudant helper scripts that are no longer needed.
 - Changed: Increase width of Admin area tables and forms to better
            suit hi-res displays. Target 1280x??? screen width. (part
            2)

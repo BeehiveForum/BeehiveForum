@@ -1,5 +1,13 @@
 # Beehive Forum Release Notes
 
+## What's new in 1.4.1 (Released 27th December 2013)
+
+- Changes from 1.4.0
+
+    - Fixed broken post preview
+    - Fixed incorrectly formatted new user admin
+      notification emails.
+
 ## What's new in 1.4.0 (Released 23rd December 2013)
 
 - Changes from 1.3.0

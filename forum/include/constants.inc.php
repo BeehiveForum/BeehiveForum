@@ -22,7 +22,7 @@ USA
 ======================================================================*/
 
 // Beehive Version
-define('BEEHIVE_VERSION', "1.4.1");
+define('BEEHIVE_VERSION', "1.4.1-GIT");
 
 // Beehive DOB (unixtimestamp)
 define('BEEHIVE_DOB', 1018220400);

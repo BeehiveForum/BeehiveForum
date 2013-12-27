@@ -592,8 +592,8 @@ function email_send_user_approval_notification($to_uid, $new_user_uid)
     $message_body = wordwrap(sprintf(gettext(
         "Hello %s,\n\nA new user account has been created on %s.\n\nThe name of the new user account is: %s\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."),
         $recipient,
-        $new_user_logon,
         $forum_name,
+        $new_user_logon,
         $admin_users_link
     ));
 
@@ -643,8 +643,8 @@ function email_send_new_user_notification($to_uid, $new_user_uid)
     $message_body = wordwrap(sprintf(gettext(
         "Hello %s,\n\nA new user account has been created on %s.\n\nThe name of the new user account is: %s\n\nTo view this user account please visit the Admin Users section and click on the new user or click the link below:\n\n%s"),
         $recipient,
-        $new_user_logon,
         $forum_name,
+        $new_user_logon,
         $admin_user_link
     ));
 

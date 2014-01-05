@@ -234,61 +234,16 @@ if (!install_table_exists($config['db_database'], 'PM_RECIPIENT')) {
     $db->query($sql);
 }
 
-if (!install_column_exists($config['db_database'], 'PM_SEARCH_RESULTS', 'RELEVANCE')) {
-
-    $sql = "ALTER TABLE PM_SEARCH_RESULTS ADD COLUMN RELEVANCE FLOAT UNSIGNED NOT NULL AFTER MID";
-
-    $db->query($sql);
-}
-
-if (install_column_exists($config['db_database'], 'PM_SEARCH_RESULTS', 'TYPE')) {
-
-    $sql = "ALTER TABLE PM_SEARCH_RESULTS DROP COLUMN TYPE";
-
-    $db->query($sql);
-}
-
-if (install_column_exists($config['db_database'], 'PM_SEARCH_RESULTS', 'FROM_UID')) {
-
-    $sql = "ALTER TABLE PM_SEARCH_RESULTS DROP COLUMN FROM_UID";
-
-    $db->query($sql);
-
-}
-
-if (install_column_exists($config['db_database'], 'PM_SEARCH_RESULTS', 'TO_UID')) {
-
-    $sql = "ALTER TABLE PM_SEARCH_RESULTS DROP COLUMN TO_UID";
-
-    $db->query($sql);
-}
-
-if (install_column_exists($config['db_database'], 'PM_SEARCH_RESULTS', 'SUBJECT')) {
-
-    $sql = "ALTER TABLE PM_SEARCH_RESULTS DROP COLUMN SUBJECT";
-
-    $db->query($sql);
-}
-
-if (install_column_exists($config['db_database'], 'PM_SEARCH_RESULTS', 'RECIPIENTS')) {
-
-    $sql = "ALTER TABLE PM_SEARCH_RESULTS DROP COLUMN RECIPIENTS";
-
-    $db->query($sql);
-}
-
-if (install_column_exists($config['db_database'], 'PM_SEARCH_RESULTS', 'CREATED')) {
-
-    $sql = "ALTER TABLE PM_SEARCH_RESULTS DROP COLUMN CREATED";
-
-    $db->query($sql);
-}
-
-$sql = "ALTER TABLE PM_SEARCH_RESULTS CHANGE UID UID MEDIUMINT(8) UNSIGNED NOT NULL";
+$sql = "DROP TABLE IF EXISTS PM_SEARCH_RESULTS";
 
 $db->query($sql);
 
-$sql = "ALTER TABLE PM_SEARCH_RESULTS CHANGE MID MID MEDIUMINT(8) UNSIGNED NOT NULL";
+$sql = "CREATE TABLE PM_SEARCH_RESULTS (";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL, ";
+$sql.= "  MID MEDIUMINT(8) UNSIGNED NOT NULL, ";
+$sql.= "  RELEVANCE FLOAT UNSIGNED NOT NULL, ";
+$sql.= "  PRIMARY KEY (UID, MID)";
+$sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
 $db->query($sql);
 
@@ -446,63 +401,18 @@ if (!install_column_exists($config['db_database'], 'POST_ATTACHMENT_FILES', 'FIL
     $db->query($sql);
 }
 
-if (install_column_exists($config['db_database'], 'SEARCH_RESULTS', 'BY_UID')) {
-
-    $sql = "ALTER TABLE SEARCH_RESULTS DROP COLUMN BY_UID";
-
-    $db->query($sql);
-}
-
-if (install_column_exists($config['db_database'], 'SEARCH_RESULTS', 'FROM_UID')) {
-
-    $sql = "ALTER TABLE SEARCH_RESULTS DROP COLUMN FROM_UID";
-
-    $db->query($sql);
-
-}
-
-if (install_column_exists($config['db_database'], 'SEARCH_RESULTS', 'TO_UID')) {
-
-    $sql = "ALTER TABLE SEARCH_RESULTS DROP COLUMN TO_UID";
-
-    $db->query($sql);
-}
-
-if (install_column_exists($config['db_database'], 'SEARCH_RESULTS', 'CREATED')) {
-
-    $sql = "ALTER TABLE SEARCH_RESULTS DROP COLUMN CREATED";
-
-    $db->query($sql);
-}
-
-if (install_column_exists($config['db_database'], 'SEARCH_RESULTS', 'LENGTH')) {
-
-    $sql = "ALTER TABLE SEARCH_RESULTS DROP COLUMN LENGTH";
-
-    $db->query($sql);
-}
-
-$sql = "ALTER TABLE SEARCH_RESULTS CHANGE UID UID MEDIUMINT(8) UNSIGNED NOT NULL";
+$sql = "DROP TABLE IF EXISTS SEARCH_RESULTS";
 
 $db->query($sql);
 
-$sql = "ALTER TABLE SEARCH_RESULTS CHANGE FORUM FORUM MEDIUMINT(8) UNSIGNED NOT NULL";
-
-$db->query($sql);
-
-$sql = "ALTER TABLE SEARCH_RESULTS CHANGE FID FID MEDIUMINT(8) UNSIGNED NOT NULL";
-
-$db->query($sql);
-
-$sql = "ALTER TABLE SEARCH_RESULTS CHANGE TID TID MEDIUMINT(8) UNSIGNED NOT NULL";
-
-$db->query($sql);
-
-$sql = "ALTER TABLE SEARCH_RESULTS CHANGE PID PID MEDIUMINT(8) UNSIGNED NOT NULL";
-
-$db->query($sql);
-
-$sql = "ALTER TABLE SEARCH_RESULTS CHANGE RELEVANCE RELEVANCE FLOAT UNSIGNED NOT NULL";
+$sql = "CREATE TABLE SEARCH_RESULTS (";
+$sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL, ";
+$sql.= "  FORUM MEDIUMINT(8) UNSIGNED NOT NULL, ";
+$sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL, ";
+$sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL, ";
+$sql.= "  RELEVANCE FLOAT UNSIGNED NOT NULL, ";
+$sql.= "  PRIMARY KEY (UID, FORUM, TID, PID)";
+$sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 $db->query($sql);
 

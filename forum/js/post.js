@@ -21,17 +21,16 @@
 
 $(beehive).bind('init', function () {
 
+    //noinspection JSLint
     beehive.quote_list = [];
 
-    var hide_post_options_containers = function () {
+    function hide_post_options_containers() {
 
         $('.post_options_container').each(function () {
 
-            var $post_options_container = $(this);
-
-            var $link = $(this).prev('span.post_options');
-
-            var link_offset = $link.offset();
+            var $post_options_container = $(this),
+                $link = $(this).prev('span.post_options'),
+                link_offset = $link.offset();
 
             $post_options_container.hide();
 
@@ -39,17 +38,14 @@ $(beehive).bind('init', function () {
 
             $post_options_container.find('table').css('margin-left', -9999);
         });
-    };
+    }
 
-    var show_post_options_container = function () {
+    function show_post_options_container() {
 
-        var $link = $(this);
-
-        var $post_options_container = $link.next('.post_options_container');
-
-        var container_offset = $post_options_container.offset();
-
-        var link_offset = $link.offset();
+        var $link = $(this),
+            $post_options_container = $link.next('.post_options_container'),
+            container_offset = $post_options_container.offset(),
+            link_offset = $link.offset();
 
         //noinspection JSValidateTypes
         if (((container_offset.top - $(window).scrollTop()) + $post_options_container.height()) > $(window).height()) {
@@ -61,15 +57,14 @@ $(beehive).bind('init', function () {
         $post_options_container.find('*').css('margin-left', 0);
         $post_options_container.css('left', Math.floor(link_offset.left - ($post_options_container.width() - $link.width())));
         $post_options_container.show();
-    };
+    }
 
     var $body = $('body');
 
     $body.on('click', 'input.post_vote_up, input.post_vote_down', function (event) {
 
-        var $button = $(this);
-
-        var $form = $button.closest('form');
+        var $button = $(this),
+            $form = $button.closest('form');
 
         event.preventDefault();
 
@@ -104,7 +99,8 @@ $(beehive).bind('init', function () {
     $body.on('click', 'span.post_options', function (event) {
 
         var link = this,
-            $link = $(link);
+            $link = $(link),
+            options = $link.prop('id').match(/post_options_(\d+)_(\d+)_(\d+)/);
 
         event.preventDefault();
         event.stopPropagation();
@@ -116,8 +112,6 @@ $(beehive).bind('init', function () {
             show_post_options_container.call(this);
             return;
         }
-
-        var options = $link.prop('id').match(/post_options_(\d+)_(\d+)_(\d+)/);
 
         $.ajax({
 
@@ -154,6 +148,7 @@ $(beehive).bind('init', function () {
 
     $body.on('click', '#quick_reply_container', function () {
 
+        //noinspection JSLint
         if (CKEDITOR.instances.content) {
             CKEDITOR.instances.content.destroy();
         }
@@ -163,23 +158,25 @@ $(beehive).bind('init', function () {
 
     $body.on('click', '.quick_reply_link', function () {
 
-        var $post_options_container = $('.post_options_container').hide();
+        var $post_options_container = $('.post_options_container').hide(),
+            quick_reply_data = /^([0-9]+)\.([0-9]+)$/.exec($(this).data('msg')),
+            $quick_reply_location,
+            $quick_reply_container;
 
         $post_options_container.find('*').css('margin-left', -9999);
 
-        var quick_reply_data = /^([0-9]+)\.([0-9]+)$/.exec($(this).data('msg'));
-
+        //noinspection JSLint
         if (CKEDITOR.instances.content) {
             CKEDITOR.instances.content.destroy();
         }
 
         if (quick_reply_data.length === 3) {
 
-            var $quick_reply_location = $('#quick_reply_' + quick_reply_data[2]);
+            $quick_reply_location = $('#quick_reply_' + quick_reply_data[2]);
 
-            var $quick_reply_container = $('#quick_reply_container');
+            $quick_reply_container = $('#quick_reply_container');
 
-            if ($quick_reply_location.length == 1) {
+            if ($quick_reply_location.length === 1) {
 
                 $quick_reply_container.find('input[name="reply_to"]').val(quick_reply_data[0]);
 
@@ -194,9 +191,10 @@ $(beehive).bind('init', function () {
 
     $body.on('click', 'a[id^="quote_"]', function () {
 
-        var $link = $(this);
-
-        var pid = $(this).data('pid');
+        var $link = $(this),
+            $links = $body.find('a[id^="reply_"]').add($link),
+            pid = $link.data('pid'),
+            check_post_id;
 
         if ($.inArray(pid, beehive.quote_list) < 0) {
 
@@ -213,22 +211,26 @@ $(beehive).bind('init', function () {
 
             $link.html(beehive.lang.quote);
 
-            for (var check_post_id in beehive.quote_list) {
+            for (check_post_id in beehive.quote_list) {
 
                 if (beehive.quote_list.hasOwnProperty(check_post_id)) {
 
-                    if (beehive.quote_list[check_post_id] == pid) {
+                    if (beehive.quote_list[check_post_id] === pid) {
                         beehive.quote_list.splice(check_post_id, 1);
                     }
                 }
             }
         }
 
-        $link.each(function () {
+        $links.each(function () {
 
             var query_string = $.parseQuery($(this).prop('href').split('?')[1]);
 
-            query_string.quote_list = beehive.quote_list.join(',');
+            if (beehive.quote_list.length > 0) {
+                query_string.quote_list = beehive.quote_list.join(',');
+            } else {
+                delete query_string.quote_list;
+            }
 
             $(this).prop('href', 'post.php?' + $.param(query_string));
         });

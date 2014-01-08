@@ -517,10 +517,26 @@ echo "<div class=\"post_to\">", gettext("To"), ":", light_form_input_text("to_lo
 echo "<div class=\"post_content\">", light_form_textarea("content", htmlentities_array(strip_paragraphs($content)), 10, 50, null, 'textarea'), "</div>\n";
 
 echo "<div class=\"post_buttons\">";
+
 echo light_form_submit("send", gettext("Send"));
+
 echo light_form_submit("save", gettext("Save"));
+
 echo light_form_submit("preview", gettext("Preview"));
-echo light_form_submit("cancel", gettext("Cancel"));
+
+if (isset($edit_mid) && is_numeric($edit_mid) && $edit_mid > 0) {
+
+    echo "<a href=\"lpm.php?webtag=$webtag&mid=$edit_mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+
+} else if (isset($forward_mid) && is_numeric($forward_mid)  && $forward_mid > 0) {
+
+    echo "<a href=\"lpm.php?webtag=$webtag&mid=$forward_mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+
+} else {
+
+    echo "<a href=\"lpm.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+}
+
 echo "</div>";
 
 if (isset($reply_mid) && is_numeric($reply_mid) && $reply_mid > 0) {

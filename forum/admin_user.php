@@ -557,7 +557,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         $user_history_array = admin_get_user_history($user['UID']);
 
-        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
+        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("User History"), "</h1>\n";
 
         if (is_array($user_history_array) && sizeof($user_history_array) < 1) {
             html_display_warning_msg(gettext("No History Records Saved"), '800', 'center');
@@ -570,72 +570,51 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "  ", form_input_hidden("uid", htmlentities_array($uid)), "\n";
         echo "  ", form_input_hidden("action", htmlentities_array($action)), "\n";
         echo "  ", form_input_hidden("ret", htmlentities_array("admin_user.php?webtag=$webtag&uid=$uid")), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td class=\"subhead\" align=\"left\">", gettext("User History"), "</td>\n";
-        echo "                </tr>\n";
 
-        if (sizeof($user_history_array) > 0) {
+        if (is_array($user_history_array) && sizeof($user_history_array) > 0) {
 
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
+            echo "    <tr>\n";
+            echo "      <td align=\"left\">\n";
+            echo "        <table class=\"box\" width=\"100%\">\n";
+            echo "          <tr>\n";
+            echo "            <td align=\"left\">\n";
+            echo "              <table class=\"posthead\" width=\"100%\">\n";
             echo "                <tr>\n";
-            echo "                  <td>&nbsp;</td>\n";
+            echo "                  <td align=\"left\" class=\"subhead\" width=\"100\">", gettext("Date"), "</td>\n";
+            echo "                  <td align=\"left\" class=\"subhead\">", gettext("Changes"), "</td>\n";
             echo "                </tr>\n";
             echo "                <tr>\n";
-            echo "                  <td align=\"center\">\n";
-            echo "                    <table class=\"box\" width=\"95%\">\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\">\n";
-            echo "                          <table class=\"posthead\" width=\"100%\">\n";
-            echo "                            <tr>\n";
-            echo "                              <td align=\"left\" class=\"subhead\" width=\"100\">", gettext("Date"), "</td>\n";
-            echo "                              <td align=\"left\" class=\"subhead\">", gettext("Changes"), "</td>\n";
-            echo "                            </tr>\n";
-            echo "                            <tr>\n";
-            echo "                              <td align=\"left\" colspan=\"2\">\n";
-            echo "                                <div class=\"admin_folder_perms\">\n";
+            echo "                  <td align=\"left\" colspan=\"2\">\n";
+            echo "                    <div class=\"admin_folder_perms\">\n";
 
             foreach ($user_history_array as $history_index => $user_history) {
 
-                echo "                                  <table class=\"posthead\" width=\"100%\">\n";
-                echo "                                    <tr>\n";
-                echo "                                      <td align=\"left\" valign=\"top\" width=\"100\">", format_date($user_history['MODIFIED']), "</td>\n";
-                echo "                                      <td align=\"left\">{$user_history['DATA']}</td>\n";
-                echo "                                    </tr>\n";
-                echo "                                    <tr>\n";
-                echo "                                      <td align=\"left\" colspan=\"2\"><hr /></td>\n";
-                echo "                                    </tr>\n";
-                echo "                                  </table>\n";
+                echo "                      <table class=\"posthead\" width=\"100%\">\n";
+                echo "                        <tr>\n";
+                echo "                          <td align=\"left\" valign=\"top\" width=\"100\">", format_date($user_history['MODIFIED']), "</td>\n";
+                echo "                          <td align=\"left\">{$user_history['DATA']}</td>\n";
+                echo "                        </tr>\n";
+                echo "                        <tr>\n";
+                echo "                          <td align=\"left\" colspan=\"2\"><hr /></td>\n";
+                echo "                        </tr>\n";
+                echo "                      </table>\n";
             }
 
-            echo "                                </div>\n";
-            echo "                              </td>\n";
-            echo "                            </tr>\n";
-            echo "                          </table>\n";
-            echo "                        </td>\n";
-            echo "                      </tr>\n";
-            echo "                    </table>\n";
+            echo "                    </div>\n";
             echo "                  </td>\n";
             echo "                </tr>\n";
+            echo "              </table>\n";
+            echo "            </td>\n";
+            echo "          </tr>\n";
+            echo "        </table>\n";
+            echo "      </td>\n";
+            echo "    </tr>\n";
+            echo "  </table>\n";
+            echo "  <br />\n";
 
             if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
-                echo "                <tr>\n";
-                echo "                  <td align=\"left\">&nbsp;</td>\n";
-                echo "                </tr>\n";
-                echo "              </table>\n";
-                echo "            </td>\n";
-                echo "          </tr>\n";
-                echo "        </table>\n";
-                echo "      </td>\n";
-                echo "    </tr>\n";
-                echo "  </table>\n";
-                echo "  <br />\n";
                 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
                 echo "    <tr>\n";
                 echo "      <td align=\"left\">\n";
@@ -644,7 +623,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
                 echo "            <td align=\"left\" class=\"posthead\">\n";
                 echo "              <table class=\"posthead\" width=\"100%\">\n";
                 echo "                <tr>\n";
-                echo "                  <td class=\"subhead\" align=\"left\">", gettext("User History"), "</td>\n";
+                echo "                  <td class=\"subhead\" align=\"left\">", gettext("Clear User History"), "</td>\n";
                 echo "                </tr>\n";
                 echo "                <tr>\n";
                 echo "                  <td align=\"center\">\n";
@@ -672,22 +651,20 @@ if (isset($action) && strlen(trim($action)) > 0) {
                 echo "      <td align=\"center\">", form_submit("user_history_submit", gettext("Update")), "&nbsp;", form_submit("cancel", gettext("Back")), "</td>\n";
                 echo "    </tr>\n";
                 echo "  </table>\n";
+                echo "  <br />\n";
+
+            } else {
+
+                echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
+                echo "    <tr>\n";
+                echo "      <td align=\"center\">", form_submit("cancel", gettext("Back")), "</td>\n";
+                echo "    </tr>\n";
+                echo "  </table>\n";
             }
 
         } else {
 
-            echo "                <tr>\n";
-            echo "                  <td align=\"left\">&nbsp;</td>\n";
-            echo "                </tr>\n";
-            echo "              </table>\n";
-            echo "            </td>\n";
-            echo "          </tr>\n";
-            echo "        </table>\n";
-            echo "      </td>\n";
-            echo "    </tr>\n";
-            echo "    <tr>\n";
-            echo "      <td align=\"left\">&nbsp;</td>\n";
-            echo "    </tr>\n";
+            echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
             echo "    <tr>\n";
             echo "      <td align=\"center\">", form_submit("cancel", gettext("Back")), "</td>\n";
             echo "    </tr>\n";
@@ -743,7 +720,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
             $user_alias_array = admin_get_user_referer_matches($user['UID']);
         }
 
-        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
+        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Possible Aliases"), "</h1>\n";
 
         if (is_array($user_alias_array) && sizeof($user_alias_array) < 1) {
             html_display_warning_msg(gettext("Search Returned No Results"), '700', 'center');
@@ -761,62 +738,49 @@ if (isset($action) && strlen(trim($action)) > 0) {
         echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
         echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "            <td align=\"left\">\n";
         echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td class=\"subhead\" align=\"left\">", gettext("Possible Aliases"), "</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" width=\"200\">", gettext("Logon"), "</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" width=\"200\">", gettext("Nickname"), "</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\">{$user_alias_column_header[$user_alias_view]}</td>\n";
         echo "                </tr>\n";
 
         if (is_array($user_alias_array) && sizeof($user_alias_array) > 0) {
 
-            echo "                <tr>\n";
-            echo "                  <td>&nbsp;</td>\n";
-            echo "                </tr>\n";
-            echo "                <tr>\n";
-            echo "                  <td align=\"center\">\n";
-            echo "                    <table class=\"box\" width=\"95%\">\n";
-            echo "                      <tr>\n";
-            echo "                        <td align=\"left\">\n";
-            echo "                          <table class=\"posthead\" width=\"100%\">\n";
-            echo "                            <tr>\n";
-            echo "                              <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
-            echo "                              <td align=\"left\" class=\"subhead\" width=\"200\">", gettext("Logon"), "</td>\n";
-            echo "                              <td align=\"left\" class=\"subhead\" width=\"200\">", gettext("Nickname"), "</td>\n";
-            echo "                              <td align=\"left\" class=\"subhead\">{$user_alias_column_header[$user_alias_view]}</td>\n";
-            echo "                            </tr>\n";
-
             foreach ($user_alias_array as $user_alias) {
 
-                echo "                            <tr>\n";
-                echo "                              <td align=\"left\" width=\"20\">&nbsp;</td>\n";
-                echo "                              <td align=\"left\" width=\"200\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">", word_filter_add_ob_tags($user_alias['LOGON'], true), "</a></td>\n";
-                echo "                              <td align=\"left\" width=\"200\">", word_filter_add_ob_tags($user_alias['NICKNAME'], true), "</td>\n";
+                echo "                <tr>\n";
+                echo "                  <td align=\"left\" width=\"20\">&nbsp;</td>\n";
+                echo "                  <td align=\"left\" width=\"200\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$user_alias['UID']}\">", word_filter_add_ob_tags($user_alias['LOGON'], true), "</a></td>\n";
+                echo "                  <td align=\"left\" width=\"200\">", word_filter_add_ob_tags($user_alias['NICKNAME'], true), "</td>\n";
 
                 if ($user_alias_view == USER_ALIAS_IPADDRESS) {
 
                     if (ip_is_banned($user_alias['IPADDRESS'])) {
 
-                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['IPADDRESS']}</a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
+                        echo "                  <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['IPADDRESS']}</a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
 
                     } else {
 
-                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['IPADDRESS']}</a>&nbsp;</td>\n";
+                        echo "                  <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$user_alias['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['IPADDRESS']}</a>&nbsp;</td>\n";
                     }
 
                 } else if ($user_alias_view == USER_ALIAS_EMAIL) {
 
                     if (email_is_banned($user_alias['EMAIL'])) {
 
-                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
+                        echo "                  <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
 
                     } else {
 
-                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;</td>\n";
+                        echo "                  <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;</td>\n";
                     }
 
                 } else if ($user_alias_view == USER_ALIAS_PASSWD) {
 
-                    echo "                              <td align=\"left\">", gettext("Yes"), "</td>\n";
+                    echo "                  <td align=\"left\">", gettext("Yes"), "</td>\n";
 
                 } else if ($user_alias_view == USER_ALIAS_REFERER) {
 
@@ -833,26 +797,16 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
                     if (referer_is_banned($user_alias['REFERER'])) {
 
-                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user_alias['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['REFERER']}</a>&nbsp;<a href=\"{$user_alias['REFERER_FULL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
+                        echo "                  <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user_alias['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['REFERER']}</a>&nbsp;<a href=\"{$user_alias['REFERER_FULL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
 
                     } else {
 
-                        echo "                              <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user_alias['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['REFERER']}</a>&nbsp;<a href=\"{$user_alias['REFERER_FULL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;</td>\n";
+                        echo "                  <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user_alias['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['REFERER']}</a>&nbsp;<a href=\"{$user_alias['REFERER_FULL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;</td>\n";
                     }
                 }
 
-                echo "                            </tr>\n";
+                echo "                </tr>\n";
             }
-
-            echo "                            <tr>\n";
-            echo "                              <td align=\"left\">&nbsp;</td>\n";
-            echo "                            </tr>\n";
-            echo "                          </table>\n";
-            echo "                        </td>\n";
-            echo "                      </tr>\n";
-            echo "                    </table>\n";
-            echo "                  </td>\n";
-            echo "                </tr>\n";
         }
 
         echo "                <tr>\n";

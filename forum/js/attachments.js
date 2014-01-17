@@ -182,7 +182,7 @@ $(beehive).bind('init', function () {
                     //noinspection JSUnresolvedVariable
                     $attachment.data('hash', responseJSON.attachment.hash)
                         .removeClass('uploading')
-                        .addClass(responseJSON.success ? complete : 'error');
+                        .addClass(responseJSON.success ? 'complete' : 'error');
 
                     //noinspection JSUnresolvedVariable
                     $input.val(responseJSON.attachment.hash);

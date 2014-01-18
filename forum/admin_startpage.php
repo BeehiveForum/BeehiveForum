@@ -137,7 +137,7 @@ if (isset($_POST['save'])) {
     }
 }
 
-html_draw_top(sprintf('title=%s', gettext("Admin - Edit Start Page")), 'ckeditor/ckeditor.js', 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Admin - Edit Start Page")), 'ckeditor/ckeditor.js', 'class=window_title', 'main_css=admin.css');
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Start Page"), "</h1>\n";
 

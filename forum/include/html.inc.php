@@ -328,8 +328,9 @@ function html_get_user_style_path()
     return $user_style;
 }
 
-function html_get_style_sheet($filename = 'style.css', $allow_cdn = true)
+function html_get_style_sheet($filename = null, $allow_cdn = true)
 {
+    $filename = !isset($filename) ? 'style.css' : $filename;
     if (!($user_style = html_get_user_style_path())) $user_style = 'default';
     return html_get_forum_file_path(sprintf('styles/%s/%s', basename($user_style), basename($filename)), $allow_cdn);
 }
@@ -505,6 +506,8 @@ function html_draw_top()
 
     $pm_popup_disabled = false;
 
+    $main_css = null;
+
     $inline_css = null;
 
     $emoticons = null;
@@ -570,6 +573,12 @@ function html_draw_top()
         if (preg_match('/^pm_popup_disabled$/Disu', $func_args, $func_matches) > 0) {
 
             $pm_popup_disabled = true;
+            unset($arg_array[$key]);
+        }
+
+        if (preg_match('/^main_css=(.+)/Disu', $func_args, $func_matches) > 0) {
+
+            $main_css = (!isset($main_css) && isset($func_matches[1]) ? $func_matches[1] : $main_css);
             unset($arg_array[$key]);
         }
 
@@ -713,7 +722,7 @@ function html_draw_top()
 
     printf("<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"%s\" href=\"%s\" />\n", $forum_name, $opensearch_path);
 
-    if (($style_sheet = html_get_style_sheet()) !== false) {
+    if (($style_sheet = html_get_style_sheet($main_css)) !== false) {
         html_include_css($style_sheet);
     }
 

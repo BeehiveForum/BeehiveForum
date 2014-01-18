@@ -269,7 +269,7 @@ if (isset($_POST['move_up_disabled']) || isset($_POST['move_down_disabled'])) {
 
 if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
-    html_draw_top(sprintf('title=%s', gettext("Admin - Forum Links - Add New Forum Link")), 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Admin - Forum Links - Add New Forum Link")), 'class=window_title', 'main_css=admin.css');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Forum Links"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add New Forum Link"), "</h1>\n";
 
@@ -348,7 +348,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
         html_draw_error(gettext("Invalid link id or link not found"), 'admin_forum_links.php', 'get', array('back' => gettext("Back")));
     }
 
-    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Forum Links - Edit Link - %s"), $forum_link['TITLE'])), 'class=window_title');
+    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Forum Links - Edit Link - %s"), $forum_link['TITLE'])), 'class=window_title', 'main_css=admin.css');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> ", gettext("Forum Links"), " <img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> ", gettext("Edit Link"), " <img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> ", word_filter_add_ob_tags($forum_link['TITLE'], true), "</h1>\n";
 
@@ -411,7 +411,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
 } else {
 
-    html_draw_top(sprintf('title=%s', gettext("Admin - Edit Forum Links")), 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Admin - Edit Forum Links")), 'class=window_title', 'main_css=admin.css');
 
     $forum_links_array = forum_links_get_links_by_page($page);
 

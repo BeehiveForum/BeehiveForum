@@ -542,7 +542,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
             if (($unread_cutoff_stamp > 0) && ($previous_unread_cutoff_stamp !== false) && ($unread_cutoff_stamp != $previous_unread_cutoff_stamp)) {
 
-                html_draw_top(sprintf('title=%s', gettext("Admin - Global Forum Settings")), 'class=window_title');
+                html_draw_top(sprintf('title=%s', gettext("Admin - Global Forum Settings")), 'class=window_title', 'main_css=admin.css');
 
                 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Global Forum Settings"), "</h1>\n";
                 echo "<br />\n";
@@ -629,7 +629,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 }
 
 // Start Output Here
-html_draw_top(sprintf('title=%s', gettext("Admin - Global Forum Settings")), 'class=window_title', "js/admin.js", "js/emoticons.js", 'ckeditor/ckeditor.js');
+html_draw_top(sprintf('title=%s', gettext("Admin - Global Forum Settings")), 'class=window_title', "js/admin.js", "js/emoticons.js", 'ckeditor/ckeditor.js', 'main_css=admin.css');
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Global Forum Settings"), "</h1>\n";
 

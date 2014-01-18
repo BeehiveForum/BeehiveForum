@@ -83,7 +83,7 @@ if (isset($_POST['prune_log'])) {
     }
 }
 
-html_draw_top(sprintf('title=%s', gettext("Admin - Visitor Log")), 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Admin - Visitor Log")), 'class=window_title', 'main_css=admin.css');
 
 $admin_visitor_log_array = admin_get_visitor_log($page);
 

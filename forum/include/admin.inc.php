@@ -1732,7 +1732,7 @@ function admin_check_credentials()
         }
     }
 
-    html_draw_top();
+    html_draw_top('main_css=admin.css');
 
     if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
         html_display_warning_msg(gettext('To save any changes you must re-authenticate yourself'), '500', 'center');

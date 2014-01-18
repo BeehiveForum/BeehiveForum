@@ -143,7 +143,7 @@ if (isset($_GET['filter']) && is_numeric($_GET['filter'])) {
     $filter = ADMIN_USER_FILTER_NONE;
 }
 
-html_draw_top(sprintf('title=%s', gettext("Admin - Manage Users")), 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Admin - Manage Users")), 'class=window_title', 'main_css=admin.css');
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Users"), "</h1>\n";
 

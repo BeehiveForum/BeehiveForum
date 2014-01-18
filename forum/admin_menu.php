@@ -45,7 +45,7 @@ if ((!session::check_perm(USER_PERM_ADMIN_TOOLS, 0) && !session::check_perm(USER
 // Perform additional admin login.
 admin_check_credentials();
 
-html_draw_top();
+html_draw_top('main_css=admin.css');
 
 if (forum_check_webtag_available($webtag)) {
 

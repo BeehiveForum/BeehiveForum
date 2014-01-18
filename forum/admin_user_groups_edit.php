@@ -198,7 +198,7 @@ if (isset($_POST['save'])) {
     exit;
 }
 
-html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage User Groups - %s"), $group['GROUP_NAME'])), 'class=window_title');
+html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage User Groups - %s"), $group['GROUP_NAME'])), 'class=window_title', 'main_css=admin.css');
 
 $group_users_array = perm_group_get_users($gid, 0);
 

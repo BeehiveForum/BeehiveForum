@@ -186,7 +186,7 @@ if (isset($_POST['add'])) {
     }
 }
 
-html_draw_top(sprintf('title=%s', gettext("Admin - Manage Forum Permissions")), 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Admin - Manage Forum Permissions")), 'class=window_title', 'main_css=admin.css');
 
 $user_permissions_array = forum_get_permissions($forum_fid, $main_page);
 

@@ -268,7 +268,7 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
-    html_draw_top(sprintf('title=%s', gettext("Admin -  Word Filter - Add word filter")), 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Admin -  Word Filter - Add word filter")), 'class=window_title', 'main_css=admin.css');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Word Filter"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add word filter"), "</h1>\n";
 
@@ -360,7 +360,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
         html_draw_error(gettext("Invalid Filter ID"), 'admin_wordfilter.php', 'get', array('back' => gettext("Back")));
     }
 
-    html_draw_top(sprintf('title=%s', gettext("Admin - Word Filter - Edit Word Filter")), 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Admin - Word Filter - Edit Word Filter")), 'class=window_title', 'main_css=admin.css');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Word Filter"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Word Filter"), "</h1>\n";
 
@@ -436,7 +436,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
 } else {
 
-    html_draw_top(sprintf('title=%s', gettext("Admin - Word Filter")), 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Admin - Word Filter")), 'class=window_title', 'main_css=admin.css');
 
     $word_filter_array = admin_get_word_filter_list($page);
 

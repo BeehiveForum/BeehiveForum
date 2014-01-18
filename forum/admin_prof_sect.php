@@ -180,7 +180,7 @@ if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
 if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
-    html_draw_top(sprintf('title=%s', gettext("Admin - Manage Profile Sections - Add new profile section")), 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Admin - Manage Profile Sections - Add new profile section")), 'class=window_title', 'main_css=admin.css');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add new profile section"), "</h1>\n";
 
@@ -255,7 +255,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
         html_draw_error(gettext("Invalid profile section ID or section not found"), 'admin_prof_sect.php', 'get', array('back' => gettext("Back")));
     }
 
-    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage Profile Sections - %s"), $profile_section['NAME'])), 'class=window_title');
+    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage Profile Sections - %s"), $profile_section['NAME'])), 'class=window_title', 'main_css=admin.css');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($profile_section['NAME'], true), "</h1>\n";
 
@@ -313,7 +313,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
 } else {
 
-    html_draw_top(sprintf('title=%s', gettext("Admin - Manage Profile Sections")), 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Admin - Manage Profile Sections")), 'class=window_title', 'main_css=admin.css');
 
     $profile_sections = profile_sections_get_by_page($page);
 

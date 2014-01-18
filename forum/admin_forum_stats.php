@@ -60,7 +60,7 @@ cache_check_request_throttle(300);
 $user_count = user_count();
 
 // And off we go ...
-html_draw_top(sprintf('title=%s', gettext("Admin - Forum Stats")), 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Admin - Forum Stats")), 'class=window_title', 'main_css=admin.css');
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Forum Stats"), "</h1>\n";
 

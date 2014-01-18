@@ -142,7 +142,7 @@ if (isset($_POST['add_group']) || isset($_POST['add_users'])) {
     }
 }
 
-html_draw_top(sprintf('title=%s', gettext("Admin - Manage User Groups - Add User Group")), 'class=window_title');
+html_draw_top(sprintf('title=%s', gettext("Admin - Manage User Groups - Add User Group")), 'class=window_title', 'main_css=admin.css');
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User Groups"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add User Group"), "</h1>\n";
 

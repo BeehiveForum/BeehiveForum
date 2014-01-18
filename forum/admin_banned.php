@@ -473,7 +473,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     $valid = true;
 
-    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_draw_top(sprintf("title=%s", gettext("Error")), 'main_css=admin.css');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Ban Controls"), "</h1>\n";
 
@@ -639,7 +639,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
         html_draw_error(gettext("Invalid Ban ID"), 'admin_banned.php', 'get', array('back' => gettext("Back")));
     }
 
-    html_draw_top(sprintf('title=%s', gettext("Admin - Ban Controls")), 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Admin - Ban Controls")), 'class=window_title', 'main_css=admin.css');
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Ban Controls"), "</h1>\n";
 
@@ -783,7 +783,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
 } else {
 
-    html_draw_top(sprintf('title=%s', gettext("Admin - Ban Controls")), 'class=window_title');
+    html_draw_top(sprintf('title=%s', gettext("Admin - Ban Controls")), 'class=window_title', 'main_css=admin.css');
 
     $ban_list_array = admin_get_ban_data($sort_by, $sort_dir, $page);
 

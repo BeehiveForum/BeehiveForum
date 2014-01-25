@@ -335,11 +335,15 @@ function html_get_style_sheet($filename = null, $allow_cdn = true)
     return html_get_forum_file_path(sprintf('styles/%s/%s', basename($user_style), basename($filename)), $allow_cdn);
 }
 
-function html_get_script_style_sheet($allow_cdn = true)
+function html_get_script_style_sheet($filename = null, $allow_cdn = true)
 {
     if (!($user_style = html_get_user_style_path())) $user_style = 'default';
 
-    $script_style_sheet = sprintf('styles/%s/%s.css', basename($user_style), basename($_SERVER['PHP_SELF'], '.php'));
+    $script_style_sheet = sprintf('%s.css', basename($_SERVER['PHP_SELF'], '.php'));
+
+    if ($script_style_sheet == $filename) return false;
+
+    $script_style_sheet = sprintf('styles/%s/%s', basename($user_style), $script_style_sheet);
 
     if (!file_exists($script_style_sheet)) return false;
 
@@ -726,7 +730,7 @@ function html_draw_top()
         html_include_css($style_sheet);
     }
 
-    if (($script_style_sheet = html_get_script_style_sheet()) !== false) {
+    if (($script_style_sheet = html_get_script_style_sheet($main_css)) !== false) {
         html_include_css($script_style_sheet);
     }
 

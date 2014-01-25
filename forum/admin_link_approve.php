@@ -120,148 +120,324 @@ if (isset($lid) && is_numeric($lid)) {
         html_draw_error(gettext("Cannot edit links"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
     }
 
-    if (($link = links_get_single($lid, false)) !== false) {
-
-        if (isset($link['APPROVED']) && ($link['APPROVED'] > 0)) {
-            html_draw_error(gettext("Link does not require approval"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
-        }
-
-        if (isset($_POST['approve'])) {
-
-            if (links_approve($lid)) {
-
-                admin_add_log_entry(APPROVED_LINK, array($lid));
-
-                if (preg_match("/^links_detail.php/u", $ret) > 0) {
-
-                    header_redirect("links_detail.php?webtag=$webtag&lid=$lid&link_approve_success=$lid");
-                    exit;
-
-                } else {
-
-                    html_draw_top(sprintf('title=%s', gettext("Approve Link")), 'class=window_title', 'main_css=admin.css');
-                    html_display_msg(gettext("Approve Link"), sprintf(gettext("Successfully approved link"), $lid), "admin_link_approve.php", 'get', array('back' => gettext("Back")), array('ret' => $ret), '_self', 'center');
-                    html_draw_bottom();
-                    exit;
-                }
-
-            } else {
-
-                $error_msg_array[] = gettext("Link approval failed");
-            }
-
-        } else if (isset($_POST['delete'])) {
-
-            if (links_delete($lid)) {
-
-                if (session::check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != $_SESSION['UID'])) {
-                    admin_add_log_entry(DELETE_LINK, array($lid));
-                }
-
-                if (preg_match("/^links_detail.php/u", $ret) > 0) {
-
-                    header_redirect("links_detail.php?webtag=$webtag&lid=$lid&link_approve_success=$lid");
-                    exit;
-
-                } else {
-
-                    html_draw_top(sprintf('title=%s', gettext("Approve Link")), 'class=window_title', 'main_css=admin.css');
-                    html_display_msg(gettext("Approve Link"), sprintf(gettext("Successfully deleted link"), $lid), "admin_link_approve.php", 'get', array('back' => gettext("Back")), array('ret' => $ret), '_self', 'center');
-                    html_draw_bottom();
-                    exit;
-                }
-
-            } else {
-
-                $error_msg_array[] = gettext("Error deleting link");
-            }
-        }
-
-        html_draw_top(sprintf('title=%s', gettext("Admin - Approve Link")), 'class=window_title', "js/post.js", "resize_width=86%", 'main_css=admin.css');
-
-        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Approve Link"), "</h1>\n";
-
-        if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-            html_display_error_array($error_msg_array, '86%', 'left');
-        }
-
-        echo "<br />\n";
-        echo "<div align=\"center\">\n";
-        echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"admin_link_approve.php\" method=\"post\" target=\"_self\">\n";
-        echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-        echo "  ", form_input_hidden('lid', htmlentities_array($lid)), "\n";
-        echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Link Details"), "</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"center\">\n";
-        echo "                    <table class=\"posthead\" width=\"95%\">\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\" width=\"120\">", gettext("Address"), ":</td>\n";
-        echo "                        <td align=\"left\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", mb_strlen($link['URI']) > 35 ? htmlentities_array(mb_substr($link['URI'], 0, 35)) . '&hellip;' : htmlentities_array($link['URI']), "</a></td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", gettext("Submitted by"), ":</td>\n";
-        echo "                        <td align=\"left\">", (isset($link['LOGON']) ? word_filter_add_ob_tags(format_user_name($link['LOGON'], $link['NICKNAME']), true) : gettext("Unknown user")), "</td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", gettext("Description"), ":</td>\n";
-        echo "                        <td align=\"left\">", word_filter_add_ob_tags($link['DESCRIPTION'], true), "</td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", gettext("Date"), ":</td>\n";
-        echo "                        <td align=\"left\">", format_time($link['CREATED']), "</td>\n";
-        echo "                      </tr>\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
-        echo "                      </tr>\n";
-        echo "                    </table>\n";
-        echo "                  </td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td>&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("approve", gettext("Approve")), "&nbsp;", form_submit("delete", gettext("Delete")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-        echo "</form>\n";
-        echo "</div>\n";
-
-        html_draw_bottom();
-
-    } else {
+    if (!($link = links_get_single($lid, false))) {
         html_draw_error(gettext("Invalid link ID!"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
     }
 
-} else {
-
-    html_draw_top(sprintf('title=%s', gettext("Admin - Link Approval Queue")), 'class=window_title', 'main_css=admin.css');
-
-    $link_approval_array = admin_get_link_approval_queue($page);
-
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Link Approval Queue"), "</h1>\n";
-
-    if (sizeof($link_approval_array['link_array']) < 1) {
-        html_display_warning_msg(gettext("No links are awaiting approval"), '86%', 'center');
+    if (isset($link['APPROVED']) && ($link['APPROVED'] > 0)) {
+        html_draw_error(gettext("Link does not require approval"), 'admin_link_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
     }
 
+    if (isset($_POST['approve'])) {
+
+        if (links_approve($lid)) {
+
+            admin_add_log_entry(APPROVED_LINK, array($lid));
+
+            if (preg_match("/^links_detail.php/u", $ret) > 0) {
+
+                header_redirect("links_detail.php?webtag=$webtag&lid=$lid&link_approve_success=$lid");
+                exit;
+
+            } else {
+
+                header_redirect("admin_link_approve.php?webtag=$webtag&link_approve_success=$lid");
+                exit;
+            }
+
+        } else {
+
+            $error_msg_array[] = gettext("Link approval failed");
+        }
+
+    } else if (isset($_POST['delete'])) {
+
+        if (links_delete($lid)) {
+
+            if (session::check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != $_SESSION['UID'])) {
+                admin_add_log_entry(DELETE_LINK, array($lid));
+            }
+
+            if (preg_match("/^links_detail.php/u", $ret) > 0) {
+
+                header_redirect("links_detail.php?webtag=$webtag&lid=$lid&link_approve_success=$lid");
+                exit;
+
+            } else {
+
+                header_redirect("admin_link_approve.php?webtag=$webtag&link_approve_success=$lid");
+                exit;
+            }
+
+        } else {
+
+            $error_msg_array[] = gettext("Error deleting link");
+        }
+    }
+}
+
+if (isset($_POST['delete_links'])) {
+
+    $valid = true;
+
+    if (isset($_POST['process']) && is_array($_POST['process'])) {
+        $process_links = array_filter($_POST['process'], 'is_numeric');
+    } else {
+        $process_links = array();
+    }
+
+    if (sizeof($process_links) > 0) {
+
+        if (isset($_POST['delete_confirm']) && $_POST['delete_confirm'] == 'Y') {
+
+            foreach ($process_links as $approve_lid) {
+
+                if ($valid) {
+
+                    if ($valid && !session::check_perm(USER_PERM_LINKS_MODERATE, 0)) {
+
+                        $error_msg_array[] = gettext("Failed to approve some links");
+                        $valid = false;
+                    }
+
+                    if ($valid && !($link = links_get_single($approve_lid, false))) {
+
+                        $error_msg_array[] = gettext("Failed to approve some links");
+                        $valid = false;
+                    }
+
+                    if ($valid && isset($link['APPROVED']) && ($link['APPROVED'] > 0)) {
+
+                        $error_msg_array[] = gettext("Failed to approve some links");
+                        $valid = false;
+                    }
+
+                    if ($valid && links_approve($approve_lid)) {
+
+                        admin_add_log_entry(APPROVED_LINK, array($approve_lid));
+
+                    } else {
+
+                        $error_msg_array[] = gettext("Failed to approve some links");
+                        $valid = false;
+                    }
+                }
+            }
+
+            if ($valid) {
+
+                header_redirect("admin_link_approve.php?webtag=$webtag&page=$page&delete_success=true");
+                exit;
+            }
+
+        } else {
+
+            html_draw_top(sprintf("title=%s", gettext("Delete Link")), 'class=window_title');
+
+            html_display_msg(gettext("Delete"), gettext("Are you sure you want to delete all of the selected links?"), "admin_link_approve.php", 'post', array(
+                'delete_links' => gettext("Yes"),
+                'back' => gettext("No")
+            ), array(
+                'page' => $page,
+                'process' => $process_links,
+                'delete_confirm' => 'Y'
+            ), '_self', 'center');
+
+            html_draw_bottom();
+            exit;
+        }
+
+    } else {
+
+        $error_msg_array[] = gettext("You must select some links to delete");
+        $valid = false;
+    }
+
+} else if (isset($_POST['approve_links'])) {
+
+    $valid = true;
+
+    if (isset($_POST['process']) && is_array($_POST['process'])) {
+        $process_links = array_filter($_POST['process'], 'is_numeric');
+    } else {
+        $process_links = array();
+    }
+
+    if (sizeof($process_links) > 0) {
+
+        if (isset($_POST['approve_confirm']) && $_POST['approve_confirm'] == 'Y') {
+
+            foreach ($process_links as $approve_lid) {
+
+                if ($valid) {
+
+                    if ($valid && !session::check_perm(USER_PERM_LINKS_MODERATE, 0)) {
+
+                        $error_msg_array[] = gettext("Failed to approve some links");
+                        $valid = false;
+                    }
+
+                    if ($valid && !($link = links_get_single($approve_lid, false))) {
+
+                        $error_msg_array[] = gettext("Failed to approve some links");
+                        $valid = false;
+                    }
+
+                    if ($valid && isset($link['APPROVED']) && ($link['APPROVED'] > 0)) {
+
+                        $error_msg_array[] = gettext("Failed to approve some links");
+                        $valid = false;
+                    }
+
+                    if ($valid && links_approve($approve_lid)) {
+
+                        admin_add_log_entry(APPROVED_LINK, array($approve_lid));
+
+                    } else {
+
+                        $error_msg_array[] = gettext("Failed to approve some links");
+                        $valid = false;
+                    }
+                }
+            }
+
+            if ($valid) {
+
+                header_redirect("admin_link_approve.php?webtag=$webtag&page=$page&approve_success=true");
+                exit;
+            }
+
+        } else {
+
+            html_draw_top(sprintf("title=%s", gettext("Approve Links")), 'class=window_title');
+
+            html_display_msg(gettext("Approve"), gettext("Are you sure you want to approve all of the selected links?"), "admin_link_approve.php", 'post', array(
+                'approve_links' => gettext("Yes"),
+                'back' => gettext("No")
+            ), array(
+                'page' => $page,
+                'process' => $process_links,
+                'approve_confirm' => 'Y'
+            ), '_self', 'center');
+
+            html_draw_bottom();
+            exit;
+        }
+
+    } else {
+
+        $error_msg_array[] = gettext("You must select some links to approve");
+        $valid = false;
+    }
+}
+
+html_draw_top(sprintf('title=%s', gettext("Admin - Link Approval Queue")), 'class=window_title', 'main_css=admin.css');
+
+$link_approval_array = admin_get_link_approval_queue($page);
+
+echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Link Approval Queue"), "</h1>\n";
+
+if (isset($_GET['link_approve_success']) && is_numeric($_GET['link_approve_success'])) {
+
+    html_display_success_msg(sprintf(gettext("Successfully approved link %s"), $_GET['link_approve_success']), '86%', 'center');
+
+} else if (isset($_GET['delete_success']) && is_numeric($_GET['delete_success'])) {
+
+    html_display_success_msg(sprintf(gettext("Successfully deleted link %s"), $_GET['delete_success']), '86%', 'center');
+
+} else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+    html_display_error_array($error_msg_array, '86%', 'center');
+
+} else if (sizeof($link_approval_array['link_array']) < 1) {
+
+    html_display_warning_msg(gettext("No links are awaiting approval"), '86%', 'center');
+}
+
+echo "<br />\n";
+echo "<div align=\"center\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"admin_link_approve.php\" method=\"post\" target=\"_self\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\" colspan=\"3\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                 <tr>\n";
+
+if (isset($link_approval_array['link_array']) && sizeof($link_approval_array['link_array']) > 0) {
+    echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"20\">", form_checkbox("toggle_all", "toggle_all"), "</td>\n";
+} else {
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
+}
+
+echo "                   <td class=\"subhead\" align=\"left\">", gettext("Name"), "</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\">", gettext("Folder"), "</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">", gettext("User"), "</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">", gettext("Date/Time"), "</td>\n";
+echo "                 </tr>\n";
+
+if (sizeof($link_approval_array['link_array']) > 0) {
+
+    foreach ($link_approval_array['link_array'] as $link_approval_entry) {
+
+        echo "                 <tr>\n";
+        echo "                   <td align=\"left\" width=\"20\">", form_checkbox("process[]", $link_approval_entry['LID']), "</td>\n";
+        echo "                   <td align=\"left\"><a href=\"admin_link_approve.php?webtag=$webtag&lid={$link_approval_entry['LID']}\" target=\"_self\">", word_filter_add_ob_tags($link_approval_entry['TITLE'], true), "</a></td>\n";
+        echo "                   <td align=\"left\">{$link_approval_entry['FOLDER_TITLE']}</td>\n";
+        echo "                   <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$link_approval_entry['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($link_approval_entry['LOGON'], $link_approval_entry['NICKNAME']), true) . "</a></td>\n";
+        echo "                   <td align=\"left\">", format_time($link_approval_entry['CREATED']), "</td>\n";
+        echo "                 </tr>\n";
+    }
+}
+
+echo "                 <tr>\n";
+echo "                   <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
+echo "                 </tr>\n";
+echo "               </table>\n";
+echo "             </td>\n";
+echo "           </tr>\n";
+echo "         </table>\n";
+echo "       </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
+echo "      <td class=\"postbody\" align=\"center\" width=\"33%\">";
+
+html_page_links("admin_link_approve.php?webtag=$webtag&ret=$ret", $page, $link_approval_array['link_count'], 10);
+
+echo "      </td>\n";
+
+if (isset($link_approval_array['link_array']) && sizeof($link_approval_array['link_array']) > 0) {
+
+    echo "<td align=\"right\" width=\"33%\" valign=\"top\" style=\"white-space: nowrap\">";
+    echo form_submit('approve_links', gettext("Approve"), sprintf('title="%s"', gettext("Approve Selected Links"))), "&nbsp;";
+    echo form_submit('delete_links', gettext("Delete"), sprintf('title="%s"', gettext("Delete Selected Links"))), "&nbsp;";
+    echo "</span></td>\n";
+
+} else {
+
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+}
+
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</form>\n";
+
+if (isset($lid, $link)) {
+
     echo "<br />\n";
-    echo "<div align=\"center\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"admin_link_approve.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+    echo "  ", form_input_hidden('lid', htmlentities_array($lid)), "\n";
+    echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
@@ -269,49 +445,50 @@ if (isset($lid) && is_numeric($lid)) {
     echo "          <tr>\n";
     echo "            <td align=\"left\" class=\"posthead\">\n";
     echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                 <tr>\n";
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"20\">&nbsp;</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\">", gettext("Name"), "</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\">", gettext("Folder"), "</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">", gettext("User"), "</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">", gettext("Date/Time"), "</td>\n";
-    echo "                 </tr>\n";
-
-    if (sizeof($link_approval_array['link_array']) > 0) {
-
-        foreach ($link_approval_array['link_array'] as $link_approval_entry) {
-
-            echo "                 <tr>\n";
-            echo "                   <td align=\"left\" width=\"20\">&nbsp;</td>\n";
-            echo "                   <td align=\"left\"><a href=\"admin_link_approve.php?webtag=$webtag&lid={$link_approval_entry['LID']}\" target=\"_self\">", word_filter_add_ob_tags($link_approval_entry['TITLE'], true), "</a></td>\n";
-            echo "                   <td align=\"left\">{$link_approval_entry['FOLDER_TITLE']}</td>\n";
-            echo "                   <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$link_approval_entry['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($link_approval_entry['LOGON'], $link_approval_entry['NICKNAME']), true) . "</a></td>\n";
-            echo "                   <td align=\"left\">", format_time($link_approval_entry['CREATED']), "</td>\n";
-            echo "                 </tr>\n";
-        }
-    }
-
-    echo "                 <tr>\n";
-    echo "                   <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
-    echo "                 </tr>\n";
-    echo "               </table>\n";
-    echo "             </td>\n";
-    echo "           </tr>\n";
-    echo "         </table>\n";
-    echo "       </td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">&nbsp;</td>\n";
-    echo "    </tr>\n";
-    echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">";
-
-    html_page_links("admin_link_approve.php?webtag=$webtag&ret=$ret", $page, $link_approval_array['link_count'], 10);
-
+    echo "                <tr>\n";
+    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("Link Details"), "</td>\n";
+    echo "                </tr>\n";
+    echo "                <tr>\n";
+    echo "                  <td align=\"center\">\n";
+    echo "                    <table class=\"posthead\" width=\"95%\">\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\" width=\"120\">", gettext("Address"), ":</td>\n";
+    echo "                        <td align=\"left\"><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", mb_strlen($link['URI']) > 35 ? htmlentities_array(mb_substr($link['URI'], 0, 35)) . '&hellip;' : htmlentities_array($link['URI']), "</a></td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", gettext("Submitted by"), ":</td>\n";
+    echo "                        <td align=\"left\">", (isset($link['LOGON']) ? word_filter_add_ob_tags(format_user_name($link['LOGON'], $link['NICKNAME']), true) : gettext("Unknown user")), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", gettext("Description"), ":</td>\n";
+    echo "                        <td align=\"left\">", word_filter_add_ob_tags($link['DESCRIPTION'], true), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", gettext("Date"), ":</td>\n";
+    echo "                        <td align=\"left\">", format_time($link['CREATED']), "</td>\n";
+    echo "                      </tr>\n";
+    echo "                      <tr>\n";
+    echo "                        <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
+    echo "                      </tr>\n";
+    echo "                    </table>\n";
+    echo "                  </td>\n";
+    echo "                </tr>\n";
+    echo "              </table>\n";
+    echo "            </td>\n";
+    echo "          </tr>\n";
+    echo "        </table>\n";
     echo "      </td>\n";
     echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td>&nbsp;</td>\n";
+    echo "    </tr>\n";
+    echo "    <tr>\n";
+    echo "      <td align=\"center\">", form_submit("approve", gettext("Approve")), "&nbsp;", form_submit("delete", gettext("Delete")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
+    echo "    </tr>\n";
     echo "  </table>\n";
-    echo "</div>\n";
-
-    html_draw_bottom();
+    echo "</form>\n";
 }
+
+echo "</div>\n";
+
+html_draw_bottom();

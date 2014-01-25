@@ -25,18 +25,18 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'poll.inc.php';
-require_once BH_INCLUDE_PATH. 'post.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'thread.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'poll.inc.php';
+require_once BH_INCLUDE_PATH . 'post.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'thread.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -56,6 +56,8 @@ admin_check_credentials();
 
 // Array to hold error messages
 $error_msg_array = array();
+
+$show_sigs = session::show_sigs();
 
 // Page number
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
@@ -99,6 +101,8 @@ if (isset($_POST['msg'])) {
 
         $msg = $_POST['msg'];
 
+        list($tid, $pid) = explode('.', $msg);
+
     } else {
 
         html_draw_error(gettext("No message specified for editing"), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
@@ -110,17 +114,15 @@ if (isset($_POST['msg'])) {
 
         $msg = $_GET['msg'];
 
+        list($tid, $pid) = explode('.', $msg);
+
     } else {
 
         html_draw_error(gettext("No message specified for editing"), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
     }
 }
 
-if (isset($msg) && validate_msg($msg)) {
-
-    $valid = true;
-
-    list($tid, $pid) = explode('.', $msg);
+if (isset($tid) && is_numeric($tid) && isset($pid) && is_numeric($pid)) {
 
     if (!$t_fid = thread_get_folder_fid($tid)) {
         html_draw_error(gettext("The requested thread could not be found or access was denied."), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
@@ -138,197 +140,388 @@ if (isset($msg) && validate_msg($msg)) {
         html_draw_error(gettext("The requested thread could not be found or access was denied."), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
     }
 
-    if (($preview_message = messages_get($tid, $pid, 1)) !== false) {
-
-        if (isset($preview_message['APPROVED'])) {
-            html_draw_error(gettext("Post does not require approval"), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
-        }
-
-        $preview_message['CONTENT'] = message_get_content($tid, $pid);
-
-        if (isset($_POST['approve']) && is_numeric($tid) && is_numeric($pid)) {
-
-            if (post_approve($tid, $pid)) {
-
-                admin_add_log_entry(APPROVED_POST, array($t_fid, $tid, $pid));
-
-                if (preg_match("/^messages.php/u", basename($ret)) > 0) {
-
-                    header_redirect("messages.php?webtag=$webtag&msg=$msg&post_approve_success=$msg");
-                    exit;
-
-                } else {
-
-                    html_draw_top(sprintf('title=%s', gettext("Approve Post")), 'class=window_title', 'main_css=admin.css');
-                    html_display_msg(gettext("Approve Post"), sprintf(gettext("Successfully approved post %s"), $msg), "admin_post_approve.php", 'get', array('back' => gettext("Back")), array('ret' => $ret), '_self', 'center');
-                    html_draw_bottom();
-                    exit;
-                }
-
-            } else {
-
-                $error_msg_array[] = gettext("Post approval failed.");
-            }
-
-        } else if (isset($_POST['delete'])) {
-
-            if (post_delete($tid, $pid)) {
-
-                post_add_edit_text($tid, $pid);
-
-                if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != $_SESSION['UID']) {
-                    admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
-                }
-
-                if (preg_match("/^messages.php/", basename($ret)) > 0) {
-
-                    header_redirect("messages.php?webtag=$webtag&msg=$msg&delete_success=$msg");
-                    exit;
-
-                } else {
-
-                    html_draw_top(sprintf('title=%s', gettext("Delete posts")), 'class=window_title', 'main_css=admin.css');
-                    html_display_msg(gettext("Delete posts"), sprintf(gettext("Successfully deleted post %s"), $msg), "admin_post_approve.php", 'get', array('back' => gettext("Back")), array('ret' => $ret), '_self', 'center');
-                    html_draw_bottom();
-                    exit;
-                }
-
-            } else {
-
-                $error_msg_array[] = gettext("Error deleting post");
-            }
-        }
-
-        html_draw_top(sprintf('title=%s', gettext("Admin - Approve Post")), 'class=window_title', "js/post.js", "resize_width=720", 'main_css=admin.css');
-
-        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Approve Post"), "</h1>\n";
-
-        $show_sigs = session::show_sigs();
-
-        if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-            html_display_error_array($error_msg_array, '86%', 'left');
-        }
-
-        echo "<br />\n";
-        echo "<div align=\"center\">\n";
-        echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"admin_post_approve.php\" method=\"post\" target=\"_self\">\n";
-        echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-        echo "  ", form_input_hidden('msg', htmlentities_array($msg)), "\n";
-        echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
-        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">\n";
-        echo "        <table class=\"box\" width=\"100%\">\n";
-        echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\">", gettext("Approve Post"), "</td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\"><br />\n";
-
-        if (thread_is_poll($tid) && $pid == 1) {
-
-            poll_display($tid, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, $thread_data['CLOSED'], $show_sigs, true);
-
-        } else {
-
-            message_display($tid, $preview_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, $thread_data['CLOSED'], false, $show_sigs, true);
-        }
-
-        echo "                  </td>\n";
-        echo "                </tr>\n";
-        echo "                <tr>\n";
-        echo "                  <td align=\"left\">&nbsp;</td>\n";
-        echo "                </tr>\n";
-        echo "              </table>\n";
-        echo "            </td>\n";
-        echo "          </tr>\n";
-        echo "        </table>\n";
-        echo "      </td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"left\">&nbsp;</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr>\n";
-        echo "      <td align=\"center\">", form_submit("approve", gettext("Approve")), "&nbsp;", form_submit("delete", gettext("Delete")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
-        echo "    </tr>\n";
-        echo "  </table>\n";
-        echo "</form>\n";
-        echo "</div>\n";
-
-        html_draw_bottom();
-
-    } else {
-
+    if (!($preview_message = messages_get($tid, $pid, 1))) {
         html_draw_error(gettext("That post does not exist in this thread!"), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
     }
 
-} else {
-
-    html_draw_top(sprintf('title=%s', gettext("Admin - Post Approval Queue")), 'class=window_title', 'main_css=admin.css');
-
-    $post_approval_array = admin_get_post_approval_queue($page);
-
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Post Approval Queue"), "</h1>\n";
-
-    if (sizeof($post_approval_array['post_array']) < 1) {
-        html_display_warning_msg(gettext("No posts are awaiting approval"), '86%', 'center');
+    if (isset($preview_message['APPROVED'])) {
+        html_draw_error(gettext("Post does not require approval"), 'admin_post_approve.php', 'post', array('cancel' => gettext("Cancel")), array('ret' => $ret), '_self', 'center');
     }
 
-    echo "<br />\n";
-    echo "<div align=\"center\">\n";
+    if (isset($_POST['approve']) && is_numeric($tid) && is_numeric($pid)) {
+
+        if (post_approve($tid, $pid)) {
+
+            admin_add_log_entry(APPROVED_POST, array($t_fid, $tid, $pid));
+
+            if (preg_match("/^messages.php/u", basename($ret)) > 0) {
+
+                header_redirect("messages.php?webtag=$webtag&msg=$msg&post_approve_success=$msg");
+                exit;
+
+            } else {
+
+                header_redirect("admin_post_approve.php?webtag=$webtag&post_approve_success=$msg");
+                exit;
+            }
+
+        } else {
+
+            $error_msg_array[] = gettext("Post approval failed.");
+        }
+
+    } else if (isset($_POST['delete'])) {
+
+        if (post_delete($tid, $pid)) {
+
+            post_add_edit_text($tid, $pid);
+
+            if (session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid) && $preview_message['FROM_UID'] != $_SESSION['UID']) {
+                admin_add_log_entry(DELETE_POST, array($t_fid, $tid, $pid));
+            }
+
+            if (preg_match("/^messages.php/", basename($ret)) > 0) {
+
+                header_redirect("messages.php?webtag=$webtag&msg=$msg&delete_success=$msg");
+                exit;
+
+            } else {
+
+                header_redirect("admin_post_approve.php?webtag=$webtag&delete_success=$msg");
+                exit;
+            }
+
+        } else {
+
+            $error_msg_array[] = gettext("Error deleting post");
+        }
+    }
+}
+
+if (isset($_POST['delete_messages'])) {
+
+    $valid = true;
+
+    if (isset($_POST['process']) && is_array($_POST['process'])) {
+        $process_messages = array_filter($_POST['process'], 'validate_msg');
+    } else {
+        $process_messages = array();
+    }
+
+    if (sizeof($process_messages) > 0) {
+
+        if (isset($_POST['delete_confirm']) && $_POST['delete_confirm'] == 'Y') {
+
+            foreach ($process_messages as $process_message) {
+
+                if ($valid) {
+
+                    list($delete_tid, $delete_pid) = $process_message;
+
+                    if ($valid && !$delete_fid = thread_get_folder_fid($delete_tid)) {
+
+                        $error_msg_array[] = gettext("Failed to delete some messages");
+                        $valid = false;
+                    }
+
+                    if ($valid && !session::check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $delete_fid)) {
+
+                        $error_msg_array[] = gettext("Failed to delete some messages");
+                        $valid = false;
+                    }
+
+                    if ($valid && !session::check_perm(USER_PERM_FOLDER_MODERATE, $delete_fid)) {
+
+                        $error_msg_array[] = gettext("Failed to delete some messages");
+                        $valid = false;
+                    }
+
+                    if ($valid && !$thread_data = thread_get($delete_tid, false, false, true)) {
+
+                        $error_msg_array[] = gettext("Failed to delete some messages");
+                        $valid = false;
+                    }
+
+                    if ($valid && !($preview_message = messages_get($delete_tid, $delete_pid, 1))) {
+
+                        $error_msg_array[] = gettext("Failed to delete some messages");
+                        $valid = false;
+                    }
+
+                    if ($valid && isset($preview_message['APPROVED'])) {
+
+                        $error_msg_array[] = gettext("Failed to delete some messages");
+                        $valid = false;
+                    }
+
+                    if ($valid && !post_delete($delete_tid, $delete_pid)) {
+
+                        $error_msg_array[] = gettext("Failed to delete some messages");
+                        $valid = false;
+                    }
+                }
+            }
+
+            if ($valid) {
+
+                header_redirect("admin_post_approve.php?webtag=$webtag&page=$page&delete_success=true");
+                exit;
+            }
+
+        } else {
+
+            html_draw_top(sprintf("title=%s", gettext("Delete Message")), 'class=window_title');
+
+            html_display_msg(gettext("Delete"), gettext("Are you sure you want to delete all of the selected messages?"), "admin_post_approve.php", 'post', array(
+                'delete_messages' => gettext("Yes"),
+                'back' => gettext("No")
+            ), array(
+                'page' => $page,
+                'process' => $process_messages,
+                'delete_confirm' => 'Y'
+            ), '_self', 'center');
+
+            html_draw_bottom();
+            exit;
+        }
+
+    } else {
+
+        $error_msg_array[] = gettext("You must select some messages to delete");
+        $valid = false;
+    }
+
+} else if (isset($_POST['approve_messages'])) {
+
+    $valid = true;
+
+    if (isset($_POST['process']) && is_array($_POST['process'])) {
+        $process_messages = array_filter($_POST['process'], 'validate_msg');
+    } else {
+        $process_messages = array();
+    }
+
+    if (sizeof($process_messages) > 0) {
+
+        if (isset($_POST['approve_confirm']) && $_POST['approve_confirm'] == 'Y') {
+
+            foreach ($process_messages as $process_message) {
+
+                if ($valid) {
+
+                    list($approve_tid, $approve_pid) = explode(".", $process_message);
+
+                    if ($valid && !$approve_fid = thread_get_folder_fid($approve_tid)) {
+
+                        $error_msg_array[] = gettext("Failed to approve some messages");
+                        $valid = false;
+                    }
+
+                    if ($valid && !session::check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $approve_fid)) {
+
+                        $error_msg_array[] = gettext("Failed to approve some messages");
+                        $valid = false;
+                    }
+
+                    if ($valid && !session::check_perm(USER_PERM_FOLDER_MODERATE, $approve_fid)) {
+
+                        $error_msg_array[] = gettext("Failed to approve some messages");
+                        $valid = false;
+                    }
+
+                    if ($valid && !$thread_data = thread_get($approve_tid, false, false, true)) {
+
+                        $error_msg_array[] = gettext("Failed to approve some messages");
+                        $valid = false;
+                    }
+
+                    if ($valid && !($preview_message = messages_get($approve_tid, $approve_pid, 1))) {
+
+                        $error_msg_array[] = gettext("Failed to approve some messages");
+                        $valid = false;
+                    }
+
+                    if ($valid && isset($preview_message['APPROVED'])) {
+
+                        $error_msg_array[] = gettext("Failed to approve some messages");
+                        $valid = false;
+                    }
+
+                    if ($valid && post_approve($approve_tid, $approve_pid)) {
+
+                        admin_add_log_entry(APPROVED_POST, array($approve_fid, $approve_tid, $approve_pid));
+
+                    } else if ($valid) {
+
+                        $error_msg_array[] = gettext("Failed to approve some messages");
+                        $valid = false;
+                    }
+                }
+            }
+
+            if ($valid) {
+
+                header_redirect("admin_post_approve.php?webtag=$webtag&page=$page&approve_success=true");
+                exit;
+            }
+
+        } else {
+
+            html_draw_top(sprintf("title=%s", gettext("Approve Message")), 'class=window_title');
+
+            html_display_msg(gettext("Approve"), gettext("Are you sure you want to approve all of the selected messages?"), "admin_post_approve.php", 'post', array(
+                'approve_messages' => gettext("Yes"),
+                'back' => gettext("No")
+            ), array(
+                'page' => $page,
+                'process' => $process_messages,
+                'approve_confirm' => 'Y'
+            ), '_self', 'center');
+
+            html_draw_bottom();
+            exit;
+        }
+
+    } else {
+
+        $error_msg_array[] = gettext("You must select some messages to approve");
+        $valid = false;
+    }
+}
+
+html_draw_top(sprintf('title=%s', gettext("Admin - Post Approval Queue")), 'class=window_title', 'main_css=admin.css');
+
+$post_approval_array = admin_get_post_approval_queue($page);
+
+echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Post Approval Queue"), "</h1>\n";
+
+if (isset($_GET['post_approve_success']) && validate_msg($_GET['post_approve_success'])) {
+
+    html_display_success_msg(sprintf(gettext("Successfully approved post %s"), $_GET['post_approve_success']), '86%', 'center');
+
+} else if (isset($_GET['delete_success']) && validate_msg($_GET['delete_success'])) {
+
+    html_display_success_msg(sprintf(gettext("Successfully deleted post %s"), $_GET['delete_success']), '86%', 'center');
+
+} else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
+
+    html_display_error_array($error_msg_array, '86%', 'center');
+
+} else if (sizeof($post_approval_array['post_array']) < 1) {
+
+    html_display_warning_msg(gettext("No posts are awaiting approval"), '86%', 'center');
+}
+
+echo "<br />\n";
+echo "<div align=\"center\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"admin_post_approve.php\" method=\"post\" target=\"_self\">\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\" colspan=\"3\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table class=\"posthead\" width=\"100%\">\n";
+echo "                 <tr>\n";
+
+if (isset($post_approval_array['post_array']) && sizeof($post_approval_array['post_array']) > 0) {
+    echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"20\">", form_checkbox("toggle_all", "toggle_all"), "</td>\n";
+} else {
+    echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
+}
+
+echo "                   <td class=\"subhead\" align=\"left\">", gettext("Thread title"), "</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\">", gettext("Folder"), "</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">", gettext("User"), "</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">", gettext("Date/Time"), "</td>\n";
+echo "                 </tr>\n";
+
+if (sizeof($post_approval_array['post_array']) > 0) {
+
+    foreach ($post_approval_array['post_array'] as $post_approval_entry) {
+
+        echo "                 <tr>\n";
+        echo "                   <td align=\"left\" width=\"20\">", form_checkbox("process[]", $post_approval_entry['MSG']), "</td>\n";
+        echo "                   <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&msg={$post_approval_entry['MSG']}\" target=\"_self\">", word_filter_add_ob_tags($post_approval_entry['TITLE'], true), "</a></td>\n";
+        echo "                   <td align=\"left\">{$post_approval_entry['FOLDER_TITLE']}</td>\n";
+        echo "                   <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$post_approval_entry['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($post_approval_entry['LOGON'], $post_approval_entry['NICKNAME']), true) . "</a></td>\n";
+        echo "                   <td align=\"left\">", format_time($post_approval_entry['CREATED']), "</td>\n";
+        echo "                 </tr>\n";
+    }
+}
+
+echo "                 <tr>\n";
+echo "                   <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
+echo "                 </tr>\n";
+echo "               </table>\n";
+echo "             </td>\n";
+echo "           </tr>\n";
+echo "         </table>\n";
+echo "       </td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\" width=\"33%\">&nbsp;</td>\n";
+echo "      <td class=\"postbody\" align=\"center\" width=\"33%\">";
+
+html_page_links("admin_post_approve.php?webtag=$webtag&ret=$ret", $page, $post_approval_array['post_count'], 10);
+
+echo "      </td>\n";
+
+if (isset($post_approval_array['post_array']) && sizeof($post_approval_array['post_array']) > 0) {
+
+    echo "<td align=\"right\" width=\"33%\" valign=\"top\" style=\"white-space: nowrap\">";
+    echo form_submit('approve_messages', gettext("Approve"), sprintf('title="%s"', gettext("Approve Selected Messages"))), "&nbsp;";
+    echo form_submit('delete_messages', gettext("Delete"), sprintf('title="%s"', gettext("Delete Selected Messages"))), "&nbsp;";
+    echo "</span></td>\n";
+
+} else {
+
+    echo "      <td align=\"left\">&nbsp;</td>\n";
+}
+
+echo "    </tr>\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">&nbsp;</td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "</form>\n";
+
+if (isset($tid, $pid, $preview_message, $thread_data)) {
+
+    $preview_message['CONTENT'] = message_get_content($tid, $pid);
+
+    echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"admin_post_approve.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
+    echo "  ", form_input_hidden('msg', htmlentities_array($msg)), "\n";
+    echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                 <tr>\n";
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"20\">&nbsp;</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\">", gettext("Thread title"), "</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\">", gettext("Folder"), "</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">", gettext("User"), "</td>\n";
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"200\">", gettext("Date/Time"), "</td>\n";
-    echo "                 </tr>\n";
 
-    if (sizeof($post_approval_array['post_array']) > 0) {
+    if (thread_is_poll($tid) && $pid == 1) {
 
-        foreach ($post_approval_array['post_array'] as $post_approval_entry) {
+        poll_display($tid, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, $thread_data['CLOSED'], $show_sigs, true);
 
-            echo "                 <tr>\n";
-            echo "                   <td align=\"left\" width=\"20\">&nbsp;</td>\n";
-            echo "                   <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&msg={$post_approval_entry['MSG']}\" target=\"_self\">", word_filter_add_ob_tags($post_approval_entry['TITLE'], true), "</a></td>\n";
-            echo "                   <td align=\"left\">{$post_approval_entry['FOLDER_TITLE']}</td>\n";
-            echo "                   <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$post_approval_entry['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($post_approval_entry['LOGON'], $post_approval_entry['NICKNAME']), true) . "</a></td>\n";
-            echo "                   <td align=\"left\">", format_time($post_approval_entry['CREATED']), "</td>\n";
-            echo "                 </tr>\n";
-        }
+    } else {
+
+        message_display($tid, $preview_message, $thread_data['LENGTH'], $pid, $thread_data['FID'], false, $thread_data['CLOSED'], false, $show_sigs, true);
     }
 
-    echo "                 <tr>\n";
-    echo "                   <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
-    echo "                 </tr>\n";
-    echo "               </table>\n";
-    echo "             </td>\n";
-    echo "           </tr>\n";
-    echo "         </table>\n";
-    echo "       </td>\n";
+    echo "      </td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td class=\"postbody\" align=\"center\">";
-
-    html_page_links("admin_post_approve.php?webtag=$webtag&ret=$ret", $page, $post_approval_array['post_count'], 10);
-
-    echo "      </td>\n";
+    echo "      <td align=\"center\">", form_submit("approve", gettext("Approve")), "&nbsp;", form_submit("delete", gettext("Delete")), "&nbsp;", form_submit("cancel", gettext("Cancel")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
-    echo "</div>\n";
-
-    html_draw_bottom();
+    echo "</form>\n";
 }
+
+echo "</div>\n";
+
+html_draw_bottom();

@@ -198,102 +198,7 @@ if (isset($tid) && is_numeric($tid) && isset($pid) && is_numeric($pid)) {
     }
 }
 
-if (isset($_POST['delete_messages'])) {
-
-    $valid = true;
-
-    if (isset($_POST['process']) && is_array($_POST['process'])) {
-        $process_messages = array_filter($_POST['process'], 'validate_msg');
-    } else {
-        $process_messages = array();
-    }
-
-    if (sizeof($process_messages) > 0) {
-
-        if (isset($_POST['delete_confirm']) && $_POST['delete_confirm'] == 'Y') {
-
-            foreach ($process_messages as $process_message) {
-
-                if ($valid) {
-
-                    list($delete_tid, $delete_pid) = $process_message;
-
-                    if ($valid && !$delete_fid = thread_get_folder_fid($delete_tid)) {
-
-                        $error_msg_array[] = gettext("Failed to delete some messages");
-                        $valid = false;
-                    }
-
-                    if ($valid && !session::check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $delete_fid)) {
-
-                        $error_msg_array[] = gettext("Failed to delete some messages");
-                        $valid = false;
-                    }
-
-                    if ($valid && !session::check_perm(USER_PERM_FOLDER_MODERATE, $delete_fid)) {
-
-                        $error_msg_array[] = gettext("Failed to delete some messages");
-                        $valid = false;
-                    }
-
-                    if ($valid && !$thread_data = thread_get($delete_tid, false, false, true)) {
-
-                        $error_msg_array[] = gettext("Failed to delete some messages");
-                        $valid = false;
-                    }
-
-                    if ($valid && !($preview_message = messages_get($delete_tid, $delete_pid, 1))) {
-
-                        $error_msg_array[] = gettext("Failed to delete some messages");
-                        $valid = false;
-                    }
-
-                    if ($valid && isset($preview_message['APPROVED'])) {
-
-                        $error_msg_array[] = gettext("Failed to delete some messages");
-                        $valid = false;
-                    }
-
-                    if ($valid && !post_delete($delete_tid, $delete_pid)) {
-
-                        $error_msg_array[] = gettext("Failed to delete some messages");
-                        $valid = false;
-                    }
-                }
-            }
-
-            if ($valid) {
-
-                header_redirect("admin_post_approve.php?webtag=$webtag&page=$page&delete_success=true");
-                exit;
-            }
-
-        } else {
-
-            html_draw_top(sprintf("title=%s", gettext("Delete Message")), 'class=window_title');
-
-            html_display_msg(gettext("Delete"), gettext("Are you sure you want to delete all of the selected messages?"), "admin_post_approve.php", 'post', array(
-                'delete_messages' => gettext("Yes"),
-                'back' => gettext("No")
-            ), array(
-                'page' => $page,
-                'process' => $process_messages,
-                'delete_confirm' => 'Y'
-            ), '_self', 'center');
-
-            html_draw_bottom();
-            exit;
-        }
-
-    } else {
-
-        $error_msg_array[] = gettext("You must select some messages to delete");
-        $valid = false;
-    }
-
-} else if (isset($_POST['approve_messages'])) {
-
-    $valid = true;
+if (isset($_POST['approve_messages'])) {
 
     if (isset($_POST['process']) && is_array($_POST['process'])) {
         $process_messages = array_filter($_POST['process'], 'validate_msg');
@@ -305,57 +210,44 @@ if (isset($_POST['delete_messages'])) {
 
         if (isset($_POST['approve_confirm']) && $_POST['approve_confirm'] == 'Y') {
 
+            $valid = true;
+
             foreach ($process_messages as $process_message) {
 
-                if ($valid) {
+                $approve_fid = null;
 
-                    list($approve_tid, $approve_pid) = explode(".", $process_message);
+                $process_valid = true;
 
-                    if ($valid && !$approve_fid = thread_get_folder_fid($approve_tid)) {
+                list($approve_tid, $approve_pid) = explode(".", $process_message);
 
-                        $error_msg_array[] = gettext("Failed to approve some messages");
-                        $valid = false;
-                    }
+                if ($process_valid && !$approve_fid = thread_get_folder_fid($approve_tid)) {
+                    $process_valid = false;
+                }
 
-                    if ($valid && !session::check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $approve_fid)) {
+                if ($process_valid && !session::check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $approve_fid)) {
+                    $process_valid = false;
+                }
 
-                        $error_msg_array[] = gettext("Failed to approve some messages");
-                        $valid = false;
-                    }
+                if ($process_valid && !session::check_perm(USER_PERM_FOLDER_MODERATE, $approve_fid)) {
+                    $process_valid = false;
+                }
 
-                    if ($valid && !session::check_perm(USER_PERM_FOLDER_MODERATE, $approve_fid)) {
+                if ($process_valid && !$thread_data = thread_get($approve_tid, false, false, true)) {
+                    $process_valid = false;
+                }
 
-                        $error_msg_array[] = gettext("Failed to approve some messages");
-                        $valid = false;
-                    }
+                if ($process_valid && !($preview_message = messages_get($approve_tid, $approve_pid, 1))) {
+                    $process_valid = false;
+                }
 
-                    if ($valid && !$thread_data = thread_get($approve_tid, false, false, true)) {
+                if ($process_valid && isset($preview_message['APPROVED'])) {
+                    $process_valid = false;
+                }
 
-                        $error_msg_array[] = gettext("Failed to approve some messages");
-                        $valid = false;
-                    }
-
-                    if ($valid && !($preview_message = messages_get($approve_tid, $approve_pid, 1))) {
-
-                        $error_msg_array[] = gettext("Failed to approve some messages");
-                        $valid = false;
-                    }
-
-                    if ($valid && isset($preview_message['APPROVED'])) {
-
-                        $error_msg_array[] = gettext("Failed to approve some messages");
-                        $valid = false;
-                    }
-
-                    if ($valid && post_approve($approve_tid, $approve_pid)) {
-
-                        admin_add_log_entry(APPROVED_POST, array($approve_fid, $approve_tid, $approve_pid));
-
-                    } else if ($valid) {
-
-                        $error_msg_array[] = gettext("Failed to approve some messages");
-                        $valid = false;
-                    }
+                if ($process_valid && post_approve($approve_tid, $approve_pid)) {
+                    admin_add_log_entry(APPROVED_POST, array($approve_fid, $approve_tid, $approve_pid));
+                } else {
+                    $valid = false;
                 }
             }
 
@@ -363,6 +255,10 @@ if (isset($_POST['delete_messages'])) {
 
                 header_redirect("admin_post_approve.php?webtag=$webtag&page=$page&approve_success=true");
                 exit;
+
+            } else {
+
+                $error_msg_array[] = gettext("Failed to approve some messages");
             }
 
         } else {
@@ -385,6 +281,98 @@ if (isset($_POST['delete_messages'])) {
     } else {
 
         $error_msg_array[] = gettext("You must select some messages to approve");
+    }
+
+} else if (isset($_POST['delete_messages'])) {
+
+    $valid = true;
+
+    if (isset($_POST['process']) && is_array($_POST['process'])) {
+        $process_messages = array_filter($_POST['process'], 'validate_msg');
+    } else {
+        $process_messages = array();
+    }
+
+    if (sizeof($process_messages) > 0) {
+
+        if (isset($_POST['delete_confirm']) && $_POST['delete_confirm'] == 'Y') {
+
+            foreach ($process_messages as $process_message) {
+
+                $delete_fid = null;
+
+                $process_valid = true;
+
+                list($delete_tid, $delete_pid) = explode(".", $process_message);
+
+                if ($process_valid && !$delete_fid = thread_get_folder_fid($delete_tid)) {
+                    $process_valid = false;
+                }
+
+                if ($process_valid && !session::check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $delete_fid)) {
+                    $process_valid = false;
+                }
+
+                if ($process_valid && !session::check_perm(USER_PERM_FOLDER_MODERATE, $delete_fid)) {
+                    $process_valid = false;
+                }
+
+                if ($process_valid && !$thread_data = thread_get($delete_tid, false, false, true)) {
+                    $process_valid = false;
+                }
+
+                if ($process_valid && !($preview_message = messages_get($delete_tid, $delete_pid, 1))) {
+                    $process_valid = false;
+                }
+
+                if ($process_valid && isset($preview_message['APPROVED'])) {
+                    $process_valid = false;
+                }
+
+                if ($process_valid && post_delete($delete_tid, $delete_pid)) {
+
+                    post_add_edit_text($delete_tid, $delete_pid);
+
+                    if (session::check_perm(USER_PERM_FOLDER_MODERATE, $delete_fid) && (!isset($preview_message['FROM_UID']) || $preview_message['FROM_UID'] != $_SESSION['UID'])) {
+                        admin_add_log_entry(DELETE_POST, array($delete_fid, $delete_tid, $delete_pid));
+                    }
+
+                } else {
+
+                    $valid = false;
+                }
+            }
+
+            if ($valid) {
+
+                header_redirect("admin_post_approve.php?webtag=$webtag&page=$page&delete_success=true");
+                exit;
+
+            } else {
+
+                $error_msg_array[] = gettext("Failed to delete some messages");
+            }
+
+        } else {
+
+            html_draw_top(sprintf("title=%s", gettext("Delete Message")), 'class=window_title');
+
+            html_display_msg(gettext("Delete"), gettext("Are you sure you want to delete all of the selected messages?"), "admin_post_approve.php", 'post', array(
+                'delete_messages' => gettext("Yes"),
+                'back' => gettext("No")
+            ), array(
+                'page' => $page,
+                'process' => $process_messages,
+                'delete_confirm' => 'Y'
+            ), '_self', 'center');
+
+            html_draw_bottom();
+            exit;
+        }
+
+    } else {
+
+        $error_msg_array[] = gettext("You must select some messages to delete");
         $valid = false;
     }
 }

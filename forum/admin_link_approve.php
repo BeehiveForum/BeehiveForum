@@ -25,15 +25,15 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'links.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'links.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -176,86 +176,7 @@ if (isset($lid) && is_numeric($lid)) {
     }
 }
 
-if (isset($_POST['delete_links'])) {
-
-    $valid = true;
-
-    if (isset($_POST['process']) && is_array($_POST['process'])) {
-        $process_links = array_filter($_POST['process'], 'is_numeric');
-    } else {
-        $process_links = array();
-    }
-
-    if (sizeof($process_links) > 0) {
-
-        if (isset($_POST['delete_confirm']) && $_POST['delete_confirm'] == 'Y') {
-
-            foreach ($process_links as $approve_lid) {
-
-                if ($valid) {
-
-                    if ($valid && !session::check_perm(USER_PERM_LINKS_MODERATE, 0)) {
-
-                        $error_msg_array[] = gettext("Failed to approve some links");
-                        $valid = false;
-                    }
-
-                    if ($valid && !($link = links_get_single($approve_lid, false))) {
-
-                        $error_msg_array[] = gettext("Failed to approve some links");
-                        $valid = false;
-                    }
-
-                    if ($valid && isset($link['APPROVED']) && ($link['APPROVED'] > 0)) {
-
-                        $error_msg_array[] = gettext("Failed to approve some links");
-                        $valid = false;
-                    }
-
-                    if ($valid && links_approve($approve_lid)) {
-
-                        admin_add_log_entry(APPROVED_LINK, array($approve_lid));
-
-                    } else {
-
-                        $error_msg_array[] = gettext("Failed to approve some links");
-                        $valid = false;
-                    }
-                }
-            }
-
-            if ($valid) {
-
-                header_redirect("admin_link_approve.php?webtag=$webtag&page=$page&delete_success=true");
-                exit;
-            }
-
-        } else {
-
-            html_draw_top(sprintf("title=%s", gettext("Delete Link")), 'class=window_title');
-
-            html_display_msg(gettext("Delete"), gettext("Are you sure you want to delete all of the selected links?"), "admin_link_approve.php", 'post', array(
-                'delete_links' => gettext("Yes"),
-                'back' => gettext("No")
-            ), array(
-                'page' => $page,
-                'process' => $process_links,
-                'delete_confirm' => 'Y'
-            ), '_self', 'center');
-
-            html_draw_bottom();
-            exit;
-        }
-
-    } else {
-
-        $error_msg_array[] = gettext("You must select some links to delete");
-        $valid = false;
-    }
-
-} else if (isset($_POST['approve_links'])) {
-
-    $valid = true;
+if (isset($_POST['approve_links'])) {
 
     if (isset($_POST['process']) && is_array($_POST['process'])) {
         $process_links = array_filter($_POST['process'], 'is_numeric');
@@ -267,37 +188,28 @@ if (isset($_POST['delete_links'])) {
 
         if (isset($_POST['approve_confirm']) && $_POST['approve_confirm'] == 'Y') {
 
+            $valid = true;
+
             foreach ($process_links as $approve_lid) {
 
-                if ($valid) {
+                $process_valid = true;
 
-                    if ($valid && !session::check_perm(USER_PERM_LINKS_MODERATE, 0)) {
+                if ($process_valid && !session::check_perm(USER_PERM_LINKS_MODERATE, 0)) {
+                    $process_valid = false;
+                }
 
-                        $error_msg_array[] = gettext("Failed to approve some links");
-                        $valid = false;
-                    }
+                if ($process_valid && !($link = links_get_single($approve_lid, false))) {
+                    $process_valid = false;
+                }
 
-                    if ($valid && !($link = links_get_single($approve_lid, false))) {
+                if ($process_valid && isset($link['APPROVED']) && ($link['APPROVED'] > 0)) {
+                    $process_valid = false;
+                }
 
-                        $error_msg_array[] = gettext("Failed to approve some links");
-                        $valid = false;
-                    }
-
-                    if ($valid && isset($link['APPROVED']) && ($link['APPROVED'] > 0)) {
-
-                        $error_msg_array[] = gettext("Failed to approve some links");
-                        $valid = false;
-                    }
-
-                    if ($valid && links_approve($approve_lid)) {
-
-                        admin_add_log_entry(APPROVED_LINK, array($approve_lid));
-
-                    } else {
-
-                        $error_msg_array[] = gettext("Failed to approve some links");
-                        $valid = false;
-                    }
+                if ($process_valid && links_approve($approve_lid)) {
+                    admin_add_log_entry(APPROVED_LINK, array($approve_lid));
+                } else {
+                    $valid = false;
                 }
             }
 
@@ -305,6 +217,10 @@ if (isset($_POST['delete_links'])) {
 
                 header_redirect("admin_link_approve.php?webtag=$webtag&page=$page&approve_success=true");
                 exit;
+
+            } else {
+
+                $error_msg_array[] = gettext("Failed to approve some links");
             }
 
         } else {
@@ -327,6 +243,76 @@ if (isset($_POST['delete_links'])) {
     } else {
 
         $error_msg_array[] = gettext("You must select some links to approve");
+        $valid = false;
+    }
+
+} else if (isset($_POST['delete_links'])) {
+
+    if (isset($_POST['process']) && is_array($_POST['process'])) {
+        $process_links = array_filter($_POST['process'], 'is_numeric');
+    } else {
+        $process_links = array();
+    }
+
+    if (sizeof($process_links) > 0) {
+
+        if (isset($_POST['delete_confirm']) && $_POST['delete_confirm'] == 'Y') {
+
+            $valid = true;
+
+            foreach ($process_links as $delete_lid) {
+
+                $process_valid = true;
+
+                if ($process_valid && !session::check_perm(USER_PERM_LINKS_MODERATE, 0)) {
+                    $process_valid = false;
+                }
+
+                if ($process_valid && !($link = links_get_single($delete_lid, false))) {
+                    $process_valid = false;
+                }
+
+                if ($process_valid && isset($link['DELETED']) && ($link['DELETED'] > 0)) {
+                    $process_valid = false;
+                }
+
+                if ($process_valid && links_delete($delete_lid)) {
+                    admin_add_log_entry(DELETE_LINK, array($delete_lid));
+                } else {
+                    $valid = false;
+                }
+            }
+
+            if ($valid) {
+
+                header_redirect("admin_link_delete.php?webtag=$webtag&page=$page&delete_success=true");
+                exit;
+
+            } else {
+
+                $error_msg_array[] = gettext("Failed to delete some links");
+            }
+
+        } else {
+
+            html_draw_top(sprintf("title=%s", gettext("delete Links")), 'class=window_title');
+
+            html_display_msg(gettext("Delete"), gettext("Are you sure you want to delete all of the selected links?"), "admin_link_approve.php", 'post', array(
+                'delete_links' => gettext("Yes"),
+                'back' => gettext("No")
+            ), array(
+                'page' => $page,
+                'process' => $process_links,
+                'delete_confirm' => 'Y'
+            ), '_self', 'center');
+
+            html_draw_bottom();
+            exit;
+        }
+
+    } else {
+
+        $error_msg_array[] = gettext("You must select some links to delete");
         $valid = false;
     }
 }

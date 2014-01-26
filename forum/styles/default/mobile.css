@@ -27,19 +27,20 @@ select {
     color: #FFFFFF;
     cursor: pointer;
     font-weight: bold;
+    letter-spacing: normal;
     line-height: 150%;
     margin: 3px;
     padding: 3px 4px 1px;
     text-align: center;
-    text-decoration: none
+    text-decoration: none;
+    text-transform: none;
+    white-space: pre;
+    word-spacing: normal
 }
 
 a.button {
-    border: 1px outset threedface;
-    display: inline-block;
-    line-height: 21px;
-    padding: 2px 7px 0;
-    vertical-align: top
+    border-style: outset;
+    padding: 4px 7px 2px
 }
 
 .checkbox,
@@ -1049,7 +1050,8 @@ span.thread_length {
 }
 
 .attachments .buttons {
-    float: left
+    float: left;
+    margin-top: 10px
 }
 
 .attachments .summary {

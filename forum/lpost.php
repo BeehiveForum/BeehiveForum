@@ -497,8 +497,6 @@ if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !session::che
 
 light_html_draw_top(sprintf("title=%s", gettext("Post message")), 'js/fineuploader.min.js', 'js/attachments.js');
 
-echo "<h1>", gettext("Post message"), "</h1>\n";
-
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);
 }

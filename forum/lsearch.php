@@ -236,7 +236,6 @@ if (isset($_POST) && sizeof($_POST) > 0) {
 
         light_thread_list_draw_top(SEARCH_RESULTS);
 
-        echo "<h1>", gettext("Error"), "</h1>\n";
         echo "<img src=\"", html_style_image('search.png'), "\" alt=\"", gettext("matches"), "\" title=\"", gettext("matches"), "\" />&nbsp;", gettext("Found"), ": 0 ", gettext("matches"), "<br /><br />\n";
     }
 
@@ -245,8 +244,6 @@ if (isset($_POST) && sizeof($_POST) > 0) {
 }
 
 light_html_draw_top();
-
-echo "<h1>", gettext("Search Messages"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

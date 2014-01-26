@@ -22,13 +22,13 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'ip.inc.php';
-require_once BH_INCLUDE_PATH. 'perm.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'ip.inc.php';
+require_once BH_INCLUDE_PATH . 'perm.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
 // End Required includes
 
 abstract class session
@@ -74,9 +74,15 @@ abstract class session
 
         session_start();
 
-        if (!isset($_SESSION['UID'])) $_SESSION['UID'] = 0;
+        if (!isset($_SESSION['UID'])) {
 
-        session::refresh($_SESSION['UID']);
+            $_SESSION['UID'] = 0;
+            session::create($_SESSION['UID']);
+
+        } else {
+
+            session::refresh($_SESSION['UID']);
+        }
     }
 
     public static function open()
@@ -127,8 +133,8 @@ abstract class session
         if (!($search_id = session::is_search_engine())) $search_id = 'NULL';
 
         $sql = "REPLACE INTO SESSIONS (ID, UID, FID, DATA, MD5, TIME, IPADDRESS, REFERER, SID) ";
-        $sql.= "VALUES ('$id', '$uid', '$forum_fid', '$data', '$md5', CAST('$time' AS DATETIME), ";
-        $sql.= "'$ip_address', '$http_referer', $search_id)";
+        $sql .= "VALUES ('$id', '$uid', '$forum_fid', '$data', '$md5', CAST('$time' AS DATETIME), ";
+        $sql .= "'$ip_address', '$http_referer', $search_id)";
 
         if (!(session::$db->query($sql))) return false;
 
@@ -153,9 +159,9 @@ abstract class session
         $expires_datetime = date(MYSQL_DATETIME, time() - ($lifetime + DAY_IN_SECONDS));
 
         $sql = "DELETE FROM SESSIONS USING SESSIONS LEFT JOIN (SELECT UID, ";
-        $sql.= "MAX(EXPIRES) AS EXPIRES FROM USER_TOKEN GROUP BY UID) AS TOKENS ";
-        $sql.= "ON (TOKENS.UID = SESSIONS.UID) WHERE TIME < CAST('$expires_datetime' AS DATETIME) ";
-        $sql.= "AND (TOKENS.UID IS NULL OR TOKENS.EXPIRES < CAST('$current_datetime' AS DATETIME))";
+        $sql .= "MAX(EXPIRES) AS EXPIRES FROM USER_TOKEN GROUP BY UID) AS TOKENS ";
+        $sql .= "ON (TOKENS.UID = SESSIONS.UID) WHERE TIME < CAST('$expires_datetime' AS DATETIME) ";
+        $sql .= "AND (TOKENS.UID IS NULL OR TOKENS.EXPIRES < CAST('$current_datetime' AS DATETIME))";
 
         if (!(session::$db->query($sql))) return false;
 
@@ -188,7 +194,7 @@ abstract class session
             $http_user_agent = session::$db->escape(session::get_user_agent());
 
             $sql = "SELECT SID FROM SEARCH_ENGINE_BOTS ";
-            $sql.= "WHERE '$http_user_agent' LIKE AGENT_MATCH ";
+            $sql .= "WHERE '$http_user_agent' LIKE AGENT_MATCH ";
 
             if (!($result = session::$db->query($sql))) {
 
@@ -372,8 +378,8 @@ abstract class session
         if (!($search_id = session::is_search_engine())) $search_id = 'NULL';
 
         $sql = "REPLACE INTO VISITOR_LOG (FORUM, UID, LAST_LOGON, IPADDRESS, REFERER, USER_AGENT, SID) ";
-        $sql.= "VALUES ('$forum_fid', $uid, CAST('$current_datetime' AS DATETIME), '$ip_address', ";
-        $sql.= "'$http_referer', '$user_agent', $search_id)";
+        $sql .= "VALUES ('$forum_fid', $uid, CAST('$current_datetime' AS DATETIME), '$ip_address', ";
+        $sql .= "'$http_referer', '$user_agent', $search_id)";
 
         if (!session::$db->query($sql)) return false;
 
@@ -411,7 +417,7 @@ abstract class session
         if (($table_prefix = forum_get_table_prefix($forum_fid))) {
 
             $sql = "SELECT FID, PERM, IF (PERM IS NULL, 0, 1) AS FOLDER_PERM_COUNT ";
-            $sql.= "FROM `{$table_prefix}FOLDER`";
+            $sql .= "FROM `{$table_prefix}FOLDER`";
 
             if (!($result = session::$db->query($sql))) return $user_perm_array;
 
@@ -427,14 +433,14 @@ abstract class session
         }
 
         $sql = "SELECT FORUM, FID, BIT_OR(PERM) AS PERM FROM ((SELECT GROUPS.FORUM, ";
-        $sql.= "GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM, COUNT(GROUP_PERMS.GID) AS PERM_COUNT ";
-        $sql.= "FROM GROUPS INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
-        $sql.= "INNER JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) WHERE GROUP_USERS.UID = '$uid' ";
-        $sql.= "AND GROUPS.FORUM = $forum_fid GROUP BY GROUPS.FORUM, GROUP_PERMS.FID HAVING PERM_COUNT > 0) ";
-        $sql.= "UNION ALL (SELECT USER_PERM.FORUM, USER_PERM.FID, BIT_OR(USER_PERM.PERM) AS PERM, ";
-        $sql.= "COUNT(USER_PERM.UID) AS PERM_COUNT FROM USER_PERM WHERE USER_PERM.UID = '$uid' ";
-        $sql.= "AND USER_PERM.FORUM IN (0, $forum_fid) GROUP BY USER_PERM.FORUM, USER_PERM.FID ";
-        $sql.= "HAVING PERM_COUNT > 0)) AS USER_GROUP_PERMS GROUP BY FORUM, FID";
+        $sql .= "GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM, COUNT(GROUP_PERMS.GID) AS PERM_COUNT ";
+        $sql .= "FROM GROUPS INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
+        $sql .= "INNER JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) WHERE GROUP_USERS.UID = '$uid' ";
+        $sql .= "AND GROUPS.FORUM = $forum_fid GROUP BY GROUPS.FORUM, GROUP_PERMS.FID HAVING PERM_COUNT > 0) ";
+        $sql .= "UNION ALL (SELECT USER_PERM.FORUM, USER_PERM.FID, BIT_OR(USER_PERM.PERM) AS PERM, ";
+        $sql .= "COUNT(USER_PERM.UID) AS PERM_COUNT FROM USER_PERM WHERE USER_PERM.UID = '$uid' ";
+        $sql .= "AND USER_PERM.FORUM IN (0, $forum_fid) GROUP BY USER_PERM.FORUM, USER_PERM.FID ";
+        $sql .= "HAVING PERM_COUNT > 0)) AS USER_GROUP_PERMS GROUP BY FORUM, FID";
 
         if (!($result = session::$db->query($sql))) return $user_perm_array;
 
@@ -470,9 +476,9 @@ abstract class session
         $current_datetime = date(MYSQL_DATETIME, time());
 
         $sql = "SELECT SESSIONS.ID FROM USER_TOKEN INNER JOIN USER ON (USER.UID = USER_TOKEN.UID) ";
-        $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER_TOKEN.UID) WHERE USER.LOGON = '$user_logon'";
-        $sql.= "AND USER_TOKEN.TOKEN = '$user_token' AND USER_TOKEN.EXPIRES > '$current_datetime' ";
-        $sql.= "AND USER.UID = '$uid' GROUP BY USER.UID";
+        $sql .= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER_TOKEN.UID) WHERE USER.LOGON = '$user_logon'";
+        $sql .= "AND USER_TOKEN.TOKEN = '$user_token' AND USER_TOKEN.EXPIRES > '$current_datetime' ";
+        $sql .= "AND USER.UID = '$uid' GROUP BY USER.UID";
 
         if (!($result = session::$db->query($sql))) return false;
 

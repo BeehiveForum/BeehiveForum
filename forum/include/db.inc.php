@@ -22,8 +22,9 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'server.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
+
 // End Required includes
 
 class db extends mysqli
@@ -141,13 +142,17 @@ class db extends mysqli
 
     public function escape($var)
     {
+        if (is_array($var)) {
+            return array_map(array($this, 'escape'), $var);
+        }
+
         return $this->real_escape_string($var);
     }
 
-    public function query($sql, $resultmode = MYSQLI_STORE_RESULT)
+    public function query($sql, $result_mode = MYSQLI_STORE_RESULT)
     {
-        if (($result = parent::query($sql, $resultmode)) === false) {
-            throw new Exception($sql. ' - '. $this->error, $this->errno);
+        if (($result = parent::query($sql, $result_mode)) === false) {
+            throw new Exception($sql . ' - ' . $this->error, $this->errno);
         }
 
         return $result;

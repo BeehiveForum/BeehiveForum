@@ -22,23 +22,23 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'adsense.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
-require_once BH_INCLUDE_PATH. 'folder.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'install.inc.php';
-require_once BH_INCLUDE_PATH. 'ip.inc.php';
-require_once BH_INCLUDE_PATH. 'perm.inc.php';
-require_once BH_INCLUDE_PATH. 'pm.inc.php';
-require_once BH_INCLUDE_PATH. 'server.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'sitemap.inc.php';
-require_once BH_INCLUDE_PATH. 'threads.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'adsense.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH . 'folder.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'install.inc.php';
+require_once BH_INCLUDE_PATH . 'ip.inc.php';
+require_once BH_INCLUDE_PATH . 'perm.inc.php';
+require_once BH_INCLUDE_PATH . 'pm.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'sitemap.inc.php';
+require_once BH_INCLUDE_PATH . 'threads.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
 // End Required includes
 
 function get_forum_data()
@@ -56,8 +56,8 @@ function get_forum_data()
             $webtag = $db->escape($webtag);
 
             $sql = "SELECT FID, WEBTAG, ACCESS_LEVEL, DEFAULT_FORUM, DATABASE_NAME, ";
-            $sql.= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX ";
-            $sql.= "FROM FORUMS WHERE WEBTAG = '$webtag'";
+            $sql .= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX ";
+            $sql .= "FROM FORUMS WHERE WEBTAG = '$webtag'";
 
             if (($result = $db->query($sql)) !== false) {
 
@@ -73,8 +73,8 @@ function get_forum_data()
             // Check #2: Try and select a default webtag from
             // the databse
             $sql = "SELECT FID, WEBTAG, ACCESS_LEVEL, DEFAULT_FORUM, DATABASE_NAME, ";
-            $sql.= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX ";
-            $sql.= "FROM FORUMS WHERE DEFAULT_FORUM = 1";
+            $sql .= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX ";
+            $sql .= "FROM FORUMS WHERE DEFAULT_FORUM = 1";
 
             if (($result = $db->query($sql)) !== false) {
 
@@ -124,7 +124,7 @@ function get_all_table_prefixes()
     $db = db::get();
 
     $sql = "SELECT FID, WEBTAG, ACCESS_LEVEL, DEFAULT_FORUM, DATABASE_NAME, ";
-    $sql.= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX FROM FORUMS";
+    $sql .= "CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX FROM FORUMS";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -211,9 +211,9 @@ function forum_check_access_level()
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT FORUMS.FID, FORUMS.ACCESS_LEVEL, USER_FORUM.ALLOWED FROM FORUMS ";
-    $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-    $sql.= "AND USER_FORUM.UID = '{$_SESSION['UID']}') WHERE FORUMS.FID = '$forum_fid' ";
-    $sql.= "AND FORUMS.ACCESS_LEVEL < 3";
+    $sql .= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
+    $sql .= "AND USER_FORUM.UID = '{$_SESSION['UID']}') WHERE FORUMS.FID = '$forum_fid' ";
+    $sql .= "AND FORUMS.ACCESS_LEVEL < 3";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -477,7 +477,7 @@ function forum_get_settings_by_fid($forum_fid, $callback = null)
         $timezone = $db->escape($forum_settings['forum_timezone']);
 
         $sql = "SELECT GMT_OFFSET, DST_OFFSET FROM TIMEZONES ";
-        $sql.= "WHERE TZID = '$timezone'";
+        $sql .= "WHERE TZID = '$timezone'";
 
         if (!($result = $db->query($sql))) return false;
 
@@ -520,12 +520,12 @@ function forum_save_settings($forum_settings_array)
 
         if (forum_check_setting_name($setting_name)) {
 
-            $setting_name  = $db->escape($setting_name);
+            $setting_name = $db->escape($setting_name);
             $setting_value = $db->escape($setting_value);
 
             $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-            $sql.= "VALUES ($forum_fid, '$setting_name', '$setting_value')";
-            $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
+            $sql .= "VALUES ($forum_fid, '$setting_name', '$setting_value')";
+            $sql .= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
             if (!$db->query($sql)) return false;
         }
@@ -548,8 +548,8 @@ function forum_save_global_settings($forum_settings_array)
             $setting_value = $db->escape($setting_value);
 
             $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-            $sql.= "VALUES ('0', '$setting_name', '$setting_value') ";
-            $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
+            $sql .= "VALUES ('0', '$setting_name', '$setting_value') ";
+            $sql .= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
             if (!$db->query($sql)) return false;
         }
@@ -702,7 +702,7 @@ function forum_get_name($fid)
     if (!is_numeric($fid)) return gettext("A Beehive Forum");
 
     $sql = "SELECT SVALUE AS FORUM_NAME FROM FORUM_SETTINGS ";
-    $sql.= "WHERE SNAME = 'forum_name' AND FID = '$fid'";
+    $sql .= "WHERE SNAME = 'forum_name' AND FID = '$fid'";
 
     if (!($result = $db->query($sql))) return gettext("A Beehive Forum");
 
@@ -737,7 +737,7 @@ function forum_get_table_prefix($fid)
     if (!is_numeric($fid)) return false;
 
     $sql = "SELECT CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX, ";
-    $sql.= "FID, WEBTAG FROM FORUMS WHERE FID = '$fid'";
+    $sql .= "FID, WEBTAG FROM FORUMS WHERE FID = '$fid'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -841,12 +841,12 @@ function forum_update_unread_data($unread_cutoff_stamp)
     foreach ($forum_prefix_array as $forum_prefix) {
 
         $sql = "DELETE QUICK FROM `{$forum_prefix}USER_THREAD` ";
-        $sql.= "USING `{$forum_prefix}USER_THREAD` LEFT JOIN `{$forum_prefix}THREAD` ";
-        $sql.= "ON (`{$forum_prefix}USER_THREAD`.`TID` = `{$forum_prefix}USER_THREAD`.`TID`) ";
-        $sql.= "WHERE `{$forum_prefix}THREAD`.`MODIFIED` IS NOT NULL ";
-        $sql.= "AND `{$forum_prefix}THREAD`.`MODIFIED` < CAST('$unread_cutoff_datetime' AS DATETIME) ";
-        $sql.= "AND (`{$forum_prefix}USER_THREAD`.`INTEREST` IS NULL ";
-        $sql.= "OR `{$forum_prefix}USER_THREAD`.`INTEREST` = 0)";
+        $sql .= "USING `{$forum_prefix}USER_THREAD` LEFT JOIN `{$forum_prefix}THREAD` ";
+        $sql .= "ON (`{$forum_prefix}USER_THREAD`.`TID` = `{$forum_prefix}USER_THREAD`.`TID`) ";
+        $sql .= "WHERE `{$forum_prefix}THREAD`.`MODIFIED` IS NOT NULL ";
+        $sql .= "AND `{$forum_prefix}THREAD`.`MODIFIED` < CAST('$unread_cutoff_datetime' AS DATETIME) ";
+        $sql .= "AND (`{$forum_prefix}USER_THREAD`.`INTEREST` IS NULL ";
+        $sql .= "OR `{$forum_prefix}USER_THREAD`.`INTEREST` = 0)";
 
         if (!$db->query($sql)) return false;
     }
@@ -883,7 +883,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
     if (($conflicting_tables_array = install_check_table_conflicts($database_name, $webtag, true, false, false)) !== false) {
 
         $error_str = gettext("The selected database contains conflicting tables. Conflicting table names are:");
-        $error_str.= sprintf("<p>%s</p>\n", implode(", ", $conflicting_tables_array));
+        $error_str .= sprintf("<p>%s</p>\n", implode(", ", $conflicting_tables_array));
 
         return false;
     }
@@ -891,470 +891,488 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
     try {
 
         $sql = "CREATE TABLE `{$forum_table_prefix}ADMIN_LOG` (";
-        $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  CREATED DATETIME NOT NULL,";
-        $sql.= "  ACTION MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  ENTRY LONGBLOB,";
-        $sql.= "  PRIMARY KEY  (ID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql .= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  CREATED DATETIME NOT NULL,";
+        $sql .= "  ACTION MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  ENTRY LONGBLOB,";
+        $sql .= "  PRIMARY KEY  (ID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}BANNED` (";
-        $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
-        $sql.= "  BANTYPE TINYINT(4) NOT NULL, ";
-        $sql.= "  BANDATA VARCHAR(255) NOT NULL, ";
-        $sql.= "  COMMENT VARCHAR(255) NOT NULL, ";
-        $sql.= "  EXPIRES DATETIME DEFAULT NULL, ";
-        $sql.= "  PRIMARY KEY (ID), ";
-        $sql.= "  KEY BANTYPE (BANTYPE, BANDATA)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+        $sql .= "  BANTYPE TINYINT(4) NOT NULL, ";
+        $sql .= "  BANDATA VARCHAR(255) NOT NULL, ";
+        $sql .= "  COMMENT VARCHAR(255) NOT NULL, ";
+        $sql .= "  EXPIRES DATETIME DEFAULT NULL, ";
+        $sql .= "  PRIMARY KEY (ID), ";
+        $sql .= "  KEY BANTYPE (BANTYPE, BANDATA)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}FOLDER` (";
-        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
-        $sql.= "  TITLE VARCHAR(32) NOT NULL, ";
-        $sql.= "  DESCRIPTION VARCHAR(255) DEFAULT NULL, ";
-        $sql.= "  CREATED DATETIME NOT NULL, ";
-        $sql.= "  MODIFIED DATETIME DEFAULT NULL, ";
-        $sql.= "  PREFIX VARCHAR(16) DEFAULT NULL, ";
-        $sql.= "  ALLOWED_TYPES TINYINT(3) NOT NULL, ";
-        $sql.= "  POSITION MEDIUMINT(8) UNSIGNED NOT NULL, ";
-        $sql.= "  PERM INT(32) UNSIGNED DEFAULT NULL, ";
-        $sql.= "  PRIMARY KEY (FID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+        $sql .= "  TITLE VARCHAR(32) NOT NULL, ";
+        $sql .= "  DESCRIPTION VARCHAR(255) DEFAULT NULL, ";
+        $sql .= "  CREATED DATETIME NOT NULL, ";
+        $sql .= "  MODIFIED DATETIME DEFAULT NULL, ";
+        $sql .= "  PREFIX VARCHAR(16) DEFAULT NULL, ";
+        $sql .= "  ALLOWED_TYPES TINYINT(3) NOT NULL, ";
+        $sql .= "  POSITION MEDIUMINT(8) UNSIGNED NOT NULL, ";
+        $sql .= "  PERM INT(32) UNSIGNED DEFAULT NULL, ";
+        $sql .= "  PRIMARY KEY (FID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}FORUM_LINKS` (";
-        $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  URI VARCHAR(255) NOT NULL,";
-        $sql.= "  TITLE VARCHAR(64) NOT NULL,";
-        $sql.= "  POSITION MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  PRIMARY KEY  (LID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql .= "  URI VARCHAR(255) NOT NULL,";
+        $sql .= "  TITLE VARCHAR(64) NOT NULL,";
+        $sql .= "  POSITION MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  PRIMARY KEY  (LID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}LINKS` (";
-        $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  FID SMALLINT(5) UNSIGNED NOT NULL,";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  URI VARCHAR(255) NOT NULL,";
-        $sql.= "  TITLE VARCHAR(64) NOT NULL,";
-        $sql.= "  DESCRIPTION TEXT NOT NULL,";
-        $sql.= "  CREATED DATETIME NOT NULL,";
-        $sql.= "  APPROVED DATETIME DEFAULT NULL,";
-        $sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  VISIBLE CHAR(1) NOT NULL DEFAULT 'N',";
-        $sql.= "  CLICKS MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  PRIMARY KEY  (LID),";
-        $sql.= "  KEY FID (FID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  LID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql .= "  FID SMALLINT(5) UNSIGNED NOT NULL,";
+        $sql .= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  URI VARCHAR(255) NOT NULL,";
+        $sql .= "  TITLE VARCHAR(64) NOT NULL,";
+        $sql .= "  DESCRIPTION TEXT NOT NULL,";
+        $sql .= "  CREATED DATETIME NOT NULL,";
+        $sql .= "  APPROVED DATETIME DEFAULT NULL,";
+        $sql .= "  APPROVED_BY MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql .= "  VISIBLE CHAR(1) NOT NULL DEFAULT 'N',";
+        $sql .= "  CLICKS MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  PRIMARY KEY  (LID),";
+        $sql .= "  KEY FID (FID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}LINKS_COMMENT` (";
-        $sql.= "  CID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL,";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  CREATED DATETIME NOT NULL,";
-        $sql.= "  COMMENT TEXT NOT NULL,";
-        $sql.= "  PRIMARY KEY  (CID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  CID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql .= "  LID SMALLINT(5) UNSIGNED NOT NULL,";
+        $sql .= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  CREATED DATETIME NOT NULL,";
+        $sql .= "  COMMENT TEXT NOT NULL,";
+        $sql .= "  PRIMARY KEY  (CID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}LINKS_FOLDERS` (";
-        $sql.= "  FID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  PARENT_FID SMALLINT(5) UNSIGNED DEFAULT NULL,";
-        $sql.= "  NAME VARCHAR(32) NOT NULL,";
-        $sql.= "  VISIBLE CHAR(1) NOT NULL,";
-        $sql.= "  PRIMARY KEY  (FID),";
-        $sql.= "  KEY PARENT_FID (PARENT_FID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  FID SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql .= "  PARENT_FID SMALLINT(5) UNSIGNED DEFAULT NULL,";
+        $sql .= "  NAME VARCHAR(32) NOT NULL,";
+        $sql .= "  VISIBLE CHAR(1) NOT NULL,";
+        $sql .= "  PRIMARY KEY  (FID),";
+        $sql .= "  KEY PARENT_FID (PARENT_FID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}LINKS_VOTE` (";
-        $sql.= "  LID SMALLINT(5) UNSIGNED NOT NULL,";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  RATING SMALLINT(5) UNSIGNED NOT NULL,";
-        $sql.= "  VOTED DATETIME NOT NULL,";
-        $sql.= "  PRIMARY KEY  (LID,UID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  LID SMALLINT(5) UNSIGNED NOT NULL,";
+        $sql .= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  RATING SMALLINT(5) UNSIGNED NOT NULL,";
+        $sql .= "  VOTED DATETIME NOT NULL,";
+        $sql .= "  PRIMARY KEY  (LID,UID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POLL` (";
-        $sql.= "  `TID` MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  `CLOSES` DATETIME DEFAULT NULL,";
-        $sql.= "  `CHANGEVOTE` TINYINT(1) NOT NULL,";
-        $sql.= "  `POLLTYPE` TINYINT(1) NOT NULL,";
-        $sql.= "  `SHOWRESULTS` TINYINT(1) NOT NULL,";
-        $sql.= "  `VOTETYPE` TINYINT(1) UNSIGNED NOT NULL,";
-        $sql.= "  `OPTIONTYPE` TINYINT(1) UNSIGNED NOT NULL,";
-        $sql.= "  `ALLOWGUESTS` TINYINT(1) NOT NULL,";
-        $sql.= "  PRIMARY KEY (`TID`)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  `TID` MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  `CLOSES` DATETIME DEFAULT NULL,";
+        $sql .= "  `CHANGEVOTE` TINYINT(1) NOT NULL,";
+        $sql .= "  `POLLTYPE` TINYINT(1) NOT NULL,";
+        $sql .= "  `SHOWRESULTS` TINYINT(1) NOT NULL,";
+        $sql .= "  `VOTETYPE` TINYINT(1) UNSIGNED NOT NULL,";
+        $sql .= "  `OPTIONTYPE` TINYINT(1) UNSIGNED NOT NULL,";
+        $sql .= "  `ALLOWGUESTS` TINYINT(1) NOT NULL,";
+        $sql .= "  PRIMARY KEY (`TID`)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POLL_QUESTIONS` (";
-        $sql.= "  `TID` MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  `QUESTION_ID` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  `QUESTION` VARCHAR(255) NOT NULL,";
-        $sql.= "  `ALLOW_MULTI` CHAR(1) NOT NULL,";
-        $sql.= "  PRIMARY KEY (`TID`,`QUESTION_ID`)";
-        $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+        $sql .= "  `TID` MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  `QUESTION_ID` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql .= "  `QUESTION` VARCHAR(255) NOT NULL,";
+        $sql .= "  `ALLOW_MULTI` CHAR(1) NOT NULL,";
+        $sql .= "  PRIMARY KEY (`TID`,`QUESTION_ID`)";
+        $sql .= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POLL_VOTES` (";
-        $sql.= "  `TID` MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  `QUESTION_ID` MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  `OPTION_ID` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  `OPTION_NAME` VARCHAR(255) NOT NULL,";
-        $sql.= "  PRIMARY KEY (`TID`,`QUESTION_ID`,`OPTION_ID`)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  `TID` MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  `QUESTION_ID` MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  `OPTION_ID` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql .= "  `OPTION_NAME` VARCHAR(255) NOT NULL,";
+        $sql .= "  PRIMARY KEY (`TID`,`QUESTION_ID`,`OPTION_ID`)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POST` (";
-        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  REPLY_TO_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  CREATED DATETIME NOT NULL,";
-        $sql.= "  APPROVED DATETIME DEFAULT NULL,";
-        $sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  EDITED DATETIME DEFAULT NULL,";
-        $sql.= "  EDITED_BY MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  IPADDRESS VARCHAR(255) NOT NULL,";
-        $sql.= "  MOVED_TID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  MOVED_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  INDEXED DATETIME DEFAULT NULL,";
-        $sql.= "  PRIMARY KEY (TID,PID),";
-        $sql.= "  KEY FROM_UID (FROM_UID),";
-        $sql.= "  KEY IPADDRESS (IPADDRESS,FROM_UID),";
-        $sql.= "  KEY APPROVED (APPROVED),";
-        $sql.= "  KEY CREATED (CREATED),";
-        $sql.= "  KEY EDITED (EDITED),";
-        $sql.= "  KEY INDEXED (INDEXED)";
-        $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+        $sql .= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  PID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql .= "  REPLY_TO_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql .= "  FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  CREATED DATETIME NOT NULL,";
+        $sql .= "  APPROVED DATETIME DEFAULT NULL,";
+        $sql .= "  APPROVED_BY MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql .= "  EDITED DATETIME DEFAULT NULL,";
+        $sql .= "  EDITED_BY MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql .= "  IPADDRESS VARCHAR(255) NOT NULL,";
+        $sql .= "  MOVED_TID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql .= "  MOVED_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql .= "  INDEXED DATETIME DEFAULT NULL,";
+        $sql .= "  PRIMARY KEY (TID,PID),";
+        $sql .= "  KEY FROM_UID (FROM_UID),";
+        $sql .= "  KEY IPADDRESS (IPADDRESS,FROM_UID),";
+        $sql .= "  KEY APPROVED (APPROVED),";
+        $sql .= "  KEY CREATED (CREATED),";
+        $sql .= "  KEY EDITED (EDITED),";
+        $sql .= "  KEY INDEXED (INDEXED)";
+        $sql .= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POST_CONTENT` (";
-        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  CONTENT TEXT,";
-        $sql.= "  PRIMARY KEY  (TID,PID),";
-        $sql.= "  FULLTEXT KEY CONTENT (CONTENT)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  CONTENT TEXT,";
+        $sql .= "  PRIMARY KEY  (TID,PID),";
+        $sql .= "  FULLTEXT KEY CONTENT (CONTENT)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POST_RATING` (";
-        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  RATING TINYINT(4) NOT NULL,";
-        $sql.= "  CREATED DATETIME NOT NULL,";
-        $sql.= "  PRIMARY KEY (TID,PID,UID),";
-        $sql.= "  KEY CREATED (CREATED),";
-        $sql.= "  KEY RATING (RATING)";
-        $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+        $sql .= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  RATING TINYINT(4) NOT NULL,";
+        $sql .= "  CREATED DATETIME NOT NULL,";
+        $sql .= "  PRIMARY KEY (TID,PID,UID),";
+        $sql .= "  KEY CREATED (CREATED),";
+        $sql .= "  KEY RATING (RATING)";
+        $sql .= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POST_RECIPIENT` (";
-        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  VIEWED DATETIME DEFAULT NULL,";
-        $sql.= "  PRIMARY KEY (TID,PID,TO_UID),";
-        $sql.= "  KEY VIEWED (VIEWED)";
-        $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+        $sql .= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  TO_UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  VIEWED DATETIME DEFAULT NULL,";
+        $sql .= "  PRIMARY KEY (TID,PID,TO_UID),";
+        $sql .= "  KEY VIEWED (VIEWED)";
+        $sql .= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}POST_SEARCH_ID` (";
-        $sql.= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  PRIMARY KEY  (SID,TID,PID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql .= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  PRIMARY KEY  (SID,TID,PID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+        $db->query($sql);
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}POST_TAG` (";
+        $sql .= "  TID MEDIUMINT(11) UNSIGNED NOT NULL,";
+        $sql .= "  PID MEDIUMINT(11) UNSIGNED NOT NULL,";
+        $sql .= "  TAG MEDIUMINT(11) UNSIGNED NOT NULL,";
+        $sql .= "  PRIMARY KEY (TID, PID, TAG)";
+        $sql .= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
+
+        $db->query($sql);
+
+        $sql = "CREATE TABLE `{$forum_table_prefix}TAG` (";
+        $sql .= "  TID MEDIUMINT(11) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql .= "  TAG VARCHAR(255) DEFAULT NULL,";
+        $sql .= "  PRIMARY KEY (TID),";
+        $sql .= "  UNIQUE KEY TAG (TAG)";
+        $sql .= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}PROFILE_ITEM` (";
-        $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  PSID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  NAME VARCHAR(64) NOT NULL,";
-        $sql.= "  TYPE TINYINT(3) UNSIGNED NOT NULL,";
-        $sql.= "  OPTIONS TEXT NOT NULL, ";
-        $sql.= "  POSITION MEDIUMINT(3) UNSIGNED NOT NULL,";
-        $sql.= "  PRIMARY KEY  (PIID),";
-        $sql.= "  KEY PSID (PSID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql .= "  PSID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  NAME VARCHAR(64) NOT NULL,";
+        $sql .= "  TYPE TINYINT(3) UNSIGNED NOT NULL,";
+        $sql .= "  OPTIONS TEXT NOT NULL, ";
+        $sql .= "  POSITION MEDIUMINT(3) UNSIGNED NOT NULL,";
+        $sql .= "  PRIMARY KEY  (PIID),";
+        $sql .= "  KEY PSID (PSID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
-        $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
-        $sql.= "VALUES (1, 'Location', 0, '', 1)";
+        $sql .= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
+        $sql .= "VALUES (1, 'Location', 0, '', 1)";
 
         $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
-        $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
-        $sql.= "VALUES (1, 'Age', 0, '', 2)";
+        $sql .= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
+        $sql .= "VALUES (1, 'Age', 0, '', 2)";
 
         $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
-        $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) VALUES ";
-        $sql.= "(1, 'Gender', 5, 'Male\nFemale\nUnspecified', 3)";
+        $sql .= "(PSID, NAME, TYPE, OPTIONS, POSITION) VALUES ";
+        $sql .= "(1, 'Gender', 5, 'Male\nFemale\nUnspecified', 3)";
 
         $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
-        $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
-        $sql.= "VALUES (1, 'Quote', 0, '', 4)";
+        $sql .= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
+        $sql .= "VALUES (1, 'Quote', 0, '', 4)";
 
         $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_ITEM` ";
-        $sql.= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
-        $sql.= "VALUES (1, 'Occupation', 0, '', 5)";
+        $sql .= "(PSID, NAME, TYPE, OPTIONS, POSITION) ";
+        $sql .= "VALUES (1, 'Occupation', 0, '', 5)";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}PROFILE_SECTION` (";
-        $sql.= "  PSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  NAME VARCHAR(64) NOT NULL,";
-        $sql.= "  POSITION MEDIUMINT(3) UNSIGNED NOT NULL,";
-        $sql.= "  PRIMARY KEY  (PSID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  PSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql .= "  NAME VARCHAR(64) NOT NULL,";
+        $sql .= "  POSITION MEDIUMINT(3) UNSIGNED NOT NULL,";
+        $sql .= "  PRIMARY KEY  (PSID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}PROFILE_SECTION` ";
-        $sql.= "(NAME, POSITION) VALUES ('Personal', 1)";
+        $sql .= "(NAME, POSITION) VALUES ('Personal', 1)";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}RSS_FEEDS` (";
-        $sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  NAME VARCHAR(255) NOT NULL,";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL, ";
-        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL, ";
-        $sql.= "  URL VARCHAR(255) NOT NULL, ";
-        $sql.= "  PREFIX VARCHAR(16) DEFAULT NULL, ";
-        $sql.= "  FREQUENCY MEDIUMINT(8) UNSIGNED NOT NULL, ";
-        $sql.= "  LAST_RUN DATETIME DEFAULT NULL, ";
-        $sql.= "  MAX_ITEM_COUNT MEDIUMINT(8) UNSIGNED NOT NULL, ";
-        $sql.= "  PRIMARY KEY  (RSSID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql .= "  NAME VARCHAR(255) NOT NULL,";
+        $sql .= "  UID MEDIUMINT(8) UNSIGNED NOT NULL, ";
+        $sql .= "  FID MEDIUMINT(8) UNSIGNED NOT NULL, ";
+        $sql .= "  URL VARCHAR(255) NOT NULL, ";
+        $sql .= "  PREFIX VARCHAR(16) DEFAULT NULL, ";
+        $sql .= "  FREQUENCY MEDIUMINT(8) UNSIGNED NOT NULL, ";
+        $sql .= "  LAST_RUN DATETIME DEFAULT NULL, ";
+        $sql .= "  MAX_ITEM_COUNT MEDIUMINT(8) UNSIGNED NOT NULL, ";
+        $sql .= "  PRIMARY KEY  (RSSID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}RSS_HISTORY` (";
-        $sql.= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  LINK VARCHAR(255) NOT NULL, ";
-        $sql.= "  KEY RSSID (RSSID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  RSSID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  LINK VARCHAR(255) NOT NULL, ";
+        $sql .= "  KEY RSSID (RSSID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}STATS` (";
-        $sql.= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  MOST_USERS_DATE DATETIME NOT NULL,";
-        $sql.= "  MOST_USERS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  MOST_POSTS_DATE DATETIME NOT NULL,";
-        $sql.= "  MOST_POSTS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  PRIMARY KEY  (ID),";
-        $sql.= "  KEY MOST_POSTS_COUNT (MOST_POSTS_COUNT), ";
-        $sql.= "  KEY MOST_USERS_COUNT (MOST_USERS_COUNT) ";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  ID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql .= "  MOST_USERS_DATE DATETIME NOT NULL,";
+        $sql .= "  MOST_USERS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  MOST_POSTS_DATE DATETIME NOT NULL,";
+        $sql .= "  MOST_POSTS_COUNT MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  PRIMARY KEY  (ID),";
+        $sql .= "  KEY MOST_POSTS_COUNT (MOST_POSTS_COUNT), ";
+        $sql .= "  KEY MOST_USERS_COUNT (MOST_USERS_COUNT) ";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}THREAD` (";
-        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
-        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL, ";
-        $sql.= "  BY_UID MEDIUMINT(8) UNSIGNED NOT NULL, ";
-        $sql.= "  TITLE VARCHAR(64) NOT NULL, ";
-        $sql.= "  LENGTH MEDIUMINT(8) UNSIGNED NOT NULL, ";
-		$sql.= "  UNREAD_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
-        $sql.= "  POLL_FLAG CHAR(1) DEFAULT 'N', ";
-        $sql.= "  APPROVED DATETIME DEFAULT NULL,";
-        $sql.= "  APPROVED_BY MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
-        $sql.= "  CREATED DATETIME NOT NULL, ";
-        $sql.= "  MODIFIED DATETIME DEFAULT NULL, ";
-        $sql.= "  CLOSED DATETIME DEFAULT NULL, ";
-        $sql.= "  STICKY CHAR(1) NOT NULL DEFAULT 'N', ";
-        $sql.= "  STICKY_UNTIL DATETIME DEFAULT NULL, ";
-        $sql.= "  ADMIN_LOCK DATETIME DEFAULT NULL, ";
-        $sql.= "  DELETED CHAR(1) NOT NULL DEFAULT 'N', ";
-        $sql.= "  PRIMARY KEY (TID), ";
-        $sql.= "  KEY STICKY (STICKY, MODIFIED, FID, LENGTH, DELETED), ";
-        $sql.= "  KEY MODIFIED (MODIFIED, FID, LENGTH, DELETED), ";
-        $sql.= "  FULLTEXT KEY TITLE (TITLE) ";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  TID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+        $sql .= "  FID MEDIUMINT(8) UNSIGNED NOT NULL, ";
+        $sql .= "  BY_UID MEDIUMINT(8) UNSIGNED NOT NULL, ";
+        $sql .= "  TITLE VARCHAR(64) NOT NULL, ";
+        $sql .= "  LENGTH MEDIUMINT(8) UNSIGNED NOT NULL, ";
+        $sql .= "  UNREAD_PID MEDIUMINT(8) UNSIGNED DEFAULT NULL, ";
+        $sql .= "  POLL_FLAG CHAR(1) DEFAULT 'N', ";
+        $sql .= "  APPROVED DATETIME DEFAULT NULL,";
+        $sql .= "  APPROVED_BY MEDIUMINT(8) UNSIGNED DEFAULT NULL,";
+        $sql .= "  CREATED DATETIME NOT NULL, ";
+        $sql .= "  MODIFIED DATETIME DEFAULT NULL, ";
+        $sql .= "  CLOSED DATETIME DEFAULT NULL, ";
+        $sql .= "  STICKY CHAR(1) NOT NULL DEFAULT 'N', ";
+        $sql .= "  STICKY_UNTIL DATETIME DEFAULT NULL, ";
+        $sql .= "  ADMIN_LOCK DATETIME DEFAULT NULL, ";
+        $sql .= "  DELETED CHAR(1) NOT NULL DEFAULT 'N', ";
+        $sql .= "  PRIMARY KEY (TID), ";
+        $sql .= "  KEY STICKY (STICKY, MODIFIED, FID, LENGTH, DELETED), ";
+        $sql .= "  KEY MODIFIED (MODIFIED, FID, LENGTH, DELETED), ";
+        $sql .= "  FULLTEXT KEY TITLE (TITLE) ";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}THREAD_STATS` (";
-        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  PRIMARY KEY  (TID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  VIEWCOUNT MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  PRIMARY KEY  (TID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}THREAD_TRACK` (";
-        $sql.= "  TID MEDIUMINT(8) NOT NULL, ";
-        $sql.= "  NEW_TID MEDIUMINT(8) NOT NULL, ";
-        $sql.= "  CREATED DATETIME NOT NULL, ";
-        $sql.= "  TRACK_TYPE TINYINT(4) NOT NULL, ";
-        $sql.= "  PRIMARY KEY (TID, NEW_TID), ";
-        $sql.= "  KEY NEW_TID (NEW_TID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  TID MEDIUMINT(8) NOT NULL, ";
+        $sql .= "  NEW_TID MEDIUMINT(8) NOT NULL, ";
+        $sql .= "  CREATED DATETIME NOT NULL, ";
+        $sql .= "  TRACK_TYPE TINYINT(4) NOT NULL, ";
+        $sql .= "  PRIMARY KEY (TID, NEW_TID), ";
+        $sql .= "  KEY NEW_TID (NEW_TID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_FOLDER` (";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL, ";
-        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL, ";
-        $sql.= "  INTEREST TINYINT(4) NOT NULL, ";
-        $sql.= "  PRIMARY KEY (UID, FID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  UID MEDIUMINT(8) UNSIGNED NOT NULL, ";
+        $sql .= "  FID MEDIUMINT(8) UNSIGNED NOT NULL, ";
+        $sql .= "  INTEREST TINYINT(4) NOT NULL, ";
+        $sql .= "  PRIMARY KEY (UID, FID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_PEER` (";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL, ";
-        $sql.= "  PEER_UID MEDIUMINT(8) UNSIGNED NOT NULL, ";
-        $sql.= "  RELATIONSHIP TINYINT(4) NOT NULL, ";
-        $sql.= "  PEER_NICKNAME VARCHAR(32) DEFAULT NULL, ";
-        $sql.= "  PRIMARY KEY (UID, PEER_UID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  UID MEDIUMINT(8) UNSIGNED NOT NULL, ";
+        $sql .= "  PEER_UID MEDIUMINT(8) UNSIGNED NOT NULL, ";
+        $sql .= "  RELATIONSHIP TINYINT(4) NOT NULL, ";
+        $sql .= "  PEER_NICKNAME VARCHAR(32) DEFAULT NULL, ";
+        $sql .= "  PRIMARY KEY (UID, PEER_UID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_POLL_VOTES` (";
-        $sql.= "  `VOTE_ID` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql.= "  `TID` MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  `QUESTION_ID` MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  `OPTION_ID` MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  `UID` MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  `VOTED` DATETIME NOT NULL,";
-        $sql.= "  PRIMARY KEY (`VOTE_ID`),";
-        $sql.= "  KEY `TID` (`TID`),";
-        $sql.= "  KEY `QUESTION_ID` (`QUESTION_ID`),";
-        $sql.= "  KEY `OPTION_ID` (`OPTION_ID`),";
-        $sql.= "  KEY `UID` (`UID`)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  `VOTE_ID` MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+        $sql .= "  `TID` MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  `QUESTION_ID` MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  `OPTION_ID` MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  `UID` MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  `VOTED` DATETIME NOT NULL,";
+        $sql .= "  PRIMARY KEY (`VOTE_ID`),";
+        $sql .= "  KEY `TID` (`TID`),";
+        $sql .= "  KEY `QUESTION_ID` (`QUESTION_ID`),";
+        $sql .= "  KEY `OPTION_ID` (`OPTION_ID`),";
+        $sql .= "  KEY `UID` (`UID`)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_PREFS` (";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  HOMEPAGE_URL VARCHAR(255) DEFAULT NULL,";
-        $sql.= "  PIC_URL VARCHAR(255) DEFAULT NULL,";
-        $sql.= "  EMAIL_NOTIFY CHAR(1) DEFAULT NULL,";
-        $sql.= "  MARK_AS_OF_INT CHAR(1) DEFAULT NULL,";
-        $sql.= "  POSTS_PER_PAGE CHAR(3) DEFAULT NULL,";
-        $sql.= "  FONT_SIZE CHAR(2) DEFAULT NULL,";
-        $sql.= "  STYLE VARCHAR(255) DEFAULT NULL,";
-        $sql.= "  EMOTICONS VARCHAR(255) DEFAULT NULL,";
-        $sql.= "  VIEW_SIGS CHAR(1) DEFAULT NULL,";
-        $sql.= "  START_PAGE CHAR(3) DEFAULT NULL,";
-        $sql.= "  LANGUAGE VARCHAR(32) DEFAULT NULL,";
-        $sql.= "  SHOW_STATS CHAR(1) DEFAULT NULL,";
-        $sql.= "  IMAGES_TO_LINKS CHAR(1) DEFAULT NULL,";
-        $sql.= "  USE_WORD_FILTER CHAR(1) DEFAULT NULL,";
-        $sql.= "  USE_ADMIN_FILTER CHAR(1) DEFAULT NULL,";
-        $sql.= "  SHOW_THUMBS CHAR(2) DEFAULT NULL,";
-        $sql.= "  ENABLE_WIKI_WORDS CHAR(1) DEFAULT NULL,";
-        $sql.= "  USE_MOVER_SPOILER CHAR(1) DEFAULT NULL,";
-        $sql.= "  USE_LIGHT_MODE_SPOILER CHAR(1) DEFAULT NULL,";
-        $sql.= "  USE_OVERFLOW_RESIZE CHAR(1) DEFAULT NULL,";
-        $sql.= "  PIC_AID MEDIUMINT(11) DEFAULT NULL,";
-        $sql.= "  AVATAR_URL VARCHAR(255) DEFAULT NULL,";
-        $sql.= "  AVATAR_AID MEDIUMINT(11) DEFAULT NULL,";
-        $sql.= "  REPLY_QUICK CHAR(1) DEFAULT NULL,";
-        $sql.= "  THREADS_BY_FOLDER CHAR(1) DEFAULT NULL,";
-        $sql.= "  THREAD_LAST_PAGE CHAR(1) DEFAULT NULL,";
-        $sql.= "  LEFT_FRAME_WIDTH SMALLINT(4) UNSIGNED DEFAULT NULL,";
-        $sql.= "  SHOW_AVATARS CHAR(1) DEFAULT NULL,";
-        $sql.= "  SHOW_SHARE_LINKS CHAR(1) DEFAULT NULL,";
-        $sql.= "  PRIMARY KEY (UID)";
-        $sql.= ") ENGINE=MYISAM DEFAULT CHARSET=utf8";
+        $sql .= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  HOMEPAGE_URL VARCHAR(255) DEFAULT NULL,";
+        $sql .= "  PIC_URL VARCHAR(255) DEFAULT NULL,";
+        $sql .= "  EMAIL_NOTIFY CHAR(1) DEFAULT NULL,";
+        $sql .= "  MARK_AS_OF_INT CHAR(1) DEFAULT NULL,";
+        $sql .= "  POSTS_PER_PAGE CHAR(3) DEFAULT NULL,";
+        $sql .= "  FONT_SIZE CHAR(2) DEFAULT NULL,";
+        $sql .= "  STYLE VARCHAR(255) DEFAULT NULL,";
+        $sql .= "  EMOTICONS VARCHAR(255) DEFAULT NULL,";
+        $sql .= "  VIEW_SIGS CHAR(1) DEFAULT NULL,";
+        $sql .= "  START_PAGE CHAR(3) DEFAULT NULL,";
+        $sql .= "  LANGUAGE VARCHAR(32) DEFAULT NULL,";
+        $sql .= "  SHOW_STATS CHAR(1) DEFAULT NULL,";
+        $sql .= "  IMAGES_TO_LINKS CHAR(1) DEFAULT NULL,";
+        $sql .= "  USE_WORD_FILTER CHAR(1) DEFAULT NULL,";
+        $sql .= "  USE_ADMIN_FILTER CHAR(1) DEFAULT NULL,";
+        $sql .= "  SHOW_THUMBS CHAR(2) DEFAULT NULL,";
+        $sql .= "  ENABLE_WIKI_WORDS CHAR(1) DEFAULT NULL,";
+        $sql .= "  USE_MOVER_SPOILER CHAR(1) DEFAULT NULL,";
+        $sql .= "  USE_LIGHT_MODE_SPOILER CHAR(1) DEFAULT NULL,";
+        $sql .= "  USE_OVERFLOW_RESIZE CHAR(1) DEFAULT NULL,";
+        $sql .= "  PIC_AID MEDIUMINT(11) DEFAULT NULL,";
+        $sql .= "  AVATAR_URL VARCHAR(255) DEFAULT NULL,";
+        $sql .= "  AVATAR_AID MEDIUMINT(11) DEFAULT NULL,";
+        $sql .= "  REPLY_QUICK CHAR(1) DEFAULT NULL,";
+        $sql .= "  THREADS_BY_FOLDER CHAR(1) DEFAULT NULL,";
+        $sql .= "  THREAD_LAST_PAGE CHAR(1) DEFAULT NULL,";
+        $sql .= "  LEFT_FRAME_WIDTH SMALLINT(4) UNSIGNED DEFAULT NULL,";
+        $sql .= "  SHOW_AVATARS CHAR(1) DEFAULT NULL,";
+        $sql .= "  SHOW_SHARE_LINKS CHAR(1) DEFAULT NULL,";
+        $sql .= "  PRIMARY KEY (UID)";
+        $sql .= ") ENGINE=MYISAM DEFAULT CHARSET=utf8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_PROFILE` (";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  ENTRY VARCHAR(255) DEFAULT NULL,";
-        $sql.= "  PRIVACY TINYINT(3) UNSIGNED NOT NULL,";
-        $sql.= "  PRIMARY KEY  (UID,PIID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  PIID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  ENTRY VARCHAR(255) DEFAULT NULL,";
+        $sql .= "  PRIVACY TINYINT(3) UNSIGNED NOT NULL,";
+        $sql .= "  PRIMARY KEY  (UID,PIID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_SIG` (";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  CONTENT TEXT,";
-        $sql.= "  PRIMARY KEY  (UID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  CONTENT TEXT,";
+        $sql .= "  PRIMARY KEY  (UID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_THREAD` (";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  LAST_READ MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  LAST_READ_AT DATETIME NOT NULL,";
-        $sql.= "  INTEREST TINYINT(4) NOT NULL DEFAULT '0',";
-        $sql.= "  PRIMARY KEY  (UID,TID),";
-        $sql.= "  KEY TID (TID),";
-        $sql.= "  KEY LAST_READ (LAST_READ),";
-        $sql.= "  KEY INTEREST (INTEREST)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  LAST_READ MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  LAST_READ_AT DATETIME NOT NULL,";
+        $sql .= "  INTEREST TINYINT(4) NOT NULL DEFAULT '0',";
+        $sql .= "  PRIMARY KEY  (UID,TID),";
+        $sql .= "  KEY TID (TID),";
+        $sql .= "  KEY LAST_READ (LAST_READ),";
+        $sql .= "  KEY INTEREST (INTEREST)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}USER_TRACK` (";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql.= "  USER_KEY VARCHAR(255) NOT NULL,";
-        $sql.= "  USER_VALUE TEXT DEFAULT NULL,";
-        $sql.= "  PRIMARY KEY  (UID, USER_KEY)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
+        $sql .= "  USER_KEY VARCHAR(255) NOT NULL,";
+        $sql .= "  USER_VALUE TEXT DEFAULT NULL,";
+        $sql .= "  PRIMARY KEY  (UID, USER_KEY)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         $sql = "CREATE TABLE `{$forum_table_prefix}WORD_FILTER` (";
-        $sql.= "  UID MEDIUMINT(8) UNSIGNED NOT NULL, ";
-        $sql.= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
-        $sql.= "  FILTER_NAME VARCHAR(255) NOT NULL, ";
-        $sql.= "  MATCH_TEXT TEXT NOT NULL, ";
-        $sql.= "  REPLACE_TEXT TEXT NOT NULL, ";
-        $sql.= "  FILTER_TYPE TINYINT(3) UNSIGNED NOT NULL, ";
-        $sql.= "  FILTER_ENABLED TINYINT(3) UNSIGNED NOT NULL, ";
-        $sql.= "  PRIMARY KEY (UID, FID)";
-        $sql.= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+        $sql .= "  UID MEDIUMINT(8) UNSIGNED NOT NULL, ";
+        $sql .= "  FID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT, ";
+        $sql .= "  FILTER_NAME VARCHAR(255) NOT NULL, ";
+        $sql .= "  MATCH_TEXT TEXT NOT NULL, ";
+        $sql .= "  REPLACE_TEXT TEXT NOT NULL, ";
+        $sql .= "  FILTER_TYPE TINYINT(3) UNSIGNED NOT NULL, ";
+        $sql .= "  FILTER_ENABLED TINYINT(3) UNSIGNED NOT NULL, ";
+        $sql .= "  PRIMARY KEY (UID, FID)";
+        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
 
         $db->query($sql);
 
         // Save Webtag, Database name and Access Level.
         $sql = "INSERT INTO FORUMS (WEBTAG, OWNER_UID, DATABASE_NAME, ACCESS_LEVEL) ";
-        $sql.= "VALUES ('$webtag', '$owner_uid', '$database_name', $access)";
+        $sql .= "VALUES ('$webtag', '$owner_uid', '$database_name', $access)";
 
         $db->query($sql);
 
@@ -1365,23 +1383,23 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         // Create General Folder
         $sql = "INSERT INTO `{$forum_table_prefix}FOLDER` (TITLE, CREATED, MODIFIED, ALLOWED_TYPES, POSITION, PERM) ";
-        $sql.= "VALUES ('General', NOW(), NOW(), 3, 1, 14588)";
+        $sql .= "VALUES ('General', NOW(), NOW(), 3, 1, 14588)";
 
         $db->query($sql);
 
         // Add some default forum links
         $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POSITION, TITLE, URI) ";
-        $sql.= "VALUES (2, 'Project Beehive Forum Home', 'http://www.beehiveforum.co.uk/')";
+        $sql .= "VALUES (2, 'Project Beehive Forum Home', 'http://www.beehiveforum.co.uk/')";
 
         $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POSITION, TITLE, URI) ";
-        $sql.= "VALUES (3, 'Project Beehive Forum on Facebook', 'http://www.facebook.com/pages/Project-Beehive-Forum/100468551205')";
+        $sql .= "VALUES (3, 'Project Beehive Forum on Facebook', 'http://www.facebook.com/pages/Project-Beehive-Forum/100468551205')";
 
         $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POSITION, TITLE, URI) ";
-        $sql.= "VALUES (2, 'Teh Forum', 'http://www.tehforum.co.uk/forum/')";
+        $sql .= "VALUES (2, 'Teh Forum', 'http://www.tehforum.co.uk/forum/')";
 
         $db->query($sql);
 
@@ -1392,10 +1410,10 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         // Create 'Welcome' Thread
         $sql = "INSERT INTO `{$forum_table_prefix}THREAD` (FID, BY_UID, TITLE, LENGTH, POLL_FLAG, ";
-        $sql.= "APPROVED, APPROVED_BY, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
-        $sql.= "VALUES (1, '$owner_uid', 'Welcome', 1, 'N', CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "'$owner_uid', CAST('$current_datetime' AS DATETIME), CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "NULL, 'N', NULL, NULL)";
+        $sql .= "APPROVED, APPROVED_BY, CREATED, MODIFIED, CLOSED, STICKY, STICKY_UNTIL, ADMIN_LOCK) ";
+        $sql .= "VALUES (1, '$owner_uid', 'Welcome', 1, 'N', CAST('$current_datetime' AS DATETIME), ";
+        $sql .= "'$owner_uid', CAST('$current_datetime' AS DATETIME), CAST('$current_datetime' AS DATETIME), ";
+        $sql .= "NULL, 'N', NULL, NULL)";
 
         $db->query($sql);
 
@@ -1407,9 +1425,9 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         // Create the first post in the thread. Make it appear to be from
         // the Owner UID.
         $sql = "INSERT INTO `{$forum_table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, ";
-        $sql.= "CREATED, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) ";
-        $sql.= "VALUES ('$new_tid', 0, $owner_uid, CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "CAST('$current_datetime' AS DATETIME), '$owner_uid', NULL, NULL, '$ipaddress')";
+        $sql .= "CREATED, APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS) ";
+        $sql .= "VALUES ('$new_tid', 0, $owner_uid, CAST('$current_datetime' AS DATETIME), ";
+        $sql .= "CAST('$current_datetime' AS DATETIME), '$owner_uid', NULL, NULL, '$ipaddress')";
 
         $db->query($sql);
 
@@ -1420,19 +1438,19 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
 
         // First Post content.
         $sql = "INSERT INTO `{$forum_table_prefix}POST_CONTENT` (TID, PID, CONTENT) ";
-        $sql.= "VALUES ('$new_tid', '$new_pid', 'Welcome to your new Beehive Forum')";
+        $sql .= "VALUES ('$new_tid', '$new_pid', 'Welcome to your new Beehive Forum')";
 
         $db->query($sql);
 
         // First Post search ID
         $sql = "INSERT INTO `{$forum_table_prefix}POST_SEARCH_ID` (TID, PID) ";
-        $sql.= "VALUES ('$new_tid', '$new_pid')";
+        $sql .= "VALUES ('$new_tid', '$new_pid')";
 
         $db->query($sql);
 
         // Create Top Level Links Folder
         $sql = "INSERT INTO `{$forum_table_prefix}LINKS_FOLDERS` ";
-        $sql.= "(PARENT_FID, NAME, VISIBLE) VALUES (NULL, 'Top Level', 'Y')";
+        $sql .= "(PARENT_FID, NAME, VISIBLE) VALUES (NULL, 'Top Level', 'Y')";
 
         $db->query($sql);
 
@@ -1467,7 +1485,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
             $setting_value = $db->escape($setting_value);
 
             $sql = "INSERT INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-            $sql.= "VALUES ($forum_fid, '$setting_name', '$setting_value')";
+            $sql .= "VALUES ($forum_fid, '$setting_name', '$setting_value')";
 
             $db->query($sql);
         }
@@ -1507,13 +1525,13 @@ function forum_update($fid, $forum_name, $owner_uid, $access_level)
     if (!session::check_perm(USER_PERM_FORUM_TOOLS, 0)) return false;
 
     $sql = "UPDATE LOW_PRIORITY FORUMS SET ACCESS_LEVEL = '$access_level', ";
-    $sql.= "OWNER_UID = '$owner_uid' WHERE FID = '$fid'";
+    $sql .= "OWNER_UID = '$owner_uid' WHERE FID = '$fid'";
 
     if (!$db->query($sql)) return false;
 
     $sql = "INSERT IGNORE INTO FORUM_SETTINGS (FID, SNAME, SVALUE) ";
-    $sql.= "VALUES ('$fid', 'forum_name', '$forum_name') ";
-    $sql.= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
+    $sql .= "VALUES ('$fid', 'forum_name', '$forum_name') ";
+    $sql .= "ON DUPLICATE KEY UPDATE SVALUE = VALUES(SVALUE)";
 
     if (!$db->query($sql)) return false;
 
@@ -1553,8 +1571,8 @@ function forum_delete($fid)
     if (!$db->query($sql)) return false;
 
     $sql = "DELETE QUICK FROM POST_ATTACHMENT_FILES ";
-    $sql.= "WHERE AID IN (SELECT AID FROM POST_ATTACHMENT_IDS ";
-    $sql.= "WHERE FID = '$fid')";
+    $sql .= "WHERE AID IN (SELECT AID FROM POST_ATTACHMENT_IDS ";
+    $sql .= "WHERE FID = '$fid')";
 
     if (!$db->query($sql)) return false;
 
@@ -1571,12 +1589,12 @@ function forum_delete($fid)
     if (!$db->query($sql)) return false;
 
     $sql = "DELETE QUICK FROM GROUP_USERS WHERE GID NOT IN (SELECT GID ";
-    $sql.= "FROM GROUP_PERMS)";
+    $sql .= "FROM GROUP_PERMS)";
 
     if (!$db->query($sql)) return false;
 
     $sql = "DELETE QUICK FROM GROUP_PERMS WHERE GID NOT IN (SELECT GID ";
-    $sql.= "FROM GROUP_PERMS)";
+    $sql .= "FROM GROUP_PERMS)";
 
     if (!$db->query($sql)) return false;
 
@@ -1647,20 +1665,21 @@ function forum_update_access($fid, $access)
     if (!is_numeric($access)) return false;
 
     if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0) ||
-        session::check_perm(USER_PERM_FORUM_TOOLS, 0))) return false;
+        session::check_perm(USER_PERM_FORUM_TOOLS, 0))
+    ) return false;
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (!$db = db::get()) return false;
 
     $sql = "UPDATE LOW_PRIORITY FORUMS SET ACCESS_LEVEL = '$access' ";
-    $sql.= "WHERE FID = '$fid'";
+    $sql .= "WHERE FID = '$fid'";
 
     if (!$db->query($sql)) return false;
 
     $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
-    $sql.= "VALUES ('{$_SESSION['UID']}', '$fid', 1) ON DUPLICATE KEY ";
-    $sql.= "UPDATE ALLOWED = VALUES(ALLOWED)";
+    $sql .= "VALUES ('{$_SESSION['UID']}', '$fid', 1) ON DUPLICATE KEY ";
+    $sql .= "UPDATE ALLOWED = VALUES(ALLOWED)";
 
     if (!$db->query($sql)) return false;
 
@@ -1674,12 +1693,13 @@ function forum_update_password($fid, $password)
     if (!is_numeric($fid)) return false;
 
     if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0) ||
-        session::check_perm(USER_PERM_FORUM_TOOLS, 0))) return false;
+        session::check_perm(USER_PERM_FORUM_TOOLS, 0))
+    ) return false;
 
     $password = $db->escape(md5($password));
 
     $sql = "UPDATE LOW_PRIORITY FORUMS SET FORUM_PASSWD = '$password' ";
-    $sql.= "WHERE FID = '$fid'";
+    $sql .= "WHERE FID = '$fid'";
 
     if (!$db->query($sql)) return false;
 
@@ -1695,7 +1715,7 @@ function forum_get($fid)
     if (!$db = db::get()) return false;
 
     $sql = "SELECT FID, WEBTAG, OWNER_UID, DATABASE_NAME, DEFAULT_FORUM, ";
-    $sql.= "ACCESS_LEVEL, FORUM_PASSWD FROM FORUMS WHERE FID = '$fid'";
+    $sql .= "ACCESS_LEVEL, FORUM_PASSWD FROM FORUMS WHERE FID = '$fid'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1736,9 +1756,9 @@ function forum_get_permissions($fid, $page = 1)
     $perms_user_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME FROM USER USER ";
-    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID) ";
-    $sql.= "WHERE USER_FORUM.FID = '$fid' AND USER_FORUM.ALLOWED = 1 ";
-    $sql.= "LIMIT $offset, 20";
+    $sql .= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID) ";
+    $sql .= "WHERE USER_FORUM.FID = '$fid' AND USER_FORUM.ALLOWED = 1 ";
+    $sql .= "LIMIT $offset, 20";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1817,7 +1837,7 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
 
     $offset = calculate_page_offset($page, 10);
 
-    $sort_by_array  = array(
+    $sort_by_array = array(
         'FORUM_NAME',
         'FORUM_DESC',
         'LAST_VISIT'
@@ -1845,16 +1865,16 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
     $forum_search_svalue = implode("%' OR FORUM_SETTINGS.SVALUE LIKE '%", $forum_search_array);
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT(FORUMS.DATABASE_NAME, '`.`', FORUMS.WEBTAG, '_') AS PREFIX, ";
-    $sql.= "FORUM_SETTINGS_NAME.SVALUE AS FORUM_NAME, FORUM_SETTINGS_DESC.SVALUE AS FORUM_DESC, ";
-    $sql.= "FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST FROM FORUMS ";
-    $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ON (FORUM_SETTINGS.FID = FORUMS.FID) ";
-    $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_NAME ON (FORUM_SETTINGS_NAME.FID = FORUMS.FID AND FORUM_SETTINGS_NAME.SNAME = 'forum_name') ";
-    $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_DESC ON (FORUM_SETTINGS_DESC.FID = FORUMS.FID AND FORUM_SETTINGS_DESC.SNAME = 'forum_desc') ";
-    $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '{$_SESSION['UID']}') ";
-    $sql.= "WHERE FORUMS.ACCESS_LEVEL > -1 AND (FORUMS.WEBTAG LIKE ";
-    $sql.= "'%$forum_search_webtag%' OR FORUM_SETTINGS.SVALUE LIKE ";
-    $sql.= "'%$forum_search_svalue%') GROUP BY FORUMS.FID ";
-    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
+    $sql .= "FORUM_SETTINGS_NAME.SVALUE AS FORUM_NAME, FORUM_SETTINGS_DESC.SVALUE AS FORUM_DESC, ";
+    $sql .= "FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST FROM FORUMS ";
+    $sql .= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS ON (FORUM_SETTINGS.FID = FORUMS.FID) ";
+    $sql .= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_NAME ON (FORUM_SETTINGS_NAME.FID = FORUMS.FID AND FORUM_SETTINGS_NAME.SNAME = 'forum_name') ";
+    $sql .= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_DESC ON (FORUM_SETTINGS_DESC.FID = FORUMS.FID AND FORUM_SETTINGS_DESC.SNAME = 'forum_desc') ";
+    $sql .= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '{$_SESSION['UID']}') ";
+    $sql .= "WHERE FORUMS.ACCESS_LEVEL > -1 AND (FORUMS.WEBTAG LIKE ";
+    $sql .= "'%$forum_search_webtag%' OR FORUM_SETTINGS.SVALUE LIKE ";
+    $sql .= "'%$forum_search_svalue%') GROUP BY FORUMS.FID ";
+    $sql .= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
 
     if (!($result_forums = $db->query($sql))) return false;
 
@@ -1898,9 +1918,9 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
         if ($unread_cutoff_datetime !== false) {
 
             $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) AS UNREAD_MESSAGES ";
-            $sql.= "FROM `{$forum_data['PREFIX']}THREAD` THREAD LEFT JOIN `{$forum_data['PREFIX']}USER_THREAD` USER_THREAD ";
-            $sql.= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE THREAD.FID IN ($folders) ";
-            $sql.= "AND (THREAD.MODIFIED > CAST('$unread_cutoff_datetime' AS DATETIME)) ";
+            $sql .= "FROM `{$forum_data['PREFIX']}THREAD` THREAD LEFT JOIN `{$forum_data['PREFIX']}USER_THREAD` USER_THREAD ";
+            $sql .= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE THREAD.FID IN ($folders) ";
+            $sql .= "AND (THREAD.MODIFIED > CAST('$unread_cutoff_datetime' AS DATETIME)) ";
 
             if (!($result_unread_count = $db->query($sql))) return false;
 
@@ -1915,7 +1935,7 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
 
         // Total number of messages
         $sql = "SELECT SUM(THREAD.LENGTH) AS NUM_MESSAGES FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
-        $sql.= "WHERE THREAD.FID IN ($folders) ";
+        $sql .= "WHERE THREAD.FID IN ($folders) ";
 
         if (!($result_messages_count = $db->query($sql))) return false;
 
@@ -1929,11 +1949,11 @@ function forum_search($forum_search, $page, $sort_by, $sort_dir)
 
         // Get unread to me message count
         $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
-        $sql.= "LEFT JOIN `{$forum_data['PREFIX']}POST` POST ON (POST.TID = THREAD.TID) ";
-        $sql.= "LEFT JOIN `{$forum_data['PREFIX']}POST_RECIPIENT` POST_RECIPIENT ";
-        $sql.= "ON (POST_RECIPIENT.TID = POST.TID AND POST_RECIPIENT.PID = POST.PID) ";
-        $sql.= "WHERE THREAD.FID IN ($folders) AND POST_RECIPIENT.TO_UID = '{$_SESSION['UID']}' ";
-        $sql.= "AND POST_RECIPIENT.VIEWED IS NULL ";
+        $sql .= "LEFT JOIN `{$forum_data['PREFIX']}POST` POST ON (POST.TID = THREAD.TID) ";
+        $sql .= "LEFT JOIN `{$forum_data['PREFIX']}POST_RECIPIENT` POST_RECIPIENT ";
+        $sql .= "ON (POST_RECIPIENT.TID = POST.TID AND POST_RECIPIENT.PID = POST.PID) ";
+        $sql .= "WHERE THREAD.FID IN ($folders) AND POST_RECIPIENT.TO_UID = '{$_SESSION['UID']}' ";
+        $sql .= "AND POST_RECIPIENT.VIEWED IS NULL ";
 
         if (!($result_unread_to_me = $db->query($sql))) return false;
 
@@ -1966,7 +1986,7 @@ function forum_get_all_prefixes()
     if (!$db = db::get()) return false;
 
     $sql = "SELECT CONCAT(DATABASE_NAME, '`.`', WEBTAG, '_') AS PREFIX, ";
-    $sql.= "FID FROM FORUMS ";
+    $sql .= "FID FROM FORUMS ";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -2032,7 +2052,7 @@ function forum_get_last_visit($uid)
     if (!($forum_fid = get_forum_fid())) return false;
 
     $sql = "SELECT UNIX_TIMESTAMP(LAST_VISIT) FROM USER_FORUM ";
-    $sql.= "WHERE USER_FORUM.FID = $forum_fid AND USER_FORUM.UID = $uid";
+    $sql .= "WHERE USER_FORUM.FID = $forum_fid AND USER_FORUM.UID = $uid";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -2058,8 +2078,8 @@ function forum_update_last_visit($uid)
     if (!($forum_fid = get_forum_fid())) return false;
 
     $sql = "INSERT INTO USER_FORUM (UID, FID, LAST_VISIT) ";
-    $sql.= "VALUES ('$uid', '$forum_fid', CAST('$current_datetime' AS DATETIME)) ";
-    $sql.= "ON DUPLICATE KEY UPDATE LAST_VISIT = VALUES(LAST_VISIT)";
+    $sql .= "VALUES ('$uid', '$forum_fid', CAST('$current_datetime' AS DATETIME)) ";
+    $sql .= "ON DUPLICATE KEY UPDATE LAST_VISIT = VALUES(LAST_VISIT)";
 
     if (!$db->query($sql)) return false;
 
@@ -2095,10 +2115,10 @@ function forums_get_available_count()
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT COUNT(FORUMS.FID) FROM FORUMS FORUMS ";
-    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
-    $sql.= "AND USER_FORUM.UID = '{$_SESSION['UID']}') WHERE FORUMS.ACCESS_LEVEL = 0 ";
-    $sql.= "OR FORUMS.ACCESS_LEVEL = 2 OR (FORUMS.ACCESS_LEVEL = 1 ";
-    $sql.= "AND USER_FORUM.ALLOWED = 1) ";
+    $sql .= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.FID = FORUMS.FID ";
+    $sql .= "AND USER_FORUM.UID = '{$_SESSION['UID']}') WHERE FORUMS.ACCESS_LEVEL = 0 ";
+    $sql .= "OR FORUMS.ACCESS_LEVEL = 2 OR (FORUMS.ACCESS_LEVEL = 1 ";
+    $sql .= "AND USER_FORUM.ALLOWED = 1) ";
 
     if (!($result = $db->query($sql))) return false;
 

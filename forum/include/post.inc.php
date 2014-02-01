@@ -22,18 +22,18 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'ip.inc.php';
-require_once BH_INCLUDE_PATH. 'perm.inc.php';
-require_once BH_INCLUDE_PATH. 'poll.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'ip.inc.php';
+require_once BH_INCLUDE_PATH . 'perm.inc.php';
+require_once BH_INCLUDE_PATH . 'poll.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 function post_create($fid, $tid, $reply_pid, $from_uid, $to_user_array, $content)
@@ -55,7 +55,7 @@ function post_create($fid, $tid, $reply_pid, $from_uid, $to_user_array, $content
     foreach ($to_user_array as $to_user) {
 
         if (!isset($to_user['UID']) || !is_numeric($to_user['UID'])) {
-             return false;
+            return false;
         }
     }
 
@@ -78,9 +78,9 @@ function post_create($fid, $tid, $reply_pid, $from_uid, $to_user_array, $content
     }
 
     $sql = "INSERT INTO `{$table_prefix}POST` (TID, REPLY_TO_PID, FROM_UID, ";
-    $sql.= "CREATED, APPROVED, APPROVED_BY, IPADDRESS) VALUES ($tid, $reply_pid, ";
-    $sql.= "$from_uid, CAST('$current_datetime' AS DATETIME), $approved_datetime, ";
-    $sql.= "$approved_by, '$ipaddress')";
+    $sql .= "CREATED, APPROVED, APPROVED_BY, IPADDRESS) VALUES ($tid, $reply_pid, ";
+    $sql .= "$from_uid, CAST('$current_datetime' AS DATETIME), $approved_datetime, ";
+    $sql .= "$approved_by, '$ipaddress')";
 
     if (!$db->query($sql)) return false;
 
@@ -89,20 +89,24 @@ function post_create($fid, $tid, $reply_pid, $from_uid, $to_user_array, $content
     foreach ($to_user_array as $to_user) {
 
         $sql = "INSERT INTO `{$table_prefix}POST_RECIPIENT` (TID, PID, TO_UID) ";
-        $sql.= "VALUES ('$tid', '$new_pid', '{$to_user['UID']}')";
+        $sql .= "VALUES ('$tid', '$new_pid', '{$to_user['UID']}')";
 
         if (!$db->query($sql)) return false;
     }
 
     $sql = "INSERT INTO `{$table_prefix}POST_CONTENT` (TID, PID, CONTENT) ";
-    $sql.= "VALUES ('$tid', '$new_pid', '$post_content')";
+    $sql .= "VALUES ('$tid', '$new_pid', '$post_content')";
 
     if (!$db->query($sql)) return false;
 
     $sql = "INSERT INTO `{$table_prefix}POST_SEARCH_ID` (TID, PID) ";
-    $sql.= "VALUES('$tid', '$new_pid')";
+    $sql .= "VALUES('$tid', '$new_pid')";
 
     if (!$db->query($sql)) return false;
+
+    if (preg_match_all('/#[A-Z0-9]{1,255}/i', $content, $tag_matches_array)) {
+        post_add_tags($tid, $new_pid, $tag_matches_array[0]);
+    }
 
     post_update_thread_length($tid, $new_pid);
 
@@ -125,17 +129,17 @@ function post_approve($tid, $pid)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST` ";
-    $sql.= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
-    $sql.= "APPROVED_BY = '{$_SESSION['UID']}' WHERE TID = '$tid' ";
-    $sql.= "AND PID = '$pid'";
+    $sql .= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
+    $sql .= "APPROVED_BY = '{$_SESSION['UID']}' WHERE TID = '$tid' ";
+    $sql .= "AND PID = '$pid'";
 
     if (!$db->query($sql)) return false;
 
     if ($pid == 1) {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-        $sql.= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "APPROVED_BY = '{$_SESSION['UID']}' WHERE TID = '$tid'";
+        $sql .= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
+        $sql .= "APPROVED_BY = '{$_SESSION['UID']}' WHERE TID = '$tid'";
 
         if (!$db->query($sql)) return false;
     }
@@ -155,8 +159,8 @@ function post_remove_attachments($tid, $pid)
     if (!($forum_fid = get_forum_fid())) return false;
 
     $sql = "DELETE QUICK FROM POST_ATTACHMENT_IDS ";
-    $sql.= "WHERE FID = '$forum_fid' AND TID = '$tid' ";
-    $sql.= "AND PID = '$pid'";
+    $sql .= "WHERE FID = '$forum_fid' AND TID = '$tid' ";
+    $sql .= "AND PID = '$pid'";
 
     if (!$db->query($sql)) return false;
 
@@ -176,7 +180,7 @@ function post_add_attachment($tid, $pid, $aid)
     if (!($forum_fid = get_forum_fid())) return false;
 
     $sql = "INSERT IGNORE INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
-    $sql.= "VALUES ($forum_fid, $tid, $pid, $aid)";
+    $sql .= "VALUES ($forum_fid, $tid, $pid, $aid)";
 
     if (!$db->query($sql)) return false;
 
@@ -220,10 +224,10 @@ function post_create_thread($fid, $uid, $title, $poll = 'N', $sticky = 'N', $clo
     }
 
     $sql = "INSERT INTO `{$table_prefix}THREAD` (FID, BY_UID, TITLE, LENGTH, POLL_FLAG, ";
-    $sql.= "APPROVED, APPROVED_BY, STICKY, CREATED, MODIFIED, CLOSED, DELETED) ";
-    $sql.= "VALUES ('$fid', '$uid', '$title', 0, '$poll', $approved_datetime, ";
-    $sql.= "$approved_by, '$sticky', CAST('$current_datetime' AS DATETIME), ";
-    $sql.= "CAST('$current_datetime' AS DATETIME), $closed, '$deleted')";
+    $sql .= "APPROVED, APPROVED_BY, STICKY, CREATED, MODIFIED, CLOSED, DELETED) ";
+    $sql .= "VALUES ('$fid', '$uid', '$title', 0, '$poll', $approved_datetime, ";
+    $sql .= "$approved_by, '$sticky', CAST('$current_datetime' AS DATETIME), ";
+    $sql .= "CAST('$current_datetime' AS DATETIME), $closed, '$deleted')";
 
     if (!$db->query($sql)) return false;
 
@@ -242,18 +246,18 @@ function post_update_thread_length($tid, $length)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET LENGTH = '$length', ";
-    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
+    $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
 
     if (!$db->query($sql)) return false;
 
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) !== false) {
 
         $sql = "INSERT INTO `{$table_prefix}THREAD` (TID, UNREAD_PID) ";
-        $sql.= "SELECT THREAD.TID, MAX(POST.PID) AS UNREAD_PID FROM `{$table_prefix}THREAD` THREAD ";
-        $sql.= "LEFT JOIN `{$table_prefix}POST` POST ON (POST.TID = THREAD.TID) ";
-        $sql.= "WHERE POST.CREATED < CAST('$unread_cutoff_datetime' AS DATETIME) ";
-        $sql.= "AND THREAD.TID = '$tid' GROUP BY THREAD.TID ";
-        $sql.= "ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID)";
+        $sql .= "SELECT THREAD.TID, MAX(POST.PID) AS UNREAD_PID FROM `{$table_prefix}THREAD` THREAD ";
+        $sql .= "LEFT JOIN `{$table_prefix}POST` POST ON (POST.TID = THREAD.TID) ";
+        $sql .= "WHERE POST.CREATED < CAST('$unread_cutoff_datetime' AS DATETIME) ";
+        $sql .= "AND THREAD.TID = '$tid' GROUP BY THREAD.TID ";
+        $sql .= "ON DUPLICATE KEY UPDATE UNREAD_PID = VALUES(UNREAD_PID)";
 
         if (!$db->query($sql)) return false;
     }
@@ -280,9 +284,9 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
     if (isset($default_uid) && $default_uid > 0) {
 
         $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
-        $sql.= "FROM USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-        $sql.= "WHERE USER.UID = '$default_uid' ";
+        $sql .= "FROM USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+        $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+        $sql .= "WHERE USER.UID = '$default_uid' ";
 
         if (!($result = $db->query($sql))) return false;
 
@@ -291,28 +295,28 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
             $top_user = $result->fetch_assoc();
 
             if (isset($top_user['PEER_NICKNAME'])) {
-            	if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
-                	$top_user['NICKNAME'] = $top_user['PEER_NICKNAME'];
+                if (!is_null($top_user['PEER_NICKNAME']) && strlen($top_user['PEER_NICKNAME']) > 0) {
+                    $top_user['NICKNAME'] = $top_user['PEER_NICKNAME'];
                 }
             }
 
             $fmt_username = word_filter_add_ob_tags(format_user_name($top_user['LOGON'], $top_user['NICKNAME']), true);
-            $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>";
+            $html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>";
         }
     }
 
     if ($show_all) {
-        $html .= "<option value=\"0\">". gettext("ALL"). "</option>";
+        $html .= "<option value=\"0\">" . gettext("ALL") . "</option>";
     }
 
     $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG VISITOR_LOG ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "WHERE VISITOR_LOG.FORUM = '$forum_fid' AND VISITOR_LOG.UID <> '$default_uid' ";
-    $sql.= "AND VISITOR_LOG.UID > 0 ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
-    $sql.= "LIMIT 0, 20";
+    $sql .= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG VISITOR_LOG ";
+    $sql .= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "WHERE VISITOR_LOG.FORUM = '$forum_fid' AND VISITOR_LOG.UID <> '$default_uid' ";
+    $sql .= "AND VISITOR_LOG.UID > 0 ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
+    $sql .= "LIMIT 0, 20";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -331,7 +335,7 @@ function post_draw_to_dropdown($default_uid, $show_all = true)
         }
     }
 
-    $html.= "</select>";
+    $html .= "</select>";
     return $html;
 }
 
@@ -354,9 +358,9 @@ function post_draw_to_dropdown_recent($default_uid)
     if (isset($default_uid) && $default_uid != 0) {
 
         $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
-        $sql.= "FROM USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-        $sql.= "WHERE USER.UID = '$default_uid' ";
+        $sql .= "FROM USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+        $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+        $sql .= "WHERE USER.UID = '$default_uid' ";
 
         if (!($result = $db->query($sql))) return false;
 
@@ -371,20 +375,20 @@ function post_draw_to_dropdown_recent($default_uid)
             }
 
             $fmt_username = word_filter_add_ob_tags(format_user_name($top_user['LOGON'], $top_user['NICKNAME']), true);
-            $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>";
+            $html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>";
         }
     }
 
-    $html .= "<option value=\"0\">". gettext("ALL"). "</option>";
+    $html .= "<option value=\"0\">" . gettext("ALL") . "</option>";
 
     $sql = "SELECT VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG VISITOR_LOG ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "WHERE VISITOR_LOG.FORUM = '$forum_fid' AND VISITOR_LOG.UID <> '$default_uid' ";
-    $sql.= "AND VISITOR_LOG.UID > 0 ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
-    $sql.= "LIMIT 0, 20";
+    $sql .= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON FROM VISITOR_LOG VISITOR_LOG ";
+    $sql .= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "WHERE VISITOR_LOG.FORUM = '$forum_fid' AND VISITOR_LOG.UID <> '$default_uid' ";
+    $sql .= "AND VISITOR_LOG.UID > 0 ORDER BY VISITOR_LOG.LAST_LOGON DESC ";
+    $sql .= "LIMIT 0, 20";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -403,7 +407,7 @@ function post_draw_to_dropdown_recent($default_uid)
         }
     }
 
-    $html.= "</select>";
+    $html .= "</select>";
     return $html;
 }
 
@@ -423,9 +427,9 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
     if (isset($default_uid) && $default_uid != 0) {
 
         $sql = "SELECT USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
-        $sql.= "FROM USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-        $sql.= "WHERE USER.UID = '$default_uid' ";
+        $sql .= "FROM USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+        $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+        $sql .= "WHERE USER.UID = '$default_uid' ";
 
         if (!($result = $db->query($sql))) return false;
 
@@ -440,30 +444,30 @@ function post_draw_to_dropdown_in_thread($tid, $default_uid, $show_all = true, $
             }
 
             $fmt_username = word_filter_add_ob_tags(format_user_name($top_user['LOGON'], $top_user['NICKNAME']), true);
-            $html.= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>";
+            $html .= "<option value=\"$default_uid\" selected=\"selected\">$fmt_username</option>";
         }
     }
 
     if ($show_all) {
 
-        $html.= "<option value=\"0\">". gettext("ALL"). "</option>";
+        $html .= "<option value=\"0\">" . gettext("ALL") . "</option>";
 
     } else if ($inc_blank) {
 
         if (isset($default_uid) && $default_uid != 0) {
-            $html.= "<option value=\"0\">&nbsp;</option>";
+            $html .= "<option value=\"0\">&nbsp;</option>";
         } else {
-            $html.= "<option value=\"0\" selected=\"selected\">&nbsp;</option>";
+            $html .= "<option value=\"0\" selected=\"selected\">&nbsp;</option>";
         }
     }
 
     $sql = "SELECT POST.FROM_UID AS UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "USER_PEER.PEER_NICKNAME FROM `{$table_prefix}POST` POST ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = POST.FROM_UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "WHERE POST.TID = '$tid' AND POST.FROM_UID <> '$default_uid' ";
-    $sql.= "GROUP BY POST.FROM_UID LIMIT 0, 20";
+    $sql .= "USER_PEER.PEER_NICKNAME FROM `{$table_prefix}POST` POST ";
+    $sql .= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "ON (USER_PEER.PEER_UID = POST.FROM_UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "WHERE POST.TID = '$tid' AND POST.FROM_UID <> '$default_uid' ";
+    $sql .= "GROUP BY POST.FROM_UID LIMIT 0, 20";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -499,7 +503,7 @@ function post_check_ddkey($ddkey)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT USER_VALUE FROM `{$table_prefix}USER_TRACK` ";
-    $sql.= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'DDKEY'";
+    $sql .= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'DDKEY'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -508,17 +512,17 @@ function post_check_ddkey($ddkey)
         list($ddkey_datetime_check) = $result->fetch_row();
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
-        $sql.= "SET USER_VALUE = CAST('$ddkey_datetime' AS DATETIME) ";
-        $sql.= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'DDKEY'";
+        $sql .= "SET USER_VALUE = CAST('$ddkey_datetime' AS DATETIME) ";
+        $sql .= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'DDKEY'";
 
         if (!($result = $db->query($sql))) return false;
 
-    } else{
+    } else {
 
         $ddkey_datetime_check = '';
 
         $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, USER_KEY, USER_VALUE) ";
-        $sql.= "VALUES ('{$_SESSION['UID']}', 'DDKEY', CAST('$ddkey_datetime' AS DATETIME))";
+        $sql .= "VALUES ('{$_SESSION['UID']}', 'DDKEY', CAST('$ddkey_datetime' AS DATETIME))";
 
         if (!($result = $db->query($sql))) return false;
     }
@@ -541,8 +545,8 @@ function post_check_frequency()
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "SELECT UNIX_TIMESTAMP(USER_VALUE) + $minimum_post_frequency, ";
-    $sql.= "UNIX_TIMESTAMP('$current_datetime') FROM `{$table_prefix}USER_TRACK` ";
-    $sql.= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'LAST_POST'";
+    $sql .= "UNIX_TIMESTAMP('$current_datetime') FROM `{$table_prefix}USER_TRACK` ";
+    $sql .= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'LAST_POST'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -553,18 +557,18 @@ function post_check_frequency()
         if (!is_numeric($last_post_stamp) || $last_post_stamp < $current_timestamp) {
 
             $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
-            $sql.= "SET USER_VALUE = CAST('$current_datetime' AS DATETIME) ";
-            $sql.= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'LAST_POST'";
+            $sql .= "SET USER_VALUE = CAST('$current_datetime' AS DATETIME) ";
+            $sql .= "WHERE UID = '{$_SESSION['UID']}' AND USER_KEY = 'LAST_POST'";
 
             if (!($result = $db->query($sql))) return false;
 
             return true;
         }
 
-    } else{
+    } else {
 
         $sql = "INSERT INTO `{$table_prefix}USER_TRACK` (UID, USER_KEY, USER_VALUE) ";
-        $sql.= "VALUES ('{$_SESSION['UID']}', 'LAST_POST', CAST('$current_datetime' AS DATETIME))";
+        $sql .= "VALUES ('{$_SESSION['UID']}', 'LAST_POST', CAST('$current_datetime' AS DATETIME))";
 
         if (!($result = $db->query($sql))) return false;
 
@@ -586,21 +590,25 @@ function post_update($fid, $tid, $pid, $content)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST_CONTENT` SET CONTENT = '$content' ";
-    $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
+    $sql .= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
     if (!$db->query($sql)) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST` SET INDEXED = NULL ";
-    $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
+    $sql .= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
     if (!$db->query($sql)) return false;
 
     if (session::check_perm(USER_PERM_POST_APPROVAL, $fid) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST` SET APPROVED = NULL, APPROVED_BY = NULL ";
-        $sql.= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
+        $sql .= "WHERE TID = '$tid' AND PID = '$pid' LIMIT 1";
 
         if (!$db->query($sql)) return false;
+    }
+
+    if (preg_match_all('/#[A-Z0-9]{1,255}/i', $content, $tag_matches_array)) {
+        post_add_tags($tid, $pid, $tag_matches_array[0]);
     }
 
     return true;
@@ -620,8 +628,8 @@ function post_add_edit_text($tid, $pid)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST` ";
-    $sql.= "SET EDITED = CAST('$current_datetime' AS DATETIME), ";
-    $sql.= "EDITED_BY = '{$_SESSION['UID']}' WHERE TID = '$tid' AND PID = '$pid'";
+    $sql .= "SET EDITED = CAST('$current_datetime' AS DATETIME), ";
+    $sql .= "EDITED_BY = '{$_SESSION['UID']}' WHERE TID = '$tid' AND PID = '$pid'";
 
     if (!$db->query($sql)) return false;
 
@@ -644,27 +652,29 @@ function post_delete($tid, $pid)
     if (thread_is_poll($tid) && $pid == 1) {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET POLL_FLAG = 'N', ";
-        $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
+        $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
 
         if (!$db->query($sql)) return false;
     }
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET DELETED = 'Y', ";
-    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid' AND LENGTH = 1";
+    $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid' AND LENGTH = 1";
 
     if (!$db->query($sql)) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST_CONTENT` SET CONTENT = NULL ";
-    $sql.= "WHERE TID = '$tid' AND PID = '$pid'";
+    $sql .= "WHERE TID = '$tid' AND PID = '$pid'";
 
     if (!$db->query($sql)) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}POST` ";
-    $sql.= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
-    $sql.= "APPROVED_BY = '{$_SESSION['UID']}' WHERE TID = '$tid' ";
-    $sql.= "AND PID = '$pid'";
+    $sql .= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
+    $sql .= "APPROVED_BY = '{$_SESSION['UID']}' WHERE TID = '$tid' ";
+    $sql .= "AND PID = '$pid'";
 
     if (!$db->query($sql)) return false;
+
+    post_delete_tags($tid, $pid);
 
     return true;
 }
@@ -689,11 +699,55 @@ function post_set_user_rating($tid, $pid, $uid, $rating)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "REPLACE INTO `{$table_prefix}POST_RATING` (TID, PID, UID, RATING, CREATED) ";
-    $sql.= "SELECT POST.TID, POST.PID, USER.UID, IF(COALESCE(POST_RATING.RATING, 0) = $rating, 0, $rating) AS RATING, ";
-    $sql.= "CAST('$current_datetime' AS DATETIME) FROM `{$table_prefix}POST` POST ";
-    $sql.= "INNER JOIN USER ON (USER.UID = $uid) LEFT JOIN `{$table_prefix}POST_RATING` POST_RATING ";
-    $sql.= "ON (POST_RATING.TID = POST.TID AND POST_RATING.PID = POST.PID AND POST_RATING.UID = $uid) ";
-    $sql.= "WHERE POST.TID = $tid AND POST.PID = $pid";
+    $sql .= "SELECT POST.TID, POST.PID, USER.UID, IF(COALESCE(POST_RATING.RATING, 0) = $rating, 0, $rating) AS RATING, ";
+    $sql .= "CAST('$current_datetime' AS DATETIME) FROM `{$table_prefix}POST` POST ";
+    $sql .= "INNER JOIN USER ON (USER.UID = $uid) LEFT JOIN `{$table_prefix}POST_RATING` POST_RATING ";
+    $sql .= "ON (POST_RATING.TID = POST.TID AND POST_RATING.PID = POST.PID AND POST_RATING.UID = $uid) ";
+    $sql .= "WHERE POST.TID = $tid AND POST.PID = $pid";
+
+    if (!$db->query($sql)) return false;
+
+    return true;
+}
+
+function post_add_tags($tid, $pid, array $tags)
+{
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+
+    if (!($table_prefix = get_table_prefix())) return false;
+
+    if (!$db = db::get()) return false;
+
+    $tags = $db->escape($tags);
+
+    foreach ($tags as $tag) {
+
+        $sql = "INSERT IGNORE INTO `{$table_prefix}TAG` (TAG) VALUES ('$tag')";
+        if (!$db->query($sql)) return false;
+    }
+
+    $tags = implode("','", $tags);
+
+    $sql = "INSERT IGNORE INTO `{$table_prefix}POST_TAG` (TID, PID, TAG) ";
+    $sql .= "SELECT '$tid', '$pid', TAG.TID FROM `{$table_prefix}TAG` TAG ";
+    $sql .= "WHERE TAG.TAG IN ('$tags')";
+
+    if (!$db->query($sql)) return false;
+
+    return true;
+}
+
+function post_delete_tags($tid, $pid)
+{
+    if (!is_numeric($tid)) return false;
+    if (!is_numeric($pid)) return false;
+
+    if (!($table_prefix = get_table_prefix())) return false;
+
+    if (!$db = db::get()) return false;
+
+    $sql = "DELETE FROM `{$table_prefix}POST_TAG` WHERE TID = '$tid' AND PID = '$pid'";
 
     if (!$db->query($sql)) return false;
 

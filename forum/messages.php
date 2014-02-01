@@ -25,20 +25,20 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'adsense.inc.php';
-require_once BH_INCLUDE_PATH. 'beehive.inc.php';
-require_once BH_INCLUDE_PATH. 'cache.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'poll.inc.php';
-require_once BH_INCLUDE_PATH. 'post.inc.php';
-require_once BH_INCLUDE_PATH. 'search.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'thread.inc.php';
+require_once BH_INCLUDE_PATH . 'adsense.inc.php';
+require_once BH_INCLUDE_PATH . 'beehive.inc.php';
+require_once BH_INCLUDE_PATH . 'cache.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'poll.inc.php';
+require_once BH_INCLUDE_PATH . 'post.inc.php';
+require_once BH_INCLUDE_PATH . 'search.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'thread.inc.php';
 // End Required includes
 
 // Message pane caching
@@ -179,7 +179,7 @@ if (isset($_GET['setinterest'])) {
 
 if (isset($_GET['relupdated'])) {
 
-    html_display_success_msg(gettext("Relationships Updated!"), '96%', 'center');
+    html_display_success_msg(gettext("Relationships Updated"), '96%', 'center');
 
 } else if (isset($_GET['setstats'])) {
 
@@ -188,7 +188,10 @@ if (isset($_GET['relupdated'])) {
 } else if (isset($_GET['post_success']) && validate_msg($_GET['post_success'])) {
 
     list($return_tid, $return_pid) = explode(".", $_GET['post_success']);
-    message_display_success_msg($return_tid, $return_pid, $pid, gettext("Successfully created post %s"), $posts_per_page);
+
+    if ($return_tid != $tid || ($return_pid > $pid + $posts_per_page)) {
+        message_display_success_msg($return_tid, $return_pid, $pid, gettext("Successfully created post %s"), $posts_per_page);
+    }
 
 } else if (isset($_GET['edit_success']) && validate_msg($_GET['edit_success'])) {
 
@@ -381,7 +384,7 @@ echo "  <tr>\n";
 if (($thread_data['CLOSED'] == 0 && session::check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || session::check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
 
     echo "    <td width=\"33%\" align=\"left\" style=\"white-space: nowrap\" class=\"postbody\">";
-    echo "      <img src=\"". html_style_image('reply_all.png') ."\" alt=\"", gettext("Reply to All"), "\" title=\"", gettext("Reply to All"), "\" border=\"0\" /> ";
+    echo "      <img src=\"" . html_style_image('reply_all.png') . "\" alt=\"", gettext("Reply to All"), "\" title=\"", gettext("Reply to All"), "\" border=\"0\" /> ";
     echo "      <a href=\"post.php?webtag=$webtag&amp;reply_to=$tid.0&amp;return_msg=$tid.$pid\" target=\"_parent\" id=\"reply_0\"><b>", gettext("Reply to All"), "</b></a>\n";
     echo "    </td>\n";
 
@@ -394,11 +397,11 @@ if (session::logged_in()) {
 
     if ($thread_data['LENGTH'] > 0) {
 
-        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"". html_style_image('thread_options.png') ."\" alt=\"", gettext("Edit Thread Options"), "\" title=\"", gettext("Edit Thread Options"), "\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg&amp;return_msg=$tid.$pid\" target=\"_self\"><b>", gettext("Edit Thread Options"), "</b></a></td>\n";
+        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"" . html_style_image('thread_options.png') . "\" alt=\"", gettext("Edit Thread Options"), "\" title=\"", gettext("Edit Thread Options"), "\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg&amp;return_msg=$tid.$pid\" target=\"_self\"><b>", gettext("Edit Thread Options"), "</b></a></td>\n";
 
     } else {
 
-        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"". html_style_image('thread_options.png') ."\" alt=\"", gettext("Undelete Thread"), "\" title=\"", gettext("Undelete Thread"), "\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg&amp;return_msg=$tid.$pid\" target=\"_self\"><b>", gettext("Undelete Thread"), "</b></a></td>\n";
+        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"" . html_style_image('thread_options.png') . "\" alt=\"", gettext("Undelete Thread"), "\" title=\"", gettext("Undelete Thread"), "\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg&amp;return_msg=$tid.$pid\" target=\"_self\"><b>", gettext("Undelete Thread"), "</b></a></td>\n";
     }
 
 } else {
@@ -422,7 +425,7 @@ echo "  </tr>\n";
 if (session::logged_in()) {
 
     echo "  <tr>\n";
-    echo "    <td colspan=\"3\" align=\"center\" class=\"postbody\"><img src=\"". html_style_image('quickreplyall.png') ."\" alt=\"", gettext("Quick Reply to All"), "\" title=\"", gettext("Quick Reply to All"), "\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" data-msg=\"$tid.0\" class=\"quick_reply_link\"><b>", gettext("Quick Reply to All"), "</b></a></td>\n";
+    echo "    <td colspan=\"3\" align=\"center\" class=\"postbody\"><img src=\"" . html_style_image('quickreplyall.png') . "\" alt=\"", gettext("Quick Reply to All"), "\" title=\"", gettext("Quick Reply to All"), "\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" data-msg=\"$tid.0\" class=\"quick_reply_link\"><b>", gettext("Quick Reply to All"), "</b></a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td colspan=\"3\">\n";

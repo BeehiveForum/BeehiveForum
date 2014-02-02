@@ -67,6 +67,8 @@ class db extends mysqli
                 }
             }
 
+            $db->query("SET SESSION sql_mode = ''");
+
             if ($new_connection) return $db;
 
             db::$connection = $db;

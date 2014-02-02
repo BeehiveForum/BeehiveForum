@@ -25,20 +25,20 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'poll.inc.php';
-require_once BH_INCLUDE_PATH. 'search.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'thread.inc.php';
-require_once BH_INCLUDE_PATH. 'threads.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'poll.inc.php';
+require_once BH_INCLUDE_PATH . 'search.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'thread.inc.php';
+require_once BH_INCLUDE_PATH . 'threads.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Open search support
@@ -143,7 +143,7 @@ $max_length = 84;
 
 search_get_word_lengths($min_length, $max_length);
 
-if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || isset($_GET['search_string']) || isset($_GET['logon'])) && !isset($_GET['search_error'])) {
+if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || isset($_GET['search_string']) || isset($_GET['logon']) || isset($_GET['tag'])) && !isset($_GET['search_error'])) {
 
     $page = 1;
 
@@ -153,6 +153,8 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
     if (isset($_GET['search_string']) && strlen(trim($_GET['search_string'])) > 0) {
         $search_arguments['search_string'] = trim($_GET['search_string']);
+    } else if (isset($_GET['tag']) && strlen(trim($_GET['tag'])) > 0) {
+        $search_arguments['search_tag'] = trim($_GET['tag']);
     } else if (isset($_POST['search_string']) && strlen(trim($_POST['search_string'])) > 0) {
         $search_arguments['search_string'] = trim($_POST['search_string']);
     }
@@ -214,7 +216,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         if (isset($_GET['search_string']) || isset($_GET['logon'])) {
 
             $redirect_uri = "index.php?webtag=$webtag&final_uri=discussion.php";
-            $redirect_uri.= "%3Fwebtag%3D$webtag%26left%3Dsearch_results";
+            $redirect_uri .= "%3Fwebtag%3D$webtag%26left%3Dsearch_results";
 
             header_redirect($redirect_uri);
             exit;
@@ -223,8 +225,8 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     } else if (isset($_GET['search_string']) || isset($_GET['logon'])) {
 
         $redirect_uri = "index.php?webtag=$webtag&final_uri=discussion.php";
-        $redirect_uri.= "%3Fwebtag%3D$webtag%26right%3Dsearch";
-        $redirect_uri.= "%26search_error%3D$error";
+        $redirect_uri .= "%3Fwebtag%3D$webtag%26right%3Dsearch";
+        $redirect_uri .= "%26search_error%3D$error";
 
         header_redirect($redirect_uri);
         exit;
@@ -276,7 +278,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         echo "<img src=\"", html_style_image('search.png'), "\" alt=\"", gettext("Found"), "\" title=\"", gettext("Found"), "\" />&nbsp;", gettext("Found"), ": {$search_results_array['result_count']} ", gettext("matches"), "<br />\n";
 
         if ($page > 1) {
-            echo "<img src=\"".html_style_image('current_thread.png')."\" alt=\"", gettext("Previous page"), "\" title=\"", gettext("Previous page"), "\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;page=", $page - 1, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">", gettext("Previous page"), "</a>\n";
+            echo "<img src=\"" . html_style_image('current_thread.png') . "\" alt=\"", gettext("Previous page"), "\" title=\"", gettext("Previous page"), "\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;page=", $page - 1, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">", gettext("Previous page"), "</a>\n";
         }
 
         echo "<ol start=\"", (($page * 20) - 20) + 1, "\">\n";
@@ -296,14 +298,14 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
                     // Limit thread title to 20 characters.
                     if (mb_strlen($message['TITLE']) > 20) {
-                        $message['TITLE'] = word_filter_add_ob_tags(mb_substr($message['TITLE'], 0, 20), true). "&hellip;";
+                        $message['TITLE'] = word_filter_add_ob_tags(mb_substr($message['TITLE'], 0, 20), true) . "&hellip;";
                     } else {
                         $message['TITLE'] = word_filter_add_ob_tags($message['TITLE'], true);
                     }
 
                     // Limit displayed post content to 35 characters
                     if (mb_strlen($message['CONTENT']) > 70) {
-                        $message['CONTENT'] = word_filter_add_ob_tags(fix_html(mb_substr($message['CONTENT'], 0, 70)), true). "&hellip;";
+                        $message['CONTENT'] = word_filter_add_ob_tags(fix_html(mb_substr($message['CONTENT'], 0, 70)), true) . "&hellip;";
                     } else {
                         $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT'], true);
                     }
@@ -340,10 +342,10 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "      <td align=\"left\" colspan=\"2\">", form_dropdown_array("sort_by", $search_sort_by_array, $sort_by), "</td>\n";
         echo "    </tr>\n";
-        echo"     <tr>\n";
+        echo "     <tr>\n";
         echo "      <td align=\"left\">&nbsp;</td>\n";
         echo "      <td align=\"left\">", form_dropdown_array("sort_dir", $search_sort_dir_array, $sort_dir), "</td>\n";
-        echo "      <td align=\"left\">", form_submit("go",gettext("Go!")). "</td>\n";
+        echo "      <td align=\"left\">", form_submit("go", gettext("Go!")) . "</td>\n";
         echo "    </tr>\n";
         echo "  </table>\n";
         echo "</form>\n";
@@ -369,8 +371,8 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     echo "    <td align=\"left\" class=\"smalltext\">\n";
     echo "      <form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"", html_get_frame_name('right'), "\">\n";
     echo "        ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
-    echo "        ", form_input_text('msg', '1.1', 10). "\n";
-    echo "        ", form_submit("go",gettext("Go!")). "\n";
+    echo "        ", form_input_text('msg', '1.1', 10) . "\n";
+    echo "        ", form_submit("go", gettext("Go!")) . "\n";
     echo "      </form>\n";
     echo "    </td>\n";
     echo "  </tr>\n";
@@ -385,8 +387,8 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     echo "    <td align=\"left\" class=\"smalltext\">\n";
     echo "      <form accept-charset=\"utf-8\" method=\"post\" action=\"search.php\" target=\"", html_get_frame_name('right'), "\">\n";
     echo "        ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
-    echo "        ", form_input_text("search_string", null, 20). "\n";
-    echo "        ", form_submit("search", gettext("Find")). "\n";
+    echo "        ", form_input_text("search_string", null, 20) . "\n";
+    echo "        ", form_submit("search", gettext("Find")) . "\n";
     echo "      </form>\n";
     echo "    </td>\n";
     echo "  </tr>\n";

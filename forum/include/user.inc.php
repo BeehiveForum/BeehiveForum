@@ -22,12 +22,12 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'ip.inc.php';
-require_once BH_INCLUDE_PATH. 'timezone.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'ip.inc.php';
+require_once BH_INCLUDE_PATH . 'timezone.inc.php';
 // End Required includes
 
 /**
@@ -35,15 +35,15 @@ require_once BH_INCLUDE_PATH. 'timezone.inc.php';
  */
 function user_count()
 {
-   if (!$db = db::get()) return false;
+    if (!$db = db::get()) return false;
 
-   $sql = "SELECT COUNT(UID) AS COUNT FROM USER";
+    $sql = "SELECT COUNT(UID) AS COUNT FROM USER";
 
-   if (!($result = $db->query($sql))) return false;
+    if (!($result = $db->query($sql))) return false;
 
-   list($user_count) = $result->fetch_row();
+    list($user_count) = $result->fetch_row();
 
-   return $user_count;
+    return $user_count;
 }
 
 function user_exists($logon, $check_uid = false)
@@ -55,12 +55,12 @@ function user_exists($logon, $check_uid = false)
     if (is_numeric($check_uid) && $check_uid !== false) {
 
         $sql = "SELECT COUNT(UID) AS USER_COUNT FROM USER ";
-        $sql.= "WHERE LOGON = '$logon' AND UID <> '$check_uid'";
+        $sql .= "WHERE LOGON = '$logon' AND UID <> '$check_uid'";
 
     } else {
 
         $sql = "SELECT COUNT(UID) AS USER_COUNT FROM USER ";
-        $sql.= "WHERE LOGON = '$logon'";
+        $sql .= "WHERE LOGON = '$logon'";
     }
 
     if (!($result = $db->query($sql))) return false;
@@ -93,8 +93,8 @@ function user_create($logon, $password, $nickname, $email)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "INSERT INTO USER (LOGON, PASSWD, SALT, NICKNAME, EMAIL, REGISTERED, REFERER, IPADDRESS) ";
-    $sql.= "VALUES ('$logon', '$passhash', '$salt', '$nickname', '$email', CAST('$current_datetime' AS DATETIME), ";
-    $sql.= "'$http_referer', '$ipaddress')";
+    $sql .= "VALUES ('$logon', '$passhash', '$salt', '$nickname', '$email', CAST('$current_datetime' AS DATETIME), ";
+    $sql .= "'$http_referer', '$ipaddress')";
 
     if (($db->query($sql))) {
 
@@ -122,8 +122,8 @@ function user_update($uid, $logon, $nickname, $email)
     // Check to see if we need to save the current
     // details to the USER_HISTORY table.
     $sql = "SELECT LOGON, NICKNAME, EMAIL FROM USER_HISTORY ";
-    $sql.= "WHERE UID = '$uid' ORDER BY MODIFIED DESC ";
-    $sql.= "LIMIT 0, 1";
+    $sql .= "WHERE UID = '$uid' ORDER BY MODIFIED DESC ";
+    $sql .= "LIMIT 0, 1";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -141,7 +141,7 @@ function user_update($uid, $logon, $nickname, $email)
             // We save everything so that future changes don't cause
             // additional matches (NULL != $logon, etc.)
             $sql = "INSERT INTO USER_HISTORY (UID, LOGON, NICKNAME, EMAIL, MODIFIED) ";
-            $sql.= "VALUES ('$uid', '$logon', '$nickname', '$email', CAST('$current_datetime' AS DATETIME))";
+            $sql .= "VALUES ('$uid', '$logon', '$nickname', '$email', CAST('$current_datetime' AS DATETIME))";
 
             if (!$db->query($sql)) return false;
         }
@@ -150,14 +150,14 @@ function user_update($uid, $logon, $nickname, $email)
 
         // No previous data so we just save what we have.
         $sql = "INSERT INTO USER_HISTORY (UID, LOGON, NICKNAME, EMAIL, MODIFIED) ";
-        $sql.= "VALUES ('$uid', '$logon', '$nickname', '$email', CAST('$current_datetime' AS DATETIME))";
+        $sql .= "VALUES ('$uid', '$logon', '$nickname', '$email', CAST('$current_datetime' AS DATETIME))";
 
         if (!$db->query($sql)) return false;
     }
 
     // Update the user details
     $sql = "UPDATE LOW_PRIORITY USER SET LOGON = '$logon', NICKNAME = '$nickname', ";
-    $sql.= "EMAIL = '$email' WHERE UID = '$uid'";
+    $sql .= "EMAIL = '$email' WHERE UID = '$uid'";
 
     if (!$db->query($sql)) return false;
 
@@ -173,7 +173,7 @@ function user_update_nickname($uid, $nickname)
     $nickname = $db->escape($nickname);
 
     $sql = "UPDATE LOW_PRIORITY USER SET NICKNAME = '$nickname' ";
-    $sql.= "WHERE UID = '$uid'";
+    $sql .= "WHERE UID = '$uid'";
 
     if (!$db->query($sql)) return false;
 
@@ -189,7 +189,7 @@ function user_change_logon($uid, $logon)
     $logon = $db->escape($logon);
 
     $sql = "UPDATE LOW_PRIORITY USER SET LOGON = '$logon' ";
-    $sql.= "WHERE UID = '$uid'";
+    $sql .= "WHERE UID = '$uid'";
 
     if (!$db->query($sql)) return false;
 
@@ -205,8 +205,8 @@ function user_increment_post_count($uid)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
-    $sql.= "SET USER_VALUE = USER_VALUE + 1 WHERE UID = '$uid' ";
-    $sql.= "AND USER_KEY = 'POST_COUNT'";
+    $sql .= "SET USER_VALUE = USER_VALUE + 1 WHERE UID = '$uid' ";
+    $sql .= "AND USER_KEY = 'POST_COUNT'";
 
     if (!$db->query($sql)) return false;
 
@@ -223,8 +223,8 @@ function user_update_post_count($uid, $post_count)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
-    $sql.= "SET USER_VALUE = '$post_count' WHERE UID = '$uid' ";
-    $sql.= "AND USER_KEY = 'POST_COUNT'";
+    $sql .= "SET USER_VALUE = '$post_count' WHERE UID = '$uid' ";
+    $sql .= "AND USER_KEY = 'POST_COUNT'";
 
     if (!$db->query($sql)) return false;
 
@@ -240,8 +240,8 @@ function user_reset_post_count($uid)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_TRACK` ";
-    $sql.= "SET USER_VALUE = NULL WHERE UID = '$uid' ";
-    $sql.= "AND USER_KEY = 'POST_COUNT'";
+    $sql .= "SET USER_VALUE = NULL WHERE UID = '$uid' ";
+    $sql .= "AND USER_KEY = 'POST_COUNT'";
 
     if (!$db->query($sql)) return false;
 
@@ -275,7 +275,7 @@ function user_change_password($uid, $new_password, $old_password)
     $passhash = $db->escape($passhash);
 
     $sql = "UPDATE USER SET PASSWD = '$passhash', ";
-    $sql.= "SALT = '$salt' WHERE UID = '$uid'";
+    $sql .= "SALT = '$salt' WHERE UID = '$uid'";
 
     if (!$db->query($sql)) return false;
 
@@ -299,7 +299,7 @@ function user_reset_password($uid, $new_password, $old_passhash)
     $passhash = $db->escape($passhash);
 
     $sql = "UPDATE USER SET PASSWD = '$passhash', SALT = '$salt' ";
-    $sql.= "WHERE UID = '$uid' AND PASSWD = '$old_passhash'";
+    $sql .= "WHERE UID = '$uid' AND PASSWD = '$old_passhash'";
 
     if (!($db->query($sql))) return false;
 
@@ -315,8 +315,8 @@ function user_update_forums($uid, $forum_fid, $allowed)
     if (!is_numeric($allowed)) return false;
 
     $sql = "INSERT INTO USER_FORUM (UID, FID, ALLOWED) ";
-    $sql.= "VALUES ('$uid', '$forum_fid', '$allowed') ";
-    $sql.= "ON DUPLICATE KEY UPDATE ALLOWED = VALUES(ALLOWED)";
+    $sql .= "VALUES ('$uid', '$forum_fid', '$allowed') ";
+    $sql .= "ON DUPLICATE KEY UPDATE ALLOWED = VALUES(ALLOWED)";
 
     if (!$db->query($sql)) return false;
 
@@ -376,8 +376,8 @@ function user_logon_token($logon, $token)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "SELECT USER.UID FROM USER INNER JOIN USER_TOKEN ON (USER_TOKEN.UID = USER.UID) ";
-    $sql.= "WHERE USER.LOGON = '$logon' AND USER_TOKEN.TOKEN = '$token' ";
-    $sql.= "AND USER_TOKEN.EXPIRES > '$current_datetime'";
+    $sql .= "WHERE USER.LOGON = '$logon' AND USER_TOKEN.TOKEN = '$token' ";
+    $sql .= "AND USER_TOKEN.EXPIRES > '$current_datetime'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -409,7 +409,7 @@ function user_generate_token($uid)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "INSERT INTO USER_TOKEN (UID, TOKEN, EXPIRES) VALUES ('$uid', ";
-    $sql.= "'$token',  DATE_ADD('$current_datetime', INTERVAL 1 MONTH))";
+    $sql .= "'$token',  DATE_ADD('$current_datetime', INTERVAL 1 MONTH))";
 
     if (!($db->query($sql))) return false;
 
@@ -425,7 +425,7 @@ function user_prune_expired_tokens($uid)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "DELETE QUICK FROM USER_TOKEN WHERE UID = '$uid' ";
-    $sql.= "AND EXPIRES < '$current_datetime'";
+    $sql .= "AND EXPIRES < '$current_datetime'";
 
     if (!($db->query($sql))) return false;
 
@@ -443,7 +443,7 @@ function user_renew_token($uid, $token)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE USER_TOKEN SET EXPIRES = DATE_ADD('$current_datetime', INTERVAL 1 MONTH) ";
-    $sql.= "WHERE UID = '$uid' AND TOKEN = '$token'";
+    $sql .= "WHERE UID = '$uid' AND TOKEN = '$token'";
 
     if (!($db->query($sql))) return false;
 
@@ -473,15 +473,15 @@ function user_get($uid)
     if ((!$table_prefix = get_table_prefix()) || ($uid == $_SESSION['UID']) || ($uid == 0)) {
 
         $sql = "SELECT UID, LOGON, PASSWD, NICKNAME, USER.EMAIL, ";
-        $sql.= "IPADDRESS, REFERER FROM USER WHERE UID = '$uid'";
+        $sql .= "IPADDRESS, REFERER FROM USER WHERE UID = '$uid'";
 
     } else {
 
         $sql = "SELECT USER.UID, USER.LOGON, USER.PASSWD, USER.NICKNAME, ";
-        $sql.= "USER.EMAIL, USER.IPADDRESS, USER.REFERER, USER_PEER.PEER_NICKNAME FROM USER ";
-        $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-        $sql.= "WHERE USER.UID = '$uid'";
+        $sql .= "USER.EMAIL, USER.IPADDRESS, USER.REFERER, USER_PEER.PEER_NICKNAME FROM USER ";
+        $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+        $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+        $sql .= "WHERE USER.UID = '$uid'";
     }
 
     if (!($result = $db->query($sql))) return false;
@@ -509,8 +509,8 @@ function user_get_by_passhash($uid, $passhash)
     $passhash = $db->escape($passhash);
 
     $sql = "SELECT UID, LOGON, PASSWD, NICKNAME, EMAIL, REGISTERED, ";
-    $sql.= "IPADDRESS, REFERER, APPROVED FROM USER WHERE UID = '$uid' ";
-    $sql.= "AND PASSWD = '$passhash'";
+    $sql .= "IPADDRESS, REFERER, APPROVED FROM USER WHERE UID = '$uid' ";
+    $sql .= "AND PASSWD = '$passhash'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -613,8 +613,8 @@ function user_get_by_logon($logon)
     $logon = $db->escape($logon);
 
     $sql = "SELECT UID, LOGON, PASSWD, NICKNAME, EMAIL, ";
-    $sql.= "REGISTERED, IPADDRESS, REFERER, APPROVED ";
-    $sql.= "FROM USER WHERE LOGON LIKE '$logon'";
+    $sql .= "REGISTERED, IPADDRESS, REFERER, APPROVED ";
+    $sql .= "FROM USER WHERE LOGON LIKE '$logon'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -679,7 +679,7 @@ function user_get_pref_names($exclude = array())
     if (is_array($exclude) && sizeof($exclude) > 0) {
 
         $exclude_list = implode("', '", array_map(array($db, 'escape'), $exclude));
-        $sql.= "AND Field NOT IN ('$exclude_list')";
+        $sql .= "AND Field NOT IN ('$exclude_list')";
     }
 
     if (!($result = $db->query($sql))) return $pref_names;
@@ -699,30 +699,31 @@ function user_get_prefs($uid)
 
     // Arrays to hold the user preferences.
     $global_prefs_array = array();
-    $forum_prefs_array  = array();
+    $forum_prefs_array = array();
 
     // 2. The user's global prefs, in USER_PREFS:
     $sql = "SELECT USER_PREFS.FIRSTNAME, USER_PREFS.LASTNAME, USER_PREFS.DOB, ";
-    $sql.= "USER_PREFS.HOMEPAGE_URL, USER_PREFS.PIC_URL, USER_PREFS.EMAIL_NOTIFY, ";
-    $sql.= "USER_PREFS.TIMEZONE, USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, ";
-    $sql.= "USER_PREFS.POSTS_PER_PAGE, USER_PREFS.FONT_SIZE, USER_PREFS.STYLE, ";
-    $sql.= "USER_PREFS.EMOTICONS, USER_PREFS.VIEW_SIGS, USER_PREFS.START_PAGE, ";
-    $sql.= "USER_PREFS.LANGUAGE, USER_PREFS.PM_NOTIFY, USER_PREFS.PM_NOTIFY_EMAIL, ";
-    $sql.= "USER_PREFS.PM_SAVE_SENT_ITEM, USER_PREFS.PM_INCLUDE_REPLY, ";
-    $sql.= "USER_PREFS.PM_AUTO_PRUNE, USER_PREFS.PM_EXPORT_TYPE, ";
-    $sql.= "USER_PREFS.PM_EXPORT_FILE, USER_PREFS.PM_EXPORT_ATTACHMENTS, ";
-    $sql.= "USER_PREFS.PM_EXPORT_WORDFILTER, USER_PREFS.DOB_DISPLAY, USER_PREFS.ANON_LOGON, ";
-    $sql.= "USER_PREFS.SHOW_STATS, USER_PREFS.IMAGES_TO_LINKS, USER_PREFS.USE_WORD_FILTER, ";
-    $sql.= "USER_PREFS.USE_ADMIN_FILTER, USER_PREFS.ALLOW_EMAIL, USER_PREFS.USE_EMAIL_ADDR, ";
-    $sql.= "USER_PREFS.ALLOW_PM, USER_PREFS.POST_PAGE, USER_PREFS.SHOW_THUMBS, ";
-    $sql.= "USER_PREFS.ENABLE_WIKI_WORDS, USER_PREFS.USE_MOVER_SPOILER, ";
-    $sql.= "USER_PREFS.USE_LIGHT_MODE_SPOILER, USER_PREFS.USE_OVERFLOW_RESIZE, ";
-    $sql.= "USER_PREFS.PIC_AID, USER_PREFS.AVATAR_URL, USER_PREFS.AVATAR_AID, ";
-    $sql.= "USER_PREFS.REPLY_QUICK, USER_PREFS.THREADS_BY_FOLDER, USER_PREFS.THREAD_LAST_PAGE, ";
-    $sql.= "USER_PREFS.LEFT_FRAME_WIDTH, USER_PREFS.SHOW_AVATARS, USER_PREFS.SHOW_SHARE_LINKS, ";
-    $sql.= "TIMEZONES.GMT_OFFSET, TIMEZONES.DST_OFFSET FROM USER_PREFS ";
-    $sql.= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS.TIMEZONE) ";
-    $sql.= "WHERE USER_PREFS.UID = '$uid'";
+    $sql .= "USER_PREFS.HOMEPAGE_URL, USER_PREFS.PIC_URL, USER_PREFS.EMAIL_NOTIFY, ";
+    $sql .= "USER_PREFS.TIMEZONE, USER_PREFS.DL_SAVING, USER_PREFS.MARK_AS_OF_INT, ";
+    $sql .= "USER_PREFS.POSTS_PER_PAGE, USER_PREFS.FONT_SIZE, USER_PREFS.STYLE, ";
+    $sql .= "USER_PREFS.EMOTICONS, USER_PREFS.VIEW_SIGS, USER_PREFS.START_PAGE, ";
+    $sql .= "USER_PREFS.LANGUAGE, USER_PREFS.PM_NOTIFY, USER_PREFS.PM_NOTIFY_EMAIL, ";
+    $sql .= "USER_PREFS.PM_SAVE_SENT_ITEM, USER_PREFS.PM_INCLUDE_REPLY, ";
+    $sql .= "USER_PREFS.PM_AUTO_PRUNE, USER_PREFS.PM_EXPORT_TYPE, ";
+    $sql .= "USER_PREFS.PM_EXPORT_FILE, USER_PREFS.PM_EXPORT_ATTACHMENTS, ";
+    $sql .= "USER_PREFS.PM_EXPORT_WORDFILTER, USER_PREFS.DOB_DISPLAY, USER_PREFS.ANON_LOGON, ";
+    $sql .= "USER_PREFS.SHOW_STATS, USER_PREFS.IMAGES_TO_LINKS, USER_PREFS.USE_WORD_FILTER, ";
+    $sql .= "USER_PREFS.USE_ADMIN_FILTER, USER_PREFS.ALLOW_EMAIL, USER_PREFS.USE_EMAIL_ADDR, ";
+    $sql .= "USER_PREFS.ALLOW_PM, USER_PREFS.POST_PAGE, USER_PREFS.SHOW_THUMBS, ";
+    $sql .= "USER_PREFS.ENABLE_WIKI_WORDS, USER_PREFS.ENABLE_WIKI_QUICK_LINKS, ";
+    $sql .= "USER_PREFS.USE_MOVER_SPOILER, USER_PREFS.USE_LIGHT_MODE_SPOILER, ";
+    $sql .= "USER_PREFS.USE_OVERFLOW_RESIZE, USER_PREFS.PIC_AID, USER_PREFS.AVATAR_URL, ";
+    $sql .= "USER_PREFS.AVATAR_AID, USER_PREFS.REPLY_QUICK, USER_PREFS.THREADS_BY_FOLDER, ";
+    $sql .= "USER_PREFS.THREAD_LAST_PAGE, USER_PREFS.LEFT_FRAME_WIDTH, USER_PREFS.SHOW_AVATARS, ";
+    $sql .= "USER_PREFS.SHOW_SHARE_LINKS, USER_PREFS.ENABLE_TAGS, ";
+    $sql .= "TIMEZONES.GMT_OFFSET, TIMEZONES.DST_OFFSET FROM USER_PREFS ";
+    $sql .= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS.TIMEZONE) ";
+    $sql .= "WHERE USER_PREFS.UID = '$uid'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -734,12 +735,12 @@ function user_get_prefs($uid)
     if (($table_prefix = get_table_prefix()) !== false) {
 
         $sql = "SELECT HOMEPAGE_URL, PIC_URL, EMAIL_NOTIFY, MARK_AS_OF_INT, POSTS_PER_PAGE, ";
-        $sql.= "FONT_SIZE, STYLE, EMOTICONS, VIEW_SIGS, START_PAGE, LANGUAGE, SHOW_STATS, ";
-        $sql.= "IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, SHOW_THUMBS, ENABLE_WIKI_WORDS, ";
-        $sql.= "USE_MOVER_SPOILER, USE_LIGHT_MODE_SPOILER, USE_OVERFLOW_RESIZE, PIC_AID, AVATAR_URL, ";
-        $sql.= "AVATAR_AID, REPLY_QUICK, THREADS_BY_FOLDER, THREAD_LAST_PAGE, LEFT_FRAME_WIDTH, ";
-        $sql.= "SHOW_AVATARS, SHOW_SHARE_LINKS FROM `{$table_prefix}USER_PREFS` ";
-        $sql.= "WHERE UID = '$uid'";
+        $sql .= "FONT_SIZE, STYLE, EMOTICONS, VIEW_SIGS, START_PAGE, LANGUAGE, SHOW_STATS, ";
+        $sql .= "IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, SHOW_THUMBS, ENABLE_WIKI_WORDS, ";
+        $sql .= "ENABLE_WIKI_QUICK_LINKS, USE_MOVER_SPOILER, USE_LIGHT_MODE_SPOILER, USE_OVERFLOW_RESIZE, ";
+        $sql .= "PIC_AID, AVATAR_URL, AVATAR_AID, REPLY_QUICK, THREADS_BY_FOLDER, THREAD_LAST_PAGE, ";
+        $sql .= "LEFT_FRAME_WIDTH, SHOW_AVATARS, SHOW_SHARE_LINKS, ENABLE_TAGS FROM `{$table_prefix}USER_PREFS` ";
+        $sql .= "WHERE UID = '$uid'";
 
         if (!($result = $db->query($sql))) return false;
 
@@ -757,11 +758,11 @@ function user_get_prefs($uid)
 
     // Add keys to indicate whether the preference is set globally or not
     foreach ($forum_prefs_array_keys as $key) {
-        $forum_prefs_array[$key. '_GLOBAL'] = false;
+        $forum_prefs_array[$key . '_GLOBAL'] = false;
     }
 
     foreach ($global_prefs_array_keys as $key) {
-        $global_prefs_array[$key. '_GLOBAL'] = true;
+        $global_prefs_array[$key . '_GLOBAL'] = true;
     }
 
     // Merge them all together, with forum prefs overriding global prefs
@@ -783,7 +784,7 @@ function user_update_prefs($uid, array $prefs, array $prefs_global = array())
 
     // Arrays to hold preferences
     $global_prefs_array = array();
-    $forum_prefs_array  = array();
+    $forum_prefs_array = array();
 
     // names of preferences that can be set globally
     $global_pref_names = array(
@@ -824,6 +825,8 @@ function user_update_prefs($uid, array $prefs, array $prefs_global = array())
         'POST_PAGE',
         'SHOW_THUMBS',
         'ENABLE_WIKI_WORDS',
+        'ENABLE_WIKI_QUICK_LINKS',
+        'ENABLE_TAGS',
         'USE_MOVER_SPOILER',
         'USE_LIGHT_MODE_SPOILER',
         'USE_OVERFLOW_RESIZE',
@@ -839,7 +842,7 @@ function user_update_prefs($uid, array $prefs, array $prefs_global = array())
     );
 
     // names of preferences that can be set on a per-forum basis
-    $forum_pref_names =  array(
+    $forum_pref_names = array(
         'HOMEPAGE_URL',
         'PIC_URL',
         'EMAIL_NOTIFY',
@@ -857,6 +860,8 @@ function user_update_prefs($uid, array $prefs, array $prefs_global = array())
         'USE_ADMIN_FILTER',
         'SHOW_THUMBS',
         'ENABLE_WIKI_WORDS',
+        'ENABLE_WIKI_QUICK_LINKS',
+        'ENABLE_TAGS',
         'USE_MOVER_SPOILER',
         'USE_LIGHT_MODE_SPOILER',
         'USE_OVERFLOW_RESIZE',
@@ -912,7 +917,7 @@ function user_update_prefs($uid, array $prefs, array $prefs_global = array())
 
         // Construct the query and run it.
         $sql = "INSERT INTO USER_PREFS (`UID`, `$column_names`) VALUES('$uid', '$column_insert_values') ";
-        $sql.= "ON DUPLICATE KEY UPDATE $column_update_values ";
+        $sql .= "ON DUPLICATE KEY UPDATE $column_update_values ";
 
         if (!$db->query($sql)) return false;
 
@@ -951,7 +956,7 @@ function user_update_prefs($uid, array $prefs, array $prefs_global = array())
 
         // Construct the query and run it.
         $sql = "INSERT INTO `{$table_prefix}USER_PREFS` (`UID`, `$column_names`) ";
-        $sql.= "VALUES('$uid', '$column_insert_values') ON DUPLICATE KEY UPDATE $column_update_values ";
+        $sql .= "VALUES('$uid', '$column_insert_values') ON DUPLICATE KEY UPDATE $column_update_values ";
 
         if (!$db->query($sql)) return false;
     }
@@ -1020,6 +1025,8 @@ function user_check_pref($name, $value)
         case "USE_EMAIL_ADDR":
         case "ALLOW_PM":
         case "ENABLE_WIKI_WORDS":
+        case "ENABLE_WIKI_QUICK_LINKS":
+        case "ENABLE_TAGS":
         case "USE_MOVER_SPOILER":
         case "USE_LIGHT_MODE_SPOILER":
         case "USE_OVERFLOW_RESIZE":
@@ -1072,8 +1079,8 @@ function user_update_sig($uid, $content, $global_update = false)
         foreach ($forum_prefix_array as $forum_prefix) {
 
             $sql = "INSERT INTO `{$forum_prefix}USER_SIG` (UID, CONTENT) ";
-            $sql.= "VALUES ('$uid', '$content') ON DUPLICATE KEY ";
-            $sql.= "UPDATE CONTENT = VALUES(CONTENT)";
+            $sql .= "VALUES ('$uid', '$content') ON DUPLICATE KEY ";
+            $sql .= "UPDATE CONTENT = VALUES(CONTENT)";
 
             if (!$db->query($sql)) return false;
         }
@@ -1083,8 +1090,8 @@ function user_update_sig($uid, $content, $global_update = false)
         if (!($table_prefix = get_table_prefix())) return false;
 
         $sql = "INSERT INTO `{$table_prefix}USER_SIG` (UID, CONTENT) ";
-        $sql.= "VALUES ('$uid', '$content') ON DUPLICATE KEY UPDATE ";
-        $sql.= "CONTENT = VALUES(CONTENT)";
+        $sql .= "VALUES ('$uid', '$content') ON DUPLICATE KEY UPDATE ";
+        $sql .= "CONTENT = VALUES(CONTENT)";
 
         if (!$db->query($sql)) return false;
     }
@@ -1114,17 +1121,17 @@ function user_get_forthcoming_birthdays()
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PREFS_GLOBAL.DOB, ";
-    $sql.= "IF (DATEDIFF(DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '00-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d')) < 0, ";
-    $sql.= "DATEDIFF(DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '01-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d')), ";
-    $sql.= "DATEDIFF(DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '00-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d'))) AS DAY_COUNT ";
-    $sql.= "FROM USER USER LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID ";
-    $sql.= "AND USER_PEER.UID = '{$_SESSION['UID']}') WHERE USER_PREFS_GLOBAL.DOB > 0 AND USER_PREFS_GLOBAL.DOB_DISPLAY > 1 ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 OR USER_PEER.RELATIONSHIP IS NULL) ";
-    $sql.= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 OR USER_PEER.RELATIONSHIP IS NULL) ";
-    $sql.= "HAVING DAY_COUNT < DATE_FORMAT(LAST_DAY(CURDATE()), '%d') ";
-    $sql.= "ORDER BY DAY_COUNT ";
-    $sql.= "LIMIT 0, 5";
+    $sql .= "IF (DATEDIFF(DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '00-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d')) < 0, ";
+    $sql .= "DATEDIFF(DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '01-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d')), ";
+    $sql .= "DATEDIFF(DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '00-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d'))) AS DAY_COUNT ";
+    $sql .= "FROM USER USER LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID ";
+    $sql .= "AND USER_PEER.UID = '{$_SESSION['UID']}') WHERE USER_PREFS_GLOBAL.DOB > 0 AND USER_PREFS_GLOBAL.DOB_DISPLAY > 1 ";
+    $sql .= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 OR USER_PEER.RELATIONSHIP IS NULL) ";
+    $sql .= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 OR USER_PEER.RELATIONSHIP IS NULL) ";
+    $sql .= "HAVING DAY_COUNT < DATE_FORMAT(LAST_DAY(CURDATE()), '%d') ";
+    $sql .= "ORDER BY DAY_COUNT ";
+    $sql .= "LIMIT 0, 5";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1172,19 +1179,19 @@ function user_search($user_search)
 
         // Main query.
         $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-        $sql.= "USER_PEER.RELATIONSHIP FROM USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-        $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-        $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
-        $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
-        $sql.= "LIMIT 10";
+        $sql .= "USER_PEER.RELATIONSHIP FROM USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+        $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+        $sql .= "WHERE (LOGON LIKE '$user_search_logon%' ";
+        $sql .= "OR NICKNAME LIKE '$user_search_nickname%') ";
+        $sql .= "LIMIT 10";
 
     } else {
 
         // Main query.
         $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME FROM USER ";
-        $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
-        $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
-        $sql.= "LIMIT 10";
+        $sql .= "WHERE (LOGON LIKE '$user_search_logon%' ";
+        $sql .= "OR NICKNAME LIKE '$user_search_nickname%') ";
+        $sql .= "LIMIT 10";
     }
 
     if (!($result = $db->query($sql))) return false;
@@ -1231,7 +1238,7 @@ function user_get_ip_addresses($uid)
 
     // Fetch the last 20 IP addresses from the POST table
     $sql = "SELECT DISTINCT IPADDRESS FROM `{$table_prefix}POST` ";
-    $sql.= "WHERE FROM_UID = '$uid' ORDER BY TID DESC LIMIT 0, 10";
+    $sql .= "WHERE FROM_UID = '$uid' ORDER BY TID DESC LIMIT 0, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1260,13 +1267,13 @@ function user_get_friends($uid)
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "USER_PEER.RELATIONSHIP FROM `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "WHERE USER.UID IS NOT NULL AND USER_PEER.UID = '$uid' ";
-    $sql.= "AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
-    $sql.= "LIMIT 0, 20";
+    $sql .= "USER_PEER.RELATIONSHIP FROM `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "WHERE USER.UID IS NOT NULL AND USER_PEER.UID = '$uid' ";
+    $sql .= "AND (USER_PEER.RELATIONSHIP & $user_rel > 0) ";
+    $sql .= "LIMIT 0, 20";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1306,11 +1313,11 @@ function user_get_relationships($uid, $page = 1)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, USER_PEER.PEER_NICKNAME ";
-    $sql.= "FROM `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
-    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER.UID IS NOT NULL ";
-    $sql.= "LIMIT $offset, 10";
+    $sql .= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, USER_PEER.PEER_NICKNAME ";
+    $sql .= "FROM `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "LEFT JOIN USER USER ON (USER.UID = USER_PEER.PEER_UID) ";
+    $sql .= "WHERE USER_PEER.UID = '$uid' AND USER.UID IS NOT NULL ";
+    $sql .= "LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1354,7 +1361,7 @@ function user_get_peer_relationship($uid, $peer_uid)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT RELATIONSHIP FROM `{$table_prefix}USER_PEER` ";
-    $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
+    $sql .= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1377,9 +1384,9 @@ function user_get_peer_nickname($uid, $peer_uid)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS NICKNAME ";
-    $sql.= "FROM USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
-    $sql.= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = '$peer_uid'";
+    $sql .= "FROM USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '$uid') ";
+    $sql .= "WHERE USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = '$peer_uid'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1415,12 +1422,12 @@ function user_search_relationships($user_search, $page = 1, $exclude_uid = 0)
     $user_search_nickname = implode("%' OR NICKNAME LIKE '", $user_search_array);
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
-    $sql.= "FROM USER USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "WHERE (LOGON LIKE '$user_search_logon%' ";
-    $sql.= "OR NICKNAME LIKE '$user_search_nickname%') ";
-    $sql.= "AND USER.UID <> $exclude_uid LIMIT $offset, 10";
+    $sql .= "USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP ";
+    $sql .= "FROM USER USER LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "WHERE (LOGON LIKE '$user_search_logon%' ";
+    $sql .= "OR NICKNAME LIKE '$user_search_nickname%') ";
+    $sql .= "AND USER.UID <> $exclude_uid LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1469,10 +1476,10 @@ function user_get_word_filter_list($page)
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS FID, FILTER_NAME, MATCH_TEXT, ";
-    $sql.= "REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED ";
-    $sql.= "FROM `{$table_prefix}WORD_FILTER` ";
-    $sql.= "WHERE UID = '{$_SESSION['UID']}' ORDER BY FID ";
-    $sql.= "LIMIT $offset, 10";
+    $sql .= "REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED ";
+    $sql .= "FROM `{$table_prefix}WORD_FILTER` ";
+    $sql .= "WHERE UID = '{$_SESSION['UID']}' ORDER BY FID ";
+    $sql .= "LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1507,9 +1514,9 @@ function user_get_word_filter($filter_id)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, ";
-    $sql.= "FILTER_ENABLED FROM `{$table_prefix}WORD_FILTER` ";
-    $sql.= "WHERE FID = '$filter_id' AND UID = '{$_SESSION['UID']}' ";
-    $sql.= "ORDER BY FID";
+    $sql .= "FILTER_ENABLED FROM `{$table_prefix}WORD_FILTER` ";
+    $sql .= "WHERE FID = '$filter_id' AND UID = '{$_SESSION['UID']}' ";
+    $sql .= "ORDER BY FID";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1529,12 +1536,12 @@ function user_get_word_filter_count()
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COUNT(FID) AS FILTER_COUNT ";
-    $sql.= "FROM `{$table_prefix}WORD_FILTER` ";
-    $sql.= "WHERE UID = '{$_SESSION['UID']}'";
+    $sql .= "FROM `{$table_prefix}WORD_FILTER` ";
+    $sql .= "WHERE UID = '{$_SESSION['UID']}'";
 
     if (!($result = $db->query($sql))) return false;
 
-    list($word_filter_count) =  $result->fetch_row();
+    list($word_filter_count) = $result->fetch_row();
 
     return $word_filter_count;
 }
@@ -1558,8 +1565,8 @@ function user_add_word_filter($filter_name, $match_text, $replace_text, $filter_
 {
     if (!$db = db::get()) return false;
 
-    $filter_name  = $db->escape($filter_name);
-    $match_text   = $db->escape($match_text);
+    $filter_name = $db->escape($filter_name);
+    $match_text = $db->escape($match_text);
     $replace_text = $db->escape($replace_text);
 
     if (!is_numeric($filter_option)) return false;
@@ -1570,8 +1577,8 @@ function user_add_word_filter($filter_name, $match_text, $replace_text, $filter_
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "INSERT INTO `{$table_prefix}WORD_FILTER` ";
-    $sql.= "(UID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED) ";
-    $sql.= "VALUES ('{$_SESSION['UID']}', '$filter_name', '$match_text', '$replace_text', '$filter_option', '$filter_enabled')";
+    $sql .= "(UID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED) ";
+    $sql .= "VALUES ('{$_SESSION['UID']}', '$filter_name', '$match_text', '$replace_text', '$filter_option', '$filter_enabled')";
 
     if (!$db->query($sql)) return false;
 
@@ -1587,8 +1594,8 @@ function user_update_word_filter($filter_id, $filter_name, $match_text, $replace
     if (!is_numeric($filter_option)) return false;
     if (!is_numeric($filter_enabled)) return false;
 
-    $filter_name  = $db->escape($filter_name);
-    $match_text   = $db->escape($match_text);
+    $filter_name = $db->escape($filter_name);
+    $match_text = $db->escape($match_text);
     $replace_text = $db->escape($replace_text);
 
     if (!($table_prefix = get_table_prefix())) return false;
@@ -1596,9 +1603,9 @@ function user_update_word_filter($filter_id, $filter_name, $match_text, $replace
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}WORD_FILTER` SET FILTER_NAME = '$filter_name', ";
-    $sql.= "MATCH_TEXT = '$match_text', REPLACE_TEXT = '$replace_text', ";
-    $sql.= "FILTER_TYPE = '$filter_option', FILTER_ENABLED = '$filter_enabled' ";
-    $sql.= "WHERE UID = '{$_SESSION['UID']}' AND FID = '$filter_id'";
+    $sql .= "MATCH_TEXT = '$match_text', REPLACE_TEXT = '$replace_text', ";
+    $sql .= "FILTER_TYPE = '$filter_option', FILTER_ENABLED = '$filter_enabled' ";
+    $sql .= "WHERE UID = '{$_SESSION['UID']}' AND FID = '$filter_id'";
 
     if (!$db->query($sql)) return false;
 
@@ -1616,7 +1623,7 @@ function user_delete_word_filter($filter_id)
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "DELETE QUICK FROM `{$table_prefix}WORD_FILTER` ";
-    $sql.= "WHERE UID = '{$_SESSION['UID']}' AND FID = '$filter_id'";
+    $sql .= "WHERE UID = '{$_SESSION['UID']}' AND FID = '$filter_id'";
 
     if (!$db->query($sql)) return false;
 
@@ -1634,7 +1641,7 @@ function user_is_active($uid)
     if (!($forum_fid = get_forum_fid())) return false;
 
     $sql = "SELECT COUNT(*) FROM SESSIONS WHERE UID = '$uid' ";
-    $sql.= "AND FID = '$forum_fid'";
+    $sql .= "AND FID = '$forum_fid'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1650,7 +1657,7 @@ function user_allow_pm($uid)
     if (!is_numeric($uid)) return false;
 
     $sql = "SELECT COUNT(UID) FROM USER_PREFS ";
-    $sql.= "WHERE UID = '$uid' AND ALLOW_PM = 'Y'";
+    $sql .= "WHERE UID = '$uid' AND ALLOW_PM = 'Y'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1666,7 +1673,7 @@ function user_allow_email($uid)
     if (!is_numeric($uid)) return false;
 
     $sql = "SELECT COUNT(UID) FROM USER_PREFS ";
-    $sql.= "WHERE UID = '$uid' AND ALLOW_EMAIL = 'Y'";
+    $sql .= "WHERE UID = '$uid' AND ALLOW_EMAIL = 'Y'";
 
     if (!($result = $db->query($sql))) return false;
 

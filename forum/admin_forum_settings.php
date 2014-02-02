@@ -288,6 +288,12 @@ if (isset($_POST['changepermissions'])) {
         $new_forum_settings['minimum_post_frequency'] = 0;
     }
 
+    if (isset($_POST['enable_tags']) && $_POST['enable_tags'] == "Y") {
+        $new_forum_settings['enable_tags'] = "Y";
+    } else {
+        $new_forum_settings['enable_tags'] = "N";
+    }
+
     if (isset($_POST['enable_wiki_integration']) && $_POST['enable_wiki_integration'] == "Y") {
         $new_forum_settings['enable_wiki_integration'] = "Y";
     } else {
@@ -686,6 +692,10 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"220\">", gettext("Enable Post Tagging"), ":</td>\n";
+echo "                        <td align=\"left\">", form_radio("enable_tags", "Y", gettext("Yes"), (isset($forum_settings['enable_tags']) && $forum_settings['enable_tags'] == "Y")), "&nbsp;", form_radio("enable_tags", "N", gettext("No"), (isset($forum_settings['enable_tags']) && $forum_settings['enable_tags'] == "N") || !isset($forum_settings['enable_tags'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">", gettext("Allow Post Editing"), ":</td>\n";
 echo "                        <td align=\"left\">", form_radio("allow_post_editing", "Y", gettext("Yes"), (isset($forum_settings['allow_post_editing']) && $forum_settings['allow_post_editing'] == "Y")), "&nbsp;", form_radio("allow_post_editing", "N", gettext("No"), (isset($forum_settings['allow_post_editing']) && $forum_settings['allow_post_editing'] == "N") || !isset($forum_settings['allow_post_editing'])), "</td>\n";
 echo "                      </tr>\n";
@@ -710,6 +720,7 @@ echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
+echo "                          <p class=\"smalltext\">", gettext("<b>Enable Post Tagging</b> allows users to tag posts by add alpha-numeric tags to posts prefixed with a hash(#) character. These tags can be clicked to find all similarly tagged posts quickly and easily."), "</p>\n";
 echo "                          <p class=\"smalltext\">", gettext("<b>Post Edit Timeout</b> is the time in minutes after posting that a user can edit their post. If set to 0 there is no limit."), "</p>\n";
 echo "                          <p class=\"smalltext\">", gettext("<b>Post Edit Grace Period</b> allows you to define a period in minutes where users may edit posts without the 'EDITED BY' text appearing on their posts. If set to 0 the 'EDITED BY' text will always appear."), "</p>\n";
 echo "                          <p class=\"smalltext\">", gettext("<b>Maximum Post Length</b> is the maximum number of characters that will be displayed in a post. If a post is longer than the number of characters defined here it will be cut short and a link added to the bottom to allow users to read the whole post on a separate page."), "</p>\n";

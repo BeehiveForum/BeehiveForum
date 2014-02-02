@@ -573,6 +573,7 @@ function forum_check_setting_name($setting_name)
         'default_user_group',
         'enable_wiki_integration',
         'enable_wiki_quick_links',
+        'enable_tags',
         'enable_google_analytics',
         'force_word_filter',
         'forum_desc',

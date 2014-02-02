@@ -401,6 +401,18 @@ if (!install_column_exists($config['db_database'], 'POST_ATTACHMENT_FILES', 'FIL
     $db->query($sql);
 }
 
+if (!install_column_exists($config['db_database'], 'USER_PREFS', 'ENABLE_WIKI_QUICK_LINKS')) {
+
+    $sql = "ALTER TABLE USER_PREFS ADD COLUMN ENABLE_WIKI_QUICK_LINKS CHAR(1) NULL AFTER ENABLE_WIKI_WORDS";
+    $db->query($sql);
+}
+
+if (!install_column_exists($config['db_database'], 'USER_PREFS', 'ENABLE_TAGS')) {
+
+    $sql = "ALTER TABLE USER_PREFS ADD COLUMN ENABLE_TAGS CHAR(1) NULL";
+    $db->query($sql);
+}
+
 $sql = "DROP TABLE IF EXISTS SEARCH_RESULTS";
 
 $db->query($sql);
@@ -520,6 +532,8 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         foreach ($user_track_keys as $user_key) {
 
+            $user_key = $db->escape($user_key);
+
             $sql = "INSERT INTO `{$table_data['PREFIX']}USER_TRACK_NEW` (UID, USER_KEY, USER_VALUE) ";
             $sql .= "SELECT UID, '$user_key', `$user_key` FROM `{$table_data['PREFIX']}USER_TRACK`";
 
@@ -532,6 +546,18 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
         $sql = "RENAME TABLE `{$table_data['PREFIX']}USER_TRACK_NEW` TO `{$table_data['PREFIX']}USER_TRACK`";
 
+        $db->query($sql);
+    }
+
+    if (!install_column_exists($config['db_database'], "{$table_data['PREFIX']}USER_PREFS", 'ENABLE_WIKI_QUICK_LINKS')) {
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD COLUMN ENABLE_WIKI_QUICK_LINKS CHAR(1) NULL AFTER ENABLE_WIKI_WORDS";
+        $db->query($sql);
+    }
+
+    if (!install_column_exists($config['db_database'], "{$table_data['PREFIX']}USER_PREFS", 'ENABLE_TAGS')) {
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD COLUMN ENABLE_TAGS CHAR(1) NULL";
         $db->query($sql);
     }
 
@@ -895,8 +921,8 @@ $db->query($sql);
 $sql = "ALTER TABLE FORUMS ";
 $sql .= "CHANGE WEBTAG WEBTAG VARCHAR(255) COLLATE UTF8_GENERAL_CI NOT NULL AFTER FID, ";
 $sql .= "CHANGE DATABASE_NAME DATABASE_NAME VARCHAR(255) COLLATE UTF8_GENERAL_CI NOT NULL AFTER OWNER_UID, ";
-$sql .= "CHANGE `DEFAULT_FORUM` `DEFAULT_FORUM` TINYINT(4) NOT NULL AFTER DATABASE_NAME, ";
-$sql .= "CHANGE ACCESS_LEVEL ACCESS_LEVEL TINYINT(4) NOT NULL AFTER `DEFAULT_FORUM`, ";
+$sql .= "CHANGE DEFAULT_FORUM DEFAULT_FORUM TINYINT(4) NOT NULL AFTER DATABASE_NAME, ";
+$sql .= "CHANGE ACCESS_LEVEL ACCESS_LEVEL TINYINT(4) NOT NULL AFTER DEFAULT_FORUM, ";
 $sql .= "CHANGE FORUM_PASSWD FORUM_PASSWD VARCHAR(32) COLLATE UTF8_GENERAL_CI NOT NULL AFTER ACCESS_LEVEL";
 
 $db->query($sql);

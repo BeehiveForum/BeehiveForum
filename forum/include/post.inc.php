@@ -104,8 +104,8 @@ function post_create($fid, $tid, $reply_pid, $from_uid, $to_user_array, $content
 
     if (!$db->query($sql)) return false;
 
-    if (preg_match_all('/#[A-Z0-9]{1,255}/i', $content, $tag_matches_array)) {
-        post_add_tags($tid, $new_pid, $tag_matches_array[0]);
+    if (preg_match_all('/(^|\s)#([A-Z0-9]{1,255})/iu', $content, $tag_matches_array)) {
+        post_add_tags($tid, $new_pid, $tag_matches_array[2]);
     }
 
     post_update_thread_length($tid, $new_pid);
@@ -607,8 +607,8 @@ function post_update($fid, $tid, $pid, $content)
         if (!$db->query($sql)) return false;
     }
 
-    if (preg_match_all('/#[A-Z0-9]{1,255}/i', $content, $tag_matches_array)) {
-        post_add_tags($tid, $pid, $tag_matches_array[0]);
+    if (preg_match_all('/(^|\s)#([A-Z0-9]{1,255})/iu', $content, $tag_matches_array)) {
+        post_add_tags($tid, $pid, $tag_matches_array[2]);
     }
 
     return true;

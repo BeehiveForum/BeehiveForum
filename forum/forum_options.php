@@ -261,6 +261,30 @@ if (isset($_POST['save'])) {
         $user_prefs_global['ENABLE_WIKI_WORDS'] = false;
     }
 
+    if (isset($_POST['enable_wiki_quick_links']) && $_POST['enable_wiki_quick_links'] == "Y") {
+        $user_prefs['ENABLE_WIKI_QUICK_LINKS'] = "Y";
+    } else {
+        $user_prefs['ENABLE_WIKI_QUICK_LINKS'] = "N";
+    }
+
+    if (isset($_POST['enable_wiki_quick_links_global'])) {
+        $user_prefs_global['ENABLE_WIKI_QUICK_LINKS'] = ($_POST['enable_wiki_quick_links_global'] == "Y") ? true : false;
+    } else {
+        $user_prefs_global['ENABLE_WIKI_QUICK_LINKS'] = false;
+    }
+    
+    if (isset($_POST['enable_tags']) && $_POST['enable_tags'] == "Y") {
+        $user_prefs['ENABLE_TAGS'] = "Y";
+    } else {
+        $user_prefs['ENABLE_TAGS'] = "N";
+    }
+
+    if (isset($_POST['enable_tags_global'])) {
+        $user_prefs_global['ENABLE_TAGS'] = ($_POST['enable_tags_global'] == "Y") ? true : false;
+    } else {
+        $user_prefs_global['ENABLE_TAGS'] = false;
+    }
+
     if (isset($_POST['show_stats']) && $_POST['show_stats'] == "Y") {
         $user_prefs['SHOW_STATS'] = "Y";
     } else {
@@ -450,7 +474,7 @@ if ($show_set_all) {
 }
 
 echo "                <tr>\n";
-echo "                  <td align=\"left\" rowspan=\"16\" width=\"1%\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" rowspan=\"18\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("threads_by_folder", "Y", gettext("Sort Thread List by folders"), (isset($user_prefs['THREADS_BY_FOLDER']) && $user_prefs['THREADS_BY_FOLDER'] == "Y") ? true : false), "</td>\n";
@@ -475,6 +499,14 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("enable_wiki_words", "Y", gettext("Enable WikiWiki Integration"), (isset($user_prefs['ENABLE_WIKI_WORDS']) && $user_prefs['ENABLE_WIKI_WORDS'] == "Y") ? true : false), "</td>\n";
 echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("enable_wiki_words_global", "Y", null, (isset($user_prefs['ENABLE_WIKI_WORDS_GLOBAL']) ? $user_prefs['ENABLE_WIKI_WORDS_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("enable_wiki_words_global", 'Y'), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("enable_wiki_quick_links", "Y", gettext("Enable WikiWiki Quick links"), (isset($user_prefs['ENABLE_WIKI_QUICK_LINKS']) && $user_prefs['ENABLE_WIKI_QUICK_LINKS'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("enable_wiki_quick_links_global", "Y", null, (isset($user_prefs['ENABLE_WIKI_QUICK_LINKS_GLOBAL']) ? $user_prefs['ENABLE_WIKI_QUICK_LINKS_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("enable_wiki_quick_links_global", 'Y'), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("enable_tags", "Y", gettext("Enable post tagging with #hashtags"), (isset($user_prefs['ENABLE_TAGS']) && $user_prefs['ENABLE_TAGS'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("enable_tags_global", "Y", null, (isset($user_prefs['ENABLE_TAGS_GLOBAL']) ? $user_prefs['ENABLE_TAGS_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("enable_tags_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("use_mover_spoiler", "Y", gettext("Reveal spoilers on mouse over"), (isset($user_prefs['USE_MOVER_SPOILER']) && $user_prefs['USE_MOVER_SPOILER'] == "Y")), "</td>\n";

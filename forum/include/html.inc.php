@@ -22,23 +22,23 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'adsense.inc.php';
-require_once BH_INCLUDE_PATH. 'browser.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
-require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
-require_once BH_INCLUDE_PATH. 'folder.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'server.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'styles.inc.php';
-require_once BH_INCLUDE_PATH. 'thread.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'adsense.inc.php';
+require_once BH_INCLUDE_PATH . 'browser.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH . 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH . 'folder.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'styles.inc.php';
+require_once BH_INCLUDE_PATH . 'thread.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 function html_guest_error($final_uri = null)
@@ -69,7 +69,7 @@ function html_guest_error($final_uri = null)
 
     } else {
 
-        html_draw_error(gettext("Sorry, you need to be logged in to use this feature."), html_get_forum_file_path('logout.php'), 'post', array('submit'   => gettext("Login now"), 'register' => gettext("Register")), array('final_uri' => $final_uri), $frame_top_target);
+        html_draw_error(gettext("Sorry, you need to be logged in to use this feature."), html_get_forum_file_path('logout.php'), 'post', array('submit' => gettext("Login now"), 'register' => gettext("Register")), array('final_uri' => $final_uri), $frame_top_target);
     }
 }
 
@@ -299,9 +299,10 @@ function html_email_confirmation_error()
 
     $user_array = user_get($_SESSION['UID']);
 
-    html_draw_error(gettext("Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details"), 'confirm_email.php', 'get', array('resend' => gettext("Resend Confirmation")), array('uid'   => $user_array['UID'],
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                        'resend' => 'Y'
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ));}
+    html_draw_error(gettext("Email confirmation is required before you can post. If you have not received a confirmation email please click the button below and a new one will be sent to you. If your email address needs changing please do so before requesting a new confirmation email. You may change your email address by click My Controls above and then User Details"), 'confirm_email.php', 'get', array('resend' => gettext("Resend Confirmation")), array('uid' => $user_array['UID'],
+        'resend' => 'Y'
+    ));
+}
 
 function html_message_type_error()
 {
@@ -454,7 +455,7 @@ function html_include_javascript($script_filepath, $id = null)
 
     $path_parts['query'] = html_query_string_add($path_parts['query'], 'version', BEEHIVE_VERSION, '&amp;');
 
-    $script_filepath = rtrim($path_parts['dirname'], '/'). '/'. $path_parts['basename']. '?'. $path_parts['query'];
+    $script_filepath = rtrim($path_parts['dirname'], '/') . '/' . $path_parts['basename'] . '?' . $path_parts['query'];
 
     printf(
         "<script type=\"text/javascript\" src=\"%s\"%s></script>\n",
@@ -477,7 +478,7 @@ function html_include_css($script_filepath, $media = 'screen', $id = null)
 
     $path_parts['query'] = html_query_string_add($path_parts['query'], 'version', BEEHIVE_VERSION, '&amp;');
 
-    $script_filepath = rtrim($path_parts['dirname'], '/'). '/'. $path_parts['basename']. '?'. $path_parts['query'];
+    $script_filepath = rtrim($path_parts['dirname'], '/') . '/' . $path_parts['basename'] . '?' . $path_parts['query'];
 
     printf(
         "<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\" media=\"%s\"%s />\n",
@@ -943,7 +944,8 @@ function html_draw_bottom($frame_set_html = false)
         }
 
         if (adsense_publisher_id() && adsense_check_user() && adsense_check_page_bottom()) {
-            echo '<br>'; adsense_output_html();
+            echo '<br>';
+            adsense_output_html();
         }
 
         if (($google_analytics_code = html_get_google_analytics_code()) !== false) {
@@ -1096,7 +1098,7 @@ class html_frame
     {
         echo sprintf("<frame src=\"%s\" name=\"%s\" frameborder=\"%s\" ", $this->src, $this->name, $this->frameborder);
         echo (strlen(trim($this->scrolling)) > 0) ? "scrolling=\"{$this->scrolling}\" " : "";
-        echo (strlen(trim($this->noresize))  > 0) ? "noresize=\"{$this->noresize}\" "  : "";
+        echo (strlen(trim($this->noresize)) > 0) ? "noresize=\"{$this->noresize}\" " : "";
         echo sprintf("%s/>\n", $this->allowtransparency);
     }
 }
@@ -1140,7 +1142,9 @@ function html_output_adsense_settings()
     if (($adsense_publisher_id = adsense_publisher_id()) !== false) {
 
         // Default banner size and type
-        $ad_type = 'medium'; $ad_width = 468; $ad_height = 60;
+        $ad_type = 'medium';
+        $ad_width = 468;
+        $ad_height = 60;
 
         // Get banner size and type
         adsense_get_banner_type($ad_type, $ad_width, $ad_height);
@@ -1306,7 +1310,7 @@ function html_page_links($uri, $page, $record_count, $rows_per_page, $page_var =
         } else {
 
             $start_page = (($page - 2) > 0) ? ($page - 2) : 1;
-            $end_page   = (($page + 2) <= $page_count) ? ($page + 2) : $page_count;
+            $end_page = (($page + 2) <= $page_count) ? ($page + 2) : $page_count;
 
             if (($end_page - $start_page) < 2) {
 
@@ -1411,8 +1415,8 @@ function html_get_forum_domain($return_array = false)
     if ($return_array) return $uri_array;
 
     $server_uri = (isset($uri_array['scheme'])) ? "{$uri_array['scheme']}://" : '';
-    $server_uri.= (isset($uri_array['host']))   ? "{$uri_array['host']}"      : '';
-    $server_uri.= (isset($uri_array['port']))   ? ":{$uri_array['port']}"     : '';
+    $server_uri .= (isset($uri_array['host'])) ? "{$uri_array['host']}" : '';
+    $server_uri .= (isset($uri_array['port'])) ? ":{$uri_array['port']}" : '';
 
     return $server_uri;
 }
@@ -1438,16 +1442,16 @@ function html_get_forum_uri($append_path = null)
         }
     }
 
-    $uri_array['path'] = str_replace(DIRECTORY_SEPARATOR, '/', dirname(rtrim($uri_array['path'], '/'). '/a'));
+    $uri_array['path'] = str_replace(DIRECTORY_SEPARATOR, '/', dirname(rtrim($uri_array['path'], '/') . '/a'));
 
     if (strlen(trim($append_path)) > 0) {
-        $uri_array['path'] = rtrim($uri_array['path'], '/'). '/'. $append_path;
+        $uri_array['path'] = rtrim($uri_array['path'], '/') . '/' . $append_path;
     }
 
     $server_uri = (isset($uri_array['scheme'])) ? "{$uri_array['scheme']}://" : '';
-    $server_uri.= (isset($uri_array['host']))   ? "{$uri_array['host']}"      : '';
-    $server_uri.= (isset($uri_array['port']))   ? ":{$uri_array['port']}"     : '';
-    $server_uri.= (isset($uri_array['path']))   ? "{$uri_array['path']}"      : '';
+    $server_uri .= (isset($uri_array['host'])) ? "{$uri_array['host']}" : '';
+    $server_uri .= (isset($uri_array['port'])) ? ":{$uri_array['port']}" : '';
+    $server_uri .= (isset($uri_array['path'])) ? "{$uri_array['path']}" : '';
 
     return $server_uri;
 }
@@ -1475,7 +1479,7 @@ function html_get_forum_file_path($file_path, $allow_cdn = true)
         if (($allow_cdn === true) && ($cdn_domain = forum_get_content_delivery_path($file_path))) {
             $final_file_path = sprintf('%s://%s/%s', $http_scheme, trim($cdn_domain, '/'), $file_path);
         } else {
-            $final_file_path = rtrim($forum_path, '/'). '/'. $file_path;
+            $final_file_path = rtrim($forum_path, '/') . '/' . $file_path;
         }
 
         // Add final file path to the cache.

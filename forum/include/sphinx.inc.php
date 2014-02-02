@@ -22,10 +22,10 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'search.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'search.inc.php';
 // End Required includes
 
 function sphinx_search_connect()
@@ -38,7 +38,7 @@ function sphinx_search_connect()
 
         return mysqli_connect($sphinx_search_host, null, null, null, $sphinx_search_port);
 
-    } catch (Exception $e){
+    } catch (Exception $e) {
 
         return false;
     }
@@ -81,7 +81,7 @@ function sphinx_search_execute($search_arguments, &$error)
     $where_sql = "WHERE forum = {$forum_fid} AND fid IN ({$search_arguments['fid']}) ";
 
     // Where query needs to limit the search results to the user specified date range.
-    $where_sql.= sphinx_search_date_range($search_arguments['date_from'], $search_arguments['date_to']);
+    $where_sql .= sphinx_search_date_range($search_arguments['date_from'], $search_arguments['date_to']);
 
     // Username based search.
     if (isset($search_arguments['user_uid_array']) && sizeof($search_arguments['user_uid_array']) > 0) {
@@ -97,11 +97,11 @@ function sphinx_search_execute($search_arguments, &$error)
 
             if ($search_arguments['user_include'] == SEARCH_FILTER_USER_THREADS) {
 
-                $where_sql.= "AND by_uid IN ($user_uids) AND pid = 1 ";
+                $where_sql .= "AND by_uid IN ($user_uids) AND pid = 1 ";
 
             } else if ($search_arguments['user_include'] == SEARCH_FILTER_USER_POSTS) {
 
-                $where_sql.= "AND from_uid IN ($user_uids) ";
+                $where_sql .= "AND from_uid IN ($user_uids) ";
             }
         }
     }
@@ -116,7 +116,7 @@ function sphinx_search_execute($search_arguments, &$error)
 
         search_save_arguments($search_arguments);
 
-        $where_sql.= "AND MATCH('$search_string')";
+        $where_sql .= "AND MATCH('$search_string')";
 
     } else {
 
@@ -138,7 +138,7 @@ function sphinx_search_execute($search_arguments, &$error)
     $sort_dir = ($search_arguments['sort_dir'] == SEARCH_SORT_DESC) ? 'DESC' : 'ASC';
 
     // Construct the order by clause.
-    switch($search_arguments['sort_by']) {
+    switch ($search_arguments['sort_by']) {
 
         case SEARCH_SORT_NUM_REPLIES:
 
@@ -166,7 +166,7 @@ function sphinx_search_execute($search_arguments, &$error)
 
     // Build query including main and delta indexes.
     $sql = "SELECT * FROM $sphinx_search_index, $sphinx_search_index_delta ";
-    $sql.= "$where_sql $group_sql $order_sql LIMIT 1000";
+    $sql .= "$where_sql $group_sql $order_sql LIMIT 1000";
 
     // Execute the query
     if (!($result = $sphinx->query($sql))) return false;
@@ -183,11 +183,11 @@ function sphinx_search_execute($search_arguments, &$error)
     while (($search_result = $result->fetch_assoc()) !== null) {
 
         $sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, TID, PID, RELEVANCE) ";
-        $sql.= "SELECT '{$_SESSION['UID']}' AS UID, '$forum_fid' AS FORUM, THREAD.TID, POST.PID, ";
-        $sql.= "{$search_result['weight']} AS RELEVANCE FROM `{$table_prefix}POST` ";
-        $sql.= "POST INNER JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
-        $sql.= "WHERE THREAD.TID = '{$search_result['tid']}' AND POST.PID = '{$search_result['pid']}' ";
-        $sql.= "AND THREAD.LENGTH > 0 AND THREAD.DELETED = 'N' AND THREAD.APPROVED IS NOT NULL";
+        $sql .= "SELECT '{$_SESSION['UID']}' AS UID, '$forum_fid' AS FORUM, THREAD.TID, POST.PID, ";
+        $sql .= "{$search_result['weight']} AS RELEVANCE FROM `{$table_prefix}POST` ";
+        $sql .= "POST INNER JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
+        $sql .= "WHERE THREAD.TID = '{$search_result['tid']}' AND POST.PID = '{$search_result['pid']}' ";
+        $sql .= "AND THREAD.LENGTH > 0 AND THREAD.DELETED = 'N' AND THREAD.APPROVED IS NOT NULL";
 
         if (!$db->query($sql)) return false;
     }
@@ -206,7 +206,7 @@ function sphinx_search_date_range($from, $to)
     }
 
     if (isset($to_timestamp) && is_numeric($to_timestamp)) {
-        $range.= "AND created <= $to_timestamp ";
+        $range .= "AND created <= $to_timestamp ";
     }
 
     return $range;

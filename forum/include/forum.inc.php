@@ -1300,6 +1300,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql .= "  USE_ADMIN_FILTER CHAR(1) DEFAULT NULL,";
         $sql .= "  SHOW_THUMBS CHAR(2) DEFAULT NULL,";
         $sql .= "  ENABLE_WIKI_WORDS CHAR(1) DEFAULT NULL,";
+        $sql .= "  ENABLE_WIKI_QUICK_LINKS CHAR(1) DEFAULT NULL,";
         $sql .= "  USE_MOVER_SPOILER CHAR(1) DEFAULT NULL,";
         $sql .= "  USE_LIGHT_MODE_SPOILER CHAR(1) DEFAULT NULL,";
         $sql .= "  USE_OVERFLOW_RESIZE CHAR(1) DEFAULT NULL,";
@@ -1312,6 +1313,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql .= "  LEFT_FRAME_WIDTH SMALLINT(4) UNSIGNED DEFAULT NULL,";
         $sql .= "  SHOW_AVATARS CHAR(1) DEFAULT NULL,";
         $sql .= "  SHOW_SHARE_LINKS CHAR(1) DEFAULT NULL,";
+        $sql .= "  ENABLE_TAGS CHAR(1) DEFAULT NULL,";
         $sql .= "  PRIMARY KEY (UID)";
         $sql .= ") ENGINE=MYISAM DEFAULT CHARSET=utf8";
 

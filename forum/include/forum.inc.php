@@ -1565,7 +1565,7 @@ function forum_delete($fid)
 
     if (!$db->query($sql)) return false;
 
-    $sql = "DELETE QUICK FROM SEARCH_RESULTS WHERE FID = '$fid'";
+    $sql = "DELETE QUICK FROM SEARCH_RESULTS WHERE FORUM = '$fid'";
 
     if (!$db->query($sql)) return false;
 

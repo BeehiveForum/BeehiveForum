@@ -128,13 +128,11 @@ abstract class session
 
         $ip_address = session::$db->escape(get_ip_address());
 
-        $http_referer = session::$db->escape(session::get_http_referer());
-
         if (!($search_id = session::is_search_engine())) $search_id = 'NULL';
 
-        $sql = "REPLACE INTO SESSIONS (ID, UID, FID, DATA, MD5, TIME, IPADDRESS, REFERER, SID) ";
+        $sql = "REPLACE INTO SESSIONS (ID, UID, FID, DATA, MD5, TIME, IPADDRESS, SID) ";
         $sql .= "VALUES ('$id', '$uid', '$forum_fid', '$data', '$md5', CAST('$time' AS DATETIME), ";
-        $sql .= "'$ip_address', '$http_referer', $search_id)";
+        $sql .= "'$ip_address', $search_id)";
 
         if (!(session::$db->query($sql))) return false;
 
@@ -536,10 +534,6 @@ abstract class session
 
         if (($user_perms = session::get_perm_array($uid, $forum_fid))) {
             $_SESSION['PERMS'] = $user_perms;
-        }
-
-        if (!isset($_SESSION['REFERER'])) {
-            $_SESSION['REFERER'] = session::get_http_referer();
         }
 
         if (!isset($_SESSION['RAND_HASH'])) {

@@ -254,6 +254,7 @@ function get_forum_check_webtag_ignore_files()
         'logout.php',
         'nav.php',
         'user.php',
+        'register.php',
         'user_menu.php',
     );
 }

@@ -28,7 +28,9 @@ require_once BH_INCLUDE_PATH . 'forum.inc.php';
 require_once BH_INCLUDE_PATH . 'html.inc.php';
 require_once BH_INCLUDE_PATH . 'ip.inc.php';
 require_once BH_INCLUDE_PATH . 'perm.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
 require_once BH_INCLUDE_PATH . 'user.inc.php';
+
 // End Required includes
 
 abstract class session
@@ -279,6 +281,12 @@ abstract class session
 
     public static function user_approved()
     {
+        $forum_access_ignore_files_preg = implode("|^", array_map('preg_quote_callback', get_forum_access_ignore_files()));
+
+        if (preg_match("/^$forum_access_ignore_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) {
+            return true;
+        }
+
         if (!session::logged_in()) return true;
 
         if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) return true;

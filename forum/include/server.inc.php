@@ -22,7 +22,7 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
 // End Required includes
 
 function server_os_mswin()
@@ -39,6 +39,7 @@ function server_os_mswin()
 function get_available_files()
 {
     return array(
+        'admin.php',
         'admin_banned.php',
         'admin_default_forum_settings.php',
         'admin_folder_add.php',
@@ -48,8 +49,8 @@ function get_available_files()
         'admin_forum_links.php',
         'admin_forum_set_passwd.php',
         'admin_forum_settings.php',
-        'admin_forums.php',
         'admin_forum_stats.php',
+        'admin_forums.php',
         'admin_link_approve.php',
         'admin_menu.php',
         'admin_post_approve.php',
@@ -58,11 +59,11 @@ function get_available_files()
         'admin_prof_sect.php',
         'admin_rss_feeds.php',
         'admin_startpage.php',
+        'admin_user.php',
+        'admin_user_groups.php',
         'admin_user_groups_add.php',
         'admin_user_groups_edit.php',
         'admin_user_groups_edit_users.php',
-        'admin_user_groups.php',
-        'admin_user.php',
         'admin_users.php',
         'admin_viewlog.php',
         'admin_visitor_log.php',
@@ -76,12 +77,12 @@ function get_available_files()
         'create_poll.php',
         'delete.php',
         'discussion.php',
-        'display_emoticons.php',
         'display.php',
+        'display_emoticons.php',
+        'edit.php',
         'edit_attachments.php',
         'edit_email.php',
         'edit_password.php',
-        'edit.php',
         'edit_poll.php',
         'edit_prefs.php',
         'edit_profile.php',
@@ -97,23 +98,24 @@ function get_available_files()
         'forum_options.php',
         'forums.php',
         'get_attachment.php',
+        'index.php',
         'json.php',
         'lboot.php',
         'ldelete.php',
         'ldisplay.php',
         'ledit.php',
         'lforums.php',
+        'links.php',
         'links_add.php',
         'links_detail.php',
         'links_folder_edit.php',
-        'links.php',
         'llogon.php',
         'llogout.php',
         'lmessages.php',
         'logon.php',
         'logout.php',
-        'lpm_edit.php',
         'lpm.php',
+        'lpm_edit.php',
         'lpm_write.php',
         'lpost.php',
         'lsearch.php',
@@ -121,28 +123,27 @@ function get_available_files()
         'messages.php',
         'mods_list.php',
         'nav.php',
+        'pm.php',
         'pm_edit.php',
         'pm_export.php',
         'pm_folders.php',
         'pm_messages.php',
         'pm_options.php',
-        'pm.php',
         'pm_write.php',
         'poll_results.php',
         'post.php',
         'register.php',
-        'robots.txt',
         'search.php',
         'search_popup.php',
+        'start.php',
         'start_left.php',
         'start_main.php',
-        'start.php',
         'thread_list.php',
         'thread_options.php',
         'threads_rss.php',
+        'user.php',
         'user_font.php',
         'user_menu.php',
-        'user.php',
         'user_profile.php',
         'user_rel.php',
         'user_stats.php',
@@ -154,6 +155,7 @@ function get_available_files()
 function get_available_admin_files()
 {
     return array(
+        'admin.php',
         'admin_banned.php',
         'admin_default_forum_settings.php',
         'admin_folder_add.php',
@@ -163,8 +165,8 @@ function get_available_admin_files()
         'admin_forum_links.php',
         'admin_forum_set_passwd.php',
         'admin_forum_settings.php',
-        'admin_forums.php',
         'admin_forum_stats.php',
+        'admin_forums.php',
         'admin_link_approve.php',
         'admin_menu.php',
         'admin_post_approve.php',
@@ -173,11 +175,11 @@ function get_available_admin_files()
         'admin_prof_sect.php',
         'admin_rss_feeds.php',
         'admin_startpage.php',
+        'admin_user.php',
+        'admin_user_groups.php',
         'admin_user_groups_add.php',
         'admin_user_groups_edit.php',
         'admin_user_groups_edit_users.php',
-        'admin_user_groups.php',
-        'admin_user.php',
         'admin_users.php',
         'admin_viewlog.php',
         'admin_visitor_log.php',
@@ -188,18 +190,24 @@ function get_available_admin_files()
 function get_available_user_files()
 {
     return array(
+        'edit_attachments.php',
+        'edit_email.php',
+        'edit_password.php',
         'edit_prefs.php',
         'edit_profile.php',
-        'edit_password.php',
-        'edit_email.php',
-        'edit_attachments.php',
+        'edit_relations.php',
         'edit_signature.php',
         'edit_subscriptions.php',
-        'edit_relations.php',
         'edit_wordfilter.php',
-        'edit_subscriptions.php',
         'folder_subscriptions.php',
         'forum_options.php',
+        'pm_options.php',
+    );
+}
+
+function get_available_pm_files()
+{
+    return array(
         'pm.php',
         'pm_edit.php',
         'pm_export.php',
@@ -213,7 +221,6 @@ function get_available_user_files()
 function get_available_popup_files()
 {
     return array(
-        'attachments.php',
         'display_emoticons.php',
         'edit_attachments.php',
         'email.php',
@@ -271,6 +278,7 @@ function get_guest_access_ignore_files()
         'logon.php',
         'logout.php',
         'nav.php',
+        'register.php',
     );
 }
 
@@ -355,7 +363,7 @@ function disable_magic_quotes()
 
                 $process[$index][stripslashes($key)] = $value;
 
-                $process[] = &$process[$index][stripslashes($key)];
+                $process[] = & $process[$index][stripslashes($key)];
 
             } else {
 
@@ -378,12 +386,12 @@ function server_get_config()
 
     if (!$config) {
 
-        if (@file_exists(BH_INCLUDE_PATH. 'config.inc.php')) {
+        if (@file_exists(BH_INCLUDE_PATH . 'config.inc.php')) {
 
-            require_once BH_INCLUDE_PATH. 'config.inc.php';
+            require_once BH_INCLUDE_PATH . 'config.inc.php';
 
-            if (@file_exists(BH_INCLUDE_PATH. "config-dev.inc.php")) {
-                require_once BH_INCLUDE_PATH. 'config-dev.inc.php';
+            if (@file_exists(BH_INCLUDE_PATH . "config-dev.inc.php")) {
+                require_once BH_INCLUDE_PATH . 'config-dev.inc.php';
             }
 
             $config = get_defined_vars();

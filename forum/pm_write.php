@@ -25,22 +25,22 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'attachments.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'email.inc.php';
-require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
-require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'pm.inc.php';
-require_once BH_INCLUDE_PATH. 'post.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'thread.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'attachments.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'email.inc.php';
+require_once BH_INCLUDE_PATH . 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH . 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'pm.inc.php';
+require_once BH_INCLUDE_PATH . 'post.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'thread.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
 // End Required includes
 
 if (!session::logged_in()) {
@@ -114,7 +114,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
             $thread_index = "[$tid.$pid]";
 
             if (mb_strlen($thread_title) > (55 - mb_strlen($thread_index))) {
-                $thread_title = mb_substr($thread_title, 0, (55 - mb_strlen($thread_index))). '...';
+                $thread_title = mb_substr($thread_title, 0, (55 - mb_strlen($thread_index))) . '...';
             }
 
             $subject = "RE:$thread_title $thread_index";
@@ -177,7 +177,7 @@ if (isset($_POST['emots_toggle'])) {
         $to_logon = '';
     }
 
-    $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
+    $page_prefs = (double)$page_prefs ^ POST_EMOTICONS_DISPLAY;
 
     $user_prefs = array(
         'POST_PAGE' => $page_prefs
@@ -336,7 +336,7 @@ if (isset($_POST['send']) || isset($_POST['preview']) || isset($_POST['save'])) 
         exit;
     }
 
-} else if (isset($forward_mid) && is_numeric($forward_mid) && $forward_mid > 0) {
+} else if (isset($forward_mid)) {
 
     if (($pm_data = pm_message_get($forward_mid)) !== false) {
 
@@ -364,7 +364,7 @@ if (isset($_POST['send']) || isset($_POST['preview']) || isset($_POST['save'])) 
         exit;
     }
 
-} else if (isset($edit_mid) && is_numeric($edit_mid) && $edit_mid > 0) {
+} else if (isset($edit_mid)) {
 
     if (($pm_data = pm_message_get($edit_mid)) !== false) {
 
@@ -407,7 +407,7 @@ if (mb_strlen($content) >= 65535) {
 
 if (isset($_POST['dedupe']) && is_numeric($_POST['dedupe'])) {
     $dedupe = $_POST['dedupe'];
-} else{
+} else {
     $dedupe = time();
 }
 
@@ -415,7 +415,7 @@ if ($valid && isset($_POST['send'])) {
 
     if (post_check_ddkey($dedupe)) {
 
-        if (isset($edit_mid) && is_numeric($edit_mid)) {
+        if (isset($edit_mid)) {
 
             $new_mid = pm_send_saved_message($edit_mid, $_SESSION['UID'], $to_logon_array, $subject, $content, $reply_mid);
 
@@ -459,7 +459,7 @@ if ($valid && isset($_POST['send'])) {
 
 } else if ($valid && isset($_POST['save'])) {
 
-    if (isset($edit_mid) && is_numeric($edit_mid)) {
+    if (isset($edit_mid)) {
 
         if (pm_update_saved_message($edit_mid, $_SESSION['UID'], $to_logon_array, $subject, $content, $reply_mid)) {
 
@@ -525,7 +525,7 @@ echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('folder', htmlentities_array($folder)), "\n";
 echo "  ", form_input_hidden("dedupe", htmlentities_array($dedupe));
 
-if (isset($return_msg)){
+if (isset($return_msg)) {
     echo "  ", form_input_hidden('return_msg', htmlentities_array($return_msg)), "\n";
 }
 
@@ -548,7 +548,7 @@ if ($valid && isset($_POST['preview'])) {
     $preview_from_user = user_get($_SESSION['UID']);
 
     $pm_preview_array['FROM_LOGON'] = $preview_from_user['LOGON'];
-    $pm_preview_array['FROM_NICKNAME']  = $preview_from_user['NICKNAME'];
+    $pm_preview_array['FROM_NICKNAME'] = $preview_from_user['NICKNAME'];
     $pm_preview_array['FROM_UID'] = $preview_from_user['UID'];
 
     $pm_preview_array['SUBJECT'] = $subject;
@@ -660,16 +660,13 @@ echo form_submit('save', gettext("Save"), "tabindex=\"3\""), "&nbsp;";
 
 echo form_submit('preview', gettext("Preview"), "tabindex=\"4\""), "&nbsp;";
 
-if (isset($edit_mid) && is_numeric($edit_mid) && $edit_mid > 0) {
-
+if (isset($return_msg)) {
+    echo "<a href=\"discussion.php?webtag=$webtag&amp;msg=$return_msg\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+} else if (isset($edit_mid)) {
     echo "<a href=\"pm.php?webtag=$webtag&mid=$edit_mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
-
-} else if (isset($forward_mid) && is_numeric($forward_mid)  && $forward_mid > 0) {
-
+} else if (isset($forward_mid)) {
     echo "<a href=\"pm.php?webtag=$webtag&mid=$forward_mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
-
 } else {
-
     echo "<a href=\"pm.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 }
 

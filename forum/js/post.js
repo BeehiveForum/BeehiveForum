@@ -122,7 +122,7 @@ $(beehive).bind('init', function () {
                 ajax: 'true',
                 action: 'post_options',
                 msg: options[1] + '.' + options[2],
-                pid: options[2]
+                pid: options[3]
             },
 
             url: beehive.forum_path + '/ajax.php',

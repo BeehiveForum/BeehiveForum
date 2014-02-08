@@ -1397,7 +1397,12 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $db->query($sql);
 
         $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POSITION, TITLE, URI) ";
-        $sql .= "VALUES (3, 'Project Beehive Forum on Facebook', 'http://www.facebook.com/pages/Project-Beehive-Forum/100468551205')";
+        $sql .= "VALUES (3, 'Project Beehive Forum on Facebook', 'http://www.facebook.com/beehiveforum')";
+
+        $db->query($sql);
+
+        $sql = "INSERT INTO `{$forum_table_prefix}FORUM_LINKS` (POSITION, TITLE, URI) ";
+        $sql .= "VALUES (3, 'Project Beehive Forum on Twitter', 'https://twitter.com/beehiveforum')";
 
         $db->query($sql);
 

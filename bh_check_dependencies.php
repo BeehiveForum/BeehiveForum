@@ -134,7 +134,7 @@ foreach ($update_files_array as $source_file => $filename) {
     );
 
     $include_files_required_array = array(
-        'constants.inc.php' => "require_once BH_INCLUDE_PATH. 'constants.inc.php'",
+        'constants.inc.php' => "require_once BH_INCLUDE_PATH . 'constants.inc.php'",
     );
 
     foreach ($include_files_functions_array as $include_file => $function_names_array) {

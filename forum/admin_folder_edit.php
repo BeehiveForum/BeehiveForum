@@ -25,16 +25,16 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'folder.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'perm.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'folder.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'perm.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -135,28 +135,28 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['old_perms']) && is_numeric($_POST['old_perms'])) {
-        $folder_data['OLD_PERMS'] = (double) $_POST['old_perms'];
+        $folder_data['OLD_PERMS'] = (double)$_POST['old_perms'];
     }
 
-    $t_post_read     = (double) (isset($_POST['t_post_read']))     ? $_POST['t_post_read']     : 0;
-    $t_post_create   = (double) (isset($_POST['t_post_create']))   ? $_POST['t_post_create']   : 0;
-    $t_thread_create = (double) (isset($_POST['t_thread_create'])) ? $_POST['t_thread_create'] : 0;
-    $t_post_edit     = (double) (isset($_POST['t_post_edit']))     ? $_POST['t_post_edit']     : 0;
-    $t_post_delete   = (double) (isset($_POST['t_post_delete']))   ? $_POST['t_post_delete']   : 0;
-    $t_post_attach   = (double) (isset($_POST['t_post_attach']))   ? $_POST['t_post_attach']   : 0;
-    $t_post_html     = (double) (isset($_POST['t_post_html']))     ? $_POST['t_post_html']     : 0;
-    $t_post_sig      = (double) (isset($_POST['t_post_sig']))      ? $_POST['t_post_sig']      : 0;
-    $t_guest_access  = (double) (isset($_POST['t_guest_access']))  ? $_POST['t_guest_access']  : 0;
-    $t_post_approval = (double) (isset($_POST['t_post_approval'])) ? $_POST['t_post_approval'] : 0;
-    $t_thread_move   = (double) (isset($_POST['t_thread_move']))   ? $_POST['t_thread_move']   : 0;
+    $t_post_read = (double)(isset($_POST['t_post_read'])) ? $_POST['t_post_read'] : 0;
+    $t_post_create = (double)(isset($_POST['t_post_create'])) ? $_POST['t_post_create'] : 0;
+    $t_thread_create = (double)(isset($_POST['t_thread_create'])) ? $_POST['t_thread_create'] : 0;
+    $t_post_edit = (double)(isset($_POST['t_post_edit'])) ? $_POST['t_post_edit'] : 0;
+    $t_post_delete = (double)(isset($_POST['t_post_delete'])) ? $_POST['t_post_delete'] : 0;
+    $t_post_attach = (double)(isset($_POST['t_post_attach'])) ? $_POST['t_post_attach'] : 0;
+    $t_post_html = (double)(isset($_POST['t_post_html'])) ? $_POST['t_post_html'] : 0;
+    $t_post_sig = (double)(isset($_POST['t_post_sig'])) ? $_POST['t_post_sig'] : 0;
+    $t_guest_access = (double)(isset($_POST['t_guest_access'])) ? $_POST['t_guest_access'] : 0;
+    $t_post_approval = (double)(isset($_POST['t_post_approval'])) ? $_POST['t_post_approval'] : 0;
+    $t_thread_move = (double)(isset($_POST['t_thread_move'])) ? $_POST['t_thread_move'] : 0;
 
     // We need a double / float here because we're storing a high bit value
-    $t_permissions = (double) $t_post_read | $t_post_create | $t_thread_create;
-    $t_permissions = (double) $t_permissions | $t_post_edit | $t_post_delete | $t_post_attach;
-    $t_permissions = (double) $t_permissions | $t_post_html | $t_post_sig | $t_guest_access;
-    $t_permissions = (double) $t_permissions | $t_post_approval | $t_thread_move;
+    $t_permissions = (double)$t_post_read | $t_post_create | $t_thread_create;
+    $t_permissions = (double)$t_permissions | $t_post_edit | $t_post_delete | $t_post_attach;
+    $t_permissions = (double)$t_permissions | $t_post_html | $t_post_sig | $t_guest_access;
+    $t_permissions = (double)$t_permissions | $t_post_approval | $t_thread_move;
 
-    $folder_data['PERM'] = (double) $t_permissions;
+    $folder_data['PERM'] = (double)$t_permissions;
 
     if ($valid) {
 

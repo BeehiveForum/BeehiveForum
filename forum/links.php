@@ -25,15 +25,15 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'folder.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'links.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'folder.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'links.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check links section is enabled
@@ -346,7 +346,7 @@ if ($sort_by == "RATING" && $sort_dir == "DESC") {
 
 echo "                </tr>\n";
 
-if (sizeof($links['links_array']) > 0 ) {
+if (sizeof($links['links_array']) > 0) {
 
     foreach ($links['links_array'] as $key => $link) {
 

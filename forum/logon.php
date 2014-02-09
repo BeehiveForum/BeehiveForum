@@ -25,14 +25,14 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'cache.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'logon.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'server.inc.php';
+require_once BH_INCLUDE_PATH . 'cache.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'logon.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
 // End Required includes
 
 // Don't cache this page
@@ -49,15 +49,15 @@ if (isset($_GET['final_uri']) && strlen(trim($_GET['final_uri'])) > 0) {
 
 } else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    $final_uri = "discussion.php?webtag=$webtag&amp;msg=". $_GET['msg'];
+    $final_uri = "discussion.php?webtag=$webtag&amp;msg=" . $_GET['msg'];
 
 } else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-    $final_uri = "discussion.php?webtag=$webtag&amp;folder=". $_GET['folder'];
+    $final_uri = "discussion.php?webtag=$webtag&amp;folder=" . $_GET['folder'];
 
 } else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
 
-    $final_uri = "pm.php?webtag=$webtag&amp;mid=". $_GET['pmid'];
+    $final_uri = "pm.php?webtag=$webtag&amp;mid=" . $_GET['pmid'];
 }
 
 // Delete the user's cookie as requested and send them back to the login form.

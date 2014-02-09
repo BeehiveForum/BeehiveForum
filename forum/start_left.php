@@ -25,19 +25,19 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'attachments.inc.php';
-require_once BH_INCLUDE_PATH. 'cache.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'thread.inc.php';
-require_once BH_INCLUDE_PATH. 'threads.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'visitor_log.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'attachments.inc.php';
+require_once BH_INCLUDE_PATH . 'cache.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'thread.inc.php';
+require_once BH_INCLUDE_PATH . 'threads.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'visitor_log.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Start left caching
@@ -93,15 +93,15 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
                 if ($thread['LENGTH'] > 1) {
 
-                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
-                    $number.= sprintf(gettext("%d new"), $thread['LENGTH']);
-                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('main') . "\" title=\"" . gettext("Go to first post in thread") . "\">[</a>";
+                    $number .= sprintf(gettext("%d new"), $thread['LENGTH']);
+                    $number .= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}." . thread_get_last_page_pid($thread['LENGTH'], $posts_per_page) . "\" target=\"" . html_get_frame_name('main') . "\" title=\"" . gettext("Go to last post in thread") . "\">]</a>";
 
                 } else {
 
-                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
-                    $number.= sprintf(gettext("%d new"), $thread['LENGTH']);
-                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('main') . "\" title=\"" . gettext("Go to first post in thread") . "\">[</a>";
+                    $number .= sprintf(gettext("%d new"), $thread['LENGTH']);
+                    $number .= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}." . thread_get_last_page_pid($thread['LENGTH'], $posts_per_page) . "\" target=\"" . html_get_frame_name('main') . "\" title=\"" . gettext("Go to last post in thread") . "\">]</a>";
                 }
 
                 $latest_post = 1;
@@ -112,15 +112,15 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
                 if ($new_posts > 1) {
 
-                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
-                    $number.= sprintf(gettext("%d new of %d"), $new_posts, $thread['LENGTH']);
-                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('main') . "\" title=\"" . gettext("Go to first post in thread") . "\">[</a>";
+                    $number .= sprintf(gettext("%d new of %d"), $new_posts, $thread['LENGTH']);
+                    $number .= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}." . thread_get_last_page_pid($thread['LENGTH'], $posts_per_page) . "\" target=\"" . html_get_frame_name('main') . "\" title=\"" . gettext("Go to last post in thread") . "\">]</a>";
 
                 } else {
 
-                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
-                    $number.= sprintf(gettext("%d new of %d"), $new_posts, $thread['LENGTH']);
-                    $number.= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('main') . "\" title=\"" . gettext("Go to first post in thread") . "\">[</a>";
+                    $number .= sprintf(gettext("%d new of %d"), $new_posts, $thread['LENGTH']);
+                    $number .= "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}." . thread_get_last_page_pid($thread['LENGTH'], $posts_per_page) . "\" target=\"" . html_get_frame_name('main') . "\" title=\"" . gettext("Go to last post in thread") . "\">]</a>";
                 }
 
                 $latest_post = $thread['LAST_READ'] + 1;
@@ -129,13 +129,13 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
 
                 if ($thread['LENGTH'] > 1) {
 
-                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
-                    $number.= "{$thread['LENGTH']}<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('main') . "\" title=\"" . gettext("Go to first post in thread") . "\">[</a>";
+                    $number .= "{$thread['LENGTH']}<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.{$thread['LENGTH']}\" target=\"" . html_get_frame_name('main') . "\" title=\"" . gettext("Go to last post in thread") . "\">]</a>";
 
                 } else {
 
-                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
-                    $number.= "1<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('main'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
+                    $number = "<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('main') . "\" title=\"" . gettext("Go to first post in thread") . "\">[</a>";
+                    $number .= "1<a href=\"discussion.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('main') . "\" title=\"" . gettext("Go to last post in thread") . "\">]</a>";
                 }
 
                 $latest_post = 1;
@@ -447,7 +447,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
     echo "                                <form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"discussion.php\" target=\"", html_get_frame_name('main'), "\">\n";
     echo "                                  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "                                  ", form_input_text('msg', '1.1', 10), "\n";
-    echo "                                  ", form_submit("go",gettext("Go!")), "\n";
+    echo "                                  ", form_submit("go", gettext("Go!")), "\n";
     echo "                                </form>\n";
     echo "                              </td>\n";
     echo "                            </tr>\n";

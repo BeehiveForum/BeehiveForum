@@ -402,8 +402,8 @@ $(beehive).bind('init', function () {
     $('a.button').bind('mousedown',function () {
         $(this).css('border', '1px inset');
     }).bind('mouseup mouseout', function () {
-            $(this).css('border', '1px outset');
-        });
+        $(this).css('border', '1px outset');
+    });
 
     if ($body.hasClass('window_title')) {
         top.document.title = document.title;

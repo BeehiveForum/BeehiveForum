@@ -25,16 +25,16 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'banned.inc.php';
-require_once BH_INCLUDE_PATH. 'cache.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'banned.inc.php';
+require_once BH_INCLUDE_PATH . 'cache.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
 // End Required includes
 
 // Don't cache this page
@@ -287,9 +287,9 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
     if (isset($_POST['newbanexpiresyear']) && isset($_POST['newbanexpiresmonth']) && isset($_POST['newbanexpiresday'])) {
 
-        $newbanexpiresday   = trim($_POST['newbanexpiresday']);
+        $newbanexpiresday = trim($_POST['newbanexpiresday']);
         $newbanexpiresmonth = trim($_POST['newbanexpiresmonth']);
-        $newbanexpiresyear  = trim($_POST['newbanexpiresyear']);
+        $newbanexpiresyear = trim($_POST['newbanexpiresyear']);
 
         if ((is_numeric($newbanexpiresmonth) && $newbanexpiresmonth > 0) || (is_numeric($newbanexpiresday) && $newbanexpiresday > 0) || (is_numeric($newbanexpiresyear) && $newbanexpiresyear > 0)) {
 
@@ -378,9 +378,9 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
         if (isset($_POST['banexpiresyear']) && isset($_POST['banexpiresmonth']) && isset($_POST['banexpiresday'])) {
 
-            $banexpiresday   = trim($_POST['banexpiresday']);
+            $banexpiresday = trim($_POST['banexpiresday']);
             $banexpiresmonth = trim($_POST['banexpiresmonth']);
-            $banexpiresyear  = trim($_POST['banexpiresyear']);
+            $banexpiresyear = trim($_POST['banexpiresyear']);
 
             if ((is_numeric($banexpiresmonth) && $banexpiresmonth > 0) || (is_numeric($banexpiresday) && $banexpiresday > 0) || (is_numeric($banexpiresyear) && $banexpiresyear > 0)) {
 
@@ -491,9 +491,9 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     if (isset($_POST['newbanexpiresyear']) && isset($_POST['newbanexpiresmonth']) && isset($_POST['newbanexpiresday'])) {
 
-        $add_new_ban_expires_year  = trim($_POST['newbanexpiresyear']);
+        $add_new_ban_expires_year = trim($_POST['newbanexpiresyear']);
         $add_new_ban_expires_month = trim($_POST['newbanexpiresmonth']);
-        $add_new_ban_expires_day   = trim($_POST['newbanexpiresday']);
+        $add_new_ban_expires_day = trim($_POST['newbanexpiresday']);
 
         if ((is_numeric($add_new_ban_expires_month) && $add_new_ban_expires_month > 0) || (is_numeric($add_new_ban_expires_day) && $add_new_ban_expires_day > 0) || (is_numeric($add_new_ban_expires_year) && $add_new_ban_expires_year > 0)) {
 
@@ -514,10 +514,10 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     } else {
 
-        $add_new_ban_expires_year  = 0;
+        $add_new_ban_expires_year = 0;
         $add_new_ban_expires_month = 0;
-        $add_new_ban_expires_day   = 0;
-        $add_new_ban_expires       = 0;
+        $add_new_ban_expires_day = 0;
+        $add_new_ban_expires = 0;
     }
 
     if (isset($add_new_ban_type) && isset($add_new_ban_data)) {
@@ -659,9 +659,9 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
         if (isset($_POST['banexpiresyear']) && isset($_POST['banexpiresmonth']) && isset($_POST['banexpiresday'])) {
 
-            $ban_data_array['EXPIRESYEAR']  = trim($_POST['banexpiresyear']);
+            $ban_data_array['EXPIRESYEAR'] = trim($_POST['banexpiresyear']);
             $ban_data_array['EXPIRESMONTH'] = trim($_POST['banexpiresmonth']);
-            $ban_data_array['EXPIRESDAY']   = trim($_POST['banexpiresday']);
+            $ban_data_array['EXPIRESDAY'] = trim($_POST['banexpiresday']);
 
             if ((is_numeric($ban_data_array['EXPIRESMONTH']) && $ban_data_array['EXPIRESMONTH'] > 0) || (is_numeric($ban_data_array['EXPIRESDAY']) && $ban_data_array['EXPIRESDAY'] > 0) | (is_numeric($ban_data_array['EXPIRESYEAR']) && $ban_data_array['EXPIRESYEAR'] > 0)) {
 
@@ -682,10 +682,10 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
         } else {
 
-            $ban_data_array['EXPIRESYEAR']  = 0;
+            $ban_data_array['EXPIRESYEAR'] = 0;
             $ban_data_array['EXPIRESMONTH'] = 0;
-            $ban_data_array['EXPIRESDAY']   = 0;
-            $ban_data_array['EXPIRES']      = 0;
+            $ban_data_array['EXPIRESDAY'] = 0;
+            $ban_data_array['EXPIRES'] = 0;
         }
 
         if ($valid) {

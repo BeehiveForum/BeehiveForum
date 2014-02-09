@@ -25,9 +25,9 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'cache.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'cache.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
 // End Required includes
 
 // Guests can't do different font sizes.
@@ -47,7 +47,7 @@ $font_size = floor(abs($font_size));
 header("Content-type: text/css; charset=UTF-8");
 
 // Check the cache
-cache_check_last_modified(time(), md5($font_size. $_SESSION['UID']. $_SESSION['LOGON']));
+cache_check_last_modified(time(), md5($font_size . $_SESSION['UID'] . $_SESSION['LOGON']));
 
 // Check the user's font size.
 if ($font_size < 5) $font_size = 5;

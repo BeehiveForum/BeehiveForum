@@ -25,24 +25,24 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'attachments.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
-require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'perm.inc.php';
-require_once BH_INCLUDE_PATH. 'poll.inc.php';
-require_once BH_INCLUDE_PATH. 'post.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'thread.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'attachments.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH . 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'perm.inc.php';
+require_once BH_INCLUDE_PATH . 'poll.inc.php';
+require_once BH_INCLUDE_PATH . 'post.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'thread.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -217,7 +217,7 @@ if ($valid && isset($_POST['preview'])) {
         $edit_message['CONTENT'] = $t_content;
 
         if ($allow_sig == true && isset($t_sig)) {
-            $edit_message['CONTENT'].= "<div class=\"sig\">$t_sig</div>";
+            $edit_message['CONTENT'] .= "<div class=\"sig\">$t_sig</div>";
         }
 
         $edit_message['ATTACHMENTS'] = $attachments;
@@ -235,8 +235,8 @@ if ($valid && isset($_POST['preview'])) {
 
     if (sizeof($attachments) > 0 && !attachments_check_post_space($_SESSION['UID'], $attachments)) {
 
-    	$max_post_attachment_space = forum_get_setting('attachments_max_post_space', 'is_numeric', 1048576);
-    	$error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
+        $max_post_attachment_space = forum_get_setting('attachments_max_post_space', 'is_numeric', 1048576);
+        $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
         $valid = false;
     }
 
@@ -249,7 +249,7 @@ if ($valid && isset($_POST['preview'])) {
         $t_content_new = $t_content;
 
         if ($allow_sig == true && isset($t_sig)) {
-            $t_content_new.= "<div class=\"sig\">$t_sig</div>";
+            $t_content_new .= "<div class=\"sig\">$t_sig</div>";
         }
 
         if (post_update($t_fid, $tid, $pid, $t_content_new)) {
@@ -287,11 +287,11 @@ if ($valid && isset($_POST['preview'])) {
 
     if (isset($_POST['emots_toggle'])) {
 
-        $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
+        $page_prefs = (double)$page_prefs ^ POST_EMOTICONS_DISPLAY;
 
     } else if (isset($_POST['sig_toggle'])) {
 
-        $page_prefs = (double) $page_prefs ^ POST_SIGNATURE_DISPLAY;
+        $page_prefs = (double)$page_prefs ^ POST_SIGNATURE_DISPLAY;
     }
 
     $user_prefs = array(
@@ -327,7 +327,7 @@ if ($valid && isset($_POST['preview'])) {
             html_draw_error(sprintf(gettext("Message %s was not found"), $msg), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $return_msg));
         }
 
-    } else{
+    } else {
         html_draw_error(sprintf(gettext("Message %s was not found"), $msg), 'discussion.php', 'get', array('back' => gettext("Back")), array('msg' => $return_msg));
     }
 }
@@ -464,7 +464,7 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 
-echo form_submit('apply',gettext("Apply"), "tabindex=\"2\""), "\n";
+echo form_submit('apply', gettext("Apply"), "tabindex=\"2\""), "\n";
 
 echo form_submit("preview", gettext("Preview"), "tabindex=\"3\""), "\n";
 

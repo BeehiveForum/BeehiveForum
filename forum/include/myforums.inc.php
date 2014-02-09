@@ -22,12 +22,12 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'folder.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'folder.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
 // End Required includes
 
 function get_forum_list($page = 1)
@@ -41,11 +41,11 @@ function get_forum_list($page = 1)
     $forums_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT(FORUMS.DATABASE_NAME, '`.`', FORUMS.WEBTAG, '_') AS PREFIX, ";
-    $sql.= "FORUM_SETTINGS_NAME.SVALUE AS FORUM_NAME, FORUM_SETTINGS_DESC.SVALUE AS FORUM_DESC, ";
-    $sql.= "FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL FROM FORUMS ";
-    $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_NAME ON (FORUM_SETTINGS_NAME.FID = FORUMS.FID AND FORUM_SETTINGS_NAME.SNAME = 'forum_name') ";
-    $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_DESC ON (FORUM_SETTINGS_DESC.FID = FORUMS.FID AND FORUM_SETTINGS_DESC.SNAME = 'forum_desc') ";
-    $sql.= "WHERE FORUMS.ACCESS_LEVEL > -1 AND FORUMS.ACCESS_LEVEL < 3 ORDER BY FORUMS.FID LIMIT $offset, 10";
+    $sql .= "FORUM_SETTINGS_NAME.SVALUE AS FORUM_NAME, FORUM_SETTINGS_DESC.SVALUE AS FORUM_DESC, ";
+    $sql .= "FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL FROM FORUMS ";
+    $sql .= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_NAME ON (FORUM_SETTINGS_NAME.FID = FORUMS.FID AND FORUM_SETTINGS_NAME.SNAME = 'forum_name') ";
+    $sql .= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_DESC ON (FORUM_SETTINGS_DESC.FID = FORUMS.FID AND FORUM_SETTINGS_DESC.SNAME = 'forum_desc') ";
+    $sql .= "WHERE FORUMS.ACCESS_LEVEL > -1 AND FORUMS.ACCESS_LEVEL < 3 ORDER BY FORUMS.FID LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -100,7 +100,7 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
 
     $offset = calculate_page_offset($page, 10);
 
-    $sort_by_array  = array(
+    $sort_by_array = array(
         'FORUM_NAME',
         'FORUM_DESC',
         'LAST_VISIT'
@@ -122,35 +122,35 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
     if ($view_type == FORUMS_SHOW_ALL) {
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT(FORUMS.DATABASE_NAME, '`.`', FORUMS.WEBTAG, '_') AS PREFIX, ";
-        $sql.= "FORUM_SETTINGS_NAME.SVALUE AS FORUM_NAME, FORUM_SETTINGS_DESC.SVALUE AS FORUM_DESC, ";
-        $sql.= "FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM FORUMS ";
-        $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_NAME ON (FORUM_SETTINGS_NAME.FID = FORUMS.FID AND FORUM_SETTINGS_NAME.SNAME = 'forum_name') ";
-        $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_DESC ON (FORUM_SETTINGS_DESC.FID = FORUMS.FID AND FORUM_SETTINGS_DESC.SNAME = 'forum_desc') ";
-        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '{$_SESSION['UID']}') ";
-        $sql.= "WHERE FORUMS.ACCESS_LEVEL > -1  AND FORUMS.ACCESS_LEVEL < 3 AND (USER_FORUM.INTEREST > -1 ";
-        $sql.= "OR USER_FORUM.INTEREST IS NULL) ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
+        $sql .= "FORUM_SETTINGS_NAME.SVALUE AS FORUM_NAME, FORUM_SETTINGS_DESC.SVALUE AS FORUM_DESC, ";
+        $sql .= "FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM FORUMS ";
+        $sql .= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_NAME ON (FORUM_SETTINGS_NAME.FID = FORUMS.FID AND FORUM_SETTINGS_NAME.SNAME = 'forum_name') ";
+        $sql .= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_DESC ON (FORUM_SETTINGS_DESC.FID = FORUMS.FID AND FORUM_SETTINGS_DESC.SNAME = 'forum_desc') ";
+        $sql .= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '{$_SESSION['UID']}') ";
+        $sql .= "WHERE FORUMS.ACCESS_LEVEL > -1  AND FORUMS.ACCESS_LEVEL < 3 AND (USER_FORUM.INTEREST > -1 ";
+        $sql .= "OR USER_FORUM.INTEREST IS NULL) ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
 
     } else if ($view_type == FORUMS_SHOW_FAVS) {
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT(FORUMS.DATABASE_NAME, '`.`', FORUMS.WEBTAG, '_') AS PREFIX, ";
-        $sql.= "FORUM_SETTINGS_NAME.SVALUE AS FORUM_NAME, FORUM_SETTINGS_DESC.SVALUE AS FORUM_DESC, ";
-        $sql.= "FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM FORUMS ";
-        $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_NAME ON (FORUM_SETTINGS_NAME.FID = FORUMS.FID AND FORUM_SETTINGS_NAME.SNAME = 'forum_name') ";
-        $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_DESC ON (FORUM_SETTINGS_DESC.FID = FORUMS.FID AND FORUM_SETTINGS_DESC.SNAME = 'forum_desc') ";
-        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '{$_SESSION['UID']}') ";
-        $sql.= "WHERE FORUMS.ACCESS_LEVEL > -1 AND FORUMS.ACCESS_LEVEL < 3 AND USER_FORUM.INTEREST = 1 ";
-        $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
+        $sql .= "FORUM_SETTINGS_NAME.SVALUE AS FORUM_NAME, FORUM_SETTINGS_DESC.SVALUE AS FORUM_DESC, ";
+        $sql .= "FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM FORUMS ";
+        $sql .= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_NAME ON (FORUM_SETTINGS_NAME.FID = FORUMS.FID AND FORUM_SETTINGS_NAME.SNAME = 'forum_name') ";
+        $sql .= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_DESC ON (FORUM_SETTINGS_DESC.FID = FORUMS.FID AND FORUM_SETTINGS_DESC.SNAME = 'forum_desc') ";
+        $sql .= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '{$_SESSION['UID']}') ";
+        $sql .= "WHERE FORUMS.ACCESS_LEVEL > -1 AND FORUMS.ACCESS_LEVEL < 3 AND USER_FORUM.INTEREST = 1 ";
+        $sql .= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
 
     } else if ($view_type == FORUMS_SHOW_IGNORED) {
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS CONCAT(FORUMS.DATABASE_NAME, '`.`', FORUMS.WEBTAG, '_') AS PREFIX, ";
-        $sql.= "FORUM_SETTINGS_NAME.SVALUE AS FORUM_NAME, FORUM_SETTINGS_DESC.SVALUE AS FORUM_DESC, ";
-        $sql.= "FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM FORUMS ";
-        $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_NAME ON (FORUM_SETTINGS_NAME.FID = FORUMS.FID AND FORUM_SETTINGS_NAME.SNAME = 'forum_name') ";
-        $sql.= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_DESC ON (FORUM_SETTINGS_DESC.FID = FORUMS.FID AND FORUM_SETTINGS_DESC.SNAME = 'forum_desc') ";
-        $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '{$_SESSION['UID']}') ";
-        $sql.= "WHERE FORUMS.ACCESS_LEVEL > -1 AND FORUMS.ACCESS_LEVEL < 3 AND USER_FORUM.INTEREST = -1 ";
-        $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
+        $sql .= "FORUM_SETTINGS_NAME.SVALUE AS FORUM_NAME, FORUM_SETTINGS_DESC.SVALUE AS FORUM_DESC, ";
+        $sql .= "FORUMS.FID, FORUMS.WEBTAG, FORUMS.ACCESS_LEVEL, USER_FORUM.INTEREST, UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM FORUMS ";
+        $sql .= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_NAME ON (FORUM_SETTINGS_NAME.FID = FORUMS.FID AND FORUM_SETTINGS_NAME.SNAME = 'forum_name') ";
+        $sql .= "LEFT JOIN FORUM_SETTINGS FORUM_SETTINGS_DESC ON (FORUM_SETTINGS_DESC.FID = FORUMS.FID AND FORUM_SETTINGS_DESC.SNAME = 'forum_desc') ";
+        $sql .= "LEFT JOIN USER_FORUM ON (USER_FORUM.FID = FORUMS.FID AND USER_FORUM.UID = '{$_SESSION['UID']}') ";
+        $sql .= "WHERE FORUMS.ACCESS_LEVEL > -1 AND FORUMS.ACCESS_LEVEL < 3 AND USER_FORUM.INTEREST = -1 ";
+        $sql .= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
 
     } else {
 
@@ -192,11 +192,11 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
         if ($unread_cutoff_datetime !== false) {
 
             $sql = "SELECT SUM(THREAD.LENGTH) - SUM(COALESCE(USER_THREAD.LAST_READ, 0)) FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
-            $sql.= "LEFT JOIN `{$forum_data['PREFIX']}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') ";
-            $sql.= "LEFT JOIN `{$forum_data['PREFIX']}USER_FOLDER` USER_FOLDER ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
-            $sql.= "WHERE THREAD.FID IN ($folders) AND (USER_FOLDER.INTEREST > -1 OR USER_FOLDER.INTEREST IS NULL) ";
-            $sql.= "AND (USER_THREAD.INTEREST > -1 OR USER_THREAD.INTEREST IS NULL) ";
-            $sql.= "AND (THREAD.MODIFIED > CAST('$unread_cutoff_datetime' AS DATETIME)) ";
+            $sql .= "LEFT JOIN `{$forum_data['PREFIX']}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') ";
+            $sql .= "LEFT JOIN `{$forum_data['PREFIX']}USER_FOLDER` USER_FOLDER ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
+            $sql .= "WHERE THREAD.FID IN ($folders) AND (USER_FOLDER.INTEREST > -1 OR USER_FOLDER.INTEREST IS NULL) ";
+            $sql .= "AND (USER_THREAD.INTEREST > -1 OR USER_THREAD.INTEREST IS NULL) ";
+            $sql .= "AND (THREAD.MODIFIED > CAST('$unread_cutoff_datetime' AS DATETIME)) ";
 
             if (!($result_unread_count = $db->query($sql))) return false;
 
@@ -210,10 +210,10 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
         }
 
         $sql = "SELECT COALESCE(SUM(THREAD.LENGTH), 0) FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
-        $sql.= "LEFT JOIN `{$forum_data['PREFIX']}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') ";
-        $sql.= "LEFT JOIN `{$forum_data['PREFIX']}USER_FOLDER` USER_FOLDER ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
-        $sql.= "WHERE THREAD.FID IN ($folders) AND (USER_FOLDER.INTEREST > -1 OR USER_FOLDER.INTEREST IS NULL) ";
-        $sql.= "AND (USER_THREAD.INTEREST > -1 OR USER_THREAD.INTEREST IS NULL) ";
+        $sql .= "LEFT JOIN `{$forum_data['PREFIX']}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') ";
+        $sql .= "LEFT JOIN `{$forum_data['PREFIX']}USER_FOLDER` USER_FOLDER ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
+        $sql .= "WHERE THREAD.FID IN ($folders) AND (USER_FOLDER.INTEREST > -1 OR USER_FOLDER.INTEREST IS NULL) ";
+        $sql .= "AND (USER_THREAD.INTEREST > -1 OR USER_THREAD.INTEREST IS NULL) ";
 
         if (!($result_messages_count = $db->query($sql))) return false;
 
@@ -222,11 +222,11 @@ function get_my_forums($view_type, $page = 1, $sort_by = 'LAST_VISIT', $sort_dir
         $forum_data['NUM_MESSAGES'] = $num_messages;
 
         $sql = "SELECT COUNT(POST.PID) AS UNREAD_TO_ME FROM `{$forum_data['PREFIX']}THREAD` THREAD ";
-        $sql.= "INNER JOIN `{$forum_data['PREFIX']}POST` POST ON (POST.TID = THREAD.TID) ";
-        $sql.= "INNER JOIN `{$forum_data['PREFIX']}POST_RECIPIENT` POST_RECIPIENT ";
-        $sql.= "ON (POST_RECIPIENT.TID = POST.TID AND POST_RECIPIENT.PID = POST.PID) ";
-        $sql.= "WHERE THREAD.FID IN ($folders) AND POST_RECIPIENT.TO_UID = '{$_SESSION['UID']}' ";
-        $sql.= "AND POST_RECIPIENT.VIEWED IS NULL ";
+        $sql .= "INNER JOIN `{$forum_data['PREFIX']}POST` POST ON (POST.TID = THREAD.TID) ";
+        $sql .= "INNER JOIN `{$forum_data['PREFIX']}POST_RECIPIENT` POST_RECIPIENT ";
+        $sql .= "ON (POST_RECIPIENT.TID = POST.TID AND POST_RECIPIENT.PID = POST.PID) ";
+        $sql .= "WHERE THREAD.FID IN ($folders) AND POST_RECIPIENT.TO_UID = '{$_SESSION['UID']}' ";
+        $sql .= "AND POST_RECIPIENT.VIEWED IS NULL ";
 
         if (!($result_unread_to_me = $db->query($sql))) return false;
 
@@ -262,8 +262,8 @@ function user_set_forum_interest($fid, $interest)
     if (!session::logged_in()) return false;
 
     $sql = "INSERT INTO USER_FORUM (UID, FID, INTEREST) ";
-    $sql.= "VALUES ('{$_SESSION['UID']}', '$fid', '$interest') ";
-    $sql.= "ON DUPLICATE KEY UPDATE INTEREST = VALUES(INTEREST)";
+    $sql .= "VALUES ('{$_SESSION['UID']}', '$fid', '$interest') ";
+    $sql .= "ON DUPLICATE KEY UPDATE INTEREST = VALUES(INTEREST)";
 
     if (!$db->query($sql)) return false;
 
@@ -277,7 +277,7 @@ function forums_any_favourites()
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT COUNT(FID) AS FAV_COUNT FROM USER_FORUM ";
-    $sql.= "WHERE INTEREST = 1 AND UID = '{$_SESSION['UID']}'";
+    $sql .= "WHERE INTEREST = 1 AND UID = '{$_SESSION['UID']}'";
 
     if (!($result = $db->query($sql))) return false;
 

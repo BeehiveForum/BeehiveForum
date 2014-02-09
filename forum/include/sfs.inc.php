@@ -22,11 +22,11 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'ip.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'ip.inc.php';
 // End Required includes
 
 function sfs_check_banned($user_data, &$cached_response = false)
@@ -109,7 +109,7 @@ function sfs_check_banned($user_data, &$cached_response = false)
                 continue;
             }
 
-            $response_confidence+= $response[$key]['confidence'];
+            $response_confidence += $response[$key]['confidence'];
         }
 
         $response_confidence = $response_confidence / (count($request) - 1);
@@ -131,7 +131,7 @@ function sfs_cache_get($request_md5, &$cached_response = false)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "SELECT RESPONSE FROM SFS_CACHE WHERE REQUEST_MD5 = '$request_md5' ";
-    $sql.= "AND EXPIRES > '$current_datetime'";
+    $sql .= "AND EXPIRES > '$current_datetime'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -157,7 +157,7 @@ function sfs_cache_put($request_md5, $response)
     $expires_datetime = date(MYSQL_DATETIME, time() + DAY_IN_SECONDS);
 
     $sql = "REPLACE INTO SFS_CACHE (REQUEST_MD5, RESPONSE, CREATED, EXPIRES) ";
-    $sql.= "VALUES('$request_md5', '$response', '$current_datetime', '$expires_datetime')";
+    $sql .= "VALUES('$request_md5', '$response', '$current_datetime', '$expires_datetime')";
 
     if (!$db->query($sql)) return false;
 

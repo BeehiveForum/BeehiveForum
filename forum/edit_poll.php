@@ -25,23 +25,23 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
-require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
-require_once BH_INCLUDE_PATH. 'folder.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'perm.inc.php';
-require_once BH_INCLUDE_PATH. 'poll.inc.php';
-require_once BH_INCLUDE_PATH. 'post.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'thread.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH . 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH . 'folder.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'perm.inc.php';
+require_once BH_INCLUDE_PATH . 'poll.inc.php';
+require_once BH_INCLUDE_PATH . 'post.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'thread.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -488,7 +488,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
                     $question['QUESTION'] = htmlentities_array($question['QUESTION']);
                 }
 
-                $poll_option_count+= sizeof($question['OPTIONS_ARRAY']);
+                $poll_option_count += sizeof($question['OPTIONS_ARRAY']);
 
                 if (sizeof($question['OPTIONS_ARRAY']) < 2) {
 
@@ -553,19 +553,19 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
     if (isset($_POST['emots_toggle_x'])) {
 
-        $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
+        $page_prefs = (double)$page_prefs ^ POST_EMOTICONS_DISPLAY;
 
     } else if (isset($_POST['sig_toggle_x'])) {
 
-        $page_prefs = (double) $page_prefs ^ POST_SIGNATURE_DISPLAY;
+        $page_prefs = (double)$page_prefs ^ POST_SIGNATURE_DISPLAY;
 
     } else if (isset($_POST['poll_additional_message_toggle_x'])) {
 
-        $page_prefs = (double) $page_prefs ^ POLL_ADDITIONAL_MESSAGE_DISPLAY;
+        $page_prefs = (double)$page_prefs ^ POLL_ADDITIONAL_MESSAGE_DISPLAY;
 
     } else if (isset($_POST['poll_advanced_toggle_x'])) {
 
-        $page_prefs = (double) $page_prefs ^ POLL_ADVANCED_DISPLAY;
+        $page_prefs = (double)$page_prefs ^ POLL_ADVANCED_DISPLAY;
     }
 
     $user_prefs = array(
@@ -581,7 +581,7 @@ if (isset($_POST['preview_poll']) || isset($_POST['preview_form']) || isset($_PO
 
 if (isset($_POST['dedupe']) && is_numeric($_POST['dedupe'])) {
     $dedupe = $_POST['dedupe'];
-} else{
+} else {
     $dedupe = time();
 }
 
@@ -675,10 +675,10 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
     } else {
 
         $poll_display = "<div align=\"center\">\n";
-        $poll_display.= "  <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"580\">\n";
-        $poll_display.= "    <tr>\n";
-        $poll_display.= "      <td align=\"center\">\n";
-        $poll_display.= "        <table width=\"560\">\n";
+        $poll_display .= "  <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"580\">\n";
+        $poll_display .= "    <tr>\n";
+        $poll_display .= "      <td align=\"center\">\n";
+        $poll_display .= "        <table width=\"560\">\n";
 
         foreach ($poll_preview_questions_array as $question_id => $question) {
 
@@ -706,55 +706,55 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
 
         if ($poll_data['POLLTYPE'] == POLL_TABLE_GRAPH) {
 
-            $poll_display.= "          <tr>\n";
-            $poll_display.= "            <td align=\"left\" colspan=\"2\">". poll_table_graph($poll_preview_questions_array, $poll_data). "</td>\n";
-            $poll_display.= "           </tr>\n";
+            $poll_display .= "          <tr>\n";
+            $poll_display .= "            <td align=\"left\" colspan=\"2\">" . poll_table_graph($poll_preview_questions_array, $poll_data) . "</td>\n";
+            $poll_display .= "           </tr>\n";
 
         } else {
 
             foreach ($poll_preview_questions_array as $question_id => $poll_question) {
 
-                $poll_display.= "          <tr>\n";
-                $poll_display.= "            <td align=\"left\"><h2>". word_filter_add_ob_tags($poll_question['QUESTION'], true). "</h2></td>\n";
-                $poll_display.= "          </tr>\n";
-                $poll_display.= "          <tr>\n";
-                $poll_display.= "            <td align=\"left\">\n";
-                $poll_display.= "              <table width=\"100%\">\n";
+                $poll_display .= "          <tr>\n";
+                $poll_display .= "            <td align=\"left\"><h2>" . word_filter_add_ob_tags($poll_question['QUESTION'], true) . "</h2></td>\n";
+                $poll_display .= "          </tr>\n";
+                $poll_display .= "          <tr>\n";
+                $poll_display .= "            <td align=\"left\">\n";
+                $poll_display .= "              <table width=\"100%\">\n";
 
                 if ($poll_data['POLLTYPE'] == POLL_VERTICAL_GRAPH) {
 
-                    $poll_display.= "                <tr>\n";
-                    $poll_display.= "                  <td align=\"left\" colspan=\"2\">". poll_vertical_graph($poll_question['OPTIONS_ARRAY'], $poll_data, $total_vote_count). "</td>\n";
-                    $poll_display.= "                </tr>\n";
+                    $poll_display .= "                <tr>\n";
+                    $poll_display .= "                  <td align=\"left\" colspan=\"2\">" . poll_vertical_graph($poll_question['OPTIONS_ARRAY'], $poll_data, $total_vote_count) . "</td>\n";
+                    $poll_display .= "                </tr>\n";
 
                 } else if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC) {
 
-                    $poll_display.= "                <tr>\n";
-                    $poll_display.= "                  <td align=\"left\" colspan=\"2\">". poll_horizontal_graph($poll_question['OPTIONS_ARRAY'], $poll_data, $total_vote_count). "</td>\n";
-                    $poll_display.= "                 </tr>\n";
+                    $poll_display .= "                <tr>\n";
+                    $poll_display .= "                  <td align=\"left\" colspan=\"2\">" . poll_horizontal_graph($poll_question['OPTIONS_ARRAY'], $poll_data, $total_vote_count) . "</td>\n";
+                    $poll_display .= "                 </tr>\n";
 
                 } else {
 
-                    $poll_display.= "                <tr>\n";
-                    $poll_display.= "                  <td align=\"left\" colspan=\"2\">". poll_horizontal_graph($poll_question['OPTIONS_ARRAY'], $poll_data, $total_vote_count). "</td>\n";
-                    $poll_display.= "                 </tr>\n";
+                    $poll_display .= "                <tr>\n";
+                    $poll_display .= "                  <td align=\"left\" colspan=\"2\">" . poll_horizontal_graph($poll_question['OPTIONS_ARRAY'], $poll_data, $total_vote_count) . "</td>\n";
+                    $poll_display .= "                 </tr>\n";
                 }
 
-                $poll_display.= "              </table>\n";
-                $poll_display.= "            </td>\n";
-                $poll_display.= "          </tr>\n";
+                $poll_display .= "              </table>\n";
+                $poll_display .= "            </td>\n";
+                $poll_display .= "          </tr>\n";
             }
         }
 
-        $poll_display.= "          </table>\n";
-        $poll_display.= "        </form>\n";
-        $poll_display.= "      </td>\n";
-        $poll_display.= "    </tr>\n";
-        $poll_display.= "  </table>\n";
-        $poll_display.= "</div>\n";
+        $poll_display .= "          </table>\n";
+        $poll_display .= "        </form>\n";
+        $poll_display .= "      </td>\n";
+        $poll_display .= "    </tr>\n";
+        $poll_display .= "  </table>\n";
+        $poll_display .= "</div>\n";
     }
 
-    $poll_display.= "<p class=\"postbody\" align=\"center\">". gettext("Note: Poll votes are randomly generated for preview only."). "</p>\n";
+    $poll_display .= "<p class=\"postbody\" align=\"center\">" . gettext("Note: Poll votes are randomly generated for preview only.") . "</p>\n";
 
     $poll_data['CONTENT'] = $poll_display;
 

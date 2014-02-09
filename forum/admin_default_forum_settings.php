@@ -25,22 +25,22 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'adsense.inc.php';
-require_once BH_INCLUDE_PATH. 'attachments.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
-require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'pm.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'sitemap.inc.php';
-require_once BH_INCLUDE_PATH. 'sphinx.inc.php';
-require_once BH_INCLUDE_PATH. 'text_captcha.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'adsense.inc.php';
+require_once BH_INCLUDE_PATH . 'attachments.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH . 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'pm.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'sitemap.inc.php';
+require_once BH_INCLUDE_PATH . 'sphinx.inc.php';
+require_once BH_INCLUDE_PATH . 'text_captcha.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -990,7 +990,7 @@ echo "                        <td align=\"left\">", form_radio("require_email_co
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">", gettext("Require user to agree to forum rules"), ":</td>\n";
-echo "                        <td align=\"left\">", form_radio("forum_rules_enabled", "Y", gettext("Yes") , ((isset($forum_global_settings['forum_rules_enabled']) && $forum_global_settings['forum_rules_enabled'] == 'Y') || !isset($forum_global_settings['forum_rules_enabled']))), "&nbsp;", form_radio("forum_rules_enabled", "N", gettext("No") , (isset($forum_global_settings['forum_rules_enabled']) && $forum_global_settings['forum_rules_enabled'] == 'N')), "</td>\n";
+echo "                        <td align=\"left\">", form_radio("forum_rules_enabled", "Y", gettext("Yes"), ((isset($forum_global_settings['forum_rules_enabled']) && $forum_global_settings['forum_rules_enabled'] == 'Y') || !isset($forum_global_settings['forum_rules_enabled']))), "&nbsp;", form_radio("forum_rules_enabled", "N", gettext("No"), (isset($forum_global_settings['forum_rules_enabled']) && $forum_global_settings['forum_rules_enabled'] == 'N')), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"220\">", gettext("Require user approval by admin"), ":</td>\n";
@@ -998,7 +998,7 @@ echo "                        <td align=\"left\">", form_radio("require_user_app
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">", gettext("Send notification to global forum owner"), ":</td>\n";
-echo "                        <td align=\"left\">", form_radio("send_new_user_email", "Y", gettext("Yes") , (isset($forum_global_settings['send_new_user_email']) && $forum_global_settings['send_new_user_email'] == 'Y')), "&nbsp;", form_radio("send_new_user_email", "N", gettext("No") , (isset($forum_global_settings['send_new_user_email']) && ($forum_global_settings['send_new_user_email'] == 'N') || !isset($forum_global_settings['send_new_user_email']))), "</td>\n";
+echo "                        <td align=\"left\">", form_radio("send_new_user_email", "Y", gettext("Yes"), (isset($forum_global_settings['send_new_user_email']) && $forum_global_settings['send_new_user_email'] == 'Y')), "&nbsp;", form_radio("send_new_user_email", "N", gettext("No"), (isset($forum_global_settings['send_new_user_email']) && ($forum_global_settings['send_new_user_email'] == 'N') || !isset($forum_global_settings['send_new_user_email']))), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
@@ -1342,15 +1342,15 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">", gettext("Enable Personal Messages"), ":</td>\n";
-echo "                        <td align=\"left\">", form_radio("show_pms", "Y", gettext("Yes") , ((isset($forum_global_settings['show_pms']) && $forum_global_settings['show_pms'] == 'Y'))), "&nbsp;", form_radio("show_pms", "N", gettext("No") , (isset($forum_global_settings['show_pms']) && $forum_global_settings['show_pms'] == 'N') || !isset($forum_global_settings['show_pms'])), "</td>\n";
+echo "                        <td align=\"left\">", form_radio("show_pms", "Y", gettext("Yes"), ((isset($forum_global_settings['show_pms']) && $forum_global_settings['show_pms'] == 'Y'))), "&nbsp;", form_radio("show_pms", "N", gettext("No"), (isset($forum_global_settings['show_pms']) && $forum_global_settings['show_pms'] == 'N') || !isset($forum_global_settings['show_pms'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"350\">", gettext("Auto prune user's PM folders every"), " ", form_dropdown_array('pm_auto_prune', array(1 => 10, 2 => 15, 3 => 30, 4 => 60), (isset($forum_global_settings['pm_auto_prune']) ? ($forum_global_settings['pm_auto_prune'] > 0 ? $forum_global_settings['pm_auto_prune'] : $forum_global_settings['pm_auto_prune'] * -1) : 4)), " ", gettext("days"), ":</td>\n";
-echo "                        <td align=\"left\">", form_radio("pm_auto_prune_enabled", "Y", gettext("Yes"), (isset($forum_global_settings['pm_auto_prune']) && $forum_global_settings['pm_auto_prune'] > 0)), "&nbsp;", form_radio("pm_auto_prune_enabled", "N", gettext("No") , ((isset($forum_global_settings['pm_auto_prune']) && $forum_global_settings['pm_auto_prune'] < 0)) || !isset($forum_global_settings['pm_auto_prune'])), "</td>\n";
+echo "                        <td align=\"left\">", form_radio("pm_auto_prune_enabled", "Y", gettext("Yes"), (isset($forum_global_settings['pm_auto_prune']) && $forum_global_settings['pm_auto_prune'] > 0)), "&nbsp;", form_radio("pm_auto_prune_enabled", "N", gettext("No"), ((isset($forum_global_settings['pm_auto_prune']) && $forum_global_settings['pm_auto_prune'] < 0)) || !isset($forum_global_settings['pm_auto_prune'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">", gettext("Allow Personal Messages to have attachments"), ":</td>\n";
-echo "                        <td align=\"left\">", form_radio("pm_allow_attachments", "Y", gettext("Yes") , (isset($forum_global_settings['pm_allow_attachments']) && $forum_global_settings['pm_allow_attachments'] == 'Y')), "&nbsp;", form_radio("pm_allow_attachments", "N", gettext("No") , ((isset($forum_global_settings['pm_allow_attachments']) && $forum_global_settings['pm_allow_attachments'] == 'N')) || !isset($forum_global_settings['pm_allow_attachments'])), "</td>\n";
+echo "                        <td align=\"left\">", form_radio("pm_allow_attachments", "Y", gettext("Yes"), (isset($forum_global_settings['pm_allow_attachments']) && $forum_global_settings['pm_allow_attachments'] == 'Y')), "&nbsp;", form_radio("pm_allow_attachments", "N", gettext("No"), ((isset($forum_global_settings['pm_allow_attachments']) && $forum_global_settings['pm_allow_attachments'] == 'N')) || !isset($forum_global_settings['pm_allow_attachments'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">", gettext("PM messages per user"), ":</td>\n";

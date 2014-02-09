@@ -22,15 +22,15 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
 // End Required includes
 
-function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $access_allowed = USER_PERM_THREAD_CREATE, $custom_html = "", $class="bhselect")
+function folder_draw_dropdown($default_fid, $field_name = "t_fid", $suffix = "", $allowed_types = FOLDER_ALLOW_ALL_THREAD, $access_allowed = USER_PERM_THREAD_CREATE, $custom_html = "", $class = "bhselect")
 {
     if (!$db = db::get()) return false;
 
@@ -41,8 +41,8 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
     $available_folders = array();
 
     $sql = "SELECT FID, TITLE, DESCRIPTION FROM `{$table_prefix}FOLDER` ";
-    $sql.= "WHERE ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL ";
-    $sql.= "ORDER BY POSITION ";
+    $sql .= "WHERE ALLOWED_TYPES & $allowed_types > 0 OR ALLOWED_TYPES IS NULL ";
+    $sql .= "ORDER BY POSITION ";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -68,10 +68,10 @@ function folder_draw_dropdown($default_fid, $field_name="t_fid", $suffix="", $al
 
     if (sizeof($available_folders) == 0) return false;
 
-    return form_dropdown_array($field_name.$suffix, $available_folders, $default_fid, $custom_html, $class);
+    return form_dropdown_array($field_name . $suffix, $available_folders, $default_fid, $custom_html, $class);
 }
 
-function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="", $custom_html = "", $class="bhselect")
+function folder_draw_dropdown_all($default_fid, $field_name = "t_fid", $suffix = "", $custom_html = "", $class = "bhselect")
 {
     if (!$db = db::get()) return false;
 
@@ -80,7 +80,7 @@ function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="",
     $available_folders = array();
 
     $sql = "SELECT FID, TITLE, DESCRIPTION FROM `{$table_prefix}FOLDER` ";
-    $sql.= "ORDER BY POSITION";
+    $sql .= "ORDER BY POSITION";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -92,7 +92,7 @@ function folder_draw_dropdown_all($default_fid, $field_name="t_fid", $suffix="",
 
     if (sizeof($available_folders) == 0) return false;
 
-    return form_dropdown_array($field_name.$suffix, $available_folders, $default_fid, $custom_html, $class);
+    return form_dropdown_array($field_name . $suffix, $available_folders, $default_fid, $custom_html, $class);
 }
 
 function folder_get_title($fid)
@@ -153,7 +153,7 @@ function folder_create($title, $description = "", $prefix = "", $allowed_types =
     list($new_pos) = $result->fetch_row();
 
     $sql = "INSERT INTO `{$table_prefix}FOLDER` (TITLE, DESCRIPTION, CREATED, PREFIX, ALLOWED_TYPES, POSITION, PERM) ";
-    $sql.= "VALUES ('$title', '$description', NOW(), '$prefix', '$allowed_types', '$new_pos', '$permissions')";
+    $sql .= "VALUES ('$title', '$description', NOW(), '$prefix', '$allowed_types', '$new_pos', '$permissions')";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -200,9 +200,9 @@ function folder_update($fid, $folder_data)
     if (!isset($folder_data['ALLOWED_TYPES']) || !is_numeric($folder_data['ALLOWED_TYPES'])) $folder_data['ALLOWED_TYPES'] = 3;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FOLDER` SET TITLE = '{$folder_data['TITLE']}', ";
-    $sql.= "DESCRIPTION = '{$folder_data['DESCRIPTION']}', MODIFIED = NOW(), ALLOWED_TYPES = '{$folder_data['ALLOWED_TYPES']}', ";
-    $sql.= "POSITION = '{$folder_data['POSITION']}', PREFIX = '{$folder_data['PREFIX']}', ";
-    $sql.= "PERM = '{$folder_data['PERM']}' WHERE FID = '$fid'";
+    $sql .= "DESCRIPTION = '{$folder_data['DESCRIPTION']}', MODIFIED = NOW(), ALLOWED_TYPES = '{$folder_data['ALLOWED_TYPES']}', ";
+    $sql .= "POSITION = '{$folder_data['POSITION']}', PREFIX = '{$folder_data['PREFIX']}', ";
+    $sql .= "PERM = '{$folder_data['PERM']}' WHERE FID = '$fid'";
 
     if (!$db->query($sql)) return false;
 
@@ -221,7 +221,7 @@ function folder_move_threads($from, $to)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET FID = '$to', ";
-    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE FID = '$from'";
+    $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE FID = '$from'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -309,10 +309,10 @@ function folder_get_all()
     if (!($table_prefix = get_table_prefix())) return array();
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.ALLOWED_TYPES, ";
-    $sql.= "FOLDER.POSITION, FOLDER.PREFIX, FOLDER.PERM AS FOLDER_PERMS, ";
-    $sql.= "IF (FOLDER.PERM IS NULL, 0, 1) AS FOLDER_PERM_COUNT ";
-    $sql.= "FROM `{$table_prefix}FOLDER` FOLDER ";
-    $sql.= "ORDER BY FOLDER.POSITION";
+    $sql .= "FOLDER.POSITION, FOLDER.PREFIX, FOLDER.PERM AS FOLDER_PERMS, ";
+    $sql .= "IF (FOLDER.PERM IS NULL, 0, 1) AS FOLDER_PERM_COUNT ";
+    $sql .= "FROM `{$table_prefix}FOLDER` FOLDER ";
+    $sql .= "ORDER BY FOLDER.POSITION";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -340,12 +340,12 @@ function folder_get_all_by_page($page = 1)
     $folder_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.FID, FOLDER.TITLE, ";
-    $sql.= "FOLDER.DESCRIPTION, FOLDER.ALLOWED_TYPES, ";
-    $sql.= "FOLDER.POSITION, FOLDER.PREFIX, FOLDER.PERM AS FOLDER_PERMS, ";
-    $sql.= "IF (FOLDER.PERM IS NULL, 0, 1) AS FOLDER_PERM_COUNT ";
-    $sql.= "FROM `{$table_prefix}FOLDER` FOLDER ";
-    $sql.= "ORDER BY FOLDER.POSITION ";
-    $sql.= "LIMIT $offset, 10";
+    $sql .= "FOLDER.DESCRIPTION, FOLDER.ALLOWED_TYPES, ";
+    $sql .= "FOLDER.POSITION, FOLDER.PREFIX, FOLDER.PERM AS FOLDER_PERMS, ";
+    $sql .= "IF (FOLDER.PERM IS NULL, 0, 1) AS FOLDER_PERM_COUNT ";
+    $sql .= "FROM `{$table_prefix}FOLDER` FOLDER ";
+    $sql .= "ORDER BY FOLDER.POSITION ";
+    $sql .= "LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -387,7 +387,7 @@ function folders_get_thread_counts(&$folder_array, $fid_array)
     if (!$db = db::get()) return false;
 
     $sql = "SELECT FID, COUNT(*) AS THREAD_COUNT FROM `{$table_prefix}THREAD` ";
-    $sql.= "WHERE FID IN ($fid_list) GROUP BY FID";
+    $sql .= "WHERE FID IN ($fid_list) GROUP BY FID";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -407,7 +407,7 @@ function folder_get_thread_count($fid)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COUNT(TID) AS THREAD_COUNT FROM `{$table_prefix}THREAD` ";
-    $sql.= "WHERE FID = '$fid'";
+    $sql .= "WHERE FID = '$fid'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -427,11 +427,11 @@ function folder_get($fid)
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.POSITION, ";
-    $sql.= "FOLDER.PREFIX, FOLDER.ALLOWED_TYPES, FOLDER.PERM, USER_FOLDER.INTEREST ";
-    $sql.= "FROM `{$table_prefix}FOLDER` FOLDER ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-    $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "WHERE FOLDER.FID = '$fid' GROUP BY FOLDER.FID, FOLDER.TITLE";
+    $sql .= "FOLDER.PREFIX, FOLDER.ALLOWED_TYPES, FOLDER.PERM, USER_FOLDER.INTEREST ";
+    $sql .= "FROM `{$table_prefix}FOLDER` FOLDER ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
+    $sql .= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "WHERE FOLDER.FID = '$fid' GROUP BY FOLDER.FID, FOLDER.TITLE";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -455,11 +455,11 @@ function folder_get_available_details()
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.POSITION, ";
-    $sql.= "FOLDER.PREFIX, FOLDER.ALLOWED_TYPES, FOLDER.PERM, USER_FOLDER.INTEREST ";
-    $sql.= "FROM `{$table_prefix}FOLDER` FOLDER ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-    $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "WHERE FOLDER.FID IN ($fid_list) GROUP BY FOLDER.FID";
+    $sql .= "FOLDER.PREFIX, FOLDER.ALLOWED_TYPES, FOLDER.PERM, USER_FOLDER.INTEREST ";
+    $sql .= "FROM `{$table_prefix}FOLDER` FOLDER ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
+    $sql .= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "WHERE FOLDER.FID IN ($fid_list) GROUP BY FOLDER.FID";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -510,8 +510,8 @@ function user_set_folder_interest($fid, $interest)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "INSERT INTO `{$table_prefix}USER_FOLDER` (UID, FID, INTEREST) ";
-    $sql.= "VALUES ('{$_SESSION['UID']}', '$fid', '$interest') ON DUPLICATE KEY UPDATE ";
-    $sql.= "INTEREST = VALUES(INTEREST)";
+    $sql .= "VALUES ('{$_SESSION['UID']}', '$fid', '$interest') ON DUPLICATE KEY UPDATE ";
+    $sql .= "INTEREST = VALUES(INTEREST)";
 
     if (!$db->query($sql)) return false;
 
@@ -552,7 +552,7 @@ function folder_get_by_type_allowed($allowed_types = FOLDER_ALLOW_ALL_THREAD)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT DISTINCT FOLDER.FID FROM `{$table_prefix}FOLDER` FOLDER ";
-    $sql.= "WHERE (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL)";
+    $sql .= "WHERE (FOLDER.ALLOWED_TYPES & $allowed_types > 0 OR FOLDER.ALLOWED_TYPES IS NULL)";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -578,7 +578,7 @@ function folder_move_up($fid)
     folder_positions_update();
 
     $sql = "SELECT FID, POSITION FROM `{$table_prefix}FOLDER` ";
-    $sql.= "ORDER BY POSITION";
+    $sql .= "ORDER BY POSITION";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -602,14 +602,14 @@ function folder_move_up($fid)
     $new_position = $folder_position[$fid];
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FOLDER` SET POSITION = '$new_position' ";
-    $sql.= "WHERE FID = '{$folder_order[$folder_order_key]}'";
+    $sql .= "WHERE FID = '{$folder_order[$folder_order_key]}'";
 
     if (!($result = $db->query($sql))) return false;
 
     $new_position = $folder_position[$folder_order[$folder_order_key]];
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FOLDER` SET POSITION = '$new_position' ";
-    $sql.= "WHERE FID = '$fid'";
+    $sql .= "WHERE FID = '$fid'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -627,7 +627,7 @@ function folder_move_down($fid)
     folder_positions_update();
 
     $sql = "SELECT FID, POSITION FROM `{$table_prefix}FOLDER` ";
-    $sql.= "ORDER BY POSITION";
+    $sql .= "ORDER BY POSITION";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -651,14 +651,14 @@ function folder_move_down($fid)
     $new_position = $folder_position[$fid];
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FOLDER` SET POSITION = '$new_position' ";
-    $sql.= "WHERE FID = '{$folder_order[$folder_order_key]}'";
+    $sql .= "WHERE FID = '{$folder_order[$folder_order_key]}'";
 
     if (!($result = $db->query($sql))) return false;
 
     $new_position = $folder_position[$folder_order[$folder_order_key]];
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FOLDER` SET POSITION = '$new_position' ";
-    $sql.= "WHERE FID = '$fid'";
+    $sql .= "WHERE FID = '$fid'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -674,7 +674,7 @@ function folder_positions_update()
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT FID FROM `{$table_prefix}FOLDER` ";
-    $sql.= "ORDER BY POSITION";
+    $sql .= "ORDER BY POSITION";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -683,7 +683,7 @@ function folder_positions_update()
         $new_position++;
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}FOLDER` ";
-        $sql.= "SET POSITION = '$new_position' WHERE FID = '{$folder_data['FID']}'";
+        $sql .= "SET POSITION = '$new_position' WHERE FID = '{$folder_data['FID']}'";
 
         if (!$db->query($sql)) return false;
     }
@@ -712,23 +712,23 @@ function folders_get_user_subscriptions($interest_type = FOLDER_NOINTEREST, $pag
     if ($interest_type <> FOLDER_NOINTEREST) {
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.FID, FOLDER.TITLE, ";
-        $sql.= "USER_FOLDER.INTEREST FROM `{$table_prefix}FOLDER` FOLDER ";
-        $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-        $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
-        $sql.= "WHERE USER_FOLDER.INTEREST = '$interest_type' ";
-        $sql.= "AND FOLDER.FID IN ($folders) ";
-        $sql.= "ORDER BY FOLDER.POSITION DESC ";
-        $sql.= "LIMIT $offset, 20";
+        $sql .= "USER_FOLDER.INTEREST FROM `{$table_prefix}FOLDER` FOLDER ";
+        $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
+        $sql .= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
+        $sql .= "WHERE USER_FOLDER.INTEREST = '$interest_type' ";
+        $sql .= "AND FOLDER.FID IN ($folders) ";
+        $sql .= "ORDER BY FOLDER.POSITION DESC ";
+        $sql .= "LIMIT $offset, 20";
 
     } else {
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.FID, FOLDER.TITLE, ";
-        $sql.= "USER_FOLDER.INTEREST FROM `{$table_prefix}FOLDER` FOLDER ";
-        $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-        $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
-        $sql.= "WHERE FOLDER.FID IN ($folders) ";
-        $sql.= "ORDER BY FOLDER.POSITION DESC ";
-        $sql.= "LIMIT $offset, 20";
+        $sql .= "USER_FOLDER.INTEREST FROM `{$table_prefix}FOLDER` FOLDER ";
+        $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
+        $sql .= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
+        $sql .= "WHERE FOLDER.FID IN ($folders) ";
+        $sql .= "ORDER BY FOLDER.POSITION DESC ";
+        $sql .= "LIMIT $offset, 20";
     }
 
     if (!($result = $db->query($sql))) return false;
@@ -776,25 +776,25 @@ function folders_search_user_subscriptions($folder_search, $interest_type = FOLD
     if ($interest_type <> FOLDER_NOINTEREST) {
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.FID, FOLDER.TITLE, ";
-        $sql.= "USER_FOLDER.INTEREST FROM `{$table_prefix}FOLDER` FOLDER ";
-        $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-        $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
-        $sql.= "WHERE USER_FOLDER.INTEREST = '$interest_type' ";
-        $sql.= "AND FOLDER.TITLE LIKE '$folder_search%' ";
-        $sql.= "AND FOLDER.FID IN ($folders) ";
-        $sql.= "ORDER BY FOLDER.POSITION DESC ";
-        $sql.= "LIMIT $offset, 20";
+        $sql .= "USER_FOLDER.INTEREST FROM `{$table_prefix}FOLDER` FOLDER ";
+        $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
+        $sql .= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
+        $sql .= "WHERE USER_FOLDER.INTEREST = '$interest_type' ";
+        $sql .= "AND FOLDER.TITLE LIKE '$folder_search%' ";
+        $sql .= "AND FOLDER.FID IN ($folders) ";
+        $sql .= "ORDER BY FOLDER.POSITION DESC ";
+        $sql .= "LIMIT $offset, 20";
 
     } else {
 
         $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.FID, FOLDER.TITLE, ";
-        $sql.= "USER_FOLDER.INTEREST FROM `{$table_prefix}FOLDER` FOLDER ";
-        $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-        $sql.= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
-        $sql.= "WHERE FOLDER.FID IN ($folders) ";
-        $sql.= "AND FOLDER.TITLE LIKE '$folder_search%' ";
-        $sql.= "ORDER BY FOLDER.POSITION DESC ";
-        $sql.= "LIMIT $offset, 20";
+        $sql .= "USER_FOLDER.INTEREST FROM `{$table_prefix}FOLDER` FOLDER ";
+        $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
+        $sql .= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
+        $sql .= "WHERE FOLDER.FID IN ($folders) ";
+        $sql .= "AND FOLDER.TITLE LIKE '$folder_search%' ";
+        $sql .= "ORDER BY FOLDER.POSITION DESC ";
+        $sql .= "LIMIT $offset, 20";
     }
 
     if (!($result = $db->query($sql))) return false;

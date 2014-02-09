@@ -21,11 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 USA
 ======================================================================*/
 
-define("BH_INCLUDE_PATH", __DIR__. "/../include/");
+define("BH_INCLUDE_PATH", __DIR__ . "/../include/");
 
 date_default_timezone_set('UTC');
 
-require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
+require_once BH_INCLUDE_PATH . 'errorhandler.inc.php';
 
 error_reporting(E_ALL | E_STRICT);
 
@@ -35,11 +35,11 @@ set_error_handler('bh_error_handler');
 
 @ini_set('display_errors', '0');
 
-require_once BH_INCLUDE_PATH. 'server.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
 
-require_once BH_INCLUDE_PATH. 'cache.inc.php';
+require_once BH_INCLUDE_PATH . 'cache.inc.php';
 
-require_once BH_INCLUDE_PATH. 'install.inc.php';
+require_once BH_INCLUDE_PATH . 'install.inc.php';
 
 $install_method = null;
 
@@ -371,12 +371,12 @@ if (isset($_POST['install_method'])) {
 
             } catch (Exception $e) {
 
-                $error_array[] = "<h2>Could not complete installation. Error was:<br /><br />". nl2br($e->getMessage()). "</h2>\n";
+                $error_array[] = "<h2>Could not complete installation. Error was:<br /><br />" . nl2br($e->getMessage()) . "</h2>\n";
             }
 
         } catch (Exception $e) {
 
-            $error_array[] = "<p>Database connection to ". htmlentities_array($config['db_server']). ":". htmlentities_array($config['db_port']). " could not be established. Please check your MySQL Database Configuration settings are correct and that you have permisison to access the database you've entered.</p>\n<p><b>Note:</b> The database must be created manually prior to the installation of the Beehive Forum software!</p>\n";
+            $error_array[] = "<p>Database connection to " . htmlentities_array($config['db_server']) . ":" . htmlentities_array($config['db_port']) . " could not be established. Please check your MySQL Database Configuration settings are correct and that you have permisison to access the database you've entered.</p>\n<p><b>Note:</b> The database must be created manually prior to the installation of the Beehive Forum software!</p>\n";
         }
     }
 

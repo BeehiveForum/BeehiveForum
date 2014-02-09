@@ -22,18 +22,18 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'attachments.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'email.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'myforums.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'attachments.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'email.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'myforums.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 function admin_add_log_entry($action, array $data = array())
@@ -51,7 +51,7 @@ function admin_add_log_entry($action, array $data = array())
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "INSERT INTO `{$table_prefix}ADMIN_LOG` (CREATED, UID, ACTION, ENTRY) ";
-    $sql.= "VALUES (CAST('$current_datetime' AS DATETIME), '{$_SESSION['UID']}', '$action', '$data')";
+    $sql .= "VALUES (CAST('$current_datetime' AS DATETIME), '{$_SESSION['UID']}', '$action', '$data')";
 
     if (!$db->query($sql)) return false;
 
@@ -70,8 +70,8 @@ function admin_prune_log($remove_type, $remove_days)
     $remove_days_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($remove_days * DAY_IN_SECONDS));
 
     $sql = "DELETE QUICK FROM `{$table_prefix}ADMIN_LOG` ";
-    $sql.= "WHERE CREATED < CAST('$remove_days_datetime' AS DATETIME) ";
-    $sql.= "AND (ACTION = '$remove_type' OR '$remove_type' = 0)";
+    $sql .= "WHERE CREATED < CAST('$remove_days_datetime' AS DATETIME) ";
+    $sql .= "AND (ACTION = '$remove_type' OR '$remove_type' = 0)";
 
     if (!$db->query($sql)) return false;
 
@@ -121,16 +121,16 @@ function admin_get_log_entries($page = 1, $group_by = 'DAY', $sort_by = 'CREATED
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS ADMIN_LOG.ID, ADMIN_LOG.UID, ADMIN_LOG.ACTION, ";
-    $sql.= "ADMIN_LOG.ENTRY, UNIX_TIMESTAMP(MAX(ADMIN_LOG.CREATED)) AS CREATED, ";
-    $sql.= "{$group_by_array[$group_by]} AS GROUP_BY, COUNT(*) AS COUNT, ";
-    $sql.= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
-    $sql.= "FROM `{$table_prefix}ADMIN_LOG` ADMIN_LOG ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = ADMIN_LOG.UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = ADMIN_LOG.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "GROUP BY GROUP_BY, ADMIN_LOG.UID, ADMIN_LOG.ACTION, ADMIN_LOG.ENTRY ";
-    $sql.= "ORDER BY $sort_by $sort_dir ";
-    $sql.= "LIMIT $offset, 10";
+    $sql .= "ADMIN_LOG.ENTRY, UNIX_TIMESTAMP(MAX(ADMIN_LOG.CREATED)) AS CREATED, ";
+    $sql .= "{$group_by_array[$group_by]} AS GROUP_BY, COUNT(*) AS COUNT, ";
+    $sql .= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME ";
+    $sql .= "FROM `{$table_prefix}ADMIN_LOG` ADMIN_LOG ";
+    $sql .= "LEFT JOIN USER USER ON (USER.UID = ADMIN_LOG.UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "ON (USER_PEER.PEER_UID = ADMIN_LOG.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "GROUP BY GROUP_BY, ADMIN_LOG.UID, ADMIN_LOG.ACTION, ADMIN_LOG.ENTRY ";
+    $sql .= "ORDER BY $sort_by $sort_dir ";
+    $sql .= "LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -179,9 +179,9 @@ function admin_get_word_filter_list($page = 1)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, ";
-    $sql.= "FILTER_TYPE, FILTER_ENABLED FROM `{$table_prefix}WORD_FILTER` ";
-    $sql.= "WHERE UID = 0 ORDER BY FID ";
-    $sql.= "LIMIT $offset, 10";
+    $sql .= "FILTER_TYPE, FILTER_ENABLED FROM `{$table_prefix}WORD_FILTER` ";
+    $sql .= "WHERE UID = 0 ORDER BY FID ";
+    $sql .= "LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -214,8 +214,8 @@ function admin_get_word_filter($filter_id)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT FID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, ";
-    $sql.= "FILTER_ENABLED FROM `{$table_prefix}WORD_FILTER` ";
-    $sql.= "WHERE UID = 0 AND FID = '$filter_id' ORDER BY FID";
+    $sql .= "FILTER_ENABLED FROM `{$table_prefix}WORD_FILTER` ";
+    $sql .= "WHERE UID = 0 AND FID = '$filter_id' ORDER BY FID";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -235,7 +235,7 @@ function admin_delete_word_filter($filter_id)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "DELETE QUICK FROM `{$table_prefix}WORD_FILTER` ";
-    $sql.= "WHERE UID = 0 AND FID = '$filter_id'";
+    $sql .= "WHERE UID = 0 AND FID = '$filter_id'";
 
     if (!$db->query($sql)) return false;
 
@@ -259,8 +259,8 @@ function admin_add_word_filter($filter_name, $match_text, $replace_text, $filter
 {
     if (!$db = db::get()) return false;
 
-    $filter_name  = $db->escape($filter_name);
-    $match_text   = $db->escape($match_text);
+    $filter_name = $db->escape($filter_name);
+    $match_text = $db->escape($match_text);
     $replace_text = $db->escape($replace_text);
 
     if (!is_numeric($filter_option)) $filter_option = WORD_FILTER_TYPE_ALL;
@@ -269,8 +269,8 @@ function admin_add_word_filter($filter_name, $match_text, $replace_text, $filter
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "INSERT INTO `{$table_prefix}WORD_FILTER` ";
-    $sql.= "(UID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED) ";
-    $sql.= "VALUES (0, '$filter_name', '$match_text', '$replace_text', '$filter_option', '$filter_enabled')";
+    $sql .= "(UID, FILTER_NAME, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE, FILTER_ENABLED) ";
+    $sql .= "VALUES (0, '$filter_name', '$match_text', '$replace_text', '$filter_option', '$filter_enabled')";
 
     if (!$db->query($sql)) return false;
 
@@ -286,16 +286,16 @@ function admin_update_word_filter($filter_id, $filter_name, $match_text, $replac
     if (!is_numeric($filter_option)) $filter_option = WORD_FILTER_TYPE_ALL;
     if (!is_numeric($filter_enabled)) $filter_enabled = WORD_FILTER_ENABLED;
 
-    $filter_name  = $db->escape($filter_name);
-    $match_text   = $db->escape($match_text);
+    $filter_name = $db->escape($filter_name);
+    $match_text = $db->escape($match_text);
     $replace_text = $db->escape($replace_text);
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}WORD_FILTER` SET FILTER_NAME = '$filter_name', ";
-    $sql.= "MATCH_TEXT = '$match_text', REPLACE_TEXT = '$replace_text', ";
-    $sql.= "FILTER_TYPE = '$filter_option', FILTER_ENABLED = '$filter_enabled' ";
-    $sql.= "WHERE UID = 0 AND FID = '$filter_id'";
+    $sql .= "MATCH_TEXT = '$match_text', REPLACE_TEXT = '$replace_text', ";
+    $sql .= "FILTER_TYPE = '$filter_option', FILTER_ENABLED = '$filter_enabled' ";
+    $sql .= "WHERE UID = 0 AND FID = '$filter_id'";
 
     if (!$db->query($sql)) return false;
 
@@ -306,7 +306,7 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
 {
     if (!$db = db::get()) return false;
 
-    $sort_by_array  = array(
+    $sort_by_array = array(
         'LOGON' => 'USER.LOGON',
         'LAST_VISIT' => 'USER_FORUM.LAST_VISIT',
         'REGISTERED' => 'USER.REGISTERED',
@@ -345,57 +345,57 @@ function admin_user_search($user_search, $sort_by = 'LAST_VISIT', $sort_dir = 'D
         case ADMIN_USER_FILTER_ONLINE:
 
             $user_fetch_sql = "WHERE ACTIVE_SESSIONS.ID IS NOT NULL ";
-            $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
-            $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
+            $user_fetch_sql .= "AND (USER.LOGON LIKE '$user_search%' ";
+            $user_fetch_sql .= "OR USER.NICKNAME LIKE '$user_search%') ";
             break;
 
         case ADMIN_USER_FILTER_OFFLINE:
 
             $user_fetch_sql = "WHERE ACTIVE_SESSIONS.ID IS NULL ";
-            $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
-            $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
+            $user_fetch_sql .= "AND (USER.LOGON LIKE '$user_search%' ";
+            $user_fetch_sql .= "OR USER.NICKNAME LIKE '$user_search%') ";
             break;
 
         case ADMIN_USER_FILTER_APPROVAL:
 
             $user_fetch_sql = "WHERE USER.APPROVED IS NULL ";
-            $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
-            $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
+            $user_fetch_sql .= "AND (USER.LOGON LIKE '$user_search%' ";
+            $user_fetch_sql .= "OR USER.NICKNAME LIKE '$user_search%') ";
             break;
 
         case ADMIN_USER_FILTER_BANNED:
 
             $user_fetch_sql = "WHERE PERMS.PERM & $up_banned > 0 ";
-            $user_fetch_sql.= "AND (USER.LOGON LIKE '$user_search%' ";
-            $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
+            $user_fetch_sql .= "AND (USER.LOGON LIKE '$user_search%' ";
+            $user_fetch_sql .= "OR USER.NICKNAME LIKE '$user_search%') ";
             break;
 
         default:
 
             $user_fetch_sql = "WHERE (USER.LOGON LIKE '$user_search%' ";
-            $user_fetch_sql.= "OR USER.NICKNAME LIKE '$user_search%') ";
+            $user_fetch_sql .= "OR USER.NICKNAME LIKE '$user_search%') ";
             break;
     }
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "ACTIVE_SESSIONS.ID, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
-    $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
-    $sql.= "LEFT JOIN (SELECT ID, UID FROM SESSIONS WHERE UID > 0 AND TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
-    $sql.= "GROUP BY UID) AS ACTIVE_SESSIONS ON (ACTIVE_SESSIONS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID AND USER_FORUM.FID = $forum_fid) ";
-    $sql.= "LEFT JOIN (SELECT UID, BIT_OR(PERM) AS PERM FROM ((SELECT GROUP_USERS.UID, ";
-    $sql.= "GROUPS.FORUM, GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS PERM_COUNT FROM GROUPS INNER JOIN GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.GID = GROUPS.GID) INNER JOIN GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.GID = GROUPS.GID) WHERE GROUPS.FORUM = $forum_fid ";
-    $sql.= "AND GROUP_PERMS.FID = 0 GROUP BY GROUP_USERS.UID, GROUPS.FORUM, GROUP_PERMS.FID ";
-    $sql.= "HAVING PERM_COUNT > 0) UNION ALL (SELECT USER.UID, USER_PERM.FORUM, ";
-    $sql.= "USER_PERM.FID, BIT_OR(USER_PERM.PERM) AS PERM, COUNT(USER_PERM.UID) AS PERM_COUNT ";
-    $sql.= "FROM USER INNER JOIN USER_PERM ON (USER_PERM.UID = USER.UID) WHERE USER_PERM.FORUM IN (0, $forum_fid) ";
-    $sql.= "AND USER_PERM.FID = 0 GROUP BY USER.UID, USER_PERM.FORUM, USER_PERM.FID ";
-    $sql.= "HAVING PERM_COUNT > 0)) AS USER_GROUP_PERMS GROUP BY UID) AS PERMS ";
-    $sql.= "ON (PERMS.UID = USER_FORUM.UID) $user_fetch_sql GROUP BY USER.UID ";
-    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
+    $sql .= "ACTIVE_SESSIONS.ID, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
+    $sql .= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
+    $sql .= "LEFT JOIN (SELECT ID, UID FROM SESSIONS WHERE UID > 0 AND TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql .= "GROUP BY UID) AS ACTIVE_SESSIONS ON (ACTIVE_SESSIONS.UID = USER.UID) ";
+    $sql .= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID AND USER_FORUM.FID = $forum_fid) ";
+    $sql .= "LEFT JOIN (SELECT UID, BIT_OR(PERM) AS PERM FROM ((SELECT GROUP_USERS.UID, ";
+    $sql .= "GROUPS.FORUM, GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM, ";
+    $sql .= "COUNT(GROUP_PERMS.GID) AS PERM_COUNT FROM GROUPS INNER JOIN GROUP_PERMS ";
+    $sql .= "ON (GROUP_PERMS.GID = GROUPS.GID) INNER JOIN GROUP_USERS ";
+    $sql .= "ON (GROUP_USERS.GID = GROUPS.GID) WHERE GROUPS.FORUM = $forum_fid ";
+    $sql .= "AND GROUP_PERMS.FID = 0 GROUP BY GROUP_USERS.UID, GROUPS.FORUM, GROUP_PERMS.FID ";
+    $sql .= "HAVING PERM_COUNT > 0) UNION ALL (SELECT USER.UID, USER_PERM.FORUM, ";
+    $sql .= "USER_PERM.FID, BIT_OR(USER_PERM.PERM) AS PERM, COUNT(USER_PERM.UID) AS PERM_COUNT ";
+    $sql .= "FROM USER INNER JOIN USER_PERM ON (USER_PERM.UID = USER.UID) WHERE USER_PERM.FORUM IN (0, $forum_fid) ";
+    $sql .= "AND USER_PERM.FID = 0 GROUP BY USER.UID, USER_PERM.FORUM, USER_PERM.FID ";
+    $sql .= "HAVING PERM_COUNT > 0)) AS USER_GROUP_PERMS GROUP BY UID) AS PERMS ";
+    $sql .= "ON (PERMS.UID = USER_FORUM.UID) $user_fetch_sql GROUP BY USER.UID ";
+    $sql .= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -423,7 +423,7 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
 {
     if (!$db = db::get()) return false;
 
-    $sort_by_array  = array(
+    $sort_by_array = array(
         'LOGON' => 'USER.LOGON',
         'LAST_VISIT' => 'USER_FORUM.LAST_VISIT',
         'REGISTERED' => 'USER.REGISTERED',
@@ -484,24 +484,24 @@ function admin_user_get_all($sort_by = 'LAST_VISIT', $sort_dir = 'ASC', $filter 
     }
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "ACTIVE_SESSIONS.ID, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
-    $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
-    $sql.= "LEFT JOIN (SELECT ID, UID FROM SESSIONS WHERE UID > 0 AND TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
-    $sql.= "GROUP BY UID) AS ACTIVE_SESSIONS ON (ACTIVE_SESSIONS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID AND USER_FORUM.FID = $forum_fid) ";
-    $sql.= "LEFT JOIN (SELECT UID, BIT_OR(PERM) AS PERM FROM ((SELECT GROUP_USERS.UID, ";
-    $sql.= "GROUPS.FORUM, GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM, ";
-    $sql.= "COUNT(GROUP_PERMS.GID) AS PERM_COUNT FROM GROUPS INNER JOIN GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.GID = GROUPS.GID) INNER JOIN GROUP_USERS ";
-    $sql.= "ON (GROUP_USERS.GID = GROUPS.GID) WHERE GROUPS.FORUM = $forum_fid ";
-    $sql.= "AND GROUP_PERMS.FID = 0 GROUP BY GROUP_USERS.UID, GROUPS.FORUM, GROUP_PERMS.FID ";
-    $sql.= "HAVING PERM_COUNT > 0) UNION ALL (SELECT USER.UID, USER_PERM.FORUM, ";
-    $sql.= "USER_PERM.FID, BIT_OR(USER_PERM.PERM) AS PERM, COUNT(USER_PERM.UID) AS PERM_COUNT ";
-    $sql.= "FROM USER INNER JOIN USER_PERM ON (USER_PERM.UID = USER.UID) WHERE USER_PERM.FORUM IN (0, $forum_fid) ";
-    $sql.= "AND USER_PERM.FID = 0 GROUP BY USER.UID, USER_PERM.FORUM, USER_PERM.FID ";
-    $sql.= "HAVING PERM_COUNT > 0)) AS USER_GROUP_PERMS GROUP BY UID) AS PERMS ";
-    $sql.= "ON (PERMS.UID = USER_FORUM.UID) $user_fetch_sql GROUP BY USER.UID ";
-    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
+    $sql .= "ACTIVE_SESSIONS.ID, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
+    $sql .= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
+    $sql .= "LEFT JOIN (SELECT ID, UID FROM SESSIONS WHERE UID > 0 AND TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
+    $sql .= "GROUP BY UID) AS ACTIVE_SESSIONS ON (ACTIVE_SESSIONS.UID = USER.UID) ";
+    $sql .= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID AND USER_FORUM.FID = $forum_fid) ";
+    $sql .= "LEFT JOIN (SELECT UID, BIT_OR(PERM) AS PERM FROM ((SELECT GROUP_USERS.UID, ";
+    $sql .= "GROUPS.FORUM, GROUP_PERMS.FID, BIT_OR(GROUP_PERMS.PERM) AS PERM, ";
+    $sql .= "COUNT(GROUP_PERMS.GID) AS PERM_COUNT FROM GROUPS INNER JOIN GROUP_PERMS ";
+    $sql .= "ON (GROUP_PERMS.GID = GROUPS.GID) INNER JOIN GROUP_USERS ";
+    $sql .= "ON (GROUP_USERS.GID = GROUPS.GID) WHERE GROUPS.FORUM = $forum_fid ";
+    $sql .= "AND GROUP_PERMS.FID = 0 GROUP BY GROUP_USERS.UID, GROUPS.FORUM, GROUP_PERMS.FID ";
+    $sql .= "HAVING PERM_COUNT > 0) UNION ALL (SELECT USER.UID, USER_PERM.FORUM, ";
+    $sql .= "USER_PERM.FID, BIT_OR(USER_PERM.PERM) AS PERM, COUNT(USER_PERM.UID) AS PERM_COUNT ";
+    $sql .= "FROM USER INNER JOIN USER_PERM ON (USER_PERM.UID = USER.UID) WHERE USER_PERM.FORUM IN (0, $forum_fid) ";
+    $sql .= "AND USER_PERM.FID = 0 GROUP BY USER.UID, USER_PERM.FORUM, USER_PERM.FID ";
+    $sql .= "HAVING PERM_COUNT > 0)) AS USER_GROUP_PERMS GROUP BY UID) AS PERMS ";
+    $sql .= "ON (PERMS.UID = USER_FORUM.UID) $user_fetch_sql GROUP BY USER.UID ";
+    $sql .= "ORDER BY $sort_by $sort_dir LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -536,12 +536,12 @@ function admin_user_get($uid)
     }
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER.EMAIL, ";
-    $sql.= "USER.IPADDRESS, SESSIONS.ID, SESSIONS.REFERER AS SESSION_REFERER, ";
-    $sql.= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
-    $sql.= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
-    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
-    $sql.= "LEFT JOIN USER_FORUM  ON (USER.UID = USER_FORUM.UID ";
-    $sql.= "AND USER_FORUM.FID = '$forum_fid') WHERE USER.UID = '$uid'";
+    $sql .= "USER.IPADDRESS, SESSIONS.ID, SESSIONS.REFERER AS SESSION_REFERER, ";
+    $sql .= "UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
+    $sql .= "UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT FROM USER ";
+    $sql .= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID) ";
+    $sql .= "LEFT JOIN USER_FORUM  ON (USER.UID = USER_FORUM.UID ";
+    $sql .= "AND USER_FORUM.FID = '$forum_fid') WHERE USER.UID = '$uid'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -563,7 +563,7 @@ function admin_session_end($uid)
     if (!($forum_fid = get_forum_fid())) return false;
 
     $sql = "DELETE QUICK FROM SESSIONS WHERE UID = '$uid' ";
-    $sql.= "AND FID = '$forum_fid'";
+    $sql .= "AND FID = '$forum_fid'";
 
     if (!$db->query($sql)) return false;
 
@@ -588,19 +588,19 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
         $hash_list = implode("', '", array_filter($hash_array, 'is_md5'));
 
         $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
-        $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
-        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-        $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
-        $sql.= "WHERE PAF.UID = '$uid' AND PAF.HASH IN ('$hash_list') ";
-        $sql.= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
+        $sql .= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
+        $sql .= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+        $sql .= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
+        $sql .= "WHERE PAF.UID = '$uid' AND PAF.HASH IN ('$hash_list') ";
+        $sql .= "ORDER BY FORUMS.FID DESC, PAF.FILENAME";
 
     } else {
 
         $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, PAF.DOWNLOADS, ";
-        $sql.= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
-        $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-        $sql.= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
-        $sql.= "WHERE PAF.UID = '$uid' ORDER BY FORUMS.FID DESC, PAF.FILENAME";
+        $sql .= "FORUMS.WEBTAG, FORUMS.FID FROM POST_ATTACHMENT_FILES PAF ";
+        $sql .= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+        $sql .= "LEFT JOIN FORUMS FORUMS ON (PAI.FID = FORUMS.FID) ";
+        $sql .= "WHERE PAF.UID = '$uid' ORDER BY FORUMS.FID DESC, PAF.FILENAME";
     }
 
     if (!($result = $db->query($sql))) return false;
@@ -612,7 +612,7 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
             if (@file_exists("$attachment_dir/{$attachment['HASH']}.thumb")) {
 
                 $filesize = filesize("$attachment_dir/{$attachment['HASH']}");
-                $filesize+= filesize("$attachment_dir/{$attachment['HASH']}.thumb");
+                $filesize += filesize("$attachment_dir/{$attachment['HASH']}.thumb");
 
                 $user_image_attachments[] = array(
                     "filename" => rawurldecode($attachment['FILENAME']),
@@ -653,10 +653,10 @@ function admin_get_forum_list($page = 1)
     $offset = calculate_page_offset($page, 10);
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS FORUMS.FID, FORUMS.WEBTAG, FORUMS.DEFAULT_FORUM, ";
-    $sql.= "FORUMS.ACCESS_LEVEL, FORUM_SETTINGS.SVALUE AS FORUM_NAME FROM FORUMS ";
-    $sql.= "LEFT JOIN FORUM_SETTINGS ON (FORUM_SETTINGS.FID = FORUMS.FID ";
-    $sql.= "AND FORUM_SETTINGS.SNAME = 'forum_name') ";
-    $sql.= "LIMIT $offset, 10 ";
+    $sql .= "FORUMS.ACCESS_LEVEL, FORUM_SETTINGS.SVALUE AS FORUM_NAME FROM FORUMS ";
+    $sql .= "LEFT JOIN FORUM_SETTINGS ON (FORUM_SETTINGS.FID = FORUMS.FID ";
+    $sql .= "AND FORUM_SETTINGS.SNAME = 'forum_name') ";
+    $sql .= "LIMIT $offset, 10 ";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -736,9 +736,9 @@ function admin_get_ban_data($sort_by = "ID", $sort_dir = "ASC", $page = 1)
     $ban_data_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS ID, BANTYPE, BANDATA, COMMENT, ";
-    $sql.= "UNIX_TIMESTAMP(EXPIRES) AS EXPIRES FROM `{$table_prefix}BANNED` ";
-    $sql.= "ORDER BY $sort_by $sort_dir ";
-    $sql.= "LIMIT $offset, 10";
+    $sql .= "UNIX_TIMESTAMP(EXPIRES) AS EXPIRES FROM `{$table_prefix}BANNED` ";
+    $sql .= "ORDER BY $sort_by $sort_dir ";
+    $sql .= "LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -771,9 +771,9 @@ function admin_get_ban($ban_id)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT ID, BANTYPE, BANDATA, COMMENT, UNIX_TIMESTAMP(EXPIRES) AS EXPIRES, ";
-    $sql.= "DAY(EXPIRES) AS EXPIRESDAY, MONTH(EXPIRES) AS EXPIRESMONTH, ";
-    $sql.= "YEAR(EXPIRES) AS EXPIRESYEAR FROM `{$table_prefix}BANNED` ";
-    $sql.= "WHERE ID = '$ban_id'";
+    $sql .= "DAY(EXPIRES) AS EXPIRESDAY, MONTH(EXPIRES) AS EXPIRESMONTH, ";
+    $sql .= "YEAR(EXPIRES) AS EXPIRESYEAR FROM `{$table_prefix}BANNED` ";
+    $sql .= "WHERE ID = '$ban_id'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -818,14 +818,14 @@ function admin_get_post_approval_queue($page = 1)
     $post_approval_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS FOLDER.TITLE AS FOLDER_TITLE, ";
-    $sql.= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
-    $sql.= "USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
-    $sql.= "CONCAT(POST.TID, '.', POST.PID) AS MSG FROM `{$table_prefix}POST` POST ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE POST.APPROVED IS NULL AND THREAD.FID IN ($fidlist) ";
-    $sql.= "LIMIT $offset, 10";
+    $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
+    $sql .= "USER.UID, USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(POST.CREATED) AS CREATED, ";
+    $sql .= "CONCAT(POST.TID, '.', POST.PID) AS MSG FROM `{$table_prefix}POST` POST ";
+    $sql .= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
+    $sql .= "WHERE POST.APPROVED IS NULL AND THREAD.FID IN ($fidlist) ";
+    $sql .= "LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -865,12 +865,12 @@ function admin_get_link_approval_queue($page = 1)
     $link_approval_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS LINKS_FOLDERS.NAME AS FOLDER_TITLE, ";
-    $sql.= "LINKS.LID, LINKS.URI, LINKS.TITLE, LINKS.DESCRIPTION, USER.UID, ";
-    $sql.= "USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED ";
-    $sql.= "FROM `{$table_prefix}LINKS` LINKS LEFT JOIN USER USER ON (USER.UID = LINKS.UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}LINKS_FOLDERS` LINKS_FOLDERS ON (LINKS_FOLDERS.FID = LINKS.FID) ";
-    $sql.= "WHERE LINKS.APPROVED IS NULL ";
-    $sql.= "LIMIT $offset, 10";
+    $sql .= "LINKS.LID, LINKS.URI, LINKS.TITLE, LINKS.DESCRIPTION, USER.UID, ";
+    $sql .= "USER.LOGON, USER.NICKNAME, UNIX_TIMESTAMP(LINKS.CREATED) AS CREATED ";
+    $sql .= "FROM `{$table_prefix}LINKS` LINKS LEFT JOIN USER USER ON (USER.UID = LINKS.UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}LINKS_FOLDERS` LINKS_FOLDERS ON (LINKS_FOLDERS.FID = LINKS.FID) ";
+    $sql .= "WHERE LINKS.APPROVED IS NULL ";
+    $sql .= "LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -911,18 +911,18 @@ function admin_get_visitor_log($page = 1)
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS VISITOR_LOG.UID, USER.LOGON, ";
-    $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql.= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-    $sql.= "VISITOR_LOG.IPADDRESS, VISITOR_LOG.REFERER, ";
-    $sql.= "SEB.SID, SEB.NAME, SEB.URL FROM VISITOR_LOG VISITOR_LOG ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "LEFT JOIN SEARCH_ENGINE_BOTS SEB ";
-    $sql.= "ON (SEB.SID = VISITOR_LOG.SID) ";
-    $sql.= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
-    $sql.= "AND VISITOR_LOG.FORUM = '$forum_fid' ";
-    $sql.= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT $offset, 10";
+    $sql .= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
+    $sql .= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
+    $sql .= "VISITOR_LOG.IPADDRESS, VISITOR_LOG.REFERER, ";
+    $sql .= "SEB.SID, SEB.NAME, SEB.URL FROM VISITOR_LOG VISITOR_LOG ";
+    $sql .= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "LEFT JOIN SEARCH_ENGINE_BOTS SEB ";
+    $sql .= "ON (SEB.SID = VISITOR_LOG.SID) ";
+    $sql .= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
+    $sql .= "AND VISITOR_LOG.FORUM = '$forum_fid' ";
+    $sql .= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -946,7 +946,7 @@ function admin_get_visitor_log($page = 1)
 
         if ($visitor_array['UID'] == 0) {
 
-            $visitor_array['LOGON']    = gettext("Guest");
+            $visitor_array['LOGON'] = gettext("Guest");
             $visitor_array['NICKNAME'] = gettext("Guest");
 
         } else if (!isset($visitor_array['LOGON']) || is_null($visitor_array['LOGON'])) {
@@ -990,7 +990,7 @@ function admin_prune_visitor_log($remove_days)
     $remove_days_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($remove_days * DAY_IN_SECONDS));
 
     $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";
-    $sql.= "AND LAST_LOGON < CAST('$remove_days_datetime' AS DATETIME)";
+    $sql .= "AND LAST_LOGON < CAST('$remove_days_datetime' AS DATETIME)";
 
     if (!$db->query($sql)) return false;
 
@@ -1010,7 +1010,7 @@ function admin_get_user_ip_matches($uid)
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT DISTINCT IPADDRESS FROM `{$table_prefix}POST` ";
-    $sql.= "WHERE FROM_UID = '$uid' AND IPADDRESS IS NOT NULL LIMIT 10";
+    $sql .= "WHERE FROM_UID = '$uid' AND IPADDRESS IS NOT NULL LIMIT 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1032,17 +1032,17 @@ function admin_get_user_ip_matches($uid)
     $user_ip_address_list = implode("', '", $user_ip_address_array);
 
     $sql = "SELECT DISTINCT POST.FROM_UID AS UID, USER.LOGON, ";
-    $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, POST.IPADDRESS ";
-    $sql.= "FROM `{$table_prefix}POST` POST ";
-    $sql.= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "LEFT JOIN `{$table_prefix}RSS_FEEDS` RSS_FEEDS ";
-    $sql.= "ON (RSS_FEEDS.UID = USER.UID) WHERE POST.FROM_UID <> $uid ";
-    $sql.= "AND ((POST.IPADDRESS IN ('$user_ip_address_list')) ";
-    $sql.= "OR (USER.IPADDRESS IN ('$user_ip_address_list'))) ";
-    $sql.= "AND RSS_FEEDS.UID IS NOT NULL ";
-    $sql.= "LIMIT 0, 10";
+    $sql .= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, POST.IPADDRESS ";
+    $sql .= "FROM `{$table_prefix}POST` POST ";
+    $sql .= "LEFT JOIN USER USER ON (POST.FROM_UID = USER.UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "LEFT JOIN `{$table_prefix}RSS_FEEDS` RSS_FEEDS ";
+    $sql .= "ON (RSS_FEEDS.UID = USER.UID) WHERE POST.FROM_UID <> $uid ";
+    $sql .= "AND ((POST.IPADDRESS IN ('$user_ip_address_list')) ";
+    $sql .= "OR (USER.IPADDRESS IN ('$user_ip_address_list'))) ";
+    $sql .= "AND RSS_FEEDS.UID IS NOT NULL ";
+    $sql .= "LIMIT 0, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1085,11 +1085,11 @@ function admin_get_user_email_matches($uid)
     $user_email_address = user_get_email($uid);
 
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "USER_PEER.PEER_NICKNAME, USER.EMAIL FROM USER ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "WHERE (USER.EMAIL = '$user_email_address') ";
-    $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
+    $sql .= "USER_PEER.PEER_NICKNAME, USER.EMAIL FROM USER ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "WHERE (USER.EMAIL = '$user_email_address') ";
+    $sql .= "AND USER.UID <> $uid LIMIT 0, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1127,11 +1127,11 @@ function admin_get_user_referer_matches($uid)
     $user_http_referer = user_get_referer($uid);
 
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "USER_PEER.PEER_NICKNAME, USER.REFERER FROM USER ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "WHERE USER.REFERER = '$user_http_referer' ";
-    $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
+    $sql .= "USER_PEER.PEER_NICKNAME, USER.REFERER FROM USER ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "WHERE USER.REFERER = '$user_http_referer' ";
+    $sql .= "AND USER.UID <> $uid LIMIT 0, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1172,11 +1172,11 @@ function admin_get_user_passwd_matches($uid)
     $user_passwd = user_get_passwd($uid);
 
     $sql = "SELECT DISTINCT USER.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "USER_PEER.PEER_NICKNAME, USER.PASSWD FROM USER ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "WHERE (USER.PASSWD = '$user_passwd') ";
-    $sql.= "AND USER.UID <> $uid LIMIT 0, 10";
+    $sql .= "USER_PEER.PEER_NICKNAME, USER.PASSWD FROM USER ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "WHERE (USER.PASSWD = '$user_passwd') ";
+    $sql .= "AND USER.UID <> $uid LIMIT 0, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1216,8 +1216,8 @@ function admin_get_user_history($uid)
     list($logon, $nickname, $email) = $result->fetch_row();
 
     $sql = "SELECT LOGON, NICKNAME, EMAIL, UNIX_TIMESTAMP(MODIFIED) ";
-    $sql.= "FROM USER_HISTORY WHERE UID = '$uid' ";
-    $sql.= "ORDER BY MODIFIED DESC LIMIT 10";
+    $sql .= "FROM USER_HISTORY WHERE UID = '$uid' ";
+    $sql .= "ORDER BY MODIFIED DESC LIMIT 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1288,7 +1288,7 @@ function admin_approve_user($uid)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY USER SET APPROVED = CAST('$current_datetime' AS DATETIME) ";
-    $sql.= "WHERE UID = '$uid'";
+    $sql .= "WHERE UID = '$uid'";
 
     if (!$db->query($sql)) return false;
 
@@ -1388,31 +1388,31 @@ function admin_delete_user($uid, $delete_content = false)
 
                     // Delete Polls created by user
                     $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}THREAD` SET POLL_FLAG = 'N', ";
-                    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE BY_UID = '$uid'";
+                    $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE BY_UID = '$uid'";
 
                     if (!$db->query($sql)) return false;
 
                     // Delete threads started by the user where
                     // the thread only contains a single post.
                     $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}THREAD` SET DELETED = 'Y', ";
-                    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE BY_UID = '$uid' ";
-                    $sql.= "AND LENGTH = 1";
+                    $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE BY_UID = '$uid' ";
+                    $sql .= "AND LENGTH = 1";
 
                     if (!$db->query($sql)) return false;
 
                     // Delete content of posts made by this user
                     $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}POST_CONTENT` POST_CONTENT ";
-                    $sql.= "LEFT JOIN `{$forum_table_prefix}POST` POST ON (POST.TID = POST_CONTENT.TID ";
-                    $sql.= "AND POST.PID = POST_CONTENT.PID) SET POST_CONTENT.CONTENT = NULL ";
-                    $sql.= "WHERE POST.FROM_UID = '$uid'";
+                    $sql .= "LEFT JOIN `{$forum_table_prefix}POST` POST ON (POST.TID = POST_CONTENT.TID ";
+                    $sql .= "AND POST.PID = POST_CONTENT.PID) SET POST_CONTENT.CONTENT = NULL ";
+                    $sql .= "WHERE POST.FROM_UID = '$uid'";
 
                     if (!$db->query($sql)) return false;
 
                     // Mark posts made by this user as approved so they don't appear in the
                     // approval queue.
                     $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}POST` ";
-                    $sql.= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
-                    $sql.= "APPROVED_BY = '{$_SESSION['UID']}' WHERE FROM_UID = '$uid'";
+                    $sql .= "SET APPROVED = CAST('$current_datetime' AS DATETIME), ";
+                    $sql .= "APPROVED_BY = '{$_SESSION['UID']}' WHERE FROM_UID = '$uid'";
 
                     if (!$db->query($sql)) return false;
                 }
@@ -1440,10 +1440,10 @@ function admin_delete_user($uid, $delete_content = false)
 
             // Remove any PMs that have no recipients.
             $sql = "DELETE QUICK FROM PM, PM_CONTENT USING PM ";
-            $sql.= "LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
-            $sql.= "LEFT JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
-            $sql.= "LEFT JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID) ";
-            $sql.= "WHERE PM_TYPE.MID IS NULL OR PM_RECIPIENT.MID IS NULL";
+            $sql .= "LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
+            $sql .= "LEFT JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
+            $sql .= "LEFT JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID) ";
+            $sql .= "WHERE PM_TYPE.MID IS NULL OR PM_RECIPIENT.MID IS NULL";
 
             if (!$db->query($sql)) return false;
 
@@ -1528,8 +1528,8 @@ function admin_delete_users_posts($uid)
     if (!is_numeric($uid)) return false;
 
     $sql = "INSERT INTO `{$table_prefix}POST_CONTENT` (TID, PID, CONTENT) ";
-    $sql.= "SELECT TID, PID, NULL FROM `{$table_prefix}POST` WHERE FROM_UID = '$uid' ";
-    $sql.= "ON DUPLICATE KEY UPDATE CONTENT = VALUES(CONTENT)";
+    $sql .= "SELECT TID, PID, NULL FROM `{$table_prefix}POST` WHERE FROM_UID = '$uid' ";
+    $sql .= "ON DUPLICATE KEY UPDATE CONTENT = VALUES(CONTENT)";
 
     if (!$db->query($sql)) return false;
 
@@ -1545,9 +1545,9 @@ function admin_prepare_affected_sessions($affected_session)
     if ($affected_session['UID'] > 0) {
 
         $affected_session_text = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$affected_session['UID']};\" ";
-        $affected_session_text.= "target=\"_blank\" class=\"popup 650x500\">";
-        $affected_session_text.= word_filter_add_ob_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), true);
-        $affected_session_text.= "</a></li>\n";
+        $affected_session_text .= "target=\"_blank\" class=\"popup 650x500\">";
+        $affected_session_text .= word_filter_add_ob_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), true);
+        $affected_session_text .= "</a></li>\n";
 
     } else {
 
@@ -1566,9 +1566,9 @@ function admin_send_user_approval_notification($new_user_uid)
     $notification_success = false;
 
     $sql = "SELECT DISTINCT USER_PERM.UID, BIT_OR(USER_PERM.PERM) AS PERM ";
-    $sql.= "FROM USER INNER JOIN USER_PERM ON (USER_PERM.UID = USER.UID) ";
-    $sql.= "WHERE USER_PERM.FORUM = 0 GROUP BY USER.UID ";
-    $sql.= "HAVING PERM & $user_perm_admin_tools > 0";
+    $sql .= "FROM USER INNER JOIN USER_PERM ON (USER_PERM.UID = USER.UID) ";
+    $sql .= "WHERE USER_PERM.FORUM = 0 GROUP BY USER.UID ";
+    $sql .= "HAVING PERM & $user_perm_admin_tools > 0";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1593,9 +1593,9 @@ function admin_send_new_user_notification($new_user_uid)
     $notification_success = false;
 
     $sql = "SELECT DISTINCT USER_PERM.UID, BIT_OR(USER_PERM.PERM) AS PERM ";
-    $sql.= "FROM USER INNER JOIN USER_PERM ON (USER_PERM.UID = USER.UID) ";
-    $sql.= "WHERE USER_PERM.FORUM = 0 GROUP BY USER.UID ";
-    $sql.= "HAVING PERM & $user_perm_admin_tools > 0";
+    $sql .= "FROM USER INNER JOIN USER_PERM ON (USER_PERM.UID = USER.UID) ";
+    $sql .= "WHERE USER_PERM.FORUM = 0 GROUP BY USER.UID ";
+    $sql .= "HAVING PERM & $user_perm_admin_tools > 0";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1624,15 +1624,15 @@ function admin_send_post_approval_notification($fid)
     $notification_success = false;
 
     $sql = "(SELECT DISTINCT GROUP_USERS.UID, BIT_OR(GROUP_PERMS.PERM) AS PERM ";
-    $sql.= "FROM GROUPS INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
-    $sql.= "INNER JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
-    $sql.= "INNER JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
-    $sql.= "WHERE GROUPS.FORUM = $forum_fid AND GROUP_PERMS.FID = $fid ";
-    $sql.= "GROUP BY GROUP_USERS.UID HAVING PERM & $user_perm_folder_moderate > 0) ";
-    $sql.= "UNION (SELECT DISTINCT USER_PERM.UID, BIT_OR(USER_PERM.PERM) AS PERM ";
-    $sql.= "FROM USER INNER JOIN USER_PERM ON (USER_PERM.UID = USER.UID) ";
-    $sql.= "WHERE USER_PERM.FORUM IN (0, $forum_fid) AND USER_PERM.FID = $fid ";
-    $sql.= "GROUP BY USER.UID HAVING PERM & $user_perm_folder_moderate > 0)";
+    $sql .= "FROM GROUPS INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
+    $sql .= "INNER JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
+    $sql .= "INNER JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
+    $sql .= "WHERE GROUPS.FORUM = $forum_fid AND GROUP_PERMS.FID = $fid ";
+    $sql .= "GROUP BY GROUP_USERS.UID HAVING PERM & $user_perm_folder_moderate > 0) ";
+    $sql .= "UNION (SELECT DISTINCT USER_PERM.UID, BIT_OR(USER_PERM.PERM) AS PERM ";
+    $sql .= "FROM USER INNER JOIN USER_PERM ON (USER_PERM.UID = USER.UID) ";
+    $sql .= "WHERE USER_PERM.FORUM IN (0, $forum_fid) AND USER_PERM.FID = $fid ";
+    $sql .= "GROUP BY USER.UID HAVING PERM & $user_perm_folder_moderate > 0)";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1659,15 +1659,15 @@ function admin_send_link_approval_notification()
     $notification_success = false;
 
     $sql = "(SELECT DISTINCT GROUP_USERS.UID, BIT_OR(GROUP_PERMS.PERM) AS PERM ";
-    $sql.= "FROM GROUPS INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
-    $sql.= "INNER JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
-    $sql.= "INNER JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
-    $sql.= "WHERE GROUPS.FORUM = $forum_fid GROUP BY GROUP_USERS.UID ";
-    $sql.= "HAVING PERM & $user_perm_links_moderate > 0) ";
-    $sql.= "UNION (SELECT DISTINCT USER_PERM.UID, BIT_OR(USER_PERM.PERM) AS PERM ";
-    $sql.= "FROM USER INNER JOIN USER_PERM ON (USER_PERM.UID = USER.UID) ";
-    $sql.= "WHERE USER_PERM.FORUM IN (0, $forum_fid) GROUP BY USER.UID ";
-    $sql.= "HAVING PERM & $user_perm_links_moderate > 0)";
+    $sql .= "FROM GROUPS INNER JOIN GROUP_PERMS ON (GROUP_PERMS.GID = GROUPS.GID) ";
+    $sql .= "INNER JOIN GROUP_USERS ON (GROUP_USERS.GID = GROUPS.GID) ";
+    $sql .= "INNER JOIN USER ON (USER.UID = GROUP_USERS.UID) ";
+    $sql .= "WHERE GROUPS.FORUM = $forum_fid GROUP BY GROUP_USERS.UID ";
+    $sql .= "HAVING PERM & $user_perm_links_moderate > 0) ";
+    $sql .= "UNION (SELECT DISTINCT USER_PERM.UID, BIT_OR(USER_PERM.PERM) AS PERM ";
+    $sql .= "FROM USER INNER JOIN USER_PERM ON (USER_PERM.UID = USER.UID) ";
+    $sql .= "WHERE USER_PERM.FORUM IN (0, $forum_fid) GROUP BY USER.UID ";
+    $sql .= "HAVING PERM & $user_perm_links_moderate > 0)";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1696,7 +1696,7 @@ function admin_reset_user_password($uid, $password)
     $passhash = $db->escape($passhash);
 
     $sql = "UPDATE USER SET PASSWD = '$passhash', SALT = '$salt' ";
-    $sql.= "WHERE UID = '$uid'";
+    $sql .= "WHERE UID = '$uid'";
 
     if (!($db->query($sql))) return false;
 

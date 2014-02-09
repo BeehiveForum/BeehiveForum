@@ -25,20 +25,20 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'cache.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'folder.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'rss_feed.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'thread.inc.php';
-require_once BH_INCLUDE_PATH. 'threads.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'cache.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'folder.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'rss_feed.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'thread.inc.php';
+require_once BH_INCLUDE_PATH . 'threads.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Thread List Cache Control
@@ -195,9 +195,9 @@ if (!session::logged_in()) {
 
             html_draw_top();
             html_display_msg(gettext("Confirm"), gettext("Are you sure you want to mark the selected threads as read?"), 'thread_list.php', 'post', array(
-                                                                                                                                                         'mark_read_submit' => gettext("Confirm"),
-                                                                                                                                                         'cancel'           => gettext("Cancel")
-                                                                                                                                                    ), array_merge($_REQUEST, array('mark_read_confirm' => 'Y')));
+                'mark_read_submit' => gettext("Confirm"),
+                'cancel' => gettext("Cancel")
+            ), array_merge($_REQUEST, array('mark_read_confirm' => 'Y')));
             html_draw_bottom();
             exit;
         }
@@ -485,7 +485,7 @@ foreach ($folder_order as $folder_number) {
         echo "          </td>\n";
 
         if ($_SESSION['UID'] > 0) {
-            echo "          <td align=\"left\" class=\"folderpostnew\" style=\"white-space: nowrap\"><a href=\"mods_list.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 580x450\" id=\"mods_list_$folder_number\"><img src=\"". html_style_image('mods_list.png'). "\" border=\"0\" alt=\"", gettext("View moderators"), "\" title=\"", gettext("View moderators"), "\" /></a></td>";
+            echo "          <td align=\"left\" class=\"folderpostnew\" style=\"white-space: nowrap\"><a href=\"mods_list.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 580x450\" id=\"mods_list_$folder_number\"><img src=\"" . html_style_image('mods_list.png') . "\" border=\"0\" alt=\"", gettext("View moderators"), "\" title=\"", gettext("View moderators"), "\" /></a></td>";
         }
 
         echo "        </tr>\n";
@@ -560,15 +560,15 @@ foreach ($folder_order as $folder_number) {
 
                                 if ($thread['LENGTH'] > 1) {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
-                                    $number.= sprintf(gettext("%d new"), $thread['LENGTH']);
-                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to first post in thread") . "\">[</a>";
+                                    $number .= sprintf(gettext("%d new"), $thread['LENGTH']);
+                                    $number .= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}." . thread_get_last_page_pid($thread['LENGTH'], $posts_per_page) . "\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to last post in thread") . "\">]</a>";
 
                                 } else {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
-                                    $number.= sprintf(gettext("%d new"), $thread['LENGTH']);
-                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to first post in thread") . "\">[</a>";
+                                    $number .= sprintf(gettext("%d new"), $thread['LENGTH']);
+                                    $number .= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}." . thread_get_last_page_pid($thread['LENGTH'], $posts_per_page) . "\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to last post in thread") . "\">]</a>";
                                 }
 
                                 $latest_post = 1;
@@ -589,15 +589,15 @@ foreach ($folder_order as $folder_number) {
 
                                 if ($new_posts > 1) {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
-                                    $number.= sprintf(gettext("%d new of %d"), $new_posts, $thread['LENGTH']);
-                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to first post in thread") . "\">[</a>";
+                                    $number .= sprintf(gettext("%d new of %d"), $new_posts, $thread['LENGTH']);
+                                    $number .= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}." . thread_get_last_page_pid($thread['LENGTH'], $posts_per_page) . "\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to last post in thread") . "\">]</a>";
 
                                 } else {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
-                                    $number.= sprintf(gettext("%d new of %d"), $new_posts, $thread['LENGTH']);
-                                    $number.= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to first post in thread") . "\">[</a>";
+                                    $number .= sprintf(gettext("%d new of %d"), $new_posts, $thread['LENGTH']);
+                                    $number .= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}." . thread_get_last_page_pid($thread['LENGTH'], $posts_per_page) . "\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to last post in thread") . "\">]</a>";
                                 }
 
                                 $latest_post = $thread['LAST_READ'] + 1;
@@ -616,13 +616,13 @@ foreach ($folder_order as $folder_number) {
 
                                 if ($thread['LENGTH'] > 1) {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
-                                    $number.= "{$thread['LENGTH']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.". thread_get_last_page_pid($thread['LENGTH'], $posts_per_page). "\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to first post in thread") . "\">[</a>";
+                                    $number .= "{$thread['LENGTH']}<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}." . thread_get_last_page_pid($thread['LENGTH'], $posts_per_page) . "\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to last post in thread") . "\">]</a>";
 
                                 } else {
 
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to first post in thread"). "\">[</a>";
-                                    $number.= "1<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"". html_get_frame_name('right'). "\" title=\"". gettext("Go to last post in thread"). "\">]</a>";
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to first post in thread") . "\">[</a>";
+                                    $number .= "1<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to last post in thread") . "\">]</a>";
                                 }
 
                                 $latest_post = 1;
@@ -755,7 +755,7 @@ foreach ($folder_order as $folder_number) {
                 if (session::check_perm(USER_PERM_THREAD_CREATE, $folder_number)) {
 
                     echo "<a href=\"";
-                    echo $folder_info[$folder_number]['ALLOWED_TYPES']&FOLDER_ALLOW_NORMAL_THREAD ? "post.php?webtag=$webtag" : (forum_get_setting('allow_polls', 'Y') ? "create_poll.php?webtag=$webtag" : "");
+                    echo $folder_info[$folder_number]['ALLOWED_TYPES'] & FOLDER_ALLOW_NORMAL_THREAD ? "post.php?webtag=$webtag" : (forum_get_setting('allow_polls', 'Y') ? "create_poll.php?webtag=$webtag" : "");
                     echo "&amp;fid=$folder_number\" target=\"", html_get_frame_name('main'), "\" class=\"folderpostnew\" title=\"", gettext("Create new discussion in this folder"), "\">", gettext("Post New"), "</a>";
 
                 } else {
@@ -837,8 +837,8 @@ if (session::logged_in()) {
         $selected_option = THREAD_MARK_READ_FOLDER;
     }
 
-    echo "        ", form_dropdown_array("mark_read_type", $labels, $selected_option). "\n";
-    echo "        ", form_submit("mark_read_submit", gettext("Go!")). "\n";
+    echo "        ", form_dropdown_array("mark_read_type", $labels, $selected_option) . "\n";
+    echo "        ", form_submit("mark_read_submit", gettext("Go!")) . "\n";
     echo "      </form>\n";
     echo "    </td>\n";
     echo "  </tr>\n";

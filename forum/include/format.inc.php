@@ -22,10 +22,10 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'timezone.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'timezone.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
 // End Required includes
 
 function format_user_name($logon, $nickname)
@@ -49,7 +49,7 @@ function format_user_name($logon, $nickname)
 function format_file_name($filename)
 {
     if (strlen($filename) > 33) {
-        return substr($filename, 0, 19). '...'. substr($filename, -13);
+        return substr($filename, 0, 19) . '...' . substr($filename, -13);
     }
 
     return $filename;
@@ -75,7 +75,7 @@ function format_file_size($size)
 
     } while ($size > 99);
 
-    return number_format(floor($size * 100) / 100, 2). $units[$b];
+    return number_format(floor($size * 100) / 100, 2) . $units[$b];
 }
 
 function convert_shorthand_filesize($size)
@@ -88,22 +88,22 @@ function convert_shorthand_filesize($size)
 
         /** @noinspection PhpMissingBreakStatementInspection */
         case 'P':
-            $result*= 1024;
+            $result *= 1024;
 
         /** @noinspection PhpMissingBreakStatementInspection */
         case 'T':
-            $result*= 1024;
+            $result *= 1024;
 
         /** @noinspection PhpMissingBreakStatementInspection */
         case 'G':
-            $result*= 1024;
+            $result *= 1024;
 
         /** @noinspection PhpMissingBreakStatementInspection */
         case 'M':
-            $result*= 1024;
+            $result *= 1024;
 
         case 'K':
-            $result*= 1024;
+            $result *= 1024;
     }
 
     return $result;
@@ -385,33 +385,33 @@ function htmlentities_decode_array($var)
 function smart_quotes_clean_up($var)
 {
     $smart_quotes_array = array(
-        "\xc2\x80" => "\xe2\x82\xac",  /* EURO SIGN */
-        "\xc2\x82" => "\xe2\x80\x9a",  /* SINGLE LOW-9 QUOTATION MARK */
-        "\xc2\x83" => "\xc6\x92",      /* LATIN SMALL LETTER F WITH HOOK */
-        "\xc2\x84" => "\xe2\x80\x9e",  /* DOUBLE LOW-9 QUOTATION MARK */
-        "\xc2\x85" => "\xe2\x80\xa6",  /* HORIZONTAL ELLIPSIS */
-        "\xc2\x86" => "\xe2\x80\xa0",  /* DAGGER */
-        "\xc2\x87" => "\xe2\x80\xa1",  /* DOUBLE DAGGER */
-        "\xc2\x88" => "\xcb\x86",      /* MODIFIER LETTER CIRCUMFLEX ACCENT */
-        "\xc2\x89" => "\xe2\x80\xb0",  /* PER MILLE SIGN */
-        "\xc2\x8a" => "\xc5\xa0",      /* LATIN CAPITAL LETTER S WITH CARON */
-        "\xc2\x8b" => "\xe2\x80\xb9",  /* SINGLE LEFT-POINTING ANGLE QUOTATION */
-        "\xc2\x8c" => "\xc5\x92",      /* LATIN CAPITAL LIGATURE OE */
-        "\xc2\x8e" => "\xc5\xbd",      /* LATIN CAPITAL LETTER Z WITH CARON */
-        "\xc2\x91" => "\xe2\x80\x98",  /* LEFT SINGLE QUOTATION MARK */
-        "\xc2\x92" => "\xe2\x80\x99",  /* RIGHT SINGLE QUOTATION MARK */
-        "\xc2\x93" => "\xe2\x80\x9c",  /* LEFT DOUBLE QUOTATION MARK */
-        "\xc2\x94" => "\xe2\x80\x9d",  /* RIGHT DOUBLE QUOTATION MARK */
-        "\xc2\x95" => "\xe2\x80\xa2",  /* BULLET */
-        "\xc2\x96" => "\xe2\x80\x93",  /* EN DASH */
-        "\xc2\x97" => "\xe2\x80\x94",  /* EM DASH */
-        "\xc2\x98" => "\xcb\x9c",      /* SMALL TILDE */
-        "\xc2\x99" => "\xe2\x84\xa2",  /* TRADE MARK SIGN */
-        "\xc2\x9a" => "\xc5\xa1",      /* LATIN SMALL LETTER S WITH CARON */
-        "\xc2\x9b" => "\xe2\x80\xba",  /* SINGLE RIGHT-POINTING ANGLE QUOTATION*/
-        "\xc2\x9c" => "\xc5\x93",      /* LATIN SMALL LIGATURE OE */
-        "\xc2\x9e" => "\xc5\xbe",      /* LATIN SMALL LETTER Z WITH CARON */
-        "\xc2\x9f" => "\xc5\xb8",      /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
+        "\xc2\x80" => "\xe2\x82\xac", /* EURO SIGN */
+        "\xc2\x82" => "\xe2\x80\x9a", /* SINGLE LOW-9 QUOTATION MARK */
+        "\xc2\x83" => "\xc6\x92", /* LATIN SMALL LETTER F WITH HOOK */
+        "\xc2\x84" => "\xe2\x80\x9e", /* DOUBLE LOW-9 QUOTATION MARK */
+        "\xc2\x85" => "\xe2\x80\xa6", /* HORIZONTAL ELLIPSIS */
+        "\xc2\x86" => "\xe2\x80\xa0", /* DAGGER */
+        "\xc2\x87" => "\xe2\x80\xa1", /* DOUBLE DAGGER */
+        "\xc2\x88" => "\xcb\x86", /* MODIFIER LETTER CIRCUMFLEX ACCENT */
+        "\xc2\x89" => "\xe2\x80\xb0", /* PER MILLE SIGN */
+        "\xc2\x8a" => "\xc5\xa0", /* LATIN CAPITAL LETTER S WITH CARON */
+        "\xc2\x8b" => "\xe2\x80\xb9", /* SINGLE LEFT-POINTING ANGLE QUOTATION */
+        "\xc2\x8c" => "\xc5\x92", /* LATIN CAPITAL LIGATURE OE */
+        "\xc2\x8e" => "\xc5\xbd", /* LATIN CAPITAL LETTER Z WITH CARON */
+        "\xc2\x91" => "\xe2\x80\x98", /* LEFT SINGLE QUOTATION MARK */
+        "\xc2\x92" => "\xe2\x80\x99", /* RIGHT SINGLE QUOTATION MARK */
+        "\xc2\x93" => "\xe2\x80\x9c", /* LEFT DOUBLE QUOTATION MARK */
+        "\xc2\x94" => "\xe2\x80\x9d", /* RIGHT DOUBLE QUOTATION MARK */
+        "\xc2\x95" => "\xe2\x80\xa2", /* BULLET */
+        "\xc2\x96" => "\xe2\x80\x93", /* EN DASH */
+        "\xc2\x97" => "\xe2\x80\x94", /* EM DASH */
+        "\xc2\x98" => "\xcb\x9c", /* SMALL TILDE */
+        "\xc2\x99" => "\xe2\x84\xa2", /* TRADE MARK SIGN */
+        "\xc2\x9a" => "\xc5\xa1", /* LATIN SMALL LETTER S WITH CARON */
+        "\xc2\x9b" => "\xe2\x80\xba", /* SINGLE RIGHT-POINTING ANGLE QUOTATION*/
+        "\xc2\x9c" => "\xc5\x93", /* LATIN SMALL LIGATURE OE */
+        "\xc2\x9e" => "\xc5\xbe", /* LATIN SMALL LETTER Z WITH CARON */
+        "\xc2\x9f" => "\xc5\xb8", /* LATIN CAPITAL LETTER Y WITH DIAERESIS*/
     );
 
     if (is_array($var)) {
@@ -701,9 +701,9 @@ function strip_paragraphs($string)
     );
 
     return implode(
-		"\n",
-		array_map('trim', explode("\n", $string))
-	);
+        "\n",
+        array_map('trim', explode("\n", $string))
+    );
 }
 
 function range_keys($low, $high)
@@ -715,7 +715,7 @@ function range_keys($low, $high)
 
 function in_range($var, $low, $high)
 {
-   return in_array($var, range($low, $high));
+    return in_array($var, range($low, $high));
 }
 
 function array_isearch($needle, $haystack)
@@ -759,7 +759,7 @@ function format_age($dob)
 
         $age = ($today_year - $birth_year);
 
-        if (($today_month < $birth_month) || (($today_month == $birth_month) && ($today_day < $birth_day)) ) $age -= 1;
+        if (($today_month < $birth_month) || (($today_month == $birth_month) && ($today_day < $birth_day))) $age -= 1;
 
         return $age;
     }
@@ -775,7 +775,8 @@ function format_birthday($date)
 
         list(, $month, $day) = $matches_array;
 
-        $month = floor($month); $day = floor($day);
+        $month = floor($month);
+        $day = floor($day);
 
         $timestamp = mktime(0, 0, 0, $month, $day, date('Y'));
 
@@ -800,9 +801,9 @@ function split_url($url, $inc_path = false, $inc_query = false, $inc_fragment = 
         if (!isset($url_parts['host'])) return false;
 
         $url_split = "{$url_parts['scheme']}://{$url_parts['host']}/";
-        if ($inc_path === true) $url_split.= "{$url_parts['path']}";
-        if ($inc_query === true) $url_split.= "{$url_parts['query']}";
-        if ($inc_fragment === true) $url_split.= "{$url_parts['fragment']}";
+        if ($inc_path === true) $url_split .= "{$url_parts['path']}";
+        if ($inc_query === true) $url_split .= "{$url_parts['query']}";
+        if ($inc_fragment === true) $url_split .= "{$url_parts['fragment']}";
 
         return $url_split;
     }
@@ -866,7 +867,7 @@ function implode_assoc($array, $separator = ': ', $glue = ', ')
     $result_array = array();
 
     foreach ($array as $key => $value) {
-        $result_array[] = $key. $separator. $value;
+        $result_array[] = $key . $separator . $value;
     }
 
     return implode($glue, $result_array);
@@ -892,12 +893,12 @@ function build_url_str($uri_array)
         throw new Exception('$uri_array needs to be an array');
     }
 
-    $uri = (isset($uri_array['scheme']))   ? "{$uri_array['scheme']}://" : '';
-    $uri.= (isset($uri_array['host']))     ? "{$uri_array['host']}"      : '';
-    $uri.= (isset($uri_array['port']))     ? ":{$uri_array['port']}"     : '';
-    $uri.= (isset($uri_array['path']))     ? "{$uri_array['path']}"      : '';
-    $uri.= (isset($uri_array['query']))    ? "?{$uri_array['query']}"    : '';
-    $uri.= (isset($uri_array['fragment'])) ? "#{$uri_array['fragment']}" : '';
+    $uri = (isset($uri_array['scheme'])) ? "{$uri_array['scheme']}://" : '';
+    $uri .= (isset($uri_array['host'])) ? "{$uri_array['host']}" : '';
+    $uri .= (isset($uri_array['port'])) ? ":{$uri_array['port']}" : '';
+    $uri .= (isset($uri_array['path'])) ? "{$uri_array['path']}" : '';
+    $uri .= (isset($uri_array['query'])) ? "?{$uri_array['query']}" : '';
+    $uri .= (isset($uri_array['fragment'])) ? "#{$uri_array['fragment']}" : '';
 
     return $uri;
 }
@@ -921,7 +922,7 @@ function get_request_uri($include_webtag = true, $encode_uri_query = true)
         $query_string_array['webtag'] = $webtag;
     }
 
-    $query_string_array+= array_diff($_GET, $query_string_array);
+    $query_string_array += array_diff($_GET, $query_string_array);
 
     $query_string = http_build_query($query_string_array, null, (($encode_uri_query) ? '&amp;' : '&'));
 

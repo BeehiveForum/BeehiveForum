@@ -25,16 +25,16 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'banned.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'banned.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -166,7 +166,7 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
             if (!$visitor['REFERER'] = split_url($visitor['REFERER'])) {
                 if (mb_strlen($visitor['REFERER_FULL']) > 25) {
                     $visitor['REFERER'] = mb_substr($visitor['REFERER_FULL'], 0, 25);
-                    $visitor['REFERER'].= "&hellip;";
+                    $visitor['REFERER'] .= "&hellip;";
                 }
             }
 

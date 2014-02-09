@@ -25,12 +25,12 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'cache.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'server.inc.php';
+require_once BH_INCLUDE_PATH . 'cache.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
 // End Required includes
 
 // User font size
@@ -152,7 +152,7 @@ if (isset($_GET['json'])) {
 header(sprintf('Content-type: %s; charset=UTF-8', $content_type), true);
 
 // Check the cache of the file.
-cache_check_last_modified(time(), md5($_SESSION['UID']. $_SESSION['LOGON']. $content));
+cache_check_last_modified(time(), md5($_SESSION['UID'] . $_SESSION['LOGON'] . $content));
 
 // Output the content
 echo $content;

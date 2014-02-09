@@ -25,14 +25,14 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'folder.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'folder.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -96,23 +96,23 @@ if (isset($_POST['add'])) {
         $t_allowed_types = FOLDER_ALLOW_ALL_THREAD;
     }
 
-    $t_post_read     = (double) (isset($_POST['t_post_read']))     ? $_POST['t_post_read']     : 0;
-    $t_post_create   = (double) (isset($_POST['t_post_create']))   ? $_POST['t_post_create']   : 0;
-    $t_thread_create = (double) (isset($_POST['t_thread_create'])) ? $_POST['t_thread_create'] : 0;
-    $t_post_edit     = (double) (isset($_POST['t_post_edit']))     ? $_POST['t_post_edit']     : 0;
-    $t_post_delete   = (double) (isset($_POST['t_post_delete']))   ? $_POST['t_post_delete']   : 0;
-    $t_post_attach   = (double) (isset($_POST['t_post_attach']))   ? $_POST['t_post_attach']   : 0;
-    $t_post_html     = (double) (isset($_POST['t_post_html']))     ? $_POST['t_post_html']     : 0;
-    $t_post_sig      = (double) (isset($_POST['t_post_sig']))      ? $_POST['t_post_sig']      : 0;
-    $t_guest_access  = (double) (isset($_POST['t_guest_access']))  ? $_POST['t_guest_access']  : 0;
-    $t_post_approval = (double) (isset($_POST['t_post_approval'])) ? $_POST['t_post_approval'] : 0;
-    $t_thread_move   = (double) (isset($_POST['t_thread_move']))   ? $_POST['t_thread_move']   : 0;
+    $t_post_read = (double)(isset($_POST['t_post_read'])) ? $_POST['t_post_read'] : 0;
+    $t_post_create = (double)(isset($_POST['t_post_create'])) ? $_POST['t_post_create'] : 0;
+    $t_thread_create = (double)(isset($_POST['t_thread_create'])) ? $_POST['t_thread_create'] : 0;
+    $t_post_edit = (double)(isset($_POST['t_post_edit'])) ? $_POST['t_post_edit'] : 0;
+    $t_post_delete = (double)(isset($_POST['t_post_delete'])) ? $_POST['t_post_delete'] : 0;
+    $t_post_attach = (double)(isset($_POST['t_post_attach'])) ? $_POST['t_post_attach'] : 0;
+    $t_post_html = (double)(isset($_POST['t_post_html'])) ? $_POST['t_post_html'] : 0;
+    $t_post_sig = (double)(isset($_POST['t_post_sig'])) ? $_POST['t_post_sig'] : 0;
+    $t_guest_access = (double)(isset($_POST['t_guest_access'])) ? $_POST['t_guest_access'] : 0;
+    $t_post_approval = (double)(isset($_POST['t_post_approval'])) ? $_POST['t_post_approval'] : 0;
+    $t_thread_move = (double)(isset($_POST['t_thread_move'])) ? $_POST['t_thread_move'] : 0;
 
     // We need a double / float here because we're storing a high bit value
-    $t_permissions = (double) $t_post_read | $t_post_create | $t_thread_create;
-    $t_permissions = (double) $t_permissions | $t_post_edit | $t_post_delete | $t_post_attach;
-    $t_permissions = (double) $t_permissions | $t_post_html | $t_post_sig | $t_guest_access;
-    $t_permissions = (double) $t_permissions | $t_post_approval | $t_thread_move;
+    $t_permissions = (double)$t_post_read | $t_post_create | $t_thread_create;
+    $t_permissions = (double)$t_permissions | $t_post_edit | $t_post_delete | $t_post_attach;
+    $t_permissions = (double)$t_permissions | $t_post_html | $t_post_sig | $t_guest_access;
+    $t_permissions = (double)$t_permissions | $t_post_approval | $t_thread_move;
 
     if ($valid) {
 
@@ -165,15 +165,15 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Name"), ":</td>\n";
-echo "                        <td align=\"left\">".form_input_text("t_name", (isset($t_name) ? htmlentities_array($t_name) : ""), 30, 32)."</td>\n";
+echo "                        <td align=\"left\">" . form_input_text("t_name", (isset($t_name) ? htmlentities_array($t_name) : ""), 30, 32) . "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Description"), ":</td>\n";
-echo "                        <td align=\"left\">".form_input_text("t_description", (isset($t_description) ? htmlentities_array($t_description) : ""), 30, 255)."</td>\n";
+echo "                        <td align=\"left\">" . form_input_text("t_description", (isset($t_description) ? htmlentities_array($t_description) : ""), 30, 255) . "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Thread Title Prefix"), ":</td>\n";
-echo "                        <td align=\"left\">".form_input_text("t_prefix", (isset($t_prefix) ? htmlentities_array($t_prefix) : ""), 30, 16)."</td>\n";
+echo "                        <td align=\"left\">" . form_input_text("t_prefix", (isset($t_prefix) ? htmlentities_array($t_prefix) : ""), 30, 16) . "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

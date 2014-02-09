@@ -25,16 +25,16 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'myforums.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'myforums.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -380,9 +380,9 @@ if (isset($_POST['delete'])) {
     $redirect_uri = "admin_forum_access.php?webtag=$forum_webtag&";
 
     if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-        $redirect_uri.= "ret=". rawurlencode("admin_forums.php?webtag=$webtag&fid={$_POST['fid']}");
+        $redirect_uri .= "ret=" . rawurlencode("admin_forums.php?webtag=$webtag&fid={$_POST['fid']}");
     } else if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
-        $redirect_uri.= "ret=". rawurlencode("admin_forums.php?webtag=$webtag&fid={$_GET['fid']}");
+        $redirect_uri .= "ret=" . rawurlencode("admin_forums.php?webtag=$webtag&fid={$_GET['fid']}");
     }
 
     header_redirect($redirect_uri);
@@ -395,9 +395,9 @@ if (isset($_POST['delete'])) {
     $redirect_uri = "admin_forum_set_passwd.php?webtag=$forum_webtag&";
 
     if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-        $redirect_uri.= "ret=". rawurlencode("admin_forums.php?webtag=$webtag&fid={$_POST['fid']}");
+        $redirect_uri .= "ret=" . rawurlencode("admin_forums.php?webtag=$webtag&fid={$_POST['fid']}");
     } else if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
-        $redirect_uri.= "ret=". rawurlencode("admin_forums.php?webtag=$webtag&fid={$_GET['fid']}");
+        $redirect_uri .= "ret=" . rawurlencode("admin_forums.php?webtag=$webtag&fid={$_GET['fid']}");
     }
 
     header_redirect($redirect_uri);
@@ -605,7 +605,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "      <td align=\"left\">&nbsp;</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\">", form_submit("updateforumsubmit", gettext("Save")), "&nbsp;", form_submit("delete", gettext("Delete")), "&nbsp;",form_submit("cancel", gettext("Back")), "</td>\n";
+    echo "      <td align=\"center\">", form_submit("updateforumsubmit", gettext("Save")), "&nbsp;", form_submit("delete", gettext("Delete")), "&nbsp;", form_submit("cancel", gettext("Back")), "</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
 

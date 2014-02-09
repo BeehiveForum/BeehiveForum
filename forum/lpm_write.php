@@ -25,23 +25,23 @@ USA
 require_once 'lboot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'attachments.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'email.inc.php';
-require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
-require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'light.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'pm.inc.php';
-require_once BH_INCLUDE_PATH. 'post.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'thread.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'attachments.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'email.inc.php';
+require_once BH_INCLUDE_PATH . 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH . 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'light.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'pm.inc.php';
+require_once BH_INCLUDE_PATH . 'post.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'thread.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
 // End Required includes
 
 if (!session::logged_in()) {
@@ -115,7 +115,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
             $thread_index = "[$tid.$pid]";
 
             if (mb_strlen($thread_title) > (55 - mb_strlen($thread_index))) {
-                $thread_title = mb_substr($thread_title, 0, (55 - mb_strlen($thread_index))). '...';
+                $thread_title = mb_substr($thread_title, 0, (55 - mb_strlen($thread_index))) . '...';
             }
 
             $subject = "RE:$thread_title $thread_index";
@@ -155,7 +155,7 @@ if (isset($_POST['emots_toggle'])) {
         $to_logon = '';
     }
 
-    $page_prefs = (double) $page_prefs ^ POST_EMOTICONS_DISPLAY;
+    $page_prefs = (double)$page_prefs ^ POST_EMOTICONS_DISPLAY;
 
     $user_prefs = array(
         'POST_PAGE' => $page_prefs
@@ -367,7 +367,7 @@ if (mb_strlen($content) >= 65535) {
 
 if (isset($_POST['dedupe']) && is_numeric($_POST['dedupe'])) {
     $dedupe = $_POST['dedupe'];
-} else{
+} else {
     $dedupe = time();
 }
 
@@ -484,7 +484,7 @@ if ($valid && isset($_POST['preview'])) {
     $preview_from_user = user_get($_SESSION['UID']);
 
     $pm_preview_array['FROM_LOGON'] = $preview_from_user['LOGON'];
-    $pm_preview_array['FROM_NICKNAME']  = $preview_from_user['NICKNAME'];
+    $pm_preview_array['FROM_NICKNAME'] = $preview_from_user['NICKNAME'];
     $pm_preview_array['FROM_UID'] = $preview_from_user['UID'];
 
     $pm_preview_array['SUBJECT'] = $subject;
@@ -500,7 +500,7 @@ echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"lpm_write.php\" me
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("dedupe", htmlentities_array($dedupe));
 
-if (isset($return_msg)){
+if (isset($return_msg)) {
     echo "  ", form_input_hidden('return_msg', htmlentities_array($return_msg)), "\n";
 }
 
@@ -528,7 +528,7 @@ if (isset($edit_mid) && is_numeric($edit_mid) && $edit_mid > 0) {
 
     echo "<a href=\"lpm.php?webtag=$webtag&mid=$edit_mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 
-} else if (isset($forward_mid) && is_numeric($forward_mid)  && $forward_mid > 0) {
+} else if (isset($forward_mid) && is_numeric($forward_mid) && $forward_mid > 0) {
 
     echo "<a href=\"lpm.php?webtag=$webtag&mid=$forward_mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 

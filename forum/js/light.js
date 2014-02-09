@@ -41,8 +41,8 @@ $(beehive).bind('init', function () {
     $body.on('focus', 'input,select,textarea',function () {
         $.mobile.zoom.disable(true);
     }).on('blur', 'input,select', function () {
-            $.mobile.zoom.enable(true);
-        });
+        $.mobile.zoom.enable(true);
+    });
 
     $body.on('click', '.message_vote_form', function (event) {
 

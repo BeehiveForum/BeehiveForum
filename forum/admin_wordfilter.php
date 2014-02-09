@@ -25,15 +25,15 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -68,8 +68,8 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 // Constants for word filter type
 $admin_word_filter_options = array(
     WORD_FILTER_TYPE_ALL => gettext("All"),
-     WORD_FILTER_TYPE_WHOLE_WORD => gettext("Whole Word"),
-     WORD_FILTER_TYPE_PREG => gettext("PREG")
+    WORD_FILTER_TYPE_WHOLE_WORD => gettext("Whole Word"),
+    WORD_FILTER_TYPE_PREG => gettext("PREG")
 );
 
 $admin_word_filter_enabled = array(
@@ -136,24 +136,24 @@ if (isset($_POST['delete'])) {
 } else if (isset($_POST['addfilter_submit'])) {
 
     if (isset($_POST['add_new_filter_name']) && strlen(trim($_POST['add_new_filter_name'])) > 0) {
-       $add_new_filter_name = trim($_POST['add_new_filter_name']);
+        $add_new_filter_name = trim($_POST['add_new_filter_name']);
     } else {
-       $valid = false;
-       $error_msg_array[] = gettext("You must specify a filter name");
+        $valid = false;
+        $error_msg_array[] = gettext("You must specify a filter name");
     }
 
     if (isset($_POST['add_new_match_text']) && strlen(trim($_POST['add_new_match_text'])) > 0) {
-       $add_new_match_text = trim($_POST['add_new_match_text']);
+        $add_new_match_text = trim($_POST['add_new_match_text']);
     } else {
-       $valid = false;
-       $error_msg_array[] = gettext("You must specify matched text");
+        $valid = false;
+        $error_msg_array[] = gettext("You must specify matched text");
     }
 
     if (isset($_POST['add_new_filter_option']) && is_numeric($_POST['add_new_filter_option'])) {
-       $add_new_filter_option = $_POST['add_new_filter_option'];
+        $add_new_filter_option = $_POST['add_new_filter_option'];
     } else {
-       $valid = false;
-       $error_msg_array[] = gettext("You must specify a filter option");
+        $valid = false;
+        $error_msg_array[] = gettext("You must specify a filter option");
     }
 
     if (isset($_POST['add_new_filter_enabled']) && is_numeric($_POST['add_new_filter_enabled'])) {
@@ -163,9 +163,9 @@ if (isset($_POST['delete'])) {
     }
 
     if (isset($_POST['add_new_replace_text']) && strlen(trim($_POST['add_new_replace_text'])) > 0) {
-       $add_new_replace_text = trim($_POST['add_new_replace_text']);
+        $add_new_replace_text = trim($_POST['add_new_replace_text']);
     } else {
-       $add_new_replace_text = "";
+        $add_new_replace_text = "";
     }
 
     if ($valid) {

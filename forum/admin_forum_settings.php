@@ -25,20 +25,20 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'adsense.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
-require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'lang.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'styles.inc.php';
-require_once BH_INCLUDE_PATH. 'timezone.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'adsense.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH . 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'lang.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'styles.inc.php';
+require_once BH_INCLUDE_PATH . 'timezone.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -105,7 +105,7 @@ $forum_global_settings = forum_get_global_settings();
 if (isset($_POST['changepermissions'])) {
 
     $redirect_uri = "admin_forum_access.php?webtag=$webtag&fid={$forum_settings['fid']}";
-    $redirect_uri.= "&ret=". rawurlencode(get_request_uri(true, false));
+    $redirect_uri .= "&ret=" . rawurlencode(get_request_uri(true, false));
 
     header_redirect($redirect_uri);
     exit;
@@ -113,7 +113,7 @@ if (isset($_POST['changepermissions'])) {
 } else if (isset($_POST['changepassword'])) {
 
     $redirect_uri = "admin_forum_set_passwd.php?webtag=$webtag&fid={$forum_settings['fid']}";
-    $redirect_uri.= "&ret=". rawurlencode(get_request_uri(true, false));
+    $redirect_uri .= "&ret=" . rawurlencode(get_request_uri(true, false));
 
     header_redirect($redirect_uri);
     exit;

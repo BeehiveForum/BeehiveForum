@@ -1,38 +1,36 @@
 /*======================================================================
-Copyright Project Beehive Forum 2002
+ Copyright Project Beehive Forum 2002
 
-This file is part of Beehive Forum.
+ This file is part of Beehive Forum.
 
-Beehive Forum is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+ Beehive Forum is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-Beehive Forum is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ Beehive Forum is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-USA
-======================================================================*/
+ You should have received a copy of the GNU General Public License
+ along with Beehive; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+ USA
+ ======================================================================*/
 
-$(beehive).bind('init', function() {
+$(beehive).bind('init', function () {
 
     var add_process_running = false;
 
-    var toggle_add_buttons = function()
-    {
+    var toggle_add_buttons = function () {
         $('button.add_question, button.add_option').toggleClass('disabled', !($('div.poll_options_list ol li').length < 20));
     };
 
-    var toggle_delete_buttons = function()
-    {
+    var toggle_delete_buttons = function () {
         var $poll_questions = $('fieldset.poll_question');
 
-        $poll_questions.each(function() {
+        $poll_questions.each(function () {
 
             var $delete_buttons = $(this).find('button.delete_option');
             $delete_buttons.toggleClass('disabled', $delete_buttons.length == 2);
@@ -42,28 +40,27 @@ $(beehive).bind('init', function() {
         $delete_buttons.toggleClass('disabled', $delete_buttons.length == 1);
     };
 
-    var hide_delete_buttons = function()
-    {
+    var hide_delete_buttons = function () {
         $(this).find('button.delete_question, button.delete_option').hide();
     };
 
-    var option_html = function(question_id, option_id)
-    {
+    var option_html = function (question_id, option_id) {
         //noinspection JSUnresolvedVariable
         return $.vsprintf(
             '<li><input type="text" dir="ltr" maxlength="255" size="45" value="" class="bhinputtext" name="poll_questions[%(0)d][options][%(1)d]">&nbsp;\
                <button title="%(2)s" class="button_image delete_option disabled" name="delete_option[%(0)d][%(1)d]" type="submit">\
                  <img alt="" src="%(3)s">\
                </button>\
-             </li>', [[ question_id,
-                        option_id,
-                        beehive.lang.deleteoption,
-                        beehive.images['delete.png']
-                     ]]);
+             </li>', [
+                [ question_id,
+                    option_id,
+                    beehive.lang.deleteoption,
+                    beehive.images['delete.png']
+                ]
+            ]);
     };
 
-    var question_html = function(question_id)
-    {
+    var question_html = function (question_id) {
         //noinspection JSUnresolvedVariable
         return $.vsprintf(
             '<fieldset class="poll_question">\
@@ -86,16 +83,18 @@ $(beehive).bind('init', function() {
                  </div>\
                </div>\
                <button class="button_image add_option" name="add_option[%(0)d]" type="submit"><img alt="" src="%(7)s">&nbsp;%(8)s</button>\
-             </fieldset>', [[ question_id,
-                              beehive.lang.pollquestion,
-                              beehive.lang.deletequestion,
-                              beehive.images['delete.png'],
-                              beehive.lang.allowmultipleoptions,
-                              option_html(question_id, 1),
-                              option_html(question_id, 2),
-                              beehive.images['add.png'],
-                              beehive.lang.addnewoption
-                           ]]);
+             </fieldset>', [
+                [ question_id,
+                    beehive.lang.pollquestion,
+                    beehive.lang.deletequestion,
+                    beehive.images['delete.png'],
+                    beehive.lang.allowmultipleoptions,
+                    option_html(question_id, 1),
+                    option_html(question_id, 2),
+                    beehive.images['add.png'],
+                    beehive.lang.addnewoption
+                ]
+            ]);
     };
 
     var $body = $('body');
@@ -104,69 +103,69 @@ $(beehive).bind('init', function() {
 
     toggle_delete_buttons();
 
-    $body.on('mouseenter', 'div.poll_question_input', function() {
+    $body.on('mouseenter', 'div.poll_question_input',function () {
 
         $(this).find('button.delete_question').show();
 
-    }).on('mouseleave', 'div.poll_question_input', function() {
+    }).on('mouseleave', 'div.poll_question_input', function () {
 
         $(this).find('button.delete_question').hide();
     });
 
-    $body.on('mouseenter', 'div.poll_options_list ol li', function() {
+    $body.on('mouseenter', 'div.poll_options_list ol li',function () {
 
         $(this).find('button.delete_option').show();
 
-    }).on('mouseleave', 'div.poll_options_list ol li', function() {
+    }).on('mouseleave', 'div.poll_options_list ol li', function () {
 
         $(this).find('button.delete_option').hide();
     });
 
-    $body. on('click', 'button.delete_question', function() {
+    $body.on('click', 'button.delete_question', function () {
 
         if ($(this).hasClass('disabled')) {
             return false;
         }
 
-       if (!window.confirm('Are you sure you want to delete this question?')) {
-           return false;
-       }
+        if (!window.confirm('Are you sure you want to delete this question?')) {
+            return false;
+        }
 
-       $(this).closest('fieldset').hide(300, function() {
+        $(this).closest('fieldset').hide(300, function () {
 
-           $(this).remove();
+            $(this).remove();
 
-           toggle_add_buttons();
+            toggle_add_buttons();
 
-           toggle_delete_buttons();
-       });
+            toggle_delete_buttons();
+        });
 
-       return false;
+        return false;
     });
 
-    $body.on('click', 'button.delete_option', function() {
+    $body.on('click', 'button.delete_option', function () {
 
         if ($(this).hasClass('disabled')) {
             return false;
         }
 
-       if (!window.confirm('Are you sure you want to delete this option?')) {
-           return false;
-       }
+        if (!window.confirm('Are you sure you want to delete this option?')) {
+            return false;
+        }
 
-       $(this).closest('li').hide(300, function() {
+        $(this).closest('li').hide(300, function () {
 
-           $(this).remove();
+            $(this).remove();
 
-           toggle_add_buttons();
+            toggle_add_buttons();
 
-           toggle_delete_buttons();
-       });
+            toggle_delete_buttons();
+        });
 
-       return false;
+        return false;
     });
 
-    $body.on('click', 'button.add_option', function() {
+    $body.on('click', 'button.add_option', function () {
 
         if ($(this).hasClass('disabled')) {
             return false;
@@ -190,7 +189,7 @@ $(beehive).bind('init', function() {
 
         hide_delete_buttons.call($html);
 
-        $html.hide().appendTo($poll_options_list).show(200, function() {
+        $html.hide().appendTo($poll_options_list).show(200, function () {
 
             $(this).css('display', 'list-item');
 
@@ -204,7 +203,7 @@ $(beehive).bind('init', function() {
         return false;
     });
 
-    $('button#add_question').bind('click', function() {
+    $('button#add_question').bind('click', function () {
 
         if ($(this).hasClass('disabled')) {
             return false;
@@ -224,7 +223,7 @@ $(beehive).bind('init', function() {
 
         hide_delete_buttons.call($html);
 
-        $html.hide().appendTo($poll_questions_container).show(200, function() {
+        $html.hide().appendTo($poll_questions_container).show(200, function () {
 
             toggle_add_buttons();
 

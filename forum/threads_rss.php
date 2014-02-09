@@ -25,15 +25,15 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'cache.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'folder.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'threads.inc.php';
+require_once BH_INCLUDE_PATH . 'cache.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'folder.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'threads.inc.php';
 // End Required includes
 
 // Check that Guests are allowed
@@ -103,7 +103,7 @@ if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
         if (in_array($_GET['fid'], $available_folders_array) && ($folder_title = folder_get_title($fid))) {
 
             $fid = trim($_GET['fid']);
-            $feed_title.= sprintf(' - %s', htmlentities_array($folder_title));
+            $feed_title .= sprintf(' - %s', htmlentities_array($folder_title));
 
         } else {
 
@@ -164,15 +164,15 @@ if (($threads_array = threads_get_most_recent($limit, $fid, ($sort_created == 'Y
 
         // Convert HTML special chars (& -> &amp;, etc);
         $content = htmlspecialchars($content);
-        $title   = htmlspecialchars($title);
+        $title = htmlspecialchars($title);
 
         // Check for double-encoded HTML chars (&amp;amp;, etc.)
         $content = preg_replace("/&amp;(#[0-9]+|[a-z]+);/iu", "&\\1;", $content);
-        $title   = preg_replace("/&amp;(#[0-9]+|[a-z]+);/iu", "&\\1;", $title);
+        $title = preg_replace("/&amp;(#[0-9]+|[a-z]+);/iu", "&\\1;", $title);
 
         // Convert HTML entities to XML literals.
         $content = html_entity_to_decimal($content);
-        $title   = html_entity_to_decimal($title);
+        $title = html_entity_to_decimal($title);
 
         // Output the item.
         echo "<item>\n";

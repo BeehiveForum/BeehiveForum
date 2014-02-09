@@ -27,15 +27,15 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'stats.inc.php';
-require_once BH_INCLUDE_PATH. 'user_profile.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'stats.inc.php';
+require_once BH_INCLUDE_PATH . 'user_profile.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -134,8 +134,12 @@ if (isset($_POST['update'])) {
 
 } else {
 
-    $from_day = 1; $from_month = date('n'); $from_year = date('Y');
-    $to_day = date('t'); $to_month = date('n'); $to_year = date('Y');
+    $from_day = 1;
+    $from_month = date('n');
+    $from_year = date('Y');
+    $to_day = date('t');
+    $to_month = date('n');
+    $to_year = date('Y');
 
     $stats_start = mktime(0, 0, 0, date('n'), 1, date('Y'));
     $stats_end = mktime(23, 59, 59, date('n'), date('t'), date('Y'));

@@ -25,18 +25,18 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'perm.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'user_rel.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'perm.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'user_rel.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -114,11 +114,11 @@ $peer_perms = perm_get_user_permissions($peer_uid);
 // Form submt code
 if (isset($_POST['save'])) {
 
-    $peer_user_status = (double) (isset($_POST['peer_user_status'])) ? $_POST['peer_user_status'] : 0;
-    $peer_sig_display = (double) (isset($_POST['peer_sig_display'])) ? $_POST['peer_sig_display'] : 0;
-    $peer_block_pm    = (double) (isset($_POST['peer_block_pm']))    ? $_POST['peer_block_pm']    : 0;
+    $peer_user_status = (double)(isset($_POST['peer_user_status'])) ? $_POST['peer_user_status'] : 0;
+    $peer_sig_display = (double)(isset($_POST['peer_sig_display'])) ? $_POST['peer_sig_display'] : 0;
+    $peer_block_pm = (double)(isset($_POST['peer_block_pm'])) ? $_POST['peer_block_pm'] : 0;
 
-    $peer_relationship = (double) $peer_user_status | $peer_sig_display | $peer_block_pm;
+    $peer_relationship = (double)$peer_user_status | $peer_sig_display | $peer_block_pm;
 
     if (isset($_POST['nickname']) && strlen(trim($_POST['nickname'])) > 0) {
 
@@ -186,7 +186,7 @@ if (isset($_POST['preview_signature'])) {
 
         $preview_message['CONTENT'] = gettext("Signature Preview");
 
-        $preview_message['CONTENT'].= "<div class=\"sig\">". fix_html($t_sig_content). "</div>";
+        $preview_message['CONTENT'] .= "<div class=\"sig\">" . fix_html($t_sig_content) . "</div>";
 
         $preview_message['CREATED'] = time();
 

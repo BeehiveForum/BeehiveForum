@@ -22,10 +22,10 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
 // End Required includes
 
 function word_filter_get($uid, &$word_filter_array)
@@ -39,11 +39,11 @@ function word_filter_get($uid, &$word_filter_array)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT FID, MATCH_TEXT, REPLACE_TEXT, FILTER_TYPE ";
-    $sql.= "FROM `{$table_prefix}WORD_FILTER` ";
-    $sql.= "WHERE UID = '$uid' AND FILTER_ENABLED = 1 ";
-    $sql.= "ORDER BY FID ";
+    $sql .= "FROM `{$table_prefix}WORD_FILTER` ";
+    $sql .= "WHERE UID = '$uid' AND FILTER_ENABLED = 1 ";
+    $sql .= "ORDER BY FID ";
 
-    if ($uid <> 0) $sql.= "LIMIT 0, 20";
+    if ($uid <> 0) $sql .= "LIMIT 0, 20";
 
     if (!($result = $db->query($sql))) return false;
 

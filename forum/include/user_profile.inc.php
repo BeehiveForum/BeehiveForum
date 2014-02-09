@@ -22,15 +22,15 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'banned.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'perm.inc.php';
-require_once BH_INCLUDE_PATH. 'timezone.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'user_rel.inc.php';
+require_once BH_INCLUDE_PATH . 'banned.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'perm.inc.php';
+require_once BH_INCLUDE_PATH . 'timezone.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'user_rel.inc.php';
 // End Required includes
 
 function user_profile_update($uid, $piid, $entry, $privacy)
@@ -48,15 +48,15 @@ function user_profile_update($uid, $piid, $entry, $privacy)
         $entry = $db->escape($entry);
 
         $sql = "INSERT INTO `{$table_prefix}USER_PROFILE` (UID, PIID, ENTRY, PRIVACY) ";
-        $sql.= "VALUES ('$uid', '$piid', '$entry', '$privacy') ON DUPLICATE KEY UPDATE ";
-        $sql.= "ENTRY = VALUES(ENTRY), PRIVACY = VALUES(PRIVACY)";
+        $sql .= "VALUES ('$uid', '$piid', '$entry', '$privacy') ON DUPLICATE KEY UPDATE ";
+        $sql .= "ENTRY = VALUES(ENTRY), PRIVACY = VALUES(PRIVACY)";
 
         if (!$db->query($sql)) return false;
 
     } else {
 
         $sql = "DELETE FROM `{$table_prefix}USER_PROFILE` ";
-        $sql.= "WHERE UID = '$uid' AND PIID = '$piid'";
+        $sql .= "WHERE UID = '$uid' AND PIID = '$piid'";
 
         if (!$db->query($sql)) return false;
     }
@@ -83,20 +83,20 @@ function user_get_profile($uid)
     $session_cutoff_datetime = date(MYSQL_DATETIME, time() - $session_gc_maxlifetime);
 
     $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, ";
-    $sql.= "SESSIONS.ID, UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
-    $sql.= "COALESCE(USER_POST_RATING.RATING, 0) AS POST_RATING, COUNT(POST_USER_RATING.RATING) AS POST_VOTE_TOTAL, ";
-    $sql.= "COALESCE(SUM(IF(POST_USER_RATING.RATING > 0, 1, 0)), 0) AS POST_VOTE_UP, ";
-    $sql.= "COALESCE(SUM(IF(POST_USER_RATING.RATING < 0, 1, 0)), 0) AS POST_VOTE_DOWN FROM USER USER ";
-    $sql.= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = USER.UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID AND USER_FORUM.FID = '$forum_fid') ";
-    $sql.= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME)) ";
-    $sql.= "LEFT JOIN `{$table_prefix}POST_RATING` POST_USER_RATING ON (POST_USER_RATING.UID = USER.UID AND POST_USER_RATING.RATING IN (-1, 1)) ";
-    $sql.= "LEFT JOIN (SELECT POST.FROM_UID AS UID, SUM(POST_RATING.RATING) AS RATING FROM `{$table_prefix}POST` POST ";
-    $sql.= "INNER JOIN `{$table_prefix}POST_RATING` POST_RATING ON (POST_RATING.TID = POST.TID AND POST_RATING.PID = POST.PID) ";
-    $sql.= "WHERE POST.FROM_UID = '$uid' GROUP BY POST.FROM_UID) AS USER_POST_RATING ON (USER_POST_RATING.UID = USER.UID) ";
-    $sql.= "WHERE USER.UID = '$uid' GROUP BY USER.UID";
+    $sql .= "SESSIONS.ID, UNIX_TIMESTAMP(USER_FORUM.LAST_VISIT) AS LAST_VISIT, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
+    $sql .= "COALESCE(USER_POST_RATING.RATING, 0) AS POST_RATING, COUNT(POST_USER_RATING.RATING) AS POST_VOTE_TOTAL, ";
+    $sql .= "COALESCE(SUM(IF(POST_USER_RATING.RATING > 0, 1, 0)), 0) AS POST_VOTE_UP, ";
+    $sql .= "COALESCE(SUM(IF(POST_USER_RATING.RATING < 0, 1, 0)), 0) AS POST_VOTE_DOWN FROM USER USER ";
+    $sql .= "LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = USER.UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "LEFT JOIN USER_FORUM USER_FORUM ON (USER_FORUM.UID = USER.UID AND USER_FORUM.FID = '$forum_fid') ";
+    $sql .= "LEFT JOIN SESSIONS ON (SESSIONS.UID = USER.UID AND SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME)) ";
+    $sql .= "LEFT JOIN `{$table_prefix}POST_RATING` POST_USER_RATING ON (POST_USER_RATING.UID = USER.UID AND POST_USER_RATING.RATING IN (-1, 1)) ";
+    $sql .= "LEFT JOIN (SELECT POST.FROM_UID AS UID, SUM(POST_RATING.RATING) AS RATING FROM `{$table_prefix}POST` POST ";
+    $sql .= "INNER JOIN `{$table_prefix}POST_RATING` POST_RATING ON (POST_RATING.TID = POST.TID AND POST_RATING.PID = POST.PID) ";
+    $sql .= "WHERE POST.FROM_UID = '$uid' GROUP BY POST.FROM_UID) AS USER_POST_RATING ON (USER_POST_RATING.UID = USER.UID) ";
+    $sql .= "WHERE USER.UID = '$uid' GROUP BY USER.UID";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -266,16 +266,16 @@ function user_get_profile_entries($uid)
     $user_friend = USER_FRIEND;
 
     $sql = "SELECT PROFILE_SECTION.PSID, PROFILE_ITEM.PIID, PROFILE_ITEM.NAME, ";
-    $sql.= "PROFILE_ITEM.TYPE, PROFILE_ITEM.OPTIONS, USER_PROFILE.ENTRY, USER_PROFILE.PRIVACY ";
-    $sql.= "FROM `{$table_prefix}PROFILE_SECTION` PROFILE_SECTION ";
-    $sql.= "LEFT JOIN `{$table_prefix}PROFILE_ITEM` PROFILE_ITEM ";
-    $sql.= "ON (PROFILE_ITEM.PSID = PROFILE_SECTION.PSID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PROFILE` USER_PROFILE ";
-    $sql.= "ON (USER_PROFILE.PIID = PROFILE_ITEM.PIID AND USER_PROFILE.UID = '$uid') ";
-    $sql.= "WHERE USER_PROFILE.ENTRY IS NOT NULL AND (USER_PROFILE.PRIVACY = 0 ";
-    $sql.= "OR (USER_PROFILE.PRIVACY = 1 AND ($peer_relationship & $user_friend > 0)) ";
-    $sql.= "OR (USER_PROFILE.PRIVACY = 2 AND USER_PROFILE.UID = '{$_SESSION['UID']}')) ";
-    $sql.= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
+    $sql .= "PROFILE_ITEM.TYPE, PROFILE_ITEM.OPTIONS, USER_PROFILE.ENTRY, USER_PROFILE.PRIVACY ";
+    $sql .= "FROM `{$table_prefix}PROFILE_SECTION` PROFILE_SECTION ";
+    $sql .= "LEFT JOIN `{$table_prefix}PROFILE_ITEM` PROFILE_ITEM ";
+    $sql .= "ON (PROFILE_ITEM.PSID = PROFILE_SECTION.PSID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PROFILE` USER_PROFILE ";
+    $sql .= "ON (USER_PROFILE.PIID = PROFILE_ITEM.PIID AND USER_PROFILE.UID = '$uid') ";
+    $sql .= "WHERE USER_PROFILE.ENTRY IS NOT NULL AND (USER_PROFILE.PRIVACY = 0 ";
+    $sql .= "OR (USER_PROFILE.PRIVACY = 1 AND ($peer_relationship & $user_friend > 0)) ";
+    $sql .= "OR (USER_PROFILE.PRIVACY = 2 AND USER_PROFILE.UID = '{$_SESSION['UID']}')) ";
+    $sql .= "ORDER BY PROFILE_SECTION.POSITION, PROFILE_ITEM.POSITION, PROFILE_ITEM.PIID";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -312,9 +312,9 @@ function user_get_profile_image($uid)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "SELECT COALESCE(USER_PREFS_FORUM.PIC_URL, USER_PREFS_GLOBAL.PIC_URL) AS PIC_URL ";
-    $sql.= "FROM USER LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ";
-    $sql.= "ON (USER_PREFS_FORUM.UID = USER.UID) WHERE USER.UID = '$uid'";
+    $sql .= "FROM USER LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ";
+    $sql .= "ON (USER_PREFS_FORUM.UID = USER.UID) WHERE USER.UID = '$uid'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -336,8 +336,8 @@ function user_get_post_count($uid)
     if (!$db = db::get()) return false;
 
     $sql = "SELECT USER_VALUE FROM `{$table_prefix}USER_TRACK` ";
-    $sql.= "WHERE UID = '$uid' AND USER_KEY = 'POST_COUNT' ";
-    $sql.= "AND USER_VALUE IS NOT NULL";
+    $sql .= "WHERE UID = '$uid' AND USER_KEY = 'POST_COUNT' ";
+    $sql .= "AND USER_VALUE IS NOT NULL";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -348,8 +348,8 @@ function user_get_post_count($uid)
     }
 
     $sql = "INSERT IGNORE INTO `{$table_prefix}USER_TRACK` (UID, USER_KEY, USER_VALUE) ";
-    $sql.= "SELECT '$uid', 'POST_COUNT', COUNT(POST.PID) AS POST_COUNT FROM `{$table_prefix}POST` POST ";
-    $sql.= "WHERE FROM_UID = '$uid' ON DUPLICATE KEY UPDATE USER_VALUE = VALUES(USER_VALUE)";
+    $sql .= "SELECT '$uid', 'POST_COUNT', COUNT(POST.PID) AS POST_COUNT FROM `{$table_prefix}POST` POST ";
+    $sql .= "WHERE FROM_UID = '$uid' ON DUPLICATE KEY UPDATE USER_VALUE = VALUES(USER_VALUE)";
 
     if (!($result = $db->query($sql))) return false;
 

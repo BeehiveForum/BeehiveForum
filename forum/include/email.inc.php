@@ -22,14 +22,14 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'swift.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'swift.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 function email_address_valid($email)
@@ -52,20 +52,20 @@ function email_send_notification($tid, $pid)
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     $sql = "SELECT THREAD.TITLE AS THREAD_TITLE, TO_USER.UID, TO_USER.LOGON, TO_USER.NICKNAME, ";
-    $sql.= "TO_USER.EMAIL, FROM_USER.LOGON AS FROM_LOGON, FROM_USER.NICKNAME AS FROM_NICKNAME, ";
-    $sql.= "USER_PEER.RELATIONSHIP, COALESCE(USER_PREFS_FORUM.EMAIL_NOTIFY, ";
-    $sql.= "USER_PREFS.EMAIL_NOTIFY, 'N') AS EMAIL_NOTIFY FROM `{$table_prefix}THREAD` THREAD ";
-    $sql.= "INNER JOIN `{$table_prefix}POST` POST ON (POST.TID = THREAD.TID) ";
-    $sql.= "INNER JOIN `{$table_prefix}POST_RECIPIENT` POST_RECIPIENT ON (POST_RECIPIENT.TID = POST.TID ";
-    $sql.= "AND POST_RECIPIENT.PID = POST.PID AND POST_RECIPIENT.TO_UID <> POST.FROM_UID) ";
-    $sql.= "INNER JOIN USER TO_USER ON (TO_USER.UID = POST_RECIPIENT.TO_UID) ";
-    $sql.= "INNER JOIN USER FROM_USER ON (FROM_USER.UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = TO_USER.UID) ";
-    $sql.= "LEFT JOIN USER_PREFS  ON (USER_PREFS.UID = TO_USER.UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.UID = TO_USER.UID AND USER_PEER.PEER_UID = POST.FROM_UID) ";
-    $sql.= "WHERE THREAD.TID = '$tid' AND POST.PID = '$pid' ";
-    $sql.= "HAVING EMAIL_NOTIFY = 'Y' AND (RELATIONSHIP IS NULL ";
-    $sql.= "OR RELATIONSHIP & $user_ignored_completely = 0)";
+    $sql .= "TO_USER.EMAIL, FROM_USER.LOGON AS FROM_LOGON, FROM_USER.NICKNAME AS FROM_NICKNAME, ";
+    $sql .= "USER_PEER.RELATIONSHIP, COALESCE(USER_PREFS_FORUM.EMAIL_NOTIFY, ";
+    $sql .= "USER_PREFS.EMAIL_NOTIFY, 'N') AS EMAIL_NOTIFY FROM `{$table_prefix}THREAD` THREAD ";
+    $sql .= "INNER JOIN `{$table_prefix}POST` POST ON (POST.TID = THREAD.TID) ";
+    $sql .= "INNER JOIN `{$table_prefix}POST_RECIPIENT` POST_RECIPIENT ON (POST_RECIPIENT.TID = POST.TID ";
+    $sql .= "AND POST_RECIPIENT.PID = POST.PID AND POST_RECIPIENT.TO_UID <> POST.FROM_UID) ";
+    $sql .= "INNER JOIN USER TO_USER ON (TO_USER.UID = POST_RECIPIENT.TO_UID) ";
+    $sql .= "INNER JOIN USER FROM_USER ON (FROM_USER.UID = POST.FROM_UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = TO_USER.UID) ";
+    $sql .= "LEFT JOIN USER_PREFS  ON (USER_PREFS.UID = TO_USER.UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.UID = TO_USER.UID AND USER_PEER.PEER_UID = POST.FROM_UID) ";
+    $sql .= "WHERE THREAD.TID = '$tid' AND POST.PID = '$pid' ";
+    $sql .= "HAVING EMAIL_NOTIFY = 'Y' AND (RELATIONSHIP IS NULL ";
+    $sql .= "OR RELATIONSHIP & $user_ignored_completely = 0)";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -115,7 +115,7 @@ function email_send_notification($tid, $pid)
 
         $message->setBody($message_body);
 
-        $count+= $mailer->send($message);
+        $count += $mailer->send($message);
     }
 
     return $count;
@@ -144,20 +144,20 @@ function email_send_thread_subscription($tid, $pid)
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     $sql = "SELECT THREAD.TITLE AS THREAD_TITLE, TO_USER.UID, TO_USER.LOGON, TO_USER.NICKNAME, ";
-    $sql.= "TO_USER.EMAIL, FROM_USER.LOGON AS FROM_LOGON, FROM_USER.NICKNAME AS FROM_NICKNAME, ";
-    $sql.= "USER_PEER.RELATIONSHIP, POST_PREVIOUS.CREATED, USER_FORUM.LAST_VISIT FROM `{$table_prefix}THREAD` THREAD ";
-    $sql.= "INNER JOIN `{$table_prefix}POST` POST ON (POST.TID = THREAD.TID) ";
-    $sql.= "INNER JOIN `{$table_prefix}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.INTEREST = $thread_subscribed) ";
-    $sql.= "INNER JOIN USER TO_USER ON (TO_USER.UID = USER_THREAD.UID) ";
-    $sql.= "INNER JOIN USER FROM_USER ON (FROM_USER.UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.UID = TO_USER.UID AND USER_PEER.PEER_UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}POST` POST_PREVIOUS ON (POST_PREVIOUS.TID = POST.TID AND POST_PREVIOUS.PID = POST.PID - 1) ";
-    $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.UID = TO_USER.UID AND USER_FORUM.FID = $forum_fid) ";
-    $sql.= "WHERE USER_THREAD.UID NOT IN (SELECT FROM_UID FROM `{$table_prefix}POST` WHERE TID = POST.TID AND PID = POST.PID) ";
-    $sql.= "AND USER_THREAD.UID NOT IN (SELECT TO_UID FROM `{$table_prefix}POST_RECIPIENT` WHERE TID = POST.TID AND PID = POST.PID) ";
-    $sql.= "AND THREAD.TID = $tid AND POST.PID = $pid ";
-    $sql.= "HAVING (RELATIONSHIP IS NULL OR RELATIONSHIP & 8 = $user_ignored_completely) ";
-    $sql.= "AND (LAST_VISIT > CREATED OR CREATED IS NULL)";
+    $sql .= "TO_USER.EMAIL, FROM_USER.LOGON AS FROM_LOGON, FROM_USER.NICKNAME AS FROM_NICKNAME, ";
+    $sql .= "USER_PEER.RELATIONSHIP, POST_PREVIOUS.CREATED, USER_FORUM.LAST_VISIT FROM `{$table_prefix}THREAD` THREAD ";
+    $sql .= "INNER JOIN `{$table_prefix}POST` POST ON (POST.TID = THREAD.TID) ";
+    $sql .= "INNER JOIN `{$table_prefix}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.INTEREST = $thread_subscribed) ";
+    $sql .= "INNER JOIN USER TO_USER ON (TO_USER.UID = USER_THREAD.UID) ";
+    $sql .= "INNER JOIN USER FROM_USER ON (FROM_USER.UID = POST.FROM_UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.UID = TO_USER.UID AND USER_PEER.PEER_UID = POST.FROM_UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}POST` POST_PREVIOUS ON (POST_PREVIOUS.TID = POST.TID AND POST_PREVIOUS.PID = POST.PID - 1) ";
+    $sql .= "LEFT JOIN USER_FORUM ON (USER_FORUM.UID = TO_USER.UID AND USER_FORUM.FID = $forum_fid) ";
+    $sql .= "WHERE USER_THREAD.UID NOT IN (SELECT FROM_UID FROM `{$table_prefix}POST` WHERE TID = POST.TID AND PID = POST.PID) ";
+    $sql .= "AND USER_THREAD.UID NOT IN (SELECT TO_UID FROM `{$table_prefix}POST_RECIPIENT` WHERE TID = POST.TID AND PID = POST.PID) ";
+    $sql .= "AND THREAD.TID = $tid AND POST.PID = $pid ";
+    $sql .= "HAVING (RELATIONSHIP IS NULL OR RELATIONSHIP & 8 = $user_ignored_completely) ";
+    $sql .= "AND (LAST_VISIT > CREATED OR CREATED IS NULL)";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -201,7 +201,7 @@ function email_send_thread_subscription($tid, $pid)
 
         $message->setBody($message_body);
 
-        $count+= $mailer->send($message);
+        $count += $mailer->send($message);
     }
 
     return $count;
@@ -232,21 +232,21 @@ function email_send_folder_subscription($tid, $pid)
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
     $sql = "SELECT THREAD.TITLE AS THREAD_TITLE, THREAD.FID AS FOLDER_FID, TO_USER.UID, TO_USER.LOGON, ";
-    $sql.= "TO_USER.NICKNAME, TO_USER.EMAIL, FROM_USER.LOGON AS FROM_LOGON, FROM_USER.NICKNAME AS FROM_NICKNAME, ";
-    $sql.= "USER_PEER.RELATIONSHIP, POST_PREVIOUS.CREATED, USER_FORUM.LAST_VISIT FROM `{$table_prefix}THREAD` THREAD ";
-    $sql.= "INNER JOIN `{$table_prefix}POST` POST ON (POST.TID = THREAD.TID) ";
-    $sql.= "INNER JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.INTEREST = $folder_subscribed) ";
-    $sql.= "INNER JOIN USER TO_USER ON (TO_USER.UID = USER_FOLDER.UID) ";
-    $sql.= "INNER JOIN USER FROM_USER ON (FROM_USER.UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.UID = TO_USER.UID AND USER_PEER.PEER_UID = POST.FROM_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}POST` POST_PREVIOUS ON (POST_PREVIOUS.TID = POST.TID AND POST_PREVIOUS.PID = POST.PID - 1) ";
-    $sql.= "LEFT JOIN USER_FORUM ON (USER_FORUM.UID = TO_USER.UID AND USER_FORUM.FID = $forum_fid) ";
-    $sql.= "WHERE USER_FOLDER.UID NOT IN (SELECT UID FROM `{$table_prefix}USER_THREAD` WHERE TID = THREAD.TID AND INTEREST = $thread_subscribed) ";
-    $sql.= "AND USER_FOLDER.UID NOT IN (SELECT FROM_UID FROM `{$table_prefix}POST` WHERE TID = POST.TID AND PID = POST.PID) ";
-    $sql.= "AND USER_FOLDER.UID NOT IN (SELECT TO_UID FROM `{$table_prefix}POST_RECIPIENT` WHERE TID = POST.TID AND PID = POST.PID) ";
-    $sql.= "AND THREAD.TID = $tid AND POST.PID = $pid ";
-    $sql.= "HAVING (RELATIONSHIP IS NULL OR RELATIONSHIP & $user_ignored_completely = 0) ";
-    $sql.= "AND (LAST_VISIT > CREATED OR CREATED IS NULL) ";
+    $sql .= "TO_USER.NICKNAME, TO_USER.EMAIL, FROM_USER.LOGON AS FROM_LOGON, FROM_USER.NICKNAME AS FROM_NICKNAME, ";
+    $sql .= "USER_PEER.RELATIONSHIP, POST_PREVIOUS.CREATED, USER_FORUM.LAST_VISIT FROM `{$table_prefix}THREAD` THREAD ";
+    $sql .= "INNER JOIN `{$table_prefix}POST` POST ON (POST.TID = THREAD.TID) ";
+    $sql .= "INNER JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.INTEREST = $folder_subscribed) ";
+    $sql .= "INNER JOIN USER TO_USER ON (TO_USER.UID = USER_FOLDER.UID) ";
+    $sql .= "INNER JOIN USER FROM_USER ON (FROM_USER.UID = POST.FROM_UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.UID = TO_USER.UID AND USER_PEER.PEER_UID = POST.FROM_UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}POST` POST_PREVIOUS ON (POST_PREVIOUS.TID = POST.TID AND POST_PREVIOUS.PID = POST.PID - 1) ";
+    $sql .= "LEFT JOIN USER_FORUM ON (USER_FORUM.UID = TO_USER.UID AND USER_FORUM.FID = $forum_fid) ";
+    $sql .= "WHERE USER_FOLDER.UID NOT IN (SELECT UID FROM `{$table_prefix}USER_THREAD` WHERE TID = THREAD.TID AND INTEREST = $thread_subscribed) ";
+    $sql .= "AND USER_FOLDER.UID NOT IN (SELECT FROM_UID FROM `{$table_prefix}POST` WHERE TID = POST.TID AND PID = POST.PID) ";
+    $sql .= "AND USER_FOLDER.UID NOT IN (SELECT TO_UID FROM `{$table_prefix}POST_RECIPIENT` WHERE TID = POST.TID AND PID = POST.PID) ";
+    $sql .= "AND THREAD.TID = $tid AND POST.PID = $pid ";
+    $sql .= "HAVING (RELATIONSHIP IS NULL OR RELATIONSHIP & $user_ignored_completely = 0) ";
+    $sql .= "AND (LAST_VISIT > CREATED OR CREATED IS NULL) ";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -275,7 +275,7 @@ function email_send_folder_subscription($tid, $pid)
         $message_link = html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid");
 
         $message_body = wordwrap(sprintf(gettext(
-            "Hello %s,\n\n%s posted a message in a folder you are subscribed to on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level by clicking on the folder's icon at the top of page."),
+                "Hello %s,\n\n%s posted a message in a folder you are subscribed to on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, go to:\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level by clicking on the folder's icon at the top of page."),
             $recipient,
             $message_author,
             $forum_name,
@@ -292,7 +292,7 @@ function email_send_folder_subscription($tid, $pid)
 
         $message->setBody($message_body);
 
-        $count+= $mailer->send($message);
+        $count += $mailer->send($message);
     }
 
     return $count;
@@ -311,13 +311,13 @@ function email_send_pm_notification($mid)
     forum_check_webtag_available($webtag);
 
     $sql = "SELECT PM.SUBJECT, TO_USER.LOGON, TO_USER.NICKNAME, TO_USER.EMAIL, ";
-    $sql.= "FROM_USER.LOGON AS FROM_LOGON, FROM_USER.NICKNAME AS FROM_NICKNAME, ";
-    $sql.= "COALESCE(USER_PREFS.PM_NOTIFY_EMAIL, 'N') AS PM_NOTIFY_EMAIL FROM PM ";
-    $sql.= "INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID AND PM_RECIPIENT.TO_UID <> PM.FROM_UID) ";
-    $sql.= "INNER JOIN USER TO_USER ON (TO_USER.UID = PM_RECIPIENT.TO_UID) ";
-    $sql.= "INNER JOIN USER FROM_USER ON (FROM_USER.UID = PM.FROM_UID) ";
-    $sql.= "LEFT JOIN USER_PREFS ON (USER_PREFS.UID = TO_USER.UID) ";
-    $sql.= "WHERE PM.MID = $mid HAVING PM_NOTIFY_EMAIL = 'Y'";
+    $sql .= "FROM_USER.LOGON AS FROM_LOGON, FROM_USER.NICKNAME AS FROM_NICKNAME, ";
+    $sql .= "COALESCE(USER_PREFS.PM_NOTIFY_EMAIL, 'N') AS PM_NOTIFY_EMAIL FROM PM ";
+    $sql .= "INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID AND PM_RECIPIENT.TO_UID <> PM.FROM_UID) ";
+    $sql .= "INNER JOIN USER TO_USER ON (TO_USER.UID = PM_RECIPIENT.TO_UID) ";
+    $sql .= "INNER JOIN USER FROM_USER ON (FROM_USER.UID = PM.FROM_UID) ";
+    $sql .= "LEFT JOIN USER_PREFS ON (USER_PREFS.UID = TO_USER.UID) ";
+    $sql .= "WHERE PM.MID = $mid HAVING PM_NOTIFY_EMAIL = 'Y'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -365,7 +365,7 @@ function email_send_pm_notification($mid)
 
         $message->setBody($message_body);
 
-        $count+= $mailer->send($message);
+        $count += $mailer->send($message);
     }
 
     return $count;
@@ -590,7 +590,7 @@ function email_send_user_approval_notification($to_uid, $new_user_uid)
     $admin_users_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_users_link");
 
     $message_body = wordwrap(sprintf(gettext(
-        "Hello %s,\n\nA new user account has been created on %s.\n\nThe name of the new user account is: %s\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."),
+            "Hello %s,\n\nA new user account has been created on %s.\n\nThe name of the new user account is: %s\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account please visit the Admin Users section and change the filter type to \"Users Awaiting Approval\" or click the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."),
         $recipient,
         $forum_name,
         $new_user_logon,
@@ -641,7 +641,7 @@ function email_send_new_user_notification($to_uid, $new_user_uid)
     $admin_user_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_user_link");
 
     $message_body = wordwrap(sprintf(gettext(
-        "Hello %s,\n\nA new user account has been created on %s.\n\nThe name of the new user account is: %s\n\nTo view this user account please visit the Admin Users section and click on the new user or click the link below:\n\n%s"),
+            "Hello %s,\n\nA new user account has been created on %s.\n\nThe name of the new user account is: %s\n\nTo view this user account please visit the Admin Users section and click on the new user or click the link below:\n\n%s"),
         $recipient,
         $forum_name,
         $new_user_logon,
@@ -686,7 +686,7 @@ function email_send_user_approved_notification($to_uid)
     $forum_link = html_get_forum_uri("index.php?webtag=$webtag");
 
     $message_body = wordwrap(sprintf(gettext(
-        "Hello %s,\n\nYour user account at %s has been approved. You can login and start posting immediately by clicking the link below:\n\n%s\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated."),
+            "Hello %s,\n\nYour user account at %s has been approved. You can login and start posting immediately by clicking the link below:\n\n%s\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated."),
         $recipient,
         $forum_name,
         $forum_link,
@@ -776,7 +776,7 @@ function email_send_link_approval_notification($to_uid)
     $admin_post_approval_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_post_approval_link");
 
     $message_body = wordwrap(sprintf(gettext(
-        "Hello %s,\n\nA new link has been created on %s.\n\nAs you are a Link Moderator on this forum you are required to approve this link before it can be read by other users.\n\nYou can approve this link and any others pending approval by visiting the Admin Link Approval section of your forum or by clicking the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."),
+            "Hello %s,\n\nA new link has been created on %s.\n\nAs you are a Link Moderator on this forum you are required to approve this link before it can be read by other users.\n\nYou can approve this link and any others pending approval by visiting the Admin Link Approval section of your forum or by clicking the link below:\n\n%s\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."),
         $recipient,
         $forum_name,
         $admin_post_approval_link
@@ -811,13 +811,13 @@ function email_send_message_to_user($to_uid, $from_uid, $subject, $message_body,
 
     $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $recipient  = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
+    $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
-    $sent_from  = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $to_uid, true);
+    $sent_from = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $to_uid, true);
 
     $message_body = word_filter_apply($message_body, $to_uid, true);
 
-    $message_body.= "\n\n". wordwrap(sprintf(gettext("This message was sent from %s by %s"), $forum_name, $sent_from));
+    $message_body .= "\n\n" . wordwrap(sprintf(gettext("This message was sent from %s by %s"), $forum_name, $sent_from));
 
     $message->setTo($to_user['EMAIL'], $recipient);
 
@@ -843,7 +843,7 @@ function email_is_unique($email_address, $user_uid = 0)
     } else {
 
         $sql = "SELECT COUNT(UID) FROM USER WHERE UID <> '$user_uid' ";
-        $sql.= "AND EMAIL = '$email_address' ";
+        $sql .= "AND EMAIL = '$email_address' ";
     }
 
     if (!($result = $db->query($sql))) return false;

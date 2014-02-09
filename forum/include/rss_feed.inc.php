@@ -22,12 +22,13 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'post.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'post.inc.php';
+
 // End Required includes
 
 class rss_feed_item
@@ -84,15 +85,15 @@ function rss_feed_read_stream($filename)
         @socket_set_blocking($fp, false);
 
         $header = "GET {$url_array['path']}{$url_array['query']} HTTP/1.0\r\n";
-        $header.= "Host: {$url_array['host']}\r\n";
-        $header.= "Connection: Close\r\n\r\n";
+        $header .= "Host: {$url_array['host']}\r\n";
+        $header .= "Connection: Close\r\n\r\n";
 
         $reply_data = "";
 
         fwrite($fp, $header);
 
         while (!feof($fp)) {
-            $reply_data.= fgets($fp, 128);
+            $reply_data .= fgets($fp, 128);
         }
 
         fclose($fp);
@@ -109,49 +110,49 @@ function rss_feed_read_stream($filename)
 
 function rss_feed_read_database($filename)
 {
-   if (!$data = rss_feed_read_stream($filename)) return false;
+    if (!$data = rss_feed_read_stream($filename)) return false;
 
-   $data = html_entity_to_decimal($data);
+    $data = html_entity_to_decimal($data);
 
-   $rss_data = array();
+    $rss_data = array();
 
-   $parser = xml_parser_create();
+    $parser = xml_parser_create();
 
-   $values = array();
+    $values = array();
 
-   $tags = array();
+    $tags = array();
 
-   xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
-   xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
-   xml_parse_into_struct($parser, $data, $values, $tags);
-   xml_parser_free($parser);
+    xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
+    xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
+    xml_parse_into_struct($parser, $data, $values, $tags);
+    xml_parser_free($parser);
 
-   // loop through the structures
-   foreach ($tags as $key => $value) {
+    // loop through the structures
+    foreach ($tags as $key => $value) {
 
-       if ($key == 'item') {
+        if ($key == 'item') {
 
-           $ranges = $value;
+            $ranges = $value;
 
-           // each contiguous pair of array entries are the
-           // lower and upper range for each molecule definition
-           for ($i = 0; $i < count($ranges); $i+=2) {
+            // each contiguous pair of array entries are the
+            // lower and upper range for each molecule definition
+            for ($i = 0; $i < count($ranges); $i += 2) {
 
-               if (isset($ranges[$i]) && isset($ranges[$i + 1])) {
+                if (isset($ranges[$i]) && isset($ranges[$i + 1])) {
 
-                   $offset = $ranges[$i] + 1;
-                   $len = $ranges[$i + 1] - $offset;
-                   $rss_data[] = rss_feed_parse_item(array_slice($values, $offset, $len));
-               }
-           }
+                    $offset = $ranges[$i] + 1;
+                    $len = $ranges[$i + 1] - $offset;
+                    $rss_data[] = rss_feed_parse_item(array_slice($values, $offset, $len));
+                }
+            }
 
-       } else {
+        } else {
 
-           continue;
-       }
-   }
+            continue;
+        }
+    }
 
-   return $rss_data;
+    return $rss_data;
 }
 
 function rss_feed_parse_item($item_values)
@@ -160,14 +161,14 @@ function rss_feed_parse_item($item_values)
 
     for ($i = 0; $i < count($item_values); $i++) {
 
-       if (isset($item_values[$i]["value"])) {
-           $item[$item_values[$i]["tag"]] = $item_values[$i]["value"];
-       } else {
-           $item[$item_values[$i]["tag"]] = " ";
-       }
-   }
+        if (isset($item_values[$i]["value"])) {
+            $item[$item_values[$i]["tag"]] = $item_values[$i]["value"];
+        } else {
+            $item[$item_values[$i]["tag"]] = " ";
+        }
+    }
 
-   return new rss_feed_item($item);
+    return new rss_feed_item($item);
 }
 
 function rss_feed_fetch()
@@ -179,12 +180,12 @@ function rss_feed_fetch()
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "SELECT RSS_FEEDS.RSSID, RSS_FEEDS.NAME, RSS_FEEDS.UID, RSS_FEEDS.FID, RSS_FEEDS.URL, ";
-    $sql.= "RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY, RSS_FEEDS.LAST_RUN, RSS_FEEDS.MAX_ITEM_COUNT, ";
-    $sql.= "COALESCE(DATE_ADD(RSS_FEEDS.LAST_RUN, INTERVAL RSS_FEEDS.FREQUENCY MINUTE), 0) AS NEXT_RUN ";
-    $sql.= "FROM `{$table_prefix}RSS_FEEDS` RSS_FEEDS LEFT JOIN USER ON (USER.UID = RSS_FEEDS.UID) ";
-    $sql.= "WHERE RSS_FEEDS.FREQUENCY > 0 AND USER.UID IS NOT NULL ";
-    $sql.= "HAVING CAST('$current_datetime' AS DATETIME) > NEXT_RUN ";
-    $sql.= "LIMIT 0, 1";
+    $sql .= "RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY, RSS_FEEDS.LAST_RUN, RSS_FEEDS.MAX_ITEM_COUNT, ";
+    $sql .= "COALESCE(DATE_ADD(RSS_FEEDS.LAST_RUN, INTERVAL RSS_FEEDS.FREQUENCY MINUTE), 0) AS NEXT_RUN ";
+    $sql .= "FROM `{$table_prefix}RSS_FEEDS` RSS_FEEDS LEFT JOIN USER ON (USER.UID = RSS_FEEDS.UID) ";
+    $sql .= "WHERE RSS_FEEDS.FREQUENCY > 0 AND USER.UID IS NOT NULL ";
+    $sql .= "HAVING CAST('$current_datetime' AS DATETIME) > NEXT_RUN ";
+    $sql .= "LIMIT 0, 1";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -193,8 +194,8 @@ function rss_feed_fetch()
     $rss_feed = $result->fetch_assoc();
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}RSS_FEEDS` ";
-    $sql.= "SET LAST_RUN = CAST('$current_datetime' AS DATETIME) ";
-    $sql.= "WHERE RSSID = {$rss_feed['RSSID']}";
+    $sql .= "SET LAST_RUN = CAST('$current_datetime' AS DATETIME) ";
+    $sql .= "WHERE RSSID = {$rss_feed['RSSID']}";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -214,8 +215,8 @@ function rss_feed_thread_exist($rss_id, $link)
     $link = $db->escape($link);
 
     $sql = "SELECT COUNT(RSSID) AS RSS_THREAD_COUNT ";
-    $sql.= "FROM `{$table_prefix}RSS_HISTORY` ";
-    $sql.= "WHERE RSSID = '$rss_id' AND LINK = '$link'";
+    $sql .= "FROM `{$table_prefix}RSS_HISTORY` ";
+    $sql .= "WHERE RSSID = '$rss_id' AND LINK = '$link'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -235,7 +236,7 @@ function rss_feed_create_history($rss_id, $link)
     $link = $db->escape($link);
 
     $sql = "INSERT IGNORE INTO `{$table_prefix}RSS_HISTORY` (RSSID, LINK) ";
-    $sql.= "VALUES ($rss_id, '$link')";
+    $sql .= "VALUES ($rss_id, '$link')";
 
     if (!$db->query($sql)) return false;
 
@@ -278,7 +279,7 @@ function rss_feed_check_feeds()
                             $rss_title = trim(mb_substr($rss_title, 0, $pos));
                         }
 
-                        $rss_title.= "...";
+                        $rss_title .= "...";
                     }
 
                     if (strlen($rss_feed_item->description) > 1) {
@@ -330,14 +331,14 @@ function rss_feed_get_feeds($page = 1)
     $rss_feed_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS RSS_FEEDS.RSSID, RSS_FEEDS.NAME, USER.LOGON, ";
-    $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, RSS_FEEDS.FID, RSS_FEEDS.URL, ";
-    $sql.= "RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY, RSS_FEEDS.MAX_ITEM_COUNT ";
-    $sql.= "FROM `{$table_prefix}RSS_FEEDS` RSS_FEEDS ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = RSS_FEEDS.UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = RSS_FEEDS.UID ";
-    $sql.= "AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "LIMIT $offset, 10";
+    $sql .= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, RSS_FEEDS.FID, RSS_FEEDS.URL, ";
+    $sql .= "RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY, RSS_FEEDS.MAX_ITEM_COUNT ";
+    $sql .= "FROM `{$table_prefix}RSS_FEEDS` RSS_FEEDS ";
+    $sql .= "LEFT JOIN USER USER ON (USER.UID = RSS_FEEDS.UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "ON (USER_PEER.PEER_UID = RSS_FEEDS.UID ";
+    $sql .= "AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -389,7 +390,7 @@ function rss_feed_add($name, $uid, $fid, $url, $prefix, $frequency, $max_item_co
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "INSERT INTO `{$table_prefix}RSS_FEEDS` (NAME, UID, FID, URL, PREFIX, FREQUENCY, LAST_RUN, MAX_ITEM_COUNT) ";
-    $sql.= "VALUES ('$name', $uid, $fid, '$url', '$prefix', $frequency, CAST('$last_run_datetime' AS DATETIME), $max_item_count)";
+    $sql .= "VALUES ('$name', $uid, $fid, '$url', '$prefix', $frequency, CAST('$last_run_datetime' AS DATETIME), $max_item_count)";
 
     if (!$db->query($sql)) return false;
 
@@ -413,9 +414,9 @@ function rss_feed_update($rssid, $name, $uid, $fid, $url, $prefix, $frequency, $
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}RSS_FEEDS` SET NAME = '$name', ";
-    $sql.= "UID = '$uid', FID = '$fid', URL = '$url', PREFIX = '$prefix', ";
-    $sql.= "FREQUENCY = '$frequency', MAX_ITEM_COUNT = '$max_item_count' ";
-    $sql.= "WHERE RSSID = '$rssid'";
+    $sql .= "UID = '$uid', FID = '$fid', URL = '$url', PREFIX = '$prefix', ";
+    $sql .= "FREQUENCY = '$frequency', MAX_ITEM_COUNT = '$max_item_count' ";
+    $sql .= "WHERE RSSID = '$rssid'";
 
     if (!$db->query($sql)) return false;
 
@@ -433,14 +434,14 @@ function rss_feed_get($feed_id)
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT RSS_FEEDS.RSSID, RSS_FEEDS.NAME, USER.LOGON, USER.NICKNAME, ";
-    $sql.= "USER_PEER.PEER_NICKNAME, RSS_FEEDS.FID, RSS_FEEDS.URL, ";
-    $sql.= "RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY, RSS_FEEDS.MAX_ITEM_COUNT ";
-    $sql.= "FROM `{$table_prefix}RSS_FEEDS` RSS_FEEDS ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = RSS_FEEDS.UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = RSS_FEEDS.UID ";
-    $sql.= "AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "WHERE RSS_FEEDS.RSSID = '$feed_id'";
+    $sql .= "USER_PEER.PEER_NICKNAME, RSS_FEEDS.FID, RSS_FEEDS.URL, ";
+    $sql .= "RSS_FEEDS.PREFIX, RSS_FEEDS.FREQUENCY, RSS_FEEDS.MAX_ITEM_COUNT ";
+    $sql .= "FROM `{$table_prefix}RSS_FEEDS` RSS_FEEDS ";
+    $sql .= "LEFT JOIN USER USER ON (USER.UID = RSS_FEEDS.UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "ON (USER_PEER.PEER_UID = RSS_FEEDS.UID ";
+    $sql .= "AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "WHERE RSS_FEEDS.RSSID = '$feed_id'";
 
     if (!($result = $db->query($sql))) return false;
 

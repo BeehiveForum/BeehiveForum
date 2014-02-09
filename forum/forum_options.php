@@ -25,18 +25,18 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'lang.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'styles.inc.php';
-require_once BH_INCLUDE_PATH. 'timezone.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'lang.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'styles.inc.php';
+require_once BH_INCLUDE_PATH . 'timezone.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -272,7 +272,7 @@ if (isset($_POST['save'])) {
     } else {
         $user_prefs_global['ENABLE_WIKI_QUICK_LINKS'] = false;
     }
-    
+
     if (isset($_POST['enable_tags']) && $_POST['enable_tags'] == "Y") {
         $user_prefs['ENABLE_TAGS'] = "Y";
     } else {

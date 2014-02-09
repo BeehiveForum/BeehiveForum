@@ -1,31 +1,31 @@
 /*======================================================================
-Copyright Project Beehive Forum 2002
+ Copyright Project Beehive Forum 2002
 
-This file is part of Beehive Forum.
+ This file is part of Beehive Forum.
 
-Beehive Forum is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+ Beehive Forum is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-Beehive Forum is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ Beehive Forum is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-USA
-======================================================================*/
+ You should have received a copy of the GNU General Public License
+ along with Beehive; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+ USA
+ ======================================================================*/
 
-$(beehive).bind('init', function() {
+$(beehive).bind('init', function () {
 
-    $('div#page_content select#folder').bind('change', function() {
+    $('div#page_content select#folder').bind('change', function () {
         $(this).closest('form').submit();
     });
 
-    $('#pm_delete_messages,#pm_save_messages,#pm_export_messages').bind('click', function() {
+    $('#pm_delete_messages,#pm_save_messages,#pm_export_messages').bind('click', function () {
 
         if ($('input[name^="process"]:checked').length == 0) {
             return false;
@@ -44,12 +44,12 @@ $(beehive).bind('init', function() {
         return true;
     });
 
-    $('#pm_rename_success,#pm_delete_success,#pm_archive_success').each(function() {
+    $('#pm_rename_success,#pm_delete_success,#pm_archive_success').each(function () {
 
         if (top.document.body.rows) {
             //noinspection JSUnresolvedVariable
             top.frames[beehive.frames.main].frames[beehive.frames.pm_folders].location.reload();
-        }else if (top.document.body.cols) {
+        } else if (top.document.body.cols) {
             //noinspection JSUnresolvedVariable
             top.frames[beehive.frames.pm_folders].location.reload();
         }
@@ -66,7 +66,7 @@ $(beehive).bind('init', function() {
         },
         dataType: 'json',
         url: beehive.forum_path + '/ajax.php',
-        success: function(data) {
+        success: function (data) {
 
             try {
 

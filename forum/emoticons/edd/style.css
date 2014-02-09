@@ -1,506 +1,584 @@
-.e_smile { /* :) :-) */
+.e_smile {
+    /* :) :-) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/smile.png") no-repeat;
 }
+
 .e_smile span {
-	display: none;
+    display: none;
 }
 
-.e_wink { /* ;) ;-) */
+.e_wink {
+    /* ;) ;-) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/wink.png") no-repeat;
 }
+
 .e_wink span {
-	display: none;
+    display: none;
 }
 
-.e_sad { /* :( :-( */
+.e_sad {
+    /* :( :-( */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/sad.png") no-repeat;
 }
+
 .e_sad span {
-	display: none;
+    display: none;
 }
 
-.e_cry { /* :'( :'-( */
+.e_cry {
+    /* :'( :'-( */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/cry.png") no-repeat;
 }
+
 .e_cry span {
-	display: none;
+    display: none;
 }
 
-.e_tongue { /* :P :-P */
+.e_tongue {
+    /* :P :-P */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/tongue.png") no-repeat;
 }
+
 .e_tongue span {
-	display: none;
+    display: none;
 }
 
-.e_grin { /* :D :-D */
+.e_grin {
+    /* :D :-D */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/grin.png") no-repeat;
 }
+
 .e_grin span {
-	display: none;
+    display: none;
 }
 
-.e_confused { /* :S :-S */
+.e_confused {
+    /* :S :-S */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/whut.png") no-repeat;
 }
+
 .e_confused span {
-	display: none;
+    display: none;
 }
 
-.e_plain { /* :| :-| */
+.e_plain {
+    /* :| :-| */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/notamused.png") no-repeat;
 }
+
 .e_plain span {
-	display: none;
+    display: none;
 }
 
-.e_unsure { /* :/ :-/ */
+.e_unsure {
+    /* :/ :-/ */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/shack.png") no-repeat;
 }
+
 .e_unsure span {
-	display: none;
+    display: none;
 }
 
-.e_shock { /* :O :-O */
+.e_shock {
+    /* :O :-O */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/shock.png") no-repeat;
 }
+
 .e_shock span {
-	display: none;
+    display: none;
 }
 
-.e_angry { /* :@ :-@ */
+.e_angry {
+    /* :@ :-@ */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/angry.png") no-repeat;
 }
+
 .e_angry span {
-	display: none;
+    display: none;
 }
 
-.e_happy { /* ^.^ */
+.e_happy {
+    /* ^.^ */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/happy.png") no-repeat;
 }
+
 .e_happy span {
-	display: none;
+    display: none;
 }
 
-.e_shades { /* B-) B) 8-) 8) */
+.e_shades {
+    /* B-) B) 8-) 8) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/cool.png") no-repeat;
 }
+
 .e_shades span {
-	display: none;
+    display: none;
 }
 
-.e_smile_big_nose { /* :o) :O) */
+.e_smile_big_nose {
+    /* :o) :O) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/smile_big_nose.png") no-repeat;
 }
+
 .e_smile_big_nose span {
-	display: none;
+    display: none;
 }
 
-.e_beer { /* (beer) */
+.e_beer {
+    /* (beer) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/beer.png") no-repeat;
 }
+
 .e_beer span {
-	display: none;
+    display: none;
 }
 
-.e_boy { /* (boy) */
+.e_boy {
+    /* (boy) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/boy.png") no-repeat;
 }
+
 .e_boy span {
-	display: none;
+    display: none;
 }
 
-.e_brokenheart { /* (heartbroke) */
+.e_brokenheart {
+    /* (heartbroke) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/brokenheart.png") no-repeat;
 }
+
 .e_brokenheart span {
-	display: none;
+    display: none;
 }
 
-.e_cat { /* (cat) */
+.e_cat {
+    /* (cat) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/cat.png") no-repeat;
 }
+
 .e_cat span {
-	display: none;
+    display: none;
 }
 
-.e_envelope { /* (envelope) */
+.e_envelope {
+    /* (envelope) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/mail.png") no-repeat;
 }
+
 .e_envelope span {
-	display: none;
+    display: none;
 }
 
-.e_fail { /* (fail) */
+.e_fail {
+    /* (fail) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/cry.png") no-repeat;
 }
+
 .e_fail span {
-	display: none;
+    display: none;
 }
 
-.e_flower { /* (flower) */
+.e_flower {
+    /* (flower) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/flower.png") no-repeat;
 }
+
 .e_flower span {
-	display: none;
+    display: none;
 }
 
-.e_girl { /* (girl) */
+.e_girl {
+    /* (girl) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/girl.png") no-repeat;
 }
+
 .e_girl span {
-	display: none;
+    display: none;
 }
 
-.e_heartbeat { /* (heart) */
+.e_heartbeat {
+    /* (heart) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/heart.png") no-repeat;
 }
+
 .e_heartbeat span {
-	display: none;
+    display: none;
 }
 
-.e_kiss { /* (kiss) */
+.e_kiss {
+    /* (kiss) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/kiss.png") no-repeat;
 }
+
 .e_kiss span {
-	display: none;
+    display: none;
 }
 
-.e_lightbulb { /* (lightbulb) */
+.e_lightbulb {
+    /* (lightbulb) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/bulb.png") no-repeat;
 }
+
 .e_lightbulb span {
-	display: none;
+    display: none;
 }
 
-.e_musicnote { /* (music) */
+.e_musicnote {
+    /* (music) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/note.png") no-repeat;
 }
+
 .e_musicnote span {
-	display: none;
+    display: none;
 }
 
-.e_star { /* (star) */
+.e_star {
+    /* (star) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/star.png") no-repeat;
 }
+
 .e_star span {
-	display: none;
+    display: none;
 }
 
-.e_tea { /* (tea) (coffee)*/
+.e_tea {
+    /* (tea) (coffee)*/
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/coffee.png") no-repeat;
 }
+
 .e_tea span {
-	display: none;
+    display: none;
 }
 
-.e_crying { /* :(( :-(( */
+.e_crying {
+    /* :(( :-(( */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/cry.png") no-repeat;
 }
+
 .e_crying span {
-	display: none;
+    display: none;
 }
 
-.e_eek { /* 8-O :o :-o*/
+.e_eek {
+    /* 8-O :o :-o*/
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/shock.png") no-repeat;
 }
+
 .e_eek span {
-	display: none;
+    display: none;
 }
 
-.e_horror { /* :& */
+.e_horror {
+    /* :& */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/horror.png") no-repeat;
 }
+
 .e_horror span {
-	display: none;
+    display: none;
 }
 
-.e_jesus { /* (jesus) */
+.e_jesus {
+    /* (jesus) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/jesus.png") no-repeat;
 }
+
 .e_jesus span {
-	display: none;
+    display: none;
 }
 
-.e_goth { /* (goth) */
+.e_goth {
+    /* (goth) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/goth.png") no-repeat;
 }
+
 .e_goth span {
-	display: none;
+    display: none;
 }
 
-.e_phone { /* (phone) */
+.e_phone {
+    /* (phone) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/phone.png") no-repeat;
 }
+
 .e_phone span {
-	display: none;
+    display: none;
 }
 
-.e_sleepyhead { /* I) I-) */
+.e_sleepyhead {
+    /* I) I-) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/sleep.png") no-repeat;
 }
+
 .e_sleepyhead span {
-	display: none;
+    display: none;
 }
 
-.e_thumbsup { /* (yes) */
+.e_thumbsup {
+    /* (yes) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/thumbup.png") no-repeat;
 }
+
 .e_thumbsup span {
-	display: none;
+    display: none;
 }
 
-.e_thumbsdown { /* (no) */
+.e_thumbsdown {
+    /* (no) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/thumbdown.png") no-repeat;
 }
+
 .e_thumbsdown span {
-	display: none;
+    display: none;
 }
 
-.e_smile_dead { /* (smile_dead) */
+.e_smile_dead {
+    /* (smile_dead) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/xsmile.png") no-repeat;
 }
+
 .e_smile_dead span {
-	display: none;
+    display: none;
 }
 
-.e_grin_dead { /* I) I-) */
+.e_grin_dead {
+    /* I) I-) */
     vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  15px;
+    width: 15px;
     height: 13px;
     font-size: 13px;
     background: url("./images/xd.png") no-repeat;
 }
+
 .e_grin_dead span {
-	display: none;
+    display: none;
 }

@@ -22,7 +22,7 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
 // End Required includes
 
 function get_available_timezones()
@@ -128,9 +128,9 @@ function timestamp_is_dst($timezone_id, $gmt_offset)
 
     switch ($timezone_id) {
 
-        case 4:  /* Alaska */
-        case 5:  /* Pacific Time (US & Canada); Tijuana */
-        case 8:  /* Mountain Time (US & Canada) */
+        case 4: /* Alaska */
+        case 5: /* Pacific Time (US & Canada); Tijuana */
+        case 8: /* Mountain Time (US & Canada) */
         case 10: /* Central Time (US & Canada) */
         case 11: /* Guadalajara, Mexico City, Monterrey */
         case 14: /* Eastern Time (US & Canada) */

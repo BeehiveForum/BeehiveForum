@@ -1,363 +1,419 @@
-.e_smile { /* :) :-) */
-	vertical-align: top;
+.e_smile {
+    /* :) :-) */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/smile.png") no-repeat;
 }
+
 .e_smile span {
-	display: none;
+    display: none;
 }
 
-.e_wink { /* ;) ;-) */
-	vertical-align: top;
+.e_wink {
+    /* ;) ;-) */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/wink.png") no-repeat;
 }
+
 .e_wink span {
-	display: none;
+    display: none;
 }
 
-.e_sad { /* :( :-( */
-	vertical-align: top;
+.e_sad {
+    /* :( :-( */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/sad.png") no-repeat;
 }
+
 .e_sad span {
-	display: none;
+    display: none;
 }
 
-.e_cry { /* :'( :'-( */
-	vertical-align: top;
+.e_cry {
+    /* :'( :'-( */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/cry.png") no-repeat;
 }
+
 .e_cry span {
-	display: none;
+    display: none;
 }
 
-.e_cringe { /* >.< */
-	vertical-align: top;
+.e_cringe {
+    /* >.< */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/cringe.png") no-repeat;
 }
+
 .e_cringe span {
-	display: none;
+    display: none;
 }
 
-.e_tongue { /* :P :-P */
-	vertical-align: top;
+.e_tongue {
+    /* :P :-P */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/tease.png") no-repeat;
 }
+
 .e_tongue span {
-	display: none;
+    display: none;
 }
 
-.e_grin { /* :D :-D */
-	vertical-align: top;
+.e_grin {
+    /* :D :-D */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/grin.png") no-repeat;
 }
+
 .e_grin span {
-	display: none;
+    display: none;
 }
 
-.e_confused { /* :S :-S */
-	vertical-align: top;
+.e_confused {
+    /* :S :-S */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/confused.png") no-repeat;
 }
+
 .e_confused span {
-	display: none;
+    display: none;
 }
 
-.e_plain { /* :| :-| */
-	vertical-align: top;
+.e_plain {
+    /* :| :-| */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/plain.png") no-repeat;
 }
+
 .e_plain span {
-	display: none;
+    display: none;
 }
 
-.e_shock { /* :O :-O */
-	vertical-align: top;
+.e_shock {
+    /* :O :-O */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/shock.png") no-repeat;
 }
+
 .e_shock span {
-	display: none;
+    display: none;
 }
 
-.e_angry { /* :@ :-@ */
-	vertical-align: top;
+.e_angry {
+    /* :@ :-@ */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/angry.png") no-repeat;
 }
+
 .e_angry span {
-	display: none;
+    display: none;
 }
 
-.e_embarrassed { /* :$ :-$ */
-	vertical-align: top;
+.e_embarrassed {
+    /* :$ :-$ */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/embarrassed.png") no-repeat;
 }
+
 .e_embarrassed span {
-	display: none;
+    display: none;
 }
 
-.e_shades { /* B) B-) (h) */
-	vertical-align: top;
+.e_shades {
+    /* B) B-) (h) */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/shades.png") no-repeat;
 }
+
 .e_shades span {
-	display: none;
+    display: none;
 }
 
-.e_angel { /* (a) */
-	vertical-align: top;
+.e_angel {
+    /* (a) */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/angel.png") no-repeat;
 }
+
 .e_angel span {
-	display: none;
+    display: none;
 }
 
-.e_devil { /* (6) */
-	vertical-align: top;
+.e_devil {
+    /* (6) */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/devil.png") no-repeat;
 }
+
 .e_devil span {
-	display: none;
+    display: none;
 }
 
-.e_alien { /* =:) */
-	vertical-align: top;
+.e_alien {
+    /* =:) */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/alien.png") no-repeat;
 }
+
 .e_alien span {
-	display: none;
+    display: none;
 }
 
-.e_anglesad { /* :< :-< */
-	vertical-align: top;
+.e_anglesad {
+    /* :< :-< */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/anglesad.png") no-repeat;
 }
+
 .e_anglesad span {
-	display: none;
+    display: none;
 }
 
-.e_cheeky { /* :> :-> */
-	vertical-align: top;
+.e_cheeky {
+    /* :> :-> */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/anglesmile.png") no-repeat;
 }
+
 .e_cheeky span {
-	display: none;
+    display: none;
 }
 
-.e_smile_big_nose { /* :O) */
-	vertical-align: top;
+.e_smile_big_nose {
+    /* :O) */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/bignose.png") no-repeat;
 }
+
 .e_smile_big_nose span {
-	display: none;
+    display: none;
 }
 
-.e_rabbit { /* :B :-B */
-	vertical-align: top;
+.e_rabbit {
+    /* :B :-B */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/bunnyteeth.png") no-repeat;
 }
+
 .e_rabbit span {
-	display: none;
+    display: none;
 }
 
-.e_happycry { /* :'D */
-	vertical-align: top;
+.e_happycry {
+    /* :'D */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/crylaugh.png") no-repeat;
 }
+
 .e_happycry span {
-	display: none;
+    display: none;
 }
 
-.e_fail { /* (fail) */
-	vertical-align: top;
+.e_fail {
+    /* (fail) */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/fail.gif") no-repeat;
 }
+
 .e_fail span {
-	display: none;
+    display: none;
 }
 
-.e_horror { /* :& :-& */
-	vertical-align: top;
+.e_horror {
+    /* :& :-& */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/fear.png") no-repeat;
 }
+
 .e_horror span {
-	display: none;
+    display: none;
 }
 
-.e_nod { /* (nod) */
-	vertical-align: top;
+.e_nod {
+    /* (nod) */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/nod.gif") no-repeat;
 }
+
 .e_nod span {
-	display: none;
+    display: none;
 }
 
-.e_sleepyhead { /* I-) I) */
-	vertical-align: top;
+.e_sleepyhead {
+    /* I-) I) */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/sleep.png") no-repeat;
 }
+
 .e_sleepyhead span {
-	display: none;
+    display: none;
 }
 
-.e_unsure { /* :/ :-/ */
-	vertical-align: top;
+.e_unsure {
+    /* :/ :-/ */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/unsure.png") no-repeat;
 }
+
 .e_unsure span {
-	display: none;
+    display: none;
 }
 
-.e_eek { /* 8-O */
-	vertical-align: top;
+.e_eek {
+    /* 8-O */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/veryshocked.png") no-repeat;
 }
+
 .e_eek span {
-	display: none;
+    display: none;
 }
 
-.e_wrong { /* (wrong) */
-	vertical-align: top;
+.e_wrong {
+    /* (wrong) */
+    vertical-align: top;
     display: -moz-inline-stack;
     display: inline-block;
-    width:  19px;
+    width: 19px;
     height: 19px;
-	font-size: 19px;
+    font-size: 19px;
     background: url("./images/wrong.gif") no-repeat;
 }
+
 .e_wrong span {
-	display: none;
+    display: none;
 }

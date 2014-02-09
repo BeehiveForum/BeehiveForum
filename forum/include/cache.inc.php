@@ -22,14 +22,14 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'browser.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'server.inc.php';
+require_once BH_INCLUDE_PATH . 'browser.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
 // End Required includes
 
 function cache_disable()
@@ -105,27 +105,27 @@ function cache_check_thread_list()
         $folder = $db->escape($_GET['folder']);
 
         $sql = "SELECT * FROM (SELECT UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
-        $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED ";
-        $sql.= "FROM `{$table_prefix}THREAD` THREAD) AS THREAD_DATA, ";
-        $sql.= "(SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
-        $sql.= "FROM `{$table_prefix}USER_THREAD` USER_THREAD ";
-        $sql.= "WHERE USER_THREAD.UID = '{$_SESSION['UID']}') AS USER_THREAD_DATA, ";
-        $sql.= "(SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
-        $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
-        $sql.= "FROM `{$table_prefix}FOLDER` FOLDER ";
-        $sql.= "WHERE FOLDER.FID = '$folder') AS FOLDER_DATA";
+        $sql .= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED ";
+        $sql .= "FROM `{$table_prefix}THREAD` THREAD) AS THREAD_DATA, ";
+        $sql .= "(SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
+        $sql .= "FROM `{$table_prefix}USER_THREAD` USER_THREAD ";
+        $sql .= "WHERE USER_THREAD.UID = '{$_SESSION['UID']}') AS USER_THREAD_DATA, ";
+        $sql .= "(SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
+        $sql .= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
+        $sql .= "FROM `{$table_prefix}FOLDER` FOLDER ";
+        $sql .= "WHERE FOLDER.FID = '$folder') AS FOLDER_DATA";
 
     } else {
 
         $sql = "SELECT * FROM (SELECT UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
-        $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED ";
-        $sql.= "FROM `{$table_prefix}THREAD` THREAD) AS THREAD_DATA, ";
-        $sql.= "(SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
-        $sql.= "FROM `{$table_prefix}USER_THREAD` USER_THREAD ";
-        $sql.= "WHERE USER_THREAD.UID = '{$_SESSION['UID']}') AS USER_THREAD_DATA, ";
-        $sql.= "(SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
-        $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
-        $sql.= "FROM `{$table_prefix}FOLDER` FOLDER) AS FOLDER_DATA";
+        $sql .= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED ";
+        $sql .= "FROM `{$table_prefix}THREAD` THREAD) AS THREAD_DATA, ";
+        $sql .= "(SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
+        $sql .= "FROM `{$table_prefix}USER_THREAD` USER_THREAD ";
+        $sql .= "WHERE USER_THREAD.UID = '{$_SESSION['UID']}') AS USER_THREAD_DATA, ";
+        $sql .= "(SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
+        $sql .= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
+        $sql .= "FROM `{$table_prefix}FOLDER` FOLDER) AS FOLDER_DATA";
     }
 
     if (!($result = $db->query($sql))) return false;
@@ -136,7 +136,7 @@ function cache_check_thread_list()
 
     $last_modified = max($created, $modified, $last_read, $folder_created, $folder_modified);
 
-    $etag = md5($_SESSION['UID']. $_SESSION['LOGON']);
+    $etag = md5($_SESSION['UID'] . $_SESSION['LOGON']);
 
     return cache_check_last_modified($last_modified, $etag);
 }
@@ -162,14 +162,14 @@ function cache_check_start_page()
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT * FROM (SELECT UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED ";
-    $sql.= "FROM `{$table_prefix}THREAD` THREAD) AS THREAD_DATA, ";
-    $sql.= "(SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
-    $sql.= "FROM `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql.= "WHERE USER_THREAD.UID = '{$_SESSION['UID']}') AS USER_THREAD_DATA, ";
-    $sql.= "(SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
-    $sql.= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
-    $sql.= "FROM `{$table_prefix}FOLDER` FOLDER) AS FOLDER_DATA";
+    $sql .= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED ";
+    $sql .= "FROM `{$table_prefix}THREAD` THREAD) AS THREAD_DATA, ";
+    $sql .= "(SELECT UNIX_TIMESTAMP(MAX(USER_THREAD.LAST_READ_AT)) AS LAST_READ ";
+    $sql .= "FROM `{$table_prefix}USER_THREAD` USER_THREAD ";
+    $sql .= "WHERE USER_THREAD.UID = '{$_SESSION['UID']}') AS USER_THREAD_DATA, ";
+    $sql .= "(SELECT UNIX_TIMESTAMP(MAX(FOLDER.CREATED)) AS FOLDER_CREATED, ";
+    $sql .= "UNIX_TIMESTAMP(MAX(FOLDER.MODIFIED)) AS FOLDER_MODIFIED ";
+    $sql .= "FROM `{$table_prefix}FOLDER` FOLDER) AS FOLDER_DATA";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -179,7 +179,7 @@ function cache_check_start_page()
 
     $last_modified = max($created, $modified, $last_read, $folder_created, $folder_modified);
 
-    $etag = md5($_SESSION['UID']. $_SESSION['LOGON']);
+    $etag = md5($_SESSION['UID'] . $_SESSION['LOGON']);
 
     return cache_check_last_modified($last_modified, $etag);
 }
@@ -217,19 +217,19 @@ function cache_check_messages()
         list($tid) = explode('.', $_GET['msg']);
 
         $sql = "SELECT * FROM (SELECT UNIX_TIMESTAMP(MAX(POST.CREATED)) AS CREATED, ";
-        $sql.= "UNIX_TIMESTAMP(MAX(POST_RECIPIENT.VIEWED)) AS VIEWED, UNIX_TIMESTAMP(MAX(POST.APPROVED)) AS APPROVED, ";
-        $sql.= "UNIX_TIMESTAMP(MAX(POST.EDITED)) AS EDITED FROM `{$table_prefix}POST` POST ";
-        $sql.= "LEFT JOIN `{$table_prefix}POST_RECIPIENT` POST_RECIPIENT ";
-        $sql.= "ON (POST_RECIPIENT.TID = POST.TID AND POST_RECIPIENT.PID = POST.PID) ";
-        $sql.= "WHERE POST.TID = '$tid') AS POST_DATA, (SELECT UNIX_TIMESTAMP(MAX(USER_POLL_VOTES.VOTED)) ";
-        $sql.= "AS POLL_VOTE FROM `{$table_prefix}USER_POLL_VOTES` USER_POLL_VOTES ";
-        $sql.= "WHERE USER_POLL_VOTES.TID = '$tid') AS POLL_DATA";
+        $sql .= "UNIX_TIMESTAMP(MAX(POST_RECIPIENT.VIEWED)) AS VIEWED, UNIX_TIMESTAMP(MAX(POST.APPROVED)) AS APPROVED, ";
+        $sql .= "UNIX_TIMESTAMP(MAX(POST.EDITED)) AS EDITED FROM `{$table_prefix}POST` POST ";
+        $sql .= "LEFT JOIN `{$table_prefix}POST_RECIPIENT` POST_RECIPIENT ";
+        $sql .= "ON (POST_RECIPIENT.TID = POST.TID AND POST_RECIPIENT.PID = POST.PID) ";
+        $sql .= "WHERE POST.TID = '$tid') AS POST_DATA, (SELECT UNIX_TIMESTAMP(MAX(USER_POLL_VOTES.VOTED)) ";
+        $sql .= "AS POLL_VOTE FROM `{$table_prefix}USER_POLL_VOTES` USER_POLL_VOTES ";
+        $sql .= "WHERE USER_POLL_VOTES.TID = '$tid') AS POLL_DATA";
 
     } else {
 
         $sql = "SELECT UNIX_TIMESTAMP(MAX(CREATED)) AS CREATED, ";
-        $sql.= "0 AS VIEWED, 0 AS APPROVED, 0 AS EDITED, 0 AS POLL_VOTE ";
-        $sql.= "FROM `{$table_prefix}POST`";
+        $sql .= "0 AS VIEWED, 0 AS APPROVED, 0 AS EDITED, 0 AS POLL_VOTE ";
+        $sql .= "FROM `{$table_prefix}POST`";
     }
 
     if (!($result = $db->query($sql))) return false;
@@ -240,7 +240,7 @@ function cache_check_messages()
 
     $last_modified = max($created, $viewed, $approved, $edited, $voted);
 
-    $etag = md5($_SESSION['UID']. $_SESSION['LOGON']);
+    $etag = md5($_SESSION['UID'] . $_SESSION['LOGON']);
 
     return cache_check_last_modified($last_modified, $etag);
 }
@@ -263,7 +263,7 @@ function cache_check_request_throttle($amount)
 
     $_SESSION['THROTTLE'][$request] = $throttle_timestamp;
 
-    $etag = md5($_SESSION['UID']. $_SESSION['LOGON']);
+    $etag = md5($_SESSION['UID'] . $_SESSION['LOGON']);
 
     return cache_check_last_modified($throttle_timestamp, $etag, time() + $amount);
 }
@@ -276,9 +276,9 @@ function cache_check_last_modified($last_modified, $etag, $expires = null)
 
     if (headers_sent()) return false;
 
-    $cache_expires = gmdate("D, d M Y H:i:s", is_numeric($expires) ? $expires : $last_modified). " GMT";
+    $cache_expires = gmdate("D, d M Y H:i:s", is_numeric($expires) ? $expires : $last_modified) . " GMT";
 
-    $last_modified = gmdate("D, d M Y H:i:s", $last_modified). " GMT";
+    $last_modified = gmdate("D, d M Y H:i:s", $last_modified) . " GMT";
 
     $remote_last_modified = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ? $_SERVER['HTTP_IF_MODIFIED_SINCE'] : null;
 

@@ -25,14 +25,14 @@ USA
 require_once 'lboot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'cache.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'folder.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'light.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'threads.inc.php';
+require_once BH_INCLUDE_PATH . 'cache.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'folder.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'light.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'threads.inc.php';
 // End Required includes
 
 // Check thread list cache
@@ -173,9 +173,9 @@ if (!session::logged_in()) {
 
             light_html_draw_top();
             light_html_display_msg(gettext("Confirm"), gettext("Are you sure you want to mark the selected threads as read?"), 'lthread_list.php', 'post', array(
-                                                                                                                                                                'mark_read_submit' => gettext("Confirm"),
-                                                                                                                                                                'cancel'           => gettext("Cancel")
-                                                                                                                                                           ), array_merge($_REQUEST, array('mark_read_confirm' => 'Y')));
+                'mark_read_submit' => gettext("Confirm"),
+                'cancel' => gettext("Cancel")
+            ), array_merge($_REQUEST, array('mark_read_confirm' => 'Y')));
             light_html_draw_bottom();
             exit;
         }

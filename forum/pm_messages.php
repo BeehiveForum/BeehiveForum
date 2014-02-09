@@ -25,16 +25,16 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'pm.inc.php';
-require_once BH_INCLUDE_PATH. 'search.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'pm.inc.php';
+require_once BH_INCLUDE_PATH . 'search.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -195,15 +195,15 @@ if (isset($_POST['pm_delete_messages'])) {
 
             html_draw_top(sprintf("title=%s", gettext("Delete Message")), 'class=window_title');
             html_display_msg(gettext("Delete"), gettext("Are you sure you want to delete all of the selected messages?"), "pm_messages.php", 'post', array(
-                                                                                                                                                          'pm_option_submit' => gettext("Yes"),
-                                                                                                                                                          'back'             => gettext("No")
-                                                                                                                                                     ), array(
-                                                                                                                                                             'folder'             => $current_folder,
-                                                                                                                                                             'page'               => $page,
-                                                                                                                                                             'process'            => $process_messages,
-                                                                                                                                                             'pm_delete_messages' => gettext("Delete"),
-                                                                                                                                                             'pm_delete_confirm'  => 'Y'
-                                                                                                                                                        ), '_self', 'center');
+                'pm_option_submit' => gettext("Yes"),
+                'back' => gettext("No")
+            ), array(
+                'folder' => $current_folder,
+                'page' => $page,
+                'process' => $process_messages,
+                'pm_delete_messages' => gettext("Delete"),
+                'pm_delete_confirm' => 'Y'
+            ), '_self', 'center');
             html_draw_bottom();
             exit;
         }
@@ -256,7 +256,7 @@ if (isset($_POST['search'])) {
 
     if (!pm_search_execute($search_string, $error)) {
 
-        switch($error) {
+        switch ($error) {
 
             case SEARCH_NO_MATCHES:
 

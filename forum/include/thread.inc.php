@@ -22,13 +22,13 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'folder.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'post.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'threads.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'folder.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'post.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'threads.inc.php';
 // End Required includes
 
 function thread_get_title($tid)
@@ -65,31 +65,31 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false, $inc_unappro
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
 
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, ";
-    $sql.= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
-    $sql.= "THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
-    $sql.= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
-    $sql.= "THREAD.BY_UID, UNIX_TIMESTAMP(THREAD.CLOSED) AS CLOSED, ";
-    $sql.= "UNIX_TIMESTAMP(THREAD.ADMIN_LOCK) AS ADMIN_LOCK, ";
-    $sql.= "UNIX_TIMESTAMP(THREAD.CREATED) AS CREATED, THREAD.ADMIN_LOCK, ";
-    $sql.= "UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, ";
-    $sql.= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.UID, USER.LOGON, ";
-    $sql.= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, ";
-    $sql.= "FOLDER.TITLE AS FOLDER_TITLE FROM `{$table_prefix}THREAD` THREAD ";
-    $sql.= "LEFT JOIN `{$table_prefix}THREAD_STATS` THREAD_STATS ";
-    $sql.= "ON (THREAD_STATS.TID = THREAD.TID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql.= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql.= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql.= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE THREAD.TID = '$tid' AND THREAD.FID IN ($fidlist) ";
+    $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
+    $sql .= "THREAD.POLL_FLAG, THREAD.STICKY, THREAD.UNREAD_PID, ";
+    $sql .= "THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, USER_THREAD.INTEREST, ";
+    $sql .= "THREAD.BY_UID, UNIX_TIMESTAMP(THREAD.CLOSED) AS CLOSED, ";
+    $sql .= "UNIX_TIMESTAMP(THREAD.ADMIN_LOCK) AS ADMIN_LOCK, ";
+    $sql .= "UNIX_TIMESTAMP(THREAD.CREATED) AS CREATED, THREAD.ADMIN_LOCK, ";
+    $sql .= "UNIX_TIMESTAMP(THREAD.STICKY_UNTIL) AS STICKY_UNTIL, ";
+    $sql .= "UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED, USER.UID, USER.LOGON, ";
+    $sql .= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PEER.RELATIONSHIP, ";
+    $sql .= "FOLDER.TITLE AS FOLDER_TITLE FROM `{$table_prefix}THREAD` THREAD ";
+    $sql .= "LEFT JOIN `{$table_prefix}THREAD_STATS` THREAD_STATS ";
+    $sql .= "ON (THREAD_STATS.TID = THREAD.TID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
+    $sql .= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
+    $sql .= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
+    $sql .= "WHERE THREAD.TID = '$tid' AND THREAD.FID IN ($fidlist) ";
 
-    if ($inc_unapproved === false) $sql.= "AND THREAD.APPROVED IS NOT NULL ";
+    if ($inc_unapproved === false) $sql .= "AND THREAD.APPROVED IS NOT NULL ";
 
-    if ($inc_deleted === false) $sql.= "AND THREAD.DELETED = 'N' ";
+    if ($inc_deleted === false) $sql .= "AND THREAD.DELETED = 'N' ";
 
-    if ($inc_empty === false)  $sql.= "AND THREAD.LENGTH > 0 ";
+    if ($inc_empty === false) $sql .= "AND THREAD.LENGTH > 0 ";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -153,7 +153,7 @@ function thread_get_by_uid($tid)
     if (!is_numeric($tid)) return false;
 
     $sql = "SELECT BY_UID FROM `{$table_prefix}THREAD` ";
-    $sql.= "WHERE TID = '$tid'";
+    $sql .= "WHERE TID = '$tid'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -173,11 +173,11 @@ function thread_get_folder($tid, $thread_count = true)
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, FOLDER.POSITION, FOLDER.PREFIX, ";
-    $sql.= "FOLDER.ALLOWED_TYPES, FOLDER.PERM, USER_FOLDER.INTEREST FROM `{$table_prefix}FOLDER` FOLDER ";
-    $sql.= "INNER JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.FID = FOLDER.FID) ";
-    $sql.= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON (USER_FOLDER.FID = FOLDER.FID ";
-    $sql.= "AND USER_FOLDER.UID = '{$_SESSION['UID']}') WHERE THREAD.TID = '$tid' ";
-    $sql.= "GROUP BY FOLDER.FID, FOLDER.TITLE";
+    $sql .= "FOLDER.ALLOWED_TYPES, FOLDER.PERM, USER_FOLDER.INTEREST FROM `{$table_prefix}FOLDER` FOLDER ";
+    $sql .= "INNER JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.FID = FOLDER.FID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON (USER_FOLDER.FID = FOLDER.FID ";
+    $sql .= "AND USER_FOLDER.UID = '{$_SESSION['UID']}') WHERE THREAD.TID = '$tid' ";
+    $sql .= "GROUP BY FOLDER.FID, FOLDER.TITLE";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -229,10 +229,10 @@ function thread_get_tracking_data($tid)
     if (!is_numeric($tid)) return false;
 
     $sql = "SELECT * FROM (SELECT TID, NEW_TID, TRACK_TYPE ";
-    $sql.= "FROM `{$table_prefix}THREAD_TRACK` ";
-    $sql.= "WHERE TID = '$tid') AS TRACK_FROM, (SELECT TID, ";
-    $sql.= "NEW_TID, TRACK_TYPE FROM `{$table_prefix}THREAD_TRACK` ";
-    $sql.= "WHERE NEW_TID = '$tid') AS TRACK_TO";
+    $sql .= "FROM `{$table_prefix}THREAD_TRACK` ";
+    $sql .= "WHERE TID = '$tid') AS TRACK_FROM, (SELECT TID, ";
+    $sql .= "NEW_TID, TRACK_TYPE FROM `{$table_prefix}THREAD_TRACK` ";
+    $sql .= "WHERE NEW_TID = '$tid') AS TRACK_TO";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -259,7 +259,7 @@ function thread_set_length($tid, $length)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET LENGTH = '$length', ";
-    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
+    $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
 
     if (!$db->query($sql)) return false;
 
@@ -278,7 +278,7 @@ function thread_set_moved($old_tid, $new_tid)
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_prefix}THREAD_TRACK` (TID, NEW_TID, CREATED, TRACK_TYPE) ";
-    $sql.= "VALUES ('$old_tid', '$new_tid', CAST('$current_datetime' AS DATETIME), 0)";
+    $sql .= "VALUES ('$old_tid', '$new_tid', CAST('$current_datetime' AS DATETIME), 0)";
 
     if (!$db->query($sql)) return false;
 
@@ -297,7 +297,7 @@ function thread_set_split($old_tid, $new_tid)
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_prefix}THREAD_TRACK` (TID, NEW_TID, CREATED, TRACK_TYPE) ";
-    $sql.= "VALUES ('$old_tid', '$new_tid', CAST('$current_datetime' AS DATETIME), 1)";
+    $sql .= "VALUES ('$old_tid', '$new_tid', CAST('$current_datetime' AS DATETIME), 1)";
 
     if (!$db->query($sql)) return false;
 
@@ -315,7 +315,7 @@ function thread_get_interest($tid)
     if (!is_numeric($tid)) return false;
 
     $sql = "SELECT INTEREST FROM `{$table_prefix}USER_THREAD` ";
-    $sql.= "WHERE UID = '{$_SESSION['UID']}' AND TID = '$tid'";
+    $sql .= "WHERE UID = '{$_SESSION['UID']}' AND TID = '$tid'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -348,8 +348,8 @@ function thread_set_interest($tid, $interest)
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "INSERT INTO `{$table_prefix}USER_THREAD` (UID, TID, INTEREST) ";
-    $sql.= "VALUES ('{$_SESSION['UID']}', '$tid', '$interest') ON DUPLICATE KEY ";
-    $sql.= "UPDATE INTEREST = VALUES(INTEREST)";
+    $sql .= "VALUES ('{$_SESSION['UID']}', '$tid', '$interest') ON DUPLICATE KEY ";
+    $sql .= "UPDATE INTEREST = VALUES(INTEREST)";
 
     if (!$db->query($sql)) return false;
 
@@ -371,8 +371,8 @@ function thread_set_high_interest($tid)
     $thread_interested = THREAD_INTERESTED;
 
     $sql = "INSERT INTO `{$table_prefix}USER_THREAD` (UID, TID, INTEREST) ";
-    $sql.= "VALUES ('{$_SESSION['UID']}', '$tid', '$thread_interested') ON DUPLICATE KEY ";
-    $sql.= "UPDATE INTEREST = VALUES(INTEREST)";
+    $sql .= "VALUES ('{$_SESSION['UID']}', '$tid', '$thread_interested') ON DUPLICATE KEY ";
+    $sql .= "UPDATE INTEREST = VALUES(INTEREST)";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -396,14 +396,14 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
         $sticky_until_datetime = date(MYSQL_DATETIME_MIDNIGHT, $sticky_until);
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-        $sql.= "SET STICKY = '$sticky_sql', MODIFIED = CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "STICKY_UNTIL = CAST('$sticky_until_datetime' AS DATETIME) WHERE TID = '$tid'";
+        $sql .= "SET STICKY = '$sticky_sql', MODIFIED = CAST('$current_datetime' AS DATETIME), ";
+        $sql .= "STICKY_UNTIL = CAST('$sticky_until_datetime' AS DATETIME) WHERE TID = '$tid'";
 
     } else {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-        $sql.= "SET STICKY = '$sticky_sql', MODIFIED = CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "STICKY_UNTIL = NULL WHERE TID = '$tid'";
+        $sql .= "SET STICKY = '$sticky_sql', MODIFIED = CAST('$current_datetime' AS DATETIME), ";
+        $sql .= "STICKY_UNTIL = NULL WHERE TID = '$tid'";
     }
 
     if (!$db->query($sql)) return false;
@@ -424,15 +424,15 @@ function thread_set_closed($tid, $closed = true)
     if ($closed === true) {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-        $sql.= "SET CLOSED = CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) ";
-        $sql.= "WHERE TID = '$tid'";
+        $sql .= "SET CLOSED = CAST('$current_datetime' AS DATETIME), ";
+        $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+        $sql .= "WHERE TID = '$tid'";
 
     } else {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-        $sql.= "SET CLOSED = NULL, MODIFIED = CAST('$current_datetime' AS DATETIME) ";
-        $sql.= "WHERE TID = '$tid'";
+        $sql .= "SET CLOSED = NULL, MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+        $sql .= "WHERE TID = '$tid'";
     }
 
     if (!$db->query($sql)) return false;
@@ -453,15 +453,15 @@ function thread_admin_lock($tid, $locked = true)
     if ($locked === true) {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-        $sql.= "SET ADMIN_LOCK = CAST('$current_datetime' AS DATETIME), ";
-        $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) ";
-        $sql.= "WHERE TID = '$tid'";
+        $sql .= "SET ADMIN_LOCK = CAST('$current_datetime' AS DATETIME), ";
+        $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+        $sql .= "WHERE TID = '$tid'";
 
     } else {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-        $sql.= "SET ADMIN_LOCK = NULL, MODIFIED = CAST('$current_datetime' AS DATETIME) ";
-        $sql.= "WHERE TID = '$tid'";
+        $sql .= "SET ADMIN_LOCK = NULL, MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+        $sql .= "WHERE TID = '$tid'";
     }
 
     if (!$db->query($sql)) return false;
@@ -481,8 +481,8 @@ function thread_change_folder($tid, $new_fid)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-    $sql.= "SET FID = '$new_fid', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
-    $sql.= "WHERE TID = '$tid'";
+    $sql .= "SET FID = '$new_fid', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+    $sql .= "WHERE TID = '$tid'";
 
     if (!$db->query($sql)) return false;
 
@@ -502,8 +502,8 @@ function thread_change_title($tid, $new_title)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-    $sql.= "SET TITLE = '$new_title', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
-    $sql.= "WHERE TID = '$tid'";
+    $sql .= "SET TITLE = '$new_title', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+    $sql .= "WHERE TID = '$tid'";
 
     if (!$db->query($sql)) return false;
 
@@ -520,9 +520,9 @@ function thread_delete_by_user($tid, $uid)
     if (!is_numeric($uid)) return false;
 
     $sql = "INSERT INTO `{$table_prefix}POST_CONTENT` (TID, PID, CONTENT) ";
-    $sql.= "SELECT TID, PID, NULL FROM `{$table_prefix}POST` POST ";
-    $sql.= "WHERE POST.FROM_UID = '$uid' AND POST.TID = '$tid'";
-    $sql.= "ON DUPLICATE KEY UPDATE CONTENT = VALUES(CONTENT)";
+    $sql .= "SELECT TID, PID, NULL FROM `{$table_prefix}POST` POST ";
+    $sql .= "WHERE POST.FROM_UID = '$uid' AND POST.TID = '$tid'";
+    $sql .= "ON DUPLICATE KEY UPDATE CONTENT = VALUES(CONTENT)";
 
     if (!$db->query($sql)) return false;
 
@@ -561,8 +561,8 @@ function thread_delete($tid, $delete_type)
     } else {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-        $sql.= "SET DELETED = 'Y', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
-        $sql.= "WHERE TID = '$tid'";
+        $sql .= "SET DELETED = 'Y', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+        $sql .= "WHERE TID = '$tid'";
 
         if (!$db->query($sql)) return false;
     }
@@ -583,7 +583,7 @@ function thread_undelete($tid)
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET DELETED = 'N', ";
-    $sql.= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
+    $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
 
     if (!$db->query($sql)) return false;
 
@@ -655,34 +655,34 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
         case THREAD_MERGE_BY_CREATED:
 
             $sql = "INSERT INTO `{$table_prefix}POST` (TID, REPLY_TO_PID, ";
-            $sql.= "FROM_UID, CREATED, APPROVED, APPROVED_BY, ";
-            $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) ";
-            $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, NULL, NOW(), ";
-            $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
-            $sql.= "PID FROM `{$table_prefix}POST` WHERE TID IN ('$tida', '$tidb') ";
-            $sql.= "ORDER BY CREATED";
+            $sql .= "FROM_UID, CREATED, APPROVED, APPROVED_BY, ";
+            $sql .= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) ";
+            $sql .= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, NULL, NOW(), ";
+            $sql .= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
+            $sql .= "PID FROM `{$table_prefix}POST` WHERE TID IN ('$tida', '$tidb') ";
+            $sql .= "ORDER BY CREATED";
             break;
 
         case THREAD_MERGE_START:
 
             $sql = "INSERT INTO `{$table_prefix}POST` (TID, REPLY_TO_PID, ";
-            $sql.= "FROM_UID, CREATED, APPROVED, APPROVED_BY, ";
-            $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) ";
-            $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, NULL, NOW(), ";
-            $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
-            $sql.= "PID FROM `{$table_prefix}POST` WHERE TID IN ('$tida', '$tidb') ";
-            $sql.= "ORDER BY TID = '$tidb', CREATED";
+            $sql .= "FROM_UID, CREATED, APPROVED, APPROVED_BY, ";
+            $sql .= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) ";
+            $sql .= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, NULL, NOW(), ";
+            $sql .= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
+            $sql .= "PID FROM `{$table_prefix}POST` WHERE TID IN ('$tida', '$tidb') ";
+            $sql .= "ORDER BY TID = '$tidb', CREATED";
             break;
 
         case THREAD_MERGE_END:
 
             $sql = "INSERT INTO `{$table_prefix}POST` (TID, REPLY_TO_PID, ";
-            $sql.= "FROM_UID, CREATED, APPROVED, APPROVED_BY, ";
-            $sql.= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) ";
-            $sql.= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, NULL, NOW(), ";
-            $sql.= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
-            $sql.= "PID FROM `{$table_prefix}POST` WHERE TID IN ('$tida', '$tidb') ";
-            $sql.= "ORDER BY TID = '$tida', CREATED";
+            $sql .= "FROM_UID, CREATED, APPROVED, APPROVED_BY, ";
+            $sql .= "EDITED, EDITED_BY, IPADDRESS, MOVED_TID, MOVED_PID) ";
+            $sql .= "SELECT '$new_tid', REPLY_TO_PID, FROM_UID, NULL, NOW(), ";
+            $sql .= "APPROVED, APPROVED_BY, EDITED, EDITED_BY, IPADDRESS, TID, ";
+            $sql .= "PID FROM `{$table_prefix}POST` WHERE TID IN ('$tida', '$tidb') ";
+            $sql .= "ORDER BY TID = '$tida', CREATED";
             break;
     }
 
@@ -699,10 +699,10 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
     // Copy the recipients to the new posts.
     $sql = "INSERT INTO `{$table_prefix}POST_RECIPIENT` (TID, PID, TO_UID, VIEWED) ";
-    $sql.= "SELECT POST.TID, POST.PID, POST_RECIPIENT.TO_UID, POST_RECIPIENT.VIEWED ";
-    $sql.= "FROM `{$table_prefix}POST` POST LEFT JOIN `{$table_prefix}POST_RECIPIENT` POST_RECIPIENT ";
-    $sql.= "ON (POST_RECIPIENT.TID = POST.MOVED_TID AND POST_RECIPIENT.PID = POST.MOVED_PID) ";
-    $sql.= "WHERE POST.TID = '$new_tid'";
+    $sql .= "SELECT POST.TID, POST.PID, POST_RECIPIENT.TO_UID, POST_RECIPIENT.VIEWED ";
+    $sql .= "FROM `{$table_prefix}POST` POST LEFT JOIN `{$table_prefix}POST_RECIPIENT` POST_RECIPIENT ";
+    $sql .= "ON (POST_RECIPIENT.TID = POST.MOVED_TID AND POST_RECIPIENT.PID = POST.MOVED_PID) ";
+    $sql .= "WHERE POST.TID = '$new_tid'";
 
     if (!$db->query($sql)) {
 
@@ -716,10 +716,10 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
     // Copy the post contents to the new thread
     $sql = "INSERT INTO `{$table_prefix}POST_CONTENT` (TID, PID, CONTENT) ";
-    $sql.= "SELECT POST.TID, POST.PID, POST_CONTENT.CONTENT FROM `{$table_prefix}POST` POST ";
-    $sql.= "LEFT JOIN `{$table_prefix}POST_CONTENT` POST_CONTENT ";
-    $sql.= "ON (POST_CONTENT.TID = POST.MOVED_TID AND POST_CONTENT.PID = POST.MOVED_PID) ";
-    $sql.= "WHERE POST.TID = '$new_tid'";
+    $sql .= "SELECT POST.TID, POST.PID, POST_CONTENT.CONTENT FROM `{$table_prefix}POST` POST ";
+    $sql .= "LEFT JOIN `{$table_prefix}POST_CONTENT` POST_CONTENT ";
+    $sql .= "ON (POST_CONTENT.TID = POST.MOVED_TID AND POST_CONTENT.PID = POST.MOVED_PID) ";
+    $sql .= "WHERE POST.TID = '$new_tid'";
 
     if (!$db->query($sql)) {
 
@@ -733,8 +733,8 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
     // Insert the new Sphinx Search IDs.
     $sql = "INSERT INTO `{$table_prefix}POST_SEARCH_ID` (TID, PID) ";
-    $sql.= "SELECT $new_tid, POST.PID FROM `{$table_prefix}POST` POST ";
-    $sql.= "WHERE POST.TID = '$new_tid'";
+    $sql .= "SELECT $new_tid, POST.PID FROM `{$table_prefix}POST` POST ";
+    $sql .= "WHERE POST.TID = '$new_tid'";
 
     if (!$db->query($sql)) {
 
@@ -748,13 +748,13 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
     // Update the REPLY_TO_PIDs in the new thread
     $sql = "INSERT INTO `{$table_prefix}POST` (TID, PID, REPLY_TO_PID) ";
-    $sql.= "SELECT TARGET_POST.TID, TARGET_POST.PID, SOURCE_POST.PID ";
-    $sql.= "FROM `{$table_prefix}POST` TARGET_POST ";
-    $sql.= "INNER JOIN `{$table_prefix}POST` SOURCE_POST ";
-    $sql.= "ON (SOURCE_POST.MOVED_TID = TARGET_POST.MOVED_TID ";
-    $sql.= "AND TARGET_POST.REPLY_TO_PID = SOURCE_POST.MOVED_PID) ";
-    $sql.= "WHERE TARGET_POST.TID = '$new_tid' ";
-    $sql.= "ON DUPLICATE KEY UPDATE REPLY_TO_PID = VALUES(REPLY_TO_PID) ";
+    $sql .= "SELECT TARGET_POST.TID, TARGET_POST.PID, SOURCE_POST.PID ";
+    $sql .= "FROM `{$table_prefix}POST` TARGET_POST ";
+    $sql .= "INNER JOIN `{$table_prefix}POST` SOURCE_POST ";
+    $sql .= "ON (SOURCE_POST.MOVED_TID = TARGET_POST.MOVED_TID ";
+    $sql .= "AND TARGET_POST.REPLY_TO_PID = SOURCE_POST.MOVED_PID) ";
+    $sql .= "WHERE TARGET_POST.TID = '$new_tid' ";
+    $sql .= "ON DUPLICATE KEY UPDATE REPLY_TO_PID = VALUES(REPLY_TO_PID) ";
 
     if (!$db->query($sql)) {
 
@@ -768,16 +768,16 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
 
     // Link the attachments to the new thread.
     $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
-    $sql.= "SELECT $forum_fid, TARGET_POST.TID, TARGET_POST.PID, ";
-    $sql.= "SOURCE_POST_ATTACHMENT_IDS.AID ";
-    $sql.= "FROM `{$table_prefix}POST` TARGET_POST ";
-    $sql.= "INNER JOIN `{$table_prefix}POST` SOURCE_POST ";
-    $sql.= "ON (SOURCE_POST.MOVED_TID = TARGET_POST.MOVED_TID ";
-    $sql.= "AND TARGET_POST.REPLY_TO_PID = SOURCE_POST.MOVED_PID) ";
-    $sql.= "INNER JOIN POST_ATTACHMENT_IDS SOURCE_POST_ATTACHMENT_IDS ";
-    $sql.= "ON (SOURCE_POST_ATTACHMENT_IDS.TID = SOURCE_POST.TID ";
-    $sql.= "AND SOURCE_POST_ATTACHMENT_IDS.PID = SOURCE_POST.PID) ";
-    $sql.= "WHERE TARGET_POST.TID = '$new_tid'";
+    $sql .= "SELECT $forum_fid, TARGET_POST.TID, TARGET_POST.PID, ";
+    $sql .= "SOURCE_POST_ATTACHMENT_IDS.AID ";
+    $sql .= "FROM `{$table_prefix}POST` TARGET_POST ";
+    $sql .= "INNER JOIN `{$table_prefix}POST` SOURCE_POST ";
+    $sql .= "ON (SOURCE_POST.MOVED_TID = TARGET_POST.MOVED_TID ";
+    $sql .= "AND TARGET_POST.REPLY_TO_PID = SOURCE_POST.MOVED_PID) ";
+    $sql .= "INNER JOIN POST_ATTACHMENT_IDS SOURCE_POST_ATTACHMENT_IDS ";
+    $sql .= "ON (SOURCE_POST_ATTACHMENT_IDS.TID = SOURCE_POST.TID ";
+    $sql .= "AND SOURCE_POST_ATTACHMENT_IDS.PID = SOURCE_POST.PID) ";
+    $sql .= "WHERE TARGET_POST.TID = '$new_tid'";
 
     if (!$db->query($sql)) {
 
@@ -792,7 +792,7 @@ function thread_merge($tida, $tidb, $merge_type, &$error_str)
     // Now we unset the MOVED_TID and MOVED_PIDs for the new thread
     // so the posts appear in the new thread.
     $sql = "UPDATE `{$table_prefix}POST` SET MOVED_TID = NULL, ";
-    $sql.= "MOVED_PID = NULL WHERE TID = '$new_tid'";
+    $sql .= "MOVED_PID = NULL WHERE TID = '$new_tid'";
 
     if (!$db->query($sql)) {
 
@@ -948,11 +948,11 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     $pid_list = implode(',', $pid_array);
 
     $sql = "INSERT INTO `{$table_prefix}POST` (TID, REPLY_TO_PID, ";
-    $sql.= "FROM_UID, CREATED, APPROVED, APPROVED_BY, EDITED, EDITED_BY, ";
-    $sql.= "IPADDRESS, MOVED_TID, MOVED_PID) SELECT '$new_tid', REPLY_TO_PID, ";
-    $sql.= "FROM_UID, NOW(), APPROVED, APPROVED_BY, EDITED, EDITED_BY, ";
-    $sql.= "IPADDRESS, TID, PID FROM `{$table_prefix}POST` WHERE TID = $tid ";
-    $sql.= "AND PID IN ($pid_list) ORDER BY CREATED";
+    $sql .= "FROM_UID, CREATED, APPROVED, APPROVED_BY, EDITED, EDITED_BY, ";
+    $sql .= "IPADDRESS, MOVED_TID, MOVED_PID) SELECT '$new_tid', REPLY_TO_PID, ";
+    $sql .= "FROM_UID, NOW(), APPROVED, APPROVED_BY, EDITED, EDITED_BY, ";
+    $sql .= "IPADDRESS, TID, PID FROM `{$table_prefix}POST` WHERE TID = $tid ";
+    $sql .= "AND PID IN ($pid_list) ORDER BY CREATED";
 
     if (!$db->query($sql)) {
 
@@ -965,10 +965,10 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     // Copy the recipients to the new thread
     $sql = "INSERT INTO `{$table_prefix}POST_RECIPIENT` (TID, PID, TO_UID, VIEWED) ";
-    $sql.= "SELECT POST.TID, POST.PID, POST_RECIPIENT.TO_UID, NULL FROM `{$table_prefix}POST` POST ";
-    $sql.= "LEFT JOIN `{$table_prefix}POST_RECIPIENT` POST_RECIPIENT ";
-    $sql.= "ON (POST_RECIPIENT.TID = POST.MOVED_TID AND POST_RECIPIENT.PID = MOVED_PID) ";
-    $sql.= "WHERE POST.TID = '$new_tid'";
+    $sql .= "SELECT POST.TID, POST.PID, POST_RECIPIENT.TO_UID, NULL FROM `{$table_prefix}POST` POST ";
+    $sql .= "LEFT JOIN `{$table_prefix}POST_RECIPIENT` POST_RECIPIENT ";
+    $sql .= "ON (POST_RECIPIENT.TID = POST.MOVED_TID AND POST_RECIPIENT.PID = MOVED_PID) ";
+    $sql .= "WHERE POST.TID = '$new_tid'";
 
     if (!$db->query($sql)) {
 
@@ -981,10 +981,10 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     // Copy the post contents to the new thread
     $sql = "INSERT INTO `{$table_prefix}POST_CONTENT` (TID, PID, CONTENT) ";
-    $sql.= "SELECT POST.TID, POST.PID, POST_CONTENT.CONTENT FROM `{$table_prefix}POST` POST ";
-    $sql.= "LEFT JOIN `{$table_prefix}POST_CONTENT` POST_CONTENT ";
-    $sql.= "ON (POST_CONTENT.TID = POST.MOVED_TID AND POST_CONTENT.PID = MOVED_PID) ";
-    $sql.= "WHERE POST.TID = '$new_tid'";
+    $sql .= "SELECT POST.TID, POST.PID, POST_CONTENT.CONTENT FROM `{$table_prefix}POST` POST ";
+    $sql .= "LEFT JOIN `{$table_prefix}POST_CONTENT` POST_CONTENT ";
+    $sql .= "ON (POST_CONTENT.TID = POST.MOVED_TID AND POST_CONTENT.PID = MOVED_PID) ";
+    $sql .= "WHERE POST.TID = '$new_tid'";
 
     if (!$db->query($sql)) {
 
@@ -997,8 +997,8 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     // Insert the new Sphinx Search IDs.
     $sql = "INSERT INTO `{$table_prefix}POST_SEARCH_ID` (TID, PID) ";
-    $sql.= "SELECT $new_tid, POST.PID FROM `{$table_prefix}POST` POST ";
-    $sql.= "WHERE POST.TID = '$new_tid'";
+    $sql .= "SELECT $new_tid, POST.PID FROM `{$table_prefix}POST` POST ";
+    $sql .= "WHERE POST.TID = '$new_tid'";
 
     if (!$db->query($sql)) {
 
@@ -1011,13 +1011,13 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     // Update the REPLY_TO_PIDs in the new thread
     $sql = "INSERT INTO `{$table_prefix}POST` (TID, PID, REPLY_TO_PID) ";
-    $sql.= "SELECT TARGET_POST.TID, TARGET_POST.PID, SOURCE_POST.PID ";
-    $sql.= "FROM `{$table_prefix}POST` TARGET_POST ";
-    $sql.= "INNER JOIN `{$table_prefix}POST` SOURCE_POST ";
-    $sql.= "ON (SOURCE_POST.MOVED_TID = TARGET_POST.MOVED_TID ";
-    $sql.= "AND TARGET_POST.REPLY_TO_PID = SOURCE_POST.MOVED_PID) ";
-    $sql.= "WHERE TARGET_POST.TID = '$new_tid' AND TARGET_POST.PID > 1 ";
-    $sql.= "ON DUPLICATE KEY UPDATE REPLY_TO_PID = VALUES(REPLY_TO_PID) ";
+    $sql .= "SELECT TARGET_POST.TID, TARGET_POST.PID, SOURCE_POST.PID ";
+    $sql .= "FROM `{$table_prefix}POST` TARGET_POST ";
+    $sql .= "INNER JOIN `{$table_prefix}POST` SOURCE_POST ";
+    $sql .= "ON (SOURCE_POST.MOVED_TID = TARGET_POST.MOVED_TID ";
+    $sql .= "AND TARGET_POST.REPLY_TO_PID = SOURCE_POST.MOVED_PID) ";
+    $sql .= "WHERE TARGET_POST.TID = '$new_tid' AND TARGET_POST.PID > 1 ";
+    $sql .= "ON DUPLICATE KEY UPDATE REPLY_TO_PID = VALUES(REPLY_TO_PID) ";
 
     if (!$db->query($sql)) {
 
@@ -1030,7 +1030,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     // Remove the first post in the thread's REPLY_TO_PID
     $sql = "UPDATE `{$table_prefix}POST` POST SET REPLY_TO_PID = NULL ";
-    $sql.= "WHERE POST.TID = '$new_tid' AND POST.PID = 1";
+    $sql .= "WHERE POST.TID = '$new_tid' AND POST.PID = 1";
 
     if (!$db->query($sql)) {
 
@@ -1043,9 +1043,9 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     // Update the old thread's post MOVED_TID and MOVED_PID
     $sql = "INSERT INTO `{$table_prefix}POST` (TID, PID, MOVED_TID, MOVED_PID) ";
-    $sql.= "SELECT $tid, MOVED_PID, $new_tid, PID FROM `{$table_prefix}POST` POST ";
-    $sql.= "WHERE POST.TID = $new_tid ON DUPLICATE KEY UPDATE MOVED_TID = VALUES(MOVED_TID), ";
-    $sql.= "MOVED_PID = VALUES(MOVED_PID)";
+    $sql .= "SELECT $tid, MOVED_PID, $new_tid, PID FROM `{$table_prefix}POST` POST ";
+    $sql .= "WHERE POST.TID = $new_tid ON DUPLICATE KEY UPDATE MOVED_TID = VALUES(MOVED_TID), ";
+    $sql .= "MOVED_PID = VALUES(MOVED_PID)";
 
     if (!$db->query($sql)) {
 
@@ -1058,16 +1058,16 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
     // Link the attachments to the new thread.
     $sql = "INSERT INTO POST_ATTACHMENT_IDS (FID, TID, PID, AID) ";
-    $sql.= "SELECT $forum_fid, TARGET_POST.TID, TARGET_POST.PID, ";
-    $sql.= "SOURCE_POST_ATTACHMENT_IDS.AID ";
-    $sql.= "FROM `{$table_prefix}POST` TARGET_POST ";
-    $sql.= "INNER JOIN `{$table_prefix}POST` SOURCE_POST ";
-    $sql.= "ON (SOURCE_POST.MOVED_TID = TARGET_POST.MOVED_TID ";
-    $sql.= "AND TARGET_POST.REPLY_TO_PID = SOURCE_POST.MOVED_PID) ";
-    $sql.= "INNER JOIN POST_ATTACHMENT_IDS SOURCE_POST_ATTACHMENT_IDS ";
-    $sql.= "ON (SOURCE_POST_ATTACHMENT_IDS.TID = SOURCE_POST.TID ";
-    $sql.= "AND SOURCE_POST_ATTACHMENT_IDS.PID = SOURCE_POST.PID) ";
-    $sql.= "WHERE TARGET_POST.TID = '$new_tid'";
+    $sql .= "SELECT $forum_fid, TARGET_POST.TID, TARGET_POST.PID, ";
+    $sql .= "SOURCE_POST_ATTACHMENT_IDS.AID ";
+    $sql .= "FROM `{$table_prefix}POST` TARGET_POST ";
+    $sql .= "INNER JOIN `{$table_prefix}POST` SOURCE_POST ";
+    $sql .= "ON (SOURCE_POST.MOVED_TID = TARGET_POST.MOVED_TID ";
+    $sql .= "AND TARGET_POST.REPLY_TO_PID = SOURCE_POST.MOVED_PID) ";
+    $sql .= "INNER JOIN POST_ATTACHMENT_IDS SOURCE_POST_ATTACHMENT_IDS ";
+    $sql .= "ON (SOURCE_POST_ATTACHMENT_IDS.TID = SOURCE_POST.TID ";
+    $sql .= "AND SOURCE_POST_ATTACHMENT_IDS.PID = SOURCE_POST.PID) ";
+    $sql .= "WHERE TARGET_POST.TID = '$new_tid'";
 
     if (!$db->query($sql)) {
 
@@ -1081,7 +1081,7 @@ function thread_split($tid, $spid, $split_type, &$error_str)
     // Now we unset the MOVED_TID and MOVED_PIDs for the new thread
     // so the posts appear in the new thread.
     $sql = "UPDATE `{$table_prefix}POST` SET MOVED_TID = NULL, ";
-    $sql.= "MOVED_PID = NULL WHERE TID = '$new_tid'";
+    $sql .= "MOVED_PID = NULL WHERE TID = '$new_tid'";
 
     if (!$db->query($sql)) {
 
@@ -1162,10 +1162,10 @@ function thread_split_get_replies($tid, $pid)
     if (!$db = db::get()) return false;
 
     $sql = "SELECT POST.PID, POST.REPLY_TO_PID ";
-    $sql.= "FROM `{$table_prefix}POST` POST ";
-    $sql.= "WHERE POST.TID = '$tid' AND POST.PID >= '$pid' ";
-    $sql.= "AND POST.MOVED_TID IS NULL AND POST.MOVED_PID IS NULL ";
-    $sql.= "ORDER BY POST.CREATED";
+    $sql .= "FROM `{$table_prefix}POST` POST ";
+    $sql .= "WHERE POST.TID = '$tid' AND POST.PID >= '$pid' ";
+    $sql .= "AND POST.MOVED_TID IS NULL AND POST.MOVED_PID IS NULL ";
+    $sql .= "ORDER BY POST.CREATED";
 
     $pid_array = array(
         $pid
@@ -1196,10 +1196,10 @@ function thread_split_get_following($tid, $pid)
     if (!$db = db::get()) return false;
 
     $sql = "SELECT POST.PID, POST.REPLY_TO_PID ";
-    $sql.= "FROM `{$table_prefix}POST` POST ";
-    $sql.= "WHERE POST.TID = '$tid' AND POST.PID >= '$pid' ";
-    $sql.= "AND POST.MOVED_TID IS NULL AND POST.MOVED_PID IS NULL ";
-    $sql.= "ORDER BY POST.CREATED";
+    $sql .= "FROM `{$table_prefix}POST` POST ";
+    $sql .= "WHERE POST.TID = '$tid' AND POST.PID >= '$pid' ";
+    $sql .= "AND POST.MOVED_TID IS NULL AND POST.MOVED_PID IS NULL ";
+    $sql .= "ORDER BY POST.CREATED";
 
     $pid_array = array();
 
@@ -1223,8 +1223,8 @@ function thread_get_unmoved_posts($tid)
     if (!$db = db::get()) return false;
 
     $sql = "SELECT PID FROM `{$table_prefix}POST` ";
-    $sql.= "WHERE TID = '$tid' AND MOVED_TID IS NULL ";
-    $sql.= "AND MOVED_PID IS NULL AND PID > 1";
+    $sql .= "WHERE TID = '$tid' AND MOVED_TID IS NULL ";
+    $sql .= "AND MOVED_PID IS NULL AND PID > 1";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1248,7 +1248,7 @@ function thread_can_be_undeleted($tid)
     if (!$db = db::get()) return false;
 
     $sql = "SELECT MAX(PID) AS LENGTH FROM ";
-    $sql.= "`{$table_prefix}POST` WHERE TID = '$tid'";
+    $sql .= "`{$table_prefix}POST` WHERE TID = '$tid'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1272,17 +1272,17 @@ function thread_search($thread_search, $selected_array = array())
     $selected_array = array_filter($selected_array, 'is_numeric');
 
     $sql = "SELECT DISTINCT THREAD.TID, TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE ";
-    $sql.= "FROM `{$table_prefix}THREAD` THREAD LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
-    $sql.= "ON (FOLDER.FID = THREAD.FID) WHERE THREAD.TITLE LIKE '$thread_search%' ";
-    $sql.= "AND THREAD.FID IN ($fidlist) ";
+    $sql .= "FROM `{$table_prefix}THREAD` THREAD LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
+    $sql .= "ON (FOLDER.FID = THREAD.FID) WHERE THREAD.TITLE LIKE '$thread_search%' ";
+    $sql .= "AND THREAD.FID IN ($fidlist) ";
 
     if (sizeof($selected_array) > 0) {
 
         $selected = implode(', ', $selected_array);
-        $sql.= "AND THREAD.TID NOT IN ($selected) ";
+        $sql .= "AND THREAD.TID NOT IN ($selected) ";
     }
 
-    $sql.= "LIMIT 10";
+    $sql .= "LIMIT 10";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1327,9 +1327,9 @@ function thread_has_attachments(&$thread_data)
     if (!$db = db::get()) return false;
 
     $sql = "SELECT PAI.TID, COUNT(PAF.HASH) AS ATTACHMENT_COUNT ";
-    $sql.= "FROM POST_ATTACHMENT_IDS PAI INNER JOIN POST_ATTACHMENT_FILES PAF ";
-    $sql.= "ON (PAF.AID = PAI.AID) WHERE PAI.FID = '$forum_fid' ";
-    $sql.= "AND PAI.TID = '{$thread_data['TID']}' GROUP BY PAI.TID";
+    $sql .= "FROM POST_ATTACHMENT_IDS PAI INNER JOIN POST_ATTACHMENT_FILES PAF ";
+    $sql .= "ON (PAF.AID = PAI.AID) WHERE PAI.FID = '$forum_fid' ";
+    $sql .= "AND PAI.TID = '{$thread_data['TID']}' GROUP BY PAI.TID";
 
     if (!($result = $db->query($sql))) return false;
 

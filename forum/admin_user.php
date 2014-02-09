@@ -25,22 +25,22 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'banned.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'email.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'perm.inc.php';
-require_once BH_INCLUDE_PATH. 'server.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'user_profile.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'banned.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'email.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'perm.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'user_profile.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -108,7 +108,7 @@ $user['POST_COUNT'] = user_get_post_count($uid);
 $user_perms = perm_get_forum_user_permissions($uid);
 
 // Page title
-$page_title = gettext("Admin"). " - ". gettext("Manage User"). " - ". format_user_name($user['LOGON'], $user['NICKNAME']);
+$page_title = gettext("Admin") . " - " . gettext("Manage User") . " - " . format_user_name($user['LOGON'], $user['NICKNAME']);
 
 // Do updates
 if (isset($_POST['action_submit'])) {
@@ -318,17 +318,17 @@ if (isset($_POST['action_submit'])) {
     if (forum_check_webtag_available($webtag)) {
 
         // Local user permissions
-        $new_user_perms = (double) 0;
+        $new_user_perms = (double)0;
 
-        $t_admintools  = (double) (isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
-        $t_banned      = (double) (isset($_POST['t_banned']))     ? $_POST['t_banned']     : 0;
-        $t_wormed      = (double) (isset($_POST['t_wormed']))     ? $_POST['t_wormed']     : 0;
-        $t_pilloried   = (double) (isset($_POST['t_pilloried']))  ? $_POST['t_pilloried']  : 0;
-        $t_globalmod   = (double) (isset($_POST['t_globalmod']))  ? $_POST['t_globalmod']  : 0;
-        $t_linksmod    = (double) (isset($_POST['t_linksmod']))   ? $_POST['t_linksmod']   : 0;
-        $t_ignoreadmin = (double) (isset($_POST['t_ignoreadmin']))? $_POST['t_ignoreadmin']: 0;
+        $t_admintools = (double)(isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
+        $t_banned = (double)(isset($_POST['t_banned'])) ? $_POST['t_banned'] : 0;
+        $t_wormed = (double)(isset($_POST['t_wormed'])) ? $_POST['t_wormed'] : 0;
+        $t_pilloried = (double)(isset($_POST['t_pilloried'])) ? $_POST['t_pilloried'] : 0;
+        $t_globalmod = (double)(isset($_POST['t_globalmod'])) ? $_POST['t_globalmod'] : 0;
+        $t_linksmod = (double)(isset($_POST['t_linksmod'])) ? $_POST['t_linksmod'] : 0;
+        $t_ignoreadmin = (double)(isset($_POST['t_ignoreadmin'])) ? $_POST['t_ignoreadmin'] : 0;
 
-        $new_user_perms = (double) $t_admintools | $t_banned | $t_wormed | $t_pilloried | $t_globalmod | $t_linksmod | $t_ignoreadmin;
+        $new_user_perms = (double)$t_admintools | $t_banned | $t_wormed | $t_pilloried | $t_globalmod | $t_linksmod | $t_ignoreadmin;
 
         if ($user_perms <> $new_user_perms) {
 
@@ -349,33 +349,33 @@ if (isset($_POST['action_submit'])) {
     // Global user permissions
     if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
-        $new_global_user_perms = (double) 0;
+        $new_global_user_perms = (double)0;
 
         $global_user_perm = perm_get_global_user_permissions($uid);
 
         $admin_tools_perm_count = perm_get_admin_tools_perm_count();
         $forum_tools_perm_count = perm_get_forum_tools_perm_count();
 
-        $t_all_admin_tools = (double) (isset($_POST['t_all_admin_tools'])) ? $_POST['t_all_admin_tools'] : 0;
-        $t_all_forum_tools = (double) (isset($_POST['t_all_forum_tools'])) ? $_POST['t_all_forum_tools'] : 0;
-        $t_all_folder_mod  = (double) (isset($_POST['t_all_folder_mod']))  ? $_POST['t_all_folder_mod']  : 0;
-        $t_all_links_mod   = (double) (isset($_POST['t_all_links_mod']))   ? $_POST['t_all_links_mod']   : 0;
-        $t_all_banned      = (double) (isset($_POST['t_all_banned']))      ? $_POST['t_all_banned']      : 0;
+        $t_all_admin_tools = (double)(isset($_POST['t_all_admin_tools'])) ? $_POST['t_all_admin_tools'] : 0;
+        $t_all_forum_tools = (double)(isset($_POST['t_all_forum_tools'])) ? $_POST['t_all_forum_tools'] : 0;
+        $t_all_folder_mod = (double)(isset($_POST['t_all_folder_mod'])) ? $_POST['t_all_folder_mod'] : 0;
+        $t_all_links_mod = (double)(isset($_POST['t_all_links_mod'])) ? $_POST['t_all_links_mod'] : 0;
+        $t_all_banned = (double)(isset($_POST['t_all_banned'])) ? $_POST['t_all_banned'] : 0;
 
         if (isset($_POST['t_confirm_email']) && $_POST['t_confirm_email'] != 'cancel') {
-            $t_confirm_email = (double) USER_PERM_EMAIL_CONFIRM;
+            $t_confirm_email = (double)USER_PERM_EMAIL_CONFIRM;
         } else {
-            $t_confirm_email = (double) 0;
+            $t_confirm_email = (double)0;
         }
 
-        $new_global_user_perms = (double) $t_all_admin_tools | $t_all_forum_tools | $t_all_folder_mod | $t_all_links_mod | $t_all_banned | $t_confirm_email;
+        $new_global_user_perms = (double)$t_all_admin_tools | $t_all_forum_tools | $t_all_folder_mod | $t_all_links_mod | $t_all_banned | $t_confirm_email;
 
         if (perm_has_forumtools_access($uid) && $forum_tools_perm_count == 1) {
 
             if (!($new_global_user_perms & USER_PERM_FORUM_TOOLS)) {
 
-                 $error_msg_array[] = gettext("There must be at least 1 user with admin tools and forum tools access on all forums!");
-                 $valid = false;
+                $error_msg_array[] = gettext("There must be at least 1 user with admin tools and forum tools access on all forums!");
+                $valid = false;
             }
         }
 
@@ -413,21 +413,21 @@ if (isset($_POST['action_submit'])) {
 
             foreach ($t_update_perms_array as $fid) {
 
-                $t_post_read     = (double) (isset($_POST['t_post_read'][$fid]))     ? $_POST['t_post_read'][$fid]     : 0;
-                $t_post_create   = (double) (isset($_POST['t_post_create'][$fid]))   ? $_POST['t_post_create'][$fid]   : 0;
-                $t_thread_create = (double) (isset($_POST['t_thread_create'][$fid])) ? $_POST['t_thread_create'][$fid] : 0;
-                $t_post_edit     = (double) (isset($_POST['t_post_edit'][$fid]))     ? $_POST['t_post_edit'][$fid]     : 0;
-                $t_post_delete   = (double) (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
-                $t_post_attach   = (double) (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
-                $t_moderator     = (double) (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
-                $t_post_html     = (double) (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
-                $t_post_sig      = (double) (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
-                $t_post_approval = (double) (isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
+                $t_post_read = (double)(isset($_POST['t_post_read'][$fid])) ? $_POST['t_post_read'][$fid] : 0;
+                $t_post_create = (double)(isset($_POST['t_post_create'][$fid])) ? $_POST['t_post_create'][$fid] : 0;
+                $t_thread_create = (double)(isset($_POST['t_thread_create'][$fid])) ? $_POST['t_thread_create'][$fid] : 0;
+                $t_post_edit = (double)(isset($_POST['t_post_edit'][$fid])) ? $_POST['t_post_edit'][$fid] : 0;
+                $t_post_delete = (double)(isset($_POST['t_post_delete'][$fid])) ? $_POST['t_post_delete'][$fid] : 0;
+                $t_post_attach = (double)(isset($_POST['t_post_attach'][$fid])) ? $_POST['t_post_attach'][$fid] : 0;
+                $t_moderator = (double)(isset($_POST['t_moderator'][$fid])) ? $_POST['t_moderator'][$fid] : 0;
+                $t_post_html = (double)(isset($_POST['t_post_html'][$fid])) ? $_POST['t_post_html'][$fid] : 0;
+                $t_post_sig = (double)(isset($_POST['t_post_sig'][$fid])) ? $_POST['t_post_sig'][$fid] : 0;
+                $t_post_approval = (double)(isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
 
-                $new_user_perms = (double) $t_post_read | $t_post_create | $t_thread_create;
-                $new_user_perms = (double) $new_user_perms | $t_post_edit | $t_post_delete;
-                $new_user_perms = (double) $new_user_perms | $t_moderator | $t_post_attach;
-                $new_user_perms = (double) $new_user_perms | $t_post_html | $t_post_sig | $t_post_approval;
+                $new_user_perms = (double)$t_post_read | $t_post_create | $t_thread_create;
+                $new_user_perms = (double)$new_user_perms | $t_post_edit | $t_post_delete;
+                $new_user_perms = (double)$new_user_perms | $t_moderator | $t_post_attach;
+                $new_user_perms = (double)$new_user_perms | $t_post_html | $t_post_sig | $t_post_approval;
 
                 if ($new_user_perms <> $folder_array[$fid]['STATUS']) {
 
@@ -694,9 +694,9 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         $user_alias_column_header = array(
             USER_ALIAS_IPADDRESS => gettext("IP"),
-             USER_ALIAS_EMAIL => gettext("Email"),
-             USER_ALIAS_PASSWD => gettext("Password"),
-             USER_ALIAS_REFERER => gettext("Referer")
+            USER_ALIAS_EMAIL => gettext("Email"),
+            USER_ALIAS_PASSWD => gettext("Password"),
+            USER_ALIAS_REFERER => gettext("Referer")
         );
 
         if (isset($_POST['user_alias_view']) && in_array($_POST['user_alias_view'], array_keys($user_alias_view_types_array))) {
@@ -791,7 +791,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
                         if (mb_strlen($user_alias['REFERER_FULL']) > 25) {
 
                             $user_alias['REFERER'] = mb_substr($user_alias['REFERER_FULL'], 0, 25);
-                            $user_alias['REFERER'].= "&hellip;";
+                            $user_alias['REFERER'] .= "&hellip;";
                         }
                     }
 
@@ -1134,7 +1134,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
                 if (mb_strlen($user['REFERER_FULL']) > 25) {
 
                     $user['REFERER'] = mb_substr($user['REFERER_FULL'], 0, 25);
-                    $user['REFERER'].= "&hellip;";
+                    $user['REFERER'] .= "&hellip;";
                 }
             }
 
@@ -1170,7 +1170,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
                 if (mb_strlen($user['SESSION_REFERER_FULL']) > 25) {
 
                     $user['SESSION_REFERER'] = mb_substr($user['SESSION_REFERER_FULL'], 0, 25);
-                    $user['SESSION_REFERER'].= "&hellip;";
+                    $user['SESSION_REFERER'] .= "&hellip;";
                 }
             }
 
@@ -1237,14 +1237,14 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
             $admin_options_dropdown = array(
                 'edit_details' => gettext("Edit User Details"),
-                 'edit_signature' => gettext("Edit Signature"),
-                 'edit_profile' => gettext("Edit Profile"),
-                 'reset_passwd' => gettext("Reset Password"),
-                 'view_history' => gettext("View User History"),
-                 'user_aliases' => gettext("View User Aliases"),
-                 'post_count' => gettext("Change Post Count"),
-                 'delete_user' => gettext("Delete User"),
-                 'delete_posts' => gettext("Delete posts")
+                'edit_signature' => gettext("Edit Signature"),
+                'edit_profile' => gettext("Edit Profile"),
+                'reset_passwd' => gettext("Reset Password"),
+                'view_history' => gettext("View User History"),
+                'user_aliases' => gettext("View User Aliases"),
+                'post_count' => gettext("Change Post Count"),
+                'delete_user' => gettext("Delete User"),
+                'delete_posts' => gettext("Delete posts")
             );
 
         } else {

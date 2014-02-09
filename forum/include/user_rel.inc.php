@@ -22,10 +22,10 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
 // End Required includes
 
 function user_rel_update($uid, $peer_uid, $relationship, $nickname = "")
@@ -39,8 +39,8 @@ function user_rel_update($uid, $peer_uid, $relationship, $nickname = "")
     if (!($table_prefix = get_table_prefix())) return false;
 
     $sql = "INSERT INTO `{$table_prefix}USER_PEER` (UID, PEER_UID, RELATIONSHIP, PEER_NICKNAME) ";
-    $sql.= "VALUES ('$uid', '$peer_uid', '$relationship', NULL) ON DUPLICATE KEY UPDATE ";
-    $sql.= "RELATIONSHIP = VALUES(RELATIONSHIP), PEER_NICKNAME = NULL";
+    $sql .= "VALUES ('$uid', '$peer_uid', '$relationship', NULL) ON DUPLICATE KEY UPDATE ";
+    $sql .= "RELATIONSHIP = VALUES(RELATIONSHIP), PEER_NICKNAME = NULL";
 
     if (!$db->query($sql)) return false;
 
@@ -51,8 +51,8 @@ function user_rel_update($uid, $peer_uid, $relationship, $nickname = "")
         $nickname = $db->escape($nickname);
 
         $sql = "INSERT INTO `{$table_prefix}USER_PEER` (UID, PEER_UID, PEER_NICKNAME) ";
-        $sql.= "VALUES ('$uid', '$peer_uid', '$nickname') ON DUPLICATE KEY UPDATE ";
-        $sql.= "PEER_NICKNAME = VALUES(PEER_NICKNAME)";
+        $sql .= "VALUES ('$uid', '$peer_uid', '$nickname') ON DUPLICATE KEY UPDATE ";
+        $sql .= "PEER_NICKNAME = VALUES(PEER_NICKNAME)";
 
         if (!$db->query($sql)) return false;
     }
@@ -70,11 +70,11 @@ function user_get_relationship($uid, $peer_uid)
     if (!($table_prefix = get_table_prefix())) return 0;
 
     $sql = "SELECT RELATIONSHIP FROM `{$table_prefix}USER_PEER` ";
-    $sql.= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
+    $sql .= "WHERE UID = '$uid' AND PEER_UID = '$peer_uid'";
 
     if (!($result = $db->query($sql))) return 0;
 
-    if ($result->num_rows == 0 ) return 0;
+    if ($result->num_rows == 0) return 0;
 
     list($peer_relationship) = $result->fetch_row();
 

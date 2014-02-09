@@ -25,26 +25,26 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'banned.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'email.inc.php';
-require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
-require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'ip.inc.php';
-require_once BH_INCLUDE_PATH. 'lang.inc.php';
-require_once BH_INCLUDE_PATH. 'perm.inc.php';
-require_once BH_INCLUDE_PATH. 'server.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'styles.inc.php';
-require_once BH_INCLUDE_PATH. 'text_captcha.inc.php';
-require_once BH_INCLUDE_PATH. 'timezone.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'banned.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'email.inc.php';
+require_once BH_INCLUDE_PATH . 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH . 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'ip.inc.php';
+require_once BH_INCLUDE_PATH . 'lang.inc.php';
+require_once BH_INCLUDE_PATH . 'perm.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'styles.inc.php';
+require_once BH_INCLUDE_PATH . 'text_captcha.inc.php';
+require_once BH_INCLUDE_PATH . 'timezone.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
 // End Required includes
 
 // Where are we going after we've logged on?
@@ -176,7 +176,7 @@ if (isset($_POST['register'])) {
     } else {
 
         $error_msg_array[] = gettext("A password is required");
-        $valid.= false;
+        $valid .= false;
     }
 
     if (isset($_POST['cpw']) && strlen(trim($_POST['cpw'])) > 0) {
@@ -243,9 +243,9 @@ if (isset($_POST['register'])) {
 
     if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && @checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
 
-        $new_user_prefs['DOB_DAY']   = trim($_POST['dob_day']);
+        $new_user_prefs['DOB_DAY'] = trim($_POST['dob_day']);
         $new_user_prefs['DOB_MONTH'] = trim($_POST['dob_month']);
-        $new_user_prefs['DOB_YEAR']  = trim($_POST['dob_year']);
+        $new_user_prefs['DOB_YEAR'] = trim($_POST['dob_year']);
 
         $new_user_prefs['DOB'] = "{$new_user_prefs['DOB_YEAR']}-{$new_user_prefs['DOB_MONTH']}-{$new_user_prefs['DOB_DAY']}";
         $new_user_prefs['DOB_BLANK_FIELDS'] = ($new_user_prefs['DOB_YEAR'] == 0 || $new_user_prefs['DOB_MONTH'] == 0 || $new_user_prefs['DOB_DAY'] == 0) ? true : false;
@@ -738,7 +738,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
         } else if (($text_captcha_image = $text_captcha->make_image()) !== false) {
 
             $forum_owner_email = forum_get_setting('forum_email', 'strlen', 'admin@beehiveforum.co.uk');
-            $forum_owner_link  = sprintf("<a href=\"mailto:%s\">%s</a>", $forum_owner_email, gettext("forum owner"));
+            $forum_owner_link = sprintf("<a href=\"mailto:%s\">%s</a>", $forum_owner_email, gettext("forum owner"));
 
             echo "  <br />\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";

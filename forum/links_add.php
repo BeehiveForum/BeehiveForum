@@ -25,14 +25,14 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'links.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'links.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -282,7 +282,7 @@ if ($mode == LINKS_ADD_LINK) {
     html_draw_top(sprintf('title=%s', gettext("Links - Add a New Folder")), 'class=window_title');
 
     echo "<h1>", gettext("Links"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add a new folder"), "</h1>\n";
-    echo "<p>", gettext("Adding new folder under"), ": <b>". links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";
+    echo "<p>", gettext("Adding new folder under"), ": <b>" . links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '500', 'left');

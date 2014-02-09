@@ -22,11 +22,13 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+
 // End Required includes
 
-class captcha {
+class captcha
+{
 
     private $image_x;
     private $image_y;
@@ -178,7 +180,7 @@ class captcha {
 
                     $noise_size = intval(mt_rand((int)($this->min_char_size / 2.3), (int)($this->max_char_size / 1.7)));
 
-                    $noise_angle  = intval(mt_rand(0, 360));
+                    $noise_angle = intval(mt_rand(0, 360));
 
                     $noise_x = intval(mt_rand(0, $this->image_x));
 
@@ -197,21 +199,21 @@ class captcha {
                     }
                 }
 
-                for ($i = 0; $i < $this->image_x; $i+= (int)($this->min_char_size / 1.5)) {
+                for ($i = 0; $i < $this->image_x; $i += (int)($this->min_char_size / 1.5)) {
 
                     $this->random_color(160, 224);
                     $line_color = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
                     imageline($image, $i, 0, $i, $this->image_y, $line_color);
                 }
 
-                for ($i = 0; $i < $this->image_y; $i+= (int)($this->min_char_size / 1.8)) {
+                for ($i = 0; $i < $this->image_y; $i += (int)($this->min_char_size / 1.8)) {
 
                     $this->random_color(160, 224);
                     $line_color = imagecolorclosest($image, $this->color_red, $this->color_green, $this->color_blue);
                     imageline($image, 0, $i, $this->image_x, $i, $line_color);
                 }
 
-                for ($i = 0, $text_x = intval(mt_rand($this->min_char_size,$this->max_char_size)); $i < $this->num_chars; $i++) {
+                for ($i = 0, $text_x = intval(mt_rand($this->min_char_size, $this->max_char_size)); $i < $this->num_chars; $i++) {
 
                     $text = mb_strtoupper(mb_substr($this->private_key, $i, 1));
 
@@ -308,7 +310,7 @@ class captcha {
             return false;
         }
 
-        $this->private_key = mb_substr(md5($this->key.$this->public_key), 16 - $this->num_chars / 2, $this->num_chars);
+        $this->private_key = mb_substr(md5($this->key . $this->public_key), 16 - $this->num_chars / 2, $this->num_chars);
         $this->prv_key_done = true;
 
         return true;
@@ -361,7 +363,7 @@ class captcha {
 
     protected function random_color($min, $max)
     {
-        $this->color_red = intval(mt_rand($min ,$max));
+        $this->color_red = intval(mt_rand($min, $max));
 
         $this->color_green = intval(mt_rand($min, $max));
 

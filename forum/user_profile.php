@@ -25,15 +25,15 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'attachments.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'profile.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'user_profile.inc.php';
-require_once BH_INCLUDE_PATH. 'user_rel.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'attachments.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'profile.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'user_profile.inc.php';
+require_once BH_INCLUDE_PATH . 'user_rel.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 $uid = null;
@@ -176,7 +176,7 @@ echo "                          <table width=\"95%\">\n";
 
 if (isset($user_profile['GROUPS']) && sizeof($user_profile['GROUPS']) > 0) {
 
-    $user_groups_list = (mb_strlen(trim($user_profile['GROUPS'])) > 50) ? mb_substr($user_profile['GROUPS'], 0, 47). "&hellip;" : $user_profile['GROUPS'];
+    $user_groups_list = (mb_strlen(trim($user_profile['GROUPS'])) > 50) ? mb_substr($user_profile['GROUPS'], 0, 47) . "&hellip;" : $user_profile['GROUPS'];
 
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" class=\"subhead\"><div title=\"", gettext("Groups"), ": ", word_filter_add_ob_tags($user_profile['GROUPS'], true), "\"><span class=\"smalltext\">", gettext("Groups"), ": ", word_filter_add_ob_tags($user_groups_list), "</span></div></td>\n";

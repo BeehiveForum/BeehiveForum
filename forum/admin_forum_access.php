@@ -25,17 +25,17 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'server.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -86,9 +86,9 @@ if (isset($_POST['enable'])) {
 
 if (!forum_get_setting('access_level', FORUM_RESTRICTED)) {
     html_draw_error(gettext("Forum is not set to Restricted Mode. Do you want to enable it now?"), 'admin_forum_access.php', 'post', array(
-                                                                                                                                          'enable' => gettext("Enable"),
-                                                                                                                                          'back'   => gettext("Back")
-                                                                                                                                     ), array('ret' => $ret), '_self', 'center');
+        'enable' => gettext("Enable"),
+        'back' => gettext("Back")
+    ), array('ret' => $ret), '_self', 'center');
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {

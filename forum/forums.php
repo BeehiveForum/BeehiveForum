@@ -24,16 +24,16 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'myforums.inc.php';
-require_once BH_INCLUDE_PATH. 'server.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'myforums.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Array to hold error messages
@@ -401,7 +401,7 @@ if (session::logged_in()) {
 
                 if (isset($forum['FORUM_DESC']) && strlen(trim($forum['FORUM_DESC'])) > 0) {
 
-                    $forum_desc_short = (mb_strlen(trim($forum['FORUM_DESC'])) > 50) ? mb_substr($forum['FORUM_DESC'], 0, 47). "&hellip;" : $forum['FORUM_DESC'];
+                    $forum_desc_short = (mb_strlen(trim($forum['FORUM_DESC'])) > 50) ? mb_substr($forum['FORUM_DESC'], 0, 47) . "&hellip;" : $forum['FORUM_DESC'];
 
                     echo "                  <td align=\"left\" valign=\"top\" width=\"30%\" style=\"white-space: nowrap\"><div title=\"", word_filter_add_ob_tags($forum['FORUM_DESC']), "\">", word_filter_add_ob_tags($forum_desc_short), "</div></td>\n";
 
@@ -615,7 +615,7 @@ if (session::logged_in()) {
 
                 if (isset($forum['FORUM_DESC']) && strlen(trim($forum['FORUM_DESC'])) > 0) {
 
-                    $forum_desc_short = (mb_strlen(trim($forum['FORUM_DESC'])) > 50) ? mb_substr($forum['FORUM_DESC'], 0, 47). "&hellip;" : $forum['FORUM_DESC'];
+                    $forum_desc_short = (mb_strlen(trim($forum['FORUM_DESC'])) > 50) ? mb_substr($forum['FORUM_DESC'], 0, 47) . "&hellip;" : $forum['FORUM_DESC'];
 
                     echo "                  <td align=\"left\" valign=\"top\" width=\"30%\" style=\"white-space: nowrap\"><div title=\"", word_filter_add_ob_tags($forum['FORUM_DESC']), "\">", word_filter_add_ob_tags($forum_desc_short), "</div></td>\n";
 

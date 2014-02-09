@@ -22,10 +22,10 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
 // End Required includes
 
 function sitemap_get_available_forums()
@@ -56,11 +56,11 @@ function sitemap_forum_get_threads($forum_fid)
     if (!($table_prefix = forum_get_table_prefix($forum_fid))) return false;
 
     $sql = "SELECT THREAD.TID, UNIX_TIMESTAMP(THREAD.MODIFIED) AS MODIFIED ";
-    $sql.= "FROM `{$table_prefix}THREAD` THREAD ";
-    $sql.= "INNER JOIN `{$table_prefix}FOLDER` FOLDER ";
-    $sql.= "ON (FOLDER.FID = THREAD.FID) ";
-    $sql.= "WHERE FOLDER.PERM & $user_perm_guest_access > 0 ";
-    $sql.= "ORDER BY THREAD.TID";
+    $sql .= "FROM `{$table_prefix}THREAD` THREAD ";
+    $sql .= "INNER JOIN `{$table_prefix}FOLDER` FOLDER ";
+    $sql .= "ON (FOLDER.FID = THREAD.FID) ";
+    $sql .= "WHERE FOLDER.PERM & $user_perm_guest_access > 0 ";
+    $sql .= "ORDER BY THREAD.TID";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -76,7 +76,7 @@ function sitemap_get_dir()
     $forum_directory = rtrim(dirname(dirname(__FILE__)), DIRECTORY_SEPARATOR);
 
     // Once we have the forum directory we can find our sitemaps directory.
-    $sitemap_path = $forum_directory. DIRECTORY_SEPARATOR. 'sitemaps';
+    $sitemap_path = $forum_directory . DIRECTORY_SEPARATOR . 'sitemaps';
 
     // Disable sitemap for get_attachment.php as that can cause problems.
     if (strstr($_SERVER['SCRIPT_NAME'], 'get_attachment.php')) return false;
@@ -101,27 +101,27 @@ function sitemap_create_file()
 
     // Header for the sitemap index file
     $sitemap_index_header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    $sitemap_index_header.= "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n";
+    $sitemap_index_header .= "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n";
 
     // Sitemap index entry
     $sitemap_index_entry = "<sitemap>\n";
-    $sitemap_index_entry.= "<loc>%s/sitemaps/sitemap%s.xml</loc>\n";
-    $sitemap_index_entry.= "<lastmod>%s</lastmod>\n";
-    $sitemap_index_entry.= "</sitemap>\n";
+    $sitemap_index_entry .= "<loc>%s/sitemaps/sitemap%s.xml</loc>\n";
+    $sitemap_index_entry .= "<lastmod>%s</lastmod>\n";
+    $sitemap_index_entry .= "</sitemap>\n";
 
     // Sitemap index footer.
     $sitemap_index_footer = "</sitemapindex>";
 
     // Header for the sitemap file
     $sitemap_header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    $sitemap_header.= "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n";
+    $sitemap_header .= "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n";
 
     // Sitemap URL entry
     $sitemap_url_entry = "<url>\n";
-    $sitemap_url_entry.= "<loc>%s/index.php?webtag=%s&amp;msg=%s.1</loc>\n";
-    $sitemap_url_entry.= "<lastmod>%s</lastmod>\n";
-    $sitemap_url_entry.= "<changefreq>%s</changefreq>\n";
-    $sitemap_url_entry.= "</url>\n";
+    $sitemap_url_entry .= "<loc>%s/index.php?webtag=%s&amp;msg=%s.1</loc>\n";
+    $sitemap_url_entry .= "<lastmod>%s</lastmod>\n";
+    $sitemap_url_entry .= "<changefreq>%s</changefreq>\n";
+    $sitemap_url_entry .= "</url>\n";
 
     // Footer for the sitemap file.
     $sitemap_footer = "</urlset>";
@@ -169,7 +169,7 @@ function sitemap_create_file()
     if (!(@$fp = fopen("{$sitemap_path}/sitemap{$sitemap_file_count}.xml", 'w'))) return false;
 
     // Write the header to the file
-    $bytes_written+= fwrite($fp, $sitemap_header);
+    $bytes_written += fwrite($fp, $sitemap_header);
 
     // Query the database to find available forums.
     if (!($result_forums = sitemap_get_available_forums())) return false;
@@ -238,7 +238,7 @@ function sitemap_create_file()
                 }
             }
 
-            $bytes_written+= fwrite($fp, $sitemap_entry);
+            $bytes_written += fwrite($fp, $sitemap_entry);
         }
     }
 

@@ -25,17 +25,17 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'email.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'email.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -178,8 +178,8 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
                     if ($valid) {
 
                         $redirect_uri = "admin_users.php?webtag=$webtag&page=$page";
-                        $redirect_uri.= "&sort_by=$sort_by&sort_dir=$sort_dir&filter=$filter";
-                        $redirect_uri.= "&user_search=%s&kicked=true";
+                        $redirect_uri .= "&sort_by=$sort_by&sort_dir=$sort_dir&filter=$filter";
+                        $redirect_uri .= "&user_search=%s&kicked=true";
 
                         header_redirect(sprintf($redirect_uri, htmlentities_array($user_search)));
                         exit;
@@ -218,8 +218,8 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
                     if ($valid) {
 
                         $redirect_uri = "admin_users.php?webtag=$webtag&page=$page";
-                        $redirect_uri.= "&sort_by=$sort_by&sort_dir=$sort_dir&filter=$filter";
-                        $redirect_uri.= "&user_search=%s&approved=true";
+                        $redirect_uri .= "&sort_by=$sort_by&sort_dir=$sort_dir&filter=$filter";
+                        $redirect_uri .= "&user_search=%s&approved=true";
 
                         header_redirect(sprintf($redirect_uri, htmlentities_array($user_search)));
                         exit;

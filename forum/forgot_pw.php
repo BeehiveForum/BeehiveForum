@@ -25,11 +25,11 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'email.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'email.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
 // End Required includes
 
 // Array for holding error messages
@@ -50,7 +50,7 @@ if (isset($_POST['request'])) {
 
         } else {
 
-           $error_msg_array[] = gettext("Could not send password reminder. Please contact the forum owner.");
+            $error_msg_array[] = gettext("Could not send password reminder. Please contact the forum owner.");
         }
 
     } else {

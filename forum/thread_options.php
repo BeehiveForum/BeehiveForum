@@ -25,21 +25,21 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'folder.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'poll.inc.php';
-require_once BH_INCLUDE_PATH. 'post.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'thread.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'folder.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'poll.inc.php';
+require_once BH_INCLUDE_PATH . 'post.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'thread.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -264,9 +264,9 @@ if (isset($_POST['save'])) {
 
             if (isset($_POST['sticky_year']) && isset($_POST['sticky_month']) && isset($_POST['sticky_day'])) {
 
-                $sticky_day   = trim($_POST['sticky_day']);
+                $sticky_day = trim($_POST['sticky_day']);
                 $sticky_month = trim($_POST['sticky_month']);
-                $sticky_year  = trim($_POST['sticky_year']);
+                $sticky_year = trim($_POST['sticky_year']);
 
                 if (is_numeric($sticky_month) && $sticky_month > 0 && is_numeric($sticky_day) && $sticky_day > 0 && is_numeric($sticky_year) && $sticky_year > 0) {
 
@@ -345,7 +345,7 @@ if (isset($_POST['save'])) {
                         $error_str = '';
 
                         $merge_thread = $_POST['merge_thread'];
-                        $merge_type   = $_POST['merge_type'];
+                        $merge_type = $_POST['merge_type'];
 
                         if (validate_msg($merge_thread)) {
                             list($merge_thread) = explode('.', $merge_thread);
@@ -374,7 +374,7 @@ if (isset($_POST['save'])) {
                         $error_str = '';
 
                         $split_start = $_POST['split_thread'];
-                        $split_type  = $_POST['split_type'];
+                        $split_type = $_POST['split_type'];
 
                         if (($split_result = thread_split($tid, $split_start, $split_type, $error_str)) !== false) {
 
@@ -780,19 +780,19 @@ if ($thread_data['DELETED'] == 'N') {
 
             if ($thread_data['STICKY_UNTIL'] && $thread_data['STICKY'] == "Y") {
 
-                $sticky_year  = strftime('%Y', $thread_data['STICKY_UNTIL']);
+                $sticky_year = strftime('%Y', $thread_data['STICKY_UNTIL']);
                 $sticky_month = strftime('%b', $thread_data['STICKY_UNTIL']);
-                $sticky_day   = strftime('%d', $thread_data['STICKY_UNTIL']);
+                $sticky_day = strftime('%d', $thread_data['STICKY_UNTIL']);
 
-                if ( $sticky_year < $sticky_year_min ) {
+                if ($sticky_year < $sticky_year_min) {
                     $sticky_year_min = $sticky_year;
                 }
 
             } else {
 
-                $sticky_year  = 0;
+                $sticky_year = 0;
                 $sticky_month = 0;
-                $sticky_day   = 0;
+                $sticky_day = 0;
             }
 
             echo "                        <td align=\"left\" style=\"white-space: nowrap\">", form_radio("sticky", "Y", gettext("Until 00:00 UTC"), $thread_data['STICKY'] == "Y"), "&nbsp;", form_date_dropdowns($sticky_year, $sticky_month, $sticky_day, "sticky_", $sticky_year_min), "&nbsp;<span class=\"small_optional_text\">", gettext("(Optional)"), "</span></td>\n";

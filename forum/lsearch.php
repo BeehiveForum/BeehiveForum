@@ -25,21 +25,21 @@ USA
 require_once 'lboot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'light.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'poll.inc.php';
-require_once BH_INCLUDE_PATH. 'search.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'thread.inc.php';
-require_once BH_INCLUDE_PATH. 'threads.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'light.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'poll.inc.php';
+require_once BH_INCLUDE_PATH . 'search.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'thread.inc.php';
+require_once BH_INCLUDE_PATH . 'threads.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -198,14 +198,14 @@ if (isset($_POST) && sizeof($_POST) > 0) {
 
                     // Limit thread title to 20 characters.
                     if (mb_strlen($message['TITLE']) > 20) {
-                        $message['TITLE'] = word_filter_add_ob_tags(mb_substr($message['TITLE'], 0, 20), true). "&hellip;";
+                        $message['TITLE'] = word_filter_add_ob_tags(mb_substr($message['TITLE'], 0, 20), true) . "&hellip;";
                     } else {
                         $message['TITLE'] = word_filter_add_ob_tags($message['TITLE'], true);
                     }
 
                     // Limit displayed post content to 35 characters
                     if (mb_strlen($message['CONTENT']) > 70) {
-                        $message['CONTENT'] = word_filter_add_ob_tags(fix_html(mb_substr($message['CONTENT'], 0, 70)), true). "&hellip;";
+                        $message['CONTENT'] = word_filter_add_ob_tags(fix_html(mb_substr($message['CONTENT'], 0, 70)), true) . "&hellip;";
                     } else {
                         $message['CONTENT'] = word_filter_add_ob_tags($message['CONTENT'], true);
                     }

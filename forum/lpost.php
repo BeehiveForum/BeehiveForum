@@ -27,27 +27,27 @@ USA
 require_once 'lboot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'attachments.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'email.inc.php';
-require_once BH_INCLUDE_PATH. 'emoticons.inc.php';
-require_once BH_INCLUDE_PATH. 'fixhtml.inc.php';
-require_once BH_INCLUDE_PATH. 'folder.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'light.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'perm.inc.php';
-require_once BH_INCLUDE_PATH. 'poll.inc.php';
-require_once BH_INCLUDE_PATH. 'post.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'thread.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'attachments.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'email.inc.php';
+require_once BH_INCLUDE_PATH . 'emoticons.inc.php';
+require_once BH_INCLUDE_PATH . 'fixhtml.inc.php';
+require_once BH_INCLUDE_PATH . 'folder.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'light.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'perm.inc.php';
+require_once BH_INCLUDE_PATH . 'poll.inc.php';
+require_once BH_INCLUDE_PATH . 'post.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'thread.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -91,7 +91,7 @@ if (isset($_POST['newthread']) && (isset($_POST['post']) || isset($_POST['previe
 
         $threadtitle = trim($_POST['threadtitle']);
 
-    } else{
+    } else {
 
         $error_msg_array[] = gettext("You must enter a title for the thread!");
         $valid = false;
@@ -121,13 +121,13 @@ if (isset($_POST['newthread']) && (isset($_POST['post']) || isset($_POST['previe
 }
 
 if (isset($_POST['attachment']) && is_array($_POST['attachment'])) {
-	$attachments = array_filter($_POST['attachment'], 'is_md5');
+    $attachments = array_filter($_POST['attachment'], 'is_md5');
 } else {
-	$attachments = array();
+    $attachments = array();
 }
 if (isset($_POST['dedupe']) && is_numeric($_POST['dedupe'])) {
     $dedupe = $_POST['dedupe'];
-} else{
+} else {
     $dedupe = time();
 }
 
@@ -263,14 +263,14 @@ if (isset($_GET['reply_to']) && validate_msg($_GET['reply_to'])) {
 
     if (sizeof($attachments) > 0 && !attachments_check_post_space($_SESSION['UID'], $attachments)) {
 
-    	$max_post_attachment_space = forum_get_setting('attachments_max_post_space', 'is_numeric', 1048576);
-    	$error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
+        $max_post_attachment_space = forum_get_setting('attachments_max_post_space', 'is_numeric', 1048576);
+        $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
         $valid = false;
     }
 
     $new_thread = false;
 
-} else{
+} else {
 
     $new_thread = true;
 
@@ -410,7 +410,7 @@ if ($valid && isset($_POST['post'])) {
                 $tid = post_create_thread($fid, $_SESSION['UID'], $threadtitle, 'N', 'N', false);
                 $reply_to_pid = 0;
 
-            } else{
+            } else {
 
                 if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && (!session::check_perm(USER_PERM_FOLDER_MODERATE, $fid))) {
                     light_html_draw_error(gettext("This thread is closed, you cannot post in it!"));
@@ -420,7 +420,7 @@ if ($valid && isset($_POST['post'])) {
             if (isset($tid) && is_numeric($tid)) {
 
                 if ($allow_sig == true && strlen(trim($sig)) > 0) {
-                    $content.= "<div class=\"sig\">$sig</div>";
+                    $content .= "<div class=\"sig\">$sig</div>";
                 }
 
                 if (($new_pid = post_create($fid, $tid, $reply_to_pid, $_SESSION['UID'], $to_logon_array, $content)) !== false) {
@@ -464,13 +464,13 @@ if ($valid && isset($_POST['post'])) {
 
                 $uri = "lmessages.php?webtag=$webtag&msg=$tid.$reply_to_pid";
 
-            } else{
+            } else {
 
                 $uri = "lmessages.php?webtag=$webtag";
             }
 
             if (isset($tid) && is_numeric($tid) && isset($new_pid) && is_numeric($new_pid)) {
-                $uri.= "&post_success=$tid.$new_pid";
+                $uri .= "&post_success=$tid.$new_pid";
             }
         }
 
@@ -514,13 +514,13 @@ if ($valid && isset($_POST['preview'])) {
     $preview_fuser = user_get($_SESSION['UID']);
 
     $preview_message['FROM_LOGON'] = $preview_fuser['LOGON'];
-    $preview_message['FROM_NICKNAME']  = $preview_fuser['NICKNAME'];
+    $preview_message['FROM_NICKNAME'] = $preview_fuser['NICKNAME'];
     $preview_message['FROM_UID'] = $preview_fuser['UID'];
 
     $preview_message['CONTENT'] = $content;
 
     if ($allow_sig == true && strlen(trim($sig)) > 0) {
-        $preview_message['CONTENT'] = $preview_message['CONTENT']. "<div class=\"sig\">". $sig. "</div>";
+        $preview_message['CONTENT'] = $preview_message['CONTENT'] . "<div class=\"sig\">" . $sig . "</div>";
     }
 
     $preview_message['CREATED'] = time();

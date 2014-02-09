@@ -22,13 +22,13 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'server.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
 // End Required includes
 
 // Include Swift Mailer
-require_once BH_INCLUDE_PATH. 'swift/swift_required.php';
+require_once BH_INCLUDE_PATH . 'swift/swift_required.php';
 
 // Swift Mailer Transport Factory
 abstract class Swift_TransportFactory
@@ -152,7 +152,7 @@ class Swift_MessageBeehive extends Swift_Message
     private function set_headers()
     {
         // Get the forum name.
-        $forum_name  = forum_get_setting('forum_name', null, 'A Beehive Forum');
+        $forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
 
         // Get the forum email address
         $forum_email = forum_get_setting('forum_noreply_email', null, 'noreply@beehiveforum.co.uk');
@@ -164,13 +164,13 @@ class Swift_MessageBeehive extends Swift_Message
         $headers = $this->getHeaders();
 
         // Add PHP version number to headers
-        $headers->addTextHeader('X-Mailer', 'PHP/'. phpversion());
+        $headers->addTextHeader('X-Mailer', 'PHP/' . phpversion());
 
         // Add the Beehive version number to headers
-        $headers->addTextHeader('X-Beehive-Forum', 'Beehive Forum '. BEEHIVE_VERSION);
+        $headers->addTextHeader('X-Beehive-Forum', 'Beehive Forum ' . BEEHIVE_VERSION);
 
         // Add header to identify Swift version
-        $headers->addTextHeader('X-Swift-Mailer', 'Swift Mailer '. Swift::VERSION);
+        $headers->addTextHeader('X-Swift-Mailer', 'Swift Mailer ' . Swift::VERSION);
 
         // Add header to identify mail function used
         $headers->addTextHeader('X-Beehive-Mail-Function', $mail_function);

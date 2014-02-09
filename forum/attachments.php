@@ -25,13 +25,13 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'attachments.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'image.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'attachments.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'image.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
 // End Required includes
 
 if (!session::logged_in()) {
@@ -207,7 +207,7 @@ if (isset($_POST['summary'])) {
 
                 $image_height = $image_info[1];
 
-                $thumbnail = image_resize($file_path, $file_path. '.thumb');
+                $thumbnail = image_resize($file_path, $file_path . '.thumb');
             }
 
             if (($attachment_aid = attachments_add($_SESSION['UID'], $file_name, $file_hash, $file_type, $file_size, $image_width, $image_height, $thumbnail)) !== false) {
@@ -218,7 +218,7 @@ if (isset($_POST['summary'])) {
 
                 @unlink($file_path);
 
-                @unlink($file_path. '.thumb');
+                @unlink($file_path . '.thumb');
 
                 @unlink($temp_file);
 

@@ -31,7 +31,7 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 
 // Constant to define where the include files are
 if (!defined('BH_INCLUDE_PATH')) {
-    define('BH_INCLUDE_PATH', __DIR__. '/include/');
+    define('BH_INCLUDE_PATH', __DIR__ . '/include/');
 }
 
 // Set the default timezone
@@ -41,10 +41,10 @@ date_default_timezone_set('UTC');
 header('Content-type: text/html; charset=UTF-8');
 
 // Constants
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
 
 // Enable the error handler
-require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
+require_once BH_INCLUDE_PATH . 'errorhandler.inc.php';
 
 // Set the error reporting level to report all errors
 error_reporting(E_ALL | E_STRICT);
@@ -65,22 +65,22 @@ set_exception_handler('bh_exception_handler');
 register_shutdown_function('session_write_close');
 
 // Forum functionality
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
 
 // Forum maintenance functionality
 register_shutdown_function('forum_check_maintenance');
 
 // Server checking functions
-require_once BH_INCLUDE_PATH. 'server.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
 
 // Caching functions
-require_once BH_INCLUDE_PATH. 'cache.inc.php';
+require_once BH_INCLUDE_PATH . 'cache.inc.php';
 
 // Installation checking functions
-require_once BH_INCLUDE_PATH. 'install.inc.php';
+require_once BH_INCLUDE_PATH . 'install.inc.php';
 
 // Wordfilter
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 
 // Disable PHP's register_globals
 unregister_globals();
@@ -101,12 +101,13 @@ cache_disable_proxy();
 install_check();
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'banned.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'lang.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'banned.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'lang.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
 // End Required includes
 
 // Initialise the session

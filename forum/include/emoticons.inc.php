@@ -22,9 +22,9 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
 // End Required includes
 
 function emoticons_initialise()
@@ -72,7 +72,7 @@ function emoticons_initialise()
             if (@file_exists(__DIR__ . "/../emoticons/$user_emoticon_pack/definitions.php")) {
 
                 /** @noinspection PhpIncludeInspection */
-                include (__DIR__ . "/../emoticons/$user_emoticon_pack/definitions.php");
+                include(__DIR__ . "/../emoticons/$user_emoticon_pack/definitions.php");
             }
         }
 
@@ -145,7 +145,7 @@ function emoticons_apply($content)
 
 function emoticons_strip($content)
 {
-    $content =  preg_replace(
+    $content = preg_replace(
         '/<span class="emoticon e_[^"]+" title="([^"]+)"><span class="e__">\1<\/span><\/span>&nbsp;/Uu',
         '$1 ',
         $content
@@ -177,8 +177,8 @@ function emoticons_get_available($include_text_none = true)
 
                     $pack_name = (isset($pack_name) && strlen(trim($pack_name)) > 0) ? $pack_name : $file;
                     $emoticon_sets_txtnon[$file] = htmlentities_array($pack_name);
-                 }
-             }
+                }
+            }
         }
 
         closedir($dir);
@@ -245,10 +245,10 @@ function emoticons_preview($emoticon_set, $width = 190, $height = 100)
     }
 
     // Add the emoticons to the HTML.
-    $html.= implode(' ', $emoticon_preview);
+    $html .= implode(' ', $emoticon_preview);
 
     // Close the container.
-    $html.= "</div>";
+    $html .= "</div>";
 
     // Return the HTML.
     return $html;

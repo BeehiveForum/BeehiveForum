@@ -22,12 +22,12 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'server.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
 // End Required includes
 
 function adsense_publisher_id()
@@ -111,7 +111,7 @@ function adsense_check_page($pid = NULL, $posts_per_page = NULL, $thread_length 
 
     $adsense_message_number = forum_get_setting('adsense_message_number', 1);
 
-    $admin_area_files_preg  = implode("|^", array_map('preg_quote_callback', get_available_admin_files()));
+    $admin_area_files_preg = implode("|^", array_map('preg_quote_callback', get_available_admin_files()));
 
     if (preg_match("/^nav\\.php|^$admin_area_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) return false;
 
@@ -152,7 +152,7 @@ function adsense_check_page_bottom()
 {
     $adsense_display_pages = adsense_display_pages();
 
-    $admin_area_files_preg  = implode("|^", array_map('preg_quote_callback', get_available_admin_files()));
+    $admin_area_files_preg = implode("|^", array_map('preg_quote_callback', get_available_admin_files()));
 
     if (preg_match("/^nav\\.php|^$admin_area_files_preg/u", basename($_SERVER['PHP_SELF'])) > 0) return false;
 
@@ -163,12 +163,16 @@ function adsense_check_page_bottom()
 
 function adsense_get_banner_type(&$ad_type, &$ad_width, &$ad_height)
 {
-    $ad_type = 'medium'; $ad_width = 468; $ad_height = 60;
+    $ad_type = 'medium';
+    $ad_width = 468;
+    $ad_height = 60;
 
     $ad_sense_small_banner_pages_preg = implode("|^", array_map('preg_quote_callback', adsense_small_banner_pages()));
 
     if (preg_match("/^$ad_sense_small_banner_pages_preg/u", basename($_SERVER['PHP_SELF'])) > 0) {
-        $ad_type = 'small'; $ad_width = 234; $ad_height = 60;
+        $ad_type = 'small';
+        $ad_width = 234;
+        $ad_height = 60;
     }
 }
 
@@ -209,7 +213,9 @@ function adsense_output_html()
 
             $adsense_display_users = adsense_display_users();
 
-            $ad_type = 'medium'; $ad_width = 468; $ad_height = 60;
+            $ad_type = 'medium';
+            $ad_width = 468;
+            $ad_height = 60;
 
             adsense_get_banner_type($ad_type, $ad_width, $ad_height);
 

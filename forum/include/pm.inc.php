@@ -22,17 +22,17 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'attachments.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'messages.inc.php';
-require_once BH_INCLUDE_PATH. 'search.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'attachments.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'messages.inc.php';
+require_once BH_INCLUDE_PATH . 'search.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 function pm_enabled()
@@ -55,7 +55,7 @@ function pm_mark_as_read($mid)
     $pm_unread = PM_UNREAD;
 
     $sql = "UPDATE PM_TYPE SET TYPE = '$pm_read' WHERE MID = '$mid' ";
-    $sql.= "AND TYPE = '$pm_unread' AND UID = '{$_SESSION['UID']}'";
+    $sql .= "AND TYPE = '$pm_unread' AND UID = '{$_SESSION['UID']}'";
 
     if (!$db->query($sql)) return false;
 
@@ -76,7 +76,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limi
 {
     if (!$db = db::get()) return false;
 
-    $sort_by_array  = array(
+    $sort_by_array = array(
         'PM.SUBJECT',
         'PM.FROM_UID',
         'CREATED'
@@ -104,13 +104,13 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limi
     $pm_inbox_items = PM_INBOX_ITEMS;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM_TYPE.TYPE, ";
-    $sql.= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
-    $sql.= "USER.NICKNAME AS FROM_NICKNAME FROM PM INNER JOIN PM_RECIPIENT ";
-    $sql.= "ON (PM_RECIPIENT.MID = PM.MID AND PM_RECIPIENT.TO_UID = '{$_SESSION['UID']}') ";
-    $sql.= "INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = '{$_SESSION['UID']}' ";
-    $sql.= "AND PM_TYPE.TYPE & $pm_inbox_items) LEFT JOIN USER ";
-    $sql.= "ON (USER.UID = PM.FROM_UID) GROUP BY PM.MID ";
-    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
+    $sql .= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
+    $sql .= "USER.NICKNAME AS FROM_NICKNAME FROM PM INNER JOIN PM_RECIPIENT ";
+    $sql .= "ON (PM_RECIPIENT.MID = PM.MID AND PM_RECIPIENT.TO_UID = '{$_SESSION['UID']}') ";
+    $sql .= "INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = '{$_SESSION['UID']}' ";
+    $sql .= "AND PM_TYPE.TYPE & $pm_inbox_items) LEFT JOIN USER ";
+    $sql .= "ON (USER.UID = PM.FROM_UID) GROUP BY PM.MID ";
+    $sql .= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -131,7 +131,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
 {
     if (!$db = db::get()) return false;
 
-    $sort_by_array  = array(
+    $sort_by_array = array(
         'PM.SUBJECT',
         'PM.FROM_UID',
         'CREATED'
@@ -159,16 +159,16 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
     $pm_outbox = PM_OUTBOX;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, $pm_outbox AS TYPE, ";
-    $sql.= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
-    $sql.= "USER.NICKNAME AS FROM_NICKNAME, COUNT(PM_RECIPIENT.TO_UID) AS RECIPIENT_COUNT, ";
-    $sql.= "COALESCE(OUTBOX.COUNT, 0) AS OUTBOX_COUNT FROM PM LEFT JOIN USER ON (USER.UID = PM.FROM_UID) ";
-    $sql.= "INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = '{$_SESSION['UID']}') ";
-    $sql.= "INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) LEFT JOIN (SELECT PM_TYPE.MID, ";
-    $sql.= "COUNT(*) AS COUNT FROM PM_TYPE WHERE (PM_TYPE.TYPE & $pm_outbox) ";
-    $sql.= "GROUP BY PM_TYPE.MID) AS OUTBOX ON (OUTBOX.MID = PM.MID) ";
-    $sql.= "WHERE PM.FROM_UID = '{$_SESSION['UID']}' ";
-    $sql.= "GROUP BY PM.MID HAVING RECIPIENT_COUNT = OUTBOX_COUNT ";
-    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
+    $sql .= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
+    $sql .= "USER.NICKNAME AS FROM_NICKNAME, COUNT(PM_RECIPIENT.TO_UID) AS RECIPIENT_COUNT, ";
+    $sql .= "COALESCE(OUTBOX.COUNT, 0) AS OUTBOX_COUNT FROM PM LEFT JOIN USER ON (USER.UID = PM.FROM_UID) ";
+    $sql .= "INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = '{$_SESSION['UID']}') ";
+    $sql .= "INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) LEFT JOIN (SELECT PM_TYPE.MID, ";
+    $sql .= "COUNT(*) AS COUNT FROM PM_TYPE WHERE (PM_TYPE.TYPE & $pm_outbox) ";
+    $sql .= "GROUP BY PM_TYPE.MID) AS OUTBOX ON (OUTBOX.MID = PM.MID) ";
+    $sql .= "WHERE PM.FROM_UID = '{$_SESSION['UID']}' ";
+    $sql .= "GROUP BY PM.MID HAVING RECIPIENT_COUNT = OUTBOX_COUNT ";
+    $sql .= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -189,7 +189,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit
 {
     if (!$db = db::get()) return false;
 
-    $sort_by_array  = array(
+    $sort_by_array = array(
         'PM.SUBJECT',
         'PM.FROM_UID',
         'CREATED'
@@ -219,16 +219,16 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit
     $pm_sent_items = PM_SENT_ITEMS;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM_TYPE.TYPE, ";
-    $sql.= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
-    $sql.= "USER.NICKNAME AS FROM_NICKNAME, COUNT(PM_RECIPIENT.TO_UID) AS RECIPIENT_COUNT, ";
-    $sql.= "COALESCE(OUTBOX.COUNT, 0) AS OUTBOX_COUNT FROM PM INNER JOIN PM_RECIPIENT ";
-    $sql.= "ON (PM_RECIPIENT.MID = PM.MID) INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID ";
-    $sql.= "AND PM_TYPE.UID = PM.FROM_UID) LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT ";
-    $sql.= "FROM PM_TYPE WHERE (PM_TYPE.TYPE & $pm_outbox_items) GROUP BY PM_TYPE.MID) AS OUTBOX ";
-    $sql.= "ON (OUTBOX.MID = PM.MID) LEFT JOIN USER ON (USER.UID = PM.FROM_UID) ";
-    $sql.= "WHERE (PM_TYPE.TYPE & $pm_sent_items) AND PM.FROM_UID = '{$_SESSION['UID']}' ";
-    $sql.= "GROUP BY PM.MID HAVING OUTBOX_COUNT < RECIPIENT_COUNT ";
-    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
+    $sql .= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
+    $sql .= "USER.NICKNAME AS FROM_NICKNAME, COUNT(PM_RECIPIENT.TO_UID) AS RECIPIENT_COUNT, ";
+    $sql .= "COALESCE(OUTBOX.COUNT, 0) AS OUTBOX_COUNT FROM PM INNER JOIN PM_RECIPIENT ";
+    $sql .= "ON (PM_RECIPIENT.MID = PM.MID) INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID ";
+    $sql .= "AND PM_TYPE.UID = PM.FROM_UID) LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT ";
+    $sql .= "FROM PM_TYPE WHERE (PM_TYPE.TYPE & $pm_outbox_items) GROUP BY PM_TYPE.MID) AS OUTBOX ";
+    $sql .= "ON (OUTBOX.MID = PM.MID) LEFT JOIN USER ON (USER.UID = PM.FROM_UID) ";
+    $sql .= "WHERE (PM_TYPE.TYPE & $pm_sent_items) AND PM.FROM_UID = '{$_SESSION['UID']}' ";
+    $sql .= "GROUP BY PM.MID HAVING OUTBOX_COUNT < RECIPIENT_COUNT ";
+    $sql .= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -249,7 +249,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1,
 {
     if (!$db = db::get()) return false;
 
-    $sort_by_array  = array(
+    $sort_by_array = array(
         'PM.SUBJECT',
         'PM.FROM_UID',
         'CREATED'
@@ -277,12 +277,12 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1,
     $pm_saved_items = PM_SAVED_ITEMS;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM_TYPE.TYPE, ";
-    $sql.= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
-    $sql.= "USER.NICKNAME AS FROM_NICKNAME FROM PM INNER JOIN PM_TYPE ";
-    $sql.= "ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = '{$_SESSION['UID']}' ";
-    $sql.= "AND PM_TYPE.TYPE & $pm_saved_items) LEFT JOIN USER ";
-    $sql.= "ON (USER.UID = PM.FROM_UID) GROUP BY PM.MID ";
-    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
+    $sql .= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
+    $sql .= "USER.NICKNAME AS FROM_NICKNAME FROM PM INNER JOIN PM_TYPE ";
+    $sql .= "ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = '{$_SESSION['UID']}' ";
+    $sql .= "AND PM_TYPE.TYPE & $pm_saved_items) LEFT JOIN USER ";
+    $sql .= "ON (USER.UID = PM.FROM_UID) GROUP BY PM.MID ";
+    $sql .= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -303,7 +303,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
 {
     if (!$db = db::get()) return false;
 
-    $sort_by_array  = array(
+    $sort_by_array = array(
         'PM.SUBJECT',
         'PM.FROM_UID',
         'CREATED'
@@ -331,12 +331,12 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
     $pm_draft_items = PM_DRAFT_ITEMS;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM_TYPE.TYPE, ";
-    $sql.= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
-    $sql.= "USER.NICKNAME AS FROM_NICKNAME FROM PM INNER JOIN PM_TYPE ";
-    $sql.= "ON (PM_TYPE.MID = PM.MID AND PM_TYPE.TYPE & $pm_draft_items) ";
-    $sql.= "LEFT JOIN USER ON (USER.UID = PM.FROM_UID) ";
-    $sql.= "WHERE PM.FROM_UID = '{$_SESSION['UID']}' GROUP BY PM.MID ";
-    $sql.= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
+    $sql .= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
+    $sql .= "USER.NICKNAME AS FROM_NICKNAME FROM PM INNER JOIN PM_TYPE ";
+    $sql .= "ON (PM_TYPE.MID = PM.MID AND PM_TYPE.TYPE & $pm_draft_items) ";
+    $sql .= "LEFT JOIN USER ON (USER.UID = PM.FROM_UID) ";
+    $sql .= "WHERE PM.FROM_UID = '{$_SESSION['UID']}' GROUP BY PM.MID ";
+    $sql .= "ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -364,10 +364,10 @@ function pm_get_recipients(&$message_data)
     if (!($db = db::get())) return false;
 
     $sql = "SELECT PM_RECIPIENT.MID, PM_RECIPIENT.TO_UID, PM_RECIPIENT.NOTIFIED, ";
-    $sql.= "USER.LOGON AS TO_LOGON, USER.NICKNAME TO_NICKNAME FROM PM_RECIPIENT ";
-    $sql.= "LEFT JOIN USER ON (USER.UID = PM_RECIPIENT.TO_UID) ";
-    $sql.= "WHERE PM_RECIPIENT.MID = '{$message_data['MID']}' ";
-    $sql.= "ORDER BY PM_RECIPIENT.TO_UID <> '{$_SESSION['UID']}'";
+    $sql .= "USER.LOGON AS TO_LOGON, USER.NICKNAME TO_NICKNAME FROM PM_RECIPIENT ";
+    $sql .= "LEFT JOIN USER ON (USER.UID = PM_RECIPIENT.TO_UID) ";
+    $sql .= "WHERE PM_RECIPIENT.MID = '{$message_data['MID']}' ";
+    $sql .= "ORDER BY PM_RECIPIENT.TO_UID <> '{$_SESSION['UID']}'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -407,10 +407,10 @@ function pms_get_recipients(&$message_array)
     if (!($db = db::get())) return false;
 
     $sql = "SELECT PM_RECIPIENT.MID, PM_RECIPIENT.TO_UID, PM_RECIPIENT.NOTIFIED, ";
-    $sql.= "USER.LOGON AS TO_LOGON, USER.NICKNAME TO_NICKNAME FROM PM_RECIPIENT ";
-    $sql.= "LEFT JOIN USER ON (USER.UID = PM_RECIPIENT.TO_UID) ";
-    $sql.= "WHERE PM_RECIPIENT.MID IN ($mid_list) ";
-    $sql.= "ORDER BY PM_RECIPIENT.TO_UID <> '{$_SESSION['UID']}'";
+    $sql .= "USER.LOGON AS TO_LOGON, USER.NICKNAME TO_NICKNAME FROM PM_RECIPIENT ";
+    $sql .= "LEFT JOIN USER ON (USER.UID = PM_RECIPIENT.TO_UID) ";
+    $sql .= "WHERE PM_RECIPIENT.MID IN ($mid_list) ";
+    $sql .= "ORDER BY PM_RECIPIENT.TO_UID <> '{$_SESSION['UID']}'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -499,10 +499,10 @@ function pm_search_execute($search_string, &$error)
     $limit = ($pm_max_user_messages > 1000) ? 1000 : $pm_max_user_messages;
 
     $sql = "INSERT INTO PM_SEARCH_RESULTS (UID, MID, RELEVANCE) SELECT '{$_SESSION['UID']}', PM.MID, ";
-    $sql.= "MATCH(PM_CONTENT.CONTENT, PM.SUBJECT) AGAINST('$search_string_checked' IN BOOLEAN MODE) AS RELEVANCE ";
-    $sql.= "FROM PM INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = {$_SESSION['UID']})";
-    $sql.= "LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) WHERE MATCH(PM_CONTENT.CONTENT, PM.SUBJECT) ";
-    $sql.= "AGAINST('$search_string_checked' IN BOOLEAN MODE) GROUP BY PM.MID LIMIT $limit";
+    $sql .= "MATCH(PM_CONTENT.CONTENT, PM.SUBJECT) AGAINST('$search_string_checked' IN BOOLEAN MODE) AS RELEVANCE ";
+    $sql .= "FROM PM INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = {$_SESSION['UID']})";
+    $sql .= "LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) WHERE MATCH(PM_CONTENT.CONTENT, PM.SUBJECT) ";
+    $sql .= "AGAINST('$search_string_checked' IN BOOLEAN MODE) GROUP BY PM.MID LIMIT $limit";
 
     if (!$db->query($sql)) return false;
 
@@ -517,7 +517,7 @@ function pm_fetch_search_results($sort_by = 'CREATED', $sort_dir = 'DESC', $page
 {
     if (!$db = db::get()) return false;
 
-    $sort_by_array  = array(
+    $sort_by_array = array(
         'PM.SUBJECT',
         'TYPE',
         'PM.FROM_UID',
@@ -545,12 +545,12 @@ function pm_fetch_search_results($sort_by = 'CREATED', $sort_dir = 'DESC', $page
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM_TYPE.TYPE, ";
-    $sql.= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
-    $sql.= "USER.NICKNAME AS FROM_NICKNAME FROM PM INNER JOIN PM_TYPE ";
-    $sql.= "ON (PM_TYPE.MID = PM.MID) INNER JOIN PM_SEARCH_RESULTS ";
-    $sql.= "ON (PM_SEARCH_RESULTS.MID = PM.MID) LEFT JOIN USER ON (USER.UID = PM.FROM_UID) ";
-    $sql.= "WHERE PM_SEARCH_RESULTS.UID = '{$_SESSION['UID']}' ";
-    $sql.= "GROUP BY PM.MID ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
+    $sql .= "PM.SUBJECT, UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, ";
+    $sql .= "USER.NICKNAME AS FROM_NICKNAME FROM PM INNER JOIN PM_TYPE ";
+    $sql .= "ON (PM_TYPE.MID = PM.MID) INNER JOIN PM_SEARCH_RESULTS ";
+    $sql .= "ON (PM_SEARCH_RESULTS.MID = PM.MID) LEFT JOIN USER ON (USER.UID = PM.FROM_UID) ";
+    $sql .= "WHERE PM_SEARCH_RESULTS.UID = '{$_SESSION['UID']}' ";
+    $sql .= "GROUP BY PM.MID ORDER BY $sort_by $sort_dir LIMIT $offset, $limit";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -589,25 +589,25 @@ function pm_get_folder_message_counts($include_search = true)
     $pm_draft_items = PM_DRAFT_ITEMS;
 
     $sql = "(SELECT PM_TYPE.TYPE, COUNT(DISTINCT PM.MID) AS MESSAGE_COUNT FROM PM ";
-    $sql.= "INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID) WHERE ((PM_TYPE.TYPE & $pm_inbox_items) ";
-    $sql.= "AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ((PM_TYPE.TYPE & $pm_saved_items) ";
-    $sql.= "AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ((PM_TYPE.TYPE & $pm_draft_items) ";
-    $sql.= "AND PM.FROM_UID = '{$_SESSION['UID']}') GROUP BY PM_TYPE.TYPE) UNION ";
-    $sql.= "(SELECT $pm_sent_items AS TYPE, COUNT(*) AS MESSAGE_COUNT FROM (SELECT PM.MID, ";
-    $sql.= "COUNT(PM_RECIPIENT.TO_UID) AS RECIPIENT_COUNT, COALESCE(OUTBOX.COUNT, 0) AS OUTBOX_COUNT ";
-    $sql.= "FROM PM INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
-    $sql.= "INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = PM.FROM_UID) ";
-    $sql.= "LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT FROM PM_TYPE ";
-    $sql.= "WHERE (PM_TYPE.TYPE & $pm_outbox_items) GROUP BY PM_TYPE.MID) AS OUTBOX ON (OUTBOX.MID = PM.MID) ";
-    $sql.= "WHERE (PM_TYPE.TYPE & $pm_sent_items) AND PM.FROM_UID = '{$_SESSION['UID']}' ";
-    $sql.= "GROUP BY PM.MID HAVING OUTBOX_COUNT < RECIPIENT_COUNT) AS SENT) UNION ";
-    $sql.= "(SELECT $pm_outbox_items AS TYPE, COUNT(*) AS MESSAGE_COUNT FROM (SELECT PM.MID, ";
-    $sql.= "COUNT(PM_RECIPIENT.TO_UID) AS RECIPIENT_COUNT, COALESCE(OUTBOX.COUNT, 0) AS OUTBOX_COUNT ";
-    $sql.= "FROM PM INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
-    $sql.= "LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT FROM PM_TYPE ";
-    $sql.= "WHERE (PM_TYPE.TYPE & $pm_outbox_items) GROUP BY PM_TYPE.MID) AS OUTBOX ON (OUTBOX.MID = PM.MID) ";
-    $sql.= "WHERE PM.FROM_UID = '{$_SESSION['UID']}' GROUP BY PM.MID ";
-    $sql.= "HAVING RECIPIENT_COUNT = OUTBOX_COUNT) AS OUTBOX) ";
+    $sql .= "INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID) WHERE ((PM_TYPE.TYPE & $pm_inbox_items) ";
+    $sql .= "AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ((PM_TYPE.TYPE & $pm_saved_items) ";
+    $sql .= "AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ((PM_TYPE.TYPE & $pm_draft_items) ";
+    $sql .= "AND PM.FROM_UID = '{$_SESSION['UID']}') GROUP BY PM_TYPE.TYPE) UNION ";
+    $sql .= "(SELECT $pm_sent_items AS TYPE, COUNT(*) AS MESSAGE_COUNT FROM (SELECT PM.MID, ";
+    $sql .= "COUNT(PM_RECIPIENT.TO_UID) AS RECIPIENT_COUNT, COALESCE(OUTBOX.COUNT, 0) AS OUTBOX_COUNT ";
+    $sql .= "FROM PM INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
+    $sql .= "INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = PM.FROM_UID) ";
+    $sql .= "LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT FROM PM_TYPE ";
+    $sql .= "WHERE (PM_TYPE.TYPE & $pm_outbox_items) GROUP BY PM_TYPE.MID) AS OUTBOX ON (OUTBOX.MID = PM.MID) ";
+    $sql .= "WHERE (PM_TYPE.TYPE & $pm_sent_items) AND PM.FROM_UID = '{$_SESSION['UID']}' ";
+    $sql .= "GROUP BY PM.MID HAVING OUTBOX_COUNT < RECIPIENT_COUNT) AS SENT) UNION ";
+    $sql .= "(SELECT $pm_outbox_items AS TYPE, COUNT(*) AS MESSAGE_COUNT FROM (SELECT PM.MID, ";
+    $sql .= "COUNT(PM_RECIPIENT.TO_UID) AS RECIPIENT_COUNT, COALESCE(OUTBOX.COUNT, 0) AS OUTBOX_COUNT ";
+    $sql .= "FROM PM INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
+    $sql .= "LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT FROM PM_TYPE ";
+    $sql .= "WHERE (PM_TYPE.TYPE & $pm_outbox_items) GROUP BY PM_TYPE.MID) AS OUTBOX ON (OUTBOX.MID = PM.MID) ";
+    $sql .= "WHERE PM.FROM_UID = '{$_SESSION['UID']}' GROUP BY PM.MID ";
+    $sql .= "HAVING RECIPIENT_COUNT = OUTBOX_COUNT) AS OUTBOX) ";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -638,8 +638,8 @@ function pm_get_folder_message_counts($include_search = true)
     if ($include_search) {
 
         $sql = "SELECT COUNT(PM_SEARCH_RESULTS.MID) AS RESULT_COUNT ";
-        $sql.= "FROM PM_SEARCH_RESULTS INNER JOIN PM ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
-        $sql.= "WHERE UID = '{$_SESSION['UID']}' AND PM.MID IS NOT NULL";
+        $sql .= "FROM PM_SEARCH_RESULTS INNER JOIN PM ON (PM.MID = PM_SEARCH_RESULTS.MID) ";
+        $sql .= "WHERE UID = '{$_SESSION['UID']}' AND PM.MID IS NOT NULL";
 
         if (!($result = $db->query($sql))) return false;
 
@@ -677,13 +677,13 @@ function pm_message_get($mid)
     $pm_outbox = PM_OUTBOX;
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS PM.MID, PM.REPLY_TO_MID, PM.FROM_UID, PM.SUBJECT, ";
-    $sql.= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, USER.NICKNAME AS FROM_NICKNAME, ";
-    $sql.= "PM_TYPE.TYPE, COUNT(PM_RECIPIENT.TO_UID) = COALESCE(OUTBOX.COUNT, 0) AS EDITABLE ";
-    $sql.= "FROM PM INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
-    $sql.= "INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = '{$_SESSION['UID']}') ";
-    $sql.= "LEFT JOIN USER ON (USER.UID = PM.FROM_UID) LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT ";
-    $sql.= "FROM PM_TYPE WHERE (PM_TYPE.TYPE & $pm_outbox) GROUP BY PM_TYPE.MID) AS OUTBOX ";
-    $sql.= "ON (OUTBOX.MID = PM.MID) WHERE PM.MID = '$mid' GROUP BY PM.MID ";
+    $sql .= "UNIX_TIMESTAMP(PM.CREATED) AS CREATED, USER.LOGON AS FROM_LOGON, USER.NICKNAME AS FROM_NICKNAME, ";
+    $sql .= "PM_TYPE.TYPE, COUNT(PM_RECIPIENT.TO_UID) = COALESCE(OUTBOX.COUNT, 0) AS EDITABLE ";
+    $sql .= "FROM PM INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
+    $sql .= "INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = '{$_SESSION['UID']}') ";
+    $sql .= "LEFT JOIN USER ON (USER.UID = PM.FROM_UID) LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT ";
+    $sql .= "FROM PM_TYPE WHERE (PM_TYPE.TYPE & $pm_outbox) GROUP BY PM_TYPE.MID) AS OUTBOX ";
+    $sql .= "ON (OUTBOX.MID = PM.MID) WHERE PM.MID = '$mid' GROUP BY PM.MID ";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -924,7 +924,7 @@ function pm_add_attachment($mid, $aid)
     if (!$db = db::get()) return false;
 
     $sql = "INSERT IGNORE INTO PM_ATTACHMENT_IDS (MID, AID) ";
-    $sql.= "VALUES ($mid, $aid)";
+    $sql .= "VALUES ($mid, $aid)";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -944,7 +944,7 @@ function pm_send_message($from_uid, $to_user_array, $subject, $content, $reply_m
     foreach ($to_user_array as $to_user) {
 
         if (!isset($to_user['UID']) || !is_numeric($to_user['UID'])) {
-             return false;
+            return false;
         }
     }
 
@@ -961,7 +961,7 @@ function pm_send_message($from_uid, $to_user_array, $subject, $content, $reply_m
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "INSERT INTO PM (SUBJECT, REPLY_TO_MID, FROM_UID, CREATED) ";
-    $sql.= "VALUES ('$subject', $reply_mid, '$from_uid', CAST('$current_datetime' AS DATETIME))";
+    $sql .= "VALUES ('$subject', $reply_mid, '$from_uid', CAST('$current_datetime' AS DATETIME))";
 
     if (!$db->query($sql)) return false;
 
@@ -974,12 +974,12 @@ function pm_send_message($from_uid, $to_user_array, $subject, $content, $reply_m
     foreach ($to_user_array as $to_user) {
 
         $sql = "INSERT INTO PM_RECIPIENT (MID, TO_UID, NOTIFIED) ";
-        $sql.= "VALUES ('$new_mid', '{$to_user['UID']}', 'N')";
+        $sql .= "VALUES ('$new_mid', '{$to_user['UID']}', 'N')";
 
         if (!$db->query($sql)) return false;
 
         $sql = "INSERT INTO PM_TYPE (MID, UID, TYPE) ";
-        $sql.= "VALUES ('$new_mid', '{$to_user['UID']}', '$pm_outbox')";
+        $sql .= "VALUES ('$new_mid', '{$to_user['UID']}', '$pm_outbox')";
 
         if (!$db->query($sql)) return false;
     }
@@ -989,7 +989,7 @@ function pm_send_message($from_uid, $to_user_array, $subject, $content, $reply_m
     if (isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
 
         $sql = "INSERT INTO PM_TYPE (MID, UID, TYPE) ";
-        $sql.= "VALUES ('$new_mid', '$from_uid', '$pm_sent')";
+        $sql .= "VALUES ('$new_mid', '$from_uid', '$pm_sent')";
 
         if (!$db->query($sql)) return false;
     }
@@ -1010,7 +1010,7 @@ function pm_save_message($from_uid, $to_user_array, $subject, $content, $reply_m
     foreach ($to_user_array as $to_user) {
 
         if (!isset($to_user['UID']) || !is_numeric($to_user['UID'])) {
-             return false;
+            return false;
         }
     }
 
@@ -1025,7 +1025,7 @@ function pm_save_message($from_uid, $to_user_array, $subject, $content, $reply_m
     $current_datetime = date(MYSQL_DATETIME, time());
 
     $sql = "INSERT INTO PM (SUBJECT, REPLY_TO_MID, FROM_UID, CREATED) ";
-    $sql.= "VALUES ('$subject', $reply_mid, '$from_uid', CAST('$current_datetime' AS DATETIME))";
+    $sql .= "VALUES ('$subject', $reply_mid, '$from_uid', CAST('$current_datetime' AS DATETIME))";
 
     if (!$db->query($sql)) return false;
 
@@ -1038,13 +1038,13 @@ function pm_save_message($from_uid, $to_user_array, $subject, $content, $reply_m
     foreach ($to_user_array as $to_user) {
 
         $sql = "INSERT INTO PM_RECIPIENT (MID, TO_UID, NOTIFIED) ";
-        $sql.= "VALUES ('$new_mid', '{$to_user['UID']}', 'N')";
+        $sql .= "VALUES ('$new_mid', '{$to_user['UID']}', 'N')";
 
         if (!$db->query($sql)) return false;
     }
 
     $sql = "INSERT INTO PM_TYPE (MID, UID, TYPE) ";
-    $sql.= "VALUES ('$new_mid', '$from_uid', '$pm_saved_draft')";
+    $sql .= "VALUES ('$new_mid', '$from_uid', '$pm_saved_draft')";
 
     if (!$db->query($sql)) return false;
 
@@ -1067,7 +1067,7 @@ function pm_send_saved_message($mid, $from_uid, $to_user_array, $subject, $conte
     foreach ($to_user_array as $to_user) {
 
         $sql = "INSERT INTO PM_TYPE (MID, UID, TYPE) ";
-        $sql.= "VALUES ('$mid', '{$to_user['UID']}', '$pm_outbox')";
+        $sql .= "VALUES ('$mid', '{$to_user['UID']}', '$pm_outbox')";
 
         if (!$db->query($sql)) return false;
     }
@@ -1077,7 +1077,7 @@ function pm_send_saved_message($mid, $from_uid, $to_user_array, $subject, $conte
     if (isset($user_prefs['PM_SAVE_SENT_ITEM']) && $user_prefs['PM_SAVE_SENT_ITEM'] == 'Y') {
 
         $sql = "INSERT INTO PM_TYPE (MID, UID, TYPE) ";
-        $sql.= "VALUES ('$mid', '$from_uid', '$pm_sent')";
+        $sql .= "VALUES ('$mid', '$from_uid', '$pm_sent')";
 
         if (!$db->query($sql)) return false;
     }
@@ -1098,7 +1098,7 @@ function pm_update_saved_message($mid, $from_uid, $to_user_array, $subject, $con
     foreach ($to_user_array as $to_user) {
 
         if (!isset($to_user['UID']) || !is_numeric($to_user['UID'])) {
-             return false;
+            return false;
         }
     }
 
@@ -1109,8 +1109,8 @@ function pm_update_saved_message($mid, $from_uid, $to_user_array, $subject, $con
     $reply_mid = is_numeric($reply_mid) ? $reply_mid : 'NULL';
 
     $sql = "UPDATE LOW_PRIORITY PM SET SUBJECT = '$subject', ";
-    $sql.= "REPLY_TO_MID = $reply_mid, FROM_UID = '$from_uid' ";
-    $sql.= "WHERE MID = '$mid'";
+    $sql .= "REPLY_TO_MID = $reply_mid, FROM_UID = '$from_uid' ";
+    $sql .= "WHERE MID = '$mid'";
 
     if (!$db->query($sql)) return false;
 
@@ -1125,7 +1125,7 @@ function pm_update_saved_message($mid, $from_uid, $to_user_array, $subject, $con
     foreach ($to_user_array as $to_user) {
 
         $sql = "INSERT INTO PM_RECIPIENT (MID, TO_UID, NOTIFIED) ";
-        $sql.= "VALUES ('$mid', '{$to_user['UID']}', 'N')";
+        $sql .= "VALUES ('$mid', '{$to_user['UID']}', 'N')";
 
         if (!$db->query($sql)) return false;
     }
@@ -1169,28 +1169,28 @@ function pm_delete_message($mid)
     $pm_draft_items = PM_DRAFT_ITEMS;
 
     $sql = "DELETE FROM PM_TYPE USING PM_TYPE INNER JOIN PM ON (PM.MID = PM_TYPE.MID) ";
-    $sql.= "WHERE (((PM_TYPE.TYPE & $pm_inbox_items) AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ";
-    $sql.= "((PM_TYPE.TYPE & $pm_outbox) AND PM.FROM_UID = '{$_SESSION['UID']}') OR ";
-    $sql.= "((PM_TYPE.TYPE & $pm_sent_items) AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ";
-    $sql.= "((PM_TYPE.TYPE & $pm_saved_out) AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ";
-    $sql.= "((PM_TYPE.TYPE & $pm_saved_in) AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ";
-    $sql.= "((PM_TYPE.TYPE & $pm_draft_items) AND PM.FROM_UID = '{$_SESSION['UID']}')) ";
-    $sql.= "AND PM_TYPE.MID = '$mid'";
+    $sql .= "WHERE (((PM_TYPE.TYPE & $pm_inbox_items) AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ";
+    $sql .= "((PM_TYPE.TYPE & $pm_outbox) AND PM.FROM_UID = '{$_SESSION['UID']}') OR ";
+    $sql .= "((PM_TYPE.TYPE & $pm_sent_items) AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ";
+    $sql .= "((PM_TYPE.TYPE & $pm_saved_out) AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ";
+    $sql .= "((PM_TYPE.TYPE & $pm_saved_in) AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ";
+    $sql .= "((PM_TYPE.TYPE & $pm_draft_items) AND PM.FROM_UID = '{$_SESSION['UID']}')) ";
+    $sql .= "AND PM_TYPE.MID = '$mid'";
 
     if (!($result = $db->query($sql))) return false;
 
     $sql = "DELETE FROM PM, PM_CONTENT, PM_RECIPIENT USING PM ";
-    $sql.= "LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
-    $sql.= "LEFT JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
-    $sql.= "LEFT JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID) ";
-    $sql.= "WHERE PM_TYPE.MID IS NULL AND PM.MID = '$mid'";
+    $sql .= "LEFT JOIN PM_CONTENT ON (PM_CONTENT.MID = PM.MID) ";
+    $sql .= "LEFT JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
+    $sql .= "LEFT JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID) ";
+    $sql .= "WHERE PM_TYPE.MID IS NULL AND PM.MID = '$mid'";
 
     if (!($result = $db->query($sql))) return false;
 
     $sql = "SELECT PAF.HASH FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "INNER JOIN PM_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-    $sql.= "LEFT JOIN PM ON (PM.MID = PAI.MID) WHERE PM.MID IS NULL ";
-    $sql.= "AND PAI.MID = '$mid'";
+    $sql .= "INNER JOIN PM_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql .= "LEFT JOIN PM ON (PM.MID = PAI.MID) WHERE PM.MID IS NULL ";
+    $sql .= "AND PAI.MID = '$mid'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1224,23 +1224,23 @@ function pm_archive_message($mid)
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    $pm_saved_in  = PM_SAVED_IN;
+    $pm_saved_in = PM_SAVED_IN;
     $pm_saved_out = PM_SAVED_OUT;
 
     $pm_inbox_items = PM_INBOX_ITEMS;
-    $pm_sent_items  = PM_SENT_ITEMS;
+    $pm_sent_items = PM_SENT_ITEMS;
 
     // Archive any PM that are in the User's Inbox
     $sql = "UPDATE LOW_PRIORITY PM_TYPE SET TYPE = '$pm_saved_in' ";
-    $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_inbox_items) ";
-    $sql.= "AND UID = '{$_SESSION['UID']}'";
+    $sql .= "WHERE MID = '$mid' AND (TYPE & $pm_inbox_items) ";
+    $sql .= "AND UID = '{$_SESSION['UID']}'";
 
     if (!$db->query($sql)) return false;
 
     // Archive any PM that are in the User's Sent Items
     $sql = "UPDATE LOW_PRIORITY PM_TYPE SET TYPE = '$pm_saved_out' ";
-    $sql.= "WHERE MID = '$mid' AND (TYPE & $pm_sent_items) ";
-    $sql.= "AND UID = '{$_SESSION['UID']}'";
+    $sql .= "WHERE MID = '$mid' AND (TYPE & $pm_sent_items) ";
+    $sql .= "AND UID = '{$_SESSION['UID']}'";
 
     if (!$db->query($sql)) return false;
 
@@ -1275,11 +1275,11 @@ function pm_get_new_messages($limit)
     $pm_outbox = PM_OUTBOX;
 
     $sql = "SELECT PM.MID, PM_TYPE.TYPE, PM.FROM_UID, PM_TYPE.UID, PM.SUBJECT, ";
-    $sql.= "PM.CREATED, PM_RECIPIENT.NOTIFIED FROM PM INNER JOIN PM_RECIPIENT ";
-    $sql.= "ON (PM_RECIPIENT.MID = PM.MID) INNER JOIN PM_TYPE ";
-    $sql.= "ON (PM_TYPE.MID = PM.MID) WHERE PM_TYPE.TYPE = '$pm_outbox' ";
-    $sql.= "AND PM_TYPE.UID = '{$_SESSION['UID']}' AND PM_RECIPIENT.NOTIFIED = 'N' ";
-    $sql.= "ORDER BY PM.CREATED ASC LIMIT $limit";
+    $sql .= "PM.CREATED, PM_RECIPIENT.NOTIFIED FROM PM INNER JOIN PM_RECIPIENT ";
+    $sql .= "ON (PM_RECIPIENT.MID = PM.MID) INNER JOIN PM_TYPE ";
+    $sql .= "ON (PM_TYPE.MID = PM.MID) WHERE PM_TYPE.TYPE = '$pm_outbox' ";
+    $sql .= "AND PM_TYPE.UID = '{$_SESSION['UID']}' AND PM_RECIPIENT.NOTIFIED = 'N' ";
+    $sql .= "ORDER BY PM.CREATED ASC LIMIT $limit";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1322,10 +1322,10 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
 
         // Mark the selected messages as unread and notified.
         $sql = "UPDATE LOW_PRIORITY PM_TYPE INNER JOIN PM_RECIPIENT ";
-        $sql.= "ON (PM_TYPE.MID = PM_RECIPIENT.MID AND PM_TYPE.UID = PM_RECIPIENT.TO_UID) ";
-        $sql.= "SET PM_TYPE.TYPE = '$pm_unread', PM_RECIPIENT.NOTIFIED = 'Y' ";
-        $sql.= "WHERE PM_TYPE.MID in ($mid_list) AND PM_TYPE.UID = '{$_SESSION['UID']}' ";
-        $sql.= "AND (PM_TYPE.TYPE & $pm_outbox) ";
+        $sql .= "ON (PM_TYPE.MID = PM_RECIPIENT.MID AND PM_TYPE.UID = PM_RECIPIENT.TO_UID) ";
+        $sql .= "SET PM_TYPE.TYPE = '$pm_unread', PM_RECIPIENT.NOTIFIED = 'Y' ";
+        $sql .= "WHERE PM_TYPE.MID in ($mid_list) AND PM_TYPE.UID = '{$_SESSION['UID']}' ";
+        $sql .= "AND (PM_TYPE.TYPE & $pm_outbox) ";
 
         if (!($result = $db->query($sql))) return false;
 
@@ -1335,7 +1335,7 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
 
     // Unread message count.
     $sql = "SELECT COUNT(MID) FROM PM_TYPE WHERE (TYPE & $pm_unread) ";
-    $sql.= "AND UID = '{$_SESSION['UID']}'";
+    $sql .= "AND UID = '{$_SESSION['UID']}'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1343,7 +1343,7 @@ function pm_get_message_count(&$pm_new_count, &$pm_outbox_count, &$pm_unread_cou
 
     // Check for any undelivered messages waiting for the user.
     $sql = "SELECT COUNT(MID) AS OUTBOX_COUNT FROM PM_TYPE ";
-    $sql.= "WHERE (TYPE & $pm_outbox) AND UID = '{$_SESSION['UID']}' ";
+    $sql .= "WHERE (TYPE & $pm_outbox) AND UID = '{$_SESSION['UID']}' ";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1426,7 +1426,7 @@ function pm_get_unread_count()
 
     // Check to see if the user has any new PMs
     $sql = "SELECT COUNT(MID) FROM PM_TYPE WHERE (TYPE & $pm_unread) ";
-    $sql.= "AND UID = '{$_SESSION['UID']}' ";
+    $sql .= "AND UID = '{$_SESSION['UID']}' ";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1452,14 +1452,14 @@ function pm_user_prune_folders($uid)
         $pm_prune_length_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - $pm_prune_length_seconds);
 
         $sql = "DELETE LOW_PRIORITY FROM PM_TYPE USING PM_TYPE INNER JOIN PM ON (PM.MID = PM_TYPE.MID) ";
-        $sql.= "WHERE (((PM_TYPE.TYPE & $pm_read) AND PM_TYPE.UID = '$uid') ";
-        $sql.= "OR ((PM_TYPE.TYPE & $pm_sent_items) AND PM_TYPE.UID = '$uid')) ";
-        $sql.= "AND PM.CREATED < CAST('$pm_prune_length_datetime' AS DATETIME)";
+        $sql .= "WHERE (((PM_TYPE.TYPE & $pm_read) AND PM_TYPE.UID = '$uid') ";
+        $sql .= "OR ((PM_TYPE.TYPE & $pm_sent_items) AND PM_TYPE.UID = '$uid')) ";
+        $sql .= "AND PM.CREATED < CAST('$pm_prune_length_datetime' AS DATETIME)";
 
         if (!$db->query($sql)) return false;
 
         $sql = "DELETE FROM PM USING PM LEFT JOIN PM_TYPE ";
-        $sql.= "ON (PM_TYPE.MID = PM.MID) WHERE PM_TYPE.MID IS NULL";
+        $sql .= "ON (PM_TYPE.MID = PM.MID) WHERE PM_TYPE.MID IS NULL";
 
         if (!$db->query($sql)) return false;
     }
@@ -1480,13 +1480,13 @@ function pm_system_prune_folders()
         $pm_prune_length_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - $pm_prune_length_seconds);
 
         $sql = "DELETE LOW_PRIORITY FROM PM_TYPE USING PM_TYPE INNER JOIN PM ON (PM.MID = PM_TYPE.MID) ";
-        $sql.= "WHERE ((PM_TYPE.TYPE & $pm_read) OR (PM_TYPE.TYPE & $pm_sent_items)) ";
-        $sql.= "AND PM.CREATED < CAST('$pm_prune_length_datetime' AS DATETIME)";
+        $sql .= "WHERE ((PM_TYPE.TYPE & $pm_read) OR (PM_TYPE.TYPE & $pm_sent_items)) ";
+        $sql .= "AND PM.CREATED < CAST('$pm_prune_length_datetime' AS DATETIME)";
 
         if (!$db->query($sql)) return false;
 
         $sql = "DELETE FROM PM USING PM LEFT JOIN PM_TYPE ";
-        $sql.= "ON (PM_TYPE.MID = PM.MID) WHERE PM_TYPE.MID IS NULL";
+        $sql .= "ON (PM_TYPE.MID = PM.MID) WHERE PM_TYPE.MID IS NULL";
 
         if (!$db->query($sql)) return false;
     }
@@ -1518,9 +1518,9 @@ function pms_have_attachments(&$message_array)
     if (!$db = db::get()) return false;
 
     $sql = "SELECT PMI.MID, COUNT(PAF.HASH) AS ATTACHMENT_COUNT ";
-    $sql.= "FROM POST_ATTACHMENT_FILES PAF INNER JOIN PM_ATTACHMENT_IDS PMI ";
-    $sql.= "ON (PMI.AID = PAF.AID) WHERE PMI.MID IN ($mid_list) ";
-    $sql.= "GROUP BY PMI.MID";
+    $sql .= "FROM POST_ATTACHMENT_FILES PAF INNER JOIN PM_ATTACHMENT_IDS PMI ";
+    $sql .= "ON (PMI.AID = PAF.AID) WHERE PMI.MID IN ($mid_list) ";
+    $sql .= "GROUP BY PMI.MID";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1542,8 +1542,8 @@ function pm_has_attachments(&$message_data)
     if (!$db = db::get()) return false;
 
     $sql = "SELECT PAF.HASH FROM PM_ATTACHMENT_IDS PAI ";
-    $sql.= "INNER JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
-    $sql.= "WHERE PAI.MID = '{$message_data['MID']}'";
+    $sql .= "INNER JOIN POST_ATTACHMENT_FILES PAF ON (PAF.AID = PAI.AID) ";
+    $sql .= "WHERE PAI.MID = '{$message_data['MID']}'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1615,7 +1615,7 @@ function pm_export_folders($pm_folders_array, $options_array)
 
     $file_size = filesize($zip_filename);
 
-    while (@ob_end_clean());
+    while (@ob_end_clean()) ;
 
     header("Content-Length: $file_size");
     header("Content-Type: application/zip");
@@ -1628,22 +1628,22 @@ function pm_export_folders($pm_folders_array, $options_array)
 function pm_export_html_top($message = null)
 {
     $html = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    $html.= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-    $html.= "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"". gettext("en-gb"). "\" lang=\"". gettext("en-gb"). "\" dir=\"". gettext("ltr"). "\">\n";
-    $html.= "<head>\n";
+    $html .= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
+    $html .= "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"" . gettext("en-gb") . "\" lang=\"" . gettext("en-gb") . "\" dir=\"" . gettext("ltr") . "\">\n";
+    $html .= "<head>\n";
 
     if (isset($message['SUBJECT']) && isset($message['MID'])) {
-        $html.= sprintf("<title>%s - %s</title>\n", gettext("Message"), htmlentities_array($message['SUBJECT']));
+        $html .= sprintf("<title>%s - %s</title>\n", gettext("Message"), htmlentities_array($message['SUBJECT']));
     } else {
-        $html.= "<title>". gettext("Messages"). "</title>\n";
+        $html .= "<title>" . gettext("Messages") . "</title>\n";
     }
 
     if (($user_style = html_get_style_sheet())) {
-        $html.= "<link rel=\"stylesheet\" href=\"". html_get_forum_domain(). $user_style. "\" type=\"text/css\" media=\"screen\" />";
+        $html .= "<link rel=\"stylesheet\" href=\"" . html_get_forum_domain() . $user_style . "\" type=\"text/css\" media=\"screen\" />";
     }
 
-    $html.= "</head>\n";
-    $html.= "<body>\n";
+    $html .= "</head>\n";
+    $html .= "<body>\n";
 
     return $html;
 }
@@ -1651,7 +1651,7 @@ function pm_export_html_top($message = null)
 function pm_export_html_bottom()
 {
     $html = "</body>\n";
-    $html.= "</html>\n";
+    $html .= "</html>\n";
 
     return $html;
 }
@@ -1748,15 +1748,15 @@ function pm_export_html($message_array, ZipArchive $zip, $options_array = array(
             $pm_display = pm_export_html_top($message);
         }
 
-        $pm_display.= pm_display_html_export($message);
+        $pm_display .= pm_display_html_export($message);
 
         if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_SINGLE) {
-            $pm_display.= "<br />\n";
+            $pm_display .= "<br />\n";
         }
 
         if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_MANY) {
 
-            $pm_display.= pm_export_html_bottom();
+            $pm_display .= pm_export_html_bottom();
 
             $zip->addFromString(sprintf("message_%s.html", $message['MID']), $pm_display);
         }
@@ -1764,7 +1764,7 @@ function pm_export_html($message_array, ZipArchive $zip, $options_array = array(
 
     if ($options_array['PM_EXPORT_FILE'] == PM_EXPORT_SINGLE) {
 
-        $pm_display.= pm_export_html_bottom();
+        $pm_display .= pm_export_html_bottom();
 
         $zip->addFromString("messages.html", $pm_display);
     }
@@ -1949,7 +1949,7 @@ function pm_update_folder_name($folder, $folder_name)
     $folder_name = $db->escape($folder_name);
 
     $sql = "INSERT INTO PM_FOLDERS (UID, FID, TITLE) VALUES('{$_SESSION['UID']}', '$folder', '$folder_name') ";
-    $sql.= "ON DUPLICATE KEY UPDATE TITLE = VALUES(TITLE)";
+    $sql .= "ON DUPLICATE KEY UPDATE TITLE = VALUES(TITLE)";
 
     if (!$db->query($sql)) return false;
 

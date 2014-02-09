@@ -1,27 +1,27 @@
 /*======================================================================
-Copyright Project Beehive Forum 2002
+ Copyright Project Beehive Forum 2002
 
-This file is part of Beehive Forum.
+ This file is part of Beehive Forum.
 
-Beehive Forum is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+ Beehive Forum is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-Beehive Forum is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ Beehive Forum is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-USA
-======================================================================*/
+ You should have received a copy of the GNU General Public License
+ along with Beehive; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+ USA
+ ======================================================================*/
 
-$(beehive).bind('init', function() {
+$(beehive).bind('init', function () {
 
-    $('input.search_input').each(function() {
+    $('input.search_input').each(function () {
 
         var $search_input = $(this);
 
@@ -29,7 +29,7 @@ $(beehive).bind('init', function() {
 
         var $search_button = $('<img src="' + beehive.images['search_button.png'] + '" class="search_button" />');
 
-        $search_button.bind('click', function() {
+        $search_button.bind('click', function () {
 
             var popup_query = {
                 webtag: beehive.webtag,
@@ -42,7 +42,7 @@ $(beehive).bind('init', function() {
             window.open('search_popup.php?' + $.param(popup_query), null, beehive.window_options.join(','));
         });
 
-        $search_button.load(function() {
+        $search_button.load(function () {
 
             $search_input.css({
                 border: 'none',
@@ -62,7 +62,7 @@ $(beehive).bind('init', function() {
 
                 minLength: 2,
 
-                source: function(request, response) {
+                source: function (request, response) {
 
                     var term = request.term;
 
@@ -79,10 +79,10 @@ $(beehive).bind('init', function() {
                             term: term
                         },
                         url: beehive.forum_path + '/ajax.php',
-                        success: function(data) {
+                        success: function (data) {
 
                             //noinspection JSUnresolvedVariable
-                            response($.map(data.results_array, function(item) {
+                            response($.map(data.results_array, function (item) {
 
                                 //noinspection JSUnresolvedVariable
                                 return {
@@ -93,13 +93,13 @@ $(beehive).bind('init', function() {
                         }
                     });
                 },
-                open: function(){
+                open: function () {
                     $('.ui-autocomplete').width($search_input.width() + 30);
                 },
-                focus: function() {
+                focus: function () {
                     return false;
                 },
-                select: function(event, ui) {
+                select: function (event, ui) {
 
                     if (!$search_input.hasClass('multiple')) {
 
@@ -123,7 +123,7 @@ $(beehive).bind('init', function() {
         }
     });
 
-    $('#select').bind('click', function() {
+    $('#select').bind('click', function () {
 
         var obj_id = $('#obj_id').val();
 
@@ -134,12 +134,12 @@ $(beehive).bind('init', function() {
             var $search_container = $search_input.closest('div.bhinputsearch');
 
             if ($search_container.length != 1) {
-                 return;
+                return;
             }
 
             var result_array = [];
 
-            $('input[name^=selected]:checked').each(function() {
+            $('input[name^=selected]:checked').each(function () {
                 result_array.push($(this).val());
                 return $search_input.hasClass('allow_multi');
             });

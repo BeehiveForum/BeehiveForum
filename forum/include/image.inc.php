@@ -22,8 +22,8 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
 // End Required includes
 
 function image_enable_transparency($im)
@@ -35,7 +35,7 @@ function image_enable_transparency($im)
 
     imagesavealpha($im, true);
 
-    $transparent = imagecolorallocatealpha($im, 255,255,255, 127);
+    $transparent = imagecolorallocatealpha($im, 255, 255, 255, 127);
 
     imagefilledrectangle($im, 0, 0, imagesx($im), imagesy($im), $transparent);
 
@@ -138,7 +138,7 @@ function image_resize_gd($src, $dest, $max_width, $max_height)
     if (!is_numeric($max_height)) return false;
 
     // Required PHP image create from functions
-    $required_read_functions  = array(
+    $required_read_functions = array(
         1 => 'imagecreatefromgif',
         2 => 'imagecreatefromjpeg',
         3 => 'imagecreatefrompng'
@@ -193,7 +193,7 @@ function image_resize_gd($src, $dest, $max_width, $max_height)
     if (!($src_im = @$required_read_functions[$image_info[2]]($src))) return false;
 
     // Extract the dimensions from the image info.
-    $target_width  = $image_info[0];
+    $target_width = $image_info[0];
     $target_height = $image_info[1];
 
     // Scale the width and height till we fit in 1 of the dimensions.

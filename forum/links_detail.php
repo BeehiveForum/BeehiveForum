@@ -25,16 +25,16 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'links.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'links.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check links section is enabled.
@@ -382,7 +382,7 @@ if (($comments_array = links_get_comments($lid)) !== false) {
     foreach ($comments_array as $comment_id => $comment) {
 
         $profile_link = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$comment['UID']}\" target=\"_blank\" class=\"popup 650x500\">";
-        $profile_link.= word_filter_add_ob_tags(format_user_name($comment['LOGON'], $comment['NICKNAME']), true). "</a>";
+        $profile_link .= word_filter_add_ob_tags(format_user_name($comment['LOGON'], $comment['NICKNAME']), true) . "</a>";
 
         if ($user_perm_links_moderate || $comment['UID'] == $_SESSION['UID']) {
 

@@ -25,19 +25,19 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'attachments.inc.php';
-require_once BH_INCLUDE_PATH. 'banned.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'email.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'perm.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'user.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'attachments.inc.php';
+require_once BH_INCLUDE_PATH . 'banned.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'email.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'perm.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -98,7 +98,7 @@ $allowed_image_types_array = array(
     'gif'
 );
 
-$allowed_image_types = "*.". implode(", *.", $allowed_image_types_array);
+$allowed_image_types = "*." . implode(", *.", $allowed_image_types_array);
 
 $user_prefs_global = array();
 
@@ -200,9 +200,9 @@ if (isset($_POST['save'])) {
 
         if (isset($_POST['dob_year']) && isset($_POST['dob_month']) && isset($_POST['dob_day']) && @checkdate($_POST['dob_month'], $_POST['dob_day'], $_POST['dob_year'])) {
 
-            $dob['DAY']   = trim($_POST['dob_day']);
+            $dob['DAY'] = trim($_POST['dob_day']);
             $dob['MONTH'] = trim($_POST['dob_month']);
-            $dob['YEAR']  = trim($_POST['dob_year']);
+            $dob['YEAR'] = trim($_POST['dob_year']);
 
             $user_prefs['DOB'] = sprintf("%04d-%02d-%02d", $dob['YEAR'], $dob['MONTH'], $dob['DAY']);
 
@@ -471,9 +471,9 @@ if (isset($user_prefs['DOB']) && preg_match('/\d{4,}-\d{2,}-\d{2,}/u', $user_pre
 
 } else {
 
-    $dob['YEAR']  = 0;
+    $dob['YEAR'] = 0;
     $dob['MONTH'] = 0;
-    $dob['DAY']   = 0;
+    $dob['DAY'] = 0;
     $dob['BLANK_FIELDS'] = true;
 }
 

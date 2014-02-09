@@ -25,15 +25,15 @@ USA
 require_once 'boot.php';
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'form.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'perm.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
-require_once BH_INCLUDE_PATH. 'word_filter.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'perm.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
 // Check we're logged in correctly
@@ -127,21 +127,21 @@ if (isset($_POST['save'])) {
         $t_description = "";
     }
 
-    $t_admintools = (double) (isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
-    $t_banned     = (double) (isset($_POST['t_banned']))     ? $_POST['t_banned']     : 0;
-    $t_wormed     = (double) (isset($_POST['t_wormed']))     ? $_POST['t_wormed']     : 0;
-    $t_globalmod  = (double) (isset($_POST['t_globalmod']))  ? $_POST['t_globalmod']  : 0;
-    $t_linksmod   = (double) (isset($_POST['t_linksmod']))   ? $_POST['t_linksmod']   : 0;
+    $t_admintools = (double)(isset($_POST['t_admintools'])) ? $_POST['t_admintools'] : 0;
+    $t_banned = (double)(isset($_POST['t_banned'])) ? $_POST['t_banned'] : 0;
+    $t_wormed = (double)(isset($_POST['t_wormed'])) ? $_POST['t_wormed'] : 0;
+    $t_globalmod = (double)(isset($_POST['t_globalmod'])) ? $_POST['t_globalmod'] : 0;
+    $t_linksmod = (double)(isset($_POST['t_linksmod'])) ? $_POST['t_linksmod'] : 0;
 
-    $new_group_perms = (double) $t_banned | $t_wormed | $t_globalmod | $t_linksmod;
+    $new_group_perms = (double)$t_banned | $t_wormed | $t_globalmod | $t_linksmod;
 
     if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
-        $new_group_perms = (double) $new_group_perms | $t_admintools;
+        $new_group_perms = (double)$new_group_perms | $t_admintools;
 
     } else {
 
-        $new_group_perms = (double) $new_group_perms | ($group_permissions & USER_PERM_ADMIN_TOOLS);
+        $new_group_perms = (double)$new_group_perms | ($group_permissions & USER_PERM_ADMIN_TOOLS);
     }
 
     if ($valid) {
@@ -156,21 +156,21 @@ if (isset($_POST['save'])) {
 
                 foreach ($t_update_perms_array as $fid) {
 
-                    $t_post_read     = (double) (isset($_POST['t_post_read'][$fid]))     ? $_POST['t_post_read'][$fid]     : 0;
-                    $t_post_create   = (double) (isset($_POST['t_post_create'][$fid]))   ? $_POST['t_post_create'][$fid]   : 0;
-                    $t_thread_create = (double) (isset($_POST['t_thread_create'][$fid])) ? $_POST['t_thread_create'][$fid] : 0;
-                    $t_post_edit     = (double) (isset($_POST['t_post_edit'][$fid]))     ? $_POST['t_post_edit'][$fid]     : 0;
-                    $t_post_delete   = (double) (isset($_POST['t_post_delete'][$fid]))   ? $_POST['t_post_delete'][$fid]   : 0;
-                    $t_post_attach   = (double) (isset($_POST['t_post_attach'][$fid]))   ? $_POST['t_post_attach'][$fid]   : 0;
-                    $t_moderator     = (double) (isset($_POST['t_moderator'][$fid]))     ? $_POST['t_moderator'][$fid]     : 0;
-                    $t_post_html     = (double) (isset($_POST['t_post_html'][$fid]))     ? $_POST['t_post_html'][$fid]     : 0;
-                    $t_post_sig      = (double) (isset($_POST['t_post_sig'][$fid]))      ? $_POST['t_post_sig'][$fid]      : 0;
-                    $t_post_approval = (double) (isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
+                    $t_post_read = (double)(isset($_POST['t_post_read'][$fid])) ? $_POST['t_post_read'][$fid] : 0;
+                    $t_post_create = (double)(isset($_POST['t_post_create'][$fid])) ? $_POST['t_post_create'][$fid] : 0;
+                    $t_thread_create = (double)(isset($_POST['t_thread_create'][$fid])) ? $_POST['t_thread_create'][$fid] : 0;
+                    $t_post_edit = (double)(isset($_POST['t_post_edit'][$fid])) ? $_POST['t_post_edit'][$fid] : 0;
+                    $t_post_delete = (double)(isset($_POST['t_post_delete'][$fid])) ? $_POST['t_post_delete'][$fid] : 0;
+                    $t_post_attach = (double)(isset($_POST['t_post_attach'][$fid])) ? $_POST['t_post_attach'][$fid] : 0;
+                    $t_moderator = (double)(isset($_POST['t_moderator'][$fid])) ? $_POST['t_moderator'][$fid] : 0;
+                    $t_post_html = (double)(isset($_POST['t_post_html'][$fid])) ? $_POST['t_post_html'][$fid] : 0;
+                    $t_post_sig = (double)(isset($_POST['t_post_sig'][$fid])) ? $_POST['t_post_sig'][$fid] : 0;
+                    $t_post_approval = (double)(isset($_POST['t_post_approval'][$fid])) ? $_POST['t_post_approval'][$fid] : 0;
 
-                    $new_group_perms = (double) $t_post_read | $t_post_create | $t_thread_create;
-                    $new_group_perms = (double) $new_group_perms | $t_post_edit | $t_post_delete;
-                    $new_group_perms = (double) $new_group_perms | $t_moderator | $t_post_attach;
-                    $new_group_perms = (double) $new_group_perms | $t_post_html | $t_post_sig | $t_post_approval;
+                    $new_group_perms = (double)$t_post_read | $t_post_create | $t_thread_create;
+                    $new_group_perms = (double)$new_group_perms | $t_post_edit | $t_post_delete;
+                    $new_group_perms = (double)$new_group_perms | $t_moderator | $t_post_attach;
+                    $new_group_perms = (double)$new_group_perms | $t_post_html | $t_post_sig | $t_post_approval;
 
                     if (!perm_update_group_folder_perms($gid, $fid, $new_group_perms)) {
 
@@ -191,8 +191,8 @@ if (isset($_POST['save'])) {
 } else if (isset($_POST['addusers'])) {
 
     $redirect_uri = "admin_user_groups_edit_users.php?webtag=$webtag&gid=$gid";
-    $redirect_uri.= "&ret=admin_user_groups_edit.php%3Fwebtag%3D$webtag%26gid%3D$gid";
-    $redirect_uri.= "%26ret%3D". rawurlencode(rawurlencode(rawurlencode($ret)));
+    $redirect_uri .= "&ret=admin_user_groups_edit.php%3Fwebtag%3D$webtag%26gid%3D$gid";
+    $redirect_uri .= "%26ret%3D" . rawurlencode(rawurlencode(rawurlencode($ret)));
 
     header_redirect($redirect_uri);
     exit;
@@ -234,11 +234,11 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Name"), ":</td>\n";
-echo "                        <td align=\"left\">".form_input_text("t_name", (isset($t_name) ? htmlentities_array($t_name) : htmlentities_array($group['GROUP_NAME'])), 30, 64)."</td>\n";
+echo "                        <td align=\"left\">" . form_input_text("t_name", (isset($t_name) ? htmlentities_array($t_name) : htmlentities_array($group['GROUP_NAME'])), 30, 64) . "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Description"), ":</td>\n";
-echo "                        <td align=\"left\">".form_input_text("t_description", (isset($t_description) ? htmlentities_array($t_description) : htmlentities_array($group['GROUP_DESC'])), 30, 64)."</td>\n";
+echo "                        <td align=\"left\">" . form_input_text("t_description", (isset($t_description) ? htmlentities_array($t_description) : htmlentities_array($group['GROUP_DESC'])), 30, 64) . "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">&nbsp;</td>\n";

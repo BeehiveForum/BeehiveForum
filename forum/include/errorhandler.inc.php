@@ -22,12 +22,13 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'cache.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'header.inc.php';
-require_once BH_INCLUDE_PATH. 'server.inc.php';
+require_once BH_INCLUDE_PATH . 'cache.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'header.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
+
 // End Required includes
 
 class Error extends Exception
@@ -89,7 +90,7 @@ function bh_exception_handler(Exception $exception)
 
         cache_disable();
 
-        while (@ob_end_clean());
+        while (@ob_end_clean()) ;
 
         ob_start();
 
@@ -291,7 +292,7 @@ function bh_error_process(Exception $exception)
     }
 
     if (defined('BEEHIVE_VERSION')) {
-       $version_strings[] = sprintf('Beehive Forum %s', BEEHIVE_VERSION);
+        $version_strings[] = sprintf('Beehive Forum %s', BEEHIVE_VERSION);
     }
 
     if (($php_version = phpversion()) !== false) {
@@ -310,7 +311,7 @@ function bh_error_process(Exception $exception)
 
         $mysql_version = sprintf('MySQL/%s', db::get_version());
 
-    } catch (Exception $e){
+    } catch (Exception $e) {
 
         $mysql_version = 'MySQL Version Unknown';
     }
@@ -325,7 +326,7 @@ function bh_error_process(Exception $exception)
 
     $error_msg_array[] = '<p><b>HTTP Request:</b></p>';
 
-    $error_msg_array[] =  $_SERVER['PHP_SELF'];
+    $error_msg_array[] = $_SERVER['PHP_SELF'];
 
     if (isset($_GET)) {
 
@@ -416,11 +417,11 @@ function bh_error_send_email(Exception $exception)
         $error_log_email_message = implode("\n\n", array_filter(array_map('strip_tags', $error_msg_array), 'strlen'));
 
         $headers = "Return-path: $error_report_email_addr_from\n";
-        $headers.= "From: \"Beehive Forum Error Report\" <$error_report_email_addr_from>\n";
-        $headers.= "Reply-To: \"Beehive Forum Error Report\" <$error_report_email_addr_from>\n";
-        $headers.= "Content-type: text/plain; charset=UTF-8\n";
-        $headers.= "X-Mailer: PHP/". phpversion(). "\n";
-        $headers.= "X-Beehive-Forum: Beehive Forum ". BEEHIVE_VERSION;
+        $headers .= "From: \"Beehive Forum Error Report\" <$error_report_email_addr_from>\n";
+        $headers .= "Reply-To: \"Beehive Forum Error Report\" <$error_report_email_addr_from>\n";
+        $headers .= "Content-type: text/plain; charset=UTF-8\n";
+        $headers .= "X-Mailer: PHP/" . phpversion() . "\n";
+        $headers .= "X-Beehive-Forum: Beehive Forum " . BEEHIVE_VERSION;
 
         @mail($error_report_email_addr_to, "Beehive Forum Error Report", $error_log_email_message, $headers);
     }

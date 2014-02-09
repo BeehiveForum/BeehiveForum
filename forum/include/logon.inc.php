@@ -41,7 +41,7 @@ function logon_perform()
         if (!user_guest_enabled()) return false;
 
         // Initialise Guest user session.
-        session::create(0);
+        session::start(0, true);
 
         // Success
         return true;
@@ -58,7 +58,7 @@ function logon_perform()
         if (($uid = user_logon($user_logon, $user_password)) !== false) {
 
             // Initialise a user session.
-            session::create($uid);
+            session::start($uid, true);
 
             // Check if we should save a token to allow auto logon,
             if (isset($_POST['user_remember']) && ($_POST['user_remember'] == 'Y')) {

@@ -78,7 +78,15 @@ abstract class session
             }
         }
 
-        session::start($update_visitor_log);
+        session_start();
+
+        if (!isset($_SESSION['UID'])) {
+
+            $_SESSION['UID'] = 0;
+            $update_visitor_log = true;
+        }
+
+        session::start($_SESSION['UID'], $update_visitor_log);
     }
 
     public static function open()
@@ -477,19 +485,11 @@ abstract class session
         return false;
     }
 
-    public static function start($update_visitor_log)
+    public static function start($uid, $update_visitor_log)
     {
-        session_start();
-
-        if (!isset($_SESSION['UID'])) {
-
-            $_SESSION['UID'] = 0;
-            $update_visitor_log = true;
-        }
-
         if (!($forum_fid = get_forum_fid())) $forum_fid = 0;
 
-        if (!($user = user_get($_SESSION['UID']))) {
+        if (!($user = user_get($uid))) {
 
             $user = array(
                 'UID' => 0,
@@ -507,13 +507,13 @@ abstract class session
 
         $_SESSION['IPADDRESS'] = get_ip_address();
 
-        if (session::logged_in() && ($user_prefs = user_get_prefs($_SESSION['UID']))) {
+        if (session::logged_in() && ($user_prefs = user_get_prefs($uid))) {
             $_SESSION = array_merge($_SESSION, $user_prefs);
         } else {
             $_SESSION = array_merge($_SESSION, user_get_pref_names(array('STYLE')));
         }
 
-        if (($user_perms = session::get_perm_array($_SESSION['UID'], $forum_fid))) {
+        if (($user_perms = session::get_perm_array($uid, $forum_fid))) {
             $_SESSION['PERMS'] = $user_perms;
         }
 
@@ -521,14 +521,14 @@ abstract class session
             $_SESSION['RAND_HASH'] = md5(uniqid(mt_rand()));
         }
 
-        if ($_SESSION['UID'] > 0 && !forum_get_last_visit($_SESSION['UID']) && ($gid = perm_get_default_group())) {
-            perm_add_user_to_group($_SESSION['UID'], $gid);
+        if ($uid > 0 && !forum_get_last_visit($uid) && ($gid = perm_get_default_group())) {
+            perm_add_user_to_group($uid, $gid);
         }
 
-        forum_update_last_visit($_SESSION['UID']);
+        forum_update_last_visit($uid);
 
         if ($update_visitor_log) {
-            session::update_visitor_log($_SESSION['UID'], $forum_fid);
+            session::update_visitor_log($uid, $forum_fid);
         }
     }
 

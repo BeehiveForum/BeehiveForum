@@ -144,7 +144,7 @@ foreach ($update_files_array as $source_file => $filename) {
         }
 
         $include_file_line = sprintf(
-            "require_once BH_INCLUDE_PATH. '%s'",
+            "require_once BH_INCLUDE_PATH . '%s'",
             $include_file
         );
 

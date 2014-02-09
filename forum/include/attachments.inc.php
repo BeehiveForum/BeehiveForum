@@ -22,14 +22,14 @@ USA
 ======================================================================*/
 
 // Required includes
-require_once BH_INCLUDE_PATH. 'admin.inc.php';
-require_once BH_INCLUDE_PATH. 'constants.inc.php';
-require_once BH_INCLUDE_PATH. 'db.inc.php';
-require_once BH_INCLUDE_PATH. 'format.inc.php';
-require_once BH_INCLUDE_PATH. 'forum.inc.php';
-require_once BH_INCLUDE_PATH. 'html.inc.php';
-require_once BH_INCLUDE_PATH. 'post.inc.php';
-require_once BH_INCLUDE_PATH. 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'admin.inc.php';
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'db.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'forum.inc.php';
+require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'post.inc.php';
+require_once BH_INCLUDE_PATH . 'session.inc.php';
 // End Required includes
 
 function attachments_get_upload_tmp_dir()
@@ -75,32 +75,32 @@ function attachments_get($uid, $filter = ATTACHMENT_FILTER_BOTH, $hash_array = a
     $hash_array = array_filter($hash_array, 'is_md5');
 
     $sql = "SELECT PAF.AID, PAF.HASH, PAF.FILENAME, PAF.MIMETYPE, ";
-    $sql.= "PAF.FILESIZE, PAF.WIDTH, PAF.HEIGHT, PAF.THUMBNAIL, ";
-    $sql.= "PAF.DOWNLOADS FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID ";
-    $sql.= "AND PAI.FID = '$forum_fid') LEFT JOIN PM_ATTACHMENT_IDS PMAI ";
-    $sql.= "ON (PMAI.AID = PAF.AID) WHERE PAF.UID = '$uid' ";
+    $sql .= "PAF.FILESIZE, PAF.WIDTH, PAF.HEIGHT, PAF.THUMBNAIL, ";
+    $sql .= "PAF.DOWNLOADS FROM POST_ATTACHMENT_FILES PAF ";
+    $sql .= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID ";
+    $sql .= "AND PAI.FID = '$forum_fid') LEFT JOIN PM_ATTACHMENT_IDS PMAI ";
+    $sql .= "ON (PMAI.AID = PAF.AID) WHERE PAF.UID = '$uid' ";
 
     switch ($filter) {
 
         case ATTACHMENT_FILTER_ASSIGNED:
 
-            $sql.= "AND (PAI.AID IS NOT NULL OR PMAI.AID IS NOT NULL) ";
+            $sql .= "AND (PAI.AID IS NOT NULL OR PMAI.AID IS NOT NULL) ";
             break;
 
         case ATTACHMENT_FILTER_UNASSIGNED:
 
-            $sql.= "AND PAI.AID IS NULL AND PMAI.AID IS NULL ";
+            $sql .= "AND PAI.AID IS NULL AND PMAI.AID IS NULL ";
             break;
     }
 
     if (is_array($hash_array) && sizeof($hash_array) > 0) {
 
         $hash_list = implode("', '", $hash_array);
-        $sql.= "AND PAF.HASH IN ('$hash_list') ";
+        $sql .= "AND PAF.HASH IN ('$hash_list') ";
     }
 
-    $sql.= "ORDER BY PAF.FILENAME";
+    $sql .= "ORDER BY PAF.FILENAME";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -135,11 +135,11 @@ function attachments_get_by_aid($aid, $uid = null)
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
     $sql = "SELECT AID, UID, FILENAME, MIMETYPE, FILESIZE, WIDTH, ";
-    $sql.= "HEIGHT, THUMBNAIL, HASH, DOWNLOADS FROM POST_ATTACHMENT_FILES ";
-    $sql.= "WHERE AID = '$aid' ";
+    $sql .= "HEIGHT, THUMBNAIL, HASH, DOWNLOADS FROM POST_ATTACHMENT_FILES ";
+    $sql .= "WHERE AID = '$aid' ";
 
     if (isset($uid) && is_numeric($uid)) {
-        $sql.= "AND UID = '$uid'";
+        $sql .= "AND UID = '$uid'";
     }
 
     if (!($result = $db->query($sql))) return false;
@@ -160,6 +160,7 @@ function attachments_get_by_aid($aid, $uid = null)
         "width" => $attachment_data['WIDTH'],
     );
 }
+
 function attachments_get_by_hash($hash, $uid = null)
 {
     if (!$db = db::get()) return false;
@@ -169,11 +170,11 @@ function attachments_get_by_hash($hash, $uid = null)
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
     $sql = "SELECT AID, UID, FILENAME, MIMETYPE, FILESIZE, WIDTH, ";
-    $sql.= "HEIGHT, THUMBNAIL, HASH, DOWNLOADS FROM POST_ATTACHMENT_FILES ";
-    $sql.= "WHERE HASH = '$hash' ";
+    $sql .= "HEIGHT, THUMBNAIL, HASH, DOWNLOADS FROM POST_ATTACHMENT_FILES ";
+    $sql .= "WHERE HASH = '$hash' ";
 
     if (isset($uid) && is_numeric($uid)) {
-        $sql.= "AND UID = '$uid'";
+        $sql .= "AND UID = '$uid'";
     }
 
     if (!($result = $db->query($sql))) return false;
@@ -220,8 +221,8 @@ function attachments_add($uid, $filename, $hash, $mimetype, $filesize, $image_wi
     $hash = $db->escape($hash);
 
     $sql = "INSERT INTO POST_ATTACHMENT_FILES (UID, FILENAME, MIMETYPE, FILESIZE, ";
-    $sql.= "WIDTH, HEIGHT, THUMBNAIL, HASH) VALUES ('$uid', '$filename', '$mimetype', ";
-    $sql.= "'$filesize', $image_width, $image_height, '$thumbnail', '$hash')";
+    $sql .= "WIDTH, HEIGHT, THUMBNAIL, HASH) VALUES ('$uid', '$filename', '$mimetype', ";
+    $sql .= "'$filesize', $image_width, $image_height, '$thumbnail', '$hash')";
 
     if (!$db->query($sql)) return false;
 
@@ -239,9 +240,9 @@ function attachments_delete($hash)
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
     $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
-    $sql.= "PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-    $sql.= "WHERE PAF.HASH = '$hash'";
+    $sql .= "PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
+    $sql .= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql .= "WHERE PAF.HASH = '$hash'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -270,7 +271,7 @@ function attachments_delete($hash)
     }
 
     $sql = "DELETE QUICK FROM POST_ATTACHMENT_FILES ";
-    $sql.= "WHERE HASH = '$hash'";
+    $sql .= "WHERE HASH = '$hash'";
 
     if (!$db->query($sql)) return false;
 
@@ -292,9 +293,9 @@ function attachments_delete_thumbnail($hash)
     if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
 
     $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
-    $sql.= "PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-    $sql.= "WHERE PAF.HASH = '$hash'";
+    $sql .= "PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
+    $sql .= "LEFT JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql .= "WHERE PAF.HASH = '$hash'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -379,12 +380,12 @@ function attachments_get_post_used_space($uid, $hash_array)
     $hash_list = implode("', '", $hash_array);
 
     $sql = "SELECT PAF.HASH, PAF.FILESIZE FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "WHERE PAF.UID = '$uid' AND PAF.HASH IN ('$hash_list')";
+    $sql .= "WHERE PAF.UID = '$uid' AND PAF.HASH IN ('$hash_list')";
 
     if (!($result = $db->query($sql))) return 0;
 
     while (($attachment_data = $result->fetch_assoc()) !== null) {
-        $post_attachment_space+= $attachment_data['FILESIZE'];
+        $post_attachment_space += $attachment_data['FILESIZE'];
     }
 
     return $post_attachment_space;
@@ -399,12 +400,12 @@ function attachments_get_user_used_space($uid)
     if (!is_numeric($uid)) return 0;
 
     $sql = "SELECT PAF.HASH, PAF.FILESIZE FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "WHERE PAF.UID = '$uid'";
+    $sql .= "WHERE PAF.UID = '$uid'";
 
     if (!($result = $db->query($sql))) return 0;
 
     while (($attachment_data = $result->fetch_assoc()) !== null) {
-        $user_attachment_space+= $attachment_data['FILESIZE'];
+        $user_attachment_space += $attachment_data['FILESIZE'];
     }
 
     return $user_attachment_space;
@@ -425,14 +426,14 @@ function attachments_form($uid, $hash_array, $view = ATTACHMENT_FILTER_UNASSIGNE
     $attachment_free_user_space = attachments_get_free_user_space($uid);
 
     if (($view & ATTACHMENT_FILTER_ASSIGNED) && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_ASSIGNED))) {
-        $html.= attachments_form_list($attachments_array, $hash_array);
+        $html .= attachments_form_list($attachments_array, $hash_array);
     }
 
     if (($view & ATTACHMENT_FILTER_UNASSIGNED) && ($attachments_array = attachments_get($uid, ATTACHMENT_FILTER_UNASSIGNED))) {
-        $html.= attachments_form_list($attachments_array, $hash_array);
+        $html .= attachments_form_list($attachments_array, $hash_array);
     }
 
-    $html.= sprintf(
+    $html .= sprintf(
         '</ul>
          <div class="buttons"></div>
          <div class="summary">
@@ -479,7 +480,7 @@ function attachments_form_list($attachments_array, $hash_array)
 
     foreach ($attachments_array as $attachment) {
 
-        $html.= sprintf(
+        $html .= sprintf(
             '<li class="attachment complete" data-hash="%1$s">
                <label>
                  <input %2$s class="bhinputcheckbox" name="attachment[]" type="checkbox" value="%1$s" />
@@ -492,16 +493,16 @@ function attachments_form_list($attachments_array, $hash_array)
                  <span class="filesize">%10$s</span>
                </label>
              </li>',
-             $attachment['hash'],
-             in_array($attachment['hash'], $hash_array) ? 'checked="checked"' : '',
-             $webtag,
-             urlencode($attachment['filename']),
-             format_file_name($attachment['filename']),
-             htmlentities_array(gettext('Retry')),
-             gettext('Retry'),
-             htmlentities_array(gettext('Cancel')),
-             gettext('Cancel'),
-             format_file_size($attachment['filesize'])
+            $attachment['hash'],
+            in_array($attachment['hash'], $hash_array) ? 'checked="checked"' : '',
+            $webtag,
+            urlencode($attachment['filename']),
+            format_file_name($attachment['filename']),
+            htmlentities_array(gettext('Retry')),
+            gettext('Retry'),
+            htmlentities_array(gettext('Cancel')),
+            gettext('Cancel'),
+            format_file_size($attachment['filesize'])
         );
     }
 
@@ -515,9 +516,9 @@ function attachments_get_message_link($hash)
     $hash = $db->escape($hash);
 
     $sql = "SELECT FORUMS.WEBTAG, PAI.TID, PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "INNER JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-    $sql.= "INNER JOIN FORUMS ON (FORUMS.FID = PAI.FID) ";
-    $sql.= "WHERE PAF.HASH = '$hash'";
+    $sql .= "INNER JOIN POST_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql .= "INNER JOIN FORUMS ON (FORUMS.FID = PAI.FID) ";
+    $sql .= "WHERE PAF.HASH = '$hash'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -539,8 +540,8 @@ function attachments_get_pm_link($hash)
     $hash = $db->escape($hash);
 
     $sql = "SELECT PAI.MID FROM POST_ATTACHMENT_FILES PAF ";
-    $sql.= "INNER JOIN PM_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
-    $sql.= "WHERE PAF.HASH = '$hash'";
+    $sql .= "INNER JOIN PM_ATTACHMENT_IDS PAI ON (PAI.AID = PAF.AID) ";
+    $sql .= "WHERE PAF.HASH = '$hash'";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -558,7 +559,7 @@ function attachments_inc_download_count($hash)
     if (!is_md5($hash)) return false;
 
     $sql = "UPDATE LOW_PRIORITY POST_ATTACHMENT_FILES ";
-    $sql.= "SET DOWNLOADS = DOWNLOADS + 1 WHERE HASH = '$hash'";
+    $sql .= "SET DOWNLOADS = DOWNLOADS + 1 WHERE HASH = '$hash'";
 
     if (!$db->query($sql)) return false;
 
@@ -569,9 +570,14 @@ function attachments_embed_check($content)
 {
     if (forum_get_setting('attachments_allow_embed', 'Y')) return false;
 
-    $content_check = preg_replace('/\&amp;\#([0-9]+)\;/ume', "chr('\\1')", rawurldecode($content));
+    $content_check = preg_replace_callback('/\&amp;\#([0-9]+)\;/um', 'attachments_embed_check_callback', rawurldecode($content));
 
     return preg_match("/<.+(src|background|codebase|background-image)(=|s?:s?).+get_attachment.php.+>/iu", $content_check);
+}
+
+function attachments_embed_check_callback($match)
+{
+    return chr($match[1]);
 }
 
 function attachments_make_link($attachment, $show_thumbs = true, $limit_filename = false, $local_path = false, $img_tag = true)
@@ -624,7 +630,7 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
     } else {
 
         $attachment_href = "get_attachment.php?webtag=$webtag&amp;hash={$attachment['hash']}";
-        $attachment_href.= "&amp;filename={$attachment['filename']}";
+        $attachment_href .= "&amp;filename={$attachment['filename']}";
     }
 
     if ($img_tag) {
@@ -665,18 +671,18 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
             }
 
             $attachment_link = "<span class=\"attachment_thumb\"><a href=\"$attachment_href\" title=\"$title\" ";
-            $attachment_link.= "target=\"_blank\"><img src=\"$attachment_href&amp;thumb=1\"";
-            $attachment_link.= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
-            $attachment_link.= "alt=\"$title\" title=\"$title\" /></a></span>";
+            $attachment_link .= "target=\"_blank\"><img src=\"$attachment_href&amp;thumb=1\"";
+            $attachment_link .= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
+            $attachment_link .= "alt=\"$title\" title=\"$title\" /></a></span>";
 
         } else {
 
-            $attachment_link = "<img src=\"". html_style_image('attach.png');
-            $attachment_link.= "\" width=\"14\" height=\"14\" border=\"0\" ";
-            $attachment_link.= "alt=\"". gettext("Attachment"). "\" ";
-            $attachment_link.= "title=\"". gettext("Attachment"). "\" />";
-            $attachment_link.= "<a href=\"$attachment_href\" title=\"$title\" ";
-            $attachment_link.= "target=\"_blank\">{$attachment['filename']}</a>";
+            $attachment_link = "<img src=\"" . html_style_image('attach.png');
+            $attachment_link .= "\" width=\"14\" height=\"14\" border=\"0\" ";
+            $attachment_link .= "alt=\"" . gettext("Attachment") . "\" ";
+            $attachment_link .= "title=\"" . gettext("Attachment") . "\" />";
+            $attachment_link .= "<a href=\"$attachment_href\" title=\"$title\" ";
+            $attachment_link .= "target=\"_blank\">{$attachment['filename']}</a>";
         }
 
         return $attachment_link;

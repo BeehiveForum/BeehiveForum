@@ -62,7 +62,7 @@ $hide_navigation = false;
 
 if (!browser_mobile() && !session::is_search_engine()) {
 
-    if (!user_guest_enabled() && session::get_value('UID') == 0) {
+    if (!user_guest_enabled() && (!isset($_SESSION['UID']) || $_SESSION['UID'] == 0)) {
         $hide_navigation = true;
     }
 

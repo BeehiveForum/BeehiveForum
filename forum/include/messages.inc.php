@@ -1449,14 +1449,12 @@ function message_get_author($tid, $pid)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (($uid = session::get_value('UID')) === false) return false;
-
-    $sql = "SELECT USER.UID, USER.LOGON, COALESCE(USER_PEER.PEER_NICKNAME, ";
-    $sql .= "USER.NICKNAME) AS NICKNAME FROM `{$table_prefix}POST` POST ";
-    $sql .= "LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
-    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql .= "ON (USER_PEER.PEER_UID = POST.FROM_UID AND USER_PEER.UID = '$uid') ";
-    $sql .= "WHERE POST.TID = '$tid' AND POST.PID = '$pid'";
+	if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+	
+    $sql = "SELECT USER.UID, USER.LOGON, COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS NICKNAME ";
+    $sql.= "FROM `{$table_prefix}POST` POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = POST.FROM_UID ";
+    $sql.= "AND USER_PEER.UID = '{$_SESSION['UID']}') WHERE POST.TID = '$tid' AND POST.PID = '$pid'";
 
     if (!$result = $db->query($sql)) return false;
 

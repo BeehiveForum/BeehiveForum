@@ -31,6 +31,7 @@ require_once BH_INCLUDE_PATH . 'ip.inc.php';
 require_once BH_INCLUDE_PATH . 'perm.inc.php';
 require_once BH_INCLUDE_PATH . 'server.inc.php';
 require_once BH_INCLUDE_PATH . 'user.inc.php';
+
 // End Required includes
 
 abstract class session
@@ -61,11 +62,14 @@ abstract class session
 
         session_name('sess_hash');
 
+        $update_visitor_log = false;
+
         if (!html_get_cookie('sess_hash')) {
 
             if (($hash = session::restore())) {
 
                 session_id($hash);
+                $update_visitor_log = true;
 
             } else {
 
@@ -74,17 +78,7 @@ abstract class session
             }
         }
 
-        session_start();
-
-        if (!isset($_SESSION['UID'])) {
-
-            $_SESSION['UID'] = 0;
-            session::create($_SESSION['UID']);
-
-        } else {
-
-            session::refresh($_SESSION['UID']);
-        }
+        session::start($update_visitor_log);
     }
 
     public static function open()
@@ -392,26 +386,6 @@ abstract class session
         return true;
     }
 
-    public static function get_value($key)
-    {
-        if (isset($_SESSION[$key])) return $_SESSION[$key];
-
-        if (mb_strtoupper($key) == 'UID') return 0;
-
-        return false;
-    }
-
-    public static function set_value($key, $value)
-    {
-        $_SESSION[$key] = $value;
-        return true;
-    }
-
-    public static function unset_value($key)
-    {
-        unset($_SESSION[$key]);
-    }
-
     public static function get_perm_array($uid, $forum_fid)
     {
         $user_perm_array = array();
@@ -503,20 +477,19 @@ abstract class session
         return false;
     }
 
-    public static function create($uid)
+    public static function start($update_visitor_log)
     {
+        session_start();
+
+        if (!isset($_SESSION['UID'])) {
+
+            $_SESSION['UID'] = 0;
+            $update_visitor_log = true;
+        }
+
         if (!($forum_fid = get_forum_fid())) $forum_fid = 0;
 
-        session::refresh($uid);
-
-        session::update_visitor_log($uid, $forum_fid);
-    }
-
-    public static function refresh($uid)
-    {
-        if (!($forum_fid = get_forum_fid())) $forum_fid = 0;
-
-        if (!($user = user_get($uid))) {
+        if (!($user = user_get($_SESSION['UID']))) {
 
             $user = array(
                 'UID' => 0,
@@ -534,13 +507,13 @@ abstract class session
 
         $_SESSION['IPADDRESS'] = get_ip_address();
 
-        if (session::logged_in() && ($user_prefs = user_get_prefs($uid))) {
+        if (session::logged_in() && ($user_prefs = user_get_prefs($_SESSION['UID']))) {
             $_SESSION = array_merge($_SESSION, $user_prefs);
         } else {
             $_SESSION = array_merge($_SESSION, user_get_pref_names(array('STYLE')));
         }
 
-        if (($user_perms = session::get_perm_array($uid, $forum_fid))) {
+        if (($user_perms = session::get_perm_array($_SESSION['UID'], $forum_fid))) {
             $_SESSION['PERMS'] = $user_perms;
         }
 
@@ -548,16 +521,20 @@ abstract class session
             $_SESSION['RAND_HASH'] = md5(uniqid(mt_rand()));
         }
 
-        if ($uid > 0 && !forum_get_last_visit($uid) && ($gid = perm_get_default_group())) {
-            perm_add_user_to_group($uid, $gid);
+        if ($_SESSION['UID'] > 0 && !forum_get_last_visit($_SESSION['UID']) && ($gid = perm_get_default_group())) {
+            perm_add_user_to_group($_SESSION['UID'], $gid);
         }
 
-        forum_update_last_visit($uid);
+        forum_update_last_visit($_SESSION['UID']);
+
+        if ($update_visitor_log) {
+            session::update_visitor_log($_SESSION['UID'], $forum_fid);
+        }
     }
 
     public static function end()
     {
-        session::refresh(0);
+        session::start(0, false);
     }
 
     public static function logged_in()

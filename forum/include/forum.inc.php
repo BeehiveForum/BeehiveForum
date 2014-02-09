@@ -176,7 +176,9 @@ function forum_check_guest_access_allowed()
 {
     $result = forum_check_guest_access_allowed_ignore();
 
-    if (!user_guest_enabled() && session::get_value('UID') == 0) {
+	if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return $result;
+
+    if (!user_guest_enabled() && $_SESSION['UID'] == 0) {
         return $result;
     }
 

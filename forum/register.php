@@ -409,7 +409,7 @@ if (isset($_POST['register'])) {
             user_update_sig($new_uid, $sig_content, true);
 
             // Initialise the new user session.
-            session::refresh($new_uid);
+            session::start($new_uid, true);
 
             // Check to see if the user is going somewhere after they have registered.
             $final_uri = (isset($final_uri)) ? rawurlencode($final_uri) : '';

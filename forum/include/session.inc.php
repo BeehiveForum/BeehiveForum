@@ -132,11 +132,13 @@ abstract class session
 
         $ip_address = session::$db->escape(get_ip_address());
 
+        $http_referer = session::$db->escape(session::get_http_referer());
+
         if (!($search_id = session::is_search_engine())) $search_id = 'NULL';
 
-        $sql = "REPLACE INTO SESSIONS (ID, UID, FID, DATA, MD5, TIME, IPADDRESS, SID) ";
+        $sql = "REPLACE INTO SESSIONS (ID, UID, FID, DATA, MD5, TIME, IPADDRESS, REFERER, SID) ";
         $sql .= "VALUES ('$id', '$uid', '$forum_fid', '$data', '$md5', CAST('$time' AS DATETIME), ";
-        $sql .= "'$ip_address', $search_id)";
+        $sql .= "'$ip_address', '$http_referer', '$search_id)";
 
         if (!(session::$db->query($sql))) return false;
 

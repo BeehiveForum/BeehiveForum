@@ -306,7 +306,7 @@ function rss_feed_check_feeds()
 
                     $tid = post_create_thread($rss_feed['FID'], $rss_feed['UID'], $rss_title);
 
-                    post_create($rss_feed['FID'], $tid, 0, $rss_feed['UID'], 0, $rss_content);
+                    post_create($rss_feed['FID'], $tid, 0, $rss_feed['UID'], array(), $rss_content);
 
                     rss_feed_create_history($rss_feed['RSSID'], $rss_feed_item->link);
                 }

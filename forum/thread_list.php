@@ -466,7 +466,7 @@ foreach ($folder_order as $folder_number) {
 
     if (isset($folder_info[$folder_number]) && is_array($folder_info[$folder_number])) {
 
-        echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
+        echo "<table width=\"100%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
         echo "  <tr>\n";
         echo "    <td align=\"left\" colspan=\"2\">\n";
         echo "      <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
@@ -483,6 +483,8 @@ foreach ($folder_order as $folder_number) {
 
         echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder_number\" title=\"", word_filter_add_ob_tags($folder_info[$folder_number]['DESCRIPTION'], true), "\">", word_filter_add_ob_tags($folder_info[$folder_number]['TITLE'], true), "</a>\n";
         echo "          </td>\n";
+
+        echo "          <td align=\"left\" class=\"folderpostnew\" style=\"white-space: nowrap\"><a href=\"threads_rss.php?webtag=DEFAULT&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 580x450\" id=\"mods_list_$folder_number\"><img src=\"" . html_style_image('rss.png') . "\" border=\"0\" alt=\"", gettext("RSS"), "\" title=\"", gettext("RSS"), "\" /></a></td>";
 
         if ($_SESSION['UID'] > 0) {
             echo "          <td align=\"left\" class=\"folderpostnew\" style=\"white-space: nowrap\"><a href=\"mods_list.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 580x450\" id=\"mods_list_$folder_number\"><img src=\"" . html_style_image('mods_list.png') . "\" border=\"0\" alt=\"", gettext("View moderators"), "\" title=\"", gettext("View moderators"), "\" /></a></td>";

@@ -138,7 +138,7 @@ abstract class session
 
         $sql = "REPLACE INTO SESSIONS (ID, UID, FID, DATA, MD5, TIME, IPADDRESS, REFERER, SID) ";
         $sql .= "VALUES ('$id', '$uid', '$forum_fid', '$data', '$md5', CAST('$time' AS DATETIME), ";
-        $sql .= "'$ip_address', '$http_referer', '$search_id)";
+        $sql .= "'$ip_address', '$http_referer', $search_id)";
 
         if (!(session::$db->query($sql))) return false;
 
@@ -501,7 +501,7 @@ abstract class session
             );
         }
 
-        unset($user['IPADDRESS'], $user['PASSWD'], $user['REFERER']);
+        unset($user['IPADDRESS'], $user['PASSWD'], $user['REFERER'], $user['PEER_NICKNAME']);
 
         $_SESSION = array_merge($_SESSION, $user);
 

@@ -26,6 +26,7 @@ USA
 
         init: function (editor) {
 
+            //noinspection JSPotentiallyInvalidConstructorUsage
             var allStyles = new CKEDITOR.style({
                 element: $
             });
@@ -36,24 +37,28 @@ USA
                 return ascendant && ascendant.hasClass(className);
             };
 
-            editor.attachStyleStateChange(allStyles, function (state) {
+            editor.attachStyleStateChange(allStyles, function () {
 
                 var element = this.getSelection().getStartElement();
 
                 if ((element.getName() == 'div' && element.hasClass('quote')) || findAscendant(element, 'div', 'quote')) {
-                    return !editor.readOnly && editor.getCommand('quote').setState(CKEDITOR.TRISTATE_ON);
+                    !editor.readOnly && editor.getCommand('quote').setState(CKEDITOR.TRISTATE_ON);
+                    return
                 }
 
                 if ((element.getName() == 'pre' && element.hasClass('code')) || findAscendant(element, 'pre', 'code')) {
-                    return !editor.readOnly && editor.getCommand('code').setState(CKEDITOR.TRISTATE_ON);
+                    !editor.readOnly && editor.getCommand('code').setState(CKEDITOR.TRISTATE_ON);
+                    return
                 }
 
                 if ((element.getName() == 'span' && element.hasClass('spoiler')) || findAscendant(element, 'span', 'spoiler')) {
-                    return !editor.readOnly && editor.getCommand('spoiler').setState(CKEDITOR.TRISTATE_ON);
+                    !editor.readOnly && editor.getCommand('spoiler').setState(CKEDITOR.TRISTATE_ON);
+                    return;
                 }
 
                 if ((element.getName() == 'img' && element.hasClass('emoticon')) || findAscendant(element, 'img', 'emoticon')) {
-                    return !editor.readOnly && editor.getCommand('image').setState(CKEDITOR.TRISTATE_DISABLED);
+                    !editor.readOnly && editor.getCommand('image').setState(CKEDITOR.TRISTATE_DISABLED);
+                    return;
                 }
 
                 !editor.readOnly && editor.getCommand('quote').setState(CKEDITOR.TRISTATE_OFF);
@@ -101,10 +106,12 @@ USA
                             selectedText = selection.getNative();
                         }
 
-                        quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><b>' + beehive.lang.code + ':</b>&nbsp;</div>');
+                        quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><strong>' + beehive.lang.code + ':</strong>&nbsp;</div>');
                         codeElement = CKEDITOR.dom.element.createFromHtml('<pre class="code">' + selectedText + '</pre>');
 
                         selection.getRanges()[0].deleteContents();
+
+                        //noinspection JSPotentiallyInvalidConstructorUsage
                         range = new CKEDITOR.dom.range(editor.document);
 
                         editor.insertElement(quoteTextElement);
@@ -163,10 +170,13 @@ USA
                             selectedText = selection.getNative();
                         }
 
-                        quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><b>' + beehive.lang.quote + ':</b>&nbsp;</div>');
+                        //noinspection JSUnresolvedVariable
+                        quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><strong>' + beehive.lang.quote + ':</strong>&nbsp;</div>');
                         quoteElement = CKEDITOR.dom.element.createFromHtml('<div class="quote">' + selectedText + '</div>');
 
                         selection.getRanges()[0].deleteContents();
+
+                        //noinspection JSPotentiallyInvalidConstructorUsage
                         range = new CKEDITOR.dom.range(editor.document);
 
                         editor.insertElement(quoteTextElement);
@@ -221,6 +231,8 @@ USA
                         spoilerElement = CKEDITOR.dom.element.createFromHtml('<span class="spoiler"><span>' + selectedText + '</span></span>');
 
                         selection.getRanges()[0].deleteContents();
+
+                        //noinspection JSPotentiallyInvalidConstructorUsage
                         range = new CKEDITOR.dom.range(editor.document);
 
                         editor.insertElement(spoilerElement);
@@ -257,8 +269,7 @@ USA
         afterInit: function (editor) {
 
             var dataProcessor = editor.dataProcessor,
-                dataFilter = dataProcessor && dataProcessor.dataFilter,
-                htmlFilter = dataProcessor && dataProcessor.htmlFilter;
+                dataFilter = dataProcessor && dataProcessor.dataFilter;
 
             if (dataFilter) {
 

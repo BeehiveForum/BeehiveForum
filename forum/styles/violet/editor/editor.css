@@ -1,10 +1,14 @@
-.cke_skin_beehive *,
-.cke_skin_beehive a:hover,
-.cke_skin_beehive a:link,
-.cke_skin_beehive a:visited,
-.cke_skin_beehive a:active {
+.cke {
+    visibility: visible;
+}
+
+.cke *,
+.cke a:hover,
+.cke a:link,
+.cke a:visited,
+.cke a:active {
     background: transparent;
-    border: 0;
+    border: none;
     cursor: auto;
     float: none;
     height: auto;
@@ -14,102 +18,89 @@
     text-decoration: none;
     vertical-align: baseline;
     white-space: nowrap;
-    width: auto
+    width: auto;
 }
 
-.cke_panel_frame {
+.cke_panel_block {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 12px
 }
 
-.cke_skin_beehive iframe {
+.cke iframe {
     vertical-align: inherit
 }
 
-.cke_skin_beehive textarea {
+.cke textarea {
     white-space: pre
 }
 
-.cke_skin_beehive input[type="text"],
-.cke_skin_beehive input[type="password"] {
-    cursor: text
-}
-
-.cke_skin_beehive input[type="text"][disabled],
-.cke_skin_beehive input[type="password"][disabled] {
-    cursor: default
-}
-
-.cke_skin_beehive fieldset {
-    border: 2px groove #E0DFE3;
-    padding: 10px
-}
-
-.cke_skin_beehive .cke_editor {
+.cke_editor {
     display: inline-table;
     width: 100%
 }
 
-.cke_skin_beehive,
-.cke_skin_beehive .cke_wrapper {
+.cke_wrapper {
     display: block
 }
 
-.cke_skin_beehive .cke_top {
+.cke_top {
     border: none
 }
 
-.cke_skin_beehive .cke_bottom {
+.cke_bottom {
     background-color: #FFFFFF;
     border: 1px inset threedface;
-    border-top: none
+    border-top: none;
+    display: block;
+    height: 12px;
 }
 
-.cke_skin_beehive .cke_contents {
+.cke_contents {
     background-color: #FFFFFF;
     border: 1px inset threedface;
     border-bottom: none
 }
 
-.cke_skin_beehive textarea.cke_source {
+textarea.cke_source {
     background-color: #FFFFFF;
     font-family: 'Courier New', monospace;
     font-size: small;
     white-space: pre
 }
 
-.cke_skin_beehive .cke_resizer {
+.cke_resizer {
     background: transparent url(sprites.png) no-repeat 0 -77px;
     cursor: se-resize;
     display: block;
     float: right;
     height: 12px;
-    margin-top: 12px;
     opacity: 0.5;
+    overflow: hidden;
+    text-indent: 100%;
     width: 12px
 }
 
-.cke_skin_beehive .cke_resizer_horizontal {
+.cke_resizer_horizontal {
     cursor: e-resize
 }
 
-.cke_skin_beehive .cke_resizer_vertical {
+.cke_resizer_vertical {
     cursor: n-resize
 }
 
-.cke_skin_beehive .cke_maximized .cke_resizer {
+.cke_maximized .cke_resizer {
     display: none
 }
 
-.cke_skin_beehive .cke_voice_label {
+.cke_voice_label {
     display: none
 }
 
-.cke_skin_beehive legend.cke_voice_label {
+legend.cke_voice_label {
     display: none
 }
 
-.cke_skin_beehive .cke_panel {
+.cke_panel {
     background-color: #FFFFFF;
     border: 1px solid;
     height: 100px;
@@ -117,17 +108,13 @@
     width: 120px
 }
 
-.cke_skin_beehive .cke_panel iframe {
+.cke_panel iframe {
     height: 100%;
     width: 100%
 }
 
-.cke_skin_beehive .cke_panel_frame .cke_label {
+.cke_panel_frame .cke_label {
     display: none
-}
-
-html.cke_skin_beehive_container {
-    visibility: visible
 }
 
 body.cke_panel_frame {
@@ -188,8 +175,8 @@ li.cke_panel_listItem {
     margin-top: 3px
 }
 
-.cke_skin_beehive .cke_button_textcolor_panel,
-.cke_skin_beehive .cke_button_bgcolor_panel {
+.cke_button_textcolor_panel,
+.cke_button_bgcolor_panel {
     height: 135px;
     width: 150px
 }
@@ -240,13 +227,13 @@ a:active.cke_colormore {
     border: 1px solid
 }
 
-.cke_skin_beehive .cke_toolbox {
+.cke_toolbox {
     clear: both;
     padding-bottom: 1px
 }
 
-.cke_skin_beehive a.cke_toolbox_collapser,
-.cke_skin_beehive a:hover.cke_toolbox_collapser {
+a.cke_toolbox_collapser,
+a:hover.cke_toolbox_collapser {
     background: url(sprites.png) no-repeat 3px -1026px;
     border: outset 1px;
     cursor: pointer;
@@ -256,62 +243,59 @@ a:active.cke_colormore {
     width: 11px
 }
 
-.cke_skin_beehive a.cke_toolbox_collapser span {
+a.cke_toolbox_collapser span {
     display: none
 }
 
-.cke_skin_beehive .cke_hc a.cke_toolbox_collapser span {
+.cke_hc a.cke_toolbox_collapser span {
     display: inline;
     font-family: Arial, sans-serif;
     font-size: 10px;
     font-weight: bold
 }
 
-.cke_skin_beehive a.cke_toolbox_collapser_min,
-.cke_skin_beehive a:hover.cke_toolbox_collapser_min {
+a.cke_toolbox_collapser_min,
+a:hover.cke_toolbox_collapser_min {
     background: url(sprites.png) no-repeat 4px -1047px;
     margin: 2px
 }
 
-.cke_skin_beehive .cke_toolbar {
+.cke_toolbar {
     display: block;
     height: 30px
 }
 
-.cke_skin_beehive .cke_toolgroup {
-    display: inline-block;
-    float: left;
+.cke_toolgroup {
     padding-bottom: 4px
 }
 
-.cke_skin_beehive .cke_separator {
+.cke_separator {
     border-left: solid 1px #B2CBFF;
     display: inline-block;
     float: left;
     margin: 6px 2px
 }
 
-.cke_skin_beehive .cke_break {
+.cke_break {
     clear: left
 }
 
-.cke_skin_beehive .cke_toolbar_start,
-.cke_skin_beehive .cke_toolbar_end {
+.cke_toolbar_start,
+.cke_toolbar_end {
     display: none
 }
 
-.cke_skin_beehive .cke_button {
+a.cke_button {
     display: inline-block;
     height: 22px;
-    margin: 2px 0 0;
     width: 24px
 }
 
-.cke_skin_beehive .cke_button a,
-.cke_skin_beehive .cke_button a:hover,
-.cke_skin_beehive .cke_button a:focus,
-.cke_skin_beehive .cke_button a:active,
-.cke_skin_beehive .cke_button a.cke_off {
+a.cke_button,
+a.cke_button:hover,
+a.cke_button:focus,
+a.cke_button:active,
+a.cke_button.cke_off {
     border: solid 1px transparent;
     cursor: default;
     display: inline-block;
@@ -322,21 +306,21 @@ a:active.cke_colormore {
     width: 22px
 }
 
-.cke_skin_beehive .cke_button a.cke_disabled * {
+.cke_button a.cke_disabled * {
     opacity: 0.3
 }
 
-.cke_skin_beehive .cke_hc .cke_button a.cke_disabled {
+.cke_hc .cke_button a.cke_disabled {
     opacity: 0.6
 }
 
-.cke_skin_beehive .cke_button a:hover,
-.cke_skin_beehive .cke_button a:focus,
-.cke_skin_beehive .cke_button a:active {
+a.cke_button:hover,
+a.cke_button:focus,
+a.cke_button:active {
     border: 1px outset threedface
 }
 
-.cke_skin_beehive .cke_button .cke_icon {
+.cke_button .cke_button_icon {
     background: transparent url(icons.png) no-repeat;
     cursor: default;
     display: inline-block;
@@ -345,23 +329,23 @@ a:active.cke_colormore {
     width: 20px
 }
 
-.cke_skin_beehive .cke_button .cke_label {
+.cke_button .cke_button_label {
     cursor: default;
     display: none;
     padding-left: 3px;
     vertical-align: middle
 }
 
-.cke_skin_beehive .cke_hc .cke_button .cke_label {
+.cke_hc .cke_button .cke_button_label {
     display: inline-block;
     padding: 0
 }
 
-.cke_skin_beehive .cke_hc .cke_button .cke_icon {
+.cke_hc .cke_button .cke_icon {
     display: none
 }
 
-.cke_skin_beehive .cke_accessibility {
+.cke_accessibility {
     display: block;
     height: 0;
     overflow: hidden;
@@ -369,7 +353,7 @@ a:active.cke_colormore {
     width: 0
 }
 
-.cke_skin_beehive .cke_button .cke_buttonarrow {
+.cke_button .cke_buttonarrow {
     background: url(sprites.png) no-repeat 2px -1004px;
     cursor: default;
     display: inline-block;
@@ -377,31 +361,31 @@ a:active.cke_colormore {
     width: 8px
 }
 
-.cke_skin_beehive .cke_contextmenu {
+.cke_contextmenu {
     background-color: threedface;
     border: 1px solid activeborder;
     padding: 2px
 }
 
-.cke_skin_beehive .cke_menuitem a {
+.cke_menuitem a {
     border: 1px solid transparent;
     color: buttontext;
     display: block
 }
 
-.cke_skin_beehive .cke_menuitem a:hover {
+.cke_menuitem a:hover {
     background-color: #D1E2F2;
     border: 1px solid highlight;
     color: buttontext
 }
 
-.cke_skin_beehive .cke_menuitem span {
+.cke_menuitem span {
     cursor: default
 }
 
-.cke_skin_beehive .cke_menuitem a:hover,
-.cke_skin_beehive .cke_menuitem a:focus,
-.cke_skin_beehive .cke_menuitem a:active {
+.cke_menuitem a:hover,
+.cke_menuitem a:focus,
+.cke_menuitem a:active {
     display: block
 }
 
@@ -411,7 +395,7 @@ a:active.cke_colormore {
     border: 2px solid
 }
 
-.cke_skin_beehive .cke_menuitem .cke_icon {
+.cke_menuitem .cke_icon {
     background: transparent url(icons.png) no-repeat 100px;
     float: left;
     height: 16px;
@@ -419,7 +403,7 @@ a:active.cke_colormore {
     width: 16px
 }
 
-.cke_skin_beehive .cke_menuitem .cke_icon_wrapper {
+.cke_menuitem .cke_icon_wrapper {
     border: none;
     clear: both;
     float: left;
@@ -427,23 +411,23 @@ a:active.cke_colormore {
     width: 16px
 }
 
-.cke_skin_beehive .cke_menuitem .cke_label {
+.cke_menuitem .cke_button_label {
     display: block;
     margin-left: 24px;
     padding: 2px
 }
 
-.cke_skin_beehive .cke_menuitem a.cke_disabled:hover .cke_label,
-.cke_skin_beehive .cke_menuitem a.cke_disabled:focus .cke_label,
-.cke_skin_beehive .cke_menuitem a.cke_disabled:active .cke_label {
+.cke_menuitem a.cke_disabled:hover .cke_button_label,
+.cke_menuitem a.cke_disabled:focus .cke_button_label,
+.cke_menuitem a.cke_disabled:active .cke_button_label {
     background-color: transparent
 }
 
-.cke_skin_beehive .cke_menuseparator {
+.cke_menuseparator {
     height: 2px
 }
 
-.cke_skin_beehive .cke_menuarrow {
+.cke_menuarrow {
     background: url(sprites.png) no-repeat 0 -1071px;
     float: right;
     height: 5px;
@@ -452,39 +436,39 @@ a:active.cke_colormore {
     width: 3px
 }
 
-.cke_skin_beehive .cke_menuarrow span {
+.cke_menuarrow span {
     display: none
 }
 
-.cke_hc .cke_skin_beehive .cke_menuarrow {
+.cke_hc .cke_menuarrow {
     margin-top: 0;
     width: auto
 }
 
-.cke_hc .cke_skin_beehive .cke_menuarrow span {
+.cke_hc .cke_menuarrow span {
     display: inline
 }
 
-.cke_skin_beehive .cke_rcombo {
+.cke_combo {
     display: inline-block;
     margin: 2px 4px 0 0;
     vertical-align: top
 }
 
-.cke_skin_beehive .cke_rcombopanel {
+.cke_combopanel {
     border: 1px inset #000000
 }
 
-.cke_skin_beehive .cke_rcombo a {
+.cke_combo a {
     display: inline-block;
     float: left
 }
 
-.cke_skin_beehive .cke_rcombo .cke_label {
+.cke_combo .cke_combo_label {
     display: none
 }
 
-.cke_skin_beehive .cke_rcombo .cke_text {
+.cke_combo .cke_combo_text {
     background-color: #FFFFFF;
     border: 1px inset threedface;
     border-right: none;
@@ -496,174 +480,140 @@ a:active.cke_colormore {
     width: 100px
 }
 
-.cke_skin_beehive .cke_rcombo .cke_openbutton {
+.cke_combo .cke_combo_open {
     border: 1px inset threedface;
     border-left: none;
     display: inline-block;
     height: 20px
 }
 
-.cke_skin_beehive .cke_rcombo .cke_openbutton .cke_icon {
+.cke_combo .cke_combo_open .cke_combo_arrow {
     background: threedface url(sprites.png) no-repeat 6px 9px;
     display: inline-block;
     height: 20px;
     width: 16px
 }
 
-.cke_skin_beehive .cke_hc .cke_rcombo .cke_openbutton .cke_icon {
+.cke_hc .cke_combo .cke_combo_open .cke_combo_arrow {
     background: none
 }
 
-.cke_skin_beehive .cke_rcombo .cke_disabled .cke_text {
+.cke_combo .cke_disabled .cke_combo_text {
     color: #fff
 }
 
-.cke_skin_beehive .cke_path {
-    display: inline-block;
-    float: left;
-    padding: 0 3px
-}
-
-.cke_skin_beehive .cke_path a,
-.cke_skin_beehive .cke_path .cke_empty {
-    border: 1px solid transparent;
-    cursor: default;
-    display: inline-block;
-    float: left;
-    font-size: 11px;
-    margin: 3px 0 0;
-    padding: 2px 4px
-}
-
-.cke_skin_beehive .cke_path .cke_empty {
-    visibility: hidden
-}
-
-.cke_skin_beehive .cke_path a:hover,
-.cke_skin_beehive .cke_path a:focus,
-.cke_skin_beehive .cke_path a:active {
-    background-color: #dff1ff;
-    border: solid 1px #316ac5;
-    outline: none
-}
-
-.cke_skin_beehive .cke_path .cke_label {
-    display: none
-}
-
-.cke_skin_beehive .cke_button .cke_on {
+.cke_button.cke_button_on {
     border: 1px inset threedface
 }
 
-.cke_skin_beehive .cke_button_bold .cke_icon {
+.cke_button__bold .cke_button_icon {
     background-position: -2px -1px
 }
 
-.cke_skin_beehive .cke_button_italic .cke_icon {
+.cke_button__italic .cke_button_icon {
     background-position: -24px -1px
 }
 
-.cke_skin_beehive .cke_button_underline .cke_icon {
+.cke_button__underline .cke_button_icon {
     background-position: -46px -1px
 }
 
-.cke_skin_beehive .cke_button_strike .cke_icon {
+.cke_button__strike .cke_button_icon {
     background-position: -68px -1px
 }
 
-.cke_skin_beehive .cke_button_superscript .cke_icon {
+.cke_button__superscript .cke_button_icon {
     background-position: -90px -1px
 }
 
-.cke_skin_beehive .cke_button_subscript .cke_icon {
+.cke_button__subscript .cke_button_icon {
     background-position: -112px -1px
 }
 
-.cke_skin_beehive .cke_button_justifyleft .cke_icon {
+.cke_button__justifyleft .cke_button_icon {
     background-position: -136px -1px
 }
 
-.cke_skin_beehive .cke_button_justifycenter .cke_icon {
+.cke_button__justifycenter .cke_button_icon {
     background-position: -156px -1px
 }
 
-.cke_skin_beehive .cke_button_justifyright .cke_icon {
+.cke_button__justifyright .cke_button_icon {
     background-position: -178px -1px
 }
 
-.cke_skin_beehive .cke_button_numberedlist .cke_icon {
+.cke_button__numberedlist .cke_button_icon {
     background-position: -200px -1px
 }
 
-.cke_skin_beehive .cke_button_bulletedlist .cke_icon {
+.cke_button__bulletedlist .cke_button_icon {
     background-position: -222px -1px
 }
 
-.cke_skin_beehive .cke_button_indent .cke_icon {
+.cke_button__indent .cke_button_icon {
     background-position: -244px -1px
 }
 
-.cke_skin_beehive .cke_button_code .cke_icon {
+.cke_button__code .cke_button_icon {
     background-position: -266px -1px
 }
 
-.cke_skin_beehive .cke_button_quote .cke_icon {
+.cke_button__quote .cke_button_icon {
     background-position: -288px -1px
 }
 
-.cke_skin_beehive .cke_button_spoiler .cke_icon {
+.cke_button__spoiler .cke_button_icon {
     background-position: -310px -1px
 }
 
-.cke_skin_beehive .cke_button_horizontalrule .cke_icon {
+.cke_button__horizontalrule .cke_button_icon {
     background-position: -332px -1px
 }
 
-.cke_skin_beehive .cke_button_image .cke_icon {
+.cke_button__image .cke_button_icon {
     background-position: -354px -1px
 }
 
-.cke_skin_beehive .cke_button_flash .cke_icon {
+.cke_button__flash .cke_button_icon {
     background-position: -398px -1px
 }
 
-.cke_skin_beehive .cke_button_link .cke_icon {
+.cke_button__link .cke_button_icon {
     background-position: -420px -1px
 }
 
-.cke_skin_beehive .cke_button_textcolor .cke_icon {
+.cke_button__textcolor .cke_button_icon {
     background-position: -508px -1px
 }
 
-.cke_skin_beehive .cke_button_cut .cke_icon {
+.cke_button__cut .cke_button_icon {
     background-position: -530px -1px
 }
 
-.cke_skin_beehive .cke_button_copy .cke_icon {
+.cke_button__copy .cke_button_icon {
     background-position: -552px -1px
 }
 
-.cke_skin_beehive .cke_button_paste .cke_icon {
+.cke_button__paste .cke_button_icon {
     background-position: -574px -1px
 }
 
-.cke_skin_beehive .cke_button_source .cke_icon {
+.cke_button__source .cke_button_icon {
     background-position: -596px -1px
 }
 
-.cke_skin_beehive .cke_font_panel {
+.cke_combo__font {
     height: 170px;
-    width: 150px
 }
 
-.cke_skin_beehive .cke_fontSize_panel {
+.cke_combo__fontsize {
     height: 170px
 }
 
-.cke_skin_beehive .cke_fontSize .cke_text {
+.cke_combo__fontsize .cke_combo_text {
     width: 40px
 }
 
-html .cke_skin_beehive {
+.cke html {
     visibility: inherit
 }

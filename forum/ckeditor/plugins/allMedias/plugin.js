@@ -1,119 +1,135 @@
-/**
+﻿/**
  * @license Copyright (c) 2003-2013, webmote - codeex.cn. All rights reserved.
  * For licensing, see http://codeex.cn/
  * 2013-2-18 v1.0
  */
 
-(function() {
+(function () {
 
-	function isallMediasEmbed(element)
-    {
-		var attributes = element.attributes;
-		return (attributes.mtype == 'allMedias');
-	}
+    function isallMediasEmbed(element) {
+        var attributes = element.attributes;
+        return ( attributes.mtype == 'allMedias');
+    }
 
     function createFakeElement(editor, realElement) {
-
-        console.log(realElement);
         return editor.createFakeParserElement(realElement, 'cke_allMedias', 'allMedias', true);
     }
 
-	CKEDITOR.plugins.add('allMedias', {
-		requires: ['dialog'],
-		lang: ['en', 'zh-cn', 'zh'],
-		icons: 'allMedias', // %REMOVE_LINE_CORE%
-		init: function(editor) {
+    CKEDITOR.plugins.add('allMedias', {
 
+        requires: ['dialog', 'fakeobjects'],
+
+        lang: ['en', 'zh-cn', 'zh'],
+
+        icons: 'allMedias',
+
+        onLoad: function () {
+
+            CKEDITOR.addCss('img.cke_allMedias' +
+                '{' +
+                'background-image: url(' + CKEDITOR.getUrl(this.path + 'images/placeholder.png') + ');' +
+                'background-position: center center;' +
+                'background-repeat: no-repeat;' +
+                'border: 1px solid #a9a9a9;' +
+                'width: 80px;' +
+                'height: 80px;' +
+                '}'
+            );
+        },
+        init: function (editor) {
+
+            //noinspection JSPotentiallyInvalidConstructorUsage
             editor.addCommand('allMedias', new CKEDITOR.dialogCommand('allMedias'));
 
-            editor.ui.addButton('allMedias', {
-				label: editor.lang.allMedias.allMedias,
-				command: 'allMedias',
-				icon: this.path + 'icons/allMedias.png'
-			});
+            editor.ui.addButton && editor.ui.addButton('allMedias', {
+                label: editor.lang.allMedias.allMedias,
+                command: 'allMedias',
+                toolbar: 'insert,20'
+            });
 
             CKEDITOR.dialog.add('allMedias', this.path + 'dialogs/allMedias.js');
 
-			if (editor.addMenuItems) {
+            if (editor.addMenuItems) {
 
-            	editor.addMenuGroup('mediagroup');
+                editor.addMenuGroup('mediagroup');
 
-            	editor.addMenuItems('allMedias', {
-					label: editor.lang.allMedias.properties,
-                    icon:  this.path + 'icons/allMedias.png',
-					command: 'allMedias',
-					group: 'allMedias'
-				});
-			}
+                editor.addMenuItems({
+                    mediamenu: {
+                        label: editor.lang.allMedias.properties,
+                        command: 'allMedias',
+                        group: 'mediagroup',
+                        icons: this.icons
+                    }
+                });
+            }
 
-			editor.on('doubleclick', function(evt) {
+            editor.on('doubleclick', function (evt) {
 
-            	var element = evt.data.element;
+                var element = evt.data.element;
 
-				if (element.is('img') && element.data('cke-real-element-type') == 'allMedias') {
-					evt.data.dialog = 'allMedias';
+                if (element.is('img') && element.data('cke-real-element-type') == 'allMedias') {
+                    evt.data.dialog = 'allMedias';
                 }
-			});
+            });
 
-			if (editor.contextMenu) {
+            if (editor.contextMenu) {
 
-				editor.contextMenu.addListener(function(element, selection) {
+                editor.contextMenu.addListener(function (element) {
 
                     if (element && element.is('img') && !element.isReadOnly() && element.data('cke-real-element-type') == 'allMedias') {
-						return { mediamenu: CKEDITOR.TRISTATE_OFF };
+                        return { mediamenu: CKEDITOR.TRISTATE_OFF };
                     }
-				});
-			}
-		},
 
-		afterInit: function(editor) {
+                    return null;
+                });
+            }
+        },
 
-			var dataProcessor = editor.dataProcessor,
-				dataFilter = dataProcessor && dataProcessor.dataFilter;
-				htmlFilter = dataProcessor && dataProcessor.htmlFilter;
+        afterInit: function (editor) {
 
-			if (dataFilter) {
+            var dataProcessor = editor.dataProcessor,
+                dataFilter = dataProcessor && dataProcessor.dataFilter;
+
+            if (dataFilter) {
 
                 dataFilter.addRules({
-					elements: {
-						'cke:object': function(element) {
 
-							var attributes = element.attributes;
-
-							if (!isallMediasEmbed(element)) {
-
-								for (var i = 0; i < element.children.length; i++) {
-
-									if (element.children[i].name == 'cke:embed') {
-
-										if (!isallMediasEmbed(element.children[i])) {
-											return null;
-                                        }
-
-										return createFakeElement(editor, element);
-									}
-								}
-
-								return null;
-
-                            } else {
-
-								return createFakeElement(editor, element);
-							}
-						},
-
-						'cke:embed': function(element) {
+                    elements: {
+                        'cke:object': function (element) {
 
                             if (!isallMediasEmbed(element)) {
-								return null;
+
+                                for (var i = 0; i < element.children.length; i++) {
+
+                                    if (element.children[ i ].name == 'cke:embed') {
+
+                                        if (!isallMediasEmbed(element.children[ i ])) {
+                                            return null;
+                                        }
+
+                                        return createFakeElement(editor, element);
+                                    }
+                                }
+
+                                return null;
+                            }
+                            else {
+
+                                return createFakeElement(editor, element);
+                            }
+                        },
+                        'cke:embed': function (element) {
+
+                            if (!isallMediasEmbed(element)) {
+                                return null;
                             }
 
-							return createFakeElement(editor, element);
-						}
-					}
-				},
-                1);
-			}
-		}
-	});
+                            return createFakeElement(editor, element);
+                        }
+                    }
+
+                }, 1);
+            }
+        }
+    });
 })();

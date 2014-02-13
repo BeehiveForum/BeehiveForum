@@ -1,31 +1,32 @@
 /*======================================================================
-Copyright Project Beehive Forum 2002
+ Copyright Project Beehive Forum 2002
 
-This file is part of Beehive Forum.
+ This file is part of Beehive Forum.
 
-Beehive Forum is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+ Beehive Forum is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-Beehive Forum is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ Beehive Forum is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-USA
-======================================================================*/
+ You should have received a copy of the GNU General Public License
+ along with Beehive; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+ USA
+ ======================================================================*/
 (function () {
 
     CKEDITOR.plugins.add('youtube', {
 
-        requires: ['dialog'],
+        requires: ['dialog', 'fakeobjects'],
 
         init: function (editor) {
 
+            //noinspection JSPotentiallyInvalidConstructorUsage
             var commandName = 'youtube',
                 iconPath = this.path + 'images/icon.png',
                 youtubeTag = new CKEDITOR.style({
@@ -39,6 +40,7 @@ USA
                 !editor.readOnly && editor.getCommand(commandName).setState(state);
             });
 
+            //noinspection JSPotentiallyInvalidConstructorUsage
             editor.addCommand(commandName, new CKEDITOR.dialogCommand(commandName));
 
             editor.ui.addButton('Youtube', {
@@ -83,10 +85,12 @@ USA
                 dataFilter.addRules({
                     elements: {
 
-                        'iframe': function (element) {
+                        iframe: function (element) {
 
                             var fakeElement,
                                 videoCode;
+
+                            console.log(element);
 
                             if (element && element.attributes && element.attributes.src) {
 
@@ -108,8 +112,7 @@ USA
                             return null;
                         }
                     }
-                },
-                9);
+                },9);
             }
         }
     });

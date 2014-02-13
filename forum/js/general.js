@@ -169,6 +169,7 @@ var beehive = $.extend({}, beehive, {
         $('<div id="toolbar">').insertBefore($editor);
 
         var editor = CKEDITOR.replace(editor_id, {
+            allowedContent: true,
             browserContextMenuOnCtrl: true,
             contentsCss: [
                 emoticons,
@@ -177,12 +178,12 @@ var beehive = $.extend({}, beehive, {
             customConfig: '',
             disableNativeSpellChecker: false,
             enterMode: CKEDITOR.ENTER_BR,
-            extraPlugins: 'beehive,youtube,allMedias',
+            extraPlugins: 'fakeobjects,sharedspace,beehive,youtube,allMedias',
             font_defaultLabel: 'Verdana',
             fontSize_defaultLabel: '12',
             height: $editor.height() - 35,
             language: 'en',
-            removePlugins: 'elementspath,contextmenu,tabletools,liststyle',
+            removePlugins: 'elementspath,contextmenu,tabletools,liststyle,iframe',
             resize_maxWidth: '100%',
             resize_minWidth: '100%',
             shiftEnterMode: CKEDITOR.ENTER_BR,

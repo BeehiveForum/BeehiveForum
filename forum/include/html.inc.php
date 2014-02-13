@@ -927,9 +927,7 @@ function html_draw_top()
             echo "<br />\n";
         }
 
-        if ((forum_get_setting('show_share_links', 'Y')) && isset($_SESSION['SHOW_SHARE_LINKS']) && ($_SESSION['SHOW_SHARE_LINKS'] == 'Y')) {
-            echo '<div id="fb-root"></div>';
-        }
+        echo '<div id="fb-root"></div>';
     }
 }
 

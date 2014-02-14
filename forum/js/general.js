@@ -235,28 +235,36 @@ var beehive = $.extend({}, beehive, {
             width: $editor.width()
         });
 
-        editor.on('focus', function (event) {
-            beehive.active_editor = event.editor;
-        });
+        if (editor) {
+
+            editor.on('focus', function (event) {
+                if (event.editor) {
+                    beehive.active_editor = event.editor;
+                }
+            });
+        }
 
         if ($editor.hasClass('quick_reply')) {
 
             var $post_button = $editor.closest('form').find('input#post');
 
-            editor.on('key', function (event) {
+            if (editor ){
 
-                if (event.data.keyCode != CKEDITOR.CTRL + 13) {
-                    return;
-                }
+                editor.on('key', function (event) {
 
-                if (event.editor.getData().length == 0) {
-                    return;
-                }
+                    if (event.data.keyCode != CKEDITOR.CTRL + 13) {
+                        return;
+                    }
 
-                $editor.val(event.editor.getData());
+                    if (event.editor.getData().length == 0) {
+                        return;
+                    }
 
-                $post_button.click();
-            });
+                    $editor.val(event.editor.getData());
+
+                    $post_button.click();
+                });
+            }
         }
     },
 

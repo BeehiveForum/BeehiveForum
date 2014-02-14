@@ -70,7 +70,7 @@ function parse_array_to_css($css_rules_array)
         $selector = implode(",\n", array_map('trim', explode(',', $selector)));
 
         $css_file_contents.= sprintf(
-            "%s {\n    %s\n}\n\n",
+            "%s {\n    %s;\n}\n\n",
             $selector,
             implode_assoc($rules_set, ': ', ";\n    ")
         );

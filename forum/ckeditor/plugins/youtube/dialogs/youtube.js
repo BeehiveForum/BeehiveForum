@@ -66,8 +66,10 @@ USA
 
             }
 
-            element.setStyle('width', '480px');
+            element.setStyle('display', 'block');
             element.setStyle('height', '360px');
+            element.setStyle('margin', '0 auto');
+            element.setStyle('width', '480px');
 
             element.removeAttribute('allowfullscreen');
 
@@ -148,9 +150,12 @@ USA
 
                                     if (element) {
 
-                                        element.setStyle('width', '480px');
+                                        element.setStyle('display', 'block');
                                         element.setStyle('height', '360px');
-                                        element.removeAttribute('allowfullscreen');
+                                        element.setStyle('margin', '0 auto');
+                                        element.setStyle('width', '480px');
+
+                                        element.removeAttribute('allowfullscreen')
 
                                         previewContainer.setHtml(element.getOuterHtml());
 
@@ -177,7 +182,7 @@ USA
                         type: 'html',
                         id: 'preview',
                         style: 'width:100%;',
-                        html: '<div>Preview:<br /><div id="cke_YoutubePreviewBox' + CKEDITOR.tools.getNextNumber() + '" style="width: 480px; height: 360px; background-color: #000000"></div></div>'
+                        html: '<div>Preview:<br /><div id="cke_YoutubePreviewBox' + CKEDITOR.tools.getNextNumber() + '" style="width: 100%; height: 360px; background-color: #000000"></div></div>'
                     }]
                 }]
             }]

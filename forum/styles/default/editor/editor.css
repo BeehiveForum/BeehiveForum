@@ -23,28 +23,28 @@
 
 .cke_panel_block {
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 12px
+    font-size: 12px;
 }
 
 .cke iframe {
-    vertical-align: inherit
+    vertical-align: inherit;
 }
 
 .cke textarea {
-    white-space: pre
+    white-space: pre;
 }
 
 .cke_editor {
     display: inline-table;
-    width: 100%
+    width: 100%;
 }
 
 .cke_wrapper {
-    display: block
+    display: block;
 }
 
 .cke_top {
-    border: none
+    border: none;
 }
 
 .cke_bottom {
@@ -58,14 +58,15 @@
 .cke_contents {
     background-color: #FFFFFF;
     border: 1px inset threedface;
-    border-bottom: none
+    border-bottom: none;
+    display: block;
 }
 
 textarea.cke_source {
     background-color: #FFFFFF;
     font-family: 'Courier New', monospace;
     font-size: small;
-    white-space: pre
+    white-space: pre;
 }
 
 .cke_resizer {
@@ -77,27 +78,27 @@ textarea.cke_source {
     opacity: 0.5;
     overflow: hidden;
     text-indent: 100%;
-    width: 12px
+    width: 12px;
 }
 
 .cke_resizer_horizontal {
-    cursor: e-resize
+    cursor: e-resize;
 }
 
 .cke_resizer_vertical {
-    cursor: n-resize
+    cursor: n-resize;
 }
 
 .cke_maximized .cke_resizer {
-    display: none
+    display: none;
 }
 
 .cke_voice_label {
-    display: none
+    display: none;
 }
 
 legend.cke_voice_label {
-    display: none
+    display: none;
 }
 
 .cke_panel {
@@ -105,31 +106,31 @@ legend.cke_voice_label {
     border: 1px solid;
     height: 100px;
     overflow: hidden;
-    width: 120px
+    width: 120px;
 }
 
 .cke_panel iframe {
     height: 100%;
-    width: 100%
+    width: 100%;
 }
 
 .cke_panel_frame .cke_label {
-    display: none
+    display: none;
 }
 
 body.cke_panel_frame {
-    overflow: auto
+    overflow: auto;
 }
 
 ul.cke_panel_list {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    white-space: nowrap
+    white-space: nowrap;
 }
 
 li.cke_panel_listItem {
-    margin: 0
+    margin: 0;
 }
 
 .cke_panel_listItem a {
@@ -138,17 +139,17 @@ li.cke_panel_listItem {
     overflow: hidden;
     padding: 2px;
     text-decoration: none;
-    text-overflow: ellipsis
+    text-overflow: ellipsis;
 }
 
 * html .cke_panel_listItem a {
-    width: 100%
+    width: 100%;
 }
 
 .cke_panel_listItem.cke_selected a {
     background-color: highlight;
     border: 1px solid transparent;
-    color: buttonhighlight
+    color: buttonhighlight;
 }
 
 .cke_hc .cke_panel_listItem.cke_selected a,
@@ -156,11 +157,11 @@ li.cke_panel_listItem {
 .cke_hc .cke_panel_listItem a:focus,
 .cke_hc .cke_panel_listItem a:active {
     border-width: 3px;
-    padding: 0
+    padding: 0;
 }
 
 .cke_panel_grouptitle {
-    display: none
+    display: none;
 }
 
 .cke_panel_listItem p,
@@ -172,42 +173,42 @@ li.cke_panel_listItem {
 .cke_panel_listItem h6,
 .cke_panel_listItem pre {
     margin-bottom: 3px;
-    margin-top: 3px
+    margin-top: 3px;
 }
 
 .cke_button_textcolor_panel,
 .cke_button_bgcolor_panel {
     height: 135px;
-    width: 150px
+    width: 150px;
 }
 
 .cke_colorblock {
-    padding: 3px
+    padding: 3px;
 }
 
 .cke_colorblock,
 .cke_colorblock a {
     color: #000000;
-    text-decoration: none
+    text-decoration: none;
 }
 
 span.cke_colorbox {
     border: 1px solid;
     float: left;
     height: 10px;
-    width: 10px
+    width: 10px;
 }
 
 a.cke_colorbox {
     border: 1px solid transparent;
     float: left;
-    padding: 2px
+    padding: 2px;
 }
 
 a:hover.cke_colorbox,
 a:focus.cke_colorbox,
 a:active.cke_colorbox {
-    border: 1px solid
+    border: 1px solid;
 }
 
 a.cke_colorauto,
@@ -215,7 +216,7 @@ a.cke_colormore {
     border: 1px solid transparent;
     cursor: pointer;
     display: block;
-    padding: 2px
+    padding: 2px;
 }
 
 a:hover.cke_colorauto,
@@ -224,12 +225,12 @@ a:focus.cke_colorauto,
 a:focus.cke_colormore,
 a:active.cke_colorauto,
 a:active.cke_colormore {
-    border: 1px solid
+    border: 1px solid;
 }
 
 .cke_toolbox {
     clear: both;
-    padding-bottom: 1px
+    padding-bottom: 1px;
 }
 
 a.cke_toolbox_collapser,
@@ -240,55 +241,55 @@ a:hover.cke_toolbox_collapser {
     float: right;
     height: 11px;
     margin: 11px 2px 2px;
-    width: 11px
+    width: 11px;
 }
 
 a.cke_toolbox_collapser span {
-    display: none
+    display: none;
 }
 
 .cke_hc a.cke_toolbox_collapser span {
     display: inline;
     font-family: Arial, sans-serif;
     font-size: 10px;
-    font-weight: bold
+    font-weight: bold;
 }
 
 a.cke_toolbox_collapser_min,
 a:hover.cke_toolbox_collapser_min {
     background: url(sprites.png) no-repeat 4px -1047px;
-    margin: 2px
+    margin: 2px;
 }
 
 .cke_toolbar {
     display: block;
-    height: 30px
+    height: 30px;
 }
 
 .cke_toolgroup {
-    padding-bottom: 4px
+    padding-bottom: 4px;
 }
 
 .cke_separator {
     border-left: solid 1px #B2CBFF;
     display: inline-block;
     float: left;
-    margin: 6px 2px
+    margin: 6px 2px;
 }
 
 .cke_break {
-    clear: left
+    clear: left;
 }
 
 .cke_toolbar_start,
 .cke_toolbar_end {
-    display: none
+    display: none;
 }
 
 a.cke_button {
     display: inline-block;
     height: 22px;
-    width: 24px
+    width: 24px;
 }
 
 a.cke_button,
@@ -303,21 +304,21 @@ a.cke_button.cke_off {
     outline: none;
     padding: 0;
     vertical-align: top;
-    width: 22px
+    width: 22px;
 }
 
 .cke_button a.cke_disabled * {
-    opacity: 0.3
+    opacity: 0.3;
 }
 
 .cke_hc .cke_button a.cke_disabled {
-    opacity: 0.6
+    opacity: 0.6;
 }
 
 a.cke_button:hover,
 a.cke_button:focus,
 a.cke_button:active {
-    border: 1px outset threedface
+    border: 1px outset threedface;
 }
 
 .cke_button .cke_button_icon {
@@ -326,23 +327,23 @@ a.cke_button:active {
     display: inline-block;
     height: 18px;
     margin: 2px 0 0 2px;
-    width: 20px
+    width: 20px;
 }
 
 .cke_button .cke_button_label {
     cursor: default;
     display: none;
     padding-left: 3px;
-    vertical-align: middle
+    vertical-align: middle;
 }
 
 .cke_hc .cke_button .cke_button_label {
     display: inline-block;
-    padding: 0
+    padding: 0;
 }
 
 .cke_hc .cke_button .cke_icon {
-    display: none
+    display: none;
 }
 
 .cke_accessibility {
@@ -350,7 +351,7 @@ a.cke_button:active {
     height: 0;
     overflow: hidden;
     position: absolute;
-    width: 0
+    width: 0;
 }
 
 .cke_button .cke_buttonarrow {
@@ -358,41 +359,41 @@ a.cke_button:active {
     cursor: default;
     display: inline-block;
     height: 18px;
-    width: 8px
+    width: 8px;
 }
 
 .cke_contextmenu {
     background-color: threedface;
     border: 1px solid activeborder;
-    padding: 2px
+    padding: 2px;
 }
 
 .cke_menuitem a {
     border: 1px solid transparent;
     color: buttontext;
-    display: block
+    display: block;
 }
 
 .cke_menuitem a:hover {
     background-color: #D1E2F2;
     border: 1px solid highlight;
-    color: buttontext
+    color: buttontext;
 }
 
 .cke_menuitem span {
-    cursor: default
+    cursor: default;
 }
 
 .cke_menuitem a:hover,
 .cke_menuitem a:focus,
 .cke_menuitem a:active {
-    display: block
+    display: block;
 }
 
 .cke_hc .cke_menuitem a:hover,
 .cke_hc .cke_menuitem a:focus,
 .cke_hc .cke_menuitem a:active {
-    border: 2px solid
+    border: 2px solid;
 }
 
 .cke_menuitem .cke_icon {
@@ -400,7 +401,7 @@ a.cke_button:active {
     float: left;
     height: 16px;
     margin: 1px 2px;
-    width: 16px
+    width: 16px;
 }
 
 .cke_menuitem .cke_icon_wrapper {
@@ -408,23 +409,23 @@ a.cke_button:active {
     clear: both;
     float: left;
     height: 18px;
-    width: 16px
+    width: 16px;
 }
 
 .cke_menuitem .cke_button_label {
     display: block;
     margin-left: 24px;
-    padding: 2px
+    padding: 2px;
 }
 
 .cke_menuitem a.cke_disabled:hover .cke_button_label,
 .cke_menuitem a.cke_disabled:focus .cke_button_label,
 .cke_menuitem a.cke_disabled:active .cke_button_label {
-    background-color: transparent
+    background-color: transparent;
 }
 
 .cke_menuseparator {
-    height: 2px
+    height: 2px;
 }
 
 .cke_menuarrow {
@@ -433,39 +434,39 @@ a.cke_button:active {
     height: 5px;
     margin-right: 2px;
     margin-top: 3px;
-    width: 3px
+    width: 3px;
 }
 
 .cke_menuarrow span {
-    display: none
+    display: none;
 }
 
 .cke_hc .cke_menuarrow {
     margin-top: 0;
-    width: auto
+    width: auto;
 }
 
 .cke_hc .cke_menuarrow span {
-    display: inline
+    display: inline;
 }
 
 .cke_combo {
     display: inline-block;
     margin: 2px 4px 0 0;
-    vertical-align: top
+    vertical-align: top;
 }
 
 .cke_combopanel {
-    border: 1px inset #000000
+    border: 1px inset #000000;
 }
 
 .cke_combo a {
     display: inline-block;
-    float: left
+    float: left;
 }
 
 .cke_combo .cke_combo_label {
-    display: none
+    display: none;
 }
 
 .cke_combo .cke_combo_text {
@@ -477,129 +478,129 @@ a.cke_button:active {
     height: 16px;
     padding: 2px 5px;
     vertical-align: top;
-    width: 100px
+    width: 100px;
 }
 
 .cke_combo .cke_combo_open {
     border: 1px inset threedface;
     border-left: none;
     display: inline-block;
-    height: 20px
+    height: 20px;
 }
 
 .cke_combo .cke_combo_open .cke_combo_arrow {
     background: threedface url(sprites.png) no-repeat 6px 9px;
     display: inline-block;
     height: 20px;
-    width: 16px
+    width: 16px;
 }
 
 .cke_hc .cke_combo .cke_combo_open .cke_combo_arrow {
-    background: none
+    background: none;
 }
 
 .cke_combo .cke_disabled .cke_combo_text {
-    color: #fff
+    color: #fff;
 }
 
 .cke_button.cke_button_on {
-    border: 1px inset threedface
+    border: 1px inset threedface !important;
 }
 
 .cke_button__bold .cke_button_icon {
-    background-position: -2px -1px
+    background-position: -2px -1px;
 }
 
 .cke_button__italic .cke_button_icon {
-    background-position: -24px -1px
+    background-position: -24px -1px;
 }
 
 .cke_button__underline .cke_button_icon {
-    background-position: -46px -1px
+    background-position: -46px -1px;
 }
 
 .cke_button__strike .cke_button_icon {
-    background-position: -68px -1px
+    background-position: -68px -1px;
 }
 
 .cke_button__superscript .cke_button_icon {
-    background-position: -90px -1px
+    background-position: -90px -1px;
 }
 
 .cke_button__subscript .cke_button_icon {
-    background-position: -112px -1px
+    background-position: -112px -1px;
 }
 
 .cke_button__justifyleft .cke_button_icon {
-    background-position: -136px -1px
+    background-position: -136px -1px;
 }
 
 .cke_button__justifycenter .cke_button_icon {
-    background-position: -156px -1px
+    background-position: -156px -1px;
 }
 
 .cke_button__justifyright .cke_button_icon {
-    background-position: -178px -1px
+    background-position: -178px -1px;
 }
 
 .cke_button__numberedlist .cke_button_icon {
-    background-position: -200px -1px
+    background-position: -200px -1px;
 }
 
 .cke_button__bulletedlist .cke_button_icon {
-    background-position: -222px -1px
+    background-position: -222px -1px;
 }
 
 .cke_button__indent .cke_button_icon {
-    background-position: -244px -1px
+    background-position: -244px -1px;
 }
 
 .cke_button__code .cke_button_icon {
-    background-position: -266px -1px
+    background-position: -266px -1px;
 }
 
 .cke_button__quote .cke_button_icon {
-    background-position: -288px -1px
+    background-position: -288px -1px;
 }
 
 .cke_button__spoiler .cke_button_icon {
-    background-position: -310px -1px
+    background-position: -310px -1px;
 }
 
 .cke_button__horizontalrule .cke_button_icon {
-    background-position: -332px -1px
+    background-position: -332px -1px;
 }
 
 .cke_button__image .cke_button_icon {
-    background-position: -354px -1px
+    background-position: -354px -1px;
 }
 
 .cke_button__flash .cke_button_icon {
-    background-position: -398px -1px
+    background-position: -398px -1px;
 }
 
 .cke_button__link .cke_button_icon {
-    background-position: -420px -1px
+    background-position: -420px -1px;
 }
 
 .cke_button__textcolor .cke_button_icon {
-    background-position: -508px -1px
+    background-position: -508px -1px;
 }
 
 .cke_button__cut .cke_button_icon {
-    background-position: -530px -1px
+    background-position: -530px -1px;
 }
 
 .cke_button__copy .cke_button_icon {
-    background-position: -552px -1px
+    background-position: -552px -1px;
 }
 
 .cke_button__paste .cke_button_icon {
-    background-position: -574px -1px
+    background-position: -574px -1px;
 }
 
 .cke_button__source .cke_button_icon {
-    background-position: -596px -1px
+    background-position: -596px -1px;
 }
 
 .cke_combo__font {
@@ -607,13 +608,13 @@ a.cke_button:active {
 }
 
 .cke_combo__fontsize {
-    height: 170px
+    height: 170px;
 }
 
 .cke_combo__fontsize .cke_combo_text {
-    width: 40px
+    width: 40px;
 }
 
 .cke html {
-    visibility: inherit
+    visibility: inherit;
 }

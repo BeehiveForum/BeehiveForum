@@ -2,19 +2,19 @@ body {
     background-color: #EAEFF4;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 80%;
-    margin: 10px 5px
+    margin: 10px 5px;
 }
 
 body.top_banner {
     background-color: #999999;
     margin: 0;
-    padding: 0
+    padding: 0;
 }
 
 a {
     background-color: transparent;
     color: #000000;
-    text-decoration: underline
+    text-decoration: underline;
 }
 
 a.button {
@@ -29,38 +29,38 @@ a.button {
     outline: none;
     padding: 1px 6px;
     text-align: center;
-    text-decoration: none
+    text-decoration: none;
 }
 
 a.button.upload,
 a.button.delete {
     display: inline-block;
-    vertical-align: middle
+    vertical-align: middle;
 }
 
 input::-moz-focus-inner {
-    border: 0
+    border: 0;
 }
 
 input:focus {
-    outline: 0
+    outline: 0;
 }
 
 form {
     margin: 0;
-    padding: 0
+    padding: 0;
 }
 
 frame {
     border: 0 none #000000;
     margin: 0 0 0 0;
-    padding: 0 0 0 0
+    padding: 0 0 0 0;
 }
 
 frameset {
     border: 0 none;
     margin: 0;
-    padding: 0
+    padding: 0;
 }
 
 h1 {
@@ -71,7 +71,7 @@ h1 {
     font-weight: bold;
     margin: 0;
     padding: 2px;
-    text-decoration: none
+    text-decoration: none;
 }
 
 h2 {
@@ -81,35 +81,35 @@ h2 {
     font-size: 100%;
     font-weight: bold;
     margin: 05px 05px 05px 0;
-    text-decoration: none
+    text-decoration: none;
 }
 
 h3 {
-    font-size: 100%
+    font-size: 100%;
 }
 
 h6 {
-    font-size: 80%
+    font-size: 80%;
 }
 
 img {
-    vertical-align: bottom
+    vertical-align: bottom;
 }
 
 p {
     color: #000000;
-    font-size: 100%
+    font-size: 100%;
 }
 
 p,
 h1,
 h2 {
     font-family: verdana, arial, helvetica, sans-serif;
-    text-decoration: none
+    text-decoration: none;
 }
 
 span.ui-helper-hidden-accessible {
-    display: none
+    display: none;
 }
 
 ul.ui-autocomplete {
@@ -118,7 +118,7 @@ ul.ui-autocomplete {
     border-style: solid;
     border-width: 1px;
     overflow: hidden;
-    padding: 0
+    padding: 0;
 }
 
 ul.ui-autocomplete li {
@@ -127,103 +127,103 @@ ul.ui-autocomplete li {
     font-size: 100%;
     line-height: 16px;
     margin: 0;
-    overflow: hidden
+    overflow: hidden;
 }
 
 ul.ui-autocomplete li a {
     display: block;
     padding: 3px;
-    text-decoration: none
+    text-decoration: none;
 }
 
 ul.ui-autocomplete li a:hover,
 ul.ui-autocomplete li a.ui-state-focus {
     background-color: #A6BED7;
-    color: #FFFFFF
+    color: #FFFFFF;
 }
 
 .activeusers {
-    font-size: 85%
+    font-size: 85%;
 }
 
 .add_upload_field {
-    cursor: pointer
+    cursor: pointer;
 }
 
 .admin_folder_perms {
     height: 140px;
     overflow: auto;
-    padding: 2px
+    padding: 2px;
 }
 
 .admin_options_dropdown {
-    width: 300px
+    width: 300px;
 }
 
 .admin_settings_text {
-    font-size: 90%
+    font-size: 90%;
 }
 
 .admin_tools_textarea {
     font-family: monospace;
-    width: 650px
+    width: 650px;
 }
 
 .adminipdisplay {
-    font-size: 90%
+    font-size: 90%;
 }
 
 .approved_text {
-    font-size: 75%
+    font-size: 75%;
 }
 
 .attachment_thumb {
     border: 1px solid #777777;
     display: inline-block;
     margin: 5px;
-    padding: 5px
+    padding: 5px;
 }
 
 .banned_dropdown {
     height: 100px;
-    width: 250px
+    width: 250px;
 }
 
 .bhinputcheckbox,
 .bhinputradio {
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 90%
+    font-size: 90%;
 }
 
 .bhinputcheckboxdisabled,
 .bhinputradiodisabled {
-    color: #808080
+    color: #808080;
 }
 
 .bhinputlogon {
-    width: 165px
+    width: 165px;
 }
 
 .bhseparatorlogon {
     border: 0 solid #a6bed7;
     border-top-width: 1px;
-    margin: 10px 0 5px
+    margin: 10px 0 5px;
 }
 
 .bhinputlogon_warning {
-    font-size: 75%
+    font-size: 75%;
 }
 
 select.bhinputprofileitem {
-    width: 574px
+    width: 574px;
 }
 
 .bhinputprofileitem {
-    width: 570px
+    width: 570px;
 }
 
 .bhinputprofileprivacy {
-    width: 80px
+    width: 80px;
 }
 
 .bhinputsearch {
@@ -231,7 +231,7 @@ select.bhinputprofileitem {
     border: 1px solid #82827e;
     border-bottom-color: #f9f9f6;
     border-right-color: #f9f9f6;
-    float: left
+    float: left;
 }
 
 .bhinputtext,
@@ -270,43 +270,43 @@ select.bhinputprofileitem {
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
-    padding-left: 2px
+    padding-left: 2px;
 }
 
 .bhlightinput {
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
     max-height: 40%;
-    max-width: 90%
+    max-width: 90%;
 }
 
 .bhlightselect {
-    max-width: 75%
+    max-width: 75%;
 }
 
 .bhlogondropdown {
-    width: 169px
+    width: 169px;
 }
 
 .bhlogonother {
     font-style: italic;
-    padding-left: 5px
+    padding-left: 5px;
 }
 
 .bhlogonseparator {
     max-width: 100%;
-    width: 350px
+    width: 350px;
 }
 
 .bhselectoptgroup {
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 100%
+    font-size: 100%;
 }
 
 .box {
     background-color: #FFFFFF;
     border: 1px solid #000000;
-    padding: 0
+    padding: 0;
 }
 
 .button,
@@ -321,7 +321,7 @@ select.bhinputprofileitem {
     margin: 0;
     padding: 1px 6px;
     text-align: center;
-    text-decoration: none
+    text-decoration: none;
 }
 
 .button_disabled {
@@ -337,7 +337,7 @@ select.bhinputprofileitem {
     margin: 0;
     padding: 1px 6px;
     text-align: center;
-    text-decoration: none
+    text-decoration: none;
 }
 
 .button_image {
@@ -346,28 +346,28 @@ select.bhinputprofileitem {
     cursor: pointer;
     overflow: visible;
     padding: 0;
-    width: auto
+    width: auto;
 }
 
 .button_image span {
     display: block;
-    margin: 0
+    margin: 0;
 }
 
 .button_image.disabled {
-    opacity: 0.4
+    opacity: 0.4;
 }
 
 .button_image.add_option {
-    padding-left: 35px
+    padding-left: 35px;
 }
 
 .button_image.delete_option {
-    vertical-align: text-bottom
+    vertical-align: text-bottom;
 }
 
 .button_image.delete_question {
-    vertical-align: text-bottom
+    vertical-align: text-bottom;
 }
 
 .code {
@@ -377,36 +377,36 @@ select.bhinputprofileitem {
     font-size: 120%;
     margin: 0 10px 10px 40px;
     overflow: auto;
-    padding: 3px
+    padding: 3px;
 }
 
 pre.code span.emoticon {
-    background-image: none
+    background-image: none;
 }
 
 pre.code span.emoticon span {
-    display: inherit
+    display: inherit;
 }
 
 fieldset.poll_question {
     margin: 5px 0;
-    width: 680px
+    width: 680px;
 }
 
 fieldset.poll_question + fieldset.poll_question {
-    margin: 10px 0 5px
+    margin: 10px 0 5px;
 }
 
 div.sig {
-    margin-top: 10px
+    margin-top: 10px;
 }
 
 div.poll_option_list ol {
-    margin-bottom: 5px
+    margin-bottom: 5px;
 }
 
 div.poll_option_list ol li {
-    margin: 5px 0
+    margin: 5px 0;
 }
 
 .create_poll_display {
@@ -415,57 +415,57 @@ div.poll_option_list ol li {
     margin-right: 10px;
     overflow: auto;
     padding: 2px;
-    width: 540px
+    width: 540px;
 }
 
 .dictionary_best_selection {
     height: 85px;
     margin: 0;
     padding: 0;
-    width: 330px
+    width: 330px;
 }
 
 .dictionary_best_selection option {
     padding-left: 5px;
-    width: 300px
+    width: 300px;
 }
 
 .dictionary_button {
-    width: 110px
+    width: 110px;
 }
 
 .dictionary_change_to {
-    width: 325px
+    width: 325px;
 }
 
 .dictionary_pretty_content {
     height: 85px;
     overflow: auto;
     padding-left: 5px;
-    width: 323px
+    width: 323px;
 }
 
 .dictionary_word_display {
-    width: 200px
+    width: 200px;
 }
 
 .edit_signature_content {
-    width: 650px
+    width: 650px;
 }
 
 .edit_text {
-    font-size: 75%
+    font-size: 75%;
 }
 
 .emoticon_preview {
     background-color: #FFFFFF;
     overflow: auto;
-    padding: 2px
+    padding: 2px;
 }
 
 .emoticon_preview .emoticon {
     cursor: pointer;
-    padding: 2px
+    padding: 2px;
 }
 
 .error_handler_details {
@@ -479,11 +479,11 @@ div.poll_option_list ol li {
     padding: 10px 10px 0;
     text-align: left;
     white-space: nowrap;
-    width: 745px
+    width: 745px;
 }
 
 .error_handler_details pre {
-    font-size: 100%
+    font-size: 100%;
 }
 
 .error_msg {
@@ -494,24 +494,24 @@ div.poll_option_list ol li {
     margin: 10px 0 10px 0;
     max-width: 100%;
     padding: 10px;
-    text-align: left
+    text-align: left;
 }
 
 .error_msg ul li {
     padding-bottom: 5px;
-    text-align: left
+    text-align: left;
 }
 
 .error_msg_icon {
-    padding-right: 0
+    padding-right: 0;
 }
 
 .error_msg_text {
-    padding-left: 0
+    padding-left: 0;
 }
 
 .fix_html_help {
-    cursor: pointer
+    cursor: pointer;
 }
 
 .fnotification {
@@ -519,13 +519,13 @@ div.poll_option_list ol li {
     left: 100px;
     position: absolute;
     top: 100px;
-    width: 100px
+    width: 100px;
 }
 
 .folderinfo {
     float: left;
     font-size: 85%;
-    text-decoration: underline
+    text-decoration: underline;
 }
 
 .foldername {
@@ -535,14 +535,14 @@ div.poll_option_list ol li {
     font-style: normal;
     font-weight: bold;
     padding: 2px;
-    text-decoration: none
+    text-decoration: none;
 }
 
 .folderpostnew {
     float: right;
     font-size: 85%;
     text-align: right;
-    text-decoration: underline
+    text-decoration: underline;
 }
 
 .forum_rules_box {
@@ -555,13 +555,13 @@ div.poll_option_list ol li {
     overflow: auto;
     padding: 0 10px 0 10px;
     text-align: left;
-    width: 95%
+    width: 95%;
 }
 
 .forumlinks {
     background-color: #5483B1;
     color: #FFFFFF;
-    font-family: verdana, arial, helvetica, sans-serif
+    font-family: verdana, arial, helvetica, sans-serif;
 }
 
 .google_adsense_register_note {
@@ -570,26 +570,26 @@ div.poll_option_list ol li {
     font-size: 80%;
     height: 15px;
     padding-left: 5px;
-    text-align: center
+    text-align: center;
 }
 
 .google_adsense_register_note a {
     color: inherit;
-    text-decoration: none
+    text-decoration: none;
 }
 
 .google_adsense_register_note a:hover {
     color: inherit;
-    text-decoration: none
+    text-decoration: none;
 }
 
 .highlight {
-    background-color: #C8D7E6
+    background-color: #C8D7E6;
 }
 
 .image_resize_icon {
     padding: 5px;
-    vertical-align: middle
+    vertical-align: middle;
 }
 
 .image_resize_text {
@@ -599,35 +599,35 @@ div.poll_option_list ol li {
     font-size: 90%;
     height: 25px;
     margin-top: 2px;
-    overflow: hidden
+    overflow: hidden;
 }
 
 .install_input {
-    width: 234px
+    width: 234px;
 }
 
 .install_help_icon {
-    cursor: pointer
+    cursor: pointer;
 }
 
 .install_table_list {
     height: 140px;
     overflow: auto;
-    padding: 2px
+    padding: 2px;
 }
 
 .link_hidden {
-    color: grey
+    color: grey;
 }
 
 .links_dropdown {
-    width: 290px
+    width: 290px;
 }
 
 .links_folder_list {
     height: 140px;
     overflow: auto;
-    padding: 2px
+    padding: 2px;
 }
 
 .merge_thread_id {
@@ -635,11 +635,11 @@ div.poll_option_list ol li {
     border: 0;
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 100%
+    font-size: 100%;
 }
 
 .message_box {
-    max-width: 100%
+    max-width: 100%;
 }
 
 .messagefoot {
@@ -647,7 +647,7 @@ div.poll_option_list ol li {
     border-width: 0;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
-    font-style: normal
+    font-style: normal;
 }
 
 .move_down_ctrl {
@@ -655,12 +655,12 @@ div.poll_option_list ol li {
     border: none;
     height: 18px;
     margin-right: 1px;
-    width: 18px
+    width: 18px;
 }
 
 .move_down_ctrl img {
     margin-left: -3px;
-    margin-top: -2px
+    margin-top: -2px;
 }
 
 .move_down_ctrl_disabled {
@@ -668,12 +668,12 @@ div.poll_option_list ol li {
     border: none;
     height: 18px;
     margin-right: 1px;
-    width: 18px
+    width: 18px;
 }
 
 .move_down_ctrl_disabled img {
     margin-left: -3px;
-    margin-top: -2px
+    margin-top: -2px;
 }
 
 .move_up_ctrl {
@@ -681,12 +681,12 @@ div.poll_option_list ol li {
     border: none;
     height: 18px;
     margin-right: 1px;
-    width: 18px
+    width: 18px;
 }
 
 .move_up_ctrl img {
     margin-left: -3px;
-    margin-top: -2px
+    margin-top: -2px;
 }
 
 .move_up_ctrl_disabled {
@@ -694,17 +694,17 @@ div.poll_option_list ol li {
     border: none;
     height: 18px;
     margin-right: 1px;
-    width: 18px
+    width: 18px;
 }
 
 .move_up_ctrl_disabled img {
     margin-left: -3px;
-    margin-top: -2px
+    margin-top: -2px;
 }
 
 .navleft {
     float: left;
-    margin: 4px
+    margin: 4px;
 }
 
 .navpage {
@@ -713,147 +713,147 @@ div.poll_option_list ol li {
     font-size: 65%;
     font-weight: bold;
     margin: 0;
-    text-decoration: none
+    text-decoration: none;
 }
 
 .navpage a {
     color: #FFFFFF;
-    text-decoration: none
+    text-decoration: none;
 }
 
 .navright {
-    float: right
+    float: right;
 }
 
 .pagenum_text {
-    font-size: 90%
+    font-size: 90%;
 }
 
 .pagenum_text a {
-    text-decoration: none
+    text-decoration: none;
 }
 
 .pagenum_current {
-    font-weight: bold
+    font-weight: bold;
 }
 
 .pm_message_count {
-    font-size: 90%
+    font-size: 90%;
 }
 
 .pmbar {
     background: transparent url('images/pbar.png') repeat-x;
-    height: 11px
+    height: 11px;
 }
 
 .pmbar_container {
     background-color: #FFFFFF;
     border: 1px solid #686868;
     height: 13px;
-    width: 100%
+    width: 100%;
 }
 
 .pmbar_text {
-    font-size: 80%
+    font-size: 80%;
 }
 
 .pmnewcount {
-    font-size: 90%
+    font-size: 90%;
 }
 
 .poll_bar {
     margin: 5px 0;
     overflow: hidden;
-    position: relative
+    position: relative;
 }
 
 .poll_bar_vertical {
-    height: 200px
+    height: 200px;
 }
 
 .poll_bar_inner {
-    position: absolute
+    position: absolute;
 }
 
 .poll_bar_horizontal,
 .poll_bar_horizontal .poll_bar_inner {
-    height: 20px
+    height: 20px;
 }
 
 .poll_bar_1 {
-    border: 1px solid #0000AA
+    border: 1px solid #0000AA;
 }
 
 .poll_bar_2 {
-    border: 1px solid #D40000
+    border: 1px solid #D40000;
 }
 
 .poll_bar_3 {
-    border: 1px solid #2AAA00
+    border: 1px solid #2AAA00;
 }
 
 .poll_bar_4 {
-    border: 1px solid #F4AA00
+    border: 1px solid #F4AA00;
 }
 
 .poll_bar_5 {
-    border: 1px solid #D42AD4
+    border: 1px solid #D42AD4;
 }
 
 .poll_bar_inner_1 {
-    background-color: #0000AA
+    background-color: #0000AA;
 }
 
 .poll_bar_inner_2 {
-    background-color: #D40000
+    background-color: #D40000;
 }
 
 .poll_bar_inner_3 {
-    background-color: #2AAA00
+    background-color: #2AAA00;
 }
 
 .poll_bar_inner_4 {
-    background-color: #F4AA00
+    background-color: #F4AA00;
 }
 
 .poll_bar_inner_5 {
-    background-color: #D42AD4
+    background-color: #D42AD4;
 }
 
 .poll_accordian {
     background-color: #A6BED7;
     color: #FFFFFF;
     font-weight: normal;
-    padding: 1px 5px
+    padding: 1px 5px;
 }
 
 .post_content {
     max-width: 720px;
     min-width: 720px;
-    width: 720px
+    width: 720px;
 }
 
 .post_folder_dropdown {
-    width: 190px
+    width: 190px;
 }
 
 .post_options {
-    cursor: pointer
+    cursor: pointer;
 }
 
 .post_options_container {
     display: none;
     position: absolute;
     text-align: left;
-    width: 160px
+    width: 160px;
 }
 
 .post_options_container * {
-    margin-left: -9999px
+    margin-left: -9999px;
 }
 
 .post_options_menu {
-    padding: 5px 10px 10px 5px
+    padding: 5px 10px 10px 5px;
 }
 
 .post_to_others {
@@ -862,31 +862,31 @@ div.poll_option_list ol li {
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
-    width: 185px
+    width: 185px;
 }
 
 .postbody {
     border: none;
     font-size: 100%;
-    padding: 2px
+    padding: 2px;
 }
 
 .posthead {
     background-color: #C8D7E6;
     border: none;
     font-size: 100%;
-    padding: 0
+    padding: 0;
 }
 
 .postinfo {
     float: right;
     font-size: 100%;
-    text-align: right
+    text-align: right;
 }
 
 .postnumber {
     font-size: 100%;
-    text-align: right
+    text-align: right;
 }
 
 .postresponse {
@@ -897,107 +897,107 @@ div.poll_option_list ol li {
     font-style: normal;
     padding-bottom: 1px;
     padding-top: 1px;
-    text-align: center
+    text-align: center;
 }
 
 .posttofrom {
     font-size: 100%;
-    text-align: left
+    text-align: left;
 }
 
 .posttofromlabel {
     font-size: 100%;
-    text-align: right
+    text-align: right;
 }
 
 .profile_browse_close {
-    vertical-align: middle
+    vertical-align: middle;
 }
 
 .profile_footer {
     background-color: #A6BED7;
-    border-top: 1px solid #FFFFFF
+    border-top: 1px solid #FFFFFF;
 }
 
 .profile_header {
-    background-color: #A6BED7
+    background-color: #A6BED7;
 }
 
 .profile_image {
     border: 1px solid #000000;
     height: 95px;
     margin: 10px;
-    width: 95px
+    width: 95px;
 }
 
 .profile_image_none {
     border: 1px solid #A6BED7;
     height: 95px;
     margin: 10px;
-    width: 95px
+    width: 95px;
 }
 
 .profile_item_name {
     font-size: 100%;
-    padding: 2px 10px 2px 2px
+    padding: 2px 10px 2px 2px;
 }
 
 .profile_item_overflow {
-    overflow: hidden
+    overflow: hidden;
 }
 
 .profile_item_value {
     border-left: 1px solid #000000;
     font-size: 100%;
-    padding: 2px 2px 2px 10px
+    padding: 2px 2px 2px 10px;
 }
 
 .profile_item_value a {
-    font-size: 100%
+    font-size: 100%;
 }
 
 .profile_items {
     border-collapse: collapse;
-    margin: 5px
+    margin: 5px;
 }
 
 .profile_items_section {
     border-bottom: 0 solid #FFFFFF;
     border-top: 1px solid #FFFFFF;
     padding-bottom: 5px;
-    padding-top: 10px
+    padding-top: 10px;
 }
 
 .profile_logon {
     color: #000000;
     cursor: pointer;
-    font-size: 100%
+    font-size: 100%;
 }
 
 .profile_logon a {
-    text-decoration: none
+    text-decoration: none;
 }
 
 .profile_options {
-    cursor: pointer
+    cursor: pointer;
 }
 
 .profile_options_container {
     display: none;
     position: absolute;
-    text-align: left
+    text-align: left;
 }
 
 .profile_options_menu {
-    padding: 5px 10px 10px 5px
+    padding: 5px 10px 10px 5px;
 }
 
 .quick_reply_container_closed {
-    display: none
+    display: none;
 }
 
 .quick_reply_container_opened {
-    display: block
+    display: block;
 }
 
 .quote {
@@ -1005,7 +1005,7 @@ div.poll_option_list ol li {
     border: 1px solid #CCCCCC;
     font-family: verdana, arial, helvetica, sans-serif;
     margin: 0 10px 10px 40px;
-    padding: 3px
+    padding: 3px;
 }
 
 .quotetext {
@@ -1014,19 +1014,19 @@ div.poll_option_list ol li {
     margin-left: 40px;
     margin-right: 10px;
     margin-top: 5px;
-    padding: 3px
+    padding: 3px;
 }
 
 .recent_user_dropdown {
-    width: 190px
+    width: 190px;
 }
 
 .recipient_dropdown {
-    width: 190px
+    width: 190px;
 }
 
 .register_dropdown {
-    width: 228px
+    width: 228px;
 }
 
 .search_button {
@@ -1036,11 +1036,11 @@ div.poll_option_list ol li {
     height: 100%;
     margin: 0;
     padding: 0;
-    vertical-align: text-bottom
+    vertical-align: text-bottom;
 }
 
 .search_dropdown {
-    width: 175px
+    width: 175px;
 }
 
 .search_input {
@@ -1049,28 +1049,28 @@ div.poll_option_list ol li {
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
-    padding-left: 2px
+    padding-left: 2px;
 }
 
 .search_keyword_highlight {
     font-style: italic;
-    font-weight: bold
+    font-weight: bold;
 }
 
 .signature_content {
     max-width: 720px;
     min-width: 720px;
-    width: 720px
+    width: 720px;
 }
 
 .create_poll {
     max-width: 710px;
     min-width: 710px;
-    width: 710px
+    width: 710px;
 }
 
 .small_optional_text {
-    font-size: 80%
+    font-size: 80%;
 }
 
 .smallbutton {
@@ -1086,15 +1086,15 @@ div.poll_option_list ol li {
     margin: 0;
     padding: 1px 6px;
     text-align: center;
-    text-decoration: none
+    text-decoration: none;
 }
 
 .smalltext {
-    font-size: 90%
+    font-size: 90%;
 }
 
 .smallertext {
-    font-size: 80%
+    font-size: 80%;
 }
 
 .spellcheckbodytext {
@@ -1105,7 +1105,7 @@ div.poll_option_list ol li {
     font-size: 100%;
     height: 85px;
     padding: 0;
-    width: 100%
+    width: 100%;
 }
 
 span.spoiler {
@@ -1116,11 +1116,11 @@ span.spoiler {
     font-family: verdana, arial, helvetica, sans-serif;
     min-height: 16px;
     min-width: 55px;
-    padding: 0 3px
+    padding: 0 3px;
 }
 
 span.spoiler > span {
-    visibility: hidden
+    visibility: hidden;
 }
 
 span.spoiler_light {
@@ -1128,16 +1128,16 @@ span.spoiler_light {
     border: 1px solid #CCCCCC;
     color: #CCCCCC;
     font-family: Verdana, Arial, Helvetica, sans-serif;
-    padding: 3px
+    padding: 3px;
 }
 
 span.spoiler_reveal {
     background-image: none;
-    color: #000000
+    color: #000000;
 }
 
 span.spoiler_reveal > span {
-    visibility: visible
+    visibility: visible;
 }
 
 div.spoiler {
@@ -1146,11 +1146,11 @@ div.spoiler {
     color: #EEEEEE;
     font-family: verdana, arial, helvetica, sans-serif;
     margin: 0 10px 10px 40px;
-    padding: 3px
+    padding: 3px;
 }
 
 div.spoiler * {
-    margin-left: -9999px
+    margin-left: -9999px;
 }
 
 div.spoiler_light {
@@ -1159,7 +1159,7 @@ div.spoiler_light {
     color: #CCCCCC;
     font-family: Verdana, Arial, Helvetica, sans-serif;
     margin: 0 10px 10px 40px;
-    padding: 3px
+    padding: 3px;
 }
 
 div.spoiler_reveal {
@@ -1168,11 +1168,11 @@ div.spoiler_reveal {
     color: #000000;
     font-family: verdana, arial, helvetica, sans-serif;
     margin: 0 10px 10px 40px;
-    padding: 3px
+    padding: 3px;
 }
 
 div.spoiler_reveal * {
-    margin-left: 0
+    margin-left: 0;
 }
 
 .subhead {
@@ -1181,7 +1181,7 @@ div.spoiler_reveal * {
     color: #FFFFFF;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
-    padding-left: 5px
+    padding-left: 5px;
 }
 
 .subhead_checkbox {
@@ -1189,7 +1189,7 @@ div.spoiler_reveal * {
     border-width: 0;
     color: #FFFFFF;
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 100%
+    font-size: 100%;
 }
 
 .subhead_sort_asc {
@@ -1198,7 +1198,7 @@ div.spoiler_reveal * {
     color: #FFFFFF;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
-    padding-left: 5px
+    padding-left: 5px;
 }
 
 .subhead_sort_desc {
@@ -1207,7 +1207,7 @@ div.spoiler_reveal * {
     color: #FFFFFF;
     font-family: verdana, arial, helvetica, sans-serif;
     font-size: 100%;
-    padding-left: 5px
+    padding-left: 5px;
 }
 
 .success_msg {
@@ -1218,23 +1218,23 @@ div.spoiler_reveal * {
     margin: 10px 0 10px 0;
     max-width: 100%;
     padding: 10px;
-    text-align: left
+    text-align: left;
 }
 
 .success_msg_icon {
-    padding-right: 0
+    padding-right: 0;
 }
 
 .success_msg_text {
-    padding-left: 0
+    padding-left: 0;
 }
 
 .text_captcha_input {
-    width: 180px
+    width: 180px;
 }
 
 .text_captcha_reload {
-    cursor: pointer
+    cursor: pointer;
 }
 
 .thread_list_folder {
@@ -1242,7 +1242,7 @@ div.spoiler_reveal * {
     border: 00px solid #ffffff;
     border-bottom-width: 01px;
     height: 20px;
-    vertical-align: middle
+    vertical-align: middle;
 }
 
 .thread_list_mode {
@@ -1250,26 +1250,26 @@ div.spoiler_reveal * {
     border: 01px solid #999999;
     font-size: 100%;
     margin-left: 05px;
-    margin-right: 05px
+    margin-right: 05px;
 }
 
 .thread_list_thread {
     border-style: none;
-    vertical-align: middle
+    vertical-align: middle;
 }
 
 .thread_title {
-    width: 185px
+    width: 185px;
 }
 
 .thread_track_notice {
     border: 1px dashed #000000;
-    padding: 5px
+    padding: 5px;
 }
 
 .threadname {
     font-size: 100%;
-    padding-left: 0
+    padding-left: 0;
 }
 
 .threads {
@@ -1278,7 +1278,7 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px
+    padding: 2px;
 }
 
 .threads_bottom_left {
@@ -1289,7 +1289,7 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px
+    padding: 2px;
 }
 
 .threads_bottom_right {
@@ -1300,7 +1300,7 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px
+    padding: 2px;
 }
 
 .threads_left {
@@ -1310,7 +1310,7 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px
+    padding: 2px;
 }
 
 .threads_left_right {
@@ -1321,7 +1321,7 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px
+    padding: 2px;
 }
 
 .threads_left_right_bottom {
@@ -1331,7 +1331,7 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px
+    padding: 2px;
 }
 
 .threads_right {
@@ -1341,7 +1341,7 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px
+    padding: 2px;
 }
 
 .threads_top_left {
@@ -1352,7 +1352,7 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px
+    padding: 2px;
 }
 
 .threads_top_left_bottom {
@@ -1362,7 +1362,7 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px
+    padding: 2px;
 }
 
 .threads_top_right {
@@ -1373,7 +1373,7 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px
+    padding: 2px;
 }
 
 .threads_top_right_bottom {
@@ -1383,55 +1383,55 @@ div.spoiler_reveal * {
     font-size: 100%;
     font-style: normal;
     margin: 4px;
-    padding: 2px
+    padding: 2px;
 }
 
 .threadtime {
     font-size: 85%;
-    padding-left: 0
+    padding-left: 0;
 }
 
 .threadxnewofy {
     font-size: 85%;
     padding-left: 0;
-    white-space: nowrap
+    white-space: nowrap;
 }
 
 .timezone_dropdown {
-    width: 375px
+    width: 375px;
 }
 
 .friends_dropdown {
-    width: 190px
+    width: 190px;
 }
 
 .upload_fields {
-    display: none
+    display: none;
 }
 
 .user_in_thread_dropdown {
-    width: 190px
+    width: 190px;
 }
 
 .user_pref_dob_dropdown {
     margin-right: 1px;
-    width: 97px
+    width: 97px;
 }
 
 .user_pref_dropdown {
-    width: 384px
+    width: 384px;
 }
 
 .user_pref_field {
-    width: 380px
+    width: 380px;
 }
 
 .user_stats_curuser {
-    font-weight: bold
+    font-weight: bold;
 }
 
 .user_stats_friend {
-    font-style: italic
+    font-style: italic;
 }
 
 .warning_msg {
@@ -1442,68 +1442,68 @@ div.spoiler_reveal * {
     margin: 10px 0 10px 0;
     max-width: 100%;
     padding: 10px;
-    text-align: left
+    text-align: left;
 }
 
 .warning_msg_icon {
-    padding-right: 0
+    padding-right: 0;
 }
 
 .warning_msg_text {
-    padding-left: 0
+    padding-left: 0;
 }
 
 .wikiword {
     border: 0 dashed;
     border-bottom-width: 1px;
-    text-decoration: none
+    text-decoration: none;
 }
 
 .attachments {
-    margin-top: 5px
+    margin-top: 5px;
 }
 
 .attachments ul {
     list-style: none;
     margin: 0;
-    padding: 0
+    padding: 0;
 }
 
 .attachments ul li {
-    margin: 5px 0
+    margin: 5px 0;
 }
 
 .attachments ul li + li {
-    margin-top: 0
+    margin-top: 0;
 }
 
 .attachments ul li:last-child {
-    margin-bottom: 10px
+    margin-bottom: 10px;
 }
 
 .attachments ul li label span {
-    margin-right: 5px
+    margin-right: 5px;
 }
 
 .attachments ul li span.filename {
     display: inline-block;
-    padding-left: 20px
+    padding-left: 20px;
 }
 
 .attachments ul li.complete span.filename {
-    background: transparent url('images/attach.png') no-repeat 0 50%
+    background: transparent url('images/attach.png') no-repeat 0 50%;
 }
 
 .attachments ul li.error span.filename {
-    background: transparent url('images/error.png') no-repeat 0 50%
+    background: transparent url('images/error.png') no-repeat 0 50%;
 }
 
 .attachments ul li.uploading span.filename {
-    background: transparent url('images/loading.gif') no-repeat 0 50%
+    background: transparent url('images/loading.gif') no-repeat 0 50%;
 }
 
 .attachments ul li label {
-    display: block
+    display: block;
 }
 
 .attachments ul li.attachment span.cancel,
@@ -1511,15 +1511,15 @@ div.spoiler_reveal * {
     display: inline-block;
     height: 16px;
     text-indent: -9999px;
-    width: 16px
+    width: 16px;
 }
 
 .attachments ul li.attachment span.cancel {
-    background: transparent url('images/stop.png') no-repeat 0 50%
+    background: transparent url('images/stop.png') no-repeat 0 50%;
 }
 
 .attachments ul li.attachment span.retry {
-    background: transparent url('images/reload.png') no-repeat 0 50%
+    background: transparent url('images/reload.png') no-repeat 0 50%;
 }
 
 .attachments ul li.error span.progress,
@@ -1530,25 +1530,25 @@ div.spoiler_reveal * {
 .attachments ul li.uploading span.delete,
 .attachments ul li.uploading span.retry,
 .attachments ul li.error span.delete {
-    display: none
+    display: none;
 }
 
 .attachments ul li.attachment span.filesize {
     float: right;
-    padding-top: 3px
+    padding-top: 3px;
 }
 
 .attachments .buttons {
-    float: left
+    float: left;
 }
 
 .attachments .summary {
     float: right;
-    text-align: right
+    text-align: right;
 }
 
 .attachments .summary div {
-    margin: 2px 0
+    margin: 2px 0;
 }
 
 .attachments .summary span.used_post_space,
@@ -1556,5 +1556,5 @@ div.spoiler_reveal * {
 .attachments .summary span.free_upload_space {
     display: inline-block;
     margin-right: 5px;
-    min-width: 60px
+    min-width: 60px;
 }

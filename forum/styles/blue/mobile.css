@@ -1,9 +1,9 @@
 * {
-    font-family: verdana, arial, helvetica, sans-serif
+    font-family: verdana, arial, helvetica, sans-serif;
 }
 
 p:first-child {
-    margin-top: 0
+    margin-top: 0;
 }
 
 input,
@@ -11,14 +11,14 @@ input,
 .textarea,
 .text {
     font-size: 11pt;
-    font-weight: normal
+    font-weight: normal;
 }
 
 select {
     border-radius: 0;
     height: 24px;
     line-height: 24px;
-    margin: 0
+    margin: 0;
 }
 
 .button {
@@ -35,34 +35,34 @@ select {
     text-decoration: none;
     text-transform: none;
     white-space: pre;
-    word-spacing: normal
+    word-spacing: normal;
 }
 
 a.button {
     border-style: outset;
-    padding: 4px 7px 2px
+    padding: 4px 7px 2px;
 }
 
 .checkbox,
 .radio {
-    margin-right: 3px
+    margin-right: 3px;
 }
 
 a {
     color: #000000;
-    text-decoration: none
+    text-decoration: none;
 }
 
 .quotetext {
     margin: 5px 10px 0 20px;
-    padding: 3px
+    padding: 3px;
 }
 
 .quote {
     background-color: #EEEEEE;
     border: 1px solid #CCCCCC;
     margin: 0 10px 0 20px;
-    padding: 3px
+    padding: 3px;
 }
 
 .code {
@@ -72,7 +72,7 @@ a {
     margin: 0 10px 0 20px;
     overflow: scroll;
     padding: 3px;
-    white-space: pre-wrap
+    white-space: pre-wrap;
 }
 
 span.spoiler {
@@ -82,11 +82,11 @@ span.spoiler {
     display: inline-block;
     min-height: 16px;
     min-width: 55px;
-    padding: 0 3px
+    padding: 0 3px;
 }
 
 span.spoiler > span {
-    visibility: hidden
+    visibility: hidden;
 }
 
 span.spoiler_light {
@@ -94,16 +94,16 @@ span.spoiler_light {
     border: 1px solid #CCCCCC;
     color: #CCCCCC;
     display: inline-block;
-    padding: 3px
+    padding: 3px;
 }
 
 span.spoiler_reveal {
     background-image: none;
-    color: #000000
+    color: #000000;
 }
 
 span.spoiler_reveal > span {
-    visibility: visible
+    visibility: visible;
 }
 
 div.spoiler {
@@ -111,11 +111,11 @@ div.spoiler {
     border: 1px solid #CCCCCC;
     color: #EEEEEE;
     margin: 0 10px 0 20px;
-    padding: 3px
+    padding: 3px;
 }
 
 div.spoiler * {
-    margin-left: -9999px
+    margin-left: -9999px;
 }
 
 div.spoiler_light {
@@ -123,7 +123,7 @@ div.spoiler_light {
     border: 1px solid #CCCCCC;
     color: #CCCCCC;
     margin: 0 10px 0 20px;
-    padding: 3px
+    padding: 3px;
 }
 
 div.spoiler_reveal {
@@ -131,15 +131,15 @@ div.spoiler_reveal {
     border: 1px solid #CCCCCC;
     color: #000000;
     margin: 0 10px 0 20px;
-    padding: 3px
+    padding: 3px;
 }
 
 div.spoiler_reveal * {
-    margin-left: 0
+    margin-left: 0;
 }
 
 .clearer {
-    clear: both
+    clear: both;
 }
 
 body {
@@ -148,7 +148,7 @@ body {
     color: #000000;
     font-size: 62.5%;
     margin: 0;
-    padding: 0
+    padding: 0;
 }
 
 #header {
@@ -160,27 +160,27 @@ body {
     position: fixed;
     top: 0;
     width: 100%;
-    z-index: 1
+    z-index: 1;
 }
 
 #header img {
-    margin: 5px
+    margin: 5px;
 }
 
 #footer {
     font-size: 11pt;
-    text-align: center
+    text-align: center;
 }
 
 #footer > #footer_links {
     font-size: 10pt;
     font-weight: bold;
-    margin: 20px 0
+    margin: 20px 0;
 }
 
 #footer h6 {
     font-size: 9pt;
-    margin: 20px 0
+    margin: 20px 0;
 }
 
 #nav {
@@ -196,11 +196,11 @@ body {
     position: absolute;
     right: 0;
     top: 0;
-    width: 100px
+    width: 100px;
 }
 
 #nav.menu_open {
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2)
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
 }
 
 #menu {
@@ -214,7 +214,7 @@ body {
     right: 0;
     top: 31px;
     width: 140px;
-    z-index: 9999
+    z-index: 9999;
 }
 
 #menu ul {
@@ -222,32 +222,32 @@ body {
     font-size: 11pt;
     list-style: none;
     margin: 0;
-    padding: 0
+    padding: 0;
 }
 
 #menu li {
     border: none;
     color: #FFFFFF;
     cursor: pointer;
-    font-weight: bold
+    font-weight: bold;
 }
 
 #menu li a {
     color: #FFFFFF;
     display: block;
-    padding: 5px 20px
+    padding: 5px 20px;
 }
 
 #menu ul li:first-child a,
 #menu ul li:last-child a,
 #menu li.menu_toggle {
-    padding: 6px 20px 6px
+    padding: 6px 20px 6px;
 }
 
 #page_content {
     font-size: 11pt;
     margin: 45px 10px 5px;
-    padding-bottom: 5px
+    padding-bottom: 5px;
 }
 
 #thread_view ul,
@@ -256,38 +256,38 @@ body {
     display: table;
     margin: 0;
     padding: 0;
-    width: 100%
+    width: 100%;
 }
 
 #thread_view li,
 #thread_mark_read li,
 #folder_view li {
     display: table-cell;
-    vertical-align: middle
+    vertical-align: middle;
 }
 
 #thread_view li .select,
 #thread_mark_read li .select,
 #folder_view li .select {
-    width: 100%
+    width: 100%;
 }
 
 #thread_view li.right_col,
 #thread_mark_read li.right_col,
 #folder_view li.right_col {
     text-align: right;
-    width: 2%
+    width: 2%;
 }
 
 #thread_mark_read h3 {
     font-size: 11pt;
     margin: 0;
-    padding: 0
+    padding: 0;
 }
 
 .forum,
 .folder {
-    margin: 10px 0
+    margin: 10px 0;
 }
 
 .forum h3,
@@ -296,14 +296,14 @@ body {
     font-size: 11pt;
     line-height: 150%;
     margin: 0;
-    padding: 0 0 0 20px
+    padding: 0 0 0 20px;
 }
 
 .forum_inner,
 .folder_inner {
     background-color: #FFFFFF;
     border: 1px solid #000000;
-    padding: 2px
+    padding: 2px;
 }
 
 .forum_info,
@@ -311,21 +311,21 @@ body {
 .folder_pagination {
     background-color: #709FCF;
     border: 1px solid #709FCF;
-    font-size: 10pt
+    font-size: 10pt;
 }
 
 .forum_info,
 .folder_info {
-    padding: 3px 3px 0
+    padding: 3px 3px 0;
 }
 
 .folder_pagination {
-    padding: 5px 3px
+    padding: 5px 3px;
 }
 
 .forum_info span,
 .folder_info span {
-    float: right
+    float: right;
 }
 
 .forum ul,
@@ -334,7 +334,7 @@ body {
     border: 1px solid #709FCF;
     list-style: none;
     margin: 0;
-    padding: 0
+    padding: 0;
 }
 
 .forum ul li,
@@ -343,7 +343,7 @@ body {
     display: table;
     line-height: 200%;
     padding: 0;
-    width: 100%
+    width: 100%;
 }
 
 .folder ul li > span.thread_title,
@@ -352,14 +352,14 @@ body {
 .folder ul li > span.pm_time,
 .forum ul li > span.forum_messages,
 .forum ul li > span.forum_last_visit {
-    display: table-cell
+    display: table-cell;
 }
 
 .folder ul li > span.thread_title,
 .folder ul li > span.pm_title,
 .forum ul li > span.forum_messages,
 .forum ul li > span.forum_last_visit {
-    padding-left: 20px
+    padding-left: 20px;
 }
 
 .folder ul li > span.thread_time,
@@ -367,53 +367,53 @@ body {
     font-size: 10pt;
     padding: 0 3px;
     text-align: right;
-    white-space: nowrap
+    white-space: nowrap;
 }
 
 .folder ul li > span.thread_detail {
-    white-space: nowrap
+    white-space: nowrap;
 }
 
 .folder ul li.pm_unread {
-    background: url('images/pmunread.png') transparent no-repeat scroll 0 0
+    background: url('images/pmunread.png') transparent no-repeat scroll 0 0;
 }
 
 .folder ul li.pm_read {
-    background: url('images/pmread.png') transparent no-repeat scroll 0 0
+    background: url('images/pmread.png') transparent no-repeat scroll 0 0;
 }
 
 .folder ul li > span.thread_title > span {
     margin-left: 3px;
-    white-space: nowrap
+    white-space: nowrap;
 }
 
 h3.thread_title {
     font-size: 11pt;
-    line-height: 150%
+    line-height: 150%;
 }
 
 .message {
     background-color: #FFFFFF;
     border: 1px solid #000000;
     margin: 10px 0;
-    padding: 2px
+    padding: 2px;
 }
 
 .message_header {
     background-color: #709FCF;
     border: 1px solid #709FCF;
-    padding: 2px 4px
+    padding: 2px 4px;
 }
 
 .message_header img {
     margin: 0 2px;
-    vertical-align: middle
+    vertical-align: middle;
 }
 
 .message_from,
 .message_to,
 .message_subject {
-    line-height: 150%
+    line-height: 150%;
 }
 
 .message_from .message_time,
@@ -421,68 +421,68 @@ h3.thread_title {
 .message_from .message_ignored {
     display: block;
     float: right;
-    white-space: nowrap
+    white-space: nowrap;
 }
 
 .message_from .message_ignored {
-    font-weight: bold
+    font-weight: bold;
 }
 
 .message_to span.message_read {
     padding-left: 10px;
-    white-space: nowrap
+    white-space: nowrap;
 }
 
 .message_to span.message_unread {
     background: url('images/post_unread.png') transparent no-repeat scroll 0 0;
     margin-left: 5px;
-    padding-left: 16px
+    padding-left: 16px;
 }
 
 .message_subject span.no_subject {
-    font-style: italic
+    font-style: italic;
 }
 
 .message_links {
     padding: 4px 4px 2px;
-    text-align: right
+    text-align: right;
 }
 
 .message_body,
 .message_attachments {
-    padding: 4px
+    padding: 4px;
 }
 
 .message_body a {
-    text-decoration: underline
+    text-decoration: underline;
 }
 
 .message_body img {
-    max-width: 100% !important
+    max-width: 100% !important;
 }
 
 .message_attachments {
-    margin: 10px 0 0
+    margin: 10px 0 0;
 }
 
 .message_attachments ul {
     list-style: none;
     margin: 0;
-    padding: 0
+    padding: 0;
 }
 
 .message_attachments li {
     background: url('images/attach.png') transparent no-repeat scroll 0 0;
-    padding-left: 20px
+    padding-left: 20px;
 }
 
 .message .edit_text {
     font-size: 8pt;
-    margin: 10px 0
+    margin: 10px 0;
 }
 
 .message_footer {
-    position: relative
+    position: relative;
 }
 
 .message_vote_form {
@@ -490,98 +490,98 @@ h3.thread_title {
     display: none;
     margin: 6px 8px;
     position: absolute;
-    top: 0
+    top: 0;
 }
 
 .message_vote_form span {
     font-size: 80%;
     line-height: 16px;
-    vertical-align: top
+    vertical-align: top;
 }
 
 .message_vote_form.popup {
     background-color: #FFFFFF;
     border: 1px solid #000000;
     height: 68px;
-    padding: 10px
+    padding: 10px;
 }
 
 .message_vote_form.popup span {
     font-size: 400%;
     line-height: 68px;
-    vertical-align: top
+    vertical-align: top;
 }
 
 .message_vote_form.popup img {
     height: 48px;
     margin: 10px;
-    width: 48px
+    width: 48px;
 }
 
 .message_footer_links {
     margin: 10px auto;
-    text-align: center
+    text-align: center;
 }
 
 .message_footer_links a {
     display: inline-block;
     line-height: 160%;
     padding-left: 20px;
-    text-decoration: underline
+    text-decoration: underline;
 }
 
 .message_footer_links a.reply {
-    background: url('images/post.png') transparent no-repeat scroll 0 50%
+    background: url('images/post.png') transparent no-repeat scroll 0 50%;
 }
 
 .message_footer_links a.replyall {
-    background: url('images/reply_all.png') transparent no-repeat scroll 0 50%
+    background: url('images/reply_all.png') transparent no-repeat scroll 0 50%;
 }
 
 .message_footer_links a.edit {
-    background: url('images/edit.png') transparent no-repeat scroll 0 50%
+    background: url('images/edit.png') transparent no-repeat scroll 0 50%;
 }
 
 .message_footer_links a.delete {
-    background: url('images/delete.png') transparent no-repeat scroll 0 50%
+    background: url('images/delete.png') transparent no-repeat scroll 0 50%;
 }
 
 .message_footer_links a.forward {
-    background: url('images/forward.png') transparent no-repeat scroll 0 50%
+    background: url('images/forward.png') transparent no-repeat scroll 0 50%;
 }
 
 .message_pagination {
     margin-top: 20px;
-    text-align: center
+    text-align: center;
 }
 
 .message_pagination span {
     display: block;
-    font-weight: bold
+    font-weight: bold;
 }
 
 .message_pagination a {
-    text-decoration: underline
+    text-decoration: underline;
 }
 
 .message_keep_reading {
     margin: 10px 0;
-    text-align: right
+    text-align: right;
 }
 
 .message_page_footer ul {
     display: table;
     margin: 0;
     padding: 0;
-    width: 100%
+    width: 100%;
 }
 
 .message_page_footer li {
-    display: table-cell
+    display: table-cell;
 }
 
 .message_page_footer li.right_col {
-    text-align: right
+    text-align: right;
 }
 
 a.reply_all {
@@ -591,7 +591,7 @@ a.reply_all {
     line-height: 160%;
     margin: 10px 0;
     padding-left: 20px;
-    text-decoration: underline
+    text-decoration: underline;
 }
 
 a.pm_send_new {
@@ -601,7 +601,7 @@ a.pm_send_new {
     line-height: 160%;
     margin: 10px 0 0;
     padding-left: 20px;
-    text-decoration: underline
+    text-decoration: underline;
 }
 
 a.thread_list_link,
@@ -612,97 +612,97 @@ a.folder_list_link {
     line-height: 160%;
     margin: 10px 0 0;
     padding-left: 20px;
-    text-decoration: underline
+    text-decoration: underline;
 }
 
 .poll {
     border: 1px solid #000000;
     margin: 0 auto;
     padding: 10px;
-    width: 75%
+    width: 75%;
 }
 
 .poll hr {
-    margin: 10px 0
+    margin: 10px 0;
 }
 
 .poll h3 {
     font-size: 11pt;
     line-height: 200%;
-    margin: 0
+    margin: 0;
 }
 
 .poll label {
     display: block;
-    line-height: 200%
+    line-height: 200%;
 }
 
 .poll .poll_vote_counts {
-    line-height: 250%
+    line-height: 250%;
 }
 
 .poll .poll_buttons {
-    margin: 15px 0
+    margin: 15px 0;
 }
 
 .poll .poll_type_warning {
-    line-height: 180%
+    line-height: 180%;
 }
 
 .poll .poll_bar {
     height: 20px;
-    margin: 5px 0
+    margin: 5px 0;
 }
 
 .poll .poll_bar_inner {
-    height: 20px
+    height: 20px;
 }
 
 .poll .poll_bar_1 {
-    border: 1px solid #0000AA
+    border: 1px solid #0000AA;
 }
 
 .poll .poll_bar_2 {
-    border: 1px solid #D40000
+    border: 1px solid #D40000;
 }
 
 .poll .poll_bar_3 {
-    border: 1px solid #2AAA00
+    border: 1px solid #2AAA00;
 }
 
 .poll .poll_bar_4 {
-    border: 1px solid #F4AA00
+    border: 1px solid #F4AA00;
 }
 
 .poll .poll_bar_5 {
-    border: 1px solid #D42AD4
+    border: 1px solid #D42AD4;
 }
 
 .poll .poll_bar_inner_1 {
-    background-color: #0000AA
+    background-color: #0000AA;
 }
 
 .poll .poll_bar_inner_2 {
-    background-color: #D40000
+    background-color: #D40000;
 }
 
 .poll .poll_bar_inner_3 {
-    background-color: #2AAA00
+    background-color: #2AAA00;
 }
 
 .poll .poll_bar_inner_4 {
-    background-color: #F4AA00
+    background-color: #F4AA00;
 }
 
 .poll .poll_bar_inner_5 {
-    background-color: #D42AD4
+    background-color: #D42AD4;
 }
 
 .post,
 .search {
     background-color: #FFFFFF;
     border: 1px solid #000000;
-    padding: 2px
+    padding: 2px;
 }
 
 .post h3,
@@ -712,13 +712,13 @@ a.folder_list_link {
     font-size: 11pt;
     font-weight: normal;
     margin: 0;
-    padding: 2px 3px
+    padding: 2px 3px;
 }
 
 .post .post_inner,
 .search .search_inner {
     background-color: #709FCF;
-    padding: 8px
+    padding: 8px;
 }
 
 .post_folder,
@@ -733,19 +733,19 @@ a.folder_list_link {
 .search_folder,
 .search_date,
 .search_buttons {
-    margin: 0 0 10px
+    margin: 0 0 10px;
 }
 
 .post_to .recipients {
     font-weight: normal;
-    margin: 10px 0
+    margin: 10px 0;
 }
 
 .post_to .select,
 .post_folder .select,
 .search_folder .select,
 .search_date .select {
-    width: calc(100% - 6px)
+    width: calc(100% - 6px);
 }
 
 .post_to .text,
@@ -753,19 +753,19 @@ a.folder_list_link {
 .post_thread_title .text,
 .post_content .textarea,
 .search .text {
-    width: calc(100% - 12px)
+    width: calc(100% - 12px);
 }
 
 .post_content .textarea {
     margin: 0;
     max-width: calc(100% - 12px);
-    min-width: calc(100% - 12px)
+    min-width: calc(100% - 12px);
 }
 
 .post_html,
 .post_buttons,
 .search_buttons {
-    text-align: center
+    text-align: center;
 }
 
 .post_folder,
@@ -777,32 +777,32 @@ a.folder_list_link {
 .search_user,
 .search_folder,
 .search_date {
-    font-weight: bold
+    font-weight: bold;
 }
 
 .post_html label {
-    margin: 0 3px
+    margin: 0 3px;
 }
 
 .post_buttons .button,
 .search_buttons .button {
-    margin: 0 3px
+    margin: 0 3px;
 }
 
 .pm_folder_usage {
-    text-align: center
+    text-align: center;
 }
 
 .pm_bar {
     border: 1px solid #000000;
     height: 11px;
     margin: 10px 0;
-    width: 100%
+    width: 100%;
 }
 
 .pm_bar_inner {
     background: url("images/pbar.png") transparent repeat-x scroll 0 0;
-    height: 11px
+    height: 11px;
 }
 
 .logon {
@@ -811,7 +811,7 @@ a.folder_list_link {
     margin: 20px auto 0;
     max-width: 350px;
     padding: 2px;
-    width: 75%
+    width: 75%;
 }
 
 .logon h3 {
@@ -820,28 +820,28 @@ a.folder_list_link {
     font-size: 11pt;
     font-weight: normal;
     margin: 0;
-    padding: 2px 3px
+    padding: 2px 3px;
 }
 
 .logon .logon_inner {
     background-color: #709FCF;
-    padding: 8px
+    padding: 8px;
 }
 
 .logon_username,
 .logon_password,
 .logon_remember,
 .logon_buttons {
-    margin: 0 10px 10px 0
+    margin: 0 10px 10px 0;
 }
 
 .logon_username .text,
 .logon_password .password {
-    width: 100%
+    width: 100%;
 }
 
 .logon_buttons {
-    text-align: center
+    text-align: center;
 }
 
 span.thread_high_interest,
@@ -860,75 +860,75 @@ span.user_enemy {
     display: inline-block;
     margin: 0 2px;
     padding-left: 16px;
-    text-indent: -9999px
+    text-indent: -9999px;
 }
 
 span.thread_high_interest {
-    background: url('images/high_interest.png') transparent no-repeat scroll 0 4pt
+    background: url('images/high_interest.png') transparent no-repeat scroll 0 4pt;
 }
 
 span.thread_subscribed {
-    background: url('images/subscribe.png') transparent no-repeat scroll 0 4pt
+    background: url('images/subscribe.png') transparent no-repeat scroll 0 4pt;
 }
 
 span.thread_poll {
-    background: url('images/poll.png') transparent no-repeat scroll 0 4pt
+    background: url('images/poll.png') transparent no-repeat scroll 0 4pt;
 }
 
 span.thread_sticky {
-    background: url('images/sticky.png') transparent no-repeat scroll 0 4pt
+    background: url('images/sticky.png') transparent no-repeat scroll 0 4pt;
 }
 
 span.thread_friend {
-    background: url('images/friend.png') transparent no-repeat scroll 0 4pt
+    background: url('images/friend.png') transparent no-repeat scroll 0 4pt;
 }
 
 span.thread_split {
-    background: url('images/split_thread.png') transparent no-repeat scroll 0 4pt
+    background: url('images/split_thread.png') transparent no-repeat scroll 0 4pt;
 }
 
 span.thread_merge {
-    background: url('images/merge_thread.png') transparent no-repeat scroll 0 4pt
+    background: url('images/merge_thread.png') transparent no-repeat scroll 0 4pt;
 }
 
 span.thread_attachment {
-    background: url('images/attach.png') transparent no-repeat scroll 0 4pt
+    background: url('images/attach.png') transparent no-repeat scroll 0 4pt;
 }
 
 span.thread_closed {
-    background: url('images/thread_closed.png') transparent no-repeat scroll 0 4pt
+    background: url('images/thread_closed.png') transparent no-repeat scroll 0 4pt;
 }
 
 span.thread_locked {
-    background: url('images/admin_locked.png') transparent no-repeat scroll 0 4pt
+    background: url('images/admin_locked.png') transparent no-repeat scroll 0 4pt;
 }
 
 span.thread_deleted {
-    background: url('images/delete.png') transparent no-repeat scroll 0 4pt
+    background: url('images/delete.png') transparent no-repeat scroll 0 4pt;
 }
 
 span.user_friend {
-    background: url('images/friend.png') transparent no-repeat scroll 0 4pt
+    background: url('images/friend.png') transparent no-repeat scroll 0 4pt;
 }
 
 span.user_enemy {
-    background: url('images/enemy.png') transparent no-repeat scroll 0 4pt
+    background: url('images/enemy.png') transparent no-repeat scroll 0 4pt;
 }
 
 span.thread_length {
-    font-size: 10pt
+    font-size: 10pt;
 }
 
 .thread_pagination,
 .search_pagination {
-    margin: 10px 0
+    margin: 10px 0;
 }
 
 .message_box {
     background-color: #FDFC9F;
     border: 1px solid #000000;
     margin: 10px 0;
-    padding: 10px
+    padding: 10px;
 }
 
 .message_box h3 {
@@ -937,85 +937,85 @@ span.thread_length {
     font-size: 11pt;
     line-height: 160%;
     margin: 0;
-    padding-left: 25px
+    padding-left: 25px;
 }
 
 .message_box a {
-    text-decoration: underline
+    text-decoration: underline;
 }
 
 .message_box p {
     margin: 10px 0;
-    padding-left: 25px
+    padding-left: 25px;
 }
 
 .message_question h3 {
     background: url('images/help.png') transparent no-repeat scroll 0 50%;
-    font-size: 11pt
+    font-size: 11pt;
 }
 
 .message_error h3 {
     background: url('images/error.png') transparent no-repeat scroll 0 50%;
-    font-size: 11pt
+    font-size: 11pt;
 }
 
 .message_success h3 {
     background: url('images/success.png') transparent no-repeat scroll 0 50%;
-    font-size: 11pt
+    font-size: 11pt;
 }
 
 .message_warning h3 {
     background: url('images/warning.png') transparent no-repeat scroll 0 50%;
-    font-size: 11pt
+    font-size: 11pt;
 }
 
 .attachments {
     font-weight: bold;
-    margin-top: 5px
+    margin-top: 5px;
 }
 
 .attachments ul {
     font-weight: normal;
     list-style: none;
     margin: 0;
-    padding: 0
+    padding: 0;
 }
 
 .attachments ul li {
-    margin: 5px 0
+    margin: 5px 0;
 }
 
 .attachments ul li + li {
-    margin-top: 0
+    margin-top: 0;
 }
 
 .attachments ul li:last-child {
-    margin-bottom: 10px
+    margin-bottom: 10px;
 }
 
 .attachments ul li label span {
-    margin-right: 5px
+    margin-right: 5px;
 }
 
 .attachments ul li span.filename {
     display: inline-block;
-    padding-left: 20px
+    padding-left: 20px;
 }
 
 .attachments ul li.complete span.filename {
-    background: transparent url('images/attach.png') no-repeat 0 50%
+    background: transparent url('images/attach.png') no-repeat 0 50%;
 }
 
 .attachments ul li.error span.filename {
-    background: transparent url('images/error.png') no-repeat 0 50%
+    background: transparent url('images/error.png') no-repeat 0 50%;
 }
 
 .attachments ul li.uploading span.filename {
-    background: transparent url('images/loading.gif') no-repeat 0 50%
+    background: transparent url('images/loading.gif') no-repeat 0 50%;
 }
 
 .attachments ul li button {
-    float: right
+    float: right;
 }
 
 .attachments ul li.attachment span.cancel,
@@ -1023,15 +1023,15 @@ span.thread_length {
     display: inline-block;
     height: 16px;
     text-indent: -9999px;
-    width: 16px
+    width: 16px;
 }
 
 .attachments ul li.attachment span.cancel {
-    background: transparent url('images/stop.png') no-repeat 0 50%
+    background: transparent url('images/stop.png') no-repeat 0 50%;
 }
 
 .attachments ul li.attachment span.retry {
-    background: transparent url('images/reload.png') no-repeat 0 50%
+    background: transparent url('images/reload.png') no-repeat 0 50%;
 }
 
 .attachments ul li.error span.progress,
@@ -1042,26 +1042,26 @@ span.thread_length {
 .attachments ul li.uploading span.delete,
 .attachments ul li.uploading span.retry,
 .attachments ul li.error span.delete {
-    display: none
+    display: none;
 }
 
 .attachments ul li.attachment span.filesize {
-    float: right
+    float: right;
 }
 
 .attachments .buttons {
     float: left;
-    margin-top: 10px
+    margin-top: 10px;
 }
 
 .attachments .summary {
     float: right;
     font-weight: normal;
-    text-align: right
+    text-align: right;
 }
 
 .attachments .summary div {
-    margin: 2px 0
+    margin: 2px 0;
 }
 
 .attachments .summary span.used_post_space,
@@ -1069,5 +1069,5 @@ span.thread_length {
 .attachments .summary span.free_upload_space {
     display: inline-block;
     margin-right: 5px;
-    min-width: 60px
+    min-width: 60px;
 }

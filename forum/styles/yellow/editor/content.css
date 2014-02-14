@@ -1,6 +1,6 @@
 body {
     font-family: verdana, arial, helvetica, sans-serif;
-    font-size: 80%
+    font-size: 80%;
 }
 
 pre.code {
@@ -11,7 +11,7 @@ pre.code {
     margin: 0 10px 10px 40px;
     min-height: 16px;
     overflow: auto;
-    padding: 3px
+    padding: 3px;
 }
 
 div.quote {
@@ -19,7 +19,7 @@ div.quote {
     border: 1px solid #CCCCCC;
     margin: 0 10px 10px 40px;
     min-height: 16px;
-    padding: 3px
+    padding: 3px;
 }
 
 div.quotetext {
@@ -27,45 +27,45 @@ div.quotetext {
     margin-left: 40px;
     margin-right: 10px;
     margin-top: 5px;
-    padding: 3px
+    padding: 3px;
 }
 
 span.spoiler {
     background: #EEEEEE;
     border: 1px solid #CCCCCC;
     color: #EEEEEE;
-    padding: 0 3px
+    padding: 0 3px;
 }
 
 span.spoiler > span {
-    color: #999999
+    color: #999999;
 }
 
 span.emoticon {
-    vertical-align: bottom
+    vertical-align: bottom;
 }
 
 pre.code span.emoticon {
-    background-image: none
+    background-image: none;
 }
 
 pre.code span.emoticon span {
-    display: inherit
+    display: inherit;
 }
 
 p:first-child {
-    margin-top: 0
+    margin-top: 0;
 }
 
 a {
     background-color: transparent;
     color: #000000;
-    text-decoration: underline
+    text-decoration: underline;
 }
 
 img.cke_allMedias {
     background: transparent url('media.png') center center no-repeat;
     border: 1px solid #a9a9a9;
     height: 80px;
-    width: 80px
+    width: 80px;
 }

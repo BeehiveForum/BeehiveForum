@@ -1,3 +1,19 @@
+.cke_dialog *,
+.cke_dialog a:hover,
+.cke_dialog a:link,
+.cke_dialog a:visited,
+.cke_dialog a:active {
+    border: none;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    text-decoration: none;
+    vertical-align: baseline;
+    white-space: nowrap;
+    width: auto;
+}
+
 .cke_dialog {
     visibility: visible
 }

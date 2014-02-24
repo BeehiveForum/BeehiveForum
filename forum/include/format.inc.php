@@ -122,7 +122,7 @@ function format_version_number($version, $glue = '.')
     return implode($glue, $version_array);
 }
 
-function format_time($time)
+function format_time($time, $date_only = false)
 {
     if (isset($_SESSION['TIMEZONE']) && is_numeric($_SESSION['TIMEZONE'])) {
         $timezone_id = $_SESSION['TIMEZONE'];
@@ -170,35 +170,40 @@ function format_time($time)
     // Get the numerical parts for the current month and year
     list($current_day, $current_month, $current_year) = explode(' ', gmdate('j M Y', $current_time));
 
+    // Show only the time by default.
+    $format = strftime('%H:%M', $time);
+
     // Decide on the date format.
-    if (($time_year != $current_year)) {
+    if ($date_only) {
 
-        // If the year is different, show everything.
-        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-
-            $format = strftime('%#d %b %Y %H:%M', $time);
-
-        } else {
-
-            $format = strftime('%e %b %Y %H:%M', $time);
-        }
-
-    } else if (($time_month != $current_month) || ($time_day != $current_day)) {
-
-        // If the month or day are different, show them with the time.
-        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-
-            $format = strftime('%#d %b %H:%M', $time);
-
-        } else {
-
-            $format = strftime('%e %b %H:%M', $time);
-        }
+        $format = format_date($time);
 
     } else {
 
-        // Show only the time.
-        $format = strftime('%H:%M', $time);
+        if (($time_year != $current_year)) {
+
+            // If the year is different, show everything.
+            if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+
+                $format = strftime('%#d %b %Y %H:%M', $time);
+
+            } else {
+
+                $format = strftime('%e %b %Y %H:%M', $time);
+            }
+
+        } else if (($time_month != $current_month) || ($time_day != $current_day)) {
+
+            // If the month or day are different, show them with the time.
+            if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+
+                $format = strftime('%#d %b %H:%M', $time);
+
+            } else {
+
+                $format = strftime('%e %b %H:%M', $time);
+            }
+        }
     }
 
     return $format;

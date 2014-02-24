@@ -141,7 +141,7 @@ if (is_array($folder_info) && sizeof($folder_info) > 0) {
                 $latest_post = 1;
             }
 
-            $thread_time = format_time($thread['MODIFIED']);
+            $thread_time = format_time($thread['MODIFIED'], true);
 
             echo "<td align=\"left\" valign=\"top\"><a href=\"discussion.php?webtag=$webtag&amp;msg=$tid.$latest_post\" target=\"";
             echo html_get_frame_name('main'), "\" title=\"", sprintf(gettext("Thread #%s Started by %s. Viewed %s"), $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME']), true), ($thread['VIEWCOUNT'] == 1) ? gettext("1 time") : sprintf(gettext("%d times"), $thread['VIEWCOUNT'])), "\">";
@@ -328,7 +328,7 @@ if (($recent_visitors_array = visitor_log_get_recent()) !== false) {
                 echo "                              <td valign=\"top\"  align=\"left\">", word_filter_add_ob_tags(htmlentities_array(format_user_name($recent_visitor['LOGON'], $recent_visitor['NICKNAME']))), "</td>\n";
             }
 
-            echo "                              <td valign=\"top\"  align=\"right\" style=\"white-space: nowrap\"><span class=\"threadtime\">", format_time($recent_visitor['LAST_LOGON']), "&nbsp;</span></td>\n";
+            echo "                              <td valign=\"top\"  align=\"right\" style=\"white-space: nowrap\"><span class=\"threadtime\">", format_time($recent_visitor['LAST_LOGON'], true), "&nbsp;</span></td>\n";
         }
 
         echo "                            </tr>\n";

@@ -557,76 +557,103 @@ function install_set_search_bots()
     if (!$db = db::get()) return false;
 
     $bots_array = array(
-        'ia_archiver' => array(
+        array(
             'NAME' => 'Alexa',
-            'URL' => 'http://www.alexa.com/'
+            'URL' => 'http://www.alexa.com/',
+            'AGENT' => 'ia_archiver',
         ),
-        'AhrefsBot' => array(
+        array(
             'NAME' => 'Ahrefs',
-            'URL' => 'https://ahrefs.com/'
+            'URL' => 'https://ahrefs.com/',
+            'AGENT' => 'AhrefsBot',
         ),
-        'Ask Jeeves/Teoma' => array(
+        array(
             'NAME' => 'Ask.com',
-            'URL' => 'http://www.ask.com/'
+            'URL' => 'http://www.ask.com/',
+            'AGENT' => 'Ask Jeeves/Teoma',
         ),
-        'Baiduspider' => array(
+        array(
             'NAME' => 'Baidu',
-            'URL' => 'http://www.baidu.com/'
+            'URL' => 'http://www.baidu.com/',
+            'AGENT' => 'Baiduspider',
         ),
-        'bingbot' => array(
+        array(
             'NAME' => 'Bing',
-            'URL' => 'http://www.bing.com/'
+            'URL' => 'http://www.bing.com/',
+            'AGENT' => 'bingbot',
         ),
-        'GameSpyHTTP' => array(
+        array(
             'NAME' => 'GameSpy',
-            'URL' => 'http://www.gamespy.com/'
+            'URL' => 'http://www.gamespy.com/',
+            'AGENT' => 'GameSpyHTTP',
         ),
-        'Gigabot' => array(
+        array(
             'NAME' => 'Gigablast',
-            'URL' => 'http://www.gigablast.com/'
+            'URL' => 'http://www.gigablast.com/',
+            'AGENT' => 'Gigabot',
         ),
-        'Googlebot' => array(
+        array(
             'NAME' => 'Google',
-            'URL' => 'http://www.google.com/'
+            'URL' => 'http://www.google.com/',
+            'AGENT' => 'Googlebot',
         ),
-        'Googlebot-Image' => array(
+        array(
             'NAME' => 'Google Images',
-            'URL' => 'http://images.google.com/'
+            'URL' => 'http://images.google.com/',
+            'AGENT' => 'Googlebot-Image',
         ),
-        'Mediapartners-Google' => array(
+        array(
             'NAME' => 'Google Adsense',
-            'URL' => 'http://www.google.co.uk/adsense'
+            'URL' => 'http://www.google.co.uk/adsense',
+            'AGENT' => 'Mediapartners-Google',
         ),
-        'MJ12bot' => array(
+        array(
             'NAME' => 'Majestic-12',
-            'URL' => 'http://www.majestic12.co.uk/'
+            'URL' => 'http://www.majestic12.co.uk/',
+            'AGENT' => 'MJ12bot',
         ),
-        'msnbot' => array(
+        array(
             'NAME' => 'Bing',
-            'URL' => 'http://www.bing.com/'
+            'URL' => 'http://www.bing.com/',
+            'AGENT' => 'msnbot',
         ),
-        'Scooter' => array(
+        array(
             'NAME' => 'Altavista',
-            'URL' => 'http://www.altavista.com/'
+            'URL' => 'http://www.altavista.com/',
+            'AGENT' => 'Scooter',
         ),
-        'Slurp/si' => array(
+        array(
             'NAME' => 'Inktomi',
-            'URL' => 'http://searchmarketing.yahoo.com/'
+            'URL' => 'http://searchmarketing.yahoo.com/',
+            'AGENT' => 'Slurp/si',
         ),
-        'Yahoo! Slurp;' => array(
-            'NAME' => 'Yahoo!', 'URL' => 'http://www.yahoo.com/'
-        ),
-        'Yahoo-MMCrawler' => array(
+        array(
             'NAME' => 'Yahoo!',
-            'URL' => 'http://www.yahoo.com/'
+            'URL' => 'http://www.yahoo.com/',
+            'AGENT' => 'Yahoo! Slurp',
+        ),
+        array(
+            'NAME' => 'Yahoo! Images',
+            'URL' => 'http://www.yahoo.com/',
+            'AGENT' => 'Yahoo-MMCrawler',
+        ),
+        array(
+            'NAME' => 'Yandex',
+            'URL' => 'http://www.yahoo.com/',
+            'AGENT' => 'YandexBot',
+        ),
+        array(
+            'NAME' => 'Yandex Images',
+            'URL' => 'http://www.yahoo.com/',
+            'AGENT' => 'YandexImages',
         ),
     );
 
-    foreach ($bots_array as $agent => $details) {
+    foreach ($bots_array as $details) {
 
-        $agent = $db->escape($agent);
         $name = $db->escape($details['NAME']);
         $url = $db->escape($details['URL']);
+        $agent = $db->escape($details['AGENT']);
 
         $sql = "INSERT INTO SEARCH_ENGINE_BOTS (NAME, URL, AGENT_MATCH) ";
         $sql .= "VALUES ('$name', '$url', '%$agent%')";

@@ -175,14 +175,7 @@ abstract class session
     public static function get_http_referer()
     {
         if (!isset($_SERVER['HTTP_REFERER']) || strlen(trim($_SERVER['HTTP_REFERER'])) == 0) return '';
-
-        $http_referer = trim($_SERVER['HTTP_REFERER']);
-
-        $forum_uri_preg = preg_quote(html_get_forum_uri(), '/');
-
-        if (preg_match("/^$forum_uri_preg/iu", $http_referer) > 0) $http_referer = '';
-
-        return $http_referer;
+        return $_SERVER['HTTP_REFERER'];
     }
 
     public static function get_user_agent()

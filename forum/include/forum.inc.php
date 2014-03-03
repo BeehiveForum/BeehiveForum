@@ -243,6 +243,8 @@ function forum_check_access_level()
 
 function forum_closed_message()
 {
+    cache_disable();
+
     html_draw_top(sprintf("title=%s", gettext("Closed")));
 
     $forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
@@ -269,6 +271,8 @@ function forum_closed_message()
 
 function forum_restricted_message()
 {
+    cache_disable();
+
     $final_uri = basename(get_request_uri());
 
     $available_popup_files_preg = implode("|^", array_map('preg_quote_callback', get_available_popup_files()));
@@ -353,6 +357,8 @@ function forum_check_password($forum_fid)
         $_SESSION["{$webtag}_PASSWORD"] = $forum_passhash_check;
         return;
     }
+
+    cache_disable();
 
     html_draw_top(sprintf("title=%s", gettext("Password Protected Forum")));
 

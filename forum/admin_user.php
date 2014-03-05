@@ -1554,62 +1554,59 @@ if (forum_check_webtag_available($webtag)) {
         echo "  <br />\n";
     }
 
-    echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
-    echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
-    echo "        <table class=\"box\" width=\"100%\">\n";
-    echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">", gettext("User Groups"), "</td>\n";
-    echo "                </tr>\n";
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-
     if (($user_groups_array = perm_user_get_groups($uid)) !== false) {
 
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"center\">\n";
-        echo "                    <table class=\"box\" width=\"90%\">\n";
-        echo "                      <tr>\n";
-        echo "                        <td align=\"left\" class=\"posthead\">\n";
-        echo "                          <table class=\"posthead\" width=\"100%\">\n";
-        echo "                            <tr>\n";
-        echo "                              <td align=\"left\" class=\"subhead\">", gettext("Group"), "</td>\n";
-        echo "                              <td align=\"left\" class=\"subhead\" width=\"220\">&nbsp;</td>\n";
-        echo "                            </tr>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" width=\"15\">&nbsp;</td>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"2\">", gettext("User Groups"), "</td>\n";
+        echo "                </tr>\n";
 
         foreach ($user_groups_array as $user_group) {
 
-            echo "                            <tr>\n";
-            echo "                              <td align=\"left\" valign=\"top\">&nbsp;<a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}&ret=admin_user.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
-            echo "                              <td valign=\"top\" align=\"right\" width=\"220\">", form_submit("remove_group[{$user_group['GID']}]", gettext("Remove user from group")), "&nbsp;</td>\n";
-            echo "                            </tr>\n";
+            echo "                <tr>\n";
+            echo "                  <td align=\"left\" width=\"15\">&nbsp;</td>\n";
+            echo "                  <td align=\"left\" valign=\"top\">&nbsp;<a href=\"admin_user_groups_edit.php?webtag=$webtag&amp;gid={$user_group['GID']}&amp;ret=admin_user.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\">{$user_group['GROUP_NAME']}</a></td>\n";
+            echo "                  <td valign=\"top\" align=\"right\" width=\"220\">", form_submit("remove_group[{$user_group['GID']}]", gettext("Remove user from group")), "&nbsp;</td>\n";
+            echo "                </tr>\n";
         }
 
-        echo "                            <tr>\n";
-        echo "                              <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
-        echo "                            </tr>\n";
-        echo "                          </table>\n";
-        echo "                        </td>\n";
-        echo "                      </tr>\n";
-        echo "                    </table>\n";
-        echo "                  </td>\n";
-        echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";
         echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "  <br />\n";
     }
 
-    if (($user_groups_array = perm_get_user_group_names())) {
+    if (($groups_array = perm_get_user_group_names()) !== false) {
 
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\" width=\"100%\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" class=\"subhead\" colspan=\"1\">", gettext("Add User to group"), "</td>\n";
+        echo "                </tr>\n";
         echo "                <tr>\n";
         echo "                  <td align=\"center\">\n";
         echo "                    <table width=\"90%\" class=\"posthead\">\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"center\">", gettext("Add user to group"), ":&nbsp;", form_dropdown_array('add_group', $user_groups_array, null, null, 'admin_options_dropdown'), "&nbsp;", form_submit('add_group_submit', gettext("Add")), "</td>\n";
+        echo "                        <td align=\"center\">", gettext("Add user to group"), ":&nbsp;", form_dropdown_array('add_group', $groups_array, null, null, 'admin_options_dropdown'), "&nbsp;", form_submit('add_group_submit', gettext("Add")), "</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -1617,19 +1614,15 @@ if (forum_check_webtag_available($webtag)) {
         echo "                    </table>\n";
         echo "                  </td>\n";
         echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+        echo "  <br />\n";
     }
-
-    echo "                <tr>\n";
-    echo "                  <td align=\"left\">&nbsp;</td>\n";
-    echo "                </tr>\n";
-    echo "              </table>\n";
-    echo "            </td>\n";
-    echo "          </tr>\n";
-    echo "        </table>\n";
-    echo "      </td>\n";
-    echo "    </tr>\n";
-    echo "  </table>\n";
-    echo "  <br />\n";
 }
 
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";

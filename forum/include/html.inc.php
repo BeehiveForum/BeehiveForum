@@ -111,7 +111,7 @@ function html_display_msg($header_text, $string_msg, $href = null, $method = 'ge
         }
     }
 
-    echo "  <div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
+    echo "  <div align=\"$align\"", ($id ? " id=\"$id\"" : ""), ">\n";
     echo "    <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\" class=\"message_box\">\n";
     echo "      <tr>\n";
     echo "        <td align=\"left\">\n";
@@ -193,7 +193,7 @@ function html_display_error_array(array $error_list, $width = '600', $align = 'c
 
     if (!in_array($align, $available_alignments)) $align = 'left';
 
-    echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
+    echo "<div align=\"$align\"", ($id ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
     echo "      <td rowspan=\"2\" valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", html_style_image('error.png'), "\" alt=\"", gettext("Error"), "\" title=\"", gettext("Error"), "\" /></td>\n";
@@ -224,7 +224,7 @@ function html_display_success_msg($message, $width = '600', $align = 'center', $
 
     if (!in_array($align, $available_alignments)) $align = 'left';
 
-    echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
+    echo "<div align=\"$align\"", ($id ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"success_msg\">\n";
     echo "    <tr>\n";
     echo "      <td valign=\"top\" width=\"25\" class=\"success_msg_icon\"><img src=\"", html_style_image('success.png'), "\" alt=\"", gettext("Success"), "\" title=\"", gettext("Success"), "\" /></td>\n";
@@ -248,7 +248,7 @@ function html_display_error_msg($message, $width = '600', $align = 'center', $id
 
     if (!in_array($align, $available_alignments)) $align = 'left';
 
-    echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
+    echo "<div align=\"$align\"", ($id ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
     echo "      <td valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", html_style_image('error.png'), "\" alt=\"", gettext("Error"), "\" title=\"", gettext("Error"), "\" /></td>\n";
@@ -272,7 +272,7 @@ function html_display_warning_msg($message, $width = '600', $align = 'center', $
 
     if (!in_array($align, $available_alignments)) $align = 'left';
 
-    echo "<div align=\"$align\"", (!is_bool($id) ? " id=\"$id\"" : ""), ">\n";
+    echo "<div align=\"$align\"", ($id ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"warning_msg\">\n";
     echo "    <tr>\n";
     echo "      <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", html_style_image('warning.png'), "\" alt=\"", gettext("Warning"), "\" title=\"", gettext("Warning"), "\" /></td>\n";

@@ -472,13 +472,17 @@ function user_get($uid)
 
     if ((!$table_prefix = get_table_prefix()) || ($uid == $_SESSION['UID']) || ($uid == 0)) {
 
-        $sql = "SELECT UID, LOGON, PASSWD, NICKNAME, USER.EMAIL, ";
-        $sql .= "IPADDRESS, REFERER FROM USER WHERE UID = '$uid'";
+        $sql = "SELECT USER.UID, USER.LOGON, USER.PASSWD, USER.SALT, USER.NICKNAME, ";
+        $sql .= "USER.EMAIL, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
+        $sql .= "USER.IPADDRESS, USER.REFERER, USER.APPROVED FROM USER ";
+        $sql .= "WHERE USER.UID = '$uid'";
 
     } else {
 
-        $sql = "SELECT USER.UID, USER.LOGON, USER.PASSWD, USER.NICKNAME, ";
-        $sql .= "USER.EMAIL, USER.IPADDRESS, USER.REFERER, USER_PEER.PEER_NICKNAME FROM USER ";
+        $sql = "SELECT USER.UID, USER.LOGON, USER.PASSWD, USER.SALT, ";
+        $sql .= "COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS NICKNAME, ";
+        $sql .= "USER.EMAIL, UNIX_TIMESTAMP(USER.REGISTERED) AS REGISTERED, ";
+        $sql .= "USER.IPADDRESS, USER.REFERER, USER.APPROVED FROM USER ";
         $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
         $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
         $sql .= "WHERE USER.UID = '$uid'";

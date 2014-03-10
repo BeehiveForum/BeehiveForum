@@ -207,6 +207,10 @@ if (isset($_GET['relupdated'])) {
 
     list($return_tid, $return_pid) = explode(".", $_GET['post_approve_success']);
     message_display_success_msg($return_tid, $return_pid, $pid, gettext("Successfully approved post %s"), $posts_per_page);
+
+} else if (!isset($thread_data['APPROVED'])) {
+
+    html_display_warning_msg(gettext("Thread is pending approval by a moderator"), '96%', 'center');
 }
 
 if (isset($_GET['font_resize'])) {

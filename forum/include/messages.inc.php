@@ -1605,8 +1605,8 @@ function messages_get_most_recent($uid, $fid = false)
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
-    $sql .= "WHERE THREAD.FID in ($fidlist) AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 AND THREAD.APPROVED IS NOT NULL ";
-    $sql .= "AND (USER_PEER.RELATIONSHIP IS NULL OR (USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0) ";
+    $sql .= "WHERE THREAD.FID in ($fidlist) AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 AND (THREAD.APPROVED IS NOT NULL ";
+    $sql .= "OR THREAD.BY_UID = '$uid') AND (USER_PEER.RELATIONSHIP IS NULL OR (USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0) ";
     $sql .= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
@@ -1670,8 +1670,8 @@ function messages_get_most_recent_unread($uid, $fid = false)
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
-    $sql .= "WHERE THREAD.FID in ($fidlist) AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 AND THREAD.APPROVED IS NOT NULL ";
-    $sql .= "AND (USER_PEER.RELATIONSHIP IS NULL OR (USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0) ";
+    $sql .= "WHERE THREAD.FID in ($fidlist) AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 AND (THREAD.APPROVED IS NOT NULL ";
+    $sql .= "OR THREAD.BY_UID = '$uid') AND (USER_PEER.RELATIONSHIP IS NULL OR (USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0) ";
     $sql .= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
     $sql .= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
     $sql .= "AND THREAD.MODIFIED > CAST('$unread_cutoff_datetime' AS DATETIME) ";

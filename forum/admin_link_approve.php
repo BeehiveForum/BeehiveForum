@@ -285,7 +285,7 @@ if (isset($_POST['approve_links'])) {
 
             if ($valid) {
 
-                header_redirect("admin_link_delete.php?webtag=$webtag&page=$page&delete_success=true");
+                header_redirect("admin_link_approve.php?webtag=$webtag&page=$page&delete_success=true");
                 exit;
 
             } else {

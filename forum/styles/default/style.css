@@ -144,6 +144,12 @@ ul.ui-autocomplete li a.ui-state-focus {
 
 .activeusers {
     font-size: 85%;
+    padding: 8px 0;
+}
+
+.birthdayusers {
+    font-size: 85%;
+    padding: 8px 0;
 }
 
 .add_upload_field {

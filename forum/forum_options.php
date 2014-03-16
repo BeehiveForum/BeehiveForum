@@ -605,7 +605,7 @@ if (sizeof($available_emoticons) > 1) {
 
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", gettext("Start page"), ":</td>\n";
-echo "                  <td align=\"left\">", form_dropdown_array("start_page", array(START_PAGE_NORMAL => gettext("Start"), START_PAGE_MESSAGES => gettext("Messages"), START_PAGE_INBOX => gettext("Inbox"), START_PAGE_THREAD_LIST => gettext("Start page with thread list")), (isset($user_prefs['START_PAGE'])) ? $user_prefs['START_PAGE'] : 0), "</td>\n";
+echo "                  <td align=\"left\">", form_dropdown_array("start_page", array(START_PAGE_NORMAL => gettext("Start"), START_PAGE_MESSAGES => gettext("Messages"), START_PAGE_INBOX => gettext("Inbox")), (isset($user_prefs['START_PAGE'])) ? $user_prefs['START_PAGE'] : 0), "</td>\n";
 echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("start_page_global", "Y", null, (isset($user_prefs['START_PAGE_GLOBAL']) ? $user_prefs['START_PAGE_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("start_page_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

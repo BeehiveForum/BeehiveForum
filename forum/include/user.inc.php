@@ -1112,7 +1112,7 @@ function user_guest_enabled()
     return true;
 }
 
-function user_get_forthcoming_birthdays()
+function user_get_todays_birthdays()
 {
     if (!$db = db::get()) return false;
 
@@ -1124,18 +1124,19 @@ function user_get_forthcoming_birthdays()
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
-    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, USER_PREFS_GLOBAL.DOB, ";
-    $sql .= "IF (DATEDIFF(DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '00-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d')) < 0, ";
-    $sql .= "DATEDIFF(DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '01-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d')), ";
-    $sql .= "DATEDIFF(DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '00-%m-%d'), DATE_FORMAT(CURDATE(), '00-%m-%d'))) AS DAY_COUNT ";
+    $sql = "SELECT USER.UID, USER.LOGON, USER.NICKNAME, USER_PEER2.PEER_NICKNAME, ";
+    $sql .= "USER_PEER.RELATIONSHIP AS PEER_RELATIONSHIP, USER_PEER2.RELATIONSHIP AS USER_RELATIONSHIP, ";
+    $sql .= "USER_PREFS_FORUM.AVATAR_URL AS AVATAR_URL_FORUM, USER_PREFS_FORUM.AVATAR_AID AS AVATAR_AID_FORUM, ";
+    $sql .= "USER_PREFS_GLOBAL.AVATAR_URL AS AVATAR_URL_GLOBAL, USER_PREFS_GLOBAL.AVATAR_AID AS AVATAR_AID_GLOBAL ";
     $sql .= "FROM USER USER LEFT JOIN USER_PREFS USER_PREFS_GLOBAL ON (USER_PREFS_GLOBAL.UID = USER.UID) ";
-    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = USER.UID ";
-    $sql .= "AND USER_PEER.UID = '{$_SESSION['UID']}') WHERE USER_PREFS_GLOBAL.DOB > 0 AND USER_PREFS_GLOBAL.DOB_DISPLAY > 1 ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PREFS` USER_PREFS_FORUM ON (USER_PREFS_FORUM.UID = USER.UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.UID = USER.UID ";
+    $sql .= "AND USER_PEER.PEER_UID = '{$_SESSION['UID']}') LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER2 ";
+    $sql .= "ON (USER_PEER2.PEER_UID = USER.UID AND USER_PEER2.UID = '{$_SESSION['UID']}') ";
+    $sql .= "WHERE USER_PREFS_GLOBAL.DOB > 0 AND USER_PREFS_GLOBAL.DOB_DISPLAY > 1 ";
+    $sql .= "AND DATE_FORMAT(USER_PREFS_GLOBAL.DOB, '%m-%d') = DATE_FORMAT(UTC_TIMESTAMP(), '%m-%d') ";
     $sql .= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql .= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 OR USER_PEER.RELATIONSHIP IS NULL) ";
-    $sql .= "HAVING DAY_COUNT < DATE_FORMAT(LAST_DAY(CURDATE()), '%d') ";
-    $sql .= "ORDER BY DAY_COUNT ";
-    $sql .= "LIMIT 0, 5";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1143,15 +1144,49 @@ function user_get_forthcoming_birthdays()
 
     $user_birthdays_array = array();
 
-    while (($user_birthday_data = $result->fetch_assoc()) !== null) {
+    while (($user_data = $result->fetch_assoc()) !== null) {
 
-        if (isset($user_birthday_data['PEER_NICKNAME'])) {
-            if (!is_null($user_birthday_data['PEER_NICKNAME']) && strlen($user_birthday_data['PEER_NICKNAME']) > 0) {
-                $user_birthday_data['NICKNAME'] = $user_birthday_data['PEER_NICKNAME'];
+        if (!isset($user_data['USER_RELATIONSHIP'])) {
+            $user_data['USER_RELATIONSHIP'] = USER_NORMAL;
+        }
+
+        if (!isset($user_data['PEER_RELATIONSHIP'])) {
+            $user_data['PEER_RELATIONSHIP'] = USER_NORMAL;
+        }
+
+        if (isset($user_data['LOGON']) && isset($user_data['PEER_NICKNAME'])) {
+            if (!is_null($user_data['PEER_NICKNAME']) && strlen($user_data['PEER_NICKNAME']) > 0) {
+                $user_data['NICKNAME'] = $user_data['PEER_NICKNAME'];
             }
         }
 
-        $user_birthdays_array[] = $user_birthday_data;
+        if (isset($user_data['AVATAR_URL_FORUM']) && strlen($user_data['AVATAR_URL_FORUM']) > 0) {
+            $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_FORUM'];
+        } else if (isset($user_data['AVATAR_URL_GLOBAL']) && strlen($user_data['AVATAR_URL_GLOBAL']) > 0) {
+            $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_GLOBAL'];
+        } else {
+            $user_data['AVATAR_URL'] = null;
+        }
+
+        if (isset($user_data['AVATAR_AID_FORUM']) && is_numeric($user_data['AVATAR_AID_FORUM'])) {
+            $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_FORUM'];
+        } else if (isset($user_data['AVATAR_AID_GLOBAL']) && is_numeric($user_data['AVATAR_AID_GLOBAL'])) {
+            $user_data['AVATAR_AID'] = $user_data['AVATAR_AID_GLOBAL'];
+        } else {
+            $user_data['AVATAR_AID'] = null;
+        }
+
+        if (!isset($user_data['LOGON'])) $user_data['LOGON'] = gettext("Unknown user");
+        if (!isset($user_data['NICKNAME'])) $user_data['NICKNAME'] = "";
+
+        $user_birthdays_array[] = array(
+            'UID' => $user_data['UID'],
+            'LOGON' => $user_data['LOGON'],
+            'NICKNAME' => $user_data['NICKNAME'],
+            'RELATIONSHIP' => $user_data['USER_RELATIONSHIP'],
+            'AVATAR_URL' => $user_data['AVATAR_URL'],
+            'AVATAR_AID' => $user_data['AVATAR_AID'],
+        );
     }
 
     return $user_birthdays_array;

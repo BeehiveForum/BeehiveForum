@@ -136,7 +136,6 @@ function get_available_files()
         'search.php',
         'search_popup.php',
         'start.php',
-        'start_left.php',
         'start_main.php',
         'thread_list.php',
         'thread_options.php',

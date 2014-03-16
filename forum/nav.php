@@ -25,6 +25,7 @@ USA
 require_once 'boot.php';
 
 // Required includes
+require_once BH_INCLUDE_PATH . 'ajax_chat.inc.php';
 require_once BH_INCLUDE_PATH . 'cache.inc.php';
 require_once BH_INCLUDE_PATH . 'constants.inc.php';
 require_once BH_INCLUDE_PATH . 'forum.inc.php';
@@ -45,7 +46,12 @@ if (forum_check_webtag_available($webtag)) {
     echo "<a href=\"discussion.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Messages"), "</a>&nbsp;|&nbsp;\n";
 
     if (forum_get_setting('ajax_chat_enabled', 'Y')) {
-        echo "<a href=\"chat/index.php\" target=\"", html_get_frame_name('main'), "\">", gettext("Chat"), "</a>&nbsp;|&nbsp;\n";
+
+        if (($ajax_chat_online_user_count = ajax_chat_online_user_count())) {
+            echo "<a href=\"chat/index.php\" target=\"", html_get_frame_name('main'), "\">", gettext("Chat"), "&nbsp;(", $ajax_chat_online_user_count, ")</a>&nbsp;|&nbsp;\n";
+        } else {
+            echo "<a href=\"chat/index.php\" target=\"", html_get_frame_name('main'), "\">", gettext("Chat"), "&nbsp;(0)</a>&nbsp;|&nbsp;\n";
+        }
     }
 
     if (forum_get_setting('show_links', 'Y')) {

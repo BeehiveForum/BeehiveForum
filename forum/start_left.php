@@ -366,7 +366,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 
-if (($user_birthdays_array = user_get_forthcoming_birthdays()) !== false) {
+if (($user_birthdays_array = user_get_todays_birthdays()) !== false) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "    <tr>\n";

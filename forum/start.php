@@ -43,22 +43,11 @@ if (isset($_SESSION['LEFT_FRAME_WIDTH']) && is_numeric($_SESSION['LEFT_FRAME_WID
 html_draw_top('frame_set_html', 'pm_popup_disabled');
 
 $frameset = new html_frameset_cols('start', "$left_frame_width,*");
-
-if (isset($_GET['left']) && $_GET['left'] == "threadlist") {
-
-    $frameset->html_frame("thread_list.php?webtag=$webtag", html_get_frame_name('left'));
-
-} else {
-
-    $frameset->html_frame("start_left.php?webtag=$webtag", html_get_frame_name('left'));
-}
+$frameset->html_frame("thread_list.php?webtag=$webtag", html_get_frame_name('left'));
 
 if (isset($_GET['show']) && $_GET['show'] == "visitors") {
-
     $frameset->html_frame("visitor_log.php?webtag=$webtag", html_get_frame_name('right'));
-
 } else {
-
     $frameset->html_frame("start_main.php?webtag=$webtag", html_get_frame_name('right'));
 }
 

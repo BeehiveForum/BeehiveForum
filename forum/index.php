@@ -125,8 +125,6 @@ if (!browser_mobile() && !session::is_search_engine()) {
                     $final_uri = "discussion.php?webtag=$webtag";
                 } else if ($_SESSION['START_PAGE'] == START_PAGE_INBOX) {
                     $final_uri = "pm.php?webtag=$webtag";
-                } else if ($_SESSION['START_PAGE'] == START_PAGE_THREAD_LIST) {
-                    $final_uri = "start.php?webtag=$webtag&amp;left=threadlist";
                 } else {
                     $final_uri = "start.php?webtag=$webtag";
                 }

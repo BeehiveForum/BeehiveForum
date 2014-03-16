@@ -66,7 +66,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
     $sql .= "UNIX_TIMESTAMP(POST.APPROVED) AS APPROVED, POST.APPROVED_BY, USER.LOGON AS FROM_LOGON, ";
     $sql .= "COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS FROM_NICKNAME, USER_PEER.RELATIONSHIP AS RELATIONSHIP, ";
     $sql .= "USER_PREFS_GLOBAL.ANON_LOGON, COALESCE(USER_PREFS_FORUM.AVATAR_URL, USER_PREFS_GLOBAL.AVATAR_URL) AS AVATAR_URL, ";
-    $sql .= "COALESCE(USER_PREFS_FORUM.AVATAR_AID, USER_PREFS_GLOBAL.AVATAR_AID) AS AVATAR_AID, ";
+    $sql .= "THREAD.BY_UID AS THREAD_BY_UID, COALESCE(USER_PREFS_FORUM.AVATAR_AID, USER_PREFS_GLOBAL.AVATAR_AID) AS AVATAR_AID, ";
     $sql .= "(SELECT MAX(SESSIONS.TIME) FROM SESSIONS WHERE SESSIONS.TIME >= CAST('$session_cutoff_datetime' AS DATETIME) ";
     $sql .= "AND SESSIONS.FID = $forum_fid AND SESSIONS.UID = POST.FROM_UID) AS USER_ACTIVE ";
     $sql .= "FROM `{$table_prefix}POST` POST LEFT JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
@@ -91,7 +91,7 @@ function messages_get($tid, $pid = 1, $limit = 1)
 
         if (!isset($message['FROM_NICKNAME'])) $message['FROM_NICKNAME'] = gettext("Unknown user");
         if (!isset($message['FROM_LOGON'])) $message['FROM_LOGON'] = gettext("Unknown user");
-        if (!isset($message['FROM_UID'])) $message['FROM_UID'] = -1;
+        if (!isset($message['FROM_UID'])) $message['FROM_UID'] = null;
 
         $messages_array[$message['PID']] = $message;
     }
@@ -577,7 +577,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     echo "                <td width=\"1%\" align=\"right\" style=\"white-space: nowrap\"><span class=\"posttofromlabel\">&nbsp;", gettext("From"), ":&nbsp;</span></td>\n";
     echo "                <td style=\"white-space: nowrap\" width=\"98%\" align=\"left\"><span class=\"posttofrom\">";
 
-    if ($message['FROM_UID'] > -1) {
+    if (isset($message['FROM_UID'])) {
 
         echo "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$message['FROM_UID']}\" target=\"_blank\" class=\"popup 650x500\">";
         echo word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true), "</a>&nbsp;</span>";
@@ -625,6 +625,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     } else {
 
         echo "<img src=\"", html_style_image('status_online.png'), "\" alt=\"\" title=\"", gettext("Online"), "\" />&nbsp;";
+    }
+
+    if (isset($message['FROM_UID']) && isset($message['THREAD_BY_UID']) && $message['FROM_UID'] == $message['THREAD_BY_UID'] && $first_msg > 1){
+        echo "<img src=\"", html_style_image('thread_starter.png'), "\" alt=\"\" title=\"", gettext("Thread Starter"), "\" />&nbsp;";
     }
 
     echo "</td>\n";
@@ -685,6 +689,10 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             } else {
 
                 echo "<img src=\"", html_style_image('status_online.png'), "\" alt=\"\" title=\"", gettext("Online"), "\" />&nbsp;";
+            }
+
+            if (isset($recipient['UID']) && isset($message['THREAD_BY_UID']) && $recipient['UID'] == $message['THREAD_BY_UID'] && $first_msg > 1){
+                echo "<img src=\"", html_style_image('thread_starter.png'), "\" alt=\"\" title=\"", gettext("Thread Starter"), "\" />&nbsp;";
             }
 
             if (isset($recipient['VIEWED']) && $recipient['VIEWED'] > 0) {
@@ -1845,6 +1853,16 @@ function messages_forum_stats($tid, $pid)
         echo "                          <tr>\n";
         echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
         echo "                            <td align=\"left\" class=\"activeusers\" id=\"active_user_list\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                          </tr>\n";
+        echo "                          <tr>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                          </tr>\n";
+        echo "                          <tr>\n";
+        echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
+        echo "                            <td align=\"left\" id=\"birthdays\">&nbsp;</td>\n";
         echo "                            <td align=\"left\" width=\"35\">&nbsp;</td>\n";
         echo "                          </tr>\n";
         echo "                          <tr>\n";

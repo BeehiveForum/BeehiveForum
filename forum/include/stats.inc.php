@@ -104,7 +104,7 @@ function stats_get_html()
     // User Profile link
     $user_profile_link = '%s<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500"><span class="%s" title="%s">%s</span></a>';
 
-    // Newest ser Profile link
+    // Newest user Profile link
     $new_user_profile_link = '<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">%s</a>';
 
     // Search Engine Bot link
@@ -115,7 +115,7 @@ function stats_get_html()
     // Output the HTML.
     if (($user_stats = stats_get_active_user_list()) !== false) {
 
-        $active_user_list_array = array();
+        $user_list_array = array();
 
         $html = "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
         $html .= "  <tr>\n";
@@ -130,29 +130,29 @@ function stats_get_html()
         if (forum_get_setting('guest_show_recent', 'Y') && user_guest_enabled()) {
 
             if ($user_stats['GUESTS'] <> 1) {
-                $active_user_list_array[] = sprintf(gettext("<b>%s</b> guests"), $user_stats['GUESTS']);
+                $user_list_array[] = sprintf(gettext("<b>%s</b> guests"), $user_stats['GUESTS']);
             } else {
-                $active_user_list_array[] = gettext("<b>1</b> guest");
+                $user_list_array[] = gettext("<b>1</b> guest");
             }
         }
 
         if ($user_stats['USER_COUNT'] <> 1) {
-            $active_user_list_array[] = sprintf(gettext("<b>%s</b> members"), $user_stats['USER_COUNT']);
+            $user_list_array[] = sprintf(gettext("<b>%s</b> members"), $user_stats['USER_COUNT']);
         } else {
-            $active_user_list_array[] = gettext("<b>1</b> member");
+            $user_list_array[] = gettext("<b>1</b> member");
         }
 
         if ($user_stats['ANON_USERS'] <> 1) {
-            $active_user_list_array[] = sprintf(gettext("<b>%s</b> anonymous members"), $user_stats['ANON_USERS']);
+            $user_list_array[] = sprintf(gettext("<b>%s</b> anonymous members"), $user_stats['ANON_USERS']);
         } else {
-            $active_user_list_array[] = gettext("<b>1</b> anonymous member");
+            $user_list_array[] = gettext("<b>1</b> anonymous member");
         }
 
-        $active_user_list = implode(", ", $active_user_list_array);
+        $user_list = implode(", ", $user_list_array);
 
-        $active_user_time = format_time_display(ini_get('session.gc_maxlifetime'), false);
+        $user_time = format_time_display(ini_get('session.gc_maxlifetime'), false);
 
-        $html .= sprintf(gettext("%s active in the past %s."), $active_user_list, $active_user_time);
+        $html .= sprintf(gettext("%s active in the past %s."), $user_list, $user_time);
 
         $html .= " [ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"" . html_get_frame_name('main') . "\">" . gettext("View Complete List") . "</a> ]\n";
         $html .= "    </td>\n";
@@ -161,54 +161,60 @@ function stats_get_html()
 
         if (sizeof($user_stats['USERS']) > 0) {
 
-            $active_users_array = array();
+            $users_array = array();
 
             foreach ($user_stats['USERS'] as $user) {
 
-                $active_user_avatar = '';
+                $user_avatar = '';
 
                 if (isset($user['BOT_NAME']) && isset($user['BOT_URL'])) {
 
-                    $active_user_display = word_filter_add_ob_tags($user['BOT_NAME'], true);
-                    $active_user_display = sprintf($search_engine_bot_link, $user['BOT_URL'], $active_user_display);
+                    $user_display = word_filter_add_ob_tags($user['BOT_NAME'], true);
+                    $user_display = sprintf($search_engine_bot_link, $user['BOT_URL'], $user_display);
 
-                    $active_users_array[] = $active_user_display;
+                    $users_array[] = $user_display;
 
                 } else {
 
-                    $active_user_logon = format_user_name($user['LOGON'], $user['NICKNAME']);
+                    $user_logon = format_user_name($user['LOGON'], $user['NICKNAME']);
 
-                    $active_user_display = str_replace(" ", "&nbsp;", word_filter_add_ob_tags($active_user_logon, true));
+                    $user_display = str_replace(" ", "&nbsp;", word_filter_add_ob_tags($user_logon, true));
 
                     if ($user['UID'] == $_SESSION['UID']) {
 
                         if (isset($user['ANON_LOGON']) && $user['ANON_LOGON'] > USER_ANON_DISABLED) {
 
-                            $active_user_title = gettext("You (Invisible)");
-                            $active_user_class = 'user_stats_curuser';
+                            $user_title = gettext("You (Invisible)");
+                            $user_class = 'user_stats_curuser';
 
                         } else {
 
-                            $active_user_title = gettext("You");
-                            $active_user_class = 'user_stats_curuser';
+                            $user_title = gettext("You");
+                            $user_class = 'user_stats_curuser';
                         }
 
                     } else if (($user['RELATIONSHIP'] & USER_FRIEND) > 0) {
 
-                        $active_user_title = gettext("Friend");
-                        $active_user_class = 'user_stats_friend';
+                        $user_title = gettext("Friend");
+                        $user_class = 'user_stats_friend';
 
                     } else {
 
-                        $active_user_class = 'user_stats_normal';
-                        $active_user_title = '';
+                        $user_class = 'user_stats_normal';
+                        $user_title = '';
                     }
 
                     if (isset($user['AVATAR_URL']) && strlen($user['AVATAR_URL']) > 0) {
 
-                        $active_user_avatar = sprintf('<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
-                                                         <img src="%s" title="%s" alt="" border="0" width="16" height="16" />
-                                                       </a>', $webtag, $user['UID'], $user['AVATAR_URL'], htmlentities_array($active_user_title));
+                        $user_avatar = sprintf(
+                            '<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
+                               <img src="%s" title="%s" alt="" border="0" width="16" height="16" />
+                             </a>',
+                            $webtag,
+                            $user['UID'],
+                            $user['AVATAR_URL'],
+                            htmlentities_array($user_title)
+                        );
 
                     } else if (isset($user['AVATAR_AID']) && is_numeric($user['AVATAR_AID'])) {
 
@@ -216,26 +222,26 @@ function stats_get_html()
 
                         if (($user_avatar_picture = attachments_make_link($attachment, false, false, false, false)) !== false) {
 
-                            $active_user_avatar = sprintf('<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
-                                                             <img src="%s&amp;avatar_picture" title="%s" alt="" border="0" width="16" height="16" />
-                                                           </a>', $webtag, $user['UID'], $user_avatar_picture, htmlentities_array($active_user_title));
-
+                            $user_avatar = sprintf(
+                                '<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
+                                   <img src="%s&amp;avatar_picture" title="%s" alt="" border="0" width="16" height="16" />
+                                 </a>',
+                                $webtag,
+                                $user['UID'],
+                                $user_avatar_picture,
+                                htmlentities_array($user_title)
+                            );
                         }
                     }
 
-                    $active_users_array[] = sprintf($user_profile_link, $active_user_avatar, $webtag, $user['UID'], $active_user_class, $active_user_title, $active_user_display);
+                    $users_array[] = sprintf($user_profile_link, $user_avatar, $webtag, $user['UID'], $user_class, $user_title, $user_display);
                 }
             }
 
-            $html .= "  <tr>\n";
-            $html .= "    <td width=\"35\">&nbsp;</td>\n";
-            $html .= "    <td>&nbsp;</td>\n";
-            $html .= "    <td width=\"35\">&nbsp;</td>\n";
-            $html .= "  </tr>\n";
             $html .= "  <tr>";
             $html .= "    <td>&nbsp;</td>\n";
             $html .= "    <td class=\"activeusers\">\n";
-            $html .= "      " . implode(", ", $active_users_array) . "\n";
+            $html .= "      " . implode(", ", $users_array) . "\n";
             $html .= "    </td>\n";
             $html .= "    <td width=\"35\">&nbsp;</td>\n";
             $html .= "  </tr>\n";
@@ -244,6 +250,105 @@ function stats_get_html()
         $html .= "  <tr>\n";
         $html .= "    <td width=\"35\">&nbsp;</td>\n";
         $html .= "    <td>&nbsp;</td>\n";
+        $html .= "  </tr>\n";
+        $html .= "</table>\n";
+    }
+
+    if (($users_birthdays_array = user_get_todays_birthdays()) !== false) {
+
+        $html .= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+        $html .= "  <tr>\n";
+        $html .= "    <td width=\"35\">&nbsp;</td>\n";
+        $html .= "    <td>";
+
+        if (count($users_birthdays_array) == 1) {
+            $html .= gettext("<b>1</b> member is celebrating their birthday today:");
+        } else {
+            $html .= sprintf(gettext("<b>%d</b> members are celebrating their birthdays today:"), count($users_birthdays_array));
+        }
+
+        $html .= "</td>\n";
+        $html .= "    <td width=\"35\">&nbsp;</td>\n";
+        $html .= "  </tr>\n";
+
+        $users_array = array();
+
+        foreach ($users_birthdays_array as $user) {
+
+            $user_avatar = '';
+
+            $user_logon = format_user_name($user['LOGON'], $user['NICKNAME']);
+
+            $user_display = str_replace(" ", "&nbsp;", word_filter_add_ob_tags($user_logon, true));
+
+            if ($user['UID'] == $_SESSION['UID']) {
+
+                $user_title = gettext("You");
+                $user_class = 'user_stats_curuser';
+
+            } else if (($user['RELATIONSHIP'] & USER_FRIEND) > 0) {
+
+                $user_title = gettext("Friend");
+                $user_class = 'user_stats_friend';
+
+            } else {
+
+                $user_class = 'user_stats_normal';
+                $user_title = '';
+            }
+
+            if (isset($user['AVATAR_URL']) && strlen($user['AVATAR_URL']) > 0) {
+
+                $user_avatar = sprintf(
+                    '<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
+                       <img src="%s" title="%s" alt="" border="0" width="16" height="16" />
+                     </a>',
+                    $webtag,
+                    $user['UID'],
+                    $user['AVATAR_URL'],
+                    htmlentities_array($user_title)
+                );
+
+            } else if (isset($user['AVATAR_AID']) && is_numeric($user['AVATAR_AID'])) {
+
+                $attachment = attachments_get_by_aid($user['AVATAR_AID']);
+
+                if (($user_avatar_picture = attachments_make_link($attachment, false, false, false, false)) !== false) {
+
+                    $user_avatar = sprintf(
+                        '<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
+                           <img src="%s&amp;avatar_picture" title="%s" alt="" border="0" width="16" height="16" />
+                         </a>',
+                        $webtag,
+                        $user['UID'],
+                        $user_avatar_picture,
+                        htmlentities_array($user_title)
+                    );
+                }
+            }
+
+            $users_array[] = sprintf(
+                $user_profile_link,
+                $user_avatar,
+                $webtag,
+                $user['UID'],
+                $user_class,
+                $user_title,
+                $user_display
+            );
+        }
+
+        $html .= "  <tr>\n";
+        $html .= "    <td width=\"35\">&nbsp;</td>\n";
+        $html .= "    <td class=\"birthdayusers\">\n";
+        $html .= "      " . implode(", ", $users_array) . "\n";
+        $html .= "    </td>\n";
+        $html .= "    <td width=\"35\">&nbsp;</td>\n";
+        $html .= "  </tr>\n";
+        $html .= "  <tr>\n";
+        $html .= "    <td width=\"35\">&nbsp;</td>\n";
+        $html .= "    <td>&nbsp;</td>\n";
+        $html .= "    <td width=\"35\">&nbsp;</td>\n";
         $html .= "  </tr>\n";
         $html .= "</table>\n";
     }
@@ -283,7 +388,7 @@ function stats_get_html()
 
         $longest_thread_title = word_filter_add_ob_tags($longest_thread['TITLE'], true);
 
-        $longest_thread_link = sprintf("<a href=\"./index.php?webtag=$webtag&amp;msg=%d.1\">%s</a>", $longest_thread['TID'], $longest_thread_title);
+        $longest_thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%d.1\">%s</a>", $longest_thread['TID'], $longest_thread_title);
         $longest_thread_post_count = ($longest_thread['LENGTH'] <> 1) ? sprintf(gettext("<b>%s</b> posts"), $longest_thread['LENGTH']) : gettext("<b>1</b> post");
 
         $html .= sprintf(gettext("Longest thread is <b>%s</b> with %s."), $longest_thread_link, $longest_thread_post_count);

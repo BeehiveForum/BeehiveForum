@@ -193,7 +193,6 @@ function adsense_small_banner_pages()
         'lpost.php',
         'lthread_list.php',
         'pm_folder.php',
-        'start_left.php',
         'thread_list.php',
         'user_menu.php',
     );

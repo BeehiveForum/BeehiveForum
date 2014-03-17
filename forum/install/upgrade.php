@@ -430,7 +430,7 @@ $db->query($sql);
 
 foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
-    if (!install_column_exists($config['db_database'], "{$table_data['PREFIX']}THREAD", 'APPROVED')) {
+    if (!install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_THREAD", 'APPROVED')) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}THREAD` ADD COLUMN APPROVED DATETIME NULL AFTER POLL_FLAG";
 
@@ -449,7 +449,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $db->query($sql);
     }
 
-    if (!install_column_exists($config['db_database'], "{$table_data['PREFIX']}POST", 'INDEXED')) {
+    if (!install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_POST", 'INDEXED')) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD COLUMN INDEXED DATETIME NULL";
 
@@ -469,7 +469,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $db->query($sql);
     }
 
-    if (!install_table_exists($config['db_database'], "{$table_data['PREFIX']}POST_RATING")) {
+    if (!install_table_exists($config['db_database'], "{$table_data['WEBTAG']}_POST_RATING")) {
 
         $sql = "CREATE TABLE `{$table_data['PREFIX']}POST_RATING` (";
         $sql .= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -485,7 +485,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $db->query($sql);
     }
 
-    if (!install_table_exists($config['db_database'], "{$table_data['PREFIX']}POST_TAG")) {
+    if (!install_table_exists($config['db_database'], "{$table_data['WEBTAG']}_POST_TAG")) {
 
         $sql = "CREATE TABLE `{$table_data['PREFIX']}POST_TAG` (";
         $sql .= "  TID MEDIUMINT(11) UNSIGNED NOT NULL,";
@@ -497,7 +497,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $db->query($sql);
     }
 
-    if (!install_table_exists($config['db_database'], "{$table_data['PREFIX']}TAG")) {
+    if (!install_table_exists($config['db_database'], "{$table_data['WEBTAG']}_TAG")) {
 
         $sql = "CREATE TABLE `{$table_data['PREFIX']}TAG` (";
         $sql .= "  TID MEDIUMINT(11) UNSIGNED NOT NULL AUTO_INCREMENT,";
@@ -509,7 +509,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $db->query($sql);
     }
 
-    if (!install_column_exists($config['db_database'], "{$table_data['PREFIX']}USER_TRACK", 'USER_KEY')) {
+    if (!install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_USER_TRACK", 'USER_KEY')) {
 
         $sql = "CREATE TABLE `{$table_data['PREFIX']}USER_TRACK_NEW` (";
         $sql .= "  UID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -549,13 +549,13 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
         $db->query($sql);
     }
 
-    if (!install_column_exists($config['db_database'], "{$table_data['PREFIX']}USER_PREFS", 'ENABLE_WIKI_QUICK_LINKS')) {
+    if (!install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_USER_PREFS", 'ENABLE_WIKI_QUICK_LINKS')) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD COLUMN ENABLE_WIKI_QUICK_LINKS CHAR(1) NULL AFTER ENABLE_WIKI_WORDS";
         $db->query($sql);
     }
 
-    if (!install_column_exists($config['db_database'], "{$table_data['PREFIX']}USER_PREFS", 'ENABLE_TAGS')) {
+    if (!install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_USER_PREFS", 'ENABLE_TAGS')) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD COLUMN ENABLE_TAGS CHAR(1) NULL";
         $db->query($sql);
@@ -589,7 +589,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $db->query($sql);
 
-    if (!install_table_exists($config['db_database'], "{$table_data['PREFIX']}POST_RECIPIENT")) {
+    if (!install_table_exists($config['db_database'], "{$table_data['WEBTAG']}_POST_RECIPIENT")) {
 
         $sql = "CREATE TABLE `{$table_data['PREFIX']}POST_RECIPIENT` (";
         $sql .= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
@@ -663,7 +663,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $db->query($sql);
 
-    if (!install_column_exists($config['db_database'], "{$table_data['PREFIX']}FORUM_LINKS", 'POSITION')) {
+    if (!install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_FORUM_LINKS", 'POSITION')) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}FORUM_LINKS` ADD COLUMN POSITION MEDIUMINT(8) UNSIGNED NULL AFTER LID";
 

@@ -701,8 +701,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     $sql = "ALTER TABLE `{$table_data['PREFIX']}FORUM_LINKS` ";
     $sql .= "CHANGE URI URI VARCHAR(255) COLLATE UTF8_GENERAL_CI NOT NULL AFTER LID, ";
     $sql .= "CHANGE TITLE TITLE VARCHAR(64) COLLATE UTF8_GENERAL_CI NOT NULL AFTER URI, ";
-    $sql .= "CHANGE POSITION POSITION MEDIUMINT(8) UNSIGNED NOT NULL AFTER TITLE, ";
-    $sql .= "DROP COLUMN POS";
+    $sql .= "CHANGE POSITION POSITION MEDIUMINT(8) UNSIGNED NOT NULL AFTER TITLE ";
 
     $db->query($sql);
 
@@ -757,11 +756,21 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ";
     $sql .= "CHANGE FROM_UID FROM_UID MEDIUMINT(8) UNSIGNED NOT NULL AFTER REPLY_TO_PID, ";
     $sql .= "CHANGE CREATED CREATED DATETIME NOT NULL AFTER FROM_UID, ";
-    $sql .= "CHANGE IPADDRESS IPADDRESS VARCHAR(255) COLLATE UTF8_GENERAL_CI NOT NULL AFTER EDITED_BY, ";
-    $sql .= "ADD KEY EDITED(EDITED), ";
-    $sql .= "ADD KEY INDEXED(INDEXED)";
+    $sql .= "CHANGE IPADDRESS IPADDRESS VARCHAR(255) COLLATE UTF8_GENERAL_CI NOT NULL AFTER EDITED_BY ";
 
-    $db->query($sql);
+	$db->query($sql);
+
+    if (!install_index_exists($config['db_database'], "{$table_data['WEBTAG']}_POST", 'EDITED')) {
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD KEY EDITED(EDITED)";
+        $db->query($sql);
+    }
+
+    if (!install_index_exists($config['db_database'], "{$table_data['WEBTAG']}_POST", 'INDEXED')) {
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD KEY INDEXED(INDEXED)";
+        $db->query($sql);
+    }
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}POST_CONTENT` ";
     $sql .= "CHANGE TID TID MEDIUMINT(8) UNSIGNED NOT NULL FIRST, ";
@@ -769,10 +778,11 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $db->query($sql);
 
-    $sql = "ALTER TABLE `{$table_data['PREFIX']}POST_RECIPIENT` ";
-    $sql .= "ADD KEY VIEWED(VIEWED)";
+    if (!install_index_exists($config['db_database'], "{$table_data['WEBTAG']}_POST_RECIPIENT", 'VIEWED')) {
 
-    $db->query($sql);
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}POST_RECIPIENT` ADD KEY VIEWED(VIEWED)";
+        $db->query($sql);
+    }
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}PROFILE_ITEM` ";
     $sql .= "CHANGE PSID PSID MEDIUMINT(8) UNSIGNED NOT NULL AFTER PIID, ";
@@ -859,10 +869,15 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     $db->query($sql);
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_SIG` ";
-    $sql .= "CHANGE UID UID MEDIUMINT(8) UNSIGNED NOT NULL FIRST, ";
-    $sql .= "DROP COLUMN HTML";
+    $sql .= "CHANGE UID UID MEDIUMINT(8) UNSIGNED NOT NULL FIRST ";
 
     $db->query($sql);
+
+    if (install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_USER_SIG", 'HTML')) {
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_SIG` DROP COLUMN HTML";
+        $db->query($sql);
+    }
 
     $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_THREAD` ";
     $sql .= "CHANGE UID UID MEDIUMINT(8) UNSIGNED NOT NULL FIRST, ";
@@ -937,10 +952,11 @@ $sql .= "CHANGE DOWNLOADS DOWNLOADS MEDIUMINT(8) UNSIGNED NOT NULL AFTER HASH";
 
 $db->query($sql);
 
-$sql = "ALTER TABLE POST_ATTACHMENT_IDS ";
-$sql .= "DROP KEY TID";
+if (install_index_exists($config['db_database'], 'POST_ATTACHMENT_IDS', 'TID')) {
 
-$db->query($sql);
+    $sql = "ALTER TABLE POST_ATTACHMENT_IDS DROP KEY TID";
+    $db->query($sql);
+}
 
 $sql = "ALTER TABLE SEARCH_ENGINE_BOTS ";
 $sql .= "CHANGE NAME NAME VARCHAR(32) COLLATE UTF8_GENERAL_CI NOT NULL AFTER SID, ";
@@ -952,10 +968,15 @@ $db->query($sql);
 $sql = "ALTER TABLE SEARCH_RESULTS ";
 $sql .= "CHANGE TID TID MEDIUMINT(8) UNSIGNED NOT NULL AFTER FORUM, ";
 $sql .= "CHANGE PID PID MEDIUMINT(8) UNSIGNED NOT NULL AFTER TID, ";
-$sql .= "CHANGE RELEVANCE RELEVANCE FLOAT UNSIGNED NOT NULL AFTER PID, ";
-$sql .= "DROP COLUMN FID";
+$sql .= "CHANGE RELEVANCE RELEVANCE FLOAT UNSIGNED NOT NULL AFTER PID ";
 
 $db->query($sql);
+
+if (install_column_exists($config['db_database'], 'SEARCH_RESULTS', 'FID')) {
+
+    $sql = "ALTER TABLE SEARCH_RESULTS DROP COLUMN FID";
+    $db->query($sql);
+}
 
 $sql = "ALTER TABLE TIMEZONES ";
 $sql .= "CHANGE TZID TZID INT(11) NOT NULL FIRST, ";
@@ -999,10 +1020,15 @@ $sql .= "CHANGE ANON_LOGON ANON_LOGON CHAR(1) COLLATE UTF8_GENERAL_CI NOT NULL A
 $db->query($sql);
 
 $sql = "ALTER TABLE VISITOR_LOG ";
-$sql .= "CHANGE LAST_LOGON LAST_LOGON DATETIME NOT NULL AFTER FORUM, ";
-$sql .= "ADD KEY FORUM_LAST_LOGON(FORUM,LAST_LOGON)";
+$sql .= "CHANGE LAST_LOGON LAST_LOGON DATETIME NOT NULL AFTER FORUM ";
 
 $db->query($sql);
+
+if (!install_index_exists($config['db_database'], 'VISITOR_LOG', 'FORUM_LAST_LOGON')) {
+
+    $sql = "ALTER TABLE `VISITOR_LOG` ADD KEY FORUM_LAST_LOGON(FORUM,LAST_LOGON)";
+    $db->query($sql);
+}
 
 if (($attachment_dir = forum_get_global_setting('attachment_dir', null, false)) !== false) {
 

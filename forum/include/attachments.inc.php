@@ -367,8 +367,6 @@ function attachments_check_post_space($uid, $hash_array)
 
 function attachments_get_post_used_space($uid, $hash_array)
 {
-    $post_attachment_space = 0;
-
     if (!$db = db::get()) return 0;
 
     if (!is_numeric($uid)) return 0;
@@ -381,34 +379,28 @@ function attachments_get_post_used_space($uid, $hash_array)
 
     $hash_list = implode("', '", $hash_array);
 
-    $sql = "SELECT PAF.HASH, PAF.FILESIZE FROM POST_ATTACHMENT_FILES PAF ";
+    $sql = "SELECT SUM(PAF.FILESIZE) AS FILESIZE FROM POST_ATTACHMENT_FILES PAF ";
     $sql .= "WHERE PAF.UID = '$uid' AND PAF.HASH IN ('$hash_list')";
 
     if (!($result = $db->query($sql))) return 0;
 
-    while (($attachment_data = $result->fetch_assoc()) !== null) {
-        $post_attachment_space += $attachment_data['FILESIZE'];
-    }
+    list( $post_attachment_space ) = $result->fetch_array( MYSQLI_NUM );
 
     return $post_attachment_space;
 }
 
 function attachments_get_user_used_space($uid)
 {
-    $user_attachment_space = 0;
-
     if (!$db = db::get()) return 0;
 
     if (!is_numeric($uid)) return 0;
 
-    $sql = "SELECT PAF.HASH, PAF.FILESIZE FROM POST_ATTACHMENT_FILES PAF ";
+    $sql = "SELECT SUM(PAF.FILESIZE) AS FILESIZE FROM POST_ATTACHMENT_FILES PAF ";
     $sql .= "WHERE PAF.UID = '$uid'";
 
     if (!($result = $db->query($sql))) return 0;
 
-    while (($attachment_data = $result->fetch_assoc()) !== null) {
-        $user_attachment_space += $attachment_data['FILESIZE'];
-    }
+    list( $user_attachment_space ) = $result->fetch_array( MYSQLI_NUM );
 
     return $user_attachment_space;
 }

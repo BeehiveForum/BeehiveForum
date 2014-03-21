@@ -40,11 +40,6 @@ if (!session::logged_in() && !forum_get_setting('attachment_allow_guests', 'Y'))
     html_guest_error();
 }
 
-// Check to see if attachments are actually enabled
-if (forum_get_setting('attachments_enabled', 'N')) {
-    html_draw_error(gettext("Attachments have been disabled by the forum owner."));
-}
-
 // If the attachments directory is undefined we can't go any further
 if (!($attachment_dir = attachments_check_dir())) {
     html_draw_error(gettext("Attachments have been disabled by the forum owner."));

@@ -470,7 +470,7 @@ echo form_submit("preview", gettext("Preview"), "tabindex=\"3\""), "\n";
 
 echo "<a href=\"discussion.php?webtag=$webtag&amp;msg=$return_msg\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 
-if (forum_get_setting('attachments_enabled', 'Y') && (session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid))) {
+if (attachments_check_dir() && (session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $t_fid))) {
 
     echo "                        </td>\n";
     echo "                      </tr>\n";

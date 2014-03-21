@@ -581,7 +581,7 @@ function admin_get_users_attachments($uid, &$user_attachments, &$user_image_atta
 
     if (!is_array($hash_array)) $hash_array = false;
 
-    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+    if (!($attachment_dir = attachments_check_dir())) return false;
 
     if (is_array($hash_array)) {
 

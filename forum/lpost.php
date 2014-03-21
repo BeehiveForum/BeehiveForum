@@ -611,7 +611,7 @@ if (isset($return_msg)) {
 
 echo "</div>";
 
-if (forum_get_setting('attachments_enabled', 'Y') && (session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid) || $new_thread)) {
+if (attachments_check_dir() && (session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid) || $new_thread)) {
 
     echo "<div class=\"attachments post_attachments\">", gettext('Attachments'), ":\n";
     echo "  ", attachments_form($_SESSION['UID'], $attachments, ATTACHMENT_FILTER_UNASSIGNED), "\n";

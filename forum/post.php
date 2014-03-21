@@ -837,7 +837,7 @@ if (isset($return_msg)) {
     echo "<a href=\"discussion.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 }
 
-if (forum_get_setting('attachments_enabled', 'Y') && (session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid) || $new_thread)) {
+if (attachments_check_dir() && (session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid) || $new_thread)) {
 
     echo "                        </td>\n";
     echo "                      </tr>\n";

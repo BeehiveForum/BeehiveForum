@@ -551,7 +551,7 @@ if (isset($edit_mid) && is_numeric($edit_mid) && $edit_mid > 0) {
     echo form_input_hidden("editmsg", htmlentities_array($edit_mid)), "\n";
 }
 
-if (forum_get_setting('attachments_enabled', 'Y')) {
+if (attachments_check_dir()) {
 
     echo "<div class=\"attachments post_attachments\">", gettext('Attachments'), ":\n";
     echo "  ", attachments_form($_SESSION['UID'], $attachments, ATTACHMENT_FILTER_UNASSIGNED), "\n";

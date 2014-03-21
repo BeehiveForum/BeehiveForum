@@ -48,12 +48,7 @@ $attachments_array = array();
 $image_attachments_array = array();
 
 // If attachments are disabled then no need to go any further.
-if (forum_get_setting('attachments_enabled', 'N')) {
-    html_draw_error(gettext("Attachments have been disabled by the forum owner."));
-}
-
-// If the attachments directory is undefined we can't go any further
-if (!$attachment_dir = attachments_check_dir()) {
+if (!($attachment_dir = attachments_check_dir())) {
     html_draw_error(gettext("Attachments have been disabled by the forum owner."));
 }
 

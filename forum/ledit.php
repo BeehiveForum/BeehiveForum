@@ -379,7 +379,7 @@ echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$return_msg\" class=\"butto
 
 echo "</div>";
 
-if (forum_get_setting('attachments_enabled', 'Y') && session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid)) {
+if (attachments_check_dir() && session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid)) {
 
     echo "<div class=\"attachments post_attachments\">", gettext('Attachments'), ":\n";
     echo "  ", attachments_form($edit_message['FROM_UID'], $attachments, ATTACHMENT_FILTER_BOTH), "\n";

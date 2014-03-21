@@ -47,7 +47,9 @@ function attachments_get_upload_tmp_dir()
 
 function attachments_check_dir()
 {
-    if (!($attachment_dir = forum_get_setting('attachment_dir'))) return false;
+    if (forum_get_setting('attachments_enabled', 'N')) return false;
+
+    if (!($attachment_dir = forum_get_setting('attachment_dir', null, 'attachments'))) return false;
 
     if (!@is_writable(attachments_get_upload_tmp_dir())) return false;
 
@@ -132,7 +134,7 @@ function attachments_get_by_aid($aid, $uid = null)
 
     if (!is_numeric($aid)) return false;
 
-    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+    if (!($attachment_dir = attachments_check_dir())) return false;
 
     $sql = "SELECT AID, UID, FILENAME, MIMETYPE, FILESIZE, WIDTH, ";
     $sql .= "HEIGHT, THUMBNAIL, HASH, DOWNLOADS FROM POST_ATTACHMENT_FILES ";
@@ -167,7 +169,7 @@ function attachments_get_by_hash($hash, $uid = null)
 
     if (!is_md5($hash)) return false;
 
-    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+    if (!($attachment_dir = attachments_check_dir())) return false;
 
     $sql = "SELECT AID, UID, FILENAME, MIMETYPE, FILESIZE, WIDTH, ";
     $sql .= "HEIGHT, THUMBNAIL, HASH, DOWNLOADS FROM POST_ATTACHMENT_FILES ";
@@ -237,7 +239,7 @@ function attachments_delete($hash)
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+    if (!($attachment_dir = attachments_check_dir())) return false;
 
     $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
     $sql .= "PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
@@ -290,7 +292,7 @@ function attachments_delete_thumbnail($hash)
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+    if (!($attachment_dir = attachments_check_dir())) return false;
 
     $sql = "SELECT PAF.AID, PAF.UID, PAF.FILENAME, PAI.TID, ";
     $sql .= "PAI.PID FROM POST_ATTACHMENT_FILES PAF ";
@@ -589,7 +591,7 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
     if (!is_bool($local_path)) $local_path = false;
     if (!is_bool($img_tag)) $img_tag = true;
 
-    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+    if (!($attachment_dir = attachments_check_dir())) return false;
 
     if (!isset($attachment['hash'])) return false;
     if (!isset($attachment['filename'])) return false;

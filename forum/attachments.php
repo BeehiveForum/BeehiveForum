@@ -38,12 +38,6 @@ if (!session::logged_in()) {
     exit;
 }
 
-if (forum_get_setting('attachments_enabled', 'N')) {
-
-    header_status(500, 'Internal Server Error');
-    exit;
-}
-
 if (!($attachment_dir = attachments_check_dir())) {
 
     header_status(500, 'Internal Server Error');

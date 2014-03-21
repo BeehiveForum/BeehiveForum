@@ -242,7 +242,7 @@ echo light_form_submit("preview", gettext("Preview"));
 echo light_form_submit("cancel", gettext("Cancel"));
 echo "</div>";
 
-if (forum_get_setting('attachments_enabled', 'Y')) {
+if (attachments_check_dir()) {
 
     echo "<div class=\"attachments post_attachments\">", gettext('Attachments'), ":\n";
     echo "  ", attachments_form($_SESSION['UID'], $attachments, ATTACHMENT_FILTER_BOTH), "\n";

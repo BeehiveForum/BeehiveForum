@@ -1240,7 +1240,7 @@ function stats_get_most_downloaded_attachment()
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (!$attachment_dir = forum_get_setting('attachment_dir')) return false;
+    if (!($attachment_dir = attachments_check_dir())) return false;
 
     if (!($forum_fid = get_forum_fid())) return false;
 

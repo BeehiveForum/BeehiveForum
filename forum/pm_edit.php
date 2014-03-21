@@ -327,7 +327,7 @@ echo form_submit('preview', gettext("Preview"), "tabindex=\"3\""), "\n";
 
 echo "<a href=\"pm.php?webtag=$webtag&mid=$mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 
-if (forum_get_setting('attachments_enabled', 'Y')) {
+if (attachments_check_dir()) {
 
     echo "                        </td>\n";
     echo "                      </tr>\n";

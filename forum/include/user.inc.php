@@ -1725,7 +1725,7 @@ function user_prefs_filter_attachments($image_attachments_array, $max_width, $ma
 {
     $attachments_array_filtered = array('' => '&nbsp;');
 
-    if (!$attachment_dir = forum_get_setting('attachment_dir')) return array();
+    if (!($attachment_dir = attachments_check_dir())) return array();
 
     if (!is_array($image_attachments_array) || sizeof($image_attachments_array) == 0) {
         return $attachments_array_filtered;

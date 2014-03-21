@@ -608,7 +608,7 @@ echo "                  <td align=\"left\">", form_input_text("homepage_url", (i
 echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("homepage_url_global", "Y", null, (isset($user_prefs['HOMEPAGE_URL_GLOBAL']) ? $user_prefs['HOMEPAGE_URL_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("homepage_url_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 
-if (forum_get_setting('attachments_enabled', 'Y')) {
+if (attachments_check_dir()) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\">&nbsp;</td>\n";

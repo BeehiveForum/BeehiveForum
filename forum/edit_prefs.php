@@ -485,7 +485,7 @@ if ((session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($prof
 }
 
 // User's attachments for profile and avatar pictures
-$attachments_array = attachments_get($profile_uid, ATTACHMENT_FILTER_BOTH);
+$attachments_array = attachments_get_all($profile_uid);
 
 // Start Output Here
 if ($admin_edit === true) {

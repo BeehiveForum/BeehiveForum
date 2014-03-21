@@ -573,7 +573,7 @@ if ($valid && isset($_POST['post'])) {
                         admin_send_post_approval_notification($fid);
                     }
 
-                    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments)) !== false) {
+                    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], $attachments)) !== false) {
 
                         foreach ($attachments_array as $attachment) {
 

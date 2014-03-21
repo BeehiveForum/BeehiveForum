@@ -587,7 +587,7 @@ switch ($_GET['action']) {
             exit;
         }
 
-        $attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH);
+        $attachments_array = attachments_get_all($_SESSION['UID']);
 
         header('Content-type: application/json; charset=UTF-8');
 

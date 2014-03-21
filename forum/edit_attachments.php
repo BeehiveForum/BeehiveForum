@@ -119,7 +119,7 @@ if (isset($_POST['delete_confirm'])) {
 
     if (is_array($hash_array) && sizeof($hash_array) > 0) {
 
-        if (($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $hash_array)) !== false) {
+        if (($attachments_array = attachments_get($_SESSION['UID'], $hash_array)) !== false) {
 
             if (isset($_POST['delete_thumbs'])) {
 
@@ -245,7 +245,7 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 
-if (($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH)) !== false) {
+if (($attachments_array = attachments_get_all($_SESSION['UID'])) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td class=\"subhead_checkbox\" align=\"center\" width=\"1%\">", form_checkbox("toggle_main", "toggle_main"), "</td>\n";

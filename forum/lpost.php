@@ -439,7 +439,7 @@ if ($valid && isset($_POST['post'])) {
                         admin_send_post_approval_notification($fid);
                     }
 
-                    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments)) !== false) {
+                    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], $attachments)) !== false) {
 
                         foreach ($attachments_array as $attachment) {
 
@@ -614,7 +614,7 @@ echo "</div>";
 if (attachments_check_dir() && (session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid) || $new_thread)) {
 
     echo "<div class=\"attachments post_attachments\">", gettext('Attachments'), ":\n";
-    echo "  ", attachments_form($_SESSION['UID'], $attachments, ATTACHMENT_FILTER_UNASSIGNED), "\n";
+    echo "  ", attachments_form($_SESSION['UID'], $attachments), "\n";
     echo "</div>\n";
 }
 

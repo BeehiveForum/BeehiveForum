@@ -258,11 +258,6 @@ define('ATTACHMENT_THUMB_LARGE', 3);
 define('ATTACHMENT_THUMBNAIL_PHPGD', 0);
 define('ATTACHMENT_THUMBNAIL_IMAGEMAGICK', 1);
 
-// Filter for get_attachment methods
-define('ATTACHMENT_FILTER_ASSIGNED', 0);
-define('ATTACHMENT_FILTER_UNASSIGNED', 1);
-define('ATTACHMENT_FILTER_BOTH', 2);
-
 // PM Constants
 define('PM_OUTBOX', 1);
 define('PM_UNREAD', 2);

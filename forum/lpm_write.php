@@ -388,7 +388,7 @@ if ($valid && isset($_POST['send'])) {
 
             email_send_pm_notification($new_mid);
 
-            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments))) {
+            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], $attachments))) {
 
                 foreach ($attachments_array as $attachment) {
 
@@ -444,7 +444,7 @@ if ($valid && isset($_POST['send'])) {
 
         if (($saved_mid = pm_save_message($_SESSION['UID'], $to_logon_array, $subject, $content, $reply_mid)) !== false) {
 
-            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments)) !== false) {
+            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], $attachments)) !== false) {
 
                 foreach ($attachments_array as $attachment) {
 
@@ -554,7 +554,7 @@ if (isset($edit_mid) && is_numeric($edit_mid) && $edit_mid > 0) {
 if (attachments_check_dir()) {
 
     echo "<div class=\"attachments post_attachments\">", gettext('Attachments'), ":\n";
-    echo "  ", attachments_form($_SESSION['UID'], $attachments, ATTACHMENT_FILTER_UNASSIGNED), "\n";
+    echo "  ", attachments_form($_SESSION['UID'], $attachments), "\n";
     echo "</div>\n";
 }
 

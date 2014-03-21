@@ -255,7 +255,7 @@ if ($valid && isset($_POST['preview'])) {
                 admin_send_post_approval_notification($fid);
             }
 
-            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($edit_message['FROM_UID'], ATTACHMENT_FILTER_BOTH, $attachments))) {
+            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($edit_message['FROM_UID'], $attachments))) {
 
                 foreach ($attachments_array as $attachment) {
 
@@ -382,7 +382,7 @@ echo "</div>";
 if (attachments_check_dir() && session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid)) {
 
     echo "<div class=\"attachments post_attachments\">", gettext('Attachments'), ":\n";
-    echo "  ", attachments_form($edit_message['FROM_UID'], $attachments, ATTACHMENT_FILTER_BOTH), "\n";
+    echo "  ", attachments_form($edit_message['FROM_UID'], $attachments), "\n";
     echo "</div>\n";
 }
 

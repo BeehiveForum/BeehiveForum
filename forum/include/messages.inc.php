@@ -816,7 +816,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
         if (isset($message['ATTACHMENTS']) && sizeof($message['ATTACHMENTS']) > 0) {
 
-            if (($attachments_array = attachments_get($message['FROM_UID'], ATTACHMENT_FILTER_BOTH, $message['ATTACHMENTS'])) !== false) {
+            if (($attachments_array = attachments_get($message['FROM_UID'], $message['ATTACHMENTS'])) !== false) {
 
                 echo "              <tr>\n";
                 echo "                <td class=\"postbody\" align=\"left\">\n";

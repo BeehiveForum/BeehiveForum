@@ -606,7 +606,7 @@ if ($valid && isset($_POST['post'])) {
                         admin_send_post_approval_notification($fid);
                     }
 
-                    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments)) !== false) {
+                    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], $attachments)) !== false) {
 
                         foreach ($attachments_array as $attachment) {
 
@@ -1185,7 +1185,7 @@ if (attachments_check_dir() && (session::check_perm(USER_PERM_POST_ATTACHMENTS |
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" colspan=\"2\">\n";
     echo "                                <div class=\"attachments attachment_toggle\" style=\"display: ", (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) ? "block" : "none", "\">\n";
-    echo "                                  ", attachments_form($_SESSION['UID'], $attachments, ATTACHMENT_FILTER_UNASSIGNED), "\n";
+    echo "                                  ", attachments_form($_SESSION['UID'], $attachments), "\n";
     echo "                                </div>\n";
     echo "                              </td>\n";
     echo "                            </tr>\n";

@@ -1834,7 +1834,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
         if (isset($message['ATTACHMENTS']) && sizeof($message['ATTACHMENTS']) > 0) {
 
-            if (($attachments_array = attachments_get($message['FROM_UID'], ATTACHMENT_FILTER_ASSIGNED, $message['ATTACHMENTS'])) !== false) {
+            if (($attachments_array = attachments_get($message['FROM_UID'], $message['ATTACHMENTS'])) !== false) {
 
                 echo "<div class=\"message_attachments\">\n";
                 echo "  <span>", gettext("Attachments"), ":</span>\n";
@@ -2468,7 +2468,7 @@ function light_pm_display($message_data, $preview = false)
 
     if (isset($message_data['ATTACHMENTS']) && sizeof($message_data['ATTACHMENTS']) > 0) {
 
-        if (($attachments_array = attachments_get($message_data['FROM_UID'], ATTACHMENT_FILTER_ASSIGNED, $message_data['ATTACHMENTS'])) !== false) {
+        if (($attachments_array = attachments_get($message_data['FROM_UID'], $message_data['ATTACHMENTS'])) !== false) {
 
             echo "<div class=\"message_attachments\">\n";
             echo "  <span>", gettext("Attachments"), ":</span>\n";

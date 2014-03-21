@@ -841,7 +841,7 @@ function pm_display($message_data, $preview = false, $export_html = false)
 
     if (isset($message_data['ATTACHMENTS']) && sizeof($message_data['ATTACHMENTS']) > 0) {
 
-        if (($attachments_array = attachments_get($message_data['FROM_UID'], ATTACHMENT_FILTER_BOTH, $message_data['ATTACHMENTS'])) !== false) {
+        if (($attachments_array = attachments_get($message_data['FROM_UID'], $message_data['ATTACHMENTS'])) !== false) {
 
             echo "              <tr>\n";
             echo "                <td class=\"postbody\" align=\"left\">\n";
@@ -1871,7 +1871,7 @@ function pm_export_attachments($message_array, ZipArchive $zip)
 
     foreach ($message_array as $message) {
 
-        if (($attachments_array = attachments_get($message['FROM_UID'], ATTACHMENT_FILTER_ASSIGNED, $message['ATTACHMENTS'])) !== false) {
+        if (($attachments_array = attachments_get($message['FROM_UID'], $message['ATTACHMENTS'])) !== false) {
 
             foreach ($attachments_array as $attachment) {
 

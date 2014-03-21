@@ -136,7 +136,7 @@ if ($valid && isset($_POST['preview'])) {
 
 } else if ($valid && isset($_POST['apply'])) {
 
-    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], ATTACHMENT_FILTER_BOTH, $attachments)) !== false) {
+    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], $attachments)) !== false) {
 
         foreach ($attachments_array as $attachment) {
 
@@ -245,7 +245,7 @@ echo "</div>";
 if (attachments_check_dir()) {
 
     echo "<div class=\"attachments post_attachments\">", gettext('Attachments'), ":\n";
-    echo "  ", attachments_form($_SESSION['UID'], $attachments, ATTACHMENT_FILTER_BOTH), "\n";
+    echo "  ", attachments_form($_SESSION['UID'], $attachments), "\n";
     echo "</div>\n";
 }
 

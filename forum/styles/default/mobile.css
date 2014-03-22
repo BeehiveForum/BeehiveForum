@@ -494,9 +494,9 @@ h3.thread_title {
 }
 
 .message_vote_form span {
-    font-size: 80%;
+    font-size: 75%;
     line-height: 16px;
-    vertical-align: top;
+    vertical-align: 2px;
 }
 
 .message_vote_form.popup {

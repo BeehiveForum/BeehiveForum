@@ -1900,9 +1900,9 @@ function light_message_get_vote_form_html($message)
     forum_check_webtag_available($webtag);
 
     if (isset($message['POST_RATING'])) {
-        $html = "  <span>" . ($message['POST_RATING'] > 0 ? '+' : '') . $message['POST_RATING'] . "</span>";
+        $html = "  <span>" . ($message['POST_RATING'] > 0 ? '+' : '') . $message['POST_RATING'] . "/" . $message['POST_RATING_COUNT'] . "</span>";
     } else {
-        $html = "  <span>0</span>";
+        $html = "  <span>0/0</span>";
     }
 
     if (isset($message['USER_POST_RATING']) && in_array($message['USER_POST_RATING'], array(-1, 1))) {

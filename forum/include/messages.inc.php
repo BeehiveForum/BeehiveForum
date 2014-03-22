@@ -229,13 +229,16 @@ function messages_get_ratings($tid, &$messages_array)
 
     $pid_list = implode("','", array_keys($messages_array));
 
-    $sql = "SELECT PID, SUM(RATING) AS RATING FROM `{$table_prefix}POST_RATING` ";
-    $sql .= "WHERE TID = $tid AND PID IN ('$pid_list') GROUP BY PID";
+    $sql = "SELECT PID, SUM(RATING) AS RATING, COUNT(RATING) AS RATING_COUNT ";
+    $sql .= "FROM `{$table_prefix}POST_RATING` WHERE TID = $tid ";
+    $sql .= "AND PID IN ('$pid_list') GROUP BY PID";
 
     if (($result = $db->query($sql))) {
 
         while (($rating_data = $result->fetch_assoc()) !== null) {
+
             $messages_array[$rating_data['PID']]['POST_RATING'] = $rating_data['RATING'];
+            $messages_array[$rating_data['PID']]['POST_RATING_COUNT'] = $rating_data['RATING_COUNT'];
         }
     }
 
@@ -627,7 +630,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         echo "<img src=\"", html_style_image('status_online.png'), "\" alt=\"\" title=\"", gettext("Online"), "\" />&nbsp;";
     }
 
-    if (isset($message['FROM_UID']) && isset($message['THREAD_BY_UID']) && $message['FROM_UID'] == $message['THREAD_BY_UID'] && $first_msg > 1){
+    if (isset($message['FROM_UID']) && isset($message['THREAD_BY_UID']) && $message['FROM_UID'] == $message['THREAD_BY_UID'] && $first_msg > 1) {
         echo "<img src=\"", html_style_image('thread_starter.png'), "\" alt=\"\" title=\"", gettext("Thread Starter"), "\" />&nbsp;";
     }
 
@@ -691,7 +694,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                 echo "<img src=\"", html_style_image('status_online.png'), "\" alt=\"\" title=\"", gettext("Online"), "\" />&nbsp;";
             }
 
-            if (isset($recipient['UID']) && isset($message['THREAD_BY_UID']) && $recipient['UID'] == $message['THREAD_BY_UID'] && $first_msg > 1){
+            if (isset($recipient['UID']) && isset($message['THREAD_BY_UID']) && $recipient['UID'] == $message['THREAD_BY_UID'] && $first_msg > 1) {
                 echo "<img src=\"", html_style_image('thread_starter.png'), "\" alt=\"\" title=\"", gettext("Thread Starter"), "\" />&nbsp;";
             }
 
@@ -1056,9 +1059,9 @@ function message_get_vote_form_html($message)
     $html .= "  " . form_input_hidden("msg", htmlentities_array("{$message['TID']}.{$message['PID']}")) . "\n";
 
     if (isset($message['POST_RATING'])) {
-        $html .= "  <span class=\"smallertext\">" . gettext("Score") . ": " . ($message['POST_RATING'] > 0 ? '+' : '') . $message['POST_RATING'] . "</span>";
+        $html .= "  <span class=\"smallertext\">" . gettext("Score") . ": " . ($message['POST_RATING'] > 0 ? '+' : '') . $message['POST_RATING'] . "/" . $message['POST_RATING_COUNT'] . "</span>";
     } else {
-        $html .= "  <span class=\"smallertext\">" . gettext("Score") . ": 0</span>";
+        $html .= "  <span class=\"smallertext\">" . gettext("Score") . ": 0/0</span>";
     }
 
     if (isset($message['USER_POST_RATING']) && in_array($message['USER_POST_RATING'], array(-1, 1))) {
@@ -1457,12 +1460,12 @@ function message_get_author($tid, $pid)
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-	if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
-	
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+
     $sql = "SELECT USER.UID, USER.LOGON, COALESCE(USER_PEER.PEER_NICKNAME, USER.NICKNAME) AS NICKNAME ";
-    $sql.= "FROM `{$table_prefix}POST` POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
+    $sql .= "FROM `{$table_prefix}POST` POST LEFT JOIN USER USER ON (USER.UID = POST.FROM_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = POST.FROM_UID ";
-    $sql.= "AND USER_PEER.UID = '{$_SESSION['UID']}') WHERE POST.TID = '$tid' AND POST.PID = '$pid'";
+    $sql .= "AND USER_PEER.UID = '{$_SESSION['UID']}') WHERE POST.TID = '$tid' AND POST.PID = '$pid'";
 
     if (!$result = $db->query($sql)) return false;
 

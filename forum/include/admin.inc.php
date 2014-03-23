@@ -1304,6 +1304,9 @@ function admin_delete_user($uid, $delete_content = false)
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
+    // Mark as read cut off
+    $modified_cutoff_datetime = forum_get_unread_cutoff_datetime();
+
     // UID of current user
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
@@ -1388,14 +1391,16 @@ function admin_delete_user($uid, $delete_content = false)
 
                     // Delete Polls created by user
                     $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}THREAD` SET POLL_FLAG = 'N', ";
-                    $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE BY_UID = '$uid'";
+                    $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+                    $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)) WHERE BY_UID = '$uid'";
 
                     if (!$db->query($sql)) return false;
 
                     // Delete threads started by the user where
                     // the thread only contains a single post.
                     $sql = "UPDATE LOW_PRIORITY `{$forum_table_prefix}THREAD` SET DELETED = 'Y', ";
-                    $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE BY_UID = '$uid' ";
+                    $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+                    $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)) WHERE BY_UID = '$uid' ";
                     $sql .= "AND LENGTH = 1";
 
                     if (!$db->query($sql)) return false;

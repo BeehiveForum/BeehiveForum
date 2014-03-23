@@ -259,8 +259,12 @@ function thread_set_length($tid, $length)
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
+    $modified_cutoff_datetime = forum_get_unread_cutoff_datetime();
+
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET LENGTH = '$length', ";
-    $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
+    $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+    $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)) ";
+    $sql .= "WHERE TID = '$tid'";
 
     if (!$db->query($sql)) return false;
 
@@ -392,18 +396,23 @@ function thread_set_sticky($tid, $sticky = true, $sticky_until = false)
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
+    $modified_cutoff_datetime = forum_get_unread_cutoff_datetime();
+
     if (is_numeric($sticky_until) && $sticky_until !== false) {
 
         $sticky_until_datetime = date(MYSQL_DATETIME_MIDNIGHT, $sticky_until);
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-        $sql .= "SET STICKY = '$sticky_sql', MODIFIED = CAST('$current_datetime' AS DATETIME), ";
-        $sql .= "STICKY_UNTIL = CAST('$sticky_until_datetime' AS DATETIME) WHERE TID = '$tid'";
+        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET STICKY = '$sticky_sql', ";
+        $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+        $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)), ";
+        $sql .= "STICKY_UNTIL = CAST('$sticky_until_datetime' AS DATETIME) ";
+        $sql .= "WHERE TID = '$tid'";
 
     } else {
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-        $sql .= "SET STICKY = '$sticky_sql', MODIFIED = CAST('$current_datetime' AS DATETIME), ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET STICKY = '$sticky_sql', ";
+        $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+        $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)), ";
         $sql .= "STICKY_UNTIL = NULL WHERE TID = '$tid'";
     }
 
@@ -422,17 +431,20 @@ function thread_set_closed($tid, $closed = true)
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
+    $modified_cutoff_datetime = forum_get_unread_cutoff_datetime();
+
     if ($closed === true) {
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-        $sql .= "SET CLOSED = CAST('$current_datetime' AS DATETIME), ";
-        $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET CLOSED = CAST('$current_datetime' AS DATETIME), ";
+        $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+        $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)) ";
         $sql .= "WHERE TID = '$tid'";
 
     } else {
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-        $sql .= "SET CLOSED = NULL, MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET CLOSED = NULL, ";
+        $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+        $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)) ";
         $sql .= "WHERE TID = '$tid'";
     }
 
@@ -451,17 +463,20 @@ function thread_admin_lock($tid, $locked = true)
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
+    $modified_cutoff_datetime = forum_get_unread_cutoff_datetime();
+
     if ($locked === true) {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
         $sql .= "SET ADMIN_LOCK = CAST('$current_datetime' AS DATETIME), ";
-        $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) ";
-        $sql .= "WHERE TID = '$tid'";
+        $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+        $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)) WHERE TID = '$tid'";
 
     } else {
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-        $sql .= "SET ADMIN_LOCK = NULL, MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET ADMIN_LOCK = NULL, ";
+        $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+        $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)) ";
         $sql .= "WHERE TID = '$tid'";
     }
 
@@ -481,8 +496,11 @@ function thread_change_folder($tid, $new_fid)
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-    $sql .= "SET FID = '$new_fid', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+    $modified_cutoff_datetime = forum_get_unread_cutoff_datetime();
+
+    $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET FID = '$new_fid', ";
+    $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+    $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)) ";
     $sql .= "WHERE TID = '$tid'";
 
     if (!$db->query($sql)) return false;
@@ -502,8 +520,11 @@ function thread_change_title($tid, $new_title)
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
-    $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-    $sql .= "SET TITLE = '$new_title', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+    $modified_cutoff_datetime = forum_get_unread_cutoff_datetime();
+
+    $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET TITLE = '$new_title', ";
+    $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+    $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)) ";
     $sql .= "WHERE TID = '$tid'";
 
     if (!$db->query($sql)) return false;
@@ -541,6 +562,8 @@ function thread_delete($tid, $delete_type)
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
+    $modified_cutoff_datetime = forum_get_unread_cutoff_datetime();
+
     if ($delete_type == THREAD_DELETE_PERMENANT) {
 
         $sql = "DELETE QUICK FROM `{$table_prefix}POST_CONTENT` WHERE TID = '$tid'";
@@ -561,8 +584,9 @@ function thread_delete($tid, $delete_type)
 
     } else {
 
-        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` ";
-        $sql .= "SET DELETED = 'Y', MODIFIED = CAST('$current_datetime' AS DATETIME) ";
+        $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET DELETED = 'Y', ";
+        $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+        $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)) ";
         $sql .= "WHERE TID = '$tid'";
 
         if (!$db->query($sql)) return false;
@@ -583,8 +607,12 @@ function thread_undelete($tid)
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
+    $modified_cutoff_datetime = forum_get_unread_cutoff_datetime();
+
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET DELETED = 'N', ";
-    $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
+    $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+    $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)) ";
+    $sql .= "WHERE TID = '$tid'";
 
     if (!$db->query($sql)) return false;
 

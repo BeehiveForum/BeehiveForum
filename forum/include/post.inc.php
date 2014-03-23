@@ -245,8 +245,11 @@ function post_update_thread_length($tid, $length)
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
+    $modified_cutoff_datetime = forum_get_unread_cutoff_datetime();
+
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET LENGTH = '$length', ";
-    $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
+    $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+    $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)) WHERE TID = '$tid'";
 
     if (!$db->query($sql)) return false;
 
@@ -649,16 +652,21 @@ function post_delete($tid, $pid)
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
+    $modified_cutoff_datetime = forum_get_unread_cutoff_datetime();
+
     if (thread_is_poll($tid) && $pid == 1) {
 
         $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET POLL_FLAG = 'N', ";
-        $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid'";
+        $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+        $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)) WHERE TID = '$tid'";
 
         if (!$db->query($sql)) return false;
     }
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET DELETED = 'Y', ";
-    $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE TID = '$tid' AND LENGTH = 1";
+    $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+    $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)) WHERE TID = '$tid' ";
+    $sql .= "AND LENGTH = 1";
 
     if (!$db->query($sql)) return false;
 

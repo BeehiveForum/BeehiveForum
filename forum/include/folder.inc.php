@@ -220,8 +220,11 @@ function folder_move_threads($from, $to)
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
+    $modified_cutoff_datetime = date(MYSQL_DATETIME, threads_get_unread_cutoff());
+
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET FID = '$to', ";
-    $sql .= "MODIFIED = CAST('$current_datetime' AS DATETIME) WHERE FID = '$from'";
+    $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
+    $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)) WHERE FID = '$from'";
 
     if (!($result = $db->query($sql))) return false;
 

@@ -42,6 +42,20 @@ if (!($forum_prefix_array = install_get_table_data())) {
     throw new Exception("Could not locate any previous Beehive Forum installations");
 }
 
+$attachment_real_path = null;
+
+if (($attachment_dir = forum_get_global_setting('attachment_dir', null, false)) !== false) {
+
+    $attachment_dir = rtrim(trim($attachment_dir), '/');
+
+    if (!($attachment_real_path = realpath($attachment_dir))) {
+
+        if (!($attachment_real_path = realpath(__DIR__ . '/../' . $attachment_dir))) {
+            throw new Exception("Could not locate attachment directory");
+        }
+    }
+}
+
 /** @noinspection PhpUndefinedVariableInspection */
 if (!install_table_exists($config['db_database'], 'USER_PERM')) {
 
@@ -757,7 +771,7 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     $sql .= "CHANGE CREATED CREATED DATETIME NOT NULL AFTER FROM_UID, ";
     $sql .= "CHANGE IPADDRESS IPADDRESS VARCHAR(255) COLLATE UTF8_GENERAL_CI NOT NULL AFTER EDITED_BY ";
 
-	$db->query($sql);
+    $db->query($sql);
 
     if (!install_index_exists($config['db_database'], "{$table_data['WEBTAG']}_POST", 'EDITED')) {
 
@@ -1029,20 +1043,19 @@ if (!install_index_exists($config['db_database'], 'VISITOR_LOG', 'FORUM_LAST_LOG
     $db->query($sql);
 }
 
-if (($attachment_dir = forum_get_global_setting('attachment_dir', null, false)) !== false) {
+$sql = "DELETE FROM POST_ATTACHMENT_IDS WHERE AID NOT IN (SELECT AID FROM POST_ATTACHMENT_FILES)";
 
-    $attachment_dir = rtrim($attachment_dir, '/');
+$db->query($sql);
 
-    if (!($attachment_realpath = realpath($attachment_dir))) {
+$sql = "DELETE FROM PM_ATTACHMENT_IDS WHERE AID NOT IN (SELECT AID FROM POST_ATTACHMENT_FILES)";
 
-        if (!($attachment_realpath = realpath(sprintf('../%s', $attachment_dir)))) {
-            throw new Exception("Could not locate attachment directory");
-        }
-    }
+$db->query($sql);
 
-    $attachments = glob(sprintf('%s/*', $attachment_realpath));
+if (isset($attachment_real_path)) {
 
-    $pattern_match = sprintf('/^%s\/([A-Fa-f0-9]{32})$/Du', preg_quote($attachment_realpath, '/'));
+    $attachments = glob(sprintf('%s/*', $attachment_real_path));
+
+    $pattern_match = sprintf('/^%s\/([A-Fa-f0-9]{32})$/Du', preg_quote($attachment_real_path, '/'));
 
     foreach ($attachments as $attachment) {
 
@@ -1058,7 +1071,7 @@ if (($attachment_dir = forum_get_global_setting('attachment_dir', null, false)) 
 
         $hash = $db->escape($matches_array[1]);
 
-        $filesize = $db->escape(filesize($attachment));
+        $file_size = $db->escape(filesize($attachment));
 
         if (($image_info = @getimagesize($attachment)) !== false) {
 
@@ -1069,18 +1082,10 @@ if (($attachment_dir = forum_get_global_setting('attachment_dir', null, false)) 
             $thumbnail = file_exists($attachment . '.thumb') ? 'Y' : 'N';
         }
 
-        $sql = "UPDATE POST_ATTACHMENT_FILES SET FILESIZE = '$filesize', ";
+        $sql = "UPDATE POST_ATTACHMENT_FILES SET FILESIZE = '$file_size', ";
         $sql .= "WIDTH = $image_width, HEIGHT = $image_height, ";
         $sql .= "THUMBNAIL = '$thumbnail' WHERE HASH = '$hash'";
 
         $db->query($sql);
     }
-
-    $sql = "DELETE FROM POST_ATTACHMENT_IDS WHERE AID NOT IN (SELECT AID FROM POST_ATTACHMENT_FILES)";
-
-    $db->query($sql);
-
-    $sql = "DELETE FROM PM_ATTACHMENT_IDS WHERE AID NOT IN (SELECT AID FROM POST_ATTACHMENT_FILES)";
-
-    $db->query($sql);
 }

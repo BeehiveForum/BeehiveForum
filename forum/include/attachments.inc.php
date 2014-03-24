@@ -51,6 +51,8 @@ function attachments_check_dir()
 
     if (!($attachment_dir = forum_get_setting('attachment_dir', null, 'attachments'))) return false;
 
+    $attachment_dir = rtrim(trim($attachment_dir), '/');
+
     if (!@is_writable(attachments_get_upload_tmp_dir())) return false;
 
     @mkdir($attachment_dir, 0755, true);
@@ -110,6 +112,7 @@ function attachments_get($uid, array $hash_array)
 
     return $attachments;
 }
+
 function attachments_get_all($uid)
 {
     if (!($forum_fid = get_forum_fid())) return false;

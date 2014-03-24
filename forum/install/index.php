@@ -23,22 +23,40 @@ USA
 
 define("BH_INCLUDE_PATH", __DIR__ . "/../include/");
 
+// Set the default timezone
 date_default_timezone_set('UTC');
 
+// Set default character set
+header('Content-type: text/html; charset=UTF-8');
+
+// Constants
+require_once BH_INCLUDE_PATH . 'constants.inc.php';
+
+// Enable the error handler
 require_once BH_INCLUDE_PATH . 'errorhandler.inc.php';
 
+// Set the error reporting level to report all errors
 error_reporting(E_ALL | E_STRICT);
 
-set_exception_handler('bh_exception_handler');
-
+// Enable the error handler
 set_error_handler('bh_error_handler');
 
+// Attempt to handle fatal errors
+register_shutdown_function('bh_fatal_error_handler');
+
+// Enable the exception handler
+set_exception_handler('bh_exception_handler');
+
+// Don't output errors to the browser
 @ini_set('display_errors', '0');
 
+// Server checking functions
 require_once BH_INCLUDE_PATH . 'server.inc.php';
 
+// Caching functions
 require_once BH_INCLUDE_PATH . 'cache.inc.php';
 
+// Installation checking functions
 require_once BH_INCLUDE_PATH . 'install.inc.php';
 
 $install_method = null;
@@ -580,7 +598,7 @@ echo "                            <option value=\"\">Please select...</option>\n
 echo "                            <option value=\"0\" ", (isset($install_method) && $install_method == 0) ? "selected=\"selected\"" : '', ">New Install</option>\n";
 echo "                            <option value=\"1\" ", (isset($install_method) && $install_method == 1) ? "selected=\"selected\"" : '', ">Reinstall</option>\n";
 echo "                            <option value=\"2\" ", (isset($install_method) && $install_method == 2) ? "selected=\"selected\"" : '', ">Reconnect</option>\n";
-echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : '', ">Upgrade 1.3.1 to 1.4.1</option>\n";
+echo "                            <option value=\"3\" ", (isset($install_method) && $install_method == 3) ? "selected=\"selected\"" : '', ">Upgrade ", BEEHIVE_VERSION_UPGRADE, " to ", BEEHIVE_VERSION, "</option>\n";
 echo "                          </select>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";

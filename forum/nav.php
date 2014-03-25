@@ -32,6 +32,7 @@ require_once BH_INCLUDE_PATH . 'forum.inc.php';
 require_once BH_INCLUDE_PATH . 'forum_links.inc.php';
 require_once BH_INCLUDE_PATH . 'html.inc.php';
 require_once BH_INCLUDE_PATH . 'session.inc.php';
+require_once BH_INCLUDE_PATH . 'user.inc.php';
 // End Required includes
 
 cache_disable();

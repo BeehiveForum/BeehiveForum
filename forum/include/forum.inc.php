@@ -23,6 +23,7 @@ USA
 
 // Required includes
 require_once BH_INCLUDE_PATH . 'adsense.inc.php';
+require_once BH_INCLUDE_PATH . 'cache.inc.php';
 require_once BH_INCLUDE_PATH . 'constants.inc.php';
 require_once BH_INCLUDE_PATH . 'db.inc.php';
 require_once BH_INCLUDE_PATH . 'fixhtml.inc.php';

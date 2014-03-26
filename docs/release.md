@@ -1,5 +1,20 @@
 # Beehive Forum Release Notes
 
+## What's new in 1.4.2 (Released 26th March 2014)
+
+- Changes from 1.4.1
+
+    - Fixed not being able to register new user
+      accounts when forum in restricted mode.
+    - Fixed Attachments disappearing from posts
+      when you edit them.
+    - Allow thread authors to view their threads
+      which are still pending approval.
+    - Upgrade to CKEditor 4 to fix problems with
+      Internet Explorer 11.
+
+    For more detail please see changelog.
+
 ## What's new in 1.4.1 (Released 27th December 2013)
 
 - Changes from 1.4.0

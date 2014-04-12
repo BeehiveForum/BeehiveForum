@@ -435,7 +435,7 @@ function stats_get_html()
             $html .= "    <td width=\"35\">&nbsp;</td>\n";
             $html .= "    <td>";
 
-            $post_stats_record_date = format_time($most_posts['MOST_POSTS_DATE']);
+            $post_stats_record_date = format_date_time($most_posts['MOST_POSTS_DATE']);
 
             $html .= sprintf(gettext("Most posts ever made in a single 60 minute period is <b>%s</b> on %s."), $most_posts['MOST_POSTS_COUNT'], $post_stats_record_date);
 
@@ -494,7 +494,7 @@ function stats_get_html()
             $html .= "    <td>";
 
             $most_users_count = number_format($most_users['MOST_USERS_COUNT'], 0, ",", ",");
-            $most_users_date = format_time($most_users['MOST_USERS_DATE']);
+            $most_users_date = format_date_time($most_users['MOST_USERS_DATE']);
 
             $html .= sprintf(gettext("Most users ever online was <b>%s</b> on %s."), $most_users_count, $most_users_date);
 

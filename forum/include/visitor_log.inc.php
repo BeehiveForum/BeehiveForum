@@ -400,13 +400,13 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
         }
 
         if (isset($user_data['LAST_VISIT']) && is_numeric($user_data['LAST_VISIT'])) {
-            $user_data['LAST_VISIT'] = format_time($user_data['LAST_VISIT']);
+            $user_data['LAST_VISIT'] = format_date_time($user_data['LAST_VISIT']);
         } else {
             $user_data['LAST_VISIT'] = gettext("Unknown");
         }
 
         if (isset($user_data['REGISTERED']) && is_numeric($user_data['REGISTERED'])) {
-            $user_data['REGISTERED'] = format_date($user_data['REGISTERED']);
+            $user_data['REGISTERED'] = format_date_time($user_data['REGISTERED']);
         } else {
             $user_data['REGISTERED'] = gettext("Unknown");
         }
@@ -422,7 +422,7 @@ function visitor_log_browse_items($user_search, $profile_items_array, $page, $so
         $user_data['TIMEZONE'] = timezone_id_to_string($user_data['TIMEZONE']);
 
         if (isset($user_data['LOCAL_TIME']) && is_numeric($user_data['LOCAL_TIME'])) {
-            $user_data['LOCAL_TIME'] = format_time($user_data['LOCAL_TIME']);
+            $user_data['LOCAL_TIME'] = format_date_time($user_data['LOCAL_TIME']);
         } else {
             $user_data['LOCAL_TIME'] = gettext("Unknown");
         }

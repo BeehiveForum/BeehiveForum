@@ -510,7 +510,7 @@ if ((($visitor_count = stats_get_visitor_counts()) !== false) && stats_get_mysql
     if ($visitor_count['WEEK'] > $visitor_count['DAY']) {
 
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"40%\">", sprintf(gettext("Number of visitors this week"), format_date($week_start), format_date($week_end)), ":&nbsp;</td>\n";
+        echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"40%\">", sprintf(gettext("Number of visitors this week"), format_date_time($week_start), format_date_time($week_end)), ":&nbsp;</td>\n";
         echo "                  <td align=\"left\">", number_format($visitor_count['WEEK'], 0, '.', ','), "</td>\n";
         echo "                </tr>\n";
     }
@@ -586,7 +586,7 @@ if (($most_users = stats_get_most_users()) !== false) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" style=\"white-space: nowrap\" width=\"40%\">", gettext("Most users ever online"), ":&nbsp;</td>\n";
-    echo "                  <td align=\"left\">", sprintf(gettext("%s on %s"), number_format($most_users['MOST_USERS_COUNT'], 0, '.', ','), format_time($most_users['MOST_USERS_DATE'])), "</td>\n";
+    echo "                  <td align=\"left\">", sprintf(gettext("%s on %s"), number_format($most_users['MOST_USERS_COUNT'], 0, '.', ','), format_date_time($most_users['MOST_USERS_DATE'])), "</td>\n";
     echo "                </tr>\n";
 }
 

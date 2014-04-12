@@ -149,9 +149,9 @@ if (isset($_POST['update'])) {
     $user_stats_array = stats_get_post_tallys($stats_start, $stats_end);
 }
 
-html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Posting Stats For Period %s to %s"), format_date($stats_start), format_date($stats_end))), 'class=window_title', 'main_css=admin.css');
+html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Posting Stats For Period %s to %s"), format_date_time($stats_start), format_date_time($stats_end))), 'class=window_title', 'main_css=admin.css');
 
-echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", sprintf(gettext("Posting Stats For Period %s to %s"), format_date($stats_start), format_date($stats_end)), "</h1>\n";
+echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", sprintf(gettext("Posting Stats For Period %s to %s"), format_date_time($stats_start), format_date_time($stats_end)), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

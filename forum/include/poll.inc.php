@@ -799,7 +799,7 @@ function poll_display_user_votes($user_poll_votes_array)
 
     $poll_votes_display = "<tr>\n";
     $poll_votes_display .= "  <td align=\"left\" colspan=\"2\" class=\"postbody\">";
-    $poll_votes_display .= "      " . sprintf(gettext("You voted for: '%s' on %s"), implode("' &amp; '", $user_poll_votes_array['VOTES']), format_date($user_poll_votes_array['VOTED']));
+    $poll_votes_display .= "      " . sprintf(gettext("You voted for: '%s' on %s"), implode("' &amp; '", $user_poll_votes_array['VOTES']), format_date_time($user_poll_votes_array['VOTED']));
     $poll_votes_display .= "  </td>\n";
     $poll_votes_display .= "</tr>\n";
 

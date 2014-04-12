@@ -482,7 +482,7 @@ if (isset($messages_array['message_array']) && sizeof($messages_array['message_a
             }
         }
 
-        echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">", format_time($message['CREATED']), "</td>\n";
+        echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">", format_date_time($message['CREATED']), "</td>\n";
         echo "                </tr>\n";
     }
 }

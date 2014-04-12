@@ -431,7 +431,7 @@ if (session::logged_in()) {
                 }
 
                 if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {
-                    echo "                  <td align=\"left\" valign=\"top\">", format_time($forum['LAST_VISIT']), "</td>\n";
+                    echo "                  <td align=\"left\" valign=\"top\">", format_date_time($forum['LAST_VISIT']), "</td>\n";
                 } else {
                     echo "                  <td align=\"left\" valign=\"top\">", gettext("Never"), "</td>\n";
                 }
@@ -646,7 +646,7 @@ if (session::logged_in()) {
 
                 if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {
 
-                    echo "                  <td align=\"left\" valign=\"top\">", format_time($forum['LAST_VISIT']), "</td>\n";
+                    echo "                  <td align=\"left\" valign=\"top\">", format_date_time($forum['LAST_VISIT']), "</td>\n";
 
                 } else {
 

@@ -122,7 +122,7 @@ function format_version_number($version, $glue = '.')
     return implode($glue, $version_array);
 }
 
-function format_time($time, $date_only = false)
+function format_date_time($time, $date_only = false)
 {
     if (isset($_SESSION['TIMEZONE']) && is_numeric($_SESSION['TIMEZONE'])) {
         $timezone_id = $_SESSION['TIMEZONE'];
@@ -157,10 +157,10 @@ function format_time($time, $date_only = false)
     // Check for DST changes
     if (($dl_saving == 'Y') && timestamp_is_dst($timezone_id, $gmt_offset)) {
 
-        // Ammend the $time to include DST
+        // Amend the $time to include DST
         $time = $time + ($dst_offset * HOUR_IN_SECONDS);
 
-        // Ammend the current time to include DST
+        // Amend the current time to include DST
         $current_time = $current_time + ($dst_offset * HOUR_IN_SECONDS);
     }
 
@@ -170,118 +170,37 @@ function format_time($time, $date_only = false)
     // Get the numerical parts for the current month and year
     list($current_day, $current_month, $current_year) = explode(' ', gmdate('j M Y', $current_time));
 
-    // Show only the time by default.
-    $format = strftime('%H:%M', $time);
+    // Decide on which format to display.
+    if ($time_year == $current_year && $time_month == $current_month && $time_day == $current_day) {
 
-    // Decide on the date format.
-    if ($date_only) {
+        // Year, month and day are the same - show time only.
+        $format = '%H:%M';
 
-        $format = format_date($time);
+    } else if ($time_year == $current_year) {
 
-    } else {
-
-        if (($time_year != $current_year)) {
-
-            // If the year is different, show everything.
-            if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-
-                $format = strftime('%#d %b %Y %H:%M', $time);
-
-            } else {
-
-                $format = strftime('%e %b %Y %H:%M', $time);
-            }
-
-        } else if (($time_month != $current_month) || ($time_day != $current_day)) {
-
-            // If the month or day are different, show them with the time.
-            if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-
-                $format = strftime('%#d %b %H:%M', $time);
-
-            } else {
-
-                $format = strftime('%e %b %H:%M', $time);
-            }
-        }
-    }
-
-    return $format;
-}
-
-function format_date($time)
-{
-    if (isset($_SESSION['TIMEZONE']) && is_numeric($_SESSION['TIMEZONE'])) {
-        $timezone_id = $_SESSION['TIMEZONE'];
-    } else {
-        $timezone_id = forum_get_setting('forum_timezone', 'is_numeric', 27);
-    }
-
-    if (isset($_SESSION['GMT_OFFSET']) && is_numeric($_SESSION['GMT_OFFSET'])) {
-        $gmt_offset = $_SESSION['GMT_OFFSET'];
-    } else {
-        $gmt_offset = forum_get_setting('forum_gmt_offset', 'is_numeric', 0);
-    }
-
-    if (isset($_SESSION['DST_OFFSET']) && is_numeric($_SESSION['DST_OFFSET'])) {
-        $dst_offset = $_SESSION['DST_OFFSET'];
-    } else {
-        $dst_offset = forum_get_setting('forum_dst_offset', 'is_numeric', 0);
-    }
-
-    if (isset($_SESSION['DL_SAVING']) && in_array($_SESSION['DL_SAVING'], array('Y', 'N'))) {
-        $dl_saving = $_SESSION['DL_SAVING'];
-    } else {
-        $dl_saving = forum_get_setting('forum_dl_saving', 'strlen', 'N');
-    }
-
-    // Calculate $time in user's timezone.
-    $time = $time + ($gmt_offset * HOUR_IN_SECONDS);
-
-    // Calculate the current time in user's timezone.
-    $current_time = time() + ($gmt_offset * HOUR_IN_SECONDS);
-
-    // Check for DST changes
-    if (($dl_saving == 'Y') && timestamp_is_dst($timezone_id, $gmt_offset)) {
-
-        // Ammend the $time to include DST
-        $time = $time + ($dst_offset * HOUR_IN_SECONDS);
-
-        // Ammend the current time to include DST
-        $current_time = $current_time + ($dst_offset * HOUR_IN_SECONDS);
-    }
-
-    // Get the year of $time
-    $time_year = gmdate("Y", $time);
-
-    // Get the year for the current time
-    $current_year = gmdate('Y', $current_time);
-
-    // Only show the year if it is different to the current year
-    if (($time_year != $current_year)) {
-
-        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-
-            $format = strftime('%#d %b %Y', $time);
-
+        // Year is the same, show day, month and optional time.
+        if ($date_only) {
+            $format = '%e %b';
         } else {
-
-            $format = strftime('%e %b %Y', $time);
+            $format = '%e %b %H:%M';
         }
 
     } else {
 
-        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
-
-            $format = strftime('%#d %b', $time);
-
+        // Show full date and optional time.
+        if ($date_only) {
+            $format = '%e %b %Y';
         } else {
-
-            $format = strftime('%e %b', $time);
+            $format = '%e %b %Y %H:%M';
         }
     }
 
-    return $format;
+    // Replace %e with %#d on Windows.
+    if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+        $format = str_replace('%e', '%#d', $format);
+    }
+
+    return strftime($format, $time);
 }
 
 function format_time_display($seconds, $abbrv_units = true)

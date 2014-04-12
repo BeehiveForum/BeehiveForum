@@ -845,7 +845,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
                             }
 
                             // work out how long ago the thread was posted and format the time to display
-                            $thread_time = format_time($thread['MODIFIED']);
+                            $thread_time = format_date_time($thread['MODIFIED']);
 
                             echo "<span class=\"thread_title\">";
                             echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" ";
@@ -1187,7 +1187,7 @@ function light_draw_pm_inbox()
                     echo "<span class=\"pm_title\">";
                     echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}\">{$message['SUBJECT']}</a>";
                     echo "</span>";
-                    echo "<span class=\"pm_time\">", format_time($message['CREATED']), "</span>";
+                    echo "<span class=\"pm_time\">", format_date_time($message['CREATED']), "</span>";
                     echo "</li>\n";
                 }
 
@@ -1281,7 +1281,7 @@ function light_draw_my_forums()
                 echo "<li>";
 
                 if (isset($forum['LAST_VISIT']) && $forum['LAST_VISIT'] > 0) {
-                    echo "<span class=\"forum_last_visit\">", gettext("Last Visited"), ": ", format_time($forum['LAST_VISIT']), "</span>\n";
+                    echo "<span class=\"forum_last_visit\">", gettext("Last Visited"), ": ", format_date_time($forum['LAST_VISIT']), "</span>\n";
                 } else {
                     echo "<span class=\"forum_last_visit\">", gettext("Last Visited"), ": ", gettext("Never"), "</span>\n";
                 }
@@ -1713,7 +1713,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
         if ($in_list) {
 
             if (($from_user_permissions & USER_PERM_WORMED)) echo gettext("Wormed user");
-            echo "<span class=\"message_time\">", format_time($message['CREATED']), "</span>\n";
+            echo "<span class=\"message_time\">", format_date_time($message['CREATED']), "</span>\n";
         }
     }
 
@@ -1733,7 +1733,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
             if (isset($recipient['VIEWED']) && $recipient['VIEWED'] > 0) {
 
-                echo "<span class=\"smalltext\"><img src=\"", html_style_image('post_read.png'), "\" alt=\"\" title=\"", sprintf(gettext("Read: %s"), format_time($recipient['VIEWED'])), "\" /></span>\n";
+                echo "<span class=\"smalltext\"><img src=\"", html_style_image('post_read.png'), "\" alt=\"\" title=\"", sprintf(gettext("Read: %s"), format_date_time($recipient['VIEWED'])), "\" /></span>\n";
 
             } else {
 
@@ -1817,7 +1817,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
                 if (($edit_user = user_get_logon($message['EDITED_BY'])) !== false) {
 
-                    echo "<div class=\"edit_text\">", sprintf(gettext("EDITED: %s by %s"), format_time($message['EDITED']), $edit_user), "</div>\n";
+                    echo "<div class=\"edit_text\">", sprintf(gettext("EDITED: %s by %s"), format_date_time($message['EDITED']), $edit_user), "</div>\n";
                 }
             }
         }
@@ -1826,7 +1826,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
             if (($message['APPROVED_BY'] != $message['FROM_UID']) && ($approved_user = user_get_logon($message['APPROVED_BY'])) !== false) {
 
-                echo "<div class=\"edit_text\">", sprintf(gettext("APPROVED: %s by %s"), format_time($message['APPROVED']), $approved_user), "</div>\n";
+                echo "<div class=\"edit_text\">", sprintf(gettext("APPROVED: %s by %s"), format_date_time($message['APPROVED']), $approved_user), "</div>\n";
             }
         }
 

@@ -361,7 +361,7 @@ if (sizeof($links['links_array']) > 0) {
             echo "                  <td align=\"left\" class=\"postbody\" valign=\"top\">&nbsp;<a href=\"links_detail.php?webtag=$webtag&amp;lid=$key&amp;fid=$fid\">", word_filter_add_ob_tags($link['TITLE'], true), "</a></td>\n";
         }
 
-        echo "                  <td align=\"center\" class=\"postbody\" valign=\"top\">", format_time($link['CREATED']), "</td>\n";
+        echo "                  <td align=\"center\" class=\"postbody\" valign=\"top\">", format_date_time($link['CREATED']), "</td>\n";
 
         if (isset($link['RATING']) && strlen($link['RATING']) > 0) {
             echo "                  <td align=\"center\" class=\"postbody\" valign=\"top\">", number_format($link['RATING'], 1, ".", ","), "</td>\n";

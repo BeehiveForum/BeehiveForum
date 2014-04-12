@@ -642,7 +642,7 @@ foreach ($folder_order as $folder_number) {
 
                             echo "</a>";
 
-                            $thread_time = format_time($thread['MODIFIED'], true);
+                            $thread_time = format_date_time($thread['MODIFIED'], true);
 
                             echo "</td>\n";
                             echo "                      <td align=\"left\" valign=\"top\">";

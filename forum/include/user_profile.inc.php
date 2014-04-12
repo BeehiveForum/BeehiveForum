@@ -111,13 +111,13 @@ function user_get_profile($uid)
     }
 
     if ($anon_logon == USER_ANON_DISABLED && isset($user_profile['LAST_VISIT']) && $user_profile['LAST_VISIT'] > 0) {
-        $user_profile['LAST_LOGON'] = format_time($user_profile['LAST_VISIT']);
+        $user_profile['LAST_LOGON'] = format_date_time($user_profile['LAST_VISIT']);
     } else {
         $user_profile['LAST_LOGON'] = gettext("Unknown");
     }
 
     if (isset($user_profile['REGISTERED']) && $user_profile['REGISTERED'] > 0) {
-        $user_profile['REGISTERED'] = format_date($user_profile['REGISTERED']);
+        $user_profile['REGISTERED'] = format_date_time($user_profile['REGISTERED']);
     } else {
         $user_profile['REGISTERED'] = gettext("Unknown");
     }

@@ -647,7 +647,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if ($from_user_permissions & USER_PERM_WORMED) echo "<b>", gettext("Wormed user"), "</b> ";
             if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED_SIG)) echo "<b>", gettext("Ignored signature"), "</b> ";
-            echo format_time($message['CREATED']);
+            echo format_date_time($message['CREATED']);
         }
     }
 
@@ -700,7 +700,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (isset($recipient['VIEWED']) && $recipient['VIEWED'] > 0) {
 
-                echo "<img src=\"", html_style_image('post_read.png'), "\" alt=\"\" title=\"", sprintf(gettext("Read: %s"), format_time($recipient['VIEWED'])), "\" />&nbsp;&nbsp;";
+                echo "<img src=\"", html_style_image('post_read.png'), "\" alt=\"\" title=\"", sprintf(gettext("Read: %s"), format_date_time($recipient['VIEWED'])), "\" />&nbsp;&nbsp;";
 
             } else {
 
@@ -801,7 +801,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
                 if (($edit_user = user_get_logon($message['EDITED_BY'])) !== false) {
 
                     echo "              <tr>\n";
-                    echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">", sprintf(gettext("EDITED: %s by %s"), format_time($message['EDITED']), $edit_user), "</p></td>\n";
+                    echo "                <td class=\"postbody\" align=\"left\"><p class=\"edit_text\">", sprintf(gettext("EDITED: %s by %s"), format_date_time($message['EDITED']), $edit_user), "</p></td>\n";
                     echo "              </tr>\n";
                 }
             }
@@ -812,7 +812,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             if (($message['APPROVED_BY'] != $message['FROM_UID']) && ($approved_user = user_get_logon($message['APPROVED_BY'])) !== false) {
 
                 echo "              <tr>\n";
-                echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">", sprintf(gettext("APPROVED: %s by %s"), format_time($message['APPROVED']), $approved_user), "</p></td>\n";
+                echo "                <td class=\"postbody\" align=\"left\"><p class=\"approved_text\">", sprintf(gettext("APPROVED: %s by %s"), format_date_time($message['APPROVED']), $approved_user), "</p></td>\n";
                 echo "              </tr>\n";
             }
         }
@@ -1157,7 +1157,7 @@ function message_display_deleted($tid, $pid, $message, $in_list, $is_preview, $f
 
         if (($edit_user = user_get_logon($message['EDITED_BY'])) !== false) {
 
-            $message_delete_time = format_time($message['EDITED']);
+            $message_delete_time = format_date_time($message['EDITED']);
             echo "                <td align=\"left\">", sprintf(gettext("Message %s.%s deleted %s by %s"), $tid, $pid, $message_delete_time, $edit_user), "</td>\n";
 
         } else {

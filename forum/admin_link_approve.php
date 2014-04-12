@@ -373,7 +373,7 @@ if (sizeof($link_approval_array['link_array']) > 0) {
         echo "                   <td align=\"left\"><a href=\"admin_link_approve.php?webtag=$webtag&lid={$link_approval_entry['LID']}\" target=\"_self\">", word_filter_add_ob_tags($link_approval_entry['TITLE'], true), "</a></td>\n";
         echo "                   <td align=\"left\">{$link_approval_entry['FOLDER_TITLE']}</td>\n";
         echo "                   <td align=\"left\"><a href=\"user_profile.php?webtag=$webtag&amp;uid={$link_approval_entry['UID']}\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags(format_user_name($link_approval_entry['LOGON'], $link_approval_entry['NICKNAME']), true) . "</a></td>\n";
-        echo "                   <td align=\"left\">", format_time($link_approval_entry['CREATED']), "</td>\n";
+        echo "                   <td align=\"left\">", format_date_time($link_approval_entry['CREATED']), "</td>\n";
         echo "                 </tr>\n";
     }
 }
@@ -451,7 +451,7 @@ if (isset($lid, $link)) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", gettext("Date"), ":</td>\n";
-    echo "                        <td align=\"left\">", format_time($link['CREATED']), "</td>\n";
+    echo "                        <td align=\"left\">", format_date_time($link['CREATED']), "</td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";

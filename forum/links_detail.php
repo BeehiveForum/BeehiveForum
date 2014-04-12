@@ -271,7 +271,7 @@ echo "                      <td align=\"left\">", word_filter_add_ob_tags($link[
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", gettext("Date"), ":</td>\n";
-echo "                      <td align=\"left\">", format_time($link['CREATED']), "</td>\n";
+echo "                      <td align=\"left\">", format_date_time($link['CREATED']), "</td>\n";
 echo "                    </tr>\n";
 echo "                    <tr>\n";
 echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", gettext("Clicks"), ":</td>\n";

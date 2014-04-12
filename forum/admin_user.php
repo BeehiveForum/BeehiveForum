@@ -592,7 +592,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
                 echo "                      <table class=\"posthead\" width=\"100%\">\n";
                 echo "                        <tr>\n";
-                echo "                          <td align=\"left\" valign=\"top\" width=\"100\">", format_date($user_history['MODIFIED']), "</td>\n";
+                echo "                          <td align=\"left\" valign=\"top\" width=\"100\">", format_date_time($user_history['MODIFIED']), "</td>\n";
                 echo "                          <td align=\"left\">{$user_history['DATA']}</td>\n";
                 echo "                        </tr>\n";
                 echo "                        <tr>\n";

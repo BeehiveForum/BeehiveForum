@@ -138,7 +138,7 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
         }
 
         if (isset($visitor['LAST_LOGON']) && $visitor['LAST_LOGON'] > 0) {
-            echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">", format_time($visitor['LAST_LOGON']), "</td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">", format_date_time($visitor['LAST_LOGON']), "</td>\n";
         } else {
             echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">", gettext("Unknown"), "</td>\n";
         }

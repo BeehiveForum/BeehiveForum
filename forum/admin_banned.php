@@ -866,7 +866,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
             echo "                   <td align=\"center\">", form_checkbox("delete_ban[$ban_list_id]", "Y"), "</td>\n";
             echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id&amp;page=$page\">{$ban_list_entry['BANDATA']}</a></td>\n";
             echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id&amp;page=$page\">", (in_array($ban_list_entry['BANTYPE'], array_keys($ban_types_list_array)) ? $ban_types_list_array[$ban_list_entry['BANTYPE']] : gettext("Unknown")), "</a></td>\n";
-            echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id&amp;page=$page\">", (($ban_list_entry['EXPIRES'] > 0 && $ban_list_entry['EXPIRES'] > time()) ? format_date($ban_list_entry['EXPIRES']) : gettext("Never")), "</a></td>\n";
+            echo "                   <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_id=$ban_list_id&amp;page=$page\">", (($ban_list_entry['EXPIRES'] > 0 && $ban_list_entry['EXPIRES'] > time()) ? format_date_time($ban_list_entry['EXPIRES']) : gettext("Never")), "</a></td>\n";
             echo "                 </tr>\n";
         }
     }

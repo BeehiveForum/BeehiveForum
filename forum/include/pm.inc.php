@@ -787,7 +787,7 @@ function pm_display($message_data, $preview = false, $export_html = false)
 
     } else {
 
-        echo "                        <td align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\">", format_time($message_data['CREATED']), "&nbsp;</span></td>\n";
+        echo "                        <td align=\"right\" style=\"white-space: nowrap\"><span class=\"postinfo\">", format_date_time($message_data['CREATED']), "&nbsp;</span></td>\n";
     }
 
     echo "                      </tr>\n";

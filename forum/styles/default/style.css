@@ -471,7 +471,7 @@ div.poll_option_list ol li {
 
 .emoticon_preview .emoticon {
     cursor: pointer;
-    padding: 2px;
+    margin: 2px;
 }
 
 .error_handler_details {

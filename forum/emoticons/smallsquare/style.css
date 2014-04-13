@@ -1,90 +1,89 @@
-.e_smile, .e_wink, .e_sad, .e_cry, .e_tongue, .e_grin, .e_confused, .e_plain, .e_shock, .e_angry, .e_embarrassed, .e_shades, .e_happycry, .e_fail, .e_horror, .e_unsure, .e_grumpy, .e_tache, .e_rolleyes {
-    vertical-align: top;
+.emoticon {
+    background: url('./images/static.png') no-repeat;
     display: -moz-inline-stack;
     display: inline-block;
-    width: 12px;
-    height: 12px;
     font-size: 12px;
-    background-repeat: no-repeat;
+    height: 12px;
+    vertical-align: top;
+    width: 12px;
 }
 
-.e_smile {
-    background-image: url("./images/smile.png");
-}
-
-.e_wink {
-    background-image: url("./images/wink.png");
-}
-
-.e_sad {
-    background-image: url("./images/sad.png");
-}
-
-.e_cry {
-    background-image: url("./images/cry.png");
-}
-
-.e_tongue {
-    background-image: url("./images/tongue.png");
-}
-
-.e_grin {
-    background-image: url("./images/grin.png");
-}
-
-.e_confused {
-    background-image: url("./images/confused.png");
-}
-
-.e_plain {
-    background-image: url("./images/plain.png");
-}
-
-.e_shock {
-    background-image: url("./images/shock.png");
-}
-
-.e_angry {
-    background-image: url("./images/angry.png");
-}
-
-.e_embarrassed {
-    background-image: url("./images/embarrassed.png");
-}
-
-.e_shades {
-    background-image: url("./images/shades.png");
-}
-
-.e_happycry {
-    background-image: url("./images/happycry.png");
-}
-
-.e_fail {
-    background-image: url("./images/fail.png");
-}
-
-.e_horror {
-    background-image: url("./images/horror.png");
-}
-
-.e_unsure {
-    background-image: url("./images/unsure.png");
-}
-
-.e_grumpy {
-    background-image: url("./images/grumpy.png");
-}
-
-.e_tache {
-    background-image: url("./images/tache.png");
-}
-
-.e_rolleyes {
-    background-image: url("./images/rolleyes.png");
-}
-
-.e_smile span, .e_wink span, .e_sad span, .e_cry span, .e_tongue span, .e_grin span, .e_confused span, .e_plain span, .e_shock span, .e_angry span, .e_embarrassed span, .e_shades span, .e_happycry span, .e_fail span, .e_horror span, .e_unsure span, .e_grumpy span, .e_tache span, .e_rolleyes span {
+.emoticon span {
     display: none;
 }
 
+.emoticon.e_angry {
+    background-position: -0px -0px;
+}
+
+.emoticon.e_confused {
+    background-position: -12px -0px;
+}
+
+.emoticon.e_cry {
+    background-position: -24px -0px;
+}
+
+.emoticon.e_embarrassed {
+    background-position: -36px -0px;
+}
+
+.emoticon.e_fail {
+    background-position: -0px -12px;
+}
+
+.emoticon.e_grin {
+    background-position: -12px -12px;
+}
+
+.emoticon.e_grumpy {
+    background-position: -24px -12px;
+}
+
+.emoticon.e_happycry {
+    background-position: -36px -12px;
+}
+
+.emoticon.e_horror {
+    background-position: -0px -24px;
+}
+
+.emoticon.e_plain {
+    background-position: -12px -24px;
+}
+
+.emoticon.e_rolleyes {
+    background-position: -24px -24px;
+}
+
+.emoticon.e_sad {
+    background-position: -36px -24px;
+}
+
+.emoticon.e_shades {
+    background-position: -0px -36px;
+}
+
+.emoticon.e_shock {
+    background-position: -12px -36px;
+}
+
+.emoticon.e_smile {
+    background-position: -24px -36px;
+}
+
+.emoticon.e_tache {
+    background-position: -36px -36px;
+}
+
+.emoticon.e_tongue {
+    background-position: -0px -48px;
+}
+
+.emoticon.e_unsure {
+    background-position: -12px -48px;
+}
+
+.emoticon.e_wink {
+    background-position: -24px -48px;
+}

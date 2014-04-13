@@ -1,419 +1,125 @@
-.e_smile {
-    /* :) :-) */
-    vertical-align: top;
+.emoticon {
+    background: url('./images/static.png') no-repeat;
     display: -moz-inline-stack;
     display: inline-block;
-    width: 19px;
-    height: 19px;
     font-size: 19px;
-    background: url("./images/smile.png") no-repeat;
+    height: 19px;
+    vertical-align: top;
+    width: 19px;
 }
 
-.e_smile span {
+.emoticon span {
     display: none;
 }
 
-.e_wink {
-    /* ;) ;-) */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/wink.png") no-repeat;
+.emoticon.e_alien {
+    background-position: -0px -0px;
 }
 
-.e_wink span {
-    display: none;
+.emoticon.e_angel {
+    background-position: -19px -0px;
 }
 
-.e_sad {
-    /* :( :-( */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/sad.png") no-repeat;
+.emoticon.e_anglesad {
+    background-position: -38px -0px;
 }
 
-.e_sad span {
-    display: none;
+.emoticon.e_anglesmile {
+    background-position: -57px -0px;
 }
 
-.e_cry {
-    /* :'( :'-( */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/cry.png") no-repeat;
+.emoticon.e_angry {
+    background-position: -76px -0px;
 }
 
-.e_cry span {
-    display: none;
+.emoticon.e_bignose {
+    background-position: -0px -19px;
 }
 
-.e_cringe {
-    /* >.< */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/cringe.png") no-repeat;
+.emoticon.e_bunnyteeth {
+    background-position: -19px -19px;
 }
 
-.e_cringe span {
-    display: none;
+.emoticon.e_confused {
+    background-position: -38px -19px;
 }
 
-.e_tongue {
-    /* :P :-P */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/tease.png") no-repeat;
+.emoticon.e_cringe {
+    background-position: -57px -19px;
 }
 
-.e_tongue span {
-    display: none;
+.emoticon.e_cry {
+    background-position: -76px -19px;
 }
 
-.e_grin {
-    /* :D :-D */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/grin.png") no-repeat;
+.emoticon.e_crylaugh {
+    background-position: -0px -38px;
 }
 
-.e_grin span {
-    display: none;
+.emoticon.e_devil {
+    background-position: -19px -38px;
 }
 
-.e_confused {
-    /* :S :-S */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/confused.png") no-repeat;
+.emoticon.e_eek {
+    background-position: -38px -38px;
 }
 
-.e_confused span {
-    display: none;
+.emoticon.e_embarrassed {
+    background-position: -57px -38px;
 }
 
-.e_plain {
-    /* :| :-| */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/plain.png") no-repeat;
+.emoticon.e_fail {
+    background: url('./images/fail.gif') no-repeat;
 }
 
-.e_plain span {
-    display: none;
+.emoticon.e_fear {
+    background-position: -76px -38px;
 }
 
-.e_shock {
-    /* :O :-O */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/shock.png") no-repeat;
+.emoticon.e_grin {
+    background-position: -0px -57px;
 }
 
-.e_shock span {
-    display: none;
+.emoticon.e_nod {
+    background: url('./images/nod.gif') no-repeat;
 }
 
-.e_angry {
-    /* :@ :-@ */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/angry.png") no-repeat;
+.emoticon.e_plain {
+    background-position: -19px -57px;
 }
 
-.e_angry span {
-    display: none;
+.emoticon.e_sad {
+    background-position: -38px -57px;
 }
 
-.e_embarrassed {
-    /* :$ :-$ */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/embarrassed.png") no-repeat;
+.emoticon.e_shades {
+    background-position: -57px -57px;
 }
 
-.e_embarrassed span {
-    display: none;
+.emoticon.e_shock {
+    background-position: -76px -57px;
 }
 
-.e_shades {
-    /* B) B-) (h) */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/shades.png") no-repeat;
+.emoticon.e_sleep {
+    background-position: -0px -76px;
 }
 
-.e_shades span {
-    display: none;
+.emoticon.e_smile {
+    background-position: -19px -76px;
 }
 
-.e_angel {
-    /* (a) */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/angel.png") no-repeat;
+.emoticon.e_tongue {
+    background-position: -38px -76px;
 }
 
-.e_angel span {
-    display: none;
+.emoticon.e_unsure {
+    background-position: -57px -76px;
 }
 
-.e_devil {
-    /* (6) */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/devil.png") no-repeat;
+.emoticon.e_wink {
+    background-position: -76px -76px;
 }
 
-.e_devil span {
-    display: none;
-}
-
-.e_alien {
-    /* =:) */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/alien.png") no-repeat;
-}
-
-.e_alien span {
-    display: none;
-}
-
-.e_anglesad {
-    /* :< :-< */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/anglesad.png") no-repeat;
-}
-
-.e_anglesad span {
-    display: none;
-}
-
-.e_cheeky {
-    /* :> :-> */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/anglesmile.png") no-repeat;
-}
-
-.e_cheeky span {
-    display: none;
-}
-
-.e_smile_big_nose {
-    /* :O) */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/bignose.png") no-repeat;
-}
-
-.e_smile_big_nose span {
-    display: none;
-}
-
-.e_rabbit {
-    /* :B :-B */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/bunnyteeth.png") no-repeat;
-}
-
-.e_rabbit span {
-    display: none;
-}
-
-.e_happycry {
-    /* :'D */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/crylaugh.png") no-repeat;
-}
-
-.e_happycry span {
-    display: none;
-}
-
-.e_fail {
-    /* (fail) */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/fail.gif") no-repeat;
-}
-
-.e_fail span {
-    display: none;
-}
-
-.e_horror {
-    /* :& :-& */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/fear.png") no-repeat;
-}
-
-.e_horror span {
-    display: none;
-}
-
-.e_nod {
-    /* (nod) */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/nod.gif") no-repeat;
-}
-
-.e_nod span {
-    display: none;
-}
-
-.e_sleepyhead {
-    /* I-) I) */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/sleep.png") no-repeat;
-}
-
-.e_sleepyhead span {
-    display: none;
-}
-
-.e_unsure {
-    /* :/ :-/ */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/unsure.png") no-repeat;
-}
-
-.e_unsure span {
-    display: none;
-}
-
-.e_eek {
-    /* 8-O */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/veryshocked.png") no-repeat;
-}
-
-.e_eek span {
-    display: none;
-}
-
-.e_wrong {
-    /* (wrong) */
-    vertical-align: top;
-    display: -moz-inline-stack;
-    display: inline-block;
-    width: 19px;
-    height: 19px;
-    font-size: 19px;
-    background: url("./images/wrong.gif") no-repeat;
-}
-
-.e_wrong span {
-    display: none;
+.emoticon.e_wrong {
+    background: url('./images/wrong.gif') no-repeat;
 }

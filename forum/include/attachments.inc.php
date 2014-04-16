@@ -53,7 +53,7 @@ function attachments_check_dir()
 
     $attachment_dir = rtrim(trim($attachment_dir), '/');
 
-    if (!@is_writable(attachments_get_upload_tmp_dir())) return false;
+    if (!attachments_get_upload_tmp_dir()) return false;
 
     @mkdir($attachment_dir, 0755, true);
 
@@ -384,6 +384,8 @@ function attachments_get_free_post_space($uid, $hash_array)
 function attachments_check_post_space($uid, $hash_array)
 {
     $max_post_attachment_space = forum_get_setting('attachments_max_post_space', null, 1048576);
+
+    if ($max_post_attachment_space == 0) return true;
 
     $post_attachment_space = attachments_get_post_used_space($uid, $hash_array);
 

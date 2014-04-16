@@ -599,7 +599,6 @@ div.poll_option_list ol li {
 }
 
 .image_resize_text {
-    background-image: url('images/warningbg.png');
     border: 1px dashed #000000;
     cursor: pointer;
     font-size: 90%;

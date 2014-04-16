@@ -35,7 +35,7 @@ define('BEEHIVE_PHP_MIN_VERSION', '5.3.0');
 define('BEEHIVE_MYSQL_MIN_VERSION', '5.1.41');
 
 // Require PHP extensions
-define('BEEHIVE_PHP_REQUIRED_EXT', 'date,fileinfo,gd,gettext,intl,json,mbstring,mysqli,pcre,xml');
+define('BEEHIVE_PHP_REQUIRED_EXT', 'curl,date,fileinfo,gd,gettext,intl,json,mbstring,mysqli,pcre,xml');
 
 // Constants for date / time.
 define('YEAR_IN_SECONDS', 31536000);

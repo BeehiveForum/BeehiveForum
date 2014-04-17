@@ -471,7 +471,7 @@ div.poll_option_list ol li {
 
 .emoticon_preview .emoticon {
     cursor: pointer;
-    padding: 2px;
+    margin: 2px;
 }
 
 .error_handler_details {
@@ -599,7 +599,6 @@ div.poll_option_list ol li {
 }
 
 .image_resize_text {
-    background-image: url('images/warningbg.png');
     border: 1px dashed #000000;
     cursor: pointer;
     font-size: 90%;

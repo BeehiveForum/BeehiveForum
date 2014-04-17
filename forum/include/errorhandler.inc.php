@@ -339,7 +339,7 @@ function bh_error_process(Exception $exception)
 
         $error_msg_array[] = sprintf(
             '<pre><b>$_POST</b> = %s;</pre>',
-            htmlentities_array(var_export($_POST, true))
+            var_export($_POST, true)
         );
     }
 
@@ -347,7 +347,7 @@ function bh_error_process(Exception $exception)
 
         $error_msg_array[] = sprintf(
             '<pre><b>$_COOKIE</b> = %s;</pre>',
-            htmlentities_array(var_export($_COOKIE, true))
+            var_export($_COOKIE, true)
         );
     }
 
@@ -355,7 +355,7 @@ function bh_error_process(Exception $exception)
 
         $error_msg_array[] = sprintf(
             '<pre><b>$_SESSION</b> = %s;</pre>',
-            htmlentities_array(var_export($_SESSION, true))
+            var_export($_SESSION, true)
         );
     }
 
@@ -363,7 +363,7 @@ function bh_error_process(Exception $exception)
 
         $error_msg_array[] = sprintf(
             '<pre><b>$_ENV</b> = %s;</pre>',
-            htmlentities_array(var_export($_ENV, true))
+            var_export($_ENV, true)
         );
     }
 
@@ -371,7 +371,7 @@ function bh_error_process(Exception $exception)
 
         $error_msg_array[] = sprintf(
             '<pre><b>$_SERVER</b> = %s;</pre>',
-            htmlentities_array(var_export($_SERVER, true))
+            var_export($_SERVER, true)
         );
     }
 

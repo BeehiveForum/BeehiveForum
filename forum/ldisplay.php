@@ -81,7 +81,7 @@ if (!$message = messages_get($tid, $pid, 1)) {
     exit;
 }
 
-light_html_draw_top("title={$thread_data['TITLE']}");
+light_html_draw_top("title={$thread_data['TITLE']}", "back=lmessages.php?webtag=$webtag&amp;msg=$return_msg");
 
 light_messages_top($msg, $thread_data['TITLE'], $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'));
 
@@ -106,7 +106,5 @@ if ($thread_data['POLL_FLAG'] == 'Y') {
     light_message_display($tid, $message, $thread_data['LENGTH'], $first_msg, $thread_data['FID'], false, $thread_data['CLOSED'], false, false, false, false);
     $last_pid = $message['PID'];
 }
-
-echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$return_msg\">", gettext("Back"), "</a>\n";
 
 light_html_draw_bottom();

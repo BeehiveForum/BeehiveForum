@@ -195,7 +195,7 @@ if ($valid && isset($_POST['preview'])) {
     $t_subject = $message_data['SUBJECT'];
 }
 
-light_html_draw_top(sprintf("title=%s", gettext("Edit Message")), 'js/fineuploader.min.js');
+light_html_draw_top(sprintf("title=%s", gettext("Edit Message")), "back=lpm.php?webtag=$webtag&mid=$mid", 'js/fineuploader.min.js');
 
 if ($valid && isset($_POST['preview'])) {
 

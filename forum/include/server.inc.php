@@ -291,6 +291,15 @@ function get_forum_access_ignore_files()
     );
 }
 
+function get_light_back_button_files()
+{
+    return array(
+        'lthread_list.php',
+        'lmessages.php',
+        'lpm.php',
+    );
+}
+
 function get_proxy_cache_headers()
 {
     return array(

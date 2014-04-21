@@ -86,11 +86,10 @@ if (isset($_POST['poll_submit'])) {
 } else if (isset($_POST['poll_change_vote'])) {
 
     poll_delete_vote($tid);
-
     header_redirect("lmessages.php?webtag=$webtag&msg=$msg");
 }
 
-light_html_draw_top("js/messages.js");
+light_html_draw_top("js/messages.js", "back=lthread_list.php?webtag=$webtag");
 
 light_draw_messages($tid, $pid);
 

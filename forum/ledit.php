@@ -328,7 +328,7 @@ if ($valid && isset($_POST['preview'])) {
 
 $page_title = sprintf(gettext("Edit message %s"), $msg);
 
-light_html_draw_top("title=$page_title", 'js/fineuploader.min.js', 'js/attachments.js');
+light_html_draw_top("title=$page_title", "back=lmessages.php?webtag=$webtag&msg=$return_msg", 'js/fineuploader.min.js', 'js/attachments.js');
 
 if ($valid && isset($_POST['preview'])) {
 

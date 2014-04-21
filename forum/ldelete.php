@@ -169,7 +169,7 @@ if (isset($_POST['delete'])) {
 
 $page_title = sprintf(gettext("Delete message %s"), $msg);
 
-light_html_draw_top("title=$page_title");
+light_html_draw_top("title=$page_title", "back=lmessages.php?webtag=$webtag&msg=$return_msg");
 
 echo "<h3>", $page_title, "</h3>\n";
 

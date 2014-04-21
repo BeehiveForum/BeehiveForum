@@ -472,7 +472,7 @@ if ($valid && isset($_POST['send'])) {
     }
 }
 
-light_html_draw_top(sprintf("title=%s", gettext("Send New PM")), "robots=noindex,nofollow", 'js/fineuploader.min.js', 'js/attachments.js');
+light_html_draw_top(sprintf("title=%s", gettext("Send New PM")), "back=lpm.php?webtag=$webtag", "robots=noindex,nofollow", 'js/fineuploader.min.js', 'js/attachments.js');
 
 if ($valid && isset($_POST['preview'])) {
 

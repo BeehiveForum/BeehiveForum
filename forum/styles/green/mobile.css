@@ -156,15 +156,16 @@ body {
     font-size: 11pt;
     height: 31px;
     margin: 0;
-    padding: 0;
+    padding: 0 5px;
     position: fixed;
     top: 0;
-    width: 100%;
+    width: calc(100% - 10px);
     z-index: 1;
 }
 
 #header img {
-    margin: 5px;
+    margin: 5px 0;
+    vertical-align: top;
 }
 
 #footer {
@@ -183,6 +184,24 @@ body {
     margin: 20px 0;
 }
 
+#back {
+    background: url("images/mobile_back.png") no-repeat scroll center center #2E8B2E;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: bold;
+    height: 100%;
+    top: 0;
+    width: 20px;
+}
+
+#back a {
+    display: inline-block;
+    height: 100%;
+    text-indent: 9999px;
+    width: 100%;
+}
+
 #nav {
     background: url("images/mobile_icon.png") no-repeat scroll 90% 5px #2E8B2E;
     border-bottom: none;
@@ -196,7 +215,7 @@ body {
     position: absolute;
     right: 0;
     top: 0;
-    width: 100px;
+    width: 80px;
 }
 
 #nav.menu_open {
@@ -213,7 +232,7 @@ body {
     position: fixed;
     right: 0;
     top: 31px;
-    width: 140px;
+    width: 120px;
     z-index: 9999;
 }
 

@@ -59,6 +59,8 @@ function light_html_draw_top()
 
     $title = null;
 
+    $back = null;
+
     $robots = null;
 
     $webtag = get_webtag();
@@ -76,6 +78,19 @@ function light_html_draw_top()
         if (preg_match('/^title=(.+)?$/Disu', $func_args, $func_matches) > 0) {
 
             $title = (!isset($title) && isset($func_matches[1]) ? $func_matches[1] : $title);
+            unset($arg_array[$key]);
+        }
+
+        if (preg_match('/^back=(.+)?$/Disu', $func_args, $func_matches) > 0) {
+
+            $back = (!isset($back) && isset($func_matches[1]) ? $func_matches[1] : $back);
+
+            $available_back_button_files = implode("|^", array_map('preg_quote_callback', get_light_back_button_files()));
+
+            if (!preg_match("/^$available_back_button_files/u", basename($back))) {
+                $back = null;
+            }
+
             unset($arg_array[$key]);
         }
 
@@ -249,6 +264,11 @@ function light_html_draw_top()
 
     echo "<a name=\"top\"></a>\n";
     echo "<div id=\"header\">\n";
+
+    if (isset($back)) {
+        echo "  <span id=\"back\"><a href=\"$back\">", gettext("Back"), "</a></span>\n";
+    }
+
     echo "  <img src=\"", html_style_image('mobile_logo.png'), "\" alt=\"", gettext("Beehive Forum Logo"), "\" />\n";
     echo "  <div id=\"nav\">", gettext("Menu"), "</div>\n";
     echo "</div>\n";
@@ -513,8 +533,6 @@ function light_draw_messages($tid, $pid)
 
     echo "</ul>\n";
     echo "</div>\n";
-
-    echo "<a href=\"lthread_list.php?webtag=$webtag\" class=\"thread_list_link\">", gettext("Back to thread list"), "</a>";
 
     light_messages_nav_strip($tid, $pid, $thread_data['LENGTH'], 10);
 
@@ -1116,8 +1134,6 @@ function light_draw_pm_inbox()
                 pm_mark_as_read($mid);
             }
         }
-
-        echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder\" class=\"folder_list_link\">", gettext("Back to folder list"), "</a>";
 
     } else {
 

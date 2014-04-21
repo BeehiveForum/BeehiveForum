@@ -495,7 +495,15 @@ if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !session::che
     light_html_draw_error(gettext("This thread is closed, you cannot post in it!"));
 }
 
-light_html_draw_top(sprintf("title=%s", gettext("Post message")), 'js/fineuploader.min.js', 'js/attachments.js');
+if (isset($return_msg)) {
+    $back = "lmessages.php?webtag=$webtag&msg=$return_msg";
+} else if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
+    $back = "lmessages.php?webtag=$webtag&msg=$tid.$reply_to_pid";
+} else {
+    $back = "lmessages.php?webtag=$webtag";
+}
+
+light_html_draw_top(sprintf("title=%s", gettext("Post message")), "back=$back", 'js/fineuploader.min.js', 'js/attachments.js');
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);

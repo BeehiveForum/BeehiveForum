@@ -173,6 +173,8 @@ if (isset($_POST) && sizeof($_POST) > 0) {
 
         light_html_draw_top();
 
+        light_navigation_bar();
+
         light_thread_list_draw_top(SEARCH_RESULTS);
 
         if ($page > 1) {
@@ -234,6 +236,8 @@ if (isset($_POST) && sizeof($_POST) > 0) {
 
         light_html_draw_top();
 
+        light_navigation_bar();
+
         light_thread_list_draw_top(SEARCH_RESULTS);
 
         echo "<img src=\"", html_style_image('search.png'), "\" alt=\"", gettext("matches"), "\" title=\"", gettext("matches"), "\" />&nbsp;", gettext("Found"), ": 0 ", gettext("matches"), "<br /><br />\n";
@@ -244,6 +248,8 @@ if (isset($_POST) && sizeof($_POST) > 0) {
 }
 
 light_html_draw_top();
+
+light_navigation_bar();
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

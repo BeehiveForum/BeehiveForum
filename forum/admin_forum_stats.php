@@ -59,11 +59,15 @@ cache_check_request_throttle(300);
 // User count is used by a few stats. Get it once here.
 $user_count = user_count();
 
-// And off we go ...
-html_draw_top(sprintf('title=%s', gettext("Admin - Forum Stats")), 'class=window_title', 'main_css=admin.css');
+html_draw_top(
+    array(
+        'title' => gettext('Admin - Forum Stats'),
+        'class' => 'window_title',
+        'main_css' => 'admin.css'
+    )
+);
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Forum Stats"), "</h1>\n";
-
 echo "  <br />\n";
 echo "  <div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";

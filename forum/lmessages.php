@@ -47,7 +47,13 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 } else if (($msg = messages_get_most_recent($_SESSION['UID'])) === false) {
 
-    light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
+    light_html_draw_top(
+        array(
+            'title' => gettext("Error")
+        )
+    );
+
+    light_navigation_bar();
     light_html_display_error_msg(gettext("No Messages"));
     light_html_draw_bottom();
     exit;
@@ -69,7 +75,13 @@ if (isset($_POST['poll_submit'])) {
 
         } else {
 
-            light_html_draw_top(sprintf("title=%s", gettext("Error")));
+            light_html_draw_top(
+                array(
+                    'title' => gettext("Error")
+                )
+            );
+
+            light_navigation_bar();
             light_html_display_error_msg(gettext("You must vote in every group."));
             light_html_draw_bottom();
             exit;
@@ -77,7 +89,13 @@ if (isset($_POST['poll_submit'])) {
 
     } else {
 
-        light_html_draw_top(sprintf("title=%s", gettext("Error")));
+        light_html_draw_top(
+            array(
+                'title' => gettext("Error")
+            )
+        );
+
+        light_navigation_bar();
         light_html_display_error_msg(gettext("You must select an option to vote for!"));
         light_html_draw_bottom();
         exit;
@@ -89,8 +107,53 @@ if (isset($_POST['poll_submit'])) {
     header_redirect("lmessages.php?webtag=$webtag&msg=$msg");
 }
 
-light_html_draw_top("js/messages.js", "back=lthread_list.php?webtag=$webtag");
+if (!$folder_data = thread_get_folder($tid)) {
 
-light_draw_messages($tid, $pid);
+    light_html_display_error_msg(gettext("The requested folder could not be found or access was denied."));
+    return;
+}
+
+$perm_folder_moderate = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_data['FID']);
+
+if (!$thread_data = thread_get($tid, $perm_folder_moderate, false, $perm_folder_moderate)) {
+
+    light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
+    return;
+}
+
+if (!$messages = messages_get($tid, $pid, 10)) {
+
+    light_html_display_error_msg(gettext("That post does not exist in this thread!"));
+    return;
+}
+
+light_html_draw_top(
+    array(
+        'js' => array(
+            'js/messages.js'
+        ),
+    )
+);
+
+light_navigation_bar(
+    array(
+        'back' => "lthread_list.php?webtag=$webtag",
+        'nav_links' => array(
+            array(
+                'text' => gettext('Reply to All'),
+                'url' => "lpost.php?webtag=$webtag&amp;reply_to=$tid.0&amp;return_msg=$tid.$pid",
+                'class' => 'reply_all',
+            ),
+            array(
+                'text' => gettext('Show messages'),
+                'url' => '#',
+                'class' => 'navigation',
+                'html' => light_messages_navigation_strip($tid, $pid, $thread_data['LENGTH'], 10)
+            )
+        )
+    )
+);
+
+light_draw_messages($tid, $pid, $thread_data, $messages);
 
 light_html_draw_bottom();

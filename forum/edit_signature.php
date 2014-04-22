@@ -153,13 +153,38 @@ if ($admin_edit === true) {
 
     $user = user_get($sig_uid);
 
-    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage User - %s "), format_user_name($user['LOGON'], $user['NICKNAME']))), "basetarget=_blank", "resize_width=700", "js/post.js", 'ckeditor/ckeditor.js', 'class=window_title');
+    html_draw_top(
+        array(
+            'title' => sprintf(
+                gettext('Admin - Manage User - %s '),
+                format_user_name($user['LOGON'], $user['NICKNAME'])
+            ),
+            'base_target' => '_blank',
+            'resize_width' => 700,
+            'js' => array(
+                'js/post.js',
+                'ckeditor/ckeditor.js'
+            ),
+            'class' => 'window_title'
+        )
+    );
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
 } else {
 
-    html_draw_top(sprintf('title=%s', gettext("My Controls - Edit Signature")), "basetarget=_blank", "resize_width=700", "js/post.js", 'ckeditor/ckeditor.js', 'class=window_title');
+    html_draw_top(
+        array(
+            'title' => gettext('My Controls - Edit Signature'),
+            'base_target' => '_blank',
+            'resize_width' => 700,
+            'js' => array(
+                'js/post.js',
+                'ckeditor/ckeditor.js'
+            ),
+            'class' => 'window_title'
+        )
+    );
 
     echo "<h1>", gettext("Edit Signature"), "</h1>\n";
 }

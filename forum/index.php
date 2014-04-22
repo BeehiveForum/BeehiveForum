@@ -95,7 +95,13 @@ if (!browser_mobile() && !session::is_search_engine()) {
         }
     }
 
-    html_draw_top('frame_set_html', 'pm_popup_disabled', 'robots=index,follow');
+    html_draw_top(
+        array(
+            'frame_set_html' => true,
+            'pm_popup_disabled' => true,
+            'robots' => 'index,follow'
+        )
+    );
 
     if (isset($_SESSION['FONT_SIZE']) && is_numeric($_SESSION['FONT_SIZE'])) {
         $navsize = max(max(min($_SESSION['FONT_SIZE'], 15), 5) * 2, 22);
@@ -113,9 +119,9 @@ if (!browser_mobile() && !session::is_search_engine()) {
 
             $final_uri = "discussion.php?webtag=$webtag&amp;folder={$_GET['folder']}";
 
-        } else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+        } else if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
-            $final_uri = "pm.php?webtag=$webtag&amp;mid={$_GET['pmid']}";
+            $final_uri = "pm.php?webtag=$webtag&amp;mid={$_GET['mid']}";
 
         } else {
 
@@ -154,21 +160,64 @@ if (!browser_mobile() && !session::is_search_engine()) {
 
     echo "<noframes>\n";
     echo "<body>\n";
-
-} else {
-
-    light_html_draw_top('js/thread_list.js');
 }
 
-if (forum_check_webtag_available($webtag)) {
+if (forum_check_webtag_available($webtag, false)) {
 
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
         list($tid, $pid) = explode('.', $_GET['msg']);
 
-        light_draw_messages($tid, $pid);
+        if (!$folder_data = thread_get_folder($tid)) {
 
-    } else if (isset($_GET['pmid']) && is_numeric($_GET['pmid'])) {
+            light_html_display_error_msg(gettext("The requested folder could not be found or access was denied."));
+            return;
+        }
+
+        $perm_folder_moderate = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_data['FID']);
+
+        if (!$thread_data = thread_get($tid, $perm_folder_moderate, false, $perm_folder_moderate)) {
+
+            light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
+            return;
+        }
+
+        if (!$messages = messages_get($tid, $pid, 10)) {
+
+            light_html_display_error_msg(gettext("That post does not exist in this thread!"));
+            return;
+        }
+
+        light_html_draw_top(
+            array(
+                'js' => array(
+                    'js/messages.js'
+                )
+            )
+        );
+
+        light_navigation_bar(
+            array(
+                'back' => "lthread_list.php?webtag=$webtag",
+                'nav_links' => array(
+                    array(
+                        'text' => gettext('Reply to All'),
+                        'url' => "lpost.php?webtag=$webtag&amp;reply_to=$tid.0&amp;return_msg=$tid.$pid",
+                        'class' => 'reply_all',
+                    ),
+                    array(
+                        'text' => gettext('Show messages'),
+                        'url' => '#',
+                        'class' => 'navigation',
+                        'html' => light_messages_navigation_strip($tid, $pid, $thread_data['LENGTH'], 10)
+                    )
+                )
+            )
+        );
+
+        light_draw_messages($tid, $pid, $thread_data, $messages);
+
+    } else if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
         if (!session::logged_in()) {
             light_html_guest_error();
@@ -177,6 +226,20 @@ if (forum_check_webtag_available($webtag)) {
         light_pm_enabled();
 
         pm_user_prune_folders($_SESSION['UID']);
+
+        light_html_draw_top(
+            array(
+                'js' => array(
+                    'js/pm.js'
+                )
+            )
+        );
+
+        light_navigation_bar(
+            array(
+                'back' => "lpm.php?webtag=$webtag",
+            )
+        );
 
         light_draw_pm_inbox();
 
@@ -230,10 +293,35 @@ if (forum_check_webtag_available($webtag)) {
             }
         }
 
+        light_html_draw_top(
+            array(
+                'js' => array(
+                    'js/thread_list.js'
+                )
+            )
+        );
+
+        if (forums_get_available_count() > 1 || !forum_get_default()) {
+
+            light_navigation_bar(
+                array(
+                    'back' => "lforums.php?webtag=$webtag",
+                )
+            );
+
+        } else {
+
+            light_navigation_bar();
+        }
+
         light_draw_thread_list($mode, $folder, $start_from);
     }
 
 } else {
+
+    light_html_draw_top();
+
+    light_navigation_bar();
 
     light_draw_my_forums();
 }

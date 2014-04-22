@@ -116,7 +116,11 @@ if (!thread_is_poll($tid) || ($pid != 1)) {
 
 if (!$edit_message = messages_get($tid, 1, 1)) {
 
-    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_draw_top(
+        array(
+            'title' => gettext('Error')
+        )
+    );
     html_display_error_msg(gettext("That post does not exist in this thread!"));
     html_draw_bottom();
     exit;
@@ -134,7 +138,12 @@ if (($preview_message = messages_get($tid, $pid, 1)) !== false) {
 
     if ((strlen(trim($preview_message['CONTENT'])) < 1) && !thread_is_poll($tid)) {
 
-        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_draw_top(
+            array(
+                'title' => gettext('Error')
+            )
+        );
+
         post_edit_refuse($tid, $pid);
         html_draw_bottom();
         exit;
@@ -142,7 +151,12 @@ if (($preview_message = messages_get($tid, $pid, 1)) !== false) {
 
     if (($_SESSION['UID'] != $preview_message['FROM_UID'] || session::check_perm(USER_PERM_PILLORIED, 0)) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_draw_top(
+            array(
+                'title' => gettext('Error')
+            )
+        );
+
         post_edit_refuse($tid, $pid);
         html_draw_bottom();
         exit;
@@ -164,7 +178,17 @@ if (isset($_POST['endpoll'])) {
     exit;
 }
 
-html_draw_top(sprintf("title=%s", gettext("Close Poll")), "js/post.js", "resize_width=720", "basetarget=_blank", 'class=window_title');
+html_draw_top(
+    array(
+        'title' => gettext('Close Poll'),
+        'js' => array(
+            'js/post.js'
+        ),
+        'resize_width' => 720,
+        'base_target' => '_blank',
+        'class' => 'window_title'
+    )
+);
 
 echo "<h1>", gettext("Close Poll"), " {$tid}.{$pid}</h1>\n";
 

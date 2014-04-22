@@ -63,13 +63,15 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
     $mid = $_GET['mid'];
 
-} else if (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
-
-    $mid = $_POST['mid'];
-
 } else {
+    if (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
 
-    light_html_draw_error(gettext("No message specified for editing"));
+        $mid = $_POST['mid'];
+
+    } else {
+
+        light_html_draw_error(gettext("No message specified for editing"));
+    }
 }
 
 // Get the message.
@@ -133,69 +135,92 @@ if ($valid && isset($_POST['preview'])) {
 
     $message_data['ATTACHMENTS'] = $attachments;
 
-} else if ($valid && isset($_POST['apply'])) {
+} else {
+    if ($valid && isset($_POST['apply'])) {
 
-    if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], $attachments)) !== false) {
+        if (sizeof($attachments) > 0 && ($attachments_array = attachments_get(
+                $_SESSION['UID'],
+                $attachments
+            )) !== false
+        ) {
 
-        foreach ($attachments_array as $attachment) {
+            foreach ($attachments_array as $attachment) {
 
-            pm_add_attachment($mid, $attachment['aid']);
+                pm_add_attachment($mid, $attachment['aid']);
+            }
+        }
+
+        if (pm_edit_message($mid, $t_subject, $t_content)) {
+
+            header_redirect("lpm.php?webtag=$webtag&mid=$mid");
+            exit;
+
+        } else {
+
+            $error_msg_array[] = gettext("Error creating PM! Please try again in a few minutes");
+            $valid = false;
+        }
+
+    } else {
+        if (isset($_POST['emots_toggle'])) {
+
+            if (isset($_POST['t_subject']) && strlen(trim($_POST['t_subject'])) > 0) {
+                $t_subject = trim($_POST['t_subject']);
+            }
+
+            if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
+                $t_content = nl2br(fix_html(emoticons_strip($_POST['t_content'])));
+            }
+
+            if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
+                $t_to_uid = $_POST['t_to_uid'];
+            } else {
+                $t_to_uid = 0;
+            }
+
+            $page_prefs = (double)$page_prefs ^ POST_EMOTICONS_DISPLAY;
+
+            $user_prefs = array(
+                'POST_PAGE' => $page_prefs
+            );
+
+            if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
+
+                $error_msg_array[] = gettext(
+                    "Some or all of your user account details could not be updated. Please try again later."
+                );
+                $valid = false;
+            }
+
+        } else {
+
+            if (!isset($message_data['EDITABLE']) || ($message_data['EDITABLE'] == 0)) {
+                pm_edit_refuse();
+            }
+
+            $parsed_message = new MessageTextParse(pm_get_content($mid));
+
+            $t_content = $parsed_message->getMessage();
+
+            $t_subject = $message_data['SUBJECT'];
         }
     }
-
-    if (pm_edit_message($mid, $t_subject, $t_content)) {
-
-        header_redirect("lpm.php?webtag=$webtag&mid=$mid");
-        exit;
-
-    } else {
-
-        $error_msg_array[] = gettext("Error creating PM! Please try again in a few minutes");
-        $valid = false;
-    }
-
-} else if (isset($_POST['emots_toggle'])) {
-
-    if (isset($_POST['t_subject']) && strlen(trim($_POST['t_subject'])) > 0) {
-        $t_subject = trim($_POST['t_subject']);
-    }
-
-    if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-        $t_content = nl2br(fix_html(emoticons_strip($_POST['t_content'])));
-    }
-
-    if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
-        $t_to_uid = $_POST['t_to_uid'];
-    } else {
-        $t_to_uid = 0;
-    }
-
-    $page_prefs = (double)$page_prefs ^ POST_EMOTICONS_DISPLAY;
-
-    $user_prefs = array(
-        'POST_PAGE' => $page_prefs
-    );
-
-    if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
-
-        $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
-        $valid = false;
-    }
-
-} else {
-
-    if (!isset($message_data['EDITABLE']) || ($message_data['EDITABLE'] == 0)) {
-        pm_edit_refuse();
-    }
-
-    $parsed_message = new MessageTextParse(pm_get_content($mid));
-
-    $t_content = $parsed_message->getMessage();
-
-    $t_subject = $message_data['SUBJECT'];
 }
 
-light_html_draw_top(sprintf("title=%s", gettext("Edit Message")), "back=lpm.php?webtag=$webtag&mid=$mid", 'js/fineuploader.min.js');
+light_html_draw_top(
+    array(
+        'title' => gettext('Edit Message'),
+        'js' => array(
+            'js/fineuploader.min.js'
+        )
+    )
+);
+
+light_navigation_bar(
+    array(
+        'back' => "lpm.php?webtag=$webtag&mid=$mid",
+    )
+);
 
 if ($valid && isset($_POST['preview'])) {
 
@@ -215,7 +240,12 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array, '720', 'left');
 }
 
-echo "<div class=\"post_thread_title\">", gettext("Subject"), ":", light_form_input_text("t_subject", isset($t_subject) ? htmlentities_array($t_subject) : "", 30, 64), "</div>\n";
+echo "<div class=\"post_thread_title\">", gettext("Subject"), ":", light_form_input_text(
+    "t_subject",
+    isset($t_subject) ? htmlentities_array($t_subject) : "",
+    30,
+    64
+), "</div>\n";
 echo "<div class=\"post_to\">", gettext("To"), ":\n";
 echo "<div class=\"recipients\">\n";
 
@@ -233,7 +263,14 @@ if (isset($message_data['RECIPIENTS']) && sizeof($message_data['RECIPIENTS']) > 
 echo "</div>\n";
 echo "</div>\n";
 
-echo "<div class=\"post_content\">", light_form_textarea("t_content", htmlentities_array(strip_paragraphs($t_content)), 10, 50, null, 'textarea'), "</div>\n";
+echo "<div class=\"post_content\">", light_form_textarea(
+    "t_content",
+    htmlentities_array(strip_paragraphs($t_content)),
+    10,
+    50,
+    null,
+    'textarea'
+), "</div>\n";
 
 echo "<div class=\"post_buttons\">";
 echo light_form_submit("apply", gettext("Apply"));

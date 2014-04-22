@@ -263,7 +263,12 @@ if (isset($_POST['approve_messages'])) {
 
         } else {
 
-            html_draw_top(sprintf("title=%s", gettext("Approve Message")), 'class=window_title');
+            html_draw_top(
+                array(
+                    'title' => gettext('Approve Message'),
+                    'class' => 'window_title'
+                )
+            );
 
             html_display_msg(gettext("Approve"), gettext("Are you sure you want to approve all of the selected messages?"), "admin_post_approve.php", 'post', array(
                 'approve_messages' => gettext("Yes"),
@@ -355,7 +360,12 @@ if (isset($_POST['approve_messages'])) {
 
         } else {
 
-            html_draw_top(sprintf("title=%s", gettext("Delete Message")), 'class=window_title');
+            html_draw_top(
+                array(
+                    'title' => gettext('Delete Message'),
+                    'class' => 'window_title'
+                )
+            );
 
             html_display_msg(gettext("Delete"), gettext("Are you sure you want to delete all of the selected messages?"), "admin_post_approve.php", 'post', array(
                 'delete_messages' => gettext("Yes"),
@@ -377,7 +387,13 @@ if (isset($_POST['approve_messages'])) {
     }
 }
 
-html_draw_top(sprintf('title=%s', gettext("Admin - Post Approval Queue")), 'class=window_title', 'main_css=admin.css');
+html_draw_top(
+    array(
+        'title' => gettext('Admin - Post Approval Queue'),
+        'class' => 'window_title',
+        'main_css' => 'admin.css'
+    )
+);
 
 $post_approval_array = admin_get_post_approval_queue($page);
 

@@ -146,9 +146,19 @@ if (isset($_POST['delete']) && is_numeric($tid) && is_numeric($pid)) {
     }
 }
 
-html_draw_top(sprintf("title=%s", gettext("Delete Message")), "js/post.js", "resize_width=720", "basetarget=_blank", 'class=window_title');
+html_draw_top(
+    array(
+        'title' => gettext('Delete Message'),
+        'js' => array(
+            'js/post.js'
+        ),
+        'resize_width' => 720,
+        'base_target' => '_blank',
+        'class' => 'window_title'
+    )
+);
 
-echo "<h1>", gettext("Delete Message"), " {$tid}.{$pid}</h1>\n";
+echo "<h1>", sprintf(gettext("Delete Message - %s"), $msg), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '720', 'left');

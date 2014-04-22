@@ -225,7 +225,12 @@ if (isset($_POST['approve_links'])) {
 
         } else {
 
-            html_draw_top(sprintf("title=%s", gettext("Approve Links")), 'class=window_title');
+            html_draw_top(
+                array(
+                    'title' => gettext('Approve Links'),
+                    'class' => 'window_title'
+                )
+            );
 
             html_display_msg(gettext("Approve"), gettext("Are you sure you want to approve all of the selected links?"), "admin_link_approve.php", 'post', array(
                 'approve_links' => gettext("Yes"),
@@ -295,7 +300,12 @@ if (isset($_POST['approve_links'])) {
 
         } else {
 
-            html_draw_top(sprintf("title=%s", gettext("delete Links")), 'class=window_title');
+            html_draw_top(
+                array(
+                    'title' => gettext('Delete Links'),
+                    'class' => 'window_title'
+                )
+            );
 
             html_display_msg(gettext("Delete"), gettext("Are you sure you want to delete all of the selected links?"), "admin_link_approve.php", 'post', array(
                 'delete_links' => gettext("Yes"),
@@ -317,7 +327,13 @@ if (isset($_POST['approve_links'])) {
     }
 }
 
-html_draw_top(sprintf('title=%s', gettext("Admin - Link Approval Queue")), 'class=window_title', 'main_css=admin.css');
+html_draw_top(
+    array(
+        'title' => gettext('Admin - Link Approval Queue'),
+        'class' => 'window_title',
+        'main_css' => 'admin.css'
+    )
+);
 
 $link_approval_array = admin_get_link_approval_queue($page);
 

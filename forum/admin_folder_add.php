@@ -137,7 +137,13 @@ $allowed_post_types = array(
     FOLDER_ALLOW_ALL_THREAD => gettext("Both thread types")
 );
 
-html_draw_top(sprintf("title=%s", gettext("Admin - Manage Folders - Add a new folder")), 'class=window_title', 'main_css=admin.css');
+html_draw_top(
+    array(
+        'title' => gettext('Admin - Manage Folders - Add a new folder'),
+        'class' => 'window_title',
+        'main_css' => 'admin.css'
+    )
+);
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Folders"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add a new folder"), "</h1>\n";
 

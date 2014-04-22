@@ -72,7 +72,16 @@ $poll_results = poll_get_votes($tid);
 
 $user_poll_votes_array = poll_get_user_votes($tid);
 
-html_draw_top("title={$thread_data['TITLE']}", 'pm_popup_disabled', 'class=window_title', 'js/poll.js');
+html_draw_top(
+    array(
+        'title' => $thread_data['TITLE'],
+        'pm_popup_disabled' => true,
+        'class' => 'window_title',
+        'js' => array(
+            'js/poll.js'
+        )
+    )
+);
 
 echo "<div align=\"center\">\n";
 echo "<table width=\"96%\" border=\"0\">\n";

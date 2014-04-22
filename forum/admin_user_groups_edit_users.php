@@ -165,7 +165,16 @@ if (!$group = perm_get_group($gid)) {
     html_draw_error(gettext("Supplied GID is not a user group"), 'admin_user_groups.php', 'get', array('back' => gettext("Back")));
 }
 
-html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage User Groups - %s - Add/Remove Users"), $group['GROUP_NAME'])), 'class=window_title', 'main_css=admin.css');
+html_draw_top(
+    array(
+        'title' => sprintf(
+            gettext('Admin - Manage User Groups - %s - Add/Remove Users'),
+            $group['GROUP_NAME']
+        ),
+        'class' => 'window_title',
+        'main_css' => 'admin.css'
+    )
+);
 
 $group_users_array = perm_group_get_users($gid, $start_main);
 

@@ -37,13 +37,40 @@ if (!session::logged_in()) {
     light_html_guest_error();
 }
 
+if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
+    $mid = ($_GET['mid'] > 0) ? $_GET['mid'] : 0;
+} else if (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
+    $mid = ($_POST['mid'] > 0) ? $_POST['mid'] : 0;
+} else {
+    $mid = null;
+}
+
 // Check that PM system is enabled
 light_pm_enabled();
 
 // Prune old messages for the current user
 pm_user_prune_folders($_SESSION['UID']);
 
-light_html_draw_top('js/pm.js');
+light_html_draw_top(
+    array(
+        'js' => array(
+            'js/pm.js'
+        )
+    )
+);
+
+if (isset($mid) && is_numeric($mid)) {
+
+    light_navigation_bar(
+        array(
+            'back' => "lpm.php?webtag=$webtag",
+        )
+    );
+
+} else {
+
+    light_navigation_bar();
+}
 
 light_draw_pm_inbox();
 

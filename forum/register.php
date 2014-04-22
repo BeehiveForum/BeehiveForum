@@ -431,14 +431,24 @@ if (isset($_POST['register'])) {
 
                     perm_user_apply_email_confirmation($new_uid);
 
-                    html_draw_top(sprintf("title=%s", gettext("User Registration")));
+                    html_draw_top(
+                        array(
+                            'title' => gettext("User Registration")
+                        )
+                    );
+
                     html_display_msg(gettext("Successfully created user account"), gettext("Your user account has been created but before you can start posting you must confirm your email address. Please check your email for a link that will allow you to confirm your address."), 'index.php', 'get', array('continue' => gettext("Continue")), array('final_uri' => $final_uri), '_top', 'center');
                     html_draw_bottom();
                     exit;
 
                 } else {
 
-                    html_draw_top(sprintf("title=%s", gettext("User Registration")));
+                    html_draw_top(
+                        array(
+                            'title' => gettext("User Registration")
+                        )
+                    );
+
                     html_display_msg(gettext("Successfully created user account"), gettext("Your user account has been created but the required confirmation email was not sent. Please contact the forum owner to rectify this. In this meantime please click the continue button to login."), 'index.php', 'get', array('continue' => gettext("Continue")), array('final_uri' => $final_uri), '_top', 'center');
                     html_draw_bottom();
                     exit;
@@ -446,7 +456,12 @@ if (isset($_POST['register'])) {
 
             } else {
 
-                html_draw_top(sprintf("title=%s", gettext("User Registration")));
+                html_draw_top(
+                    array(
+                        'title' => gettext("User Registration")
+                    )
+                );
+
                 html_display_msg(gettext("Successfully created user account"), gettext("Your user account has been created successfully! Click the continue button below to login"), 'index.php', 'get', array('continue' => gettext("Continue")), array('final_uri' => $final_uri), '_top', 'center');
                 html_draw_bottom();
                 exit;
@@ -460,7 +475,18 @@ if (isset($_POST['register'])) {
     }
 }
 
-html_draw_top(sprintf('title=%s', gettext("User Registration")), 'js/emoticons.js', 'js/register.js', 'ckeditor/ckeditor.js', "basetarget=$frame_top_target", 'class=window_title');
+html_draw_top(
+    array(
+        'title' => gettext('User Registration'),
+        'js' => array(
+            'js/emoticons.js',
+            'js/register.js',
+            'ckeditor/ckeditor.js'
+        ),
+        'base_target' => $frame_top_target,
+        'class' => 'window_title'
+    )
+);
 
 echo "<h1>", gettext("User Registration"), "</h1>\n";
 

@@ -212,7 +212,13 @@ if (isset($_POST['prune_log'])) {
     }
 }
 
-html_draw_top(sprintf('title=%s', gettext("Admin - Admin Access Log")), 'class=window_title', 'main_css=admin.css');
+html_draw_top(
+    array(
+        'title' => gettext('Admin - Admin Access Log'),
+        'class' => 'window_title',
+        'main_css' => 'admin.css'
+    )
+);
 
 $admin_log_array = admin_get_log_entries($page, $group_by, $sort_by, $sort_dir);
 

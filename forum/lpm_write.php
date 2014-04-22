@@ -69,37 +69,51 @@ if (isset($_GET['reply_to']) && is_numeric($_GET['reply_to'])) {
 
     $reply_mid = $_GET['reply_to'];
 
-} else if (isset($_POST['reply_to']) && is_numeric($_POST['reply_to'])) {
+} else {
+    if (isset($_POST['reply_to']) && is_numeric($_POST['reply_to'])) {
 
-    $reply_mid = $_POST['reply_to'];
+        $reply_mid = $_POST['reply_to'];
 
-} else if (isset($_GET['replyall']) && is_numeric($_GET['replyall'])) {
+    } else {
+        if (isset($_GET['replyall']) && is_numeric($_GET['replyall'])) {
 
-    $reply_mid = $_GET['replyall'];
+            $reply_mid = $_GET['replyall'];
 
-    $reply_all = true;
+            $reply_all = true;
 
-} else if (isset($_POST['replyall']) && is_numeric($_POST['replyall'])) {
+        } else {
+            if (isset($_POST['replyall']) && is_numeric($_POST['replyall'])) {
 
-    $reply_mid = $_POST['replyall'];
+                $reply_mid = $_POST['replyall'];
 
-    $reply_all = true;
+                $reply_all = true;
 
-} else if (isset($_GET['fwdmsg']) && is_numeric($_GET['fwdmsg'])) {
+            } else {
+                if (isset($_GET['fwdmsg']) && is_numeric($_GET['fwdmsg'])) {
 
-    $forward_mid = $_GET['fwdmsg'];
+                    $forward_mid = $_GET['fwdmsg'];
 
-} else if (isset($_POST['fwdmsg']) && is_numeric($_POST['fwdmsg'])) {
+                } else {
+                    if (isset($_POST['fwdmsg']) && is_numeric($_POST['fwdmsg'])) {
 
-    $forward_mid = $_POST['fwdmsg'];
+                        $forward_mid = $_POST['fwdmsg'];
 
-} else if (isset($_GET['editmsg']) && is_numeric($_GET['editmsg'])) {
+                    } else {
+                        if (isset($_GET['editmsg']) && is_numeric($_GET['editmsg'])) {
 
-    $edit_mid = $_GET['editmsg'];
+                            $edit_mid = $_GET['editmsg'];
 
-} else if (isset($_POST['editmsg']) && is_numeric($_POST['editmsg'])) {
+                        } else {
+                            if (isset($_POST['editmsg']) && is_numeric($_POST['editmsg'])) {
 
-    $edit_mid = $_POST['editmsg'];
+                                $edit_mid = $_POST['editmsg'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
@@ -124,8 +138,10 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
     $return_msg = $_POST['return_msg'];
-} else if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
-    $return_msg = $_GET['return_msg'];
+} else {
+    if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
+        $return_msg = $_GET['return_msg'];
+    }
 }
 
 $valid = true;
@@ -162,7 +178,9 @@ if (isset($_POST['emots_toggle'])) {
 
     if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
-        $error_msg_array[] = gettext("Some or all of your user account details could not be updated. Please try again later.");
+        $error_msg_array[] = gettext(
+            "Some or all of your user account details could not be updated. Please try again later."
+        );
         $valid = false;
     }
 }
@@ -223,7 +241,10 @@ if (isset($_POST['send']) || isset($_POST['preview']) || isset($_POST['save'])) 
                     'NICKNAME' => $to_user['NICKNAME']
                 );
 
-                if (((($peer_relationship & USER_BLOCK_PM) == 0) && user_allow_pm($to_user['UID'])) || session::check_perm(USER_PERM_FOLDER_MODERATE, 0)) {
+                if (((($peer_relationship & USER_BLOCK_PM) == 0) && user_allow_pm(
+                            $to_user['UID']
+                        )) || session::check_perm(USER_PERM_FOLDER_MODERATE, 0)
+                ) {
 
                     pm_user_prune_folders($_SESSION['UID']);
 
@@ -250,7 +271,9 @@ if (isset($_POST['send']) || isset($_POST['preview']) || isset($_POST['save'])) 
 
         if ($valid && sizeof($to_logon_array) > 10) {
 
-            $error_msg_array[] = gettext("There is a limit of 10 recipients per message. Please amend your recipient list.");
+            $error_msg_array[] = gettext(
+                "There is a limit of 10 recipients per message. Please amend your recipient list."
+            );
             $valid = false;
         }
 
@@ -266,89 +289,99 @@ if (isset($_POST['send']) || isset($_POST['preview']) || isset($_POST['save'])) 
         $valid = false;
     }
 
-} else if (isset($reply_mid) && is_numeric($reply_mid) && $reply_mid > 0) {
+} else {
+    if (isset($reply_mid) && is_numeric($reply_mid) && $reply_mid > 0) {
 
-    if (($pm_data = pm_message_get($reply_mid)) !== false) {
+        if (($pm_data = pm_message_get($reply_mid)) !== false) {
 
-        $pm_data['CONTENT'] = pm_get_content($reply_mid);
+            $pm_data['CONTENT'] = pm_get_content($reply_mid);
 
-        $subject = preg_replace('/^(RE:)?/iu', 'RE:', $pm_data['SUBJECT']);
+            $subject = preg_replace('/^(RE:)?/iu', 'RE:', $pm_data['SUBJECT']);
 
-        $to_logon_array[$pm_data['FROM_UID']] = array(
-            'UID' => $pm_data['FROM_UID'],
-            'LOGON' => $pm_data['FROM_LOGON'],
-            'NICKNAME' => $pm_data['FROM_NICKNAME']
-        );
+            $to_logon_array[$pm_data['FROM_UID']] = array(
+                'UID' => $pm_data['FROM_UID'],
+                'LOGON' => $pm_data['FROM_LOGON'],
+                'NICKNAME' => $pm_data['FROM_NICKNAME']
+            );
 
-        if ($reply_all && isset($pm_data['RECIPIENTS']) && sizeof($pm_data['RECIPIENTS']) > 0) {
+            if ($reply_all && isset($pm_data['RECIPIENTS']) && sizeof($pm_data['RECIPIENTS']) > 0) {
 
-            foreach ($pm_data['RECIPIENTS'] as $recipient) {
-                $to_logon_array[$recipient['UID']] = $recipient;
+                foreach ($pm_data['RECIPIENTS'] as $recipient) {
+                    $to_logon_array[$recipient['UID']] = $recipient;
+                }
+            }
+
+            $to_logon = implode(', ', array_map('user_get_logon_callback', $to_logon_array));
+
+            if (isset($_SESSION['PM_INCLUDE_REPLY']) && ($_SESSION['PM_INCLUDE_REPLY'] == 'Y')) {
+
+                $message_author = htmlentities_array(
+                    format_user_name($pm_data['FROM_LOGON'], $pm_data['FROM_NICKNAME'])
+                );
+
+                $content = sprintf(
+                    '<div class="quotetext"><b>%s:</b> %s</div>
+                     <div class="quote">%s</div><p>&nbsp;</p>',
+                    gettext('quote'),
+                    $message_author,
+                    fix_html($pm_data['CONTENT'])
+                );
+            }
+
+        } else {
+
+            light_pm_error_refuse();
+        }
+
+    } else {
+        if (isset($forward_mid) && is_numeric($forward_mid) && $forward_mid > 0) {
+
+            if (($pm_data = pm_message_get($forward_mid)) !== false) {
+
+                $pm_data['CONTENT'] = pm_get_content($forward_mid);
+
+                $subject = preg_replace('/^(FWD:)?/iu', 'FWD:', $pm_data['SUBJECT']);
+
+                $message_author = htmlentities_array(
+                    format_user_name($pm_data['FROM_LOGON'], $pm_data['FROM_NICKNAME'])
+                );
+
+                $content = fix_html($pm_data['CONTENT']);
+
+                $attachments = $pm_data['ATTACHMENTS'];
+
+            } else {
+
+                light_pm_error_refuse();
+            }
+
+        } else {
+            if (isset($edit_mid) && is_numeric($edit_mid) && $edit_mid > 0) {
+
+                if (($pm_data = pm_message_get($edit_mid)) !== false) {
+
+                    $pm_data['CONTENT'] = pm_get_content($edit_mid);
+
+                    $subject = $pm_data['SUBJECT'];
+
+                    $parsed_message = new MessageTextParse($pm_data['CONTENT']);
+
+                    $content = $parsed_message->getMessage();
+
+                    $subject = $pm_data['SUBJECT'];
+
+                    $reply_mid = $pm_data['REPLY_TO_MID'];
+
+                    $to_logon = implode(', ', array_map('user_get_logon_callback', $pm_data['RECIPIENTS']));
+
+                    $attachments = $pm_data['ATTACHMENTS'];
+
+                } else {
+
+                    light_pm_error_refuse();
+                }
             }
         }
-
-        $to_logon = implode(', ', array_map('user_get_logon_callback', $to_logon_array));
-
-        if (isset($_SESSION['PM_INCLUDE_REPLY']) && ($_SESSION['PM_INCLUDE_REPLY'] == 'Y')) {
-
-            $message_author = htmlentities_array(format_user_name($pm_data['FROM_LOGON'], $pm_data['FROM_NICKNAME']));
-
-            $content = sprintf(
-                '<div class="quotetext"><b>%s:</b> %s</div>
-                 <div class="quote">%s</div><p>&nbsp;</p>',
-                gettext('quote'),
-                $message_author,
-                fix_html($pm_data['CONTENT'])
-            );
-        }
-
-    } else {
-
-        light_pm_error_refuse();
-    }
-
-} else if (isset($forward_mid) && is_numeric($forward_mid) && $forward_mid > 0) {
-
-    if (($pm_data = pm_message_get($forward_mid)) !== false) {
-
-        $pm_data['CONTENT'] = pm_get_content($forward_mid);
-
-        $subject = preg_replace('/^(FWD:)?/iu', 'FWD:', $pm_data['SUBJECT']);
-
-        $message_author = htmlentities_array(format_user_name($pm_data['FROM_LOGON'], $pm_data['FROM_NICKNAME']));
-
-        $content = fix_html($pm_data['CONTENT']);
-
-        $attachments = $pm_data['ATTACHMENTS'];
-
-    } else {
-
-        light_pm_error_refuse();
-    }
-
-} else if (isset($edit_mid) && is_numeric($edit_mid) && $edit_mid > 0) {
-
-    if (($pm_data = pm_message_get($edit_mid)) !== false) {
-
-        $pm_data['CONTENT'] = pm_get_content($edit_mid);
-
-        $subject = $pm_data['SUBJECT'];
-
-        $parsed_message = new MessageTextParse($pm_data['CONTENT']);
-
-        $content = $parsed_message->getMessage();
-
-        $subject = $pm_data['SUBJECT'];
-
-        $reply_mid = $pm_data['REPLY_TO_MID'];
-
-        $to_logon = implode(', ', array_map('user_get_logon_callback', $pm_data['RECIPIENTS']));
-
-        $attachments = $pm_data['ATTACHMENTS'];
-
-    } else {
-
-        light_pm_error_refuse();
     }
 }
 
@@ -376,7 +409,14 @@ if ($valid && isset($_POST['send'])) {
 
         if (isset($edit_mid) && is_numeric($edit_mid)) {
 
-            $new_mid = pm_send_saved_message($edit_mid, $_SESSION['UID'], $to_logon_array, $subject, $content, $reply_mid);
+            $new_mid = pm_send_saved_message(
+                $edit_mid,
+                $_SESSION['UID'],
+                $to_logon_array,
+                $subject,
+                $content,
+                $reply_mid
+            );
 
         } else {
 
@@ -441,9 +481,20 @@ if ($valid && isset($_POST['send'])) {
 
     } else {
 
-        if (($saved_mid = pm_save_message($_SESSION['UID'], $to_logon_array, $subject, $content, $reply_mid)) !== false) {
+        if (($saved_mid = pm_save_message(
+                $_SESSION['UID'],
+                $to_logon_array,
+                $subject,
+                $content,
+                $reply_mid
+            )) !== false
+        ) {
 
-            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get($_SESSION['UID'], $attachments)) !== false) {
+            if (sizeof($attachments) > 0 && ($attachments_array = attachments_get(
+                    $_SESSION['UID'],
+                    $attachments
+                )) !== false
+            ) {
 
                 foreach ($attachments_array as $attachment) {
 
@@ -472,7 +523,21 @@ if ($valid && isset($_POST['send'])) {
     }
 }
 
-light_html_draw_top(sprintf("title=%s", gettext("Send New PM")), "back=lpm.php?webtag=$webtag", "robots=noindex,nofollow", 'js/fineuploader.min.js', 'js/attachments.js');
+light_html_draw_top(
+    array(
+        'title' => gettext('Send New PM'),
+        'js' => array(
+            'js/fineuploader.min.js',
+            'js/attachments.js'
+        )
+    )
+);
+
+light_navigation_bar(
+    array(
+        'back' => "lpm.php?webtag=$webtag",
+    )
+);
 
 if ($valid && isset($_POST['preview'])) {
 
@@ -511,9 +576,24 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);
 }
 
-echo "<div class=\"post_thread_title\">", gettext("Subject"), ":", light_form_input_text("subject", isset($subject) ? htmlentities_array($subject) : null, 30, 64), "</div>\n";
-echo "<div class=\"post_to\">", gettext("To"), ":", light_form_input_text("to_logon", isset($to_logon) ? htmlentities_array($to_logon) : null), "</div>\n";
-echo "<div class=\"post_content\">", light_form_textarea("content", htmlentities_array(strip_paragraphs($content)), 10, 50, null, 'textarea'), "</div>\n";
+echo "<div class=\"post_thread_title\">", gettext("Subject"), ":", light_form_input_text(
+    "subject",
+    isset($subject) ? htmlentities_array($subject) : null,
+    30,
+    64
+), "</div>\n";
+echo "<div class=\"post_to\">", gettext("To"), ":", light_form_input_text(
+    "to_logon",
+    isset($to_logon) ? htmlentities_array($to_logon) : null
+), "</div>\n";
+echo "<div class=\"post_content\">", light_form_textarea(
+    "content",
+    htmlentities_array(strip_paragraphs($content)),
+    10,
+    50,
+    null,
+    'textarea'
+), "</div>\n";
 
 echo "<div class=\"post_buttons\">";
 
@@ -525,15 +605,21 @@ echo light_form_submit("preview", gettext("Preview"));
 
 if (isset($edit_mid) && is_numeric($edit_mid) && $edit_mid > 0) {
 
-    echo "<a href=\"lpm.php?webtag=$webtag&mid=$edit_mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+    echo "<a href=\"lpm.php?webtag=$webtag&mid=$edit_mid\" class=\"button\" target=\"_self\"><span>", gettext(
+        "Cancel"
+    ), "</span></a>\n";
 
 } else if (isset($forward_mid) && is_numeric($forward_mid) && $forward_mid > 0) {
 
-    echo "<a href=\"lpm.php?webtag=$webtag&mid=$forward_mid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+    echo "<a href=\"lpm.php?webtag=$webtag&mid=$forward_mid\" class=\"button\" target=\"_self\"><span>", gettext(
+        "Cancel"
+    ), "</span></a>\n";
 
 } else {
 
-    echo "<a href=\"lpm.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+    echo "<a href=\"lpm.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext(
+        "Cancel"
+    ), "</span></a>\n";
 }
 
 echo "</div>";

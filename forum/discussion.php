@@ -76,7 +76,12 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     if (($msg = messages_get_most_recent($_SESSION['UID'], $fid)) !== false) {
 
-        html_draw_top('frame_set_html', 'pm_popup_disabled');
+        html_draw_top(
+            array(
+                'frame_set_html' => true,
+                'pm_popup_disabled' => true
+            )
+        );
 
         $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
@@ -94,7 +99,12 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
 } else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    html_draw_top('frame_set_html', 'pm_popup_disabled');
+    html_draw_top(
+        array(
+            'frame_set_html' => true,
+            'pm_popup_disabled' => true
+        )
+    );
 
     $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
@@ -116,7 +126,12 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     if (isset($_GET['search_error']) && is_numeric($_GET['search_error'])) {
 
-        html_draw_top('frame_set_html', 'pm_popup_disabled');
+        html_draw_top(
+            array(
+                'frame_set_html' => true,
+                'pm_popup_disabled' => true
+            )
+        );
 
         $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
@@ -129,7 +144,12 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     } else {
 
-        html_draw_top('frame_set_html', 'pm_popup_disabled');
+        html_draw_top(
+            array(
+                'frame_set_html' => true,
+                'pm_popup_disabled' => true
+            )
+        );
 
         $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
@@ -152,7 +172,12 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     if (($search_msg = search_get_first_result_msg()) !== false) {
 
-        html_draw_top('frame_set_html', 'pm_popup_disabled');
+        html_draw_top(
+            array(
+                'frame_set_html' => true,
+                'pm_popup_disabled' => true
+            )
+        );
 
         $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
@@ -165,7 +190,12 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     } else {
 
-        html_draw_top('frame_set_html', 'pm_popup_disabled');
+        html_draw_top(
+            array(
+                'frame_set_html' => true,
+                'pm_popup_disabled' => true
+            )
+        );
 
         $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
@@ -181,7 +211,12 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     if (($msg = messages_get_most_recent($_SESSION['UID'])) !== false) {
 
-        html_draw_top('frame_set_html', 'pm_popup_disabled');
+        html_draw_top(
+            array(
+                'frame_set_html' => true,
+                'pm_popup_disabled' => true
+            )
+        );
 
         $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 

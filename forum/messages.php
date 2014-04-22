@@ -122,7 +122,19 @@ if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
     html_draw_error(gettext("That post does not exist in this thread!"));
 }
 
-html_draw_top("title={$thread_data['TITLE']}", "class=window_title", "js/post.js", "js/poll.js", "js/messages.js", 'ckeditor/ckeditor.js', "basetarget=_blank");
+html_draw_top(
+    array(
+        'title' => $thread_data['TITLE'],
+        'class' => 'window_title',
+        'js' => array(
+            'js/post.js',
+            'js/poll.js',
+            'js/messages.js',
+            'ckeditor/ckeditor.js'
+        ),
+        'base_target' => '_blank'
+    )
+);
 
 if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 
@@ -337,7 +349,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "</form>\n";
 echo "</div>\n";
-echo "<div id=\"messages\">\n";
+echo "<div id=\"messages\" data-navigation=\"{$tid}_{$pid}_{$thread_data['LENGTH']}_{$posts_per_page}\">\n";
 
 if ($msg_count > 0) {
 
@@ -448,7 +460,7 @@ echo "</div>\n";
 
 messages_start_panel();
 
-messages_nav_strip($tid, $pid, $thread_data['LENGTH'], $posts_per_page);
+echo messages_nav_strip($tid, $pid, $thread_data['LENGTH'], $posts_per_page);
 
 if ($thread_data['POLL_FLAG'] == 'Y') {
 

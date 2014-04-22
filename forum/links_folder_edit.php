@@ -102,7 +102,12 @@ if (isset($_POST['update'])) {
     html_draw_error(gettext("You must specify a folder!"));
 }
 
-html_draw_top(sprintf('title=%s', gettext("Links - Edit Folder")), 'class=window_title');
+html_draw_top(
+    array(
+        'title' => gettext("Links - Edit Folder"),
+        'class' => 'window_title'
+    )
+);
 
 echo "<h1>", links_get_folder_path_links($fid, $folders, false), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Folder"), "</h1>\n";
 echo "<br />\n";

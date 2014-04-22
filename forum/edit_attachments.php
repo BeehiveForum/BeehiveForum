@@ -122,12 +122,26 @@ if (isset($_POST['delete_confirm'])) {
 
             if (isset($_POST['delete_thumbs'])) {
 
-                html_draw_top(sprintf('title=%s', gettext("Delete Thumbnails")), 'pm_popup_disabled', 'class=window_title');
+                html_draw_top(
+                    array(
+                        'title' => gettext('Delete Thumbnails'),
+                        'pm_popup_disabled' => true,
+                        'class' => 'window_title'
+                    )
+                );
+
                 echo "<h1>", gettext("Delete Thumbnails"), "</h1>\n";
 
             } else {
 
-                html_draw_top(sprintf('title=%s', gettext("Delete attachments")), 'pm_popup_disabled', 'class=window_title');
+                html_draw_top(
+                    array(
+                        'title' => gettext('Delete Thumbnails'),
+                        'pm_popup_disabled' => true,
+                        'class' => 'window_title'
+                    )
+                );
+
                 echo "<h1>", gettext("Delete attachments"), "</h1>\n";
             }
 
@@ -225,7 +239,16 @@ if (isset($_POST['delete_confirm'])) {
     }
 }
 
-html_draw_top(sprintf('title=%s', gettext("Attachments")), "js/attachments.js", 'pm_popup_disabled', 'class=window_title');
+html_draw_top(
+    array(
+        'title' => gettext('Attachments'),
+        'js' => array(
+            'js/attachments.js'
+        ),
+        'pm_popup_disabled' => true,
+        'class' => 'window_title'
+    )
+);
 
 echo "<h1>", gettext("Attachments"), "</h1>\n";
 

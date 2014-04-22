@@ -32,6 +32,8 @@ require_once BH_INCLUDE_PATH . 'light.inc.php';
 
 light_html_draw_top();
 
+light_navigation_bar();
+
 light_draw_my_forums();
 
 light_html_draw_bottom();

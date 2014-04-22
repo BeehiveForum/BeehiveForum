@@ -392,7 +392,16 @@ if (isset($_POST['move_down']) && is_array($_POST['move_down'])) {
 
 if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
-    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage Profile Sections - %s - Add New Item"), profile_section_get_name($psid))), 'class=window_title', 'main_css=admin.css');
+    html_draw_top(
+        array(
+            'title' => sprintf(
+                gettext('Admin - Manage Profile Sections - %s - Add New Item'),
+                profile_section_get_name($psid)
+            ),
+            'class' => 'window_title',
+            'main_css' => 'admin.css'
+        )
+    );
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add new item"), "</h1>\n";
 
@@ -482,7 +491,17 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
         html_draw_error(gettext("Invalid profile item ID or item not found"), 'admin_prof_sect.php', 'get', array('back' => gettext("Back")));
     }
 
-    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage Profile Sections - %s - Edit Item - %s"), profile_section_get_name($psid), $profile_item['NAME'])), 'class=window_title', 'main_css=admin.css');
+    html_draw_top(
+        array(
+            'title' => sprintf(
+                gettext('Admin - Manage Profile Sections - %s - Edit Item - %s'),
+                profile_section_get_name($psid),
+                $profile_item['NAME']
+            ),
+            'class' => 'window_title',
+            'main_css' => 'admin.css'
+        )
+    );
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit item"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($profile_item['NAME'], true), "</h1>\n";
 
@@ -561,7 +580,16 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
 } else {
 
-    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage Profile Sections - %s - View Items"), profile_section_get_name($psid))), 'class=window_title', 'main_css=admin.css');
+    html_draw_top(
+        array(
+            'title' => sprintf(
+                gettext('Admin - Manage Profile Sections - %s - View Items'),
+                profile_section_get_name($psid)
+            ),
+            'class' => 'window_title',
+            'main_css' => 'admin.css'
+        )
+    );
 
     $profile_items = profile_items_get_by_page($psid, $page);
 

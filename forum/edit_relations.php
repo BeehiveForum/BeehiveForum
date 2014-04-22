@@ -45,7 +45,13 @@ if (!session::logged_in()) {
 $error_msg_array = array();
 
 // Start output here
-html_draw_top(sprintf('title=%s', gettext("My Controls - User Relationships")), "basetarget=_blank", 'class=window_title');
+html_draw_top(
+    array(
+        'title' => gettext('My Controls - User Relationships'),
+        'base_target' => '_blank',
+        'class' => 'window_title'
+    )
+);
 
 echo "<h1>", gettext("User Relationships"), "</h1>\n";
 

@@ -96,7 +96,12 @@ if (isset($_GET['manage_folder'])) {
 
     } else {
 
-        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_draw_top(
+            array(
+                'title' => gettext("Error")
+            )
+        );
+
         html_display_error_msg(gettext("Invalid Folder ID. Check that a folder with this ID exists!"));
         html_draw_bottom();
         exit;
@@ -110,7 +115,12 @@ if (isset($_GET['manage_folder'])) {
 
     } else {
 
-        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_draw_top(
+            array(
+                'title' => gettext("Error")
+            )
+        );
+
         html_display_error_msg(gettext("Invalid Folder ID. Check that a folder with this ID exists!"));
         html_draw_bottom();
         exit;
@@ -156,7 +166,16 @@ pm_user_prune_folders($_SESSION['UID']);
 $pm_messages_frame = html_get_frame_name('pm_messages');
 
 // Draw the header.
-html_draw_top(sprintf("title=%s", gettext("Private Messages")), "basetarget=$pm_messages_frame", "js/pm.js", 'pm_popup_disabled');
+html_draw_top(
+    array(
+        'title' => gettext('Private Messages'),
+        'base_target' => $pm_messages_frame,
+        'js' => array(
+            'js/pm.js'
+        ),
+        'pm_popup_disabled' => true
+    )
+);
 
 if (isset($manage_folder) && is_numeric($manage_folder)) {
 

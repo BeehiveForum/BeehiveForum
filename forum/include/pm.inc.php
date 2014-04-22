@@ -1629,7 +1629,7 @@ function pm_export_html_top($message = null)
 {
     $html = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     $html .= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-    $html .= "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"" . gettext("en-gb") . "\" lang=\"" . gettext("en-gb") . "\" dir=\"" . gettext("ltr") . "\">\n";
+    $html .= "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"". gettext('en-gb'). "\" lang=\"". gettext('en-gb'). "\" dir=\"". gettext('ltr'). "\">\n";
     $html .= "<head>\n";
 
     if (isset($message['SUBJECT']) && isset($message['MID'])) {

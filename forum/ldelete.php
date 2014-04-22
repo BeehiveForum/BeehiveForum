@@ -56,7 +56,13 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     if (!$t_fid = thread_get_folder_fid($tid)) {
 
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
+        light_html_draw_top(
+            array(
+                'title' => gettext("Error")
+            )
+        );
+
+        light_navigation_bar();
         light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
         light_html_draw_bottom();
         exit;
@@ -70,7 +76,13 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
     if (!$t_fid = thread_get_folder_fid($tid)) {
 
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
+        light_html_draw_top(
+            array(
+                'title' => gettext("Error")
+            )
+        );
+
+        light_navigation_bar();
         light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
         light_html_draw_bottom();
         exit;
@@ -78,7 +90,13 @@ if (isset($_POST['msg']) && validate_msg($_POST['msg'])) {
 
 } else {
 
-    light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
+    light_html_draw_top(
+        array(
+            'title' => gettext("Error")
+        )
+    );
+
+    light_navigation_bar();
     light_html_display_error_msg(gettext("No message specified for deletion"));
     light_html_draw_bottom();
     exit;
@@ -106,7 +124,13 @@ if (session::check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
 if (!session::check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
-    light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
+    light_html_draw_top(
+        array(
+            'title' => gettext("Error")
+        )
+    );
+
+    light_navigation_bar();
     light_html_display_error_msg(gettext("You cannot delete posts in this folder"));
     light_html_draw_bottom();
     exit;
@@ -114,7 +138,13 @@ if (!session::check_perm(USER_PERM_POST_EDIT | USER_PERM_POST_READ, $t_fid)) {
 
 if (!$thread_data = thread_get($tid)) {
 
-    light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
+    light_html_draw_top(
+        array(
+            'title' => gettext("Error")
+        )
+    );
+
+    light_navigation_bar();
     light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
     light_html_draw_bottom();
     exit;
@@ -126,7 +156,13 @@ if (($preview_message = messages_get($tid, $pid, 1)) !== false) {
 
     if ((strlen(trim($preview_message['CONTENT'])) < 1) && !thread_is_poll($tid)) {
 
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
+        light_html_draw_top(
+            array(
+                'title' => gettext("Error")
+            )
+        );
+
+        light_navigation_bar();
         light_post_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -134,7 +170,13 @@ if (($preview_message = messages_get($tid, $pid, 1)) !== false) {
 
     if (($_SESSION['UID'] != $preview_message['FROM_UID'] || session::check_perm(USER_PERM_PILLORIED, 0)) && !session::check_perm(USER_PERM_FOLDER_MODERATE, $t_fid)) {
 
-        light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
+        light_html_draw_top(
+            array(
+                'title' => gettext("Error")
+            )
+        );
+
+        light_navigation_bar();
         light_post_edit_refuse();
         light_html_draw_bottom();
         exit;
@@ -142,7 +184,13 @@ if (($preview_message = messages_get($tid, $pid, 1)) !== false) {
 
 } else {
 
-    light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
+    light_html_draw_top(
+        array(
+            'title' => gettext("Error")
+        )
+    );
+
+    light_navigation_bar();
     light_html_display_error_msg(sprintf(gettext("Message %s was not found"), $msg));
     light_html_draw_bottom();
     exit;
@@ -169,7 +217,17 @@ if (isset($_POST['delete'])) {
 
 $page_title = sprintf(gettext("Delete message %s"), $msg);
 
-light_html_draw_top("title=$page_title", "back=lmessages.php?webtag=$webtag&msg=$return_msg");
+light_html_draw_top(
+    array(
+        'title' => $page_title,
+    )
+);
+
+light_navigation_bar(
+    array(
+        'back' => "lmessages.php?webtag=$webtag&msg=$return_msg"
+    )
+);
 
 echo "<h3>", $page_title, "</h3>\n";
 

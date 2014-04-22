@@ -235,7 +235,12 @@ if (isset($_POST['clear_search'])) {
     $user_search = "";
 }
 
-html_draw_top(sprintf('title=%s', gettext("Visitor Log")), 'class=window_title');
+html_draw_top(
+    array(
+        'title' => gettext("Visitor Log"),
+        'class' => 'window_title'
+    )
+);
 
 echo "<h1>", gettext("Visitor Log"), "</h1>\n";
 

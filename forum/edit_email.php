@@ -115,7 +115,12 @@ if (isset($_POST['save'])) {
 // Check to see if we should show the set for all forums checkboxes
 $show_set_all = (forums_get_available_count() > 1) ? true : false;
 
-html_draw_top(sprintf('title=%s', gettext("My Controls - Email & Privacy")), 'class=window_title');
+html_draw_top(
+    array(
+        'title' => gettext('My Controls - Email & Privacy'),
+        'class' => 'window_title'
+    )
+);
 
 echo "<h1>", htmlentities_array(gettext("Email & Privacy")), "</h1>\n";
 

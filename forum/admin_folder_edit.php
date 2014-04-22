@@ -242,7 +242,16 @@ $allowed_post_types = array(
     FOLDER_ALLOW_ALL_THREAD => gettext("Both thread types")
 );
 
-html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - Manage Folders - Edit Folder - %s"), $folder_data['TITLE'])), 'class=window_title', 'main_css=admin.css');
+html_draw_top(
+    array(
+        'title' => sprintf(
+            gettext('Admin - Manage Folders - Edit Folder - %s'),
+            $folder_data['TITLE']
+        ),
+        'class' => 'window_title',
+        'main_css' => 'admin.css'
+    )
+);
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Folders"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Folder"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($folder_data['TITLE'], true), "</h1>\n";
 

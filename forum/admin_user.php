@@ -194,7 +194,14 @@ if (isset($_POST['action_submit'])) {
 
         if (user_reset_post_count($uid)) {
 
-            html_draw_top("title=$page_title", 'class=window_title', 'main_css=admin.css');
+            html_draw_top(
+                array(
+                    'title' => $page_title,
+                    'class' => 'window_title',
+                    'main_css' => 'admin.css'
+                )
+            );
+
             html_display_msg(gettext("Post Count"), gettext("Successfully Reset Post Count"), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
             html_draw_bottom();
             exit;
@@ -213,7 +220,14 @@ if (isset($_POST['action_submit'])) {
 
             if (user_update_post_count($uid, $user_post_count)) {
 
-                html_draw_top("title=$page_title", 'class=window_title', 'main_css=admin.css');
+                html_draw_top(
+                    array(
+                        'title' => $page_title,
+                        'class' => 'window_title',
+                        'main_css' => 'admin.css'
+                    )
+                );
+
                 html_display_msg(gettext("Post Count"), gettext("Successfully Updated Post Count"), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
                 html_draw_bottom();
                 exit;
@@ -236,7 +250,14 @@ if (isset($_POST['action_submit'])) {
 
         if (admin_clear_user_history($uid)) {
 
-            html_draw_top("title=$page_title", 'class=window_title', 'main_css=admin.css');
+            html_draw_top(
+                array(
+                    'title' => $page_title,
+                    'class' => 'window_title',
+                    'main_css' => 'admin.css'
+                )
+            );
+
             html_display_msg(gettext("User History"), gettext("Successfully cleared user history"), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid), '_self', 'center');
             html_draw_bottom();
             exit;
@@ -263,7 +284,14 @@ if (isset($_POST['action_submit'])) {
 
                 email_send_new_pw_notification($uid, $_SESSION['UID'], $t_new_password);
 
-                html_draw_top("title=$page_title", 'class=window_title', 'main_css=admin.css');
+                html_draw_top(
+                    array(
+                        'title' => $page_title,
+                        'class' => 'window_title',
+                        'main_css' => 'admin.css'
+                    )
+                );
+
                 html_display_msg(gettext("Change Password"), gettext("Successfully Changed Password"), 'admin_user.php', 'get', array('back' => gettext("Back")), array(), '_self', 'center');
                 html_draw_bottom();
                 exit;
@@ -282,7 +310,14 @@ if (isset($_POST['action_submit'])) {
 
     if (admin_delete_user($uid, $delete_content)) {
 
-        html_draw_top("title=$page_title", 'class=window_title', 'main_css=admin.css');
+        html_draw_top(
+            array(
+                'title' => $page_title,
+                'class' => 'window_title',
+                'main_css' => 'admin.css'
+            )
+        );
+
         html_display_msg(gettext("Delete User"), gettext("User Successfully Deleted"), 'admin_users.php', 'get', array('back' => gettext("Back")), array(), '_self', 'center');
         html_draw_bottom();
         exit;
@@ -300,7 +335,14 @@ if (isset($_POST['action_submit'])) {
 
             admin_add_log_entry(DELETE_ALL_USER_POSTS, array($user_logon));
 
-            html_draw_top("title=$page_title", 'class=window_title', 'main_css=admin.css');
+            html_draw_top(
+                array(
+                    'title' => $page_title,
+                    'class' => 'window_title',
+                    'main_css' => 'admin.css'
+                )
+            );
+
             html_display_msg(gettext("Delete posts"), gettext("Posts were successfully deleted"), 'admin_user.php', 'get', array('back' => gettext("Back")), array(), '_self', 'center');
             html_draw_bottom();
             exit;
@@ -497,7 +539,13 @@ if (isset($action) && strlen(trim($action)) > 0) {
             html_draw_error(gettext("You do not have permission to use this section."), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid));
         }
 
-        html_draw_top("title=$page_title", 'class=window_title', 'main_css=admin.css');
+        html_draw_top(
+            array(
+                'title' => $page_title,
+                'class' => 'window_title',
+                'main_css' => 'admin.css'
+            )
+        );
 
         echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
 
@@ -553,7 +601,13 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     } else if ($action == 'view_history') {
 
-        html_draw_top("title=$page_title", 'class=window_title', 'main_css=admin.css');
+        html_draw_top(
+            array(
+                'title' => $page_title,
+                'class' => 'window_title',
+                'main_css' => 'admin.css'
+            )
+        );
 
         $user_history_array = admin_get_user_history($user['UID']);
 
@@ -679,7 +733,13 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     } else if ($action == 'user_aliases') {
 
-        html_draw_top("title=$page_title", 'class=window_title', 'main_css=admin.css');
+        html_draw_top(
+            array(
+                'title' => $page_title,
+                'class' => 'window_title',
+                'main_css' => 'admin.css'
+            )
+        );
 
         $user_alias_view = USER_ALIAS_IPADDRESS;
 
@@ -871,7 +931,13 @@ if (isset($action) && strlen(trim($action)) > 0) {
             html_draw_error(gettext("You do not have permission to use this section."), 'admin_user.php', 'get', array('back' => gettext("Back")), array('uid' => $uid));
         }
 
-        html_draw_top("title=$page_title", 'class=window_title', 'main_css=admin.css');
+        html_draw_top(
+            array(
+                'title' => $page_title,
+                'class' => 'window_title',
+                'main_css' => 'admin.css'
+            )
+        );
 
         echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
         echo "<br />\n";
@@ -927,7 +993,13 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     } else if ($action == 'delete_posts') {
 
-        html_draw_top("title=$page_title", 'class=window_title', 'main_css=admin.css');
+        html_draw_top(
+            array(
+                'title' => $page_title,
+                'class' => 'window_title',
+                'main_css' => 'admin.css'
+            )
+        );
 
         echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
         echo "<br />\n";
@@ -980,7 +1052,13 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
     } else if ($action == 'post_count') {
 
-        html_draw_top("title=$page_title", 'class=window_title', 'main_css=admin.css');
+        html_draw_top(
+            array(
+                'title' => $page_title,
+                'class' => 'window_title',
+                'main_css' => 'admin.css'
+            )
+        );
 
         echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
         echo "<br />\n";
@@ -1034,7 +1112,13 @@ if (isset($action) && strlen(trim($action)) > 0) {
     }
 }
 
-html_draw_top("title=$page_title", 'class=window_title', 'main_css=admin.css');
+html_draw_top(
+    array(
+        'title' => $page_title,
+        'class' => 'window_title',
+        'main_css' => 'admin.css'
+    )
+);
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
 

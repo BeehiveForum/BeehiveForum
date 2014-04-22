@@ -193,7 +193,13 @@ if (isset($_POST['pm_delete_messages'])) {
 
         } else {
 
-            html_draw_top(sprintf("title=%s", gettext("Delete Message")), 'class=window_title');
+            html_draw_top(
+                array(
+                    'title' => gettext('Delete Message'),
+                    'class' => 'window_title'
+                )
+            );
+
             html_display_msg(gettext("Delete"), gettext("Are you sure you want to delete all of the selected messages?"), "pm_messages.php", 'post', array(
                 'pm_option_submit' => gettext("Yes"),
                 'back' => gettext("No")
@@ -273,7 +279,21 @@ if (isset($_POST['search'])) {
 
 pm_user_prune_folders($_SESSION['UID']);
 
-html_draw_top(sprintf('title=%s', sprintf(gettext("Private Messages - %s"), $folder_names_array[$current_folder])), "basetarget=_blank", "js/search.js", "js/pm.js", 'pm_popup_disabled', 'class=window_title');
+html_draw_top(
+    array(
+        'title' => sprintf(
+            gettext('Private Messages - %s'),
+            $folder_names_array[$current_folder]
+        ),
+        'base_target' => '_blank',
+        'js' => array(
+            'js/search.js',
+            'js/pm.js'
+        ),
+        'pm_popup_disabled' => true,
+        'class' => 'window_title'
+    )
+);
 
 if ($current_folder == PM_FOLDER_INBOX) {
 

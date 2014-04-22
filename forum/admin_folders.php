@@ -135,7 +135,13 @@ if (isset($_POST['move_up_disabled']) || isset($_POST['move_down_disabled'])) {
     exit;
 }
 
-html_draw_top(sprintf('title=%s', gettext("Admin - Manage Folders")), 'class=window_title', 'main_css=admin.css');
+html_draw_top(
+    array(
+        'title' => gettext('Admin - Manage Folders'),
+        'class' => 'window_title',
+        'main_css' => 'admin.css'
+    )
+);
 
 $folder_array = folder_get_all_by_page($page);
 

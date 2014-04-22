@@ -37,11 +37,18 @@ require_once BH_INCLUDE_PATH . 'user.inc.php';
 
 cache_disable();
 
-html_draw_top("class=navpage", "js/forumlinks.js");
+html_draw_top(
+    array(
+        'class' => 'navpage',
+        'js' => array(
+            'js/forumlinks.js'
+        )
+    )
+);
 
 echo "<div class=\"navleft\">\n";
 
-if (forum_check_webtag_available($webtag)) {
+if (forum_check_webtag_available($webtag, false)) {
 
     echo "<a href=\"start.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Start"), "</a>&nbsp;|&nbsp;\n";
     echo "<a href=\"discussion.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Messages"), "</a>&nbsp;|&nbsp;\n";

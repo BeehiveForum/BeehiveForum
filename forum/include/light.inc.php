@@ -47,67 +47,60 @@ require_once BH_INCLUDE_PATH . 'user.inc.php';
 require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 // End Required includes
 
-function light_html_draw_top()
+function light_html_draw_top(array $options = array())
 {
-    static $called = false;
-
-    if ($called) return;
-
-    $called = true;
-
-    $arg_array = func_get_args();
-
     $title = null;
 
-    $back = null;
-
     $robots = null;
+
+    $js = array();
+
+    $css = array();
 
     $webtag = get_webtag();
 
     forum_check_webtag_available($webtag);
 
-    $link_array = array();
-
-    $func_matches = array();
-
     $forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
 
-    foreach ($arg_array as $key => $func_args) {
+    $available_back_button_files = implode("|^", array_map('preg_quote_callback', get_light_back_button_files()));
 
-        if (preg_match('/^title=(.+)?$/Disu', $func_args, $func_matches) > 0) {
+    foreach ($options as $key => $value) {
 
-            $title = (!isset($title) && isset($func_matches[1]) ? $func_matches[1] : $title);
-            unset($arg_array[$key]);
-        }
+        switch ($key) {
 
-        if (preg_match('/^back=(.+)?$/Disu', $func_args, $func_matches) > 0) {
+            case 'title':
+            case 'robots':
 
-            $back = (!isset($back) && isset($func_matches[1]) ? $func_matches[1] : $back);
+                $$key = (!isset($$key) && isset($value) ? $value : $$key);
+                break;
 
-            $available_back_button_files = implode("|^", array_map('preg_quote_callback', get_light_back_button_files()));
+            case 'js':
+            case 'css':
 
-            if (!preg_match("/^$available_back_button_files/u", basename($back))) {
-                $back = null;
-            }
+                if (!is_array($value) || count(array_filter($value, 'is_string')) <> count($value)) {
 
-            unset($arg_array[$key]);
-        }
+                    throw new InvalidArgumentException(
+                        sprintf(
+                            'Expecting light_html_draw_top argument %s to be an array of strings',
+                            $key
+                        )
+                    );
+                }
 
-        if (preg_match('/^robots=(.+)?$/Disu', $func_args, $func_matches) > 0) {
+                $$key = $value;
+                break;
 
-            $robots = (!isset($robots) && isset($func_matches[1]) ? $func_matches[1] : $robots);
-            unset($arg_array[$key]);
-        }
+            default:
 
-        if (preg_match('/^link=([^:]+):(.+)$/Disu', $func_args, $func_matches) > 0) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Unknown light_html_draw_top argument "%s"',
+                        $key
+                    )
+                );
 
-            $link_array[] = array(
-                'rel' => $func_matches[1],
-                'href' => $func_matches[2]
-            );
-
-            unset($arg_array[$key]);
+                break;
         }
     }
 
@@ -115,8 +108,9 @@ function light_html_draw_top()
     $meta_keywords = html_get_forum_keywords();
     $meta_description = html_get_forum_description();
 
+    echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-    echo "<html lang=\"en\" dir=\"", gettext("ltr"), "\">\n";
+    echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"", gettext('en-gb'), "\" lang=\"", gettext('en-gb'), "\" dir=\"", gettext('ltr'), "\">\n";
     echo "<head>\n";
 
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
@@ -172,11 +166,11 @@ function light_html_draw_top()
     }
 
     if (($stylesheet = html_get_style_sheet('mobile.css')) !== false) {
-        html_include_css($stylesheet);
+        echo html_include_css($stylesheet);
     }
 
     if (($emoticon_stylesheet = html_get_emoticon_style_sheet(true)) !== false) {
-        html_include_css($emoticon_stylesheet, 'print, screen');
+        echo html_include_css($emoticon_stylesheet, 'print, screen');
     }
 
     $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag");
@@ -203,57 +197,33 @@ function light_html_draw_top()
         printf("<link rel=\"shortcut icon\" type=\"image/ico\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
     }
 
-    html_include_javascript(html_get_forum_file_path('js/jquery.min.js'));
-    html_include_javascript(html_get_forum_file_path('js/jquery.mobile.zoom.min.js'));
-    html_include_javascript(html_get_forum_file_path('js/jquery.placeholder.min.js'));
-    html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.min.js'));
-    html_include_javascript(html_get_forum_file_path('js/general.js'));
-    html_include_javascript(html_get_forum_file_path('js/light.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/jquery.min.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/jquery.mobile.zoom.min.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/jquery.placeholder.min.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.min.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/jquery.url.min.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/general.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/light.js'));
 
-    $message_display_pages = array(
-        'admin_post_approve.php',
-        'create_poll.php',
-        'delete.php',
-        'display.php',
-        'edit.php',
-        'edit_poll.php',
-        'edit_signature.php',
-        'ldisplay.php',
-        'lmessages.php',
-        'lpost.php',
-        'messages.php',
-        'post.php'
-    );
+    $message_display_pages = get_message_display_files();
 
     if (in_array(basename($_SERVER['PHP_SELF']), $message_display_pages)) {
 
         if (isset($_SESSION['USE_MOVER_SPOILER']) && ($_SESSION['USE_MOVER_SPOILER'] == 'Y')) {
 
-            html_include_javascript(html_get_forum_file_path('js/spoiler.js'));
+            echo html_include_javascript(html_get_forum_file_path('js/spoiler.js'));
         }
     }
 
-    foreach ($arg_array as $func_args) {
-
-        if (!($extension = pathinfo($func_args, PATHINFO_EXTENSION))) {
-            continue;
-        }
-
-        switch ($extension) {
-
-            case 'js':
-
-                html_include_javascript(html_get_forum_file_path($func_args));
-                break;
-
-            case 'css':
-
-                html_include_css(html_get_forum_file_path($func_args));
-                break;
-        }
+    foreach ($css as $css_file) {
+        echo html_include_css(html_get_forum_file_path($css_file));
     }
 
-    html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag"));
+    foreach ($js as $js_file) {
+        echo html_include_javascript(html_get_forum_file_path($js_file));
+    }
+
+    echo html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag"));
 
     echo "</head>\n";
     echo "<body id=\"mobile\">\n";
@@ -263,34 +233,111 @@ function light_html_draw_top()
     }
 
     echo "<a name=\"top\"></a>\n";
-    echo "<div id=\"header\">\n";
+}
 
-    if (isset($back)) {
-        echo "  <span id=\"back\"><a href=\"$back\">", gettext("Back"), "</a></span>\n";
+function light_navigation_bar(array $options = array())
+{
+    $nav_links = array();
+
+    $back = null;
+
+    $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
+
+    $available_back_button_files = implode("|^", array_map('preg_quote_callback', get_light_back_button_files()));
+
+    foreach ($options as $key => $value) {
+
+        switch ($key) {
+
+            case 'nav_links':
+
+                if (!is_array($value) || count(array_filter($value, 'light_validate_nav_link')) <> count($value)) {
+
+                    throw new InvalidArgumentException(
+                        sprintf(
+                            'Expecting light_navigation_bar argument %s to be an array of arrays, each with class and url keys',
+                            $key
+                        )
+                    );
+                }
+
+                $$key = $value;
+                break;
+
+            case 'back':
+
+                if (preg_match("/^$available_back_button_files/u", basename($back))) {
+                    throw new InvalidArgumentException('Expecting light_navigation_bar argument back to be in permitted light back button files');
+                }
+
+                $back = (!isset($back) && isset($value) ? $value : $back);
+                break;
+
+            default:
+
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Unknown light_navigation_bar argument "%s"',
+                        $key
+                    )
+                );
+
+                break;
+        }
     }
 
-    echo "  <img src=\"", html_style_image('mobile_logo.png'), "\" alt=\"", gettext("Beehive Forum Logo"), "\" />\n";
-    echo "  <div id=\"nav\">", gettext("Menu"), "</div>\n";
+    echo "<div id=\"header\">\n";
+    echo "  <span class=\"left\">\n";
+
+    if (isset($back)) {
+        echo "    <span class=\"back\"><a href=\"$back\">", gettext("Back"), "</a></span>\n";
+    }
+
+    echo "    <img src=\"", html_style_image('mobile_logo.png'), "\" alt=\"", gettext("Beehive Forum Logo"), "\" />\n";
+    echo "  </span>\n";
+    echo "  <ul>\n";
+
+    foreach ($nav_links as $nav_link) {
+        echo "    <li><a class=\"{$nav_link['class']}\" href=\"{$nav_link['url']}\">{$nav_link['text']}</a></li>\n";
+    }
+
+    echo "    <li><a class=\"main\" href=\"#\">", gettext("Menu"), "</a></li>\n";
+    echo "  </ul>\n";
     echo "</div>\n";
-    echo "<div id=\"menu\">\n";
+    echo "<div class=\"menu main\">\n";
     echo "  <ul>\n";
 
     if (forums_get_available_count() > 1 || !forum_get_default()) {
-        echo "    <li class=\"menu_item\"><a href=\"lforums.php?webtag=$webtag\">", gettext("My Forums"), "</a></li>\n";
+        echo "    <li><a href=\"lforums.php?webtag=$webtag\">", gettext("My Forums"), "</a></li>\n";
     }
 
-    echo "    <li class=\"menu_item\"><a href=\"lthread_list.php?webtag=$webtag\">", gettext("Messages"), "</a></li>\n";
-    echo "    <li class=\"menu_item\"><a href=\"lpm.php?webtag=$webtag\">", gettext("Inbox"), "</a></li>\n";
-    echo "    <li class=\"menu_item\"><a href=\"lsearch.php?webtag=$webtag\">", gettext("Search"), "</a></li>\n";
+    if (forum_check_webtag_available($webtag, false)) {
+        echo "    <li><a href=\"lthread_list.php?webtag=$webtag\">", gettext("Messages"), "</a></li>\n";
+    }
+
+    echo "    <li><a href=\"lpm.php?webtag=$webtag\">", gettext("Inbox"), "</a></li>\n";
+
+    if (forum_check_webtag_available($webtag, false)) {
+        echo "    <li><a href=\"lsearch.php?webtag=$webtag\">", gettext("Search"), "</a></li>\n";
+    }
 
     if (!session::logged_in()) {
-        echo "    <li class=\"menu_item\"><a href=\"llogon.php?webtag=$webtag\">", gettext("Login"), "</a></li>\n";
+        echo "    <li><a href=\"llogon.php?webtag=$webtag\">", gettext("Login"), "</a></li>\n";
     } else {
-        echo "    <li class=\"menu_item\"><a href=\"llogout.php?webtag=$webtag\">", gettext("Logout"), "</a></li>\n";
+        echo "    <li><a href=\"llogout.php?webtag=$webtag\">", gettext("Logout"), "</a></li>\n";
     }
 
     echo "  </ul>\n";
     echo "</div>\n";
+
+    foreach ($nav_links as $nav_link) {
+        if (isset($nav_link['html'])) {
+            echo "    <div class=\"menu {$nav_link['class']}\">{$nav_link['html']}</div>\n";
+        }
+    }
+
     echo "<div id=\"page_content\">\n";
 
     light_pm_check_messages();
@@ -328,6 +375,11 @@ function light_html_draw_bottom()
     echo "</html>\n";
 }
 
+function light_validate_nav_link($nav_link)
+{
+    return is_array($nav_link) && isset($nav_link['class'], $nav_link['url'], $nav_link['text']);
+}
+
 function light_draw_logon_form($error_msg_array = array())
 {
     $webtag = get_webtag();
@@ -340,30 +392,25 @@ function light_draw_logon_form($error_msg_array = array())
         light_html_display_error_array($error_msg_array);
     }
 
-    $username_array = array();
-    $password_array = array();
-    $passhash_array = array();
+    // Get the original requested page url.
+    $request_uri = get_request_uri();
 
     echo "<div class=\"logon\">\n";
     echo "<h3>", gettext("Logon"), "</h3>\n";
     echo "<div class=\"logon_inner\">\n";
-    echo "<form accept-charset=\"utf-8\" name=\"logonform\" action=\"llogon.php\" method=\"post\">\n";
-    echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
-    echo "  <div class=\"logon_username\"><span>", gettext("Username"), ":</span>", light_form_input_text("user_logon", (isset($username_array[0]) ? htmlentities_array($username_array[0]) : ""), 20, 15) . "</div>\n";
+    echo "<form accept-charset=\"utf-8\" name=\"logonform\" action=\"$request_uri\" method=\"post\">\n";
 
-    if (isset($password_array[0]) && strlen($password_array[0]) > 0) {
+    // Check for any post data that we need to include in the form.
+    unset($_POST['user_logon'], $_POST['user_password'], $_POST['logon'], $_POST['webtag'], $_POST['register']);
 
-        if (isset($passhash_array[0]) && is_md5($passhash_array[0])) {
-            echo "  <div class=\"logon_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", htmlentities_array($password_array[0]), 20, 32), form_input_hidden("user_passhash", htmlentities_array($passhash_array[0])), "</div>\n";
-        } else {
-            echo "  <div class=\"logon_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", null, 20, 32), form_input_hidden("user_passhash"), "</div>\n";
-        }
-
-    } else {
-
-        echo "  <div class=\"logon_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", null, 20, 32), form_input_hidden("user_passhash"), "</div>\n";
+    // Add any post data into the form.
+    if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
+        echo form_input_hidden_array($_POST);
     }
 
+    echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+    echo "  <div class=\"logon_username\"><span>", gettext("Username"), ":</span>", light_form_input_text("user_logon", null, 20, 15) . "</div>\n";
+    echo "  <div class=\"logon_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", null, 20, 32), "</div>\n";
     echo "  <div class=\"logon_remember\">", light_form_checkbox("user_remember", "Y", gettext("Remember me")), "</div>\n";
     echo "  <div class=\"logon_buttons\">", light_form_submit('logon', gettext("Logon")), "</div>\n";
     echo "</form>\n";
@@ -371,37 +418,11 @@ function light_draw_logon_form($error_msg_array = array())
     echo "</div>\n";
 }
 
-function light_draw_messages($tid, $pid)
+function light_draw_messages($tid, $pid, array $thread_data, array $messages)
 {
     $webtag = get_webtag();
 
     forum_check_webtag_available($webtag);
-
-    if (!$folder_data = thread_get_folder($tid)) {
-
-        light_html_display_error_msg(gettext("The requested folder could not be found or access was denied."));
-        return;
-    }
-
-    $perm_folder_moderate = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_data['FID']);
-
-    if (!$thread_data = thread_get($tid, $perm_folder_moderate, false, $perm_folder_moderate)) {
-
-        light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
-        return;
-    }
-
-    if (!$thread_data = thread_get($tid, session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
-
-        light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
-        return;
-    }
-
-    if (!$messages = messages_get($tid, $pid, 10)) {
-
-        light_html_display_error_msg(gettext("That post does not exist in this thread!"));
-        return;
-    }
 
     $msg_count = count($messages);
 
@@ -477,7 +498,7 @@ function light_draw_messages($tid, $pid)
         }
     }
 
-    echo "<div id=\"messages\">\n";
+    echo "<div id=\"messages\" data-navigation=\"{$tid}_{$pid}_{$thread_data['LENGTH']}_10\">\n";
 
     if ($msg_count > 0) {
 
@@ -521,20 +542,14 @@ function light_draw_messages($tid, $pid)
     echo "<div class=\"message_page_footer\">\n";
     echo "<ul>\n";
 
-    if (($thread_data['CLOSED'] == 0 && session::check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || session::check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
-        echo "<li><a href=\"lpost.php?webtag=$webtag&amp;reply_to=$tid.0&amp;return_msg=$tid.$pid\" class=\"reply_all\">", gettext("Reply to All"), "</a></li>\n";
-    }
-
     if ($last_pid < $thread_data['LENGTH']) {
 
-        $npid = $last_pid + 1;
-        echo "<li class=\"right_col\">", light_form_quick_button("lmessages.php", gettext("Keep reading&hellip;"), array('msg' => "$tid.$npid"), '_self', 'keep_reading'), "</li>\n";
+        $next_pid = $last_pid + 1;
+        echo "<li class=\"right_col\">", light_form_quick_button("lmessages.php", gettext("Keep reading&hellip;"), array('msg' => "$tid.$next_pid"), '_self', 'keep_reading'), "</li>\n";
     }
 
     echo "</ul>\n";
     echo "</div>\n";
-
-    light_messages_nav_strip($tid, $pid, $thread_data['LENGTH'], 10);
 
     if (($msg_count > 0 && session::logged_in())) {
         messages_update_read($tid, $last_pid, $thread_data['LAST_READ'], $thread_data['LENGTH'], $thread_data['MODIFIED']);
@@ -1040,7 +1055,7 @@ function light_draw_pm_inbox()
 
     } else {
 
-        $mid = 0;
+        $mid = null;
     }
 
     if (isset($_GET['folder'])) {
@@ -1324,8 +1339,15 @@ function light_draw_my_forums()
             foreach ($forums_array['forums_array'] as $forum) {
 
                 echo "<div class=\"forum\">\n";
-                echo "  <h3><a href=\"lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
-                echo "  <div class=\"forum_info\">", number_format($forum['MESSAGES']), " ", gettext("Messages"), "</div>\n";
+                echo "<h3><a href=\"lthread_list.php?webtag={$forum['WEBTAG']}\">{$forum['FORUM_NAME']}</a></h3>\n";
+                echo "<div class=\"forum_inner\">\n";
+                echo "<div class=\"forum_info\">", $forum['FORUM_DESC'], "</div>";
+                echo "<ul>\n";
+                echo "<li>\n";
+                echo "<span class=\"forum_messages\">", number_format($forum['MESSAGES']), " ", gettext("Messages"), "</span>\n";
+                echo "</li>\n";
+                echo "</ul>\n";
+                echo "</div>\n";
                 echo "</div>\n";
             }
 
@@ -1704,7 +1726,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     echo "<div class=\"message_header\">\n";
     echo "<div class=\"message_from\">\n";
-    echo "", gettext("From"), ": ", word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true);
+    echo gettext("From"), ": ", word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true);
 
     if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_FRIEND)) {
 
@@ -1801,10 +1823,9 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if ($is_preview || !isset($message['RELATIONSHIP']) || !($message['RELATIONSHIP'] & USER_IGNORED)) {
 
-        echo "<div class=\"message_links\">\n";
-
         if ($in_list && $msg_count > 0) {
 
+            echo "<div class=\"message_links\">\n";
             echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}\">$tid.{$message['PID']}</a>";
 
             if ($message['REPLY_TO_PID'] > 0) {
@@ -1820,9 +1841,14 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
                     echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$message['REPLY_TO_PID']}\">$tid.{$message['REPLY_TO_PID']}</a>";
                 }
             }
+
+            echo "</div>\n";
+
+        } else {
+
+            echo "<div class=\"message_links\">&nbsp;</div>\n";
         }
 
-        echo "</div>\n";
         echo "<div class=\"message_body\">\n";
 
         echo $message['CONTENT'];
@@ -1985,104 +2011,63 @@ function light_message_display_approval_req($tid, $pid)
     echo "</div>\n";
 }
 
-function light_messages_nav_strip($tid, $pid, $length, $posts_per_page)
+function light_messages_navigation_strip($tid, $pid, $length, $posts_per_page)
 {
     $webtag = get_webtag();
 
     forum_check_webtag_available($webtag);
 
-    if ($pid < 2 && $length < $posts_per_page) {
-        return;
-    } else if ($pid < 1) {
-        $pid = 1;
-    }
+    $current = floor($pid / $posts_per_page);
 
-    $current = 0;
-
-    $start_pid = $pid % $posts_per_page;
+    $ranges = array_chunk(range(1, $length), $posts_per_page);
 
     $navigation = array();
 
-    if ($start_pid > 1) {
+    $separator = false;
 
-        if ($pid > 1) {
+    foreach ($ranges as $key => $range) {
 
-            $navigation[0] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">" . mess_nav_range(1, $start_pid - 1) . "</a>";
+        if ($key == 0 || $key == count($ranges) - 1 || ($key > $current - 3 && $key < $current + 2)) {
 
-        } else {
+            $separator = true;
 
-            $current = 0;
-            $navigation[0] = mess_nav_range(1, $start_pid - 1);
+            $navigation[$key] = sprintf(
+                '<a href="lmessages.php?webtag=%s&amp;msg=%s.%s">%s&ndash;%s</a>',
+                urlencode($webtag),
+                urlencode($tid),
+                urlencode(min($range)),
+                htmlentities(min($range)),
+                htmlentities(max($range))
+            );
+
+        } else if ($separator) {
+
+            $separator = false;
+
+            $navigation[$key] = '&hellip;';
         }
+    };
 
-        $i = 1;
-
-    } else {
-
-        $i = 0;
-    }
-
-    while ($start_pid + ($posts_per_page - 1) < $length) {
-
-        if ($start_pid == $pid) {
-
-            $current = $i;
-            $navigation[$i] = mess_nav_range($start_pid, $start_pid + ($posts_per_page - 1));
-
-        } else {
-
-            $navigation[$i] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid." . ($start_pid == 0 ? 1 : $start_pid) . "\">" . mess_nav_range($start_pid == 0 ? 1 : $start_pid, $start_pid + ($posts_per_page - 1)) . "</a>";
-        }
-
-        $start_pid += $posts_per_page;
-
-        $i++;
-    }
-
-    if ($start_pid <= $length) {
-
-        if ($start_pid == $pid) {
-
-            $current = $i;
-            $navigation[$i] = mess_nav_range($start_pid, $length);
-
-        } else {
-
-            $navigation[$i] = "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$start_pid\">" . mess_nav_range($start_pid, $length) . "</a>";
-        }
-    }
-
-    $max = $i;
-
-    $html = "<span>" . gettext("Show messages") . ":</span>";
-
-    if ($length <= $posts_per_page) {
-        $html .= " <a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.1\">" . gettext("All") . "</a>\n";
-    }
-
-    for ($i = 0; $i <= $max; $i++) {
-
-        if (isset($navigation[$i])) {
-
-            if ((abs($current - $i) < 4) || $i == 0 || $i == $max) {
-
-                $html .= "\n&nbsp;" . $navigation[$i];
-
-            } else if (abs($current - $i) == 4) {
-
-                $html .= "\n&nbsp;&hellip;";
-            }
-        }
-    }
-
-    unset($navigation);
-
-    echo "<div class=\"message_pagination navigation\" id=\"navigation_{$tid}_{$pid}_{$length}_{$posts_per_page}\">{$html}</div>";
+    return implode('', $navigation);
 }
 
 function light_html_guest_error()
 {
-    light_html_draw_error(gettext("Sorry, you need to be logged in to use this feature."), 'llogout.php', 'get', array('login' => gettext("Login now")));
+    $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
+
+    light_html_draw_error(
+        gettext("Sorry, you need to be logged in to use this feature."),
+        'llogout.php',
+        'post',
+        array(
+            'login' => gettext("Login now")
+        ),
+        array(
+            'final_uri' => get_request_uri(true, false)
+        )
+    );
 }
 
 function light_folder_draw_dropdown($default_fid, $field_name = 't_fid', $suffix = '')
@@ -2303,7 +2288,7 @@ function light_post_edit_refuse()
     light_html_draw_error(gettext("You are not permitted to edit this message."));
 }
 
-function light_html_display_msg($header, $message, $href = null, $method = 'get', array $buttons = array(), array $vars = array(), $target = '_self')
+function light_html_display_msg($header, $message, $href = null, $method = 'get', array $buttons = array(), array $vars = array())
 {
     $webtag = get_webtag();
 
@@ -2318,11 +2303,10 @@ function light_html_display_msg($header, $message, $href = null, $method = 'get'
 
     if (is_string($href) && strlen(trim($href)) > 0) {
 
-        echo "<form accept-charset=\"utf-8\" action=\"$href\" method=\"$method\" target=\"$target\">\n";
+        echo "<form accept-charset=\"utf-8\" action=\"$href\" method=\"$method\">\n";
         echo form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
         if (is_array($vars)) {
-
             echo form_input_hidden_array($vars), "\n";
         }
     }
@@ -2385,10 +2369,11 @@ function light_html_display_error_msg($string_msg)
     echo "</div>\n";
 }
 
-function light_html_draw_error($message, $href = null, $method = 'get', array $buttons = array(), array $vars = array(), $target = '_self')
+function light_html_draw_error($message, $href = null, $method = 'get', array $buttons = array(), array $vars = array())
 {
     light_html_draw_top();
-    light_html_display_msg(gettext('Error'), $message, $href, $method, $buttons, $vars, $target);
+    light_navigation_bar();
+    light_html_display_msg(gettext('Error'), $message, $href, $method, $buttons, $vars);
     light_html_draw_bottom();
     exit;
 }
@@ -2438,24 +2423,21 @@ function light_pm_display($message_data, $preview = false)
 
     forum_check_webtag_available($webtag);
 
+    if (!$preview) {
+
+        if (strlen(trim($message_data['SUBJECT'])) > 0) {
+            echo "<h3 class=\"message_subject\">", word_filter_add_ob_tags($message_data['SUBJECT'], true), "</h3>\n";
+        } else {
+            echo "<h3 class=\"message_subject\">", gettext("No Subject"), "</h3>\n";
+        }
+    }
+
     echo "<div class=\"message\">\n";
     echo "<div class=\"message_header\">\n";
 
     echo "<div class=\"message_from\">\n";
-    echo "<span>", gettext("From"), ": ", word_filter_add_ob_tags(format_user_name($message_data['FROM_LOGON'], $message_data['FROM_NICKNAME']), true), "</span>\n";
-    echo "</div>\n";
-
-    echo "<div class=\"message_subject\">", gettext("Subject"), ": ";
-
-    if (strlen(trim($message_data['SUBJECT'])) > 0) {
-
-        echo word_filter_add_ob_tags($message_data['SUBJECT'], true), "\n";
-
-    } else {
-
-        echo "<span class=\"no_subject\">", gettext("No Subject"), "</span>\n";
-    }
-
+    echo gettext("From"), ": ", word_filter_add_ob_tags(format_user_name($message_data['FROM_LOGON'], $message_data['FROM_NICKNAME']), true), "\n";
+    echo "<span class=\"message_time\">", format_date_time($message_data['CREATED']), "</span>\n";
     echo "<div class=\"clearer\"></div>\n";
     echo "</div>\n";
 
@@ -2480,6 +2462,7 @@ function light_pm_display($message_data, $preview = false)
     $message_data['CONTENT'] = message_apply_formatting($message_data['CONTENT']);
     $message_data['CONTENT'] = word_filter_add_ob_tags($message_data['CONTENT']);
 
+    echo "<div class=\"message_links\">&nbsp;</div>\n";
     echo "<div class=\"message_body\">", $message_data['CONTENT'], "</div>\n";
 
     if (isset($message_data['ATTACHMENTS']) && sizeof($message_data['ATTACHMENTS']) > 0) {

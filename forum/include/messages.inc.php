@@ -1319,108 +1319,44 @@ function messages_nav_strip($tid, $pid, $length, $posts_per_page)
 
     forum_check_webtag_available($webtag);
 
-    if ($pid < 2 && $length < $posts_per_page) {
-        return;
-    } else if ($pid < 1) {
-        $pid = 1;
-    }
+    $current = floor($pid / $posts_per_page);
 
-    $current = 0;
-
-    $start_pid = $pid % $posts_per_page;
+    $ranges = array_chunk(range(1, $length), $posts_per_page);
 
     $navigation = array();
 
-    if ($start_pid > 1) {
+    $separator = false;
 
-        if ($pid > 1) {
+    foreach ($ranges as $key => $range) {
 
-            $navigation[0] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\">" . mess_nav_range(1, $start_pid - 1) . "</a>";
+        if ($key == 0 || $key == count($ranges) - 1 || ($key > $current - 3 && $key < $current + 2)) {
 
-        } else {
+            $separator = true;
 
-            $current = 0;
-            $navigation[0] = mess_nav_range(1, $start_pid - 1);
+            $navigation[$key] = sprintf(
+                '<a href="messages.php?webtag=%s&amp;msg=%s.%s" target="_self">%s&ndash;%s</a>',
+                urlencode($webtag),
+                urlencode($tid),
+                urlencode(min($range)),
+                htmlentities(min($range)),
+                htmlentities(max($range))
+            );
+
+        } else if ($separator) {
+
+            $separator = false;
+            $navigation[$key] = '&hellip;';
         }
+    };
 
-        $i = 1;
+    $html = "<table class=\"posthead\" width=\"100%\">\n";
+    $html .= "  <tr>\n";
+    $html .= "    <td align=\"center\">" . implode('&nbsp;&nbsp;', $navigation) . "</td>\n";
+    $html .= "  </tr>\n";
+    $html .= "</table>\n";
+    $html .= "<br />\n";
 
-    } else {
-
-        $i = 0;
-    }
-
-    while ($start_pid + ($posts_per_page - 1) < $length) {
-
-        if ($start_pid == $pid) {
-
-            $current = $i;
-            $navigation[$i] = mess_nav_range($start_pid, $start_pid + ($posts_per_page - 1));
-
-        } else {
-
-            $navigation[$i] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid." . ($start_pid == 0 ? 1 : $start_pid) . "\" target=\"_self\">" . mess_nav_range($start_pid == 0 ? 1 : $start_pid, $start_pid + ($posts_per_page - 1)) . "</a>";
-        }
-
-        $start_pid += $posts_per_page;
-
-        $i++;
-    }
-
-    if ($start_pid <= $length) {
-
-        if ($start_pid == $pid) {
-
-            $current = $i;
-            $navigation[$i] = mess_nav_range($start_pid, $length);
-
-        } else {
-
-            $navigation[$i] = "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.$start_pid\" target=\"_self\">" . mess_nav_range($start_pid, $length) . "</a>";
-        }
-    }
-
-    $max = $i;
-
-    $html = gettext("Show messages:");
-
-    if ($length <= $posts_per_page) {
-        $html .= " <a href=\"messages.php?webtag=$webtag&amp;msg=$tid.1\" target=\"_self\">" . gettext("All") . "</a>\n";
-    }
-
-    for ($i = 0; $i <= $max; $i++) {
-
-        if (isset($navigation[$i])) {
-
-            if ((abs($current - $i) < 4) || $i == 0 || $i == $max) {
-
-                $html .= "\n&nbsp;" . $navigation[$i];
-
-            } else if (abs($current - $i) == 4) {
-
-                $html .= "\n&nbsp;&hellip;";
-            }
-        }
-    }
-
-    unset($navigation);
-
-    echo "<table class=\"posthead navigation\" width=\"100%\" id=\"navigation_{$tid}_{$pid}_{$length}_{$posts_per_page}\">\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"center\">$html</td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-    echo "<br />\n";
-}
-
-function mess_nav_range($from, $to)
-{
-    if ($from == $to) {
-        $range = sprintf("%d", $from);
-    } else {
-        $range = sprintf("%d-%d", $from, $to);
-    }
-    return $range;
+    return $html;
 }
 
 function messages_interest_form($tid, $pid, $interest)

@@ -123,7 +123,15 @@ if (isset($search_keyword) && strlen(trim($search_keyword)) > 0) {
     $thread_subscriptions = threads_get_user_subscriptions($view, $page);
 }
 
-html_draw_top(sprintf('title=%s', gettext("My Controls - Thread Subscriptions")), "js/edit_subscriptions.js", 'class=window_title');
+html_draw_top(
+    array(
+        'title' => gettext('My Controls - Thread Subscriptions'),
+        'js' => array(
+            'js/edit_subscriptions.js'
+        ),
+        'class' => 'window_title'
+    )
+);
 
 echo "<h1>", gettext("Thread Subscriptions"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$header_text_array[$view]}</h1>\n";
 

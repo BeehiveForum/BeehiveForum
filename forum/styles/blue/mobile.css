@@ -154,7 +154,7 @@ body {
 #header {
     background-color: #336699;
     font-size: 11pt;
-    height: 31px;
+    height: 41px;
     margin: 0;
     padding: 0 5px;
     position: fixed;
@@ -164,7 +164,7 @@ body {
 }
 
 #header img {
-    margin: 5px 0;
+    margin: 10px 0;
     vertical-align: top;
 }
 
@@ -204,18 +204,16 @@ body {
 
 #nav {
     background: url("images/mobile_icon.png") no-repeat scroll 90% 5px #336699;
-    border-bottom: none;
-    border-left: 1px solid rgba(0, 0, 0, 0.1);
-    border-right: none;
     color: #FFFFFF;
     cursor: pointer;
+    display: inline-block;
     font-weight: bold;
-    height: 19px;
-    padding: 8px 20px 4px;
+    height: 100%;
     position: absolute;
-    right: 0;
+    right: 10px;
+    text-indent: 9999px;
     top: 0;
-    width: 80px;
+    width: 20px;
 }
 
 #nav.menu_open {
@@ -231,7 +229,7 @@ body {
     display: none;
     position: fixed;
     right: 0;
-    top: 31px;
+    top: 41px;
     width: 120px;
     z-index: 9999;
 }
@@ -265,7 +263,7 @@ body {
 
 #page_content {
     font-size: 11pt;
-    margin: 45px 10px 5px;
+    margin: 55px 10px 5px;
     padding-bottom: 5px;
 }
 

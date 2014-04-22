@@ -40,7 +40,12 @@ if (isset($_SESSION['LEFT_FRAME_WIDTH']) && is_numeric($_SESSION['LEFT_FRAME_WID
     $left_frame_width = 280;
 }
 
-html_draw_top('frame_set_html', 'pm_popup_disabled');
+html_draw_top(
+    array(
+        'frame_set_html' => true,
+        'pm_popup_disabled' => true
+    )
+);
 
 $frameset = new html_frameset_cols('start', "$left_frame_width,*");
 $frameset->html_frame("thread_list.php?webtag=$webtag", html_get_frame_name('left'));

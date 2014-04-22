@@ -846,7 +846,7 @@ function get_request_uri($include_webtag = true, $encode_uri_query = true)
         $query_string_array['webtag'] = $webtag;
     }
 
-    $query_string_array = array_merge_recursive( $_GET, $query_string_array );
+    $query_string_array = array_merge_recursive($_GET, $query_string_array);
 
     $query_string = http_build_query($query_string_array, null, (($encode_uri_query) ? '&amp;' : '&'));
 

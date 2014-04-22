@@ -251,16 +251,32 @@ function get_forum_check_webtag_ignore_files()
         'admin_menu.php',
         'admin_users.php',
         'admin_user.php',
-        'index.php',
+        'ajax.php',
+        'edit_email.php',
+        'edit_password',
+        'edit_prefs',
+        'forum_options.php',
         'forums.php',
+        'index.php',
+        'json.php',
         'lforums.php',
         'llogon.php',
         'llogout.php',
+        'lpm.php',
+        'lpm_edit.php',
+        'lpm_write.php',
         'logon.php',
         'logout.php',
         'nav.php',
-        'user.php',
+        'pm.php',
+        'pm_edit.php',
+        'pm_export.php',
+        'pm_folders.php',
+        'pm_messages.php',
+        'pm_options.php',
+        'pm_write.php',
         'register.php',
+        'user.php',
         'user_menu.php',
     );
 }
@@ -297,6 +313,75 @@ function get_light_back_button_files()
         'lthread_list.php',
         'lmessages.php',
         'lpm.php',
+    );
+}
+
+function get_pm_popup_disabled_files()
+{
+    return array(
+        'admin.php',
+        'attachments.php',
+        'change_pw.php',
+        'confirm_email.php',
+        'discussion.php',
+        'display_emoticons.php',
+        'edit_attachments.php',
+        'email.php',
+        'font_size.php',
+        'forgot_pw.php',
+        'get_attachment.php',
+        'index.php',
+        'mods_list.php',
+        'nav.php',
+        'pm.php',
+        'pm_edit.php',
+        'pm_folders.php',
+        'pm_messages.php',
+        'pm_options.php',
+        'poll_results.php',
+        'start.php',
+        'search_popup.php',
+        'threads_rss.php',
+        'user.php',
+        'user_font.php',
+        'user_profile.php',
+        'user_stats.php',
+    );
+}
+
+function get_image_resize_files()
+{
+    return array(
+        'admin_post_approve.php',
+        'create_poll.php',
+        'delete.php',
+        'display.php',
+        'edit.php',
+        'edit_poll.php',
+        'edit_signature.php',
+        'messages.php',
+        'post.php',
+        'pm_write.php',
+        'pm_edit.php',
+        'pm_messages.php'
+    );
+}
+
+function get_message_display_files()
+{
+    return array(
+        'admin_post_approve.php',
+        'create_poll.php',
+        'delete.php',
+        'display.php',
+        'edit.php',
+        'edit_poll.php',
+        'edit_signature.php',
+        'ldisplay.php',
+        'lmessages.php',
+        'lpost.php',
+        'messages.php',
+        'post.php',
     );
 }
 

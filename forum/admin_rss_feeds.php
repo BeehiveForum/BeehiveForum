@@ -434,7 +434,16 @@ if (isset($_POST['delete'])) {
 
 if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
-    html_draw_top(sprintf('title=%s', gettext("Admin - RSS Feeds - Add New Feed")), 'class=window_title', "js/search_popup.js", 'main_css=admin.css');
+    html_draw_top(
+        array(
+            'title' => gettext('Admin - RSS Feeds - Add New Feed'),
+            'class' => 'window_title',
+            'js' => array(
+                'js/search_popup.js'
+            ),
+            'main_css' => 'admin.css'
+        )
+    );
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("RSS Feeds"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add New Feed"), "</h1>\n";
 
@@ -560,7 +569,19 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
         html_draw_error(gettext("Invalid feed id or feed not found"), 'admin_rss_feeds.php', 'get', array('back' => gettext("Back")));
     }
 
-    html_draw_top(sprintf('title=%s', sprintf(gettext("Admin - RSS Feeds - Edit Feed - %s"), $rss_feed['NAME'])), "js/search_popup.js", 'class=window_title', 'main_css=admin.css');
+    html_draw_top(
+        array(
+            'title' => sprintf(
+                gettext('Admin - RSS Feeds - Edit Feed - %s'),
+                $rss_feed['NAME']
+            ),
+            'js' => array(
+                'js/search_popup.js'
+            ),
+            'class' => 'window_title',
+            'main_css' => 'admin.css'
+        )
+    );
 
     echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("RSS Feeds"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Feed"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($rss_feed['NAME'], true), "</h1>\n";
 
@@ -670,7 +691,16 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
 } else {
 
-    html_draw_top(sprintf('title=%s', gettext("Admin - RSS Feeds")), "js/search.js", 'class=window_title', 'main_css=admin.css');
+    html_draw_top(
+        array(
+            'title' => gettext('Admin - RSS Feeds'),
+            'js' => array(
+                'js/search.js'
+            ),
+            'class' => 'window_title',
+            'main_css' => 'admin.css'
+        )
+    );
 
     $rss_feeds = rss_feed_get_feeds($page);
 

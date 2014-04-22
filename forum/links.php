@@ -125,7 +125,12 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 
 $page_title = links_get_folder_page_title($fid, $folders);
 
-html_draw_top("title={$page_title}", 'class=window_title');
+html_draw_top(
+    array(
+        'title' => $page_title,
+        'class' => 'window_title'
+    )
+);
 
 echo "<h1>", links_get_folder_path_links($fid, $folders), "</h1>\n";
 

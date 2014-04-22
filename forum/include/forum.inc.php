@@ -143,9 +143,9 @@ function get_all_table_prefixes()
     return $forum_data_array;
 }
 
-function forum_check_webtag_available(&$webtag = false)
+function forum_check_webtag_available(&$webtag, $check_ignore = true)
 {
-    $result = forum_check_webtag_available_ignore();
+    $result = ($check_ignore) ? forum_check_webtag_available_ignore() : false;
 
     if (!($forum_data = get_forum_data())) return $result;
 
@@ -177,7 +177,7 @@ function forum_check_guest_access_allowed()
 {
     $result = forum_check_guest_access_allowed_ignore();
 
-	if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return $result;
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return $result;
 
     if (!user_guest_enabled() && $_SESSION['UID'] == 0) {
         return $result;
@@ -246,7 +246,12 @@ function forum_closed_message()
 {
     cache_disable();
 
-    html_draw_top(sprintf("title=%s", gettext("Closed")));
+    html_draw_top(
+        array(
+            'title' => gettext("Closed")
+        )
+    );
+
 
     $forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
 
@@ -361,7 +366,12 @@ function forum_check_password($forum_fid)
 
     cache_disable();
 
-    html_draw_top(sprintf("title=%s", gettext("Password Protected Forum")));
+    html_draw_top(
+        array(
+            'title' => gettext("Password Protected Forum")
+        )
+    );
+
 
     echo "<h1>", gettext("Password Protected Forum"), "</h1>\n";
 

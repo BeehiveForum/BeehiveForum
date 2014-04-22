@@ -31,6 +31,7 @@ require_once BH_INCLUDE_PATH . 'ip.inc.php';
 require_once BH_INCLUDE_PATH . 'perm.inc.php';
 require_once BH_INCLUDE_PATH . 'server.inc.php';
 require_once BH_INCLUDE_PATH . 'user.inc.php';
+
 // End Required includes
 
 abstract class session

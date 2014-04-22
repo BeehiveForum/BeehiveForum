@@ -50,7 +50,6 @@ a.button {
 
 a {
     color: #000000;
-    text-decoration: none;
 }
 
 .quotetext {
@@ -153,19 +152,41 @@ body {
 
 #header {
     background-color: #5483B1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
     font-size: 11pt;
-    height: 31px;
+    font-weight: bold;
+    height: 46px;
     margin: 0;
+    overflow: hidden;
     padding: 0 5px;
     position: fixed;
+    text-align: right;
     top: 0;
     width: calc(100% - 10px);
     z-index: 1;
 }
 
+#header span.left {
+    display: inline-block;
+    float: left;
+    height: 100%;
+}
+
 #header img {
-    margin: 5px 0;
+    margin: 12px 0 13px;
     vertical-align: top;
+}
+
+#header a {
+    background: transparent no-repeat scroll center center;
+}
+
+#header a.reply_all {
+    background-image: url('images/reply_all.png');
+}
+
+#header a.navigation {
+    background-image: url('images/navigation.png');
 }
 
 #footer {
@@ -184,7 +205,7 @@ body {
     margin: 20px 0;
 }
 
-#back {
+span.back {
     background: url("images/mobile_back.png") no-repeat scroll center center #5483B1;
     color: #FFFFFF;
     cursor: pointer;
@@ -192,80 +213,130 @@ body {
     font-weight: bold;
     height: 100%;
     top: 0;
-    width: 20px;
+    width: 46px;
 }
 
-#back a {
+span.back a {
     display: inline-block;
     height: 100%;
     text-indent: 9999px;
     width: 100%;
 }
 
-#nav {
-    background: url("images/mobile_icon.png") no-repeat scroll 90% 5px #5483B1;
-    border-bottom: none;
-    border-left: 1px solid rgba(0, 0, 0, 0.1);
-    border-right: none;
+#header ul {
+    background-color: #5483B1;
     color: #FFFFFF;
     cursor: pointer;
-    font-weight: bold;
-    height: 19px;
-    padding: 8px 20px 4px;
+    display: inline-block;
+    height: 46px;
+    margin: 0;
+    padding: 0;
     position: absolute;
     right: 0;
-    top: 0;
-    width: 80px;
 }
 
-#nav.menu_open {
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+#header ul li {
+    float: left;
+    height: 46px;
+    list-style: none;
+    width: 46px;
 }
 
-#menu {
+#header ul li a {
+    color: #FFFFFF;
+    display: inline-block;
+    height: 46px;
+    width: 100%;
+    text-indent: 100%;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#header ul li a.main {
+    background: url("images/mobile_menu.png") no-repeat scroll center center;
+}
+
+@media screen and (min-width: 630px) {
+
+    #header ul li {
+        margin-left: 15px;
+        min-width: 46px;
+        width: auto;
+    }
+
+    #header ul li a:not(.main) {
+        background-position: 8px center;
+        line-height: 46px;
+        padding-left: 32px;
+        text-align: left;
+        text-indent: 0;
+    }
+}
+
+div.menu {
     background-color: #5483B1;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    border-left: 1px solid rgba(0, 0, 0, 0.1);
-    border-style: none;
-    box-shadow: -2px 10px 10px rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: -2px 4px 4px rgba(0, 0, 0, 0.4);
+    border-radius: 0 0 3px 3px;
+    color: #FFFFFF;
     display: none;
+    font-size: 11pt;
+    font-weight: bold;
     position: fixed;
-    right: 0;
-    top: 31px;
-    width: 120px;
+    top: 46px;
     z-index: 9999;
 }
 
-#menu ul {
-    border-collapse: collapse;
-    font-size: 11pt;
+div.menu a {
+    white-space: nowrap;
+}
+
+div.menu ul {
     list-style: none;
     margin: 0;
+    min-width: 175px;
     padding: 0;
 }
 
-#menu li {
-    border: none;
-    color: #FFFFFF;
-    cursor: pointer;
-    font-weight: bold;
+div.menu ul li {
+    border-top: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-#menu li a {
+div.menu li:first-child {
+    border: none;
+}
+
+div.menu a {
     color: #FFFFFF;
+    cursor: pointer;
     display: block;
+    line-height: 36px;
+    height: 36px;
+    text-decoration: none;
+}
+
+div.menu.main li a {
     padding: 5px 20px;
 }
 
-#menu ul li:first-child a,
-#menu ul li:last-child a,
-#menu li.menu_toggle {
-    padding: 6px 20px 6px;
+div.menu.navigation a {
+    border-right: 1px solid rgba(255, 255, 255, 0.4);
+    display: inline-block;
+    padding: 5px 10px;
+}
+
+div.menu.navigation a:first-child {
+    padding-left: 15px;
+}
+
+div.menu.navigation a:last-child {
+    padding-right: 15px;
 }
 
 #page_content {
     font-size: 11pt;
-    margin: 45px 10px 5px;
+    margin: 65px 10px 5px;
     padding-bottom: 5px;
 }
 
@@ -406,7 +477,8 @@ body {
     white-space: nowrap;
 }
 
-h3.thread_title {
+h3.thread_title,
+h3.message_subject {
     font-size: 11pt;
     line-height: 150%;
 }
@@ -430,8 +502,7 @@ h3.thread_title {
 }
 
 .message_from,
-.message_to,
-.message_subject {
+.message_to {
     line-height: 150%;
 }
 
@@ -456,10 +527,6 @@ h3.thread_title {
     background: url('images/post_unread.png') transparent no-repeat scroll 0 0;
     margin-left: 5px;
     padding-left: 16px;
-}
-
-.message_subject span.no_subject {
-    font-style: italic;
 }
 
 .message_links {
@@ -603,29 +670,8 @@ h3.thread_title {
     text-align: right;
 }
 
-a.reply_all {
-    background: url('images/reply_all.png') transparent no-repeat scroll 0 0;
-    display: inline-block;
-    font-weight: bold;
-    line-height: 160%;
-    margin: 10px 0;
-    padding-left: 20px;
-    text-decoration: underline;
-}
-
 a.pm_send_new {
     background: url('images/post.png') transparent no-repeat scroll 0 0;
-    display: inline-block;
-    font-weight: bold;
-    line-height: 160%;
-    margin: 10px 0 0;
-    padding-left: 20px;
-    text-decoration: underline;
-}
-
-a.thread_list_link,
-a.folder_list_link {
-    background: url('images/thread_back.png') transparent no-repeat scroll 0 0;
     display: inline-block;
     font-weight: bold;
     line-height: 160%;

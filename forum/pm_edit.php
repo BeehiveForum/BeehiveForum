@@ -206,7 +206,23 @@ if ($valid && isset($_POST['preview'])) {
     $t_subject = $message_data['SUBJECT'];
 }
 
-html_draw_top(sprintf("title=%s", gettext("Private Messages")), "resize_width=960", "js/attachments.js", "js/edit.js", "js/pm.js", "js/emoticons.js", 'ckeditor/ckeditor.js', 'js/fineuploader.min.js', "basetarget=_blank", 'pm_popup_disabled', 'class=window_title');
+html_draw_top(
+    array(
+        'title' => gettext("Private Messages"),
+        'resize_width' => 960,
+        'js' => array(
+            'js/attachments.js',
+            'js/edit.js',
+            'js/pm.js',
+            'js/emoticons.js',
+            'ckeditor/ckeditor.js',
+            'js/fineuploader.min.js'
+        ),
+        'base_target' => '_blank',
+        'pm_popup_disabled' => true,
+        'class' => 'window_title'
+    )
+);
 
 echo "<h1>", gettext("Private Messages"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Message"), "</h1>\n";
 

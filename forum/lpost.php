@@ -90,7 +90,6 @@ if (isset($_POST['newthread']) && (isset($_POST['post']) || isset($_POST['previe
     if (isset($_POST['threadtitle']) && strlen(trim($_POST['threadtitle'])) > 0) {
 
         $threadtitle = trim($_POST['threadtitle']);
-
     } else {
 
         $error_msg_array[] = gettext("You must enter a title for the thread!");
@@ -102,22 +101,23 @@ if (isset($_POST['newthread']) && (isset($_POST['post']) || isset($_POST['previe
         if (folder_thread_type_allowed($_POST['fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
 
             $fid = $_POST['fid'];
-
         } else {
 
             $error_msg_array[] = gettext("You cannot post this thread type in that folder!");
             $valid = false;
         }
+    } else {
+        if ($valid) {
 
-    } else if ($valid) {
+            $error_msg_array[] = gettext("Please select a folder");
+            $valid = false;
+        }
+    }
+} else {
+    if (!isset($_POST['reply_to'])) {
 
-        $error_msg_array[] = gettext("Please select a folder");
         $valid = false;
     }
-
-} else if (!isset($_POST['reply_to'])) {
-
-    $valid = false;
 }
 
 if (isset($_POST['attachment']) && is_array($_POST['attachment'])) {
@@ -142,7 +142,6 @@ if (isset($_POST['post']) || isset($_POST['preview'])) {
             $error_msg_array[] = gettext("You are not allowed to embed attachments in your posts.");
             $valid = false;
         }
-
     } else {
 
         $error_msg_array[] = gettext("You must enter some content for the post!");
@@ -170,7 +169,6 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
             if (folder_thread_type_allowed($_POST['fid'], FOLDER_ALLOW_NORMAL_THREAD)) {
 
                 $fid = $_POST['fid'];
-
             } else {
 
                 $error_msg_array[] = gettext("You cannot post this thread type in that folder!");
@@ -186,15 +184,14 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
     if (isset($_POST['emots_toggle'])) {
 
         $page_prefs = (double)$page_prefs ^ POST_EMOTICONS_DISPLAY;
+    } else {
+        if (isset($_POST['sig_toggle'])) {
 
-    } else if (isset($_POST['sig_toggle'])) {
-
-        $page_prefs = (double)$page_prefs ^ POST_SIGNATURE_DISPLAY;
+            $page_prefs = (double)$page_prefs ^ POST_SIGNATURE_DISPLAY;
+        }
     }
 
-    $user_prefs = array(
-        'POST_PAGE' => $page_prefs
-    );
+    $user_prefs = array('POST_PAGE' => $page_prefs);
 
     if (!user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
@@ -203,7 +200,9 @@ if (isset($_POST['emots_toggle']) || isset($_POST['sig_toggle'])) {
     }
 }
 
-if (!isset($content)) $content = "";
+if (!isset($content)) {
+    $content = "";
+}
 
 if (isset($_GET['reply_to']) && validate_msg($_GET['reply_to'])) {
 
@@ -230,84 +229,86 @@ if (isset($_GET['reply_to']) && validate_msg($_GET['reply_to'])) {
     }
 
     $new_thread = false;
-
-} else if (isset($_POST['reply_to']) && validate_msg($_POST['reply_to'])) {
-
-    list($tid, $reply_to_pid) = explode(".", $_POST['reply_to']);
-
-    if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
-        $return_msg = $_POST['return_msg'];
-    } else {
-        $return_msg = $_POST['reply_to'];
-    }
-
-    if (!($fid = thread_get_folder_fid($tid))) {
-        light_html_draw_error(gettext("The requested thread could not be found or access was denied."));
-    }
-
-    if (session::check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
-
-        light_html_email_confirmation_error();
-        exit;
-    }
-
-    if (!session::check_perm(USER_PERM_POST_CREATE, $fid)) {
-        light_html_draw_error(gettext("You cannot reply to posts in this folder"));
-    }
-
-    if (sizeof($attachments) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid)) {
-
-        $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
-        $valid = false;
-    }
-
-    if (sizeof($attachments) > 0 && !attachments_check_post_space($_SESSION['UID'], $attachments)) {
-
-        $max_post_attachment_space = forum_get_setting('attachments_max_post_space', 'is_numeric', 1048576);
-        $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
-        $valid = false;
-    }
-
-    $new_thread = false;
-
 } else {
+    if (isset($_POST['reply_to']) && validate_msg($_POST['reply_to'])) {
 
-    $new_thread = true;
+        list($tid, $reply_to_pid) = explode(".", $_POST['reply_to']);
 
-    if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
-        $fid = $_GET['fid'];
-    } else if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-        $fid = $_POST['fid'];
-    }
+        if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
+            $return_msg = $_POST['return_msg'];
+        } else {
+            $return_msg = $_POST['reply_to'];
+        }
 
-    if (isset($fid) && !folder_is_valid($fid)) {
+        if (!($fid = thread_get_folder_fid($tid))) {
+            light_html_draw_error(gettext("The requested thread could not be found or access was denied."));
+        }
 
-        $error_msg_array[] = gettext("Invalid Folder ID. Check that a folder with this ID exists!");
-        $valid = false;
-    }
+        if (session::check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
 
-    if (session::check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
+            light_html_email_confirmation_error();
+            exit;
+        }
 
-        light_html_email_confirmation_error();
-        exit;
-    }
+        if (!session::check_perm(USER_PERM_POST_CREATE, $fid)) {
+            light_html_draw_error(gettext("You cannot reply to posts in this folder"));
+        }
 
-    if (isset($fid) && !session::check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $fid)) {
+        if (sizeof($attachments) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid)) {
 
-        $error_msg_array[] = gettext("You cannot create new threads in this folder");
-        $valid = false;
-    }
+            $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
+            $valid = false;
+        }
 
-    if (isset($fid) && sizeof($attachments) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid)) {
+        if (sizeof($attachments) > 0 && !attachments_check_post_space($_SESSION['UID'], $attachments)) {
 
-        $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
-        $valid = false;
-    }
+            $max_post_attachment_space = forum_get_setting('attachments_max_post_space', 'is_numeric', 1048576);
+            $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
+            $valid = false;
+        }
 
-    if (sizeof($attachments) > 0 && !attachments_check_post_space($_SESSION['UID'], $attachments)) {
+        $new_thread = false;
+    } else {
 
-        $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
-        $valid = false;
+        $new_thread = true;
+
+        if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
+            $fid = $_GET['fid'];
+        } else {
+            if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
+                $fid = $_POST['fid'];
+            }
+        }
+
+        if (isset($fid) && !folder_is_valid($fid)) {
+
+            $error_msg_array[] = gettext("Invalid Folder ID. Check that a folder with this ID exists!");
+            $valid = false;
+        }
+
+        if (session::check_perm(USER_PERM_EMAIL_CONFIRM, 0)) {
+
+            light_html_email_confirmation_error();
+            exit;
+        }
+
+        if (isset($fid) && !session::check_perm(USER_PERM_THREAD_CREATE | USER_PERM_POST_READ, $fid)) {
+
+            $error_msg_array[] = gettext("You cannot create new threads in this folder");
+            $valid = false;
+        }
+
+        if (isset($fid) && sizeof($attachments) > 0 && !session::check_perm(USER_PERM_POST_ATTACHMENTS | USER_PERM_POST_READ, $fid)) {
+
+            $error_msg_array[] = gettext("You cannot post attachments in this folder. Remove attachments to continue.");
+            $valid = false;
+        }
+
+        if (sizeof($attachments) > 0 && !attachments_check_post_space($_SESSION['UID'], $attachments)) {
+
+            $error_msg_array[] = gettext(sprintf("You have too many files attached to this post. Maximum attachment space per post is %s", format_file_size($max_post_attachment_space)));
+            $valid = false;
+        }
     }
 }
 
@@ -344,12 +345,7 @@ if (isset($_POST['to_logon'])) {
 
             if (($to_user = user_get_by_logon($to_logon)) !== false) {
 
-                $to_logon_array[$to_user['UID']] = array(
-                    'UID' => $to_user['UID'],
-                    'LOGON' => $to_user['LOGON'],
-                    'NICKNAME' => $to_user['NICKNAME']
-                );
-
+                $to_logon_array[$to_user['UID']] = array('UID' => $to_user['UID'], 'LOGON' => $to_user['LOGON'], 'NICKNAME' => $to_user['NICKNAME']);
             } else {
 
                 $error_msg_array[] = sprintf(gettext("User %s not found"), $to_logon);
@@ -365,10 +361,11 @@ if (isset($_POST['to_logon'])) {
             $valid = false;
         }
     }
+} else {
+    if (isset($tid) && isset($reply_to_pid) && ($reply_to_pid > 0)) {
 
-} else if (isset($tid) && isset($reply_to_pid) && ($reply_to_pid > 0)) {
-
-    $to_logon = $reply_message['FROM_LOGON'];
+        $to_logon = $reply_message['FROM_LOGON'];
+    }
 }
 
 $allow_html = true;
@@ -391,10 +388,7 @@ if ($allow_html == false) {
 
 if ((mb_strlen($content) + mb_strlen($sig)) >= 65535) {
 
-    $error_msg_array[] = sprintf(
-        gettext("Combined Message and signature length must be less than 65,535 characters (currently: %s)"),
-        number_format(mb_strlen($content) + mb_strlen($sig))
-    );
+    $error_msg_array[] = sprintf(gettext("Combined Message and signature length must be less than 65,535 characters (currently: %s)"), number_format(mb_strlen($content) + mb_strlen($sig)));
 
     $valid = false;
 }
@@ -409,7 +403,6 @@ if ($valid && isset($_POST['post'])) {
 
                 $tid = post_create_thread($fid, $_SESSION['UID'], $threadtitle, 'N', 'N', false);
                 $reply_to_pid = 0;
-
             } else {
 
                 if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && (!session::check_perm(USER_PERM_FOLDER_MODERATE, $fid))) {
@@ -453,20 +446,19 @@ if ($valid && isset($_POST['post'])) {
         if ($new_thread && isset($tid) && is_numeric($tid)) {
 
             $uri = "lmessages.php?webtag=$webtag&msg=$tid.1";
-
         } else {
 
             if (isset($return_msg)) {
 
                 $uri = "lmessages.php?webtag=$webtag&msg=$return_msg";
-
-            } else if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
-
-                $uri = "lmessages.php?webtag=$webtag&msg=$tid.$reply_to_pid";
-
             } else {
+                if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
 
-                $uri = "lmessages.php?webtag=$webtag";
+                    $uri = "lmessages.php?webtag=$webtag&msg=$tid.$reply_to_pid";
+                } else {
+
+                    $uri = "lmessages.php?webtag=$webtag";
+                }
             }
 
             if (isset($tid) && is_numeric($tid) && isset($new_pid) && is_numeric($new_pid)) {
@@ -476,7 +468,6 @@ if ($valid && isset($_POST['post'])) {
 
         header_redirect($uri);
         exit;
-
     } else {
 
         $error_msg_array[] = sprintf(gettext("You can only post once every %s seconds. Please try again later."), forum_get_setting('minimum_post_frequency', 'is_numeric', 0));
@@ -497,13 +488,29 @@ if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !session::che
 
 if (isset($return_msg)) {
     $back = "lmessages.php?webtag=$webtag&msg=$return_msg";
-} else if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
-    $back = "lmessages.php?webtag=$webtag&msg=$tid.$reply_to_pid";
 } else {
-    $back = "lmessages.php?webtag=$webtag";
+    if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
+        $back = "lmessages.php?webtag=$webtag&msg=$tid.$reply_to_pid";
+    } else {
+        $back = "lmessages.php?webtag=$webtag";
+    }
 }
 
-light_html_draw_top(sprintf("title=%s", gettext("Post message")), "back=$back", 'js/fineuploader.min.js', 'js/attachments.js');
+light_html_draw_top(
+    array(
+        'title' => gettext('Post message'),
+        'js' => array(
+            'js/fineuploader.min.js',
+            'js/attachments.js'
+        )
+    )
+);
+
+light_navigation_bar(
+    array(
+        'back' => $back,
+    )
+);
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);
@@ -539,18 +546,8 @@ if ($valid && isset($_POST['preview'])) {
 
 if (!$new_thread) {
 
-    if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0) {
-
-        if (session::check_perm(USER_PERM_FOLDER_MODERATE, $fid)) {
-
-            echo "<h3>", gettext("Warning: this thread is closed for posting to normal users."), "</h3>\n";
-
-        } else {
-
-            echo "<h3>", gettext("This thread is closed, you cannot post in it!"), "</h3>\n";
-            light_html_draw_bottom();
-            exit;
-        }
+    if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && (!session::check_perm(USER_PERM_FOLDER_MODERATE, $fid))) {
+        light_html_display_warning_msg(gettext("This thread is closed, you cannot post in it!"));
     }
 }
 
@@ -576,7 +573,6 @@ if ($new_thread) {
     echo "<div class=\"post_inner\">\n";
     echo "<div class=\"post_folder\">", gettext("Select folder"), ":", light_folder_draw_dropdown($fid, "fid"), "</div>";
     echo "<div class=\"post_thread_title\">", gettext("Thread title"), ":", light_form_input_text("threadtitle", htmlentities_array($threadtitle), 30, 64), "</div>";
-
 } else {
 
     if (!($reply_message = messages_get($tid, $reply_to_pid))) {
@@ -593,7 +589,6 @@ if ($new_thread) {
         light_html_display_error_msg(gettext("Message not found. Check that it hasn't been deleted."));
         light_html_draw_bottom();
         exit;
-
     } else {
 
         echo "<h3>", gettext("Post Reply"), ": ", word_filter_add_ob_tags(thread_get_title($tid), true), "</h3>\n";
@@ -611,10 +606,12 @@ echo light_form_submit("preview", gettext("Preview"));
 
 if (isset($return_msg)) {
     echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$return_msg\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
-} else if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
-    echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$reply_to_pid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
 } else {
-    echo "<a href=\"lmessages.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+    if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
+        echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$reply_to_pid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+    } else {
+        echo "<a href=\"lmessages.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+    }
 }
 
 echo "</div>";
@@ -637,7 +634,6 @@ if (!$new_thread && $reply_to_pid > 0) {
     if (($thread_data['POLL_FLAG'] == 'Y') && ($reply_message['PID'] == 1)) {
 
         light_poll_display($tid, $thread_data['LENGTH'], $thread_data['FID'], $thread_data['CLOSED'], false, true);
-
     } else {
 
         light_message_display($tid, $reply_message, $thread_data['LENGTH'], $reply_to_pid, $thread_data['FID'], false, false, false, false, true);

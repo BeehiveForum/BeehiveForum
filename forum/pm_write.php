@@ -220,7 +220,12 @@ if (isset($_POST['send']) || isset($_POST['preview']) || isset($_POST['save'])) 
 
         } else {
 
-            html_draw_top(sprintf("title=%s", gettext("Error")));
+            html_draw_top(
+                array(
+                    'title' => gettext("Error")
+                )
+            );
+
             pm_error_refuse();
             html_draw_bottom();
             exit;
@@ -330,7 +335,12 @@ if (isset($_POST['send']) || isset($_POST['preview']) || isset($_POST['save'])) 
 
     } else {
 
-        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_draw_top(
+            array(
+                'title' => gettext("Error")
+            )
+        );
+
         pm_error_refuse();
         html_draw_bottom();
         exit;
@@ -358,7 +368,12 @@ if (isset($_POST['send']) || isset($_POST['preview']) || isset($_POST['save'])) 
 
     } else {
 
-        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_draw_top(
+            array(
+                'title' => gettext("Error")
+            )
+        );
+
         pm_error_refuse();
         html_draw_bottom();
         exit;
@@ -386,7 +401,12 @@ if (isset($_POST['send']) || isset($_POST['preview']) || isset($_POST['save'])) 
 
     } else {
 
-        html_draw_top(sprintf("title=%s", gettext("Error")));
+        html_draw_top(
+            array(
+                'title' => gettext("Error")
+            )
+        );
+
         pm_error_refuse();
         html_draw_bottom();
         exit;
@@ -511,7 +531,23 @@ if ($valid && isset($_POST['send'])) {
     }
 }
 
-html_draw_top(sprintf("title=%s", gettext("Private Messages - Send New PM")), "resize_width=960", "basetarget=_blank", "js/pm.js", "js/attachments.js", "js/emoticons.js", 'js/search.js', 'js/search_popup.js', 'ckeditor/ckeditor.js', 'js/fineuploader.min.js', 'class=window_title');
+html_draw_top(
+    array(
+        'title' => gettext('Private Messages - Send New PM'),
+        'resize_width' => 960,
+        'base_target' => '_blank',
+        'js' => array(
+            'js/pm.js',
+            'js/attachments.js',
+            'js/emoticons.js',
+            'js/search.js',
+            'js/search_popup.js',
+            'ckeditor/ckeditor.js',
+            'js/fineuploader.min.js'
+        ),
+        'class' => 'window_title'
+    )
+);
 
 echo "<h1>", gettext("Private Messages"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Send New PM"), "</h1>\n";
 

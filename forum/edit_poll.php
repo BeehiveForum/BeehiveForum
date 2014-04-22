@@ -124,7 +124,12 @@ if (!($thread_data = thread_get($tid))) {
 
 if (!$edit_message = messages_get($tid, 1, 1)) {
 
-    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_draw_top(
+        array(
+            'title' => gettext("Error")
+        )
+    );
+
     html_display_error_msg(gettext("That post does not exist in this thread!"));
     html_draw_bottom();
     exit;
@@ -626,7 +631,19 @@ if (!$folder_dropdown = folder_draw_dropdown($fid, "fid", "", FOLDER_ALLOW_POLL_
     html_draw_error(gettext("You cannot create new threads."));
 }
 
-html_draw_top(sprintf("title=%s", gettext("Edit Poll")), "basetarget=_blank", "resize_width=960", "js/post.js", "js/poll.js", "js/emoticons.js", 'class=window_title');
+html_draw_top(
+    array(
+        'title' => gettext('Edit Poll'),
+        'base_target' => '_blank',
+        'resize_width' => 960,
+        'js' => array(
+            'js/post.js',
+            'js/poll.js',
+            'js/emoticons.js'
+        ),
+        'class' => 'window_title'
+    )
+);
 
 echo "<h1>", gettext("Edit Poll"), "</h1>\n";
 

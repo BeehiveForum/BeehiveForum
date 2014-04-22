@@ -174,22 +174,25 @@ function image_resize_gd($src, $dest, $max_width, $max_height)
     // Check the gd_info function exists
     if (!function_exists('gd_info') || !($gd_info = gd_info())) return false;
 
-    // Check 0: Do we have a new enough version of GD?
-    if (stristr($gd_info['GD Version'], '2.0') === false) return false;
+    // Check the 'GD Version' key exists
+    if (!isset($gd_info['GD Version']) || empty($gd_info['GD Version'])) return false;
 
-    // Check 1: Is the image format in our list of supported image types.
+    // Do we have a new enough version of GD?
+    if (version_compare($gd_info['GD Version'], '2.0', '>=') === false) return false;
+
+    // Is the image format in our list of supported image types.
     if (!isset($required_read_support[$image_info[2]])) return false;
     if (!isset($required_write_support[$image_info[2]])) return false;
 
-    // Check 2: Check gd_info function indicates support for the image type.
+    // Check gd_info function indicates support for the image type.
     if (!image_check_gd_info_key($required_read_support[$image_info[2]])) return false;
     if (!image_check_gd_info_key($required_write_support[$image_info[2]])) return false;
 
-    // Check 3: Even if GD says it supports the image format check the php functions actually exist!
+    // Even if GD says it supports the image format check the php functions actually exist!
     if (!function_exists($required_read_functions[$image_info[2]])) return false;
     if (!function_exists($required_write_functions[$image_info[2]])) return false;
 
-    // Check 4: Can we actually read the image using the function?
+    // Can we actually read the image using the function?
     if (!($src_im = @$required_read_functions[$image_info[2]]($src))) return false;
 
     // Extract the dimensions from the image info.

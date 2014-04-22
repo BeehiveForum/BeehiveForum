@@ -32,12 +32,20 @@ require_once BH_INCLUDE_PATH . 'session.inc.php';
 require_once BH_INCLUDE_PATH . 'user.inc.php';
 // End Required includes
 
+// Default final URI if one isn't specified.
+$final_uri = null;
+
+if (isset($_REQUEST['final_uri']) && strlen(trim($_REQUEST['final_uri'])) > 0) {
+
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
+
+    if (preg_match("/^$available_files_preg/u", trim($_REQUEST['final_uri'])) > 0) {
+        $final_uri = sprintf('&final_uri=%s', rawurlencode(href_cleanup_query_keys($_REQUEST['final_uri'])));
+    }
+}
+
 session::end();
 
 html_set_cookie("user_logon", "", time() - YEAR_IN_SECONDS);
 
-if (!session::logged_in()) {
-    header_redirect("llogon.php?webtag=$webtag");
-} else {
-    header_redirect("llogon.php?webtag=$webtag&logout_success=true");
-}
+header_redirect("llogon.php?webtag=$webtag$final_uri");

@@ -40,12 +40,41 @@ cache_disable();
 // Error messages string
 $error_msg_array = array();
 
+// Retrieve the final_uri request
+if (isset($_GET['final_uri']) && strlen(trim($_GET['final_uri'])) > 0) {
+
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
+
+    if (preg_match("/^$available_files_preg/u", trim($_GET['final_uri'])) > 0) {
+        $final_uri = href_cleanup_query_keys($_GET['final_uri']);
+    }
+
+} else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
+
+    $final_uri = "discussion.php?webtag=$webtag&amp;msg=" . $_GET['msg'];
+
+} else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
+
+    $final_uri = "discussion.php?webtag=$webtag&amp;folder=" . $_GET['folder'];
+
+} else if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
+
+    $final_uri = "pm.php?webtag=$webtag&amp;mid=" . $_GET['pmid'];
+}
+
 // Check for logon post data
 if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 
     if (logon_perform()) {
 
-        header_redirect("lthread_list.php?webtag=$webtag", gettext("You logged in successfully."));
+        if (isset($final_uri)) {
+
+            header_redirect($final_uri);
+
+        } else {
+
+            header_redirect("lthread_list.php?webtag=$webtag");
+        }
 
     } else {
 
@@ -54,6 +83,8 @@ if (isset($_POST['user_logon']) && isset($_POST['user_password'])) {
 }
 
 light_html_draw_top();
+
+light_navigation_bar();
 
 light_draw_logon_form($error_msg_array);
 

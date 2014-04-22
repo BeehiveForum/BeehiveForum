@@ -33,7 +33,7 @@ function ajax_chat_online_user_count()
 
     $config = ajax_chat_get_config();
 
-    $ajax_chat_online = $db->escape( $config['dbTableNames']['online'] );
+    $ajax_chat_online = $db->escape($config['dbTableNames']['online']);
 
     $sql = "SELECT COUNT(*) FROM `$ajax_chat_online`";
 

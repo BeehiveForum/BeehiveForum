@@ -25,18 +25,12 @@ $(beehive).bind('init', function () {
         $body = $('body'),
         $document = $(document),
         $messages = $('div#messages'),
-        $navigation = $('.navigation'),
         $keep_reading = $('input#keep_reading.button'),
         loading_messages = false,
         navigation_options;
 
-    if ($navigation.length === 0) {
-        return;
-    }
-
-    navigation_options = $navigation.prop("id")
-        .match(/^navigation_(\d+)_(\d+)_(\d+)_(\d+)$/)
-        .map(function (option) {
+    navigation_options = $messages.data('navigation')
+        .split('_').map(function (option) {
             return parseInt(option, 10);
         });
 
@@ -55,14 +49,14 @@ $(beehive).bind('init', function () {
 
         loading_messages = true;
 
-        var pid = navigation_options[2] + navigation_options[4],
-            msg = navigation_options[1] + "." + Math.min(navigation_options[3] + 1, pid),
+        var pid = navigation_options[1] + navigation_options[3],
+            msg = navigation_options[0] + "." + Math.min(navigation_options[2] + 1, pid),
             last_pid;
 
         last_pid = $messages.find('.message').last()
             .prop('id').match(/^message_(\d+)_(\d+)$/)[2];
 
-        if (last_pid >= navigation_options[3]) {
+        if (last_pid >= navigation_options[2]) {
             return;
         }
 
@@ -90,7 +84,7 @@ $(beehive).bind('init', function () {
                 if ($data.length > 0) {
 
                     $messages.append($data);
-                    navigation_options[2] = pid;
+                    navigation_options[1] = pid;
                 }
 
                 loading_messages = false;
@@ -105,6 +99,7 @@ $(beehive).bind('init', function () {
         if ($anchor.length > 0) {
 
             event.preventDefault();
+            event.stopPropagation();
 
             //noinspection JSValidateTypes
             $window.scrollTop(Math.floor($anchor.offset().top));

@@ -134,7 +134,13 @@ if (isset($_POST['delete'])) {
     }
 }
 
-html_draw_top(sprintf('title=%s', gettext("Admin - User Groups")), 'class=window_title', 'main_css=admin.css');
+html_draw_top(
+    array(
+        'title' => gettext('Admin - User Groups'),
+        'class' => 'window_title',
+        'main_css' => 'admin.css'
+    )
+);
 
 echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("User Groups"), "</h1>\n";
 

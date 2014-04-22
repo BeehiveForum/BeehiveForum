@@ -89,7 +89,11 @@ if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
 
 if (!($edit_message = messages_get($tid, $pid, 1))) {
 
-    html_draw_top(sprintf("title=%s", gettext("Error")));
+    html_draw_top(
+        array(
+            'title' => gettext("Error")
+        )
+    );
     html_display_error_msg(gettext("That post does not exist in this thread!"));
     html_draw_bottom();
     exit;
@@ -334,7 +338,21 @@ if ($valid && isset($_POST['preview'])) {
 
 $page_title = sprintf(gettext("Edit message %s"), $msg);
 
-html_draw_top("title=$page_title", "resize_width=960", "basetarget=_blank", "js/attachments.js", "js/emoticons.js", "js/post.js", 'ckeditor/ckeditor.js', 'js/fineuploader.min.js', 'class=window_title');
+html_draw_top(
+    array(
+        'title' => $page_title,
+        'resize_width' => 960,
+        'base_target' => '_blank',
+        'js' => array(
+            'js/attachments.js',
+            'js/emoticons.js',
+            'js/post.js',
+            'ckeditor/ckeditor.js',
+            'js/fineuploader.min.js'
+        ),
+        'class' => 'window_title'
+    )
+);
 
 echo "<h1>$page_title</h1>\n";
 

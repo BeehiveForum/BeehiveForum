@@ -343,7 +343,7 @@ function email_send_pm_notification($mid)
 
         $forum_link = html_get_forum_uri("index.php?webtag=$webtag");
 
-        $message_link = html_get_forum_uri("index.php?webtag=$webtag&pmid=$mid");
+        $message_link = html_get_forum_uri("index.php?webtag=$webtag&mid=$mid");
 
         $message_body = wordwrap(
             sprintf(

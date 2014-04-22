@@ -73,7 +73,16 @@ if (!$message = messages_get($tid, $pid, 1)) {
     html_draw_error(gettext("That post does not exist in this thread!"));
 }
 
-html_draw_top("title={$thread_data['TITLE']}", "js/post.js", "basetarget=_blank", 'class=window_title');
+html_draw_top(
+    array(
+        'title' => $thread_data['TITLE'],
+        'js' => array(
+            'js/post.js'
+        ),
+        'base_target' => '_blank',
+        'class' => 'window_title'
+    )
+);
 
 if (isset($thread_data['STICKY']) && isset($thread_data['STICKY_UNTIL'])) {
 

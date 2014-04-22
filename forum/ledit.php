@@ -90,7 +90,13 @@ if (isset($_POST['return_msg']) && validate_msg($_POST['return_msg'])) {
 
 if (!($edit_message = messages_get($tid, $pid, 1))) {
 
-    light_html_draw_top(sprintf("title=%s", gettext("Error")));
+    light_html_draw_top(
+        array(
+            'title' => gettext("Error")
+        )
+    );
+
+    light_navigation_bar();
     light_html_display_error_msg(gettext("That post does not exist in this thread!"));
     light_html_draw_bottom();
     exit;
@@ -98,7 +104,13 @@ if (!($edit_message = messages_get($tid, $pid, 1))) {
 
 if (thread_is_poll($tid) && $pid == 1) {
 
-    light_html_draw_top(sprintf("title=%s", gettext("Error")));
+    light_html_draw_top(
+        array(
+            'title' => gettext("Error")
+        )
+    );
+
+    light_navigation_bar();
     light_html_display_error_msg(gettext("Cannot edit polls in Mobile mode"));
     light_html_draw_bottom();
     exit;
@@ -328,7 +340,21 @@ if ($valid && isset($_POST['preview'])) {
 
 $page_title = sprintf(gettext("Edit message %s"), $msg);
 
-light_html_draw_top("title=$page_title", "back=lmessages.php?webtag=$webtag&msg=$return_msg", 'js/fineuploader.min.js', 'js/attachments.js');
+light_html_draw_top(
+    array(
+        'title' => $page_title,
+        'js' => array(
+            'js/fineuploader.min.js',
+            'js/attachments.js'
+        )
+    )
+);
+
+light_navigation_bar(
+    array(
+        'back' => "lmessages.php?webtag=$webtag&msg=$return_msg",
+    )
+);
 
 if ($valid && isset($_POST['preview'])) {
 

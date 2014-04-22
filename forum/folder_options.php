@@ -90,7 +90,16 @@ if (isset($_POST['save'])) {
     }
 }
 
-html_draw_top(sprintf('title=%s', sprintf(gettext("Folder Options - %s"), $folder_data['TITLE'])), "basetarget=_blank", 'class=window_title');
+html_draw_top(
+    array(
+        'title' => sprintf(
+            gettext('Folder Options - %s'),
+            $folder_data['TITLE']
+        ),
+        'base_target' => '_blank',
+        'class' => 'window_title'
+    )
+);
 
 echo "<h1>", gettext("Folder Options"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($folder_data['TITLE'], true), "</h1>\n";
 

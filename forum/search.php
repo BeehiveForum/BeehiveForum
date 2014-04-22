@@ -269,7 +269,15 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
     if (($search_results_array = search_fetch_results($page, $sort_by, $sort_dir)) !== false) {
 
-        html_draw_top('js/search.js', 'js/search_popup.js', 'js/thread_list.js');
+        html_draw_top(
+            array(
+                'js' => array(
+                    'js/search.js',
+                    'js/search_popup.js',
+                    'js/thread_list.js'
+                )
+            )
+        );
 
         thread_list_draw_top(SEARCH_RESULTS);
 
@@ -353,7 +361,15 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
     } else {
 
-        html_draw_top('js/search.js', 'js/search_popup.js', 'js/thread_list.js');
+        html_draw_top(
+            array(
+                'js' => array(
+                    'js/search.js',
+                    'js/search_popup.js',
+                    'js/thread_list.js'
+                )
+            )
+        );
 
         thread_list_draw_top(SEARCH_RESULTS);
 
@@ -398,7 +414,15 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     exit;
 }
 
-html_draw_top('js/search.js', 'js/search_popup.js', 'js/thread_list.js');
+html_draw_top(
+    array(
+        'js' => array(
+            'js/search.js',
+            'js/search_popup.js',
+            'js/thread_list.js'
+        )
+    )
+);
 
 echo "<h1>", gettext("Search Messages"), "</h1>\n";
 

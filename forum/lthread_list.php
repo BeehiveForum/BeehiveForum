@@ -172,6 +172,7 @@ if (!session::logged_in()) {
             unset($_REQUEST['mark_read_submit'], $_REQUEST['mark_read_confirm']);
 
             light_html_draw_top();
+            light_navigation_bar();
             light_html_display_msg(gettext("Confirm"), gettext("Are you sure you want to mark the selected threads as read?"), 'lthread_list.php', 'post', array(
                 'mark_read_submit' => gettext("Confirm"),
                 'cancel' => gettext("Cancel")
@@ -182,7 +183,26 @@ if (!session::logged_in()) {
     }
 }
 
-light_html_draw_top('js/thread_list.js');
+light_html_draw_top(
+    array(
+        'js' => array(
+            'js/thread_list.js'
+        )
+    )
+);
+
+if (forums_get_available_count() > 1 || !forum_get_default()) {
+
+    light_navigation_bar(
+        array(
+            'back' => "lforums.php?webtag=$webtag",
+        )
+    );
+
+} else {
+
+    light_navigation_bar();
+}
 
 light_draw_thread_list($mode, $folder, $page);
 

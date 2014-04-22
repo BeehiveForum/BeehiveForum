@@ -43,7 +43,13 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
 } else {
 
-    light_html_draw_top(sprintf("title=%s", gettext("Error")), "robots=noindex,nofollow");
+    light_html_draw_top(
+        array(
+            'title' => gettext("Error")
+        )
+    );
+
+    light_navigation_bar();
     light_html_display_error_msg(gettext("Invalid Message ID or no Message ID specified."));
     light_html_draw_bottom();
     exit;
@@ -57,7 +63,13 @@ if (isset($_GET['return_msg']) && validate_msg($_GET['return_msg'])) {
 
 if (!$folder_data = thread_get_folder($tid)) {
 
-    light_html_draw_top(sprintf("title=%s", gettext("Error")));
+    light_html_draw_top(
+        array(
+            'title' => gettext("Error")
+        )
+    );
+
+    light_navigation_bar();
     light_html_display_error_msg(gettext("The requested folder could not be found or access was denied."));
     light_html_draw_bottom();
     exit;
@@ -67,7 +79,13 @@ $perm_folder_moderate = session::check_perm(USER_PERM_FOLDER_MODERATE, $folder_d
 
 if (!$thread_data = thread_get($tid, $perm_folder_moderate, false, $perm_folder_moderate)) {
 
-    light_html_draw_top(sprintf("title=%s", gettext("Error")));
+    light_html_draw_top(
+        array(
+            'title' => gettext("Error")
+        )
+    );
+
+    light_navigation_bar();
     light_html_display_error_msg(gettext("The requested thread could not be found or access was denied."));
     light_html_draw_bottom();
     exit;
@@ -75,13 +93,29 @@ if (!$thread_data = thread_get($tid, $perm_folder_moderate, false, $perm_folder_
 
 if (!$message = messages_get($tid, $pid, 1)) {
 
-    light_html_draw_top(sprintf("title=%s", gettext("Error")));
+    light_html_draw_top(
+        array(
+            'title' => gettext("Error")
+        )
+    );
+
+    light_navigation_bar();
     light_html_display_error_msg(gettext("That post does not exist in this thread!"));
     light_html_draw_bottom();
     exit;
 }
 
-light_html_draw_top("title={$thread_data['TITLE']}", "back=lmessages.php?webtag=$webtag&amp;msg=$return_msg");
+light_html_draw_top(
+    array(
+        'title' => $thread_data['TITLE'],
+    )
+);
+
+light_navigation_bar(
+    array(
+        'back' => "lmessages.php?webtag=$webtag&amp;msg=$return_msg"
+    )
+);
 
 light_messages_top($msg, $thread_data['TITLE'], $thread_data['INTEREST'], $thread_data['STICKY'], $thread_data['CLOSED'], $thread_data['ADMIN_LOCK'], ($thread_data['DELETED'] == 'Y'));
 

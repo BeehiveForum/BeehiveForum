@@ -229,7 +229,12 @@ $folders = links_folders_get(!$user_perm_links_moderate);
 
 $page_title = links_get_folder_page_title($link['FID'], $folders, $link['TITLE']);
 
-html_draw_top("title={$page_title}", 'class=window_title');
+html_draw_top(
+    array(
+        'title' => $page_title,
+        'class' => 'window_title'
+    )
+);
 
 echo "<h1>", links_get_folder_path_links($link['FID'], $folders, true, true), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"links.php?webtag=$webtag&amp;lid=$lid&amp;action=go\" target=\"_blank\">", word_filter_add_ob_tags($link['TITLE'], true), "</a></h1>\n";
 

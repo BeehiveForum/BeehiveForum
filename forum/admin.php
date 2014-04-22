@@ -57,8 +57,13 @@ if (isset($_SESSION['LEFT_FRAME_WIDTH']) && is_numeric($_SESSION['LEFT_FRAME_WID
     $left_frame_width = 280;
 }
 
-// Output starts here
-html_draw_top('frame_set_html', 'pm_popup_disabled', 'main_css=admin.css');
+html_draw_top(
+    array(
+        'frame_set_html' => true,
+        'pm_popup_disabled' => true,
+        'main_css' => 'admin.css'
+    )
+);
 
 $frameset = new html_frameset_cols('admin', "$left_frame_width,*");
 

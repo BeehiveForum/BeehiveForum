@@ -246,39 +246,36 @@ span.back a {
     color: #FFFFFF;
     display: inline-block;
     height: 46px;
-    width: 100%;
-    text-indent: 100%;
-    text-decoration: none;
-    white-space: nowrap;
     overflow: hidden;
+    text-decoration: none;
+    text-indent: 100%;
+    white-space: nowrap;
+    width: 100%;
 }
 
 #header ul li a.main {
     background: url("images/mobile_menu.png") no-repeat scroll center center;
 }
 
-@media screen and (min-width: 630px) {
+@media screen and (min-width: 630px) { #header ul li {
+    margin-left: 15px;
+    min-width: 46px;
+    width: auto;
+}
 
-    #header ul li {
-        margin-left: 15px;
-        min-width: 46px;
-        width: auto;
-    }
-
-    #header ul li a:not(.main) {
-        background-position: 8px center;
-        line-height: 46px;
-        padding-left: 46px;
-        text-align: left;
-        text-indent: 0;
-    }
+#header ul li a:not(.main) {
+    background-position: 8px center;
+    line-height: 46px;
+    padding-left: 46px;
+    text-align: left;
+    text-indent: 0;
 }
 
 div.menu {
     background-color: #5483B1;
+    border-radius: 0 0 3px 3px;
     border-top: 1px solid rgba(0, 0, 0, 0.2);
     box-shadow: -2px 4px 4px rgba(0, 0, 0, 0.4);
-    border-radius: 0 0 3px 3px;
     color: #FFFFFF;
     display: none;
     font-size: 11pt;
@@ -289,7 +286,12 @@ div.menu {
 }
 
 div.menu a {
-    white-space: nowrap;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: block;
+    height: 36px;
+    line-height: 36px;
+    text-decoration: none;
 }
 
 div.menu ul {
@@ -305,15 +307,6 @@ div.menu ul li {
 
 div.menu li:first-child {
     border: none;
-}
-
-div.menu a {
-    color: #FFFFFF;
-    cursor: pointer;
-    display: block;
-    line-height: 36px;
-    height: 36px;
-    text-decoration: none;
 }
 
 div.menu.main li a {

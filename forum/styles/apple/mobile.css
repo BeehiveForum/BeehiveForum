@@ -256,18 +256,21 @@ span.back a {
     background: url("images/mobile_menu.png") no-repeat scroll center center;
 }
 
-@media screen and (min-width: 630px) { #header ul li {
-    margin-left: 15px;
-    min-width: 46px;
-    width: auto;
-}
+@media screen and (min-width: 630px) {
 
-#header ul li a:not(.main) {
-    background-position: 8px center;
-    line-height: 46px;
-    padding-left: 46px;
-    text-align: left;
-    text-indent: 0;
+    #header ul li {
+        margin-left: 15px;
+        min-width: 46px;
+        width: auto;
+    }
+
+    #header ul li a:not(.main) {
+        background-position: 8px center;
+        line-height: 46px;
+        padding-left: 46px;
+        text-align: left;
+        text-indent: 0;
+    }
 }
 
 div.menu {
@@ -1115,16 +1118,4 @@ span.thread_length {
     float: right;
     font-weight: normal;
     text-align: right;
-}
-
-.attachments .summary div {
-    margin: 2px 0;
-}
-
-.attachments .summary span.used_post_space,
-.attachments .summary span.free_post_space,
-.attachments .summary span.free_upload_space {
-    display: inline-block;
-    margin-right: 5px;
-    min-width: 60px;
 }

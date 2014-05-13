@@ -635,13 +635,12 @@ html_draw_top(
     array(
         'title' => gettext('Edit Poll'),
         'base_target' => '_blank',
-        'resize_width' => 960,
         'js' => array(
             'js/post.js',
             'js/poll.js',
             'js/emoticons.js'
         ),
-        'class' => 'window_title'
+        'class' => 'window_title max_width'
     )
 );
 

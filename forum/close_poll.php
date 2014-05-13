@@ -184,9 +184,8 @@ html_draw_top(
         'js' => array(
             'js/post.js'
         ),
-        'resize_width' => 720,
         'base_target' => '_blank',
-        'class' => 'window_title'
+        'class' => 'window_title max_width'
     )
 );
 

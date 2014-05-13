@@ -652,7 +652,6 @@ html_draw_top(
     array(
         'title' => gettext('Create Poll'),
         'base_target' => '_blank',
-        'resize_width' => 960,
         'js' => array(
             'js/post.js',
             'js/poll.js',
@@ -661,7 +660,7 @@ html_draw_top(
             'ckeditor/ckeditor.js',
             'js/fineuploader.min.js'
         ),
-        'class' => 'window_title'
+        'class' => 'window_title max_width'
     )
 );
 

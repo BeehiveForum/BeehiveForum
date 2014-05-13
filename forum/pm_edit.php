@@ -209,7 +209,6 @@ if ($valid && isset($_POST['preview'])) {
 html_draw_top(
     array(
         'title' => gettext("Private Messages"),
-        'resize_width' => 960,
         'js' => array(
             'js/attachments.js',
             'js/edit.js',
@@ -220,7 +219,7 @@ html_draw_top(
         ),
         'base_target' => '_blank',
         'pm_popup_disabled' => true,
-        'class' => 'window_title'
+        'class' => 'window_title max_width'
     )
 );
 

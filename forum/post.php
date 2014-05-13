@@ -632,7 +632,6 @@ if (isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 && !session::che
 html_draw_top(
     array(
         'title' => gettext('Post message'),
-        'resize_width' => 960,
         'base_target' => '_blank',
         'js' => array(
             'js/post.js',
@@ -644,7 +643,7 @@ html_draw_top(
             'ckeditor/ckeditor.js',
             'js/fineuploader.min.js'
         ),
-        'class' => 'window_title'
+        'class' => 'window_title max_width'
     )
 );
 

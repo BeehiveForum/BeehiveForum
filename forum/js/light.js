@@ -107,20 +107,5 @@ $(beehive).bind('init', function () {
         });
     });
 
-    /*$body.on('click', 'div#header a.navigation', function (event) {
-
-     var $link = $(this);
-
-     $message_navigation.css(
-     {
-     position: 'absolute',
-     left: '50%',
-     top: '50%',
-     marginTop: ($message_navigation.height() / 2) * -1,
-     marginLeft: ($message_navigation.width() / 2) * -1
-     }
-     )
-     });*/
-
     $message_vote_form.show();
 });

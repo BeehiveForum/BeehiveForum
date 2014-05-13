@@ -121,7 +121,7 @@ if (isset($user_profile['HOMEPAGE_URL'])) {
 }
 
 echo "                                                <tr>\n";
-echo "                                                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=pm_write.php%3Fwebtag%3D$webtag%26uid=$uid\" target=\"_blank\" title=\"", gettext("Send PM"), "\"><img src=\"", html_style_image('pmunread.png'), "\" border=\"0\" alt=\"", gettext("Send PM"), "\" title=\"", gettext("Send PM"), "\" /></a></td>\n";
+echo "                                                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=pm_write.php%3Fwebtag%3D$webtag%26uid=$uid\" target=\"_blank\" title=\"", gettext("Send PM"), "\"><img src=\"", html_style_image('pm_unread.png'), "\" border=\"0\" alt=\"", gettext("Send PM"), "\" title=\"", gettext("Send PM"), "\" /></a></td>\n";
 echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"index.php?webtag=$webtag&amp;final_uri=pm_write.php%3Fwebtag%3D$webtag%26uid=$uid\" target=\"_blank\" title=\"", gettext("Send PM"), "\">", gettext("Send PM"), "</a></td>\n";
 echo "                                                </tr>\n";
 echo "                                                <tr>\n";

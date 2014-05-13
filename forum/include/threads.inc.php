@@ -1580,7 +1580,7 @@ function thread_list_draw_top($mode, $folder = false)
     echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('search.png'), "\" alt=\"", gettext("Search"), "\" title=\"", gettext("Search"), "\" />&nbsp;<a href=\"search.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Search"), "</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('pmunread.png'), "\" alt=\"", gettext("Inbox"), "\" title=\"", gettext("Inbox"), "\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Inbox"), "</a> <span class=\"pmnewcount\" id=\"pm_message_count\"></span></td>\n";
+    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('pm_unread.png'), "\" alt=\"", gettext("Inbox"), "\" title=\"", gettext("Inbox"), "\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Inbox"), "</a> <span class=\"pmnewcount\" id=\"pm_message_count\"></span></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
     echo "<br />\n";

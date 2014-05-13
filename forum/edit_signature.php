@@ -160,12 +160,11 @@ if ($admin_edit === true) {
                 format_user_name($user['LOGON'], $user['NICKNAME'])
             ),
             'base_target' => '_blank',
-            'resize_width' => 700,
             'js' => array(
                 'js/post.js',
                 'ckeditor/ckeditor.js'
             ),
-            'class' => 'window_title'
+            'class' => 'window_title max_width'
         )
     );
 
@@ -177,12 +176,11 @@ if ($admin_edit === true) {
         array(
             'title' => gettext('My Controls - Edit Signature'),
             'base_target' => '_blank',
-            'resize_width' => 700,
             'js' => array(
                 'js/post.js',
                 'ckeditor/ckeditor.js'
             ),
-            'class' => 'window_title'
+            'class' => 'window_title max_width'
         )
     );
 

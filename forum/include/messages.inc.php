@@ -852,7 +852,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                     if ($quick_reply == 'Y') {
 
-                        echo "<img src=\"", html_style_image('quickreply.png'), "\" border=\"0\" alt=\"", gettext("Quick Reply"), "\" title=\"", gettext("Quick Reply"), "\" />\n";
+                        echo "<img src=\"", html_style_image('quick_reply.png'), "\" border=\"0\" alt=\"", gettext("Quick Reply"), "\" title=\"", gettext("Quick Reply"), "\" />\n";
                         echo "<a href=\"Javascript:void(0)\" data-msg=\"$tid.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\">", gettext("Quick Reply"), "</a>\n";
 
                     } else {
@@ -959,7 +959,7 @@ function message_get_post_options_html($tid, $pid, $message)
 
     if ($quick_reply == 'N') {
 
-        $html .= "                        <td align=\"left\"><a href=\"Javascript:void(0)\" data-msg=\"{$message['TID']}.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\"><img src=\"" . html_style_image('quickreply.png') . "\" border=\"0\" alt=\"" . gettext("Quick Reply") . "\" title=\"" . gettext("Quick Reply") . "\" /></a></td>\n";
+        $html .= "                        <td align=\"left\"><a href=\"Javascript:void(0)\" data-msg=\"{$message['TID']}.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\"><img src=\"" . html_style_image('quick_reply.png') . "\" border=\"0\" alt=\"" . gettext("Quick Reply") . "\" title=\"" . gettext("Quick Reply") . "\" /></a></td>\n";
         $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"Javascript:void(0)\" data-msg=\"{$message['TID']}.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\">" . gettext("Quick Reply") . "</a></td>\n";
 
     } else {
@@ -979,7 +979,7 @@ function message_get_post_options_html($tid, $pid, $message)
     }
 
     $html .= "                      <tr>\n";
-    $html .= "                        <td align=\"left\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\" title=\"" . gettext("Reply as PM") . "\"><img src=\"" . html_style_image('pmunread.png') . "\" border=\"0\" alt=\"" . gettext("Reply as PM") . "\" title=\"" . gettext("Reply as PM") . "\" /></a></td>\n";
+    $html .= "                        <td align=\"left\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\" title=\"" . gettext("Reply as PM") . "\"><img src=\"" . html_style_image('pm_unread.png') . "\" border=\"0\" alt=\"" . gettext("Reply as PM") . "\" title=\"" . gettext("Reply as PM") . "\" /></a></td>\n";
     $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\" title=\"" . gettext("Reply as PM") . "\">" . gettext("Reply as PM") . "</a></td>\n";
     $html .= "                      </tr>\n";
     $html .= "                      <tr>\n";
@@ -987,7 +987,7 @@ function message_get_post_options_html($tid, $pid, $message)
     $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"display.php?webtag=$webtag&amp;print_msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"" . gettext("Print") . "\">" . gettext("Print") . "</a></td>\n";
     $html .= "                      </tr>\n";
     $html .= "                      <tr>\n";
-    $html .= "                        <td align=\"left\"><a href=\"thread_options.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;markasread=" . ($message['PID'] - 1) . "&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"" . gettext("Mark as unread") . "\"><img src=\"" . html_style_image('markasunread.png') . "\" border=\"0\" alt=\"" . gettext("Mark as unread") . "\" title=\"" . gettext("Mark as unread") . "\" /></a></td>\n";
+    $html .= "                        <td align=\"left\"><a href=\"thread_options.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;markasread=" . ($message['PID'] - 1) . "&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"" . gettext("Mark as unread") . "\"><img src=\"" . html_style_image('mark_as_unread.png') . "\" border=\"0\" alt=\"" . gettext("Mark as unread") . "\" title=\"" . gettext("Mark as unread") . "\" /></a></td>\n";
     $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"thread_options.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;markasread=" . ($message['PID'] - 1) . "&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"" . gettext("Mark as unread") . "\">" . gettext("Mark as unread") . "</a></td>\n";
     $html .= "                      </tr>\n";
 
@@ -1002,7 +1002,7 @@ function message_get_post_options_html($tid, $pid, $message)
     if ($perm_has_admin_access) {
 
         $html .= "                      <tr>\n";
-        $html .= "                        <td align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"" . gettext("Privileges") . "\"><img src=\"" . html_style_image('admintool.png') . "\" border=\"0\" alt=\"" . gettext("Privileges") . "\" title=\"" . gettext("Privileges") . "\" /></a></td>\n";
+        $html .= "                        <td align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"" . gettext("Privileges") . "\"><img src=\"" . html_style_image('admin_tool.png') . "\" border=\"0\" alt=\"" . gettext("Privileges") . "\" title=\"" . gettext("Privileges") . "\" /></a></td>\n";
         $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"" . gettext("Privileges") . "\">" . gettext("Privileges") . "</a></td>\n";
         $html .= "                      </tr>\n";
     }

@@ -447,11 +447,11 @@ if (isset($messages_array['message_array']) && sizeof($messages_array['message_a
 
         } else if (($current_folder == PM_FOLDER_INBOX) && ($message['TYPE'] == PM_UNREAD)) {
 
-            echo "                  <td class=\"postbody\" align=\"center\" valign=\"top\" width=\"1%\"><img src=\"", html_style_image('pmunread.png'), "\" title=\"", gettext("Unread Message"), "\" alt=\"", gettext("Unread Message"), "\" /></td>";
+            echo "                  <td class=\"postbody\" align=\"center\" valign=\"top\" width=\"1%\"><img src=\"", html_style_image('pm_unread.png'), "\" title=\"", gettext("Unread Message"), "\" alt=\"", gettext("Unread Message"), "\" /></td>";
 
         } else {
 
-            echo "                  <td class=\"postbody\" align=\"center\" valign=\"top\" width=\"1%\"><img src=\"", html_style_image('pmread.png'), "\" title=\"", gettext("Read Message"), "\" alt=\"", gettext("Read Message"), "\" /></td>";
+            echo "                  <td class=\"postbody\" align=\"center\" valign=\"top\" width=\"1%\"><img src=\"", html_style_image('pm_read.png'), "\" title=\"", gettext("Read Message"), "\" alt=\"", gettext("Read Message"), "\" /></td>";
         }
 
         echo "                  <td align=\"left\" class=\"postbody\" width=\"50%\" valign=\"top\">";

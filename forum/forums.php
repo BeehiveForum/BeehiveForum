@@ -382,11 +382,11 @@ if (session::logged_in()) {
 
                 if (isset($forum['INTEREST']) && $forum['INTEREST'] == FORUM_FAVOURITE) {
 
-                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", null, sprintf('title="%s"', gettext("Remove From Favourites"))), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_remove_favourite.png', "rem_fav[{$forum['FID']}]", null, sprintf('title="%s"', gettext("Remove From Favourites"))), "</td>\n";
 
                 } else {
 
-                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", null, sprintf('title="%s"', gettext("Add To Favourites"))), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_add_favourite.png', "add_fav[{$forum['FID']}]", null, sprintf('title="%s"', gettext("Add To Favourites"))), "</td>\n";
                 }
 
                 if (isset($final_uri) && strlen($final_uri) > 0) {
@@ -596,11 +596,11 @@ if (session::logged_in()) {
 
                 if (isset($forum['INTEREST']) && $forum['INTEREST'] == FORUM_FAVOURITE) {
 
-                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_rem_fav.png', "rem_fav[{$forum['FID']}]", null, sprintf('title="%s"', gettext("Remove From Favourites"))), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_remove_favourite.png', "rem_fav[{$forum['FID']}]", null, sprintf('title="%s"', gettext("Remove From Favourites"))), "</td>\n";
 
                 } else {
 
-                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", null, sprintf('title="%s"', gettext("Add To Favourites"))), "</td>\n";
+                    echo "                  <td align=\"center\" valign=\"top\" width=\"1%\">", form_submit_image('forum_add_favourite.png', "add_fav[{$forum['FID']}]", null, sprintf('title="%s"', gettext("Add To Favourites"))), "</td>\n";
                 }
 
                 if (isset($final_uri) && strlen($final_uri) > 0) {
@@ -785,7 +785,7 @@ if (session::logged_in()) {
         foreach ($forums_array['forums_array'] as $forum) {
 
             echo "                <tr>\n";
-            echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_add_fav.png', "add_fav[{$forum['FID']}]", null, sprintf('title="%s"', gettext("Add To Favourites"))), "</td>\n";
+            echo "                  <td align=\"center\" width=\"1%\">", form_submit_image('forum_add_favourite.png', "add_fav[{$forum['FID']}]", null, sprintf('title="%s"', gettext("Add To Favourites"))), "</td>\n";
 
             if (isset($final_uri) && strlen($final_uri) > 0) {
 

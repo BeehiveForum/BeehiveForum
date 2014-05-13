@@ -534,7 +534,6 @@ if ($valid && isset($_POST['send'])) {
 html_draw_top(
     array(
         'title' => gettext('Private Messages - Send New PM'),
-        'resize_width' => 960,
         'base_target' => '_blank',
         'js' => array(
             'js/pm.js',
@@ -545,7 +544,7 @@ html_draw_top(
             'ckeditor/ckeditor.js',
             'js/fineuploader.min.js'
         ),
-        'class' => 'window_title'
+        'class' => 'window_title max_width'
     )
 );
 

@@ -341,7 +341,6 @@ $page_title = sprintf(gettext("Edit message %s"), $msg);
 html_draw_top(
     array(
         'title' => $page_title,
-        'resize_width' => 960,
         'base_target' => '_blank',
         'js' => array(
             'js/attachments.js',
@@ -350,7 +349,7 @@ html_draw_top(
             'ckeditor/ckeditor.js',
             'js/fineuploader.min.js'
         ),
-        'class' => 'window_title'
+        'class' => 'window_title max_width'
     )
 );
 

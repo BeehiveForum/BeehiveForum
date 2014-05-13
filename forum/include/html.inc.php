@@ -647,7 +647,7 @@ function html_draw_top(array $options = array())
     }
 
     if (forum_get_setting('show_pms', 'Y')) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Inbox'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=pm.php%3Fwebtag%3D$webtag")), html_style_image('msie/pmunread.ico', true, true));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Inbox'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=pm.php%3Fwebtag%3D$webtag")), html_style_image('msie/pm_unread.ico', true, true));
     }
 
     if (forum_check_webtag_available($webtag)) {
@@ -655,7 +655,7 @@ function html_draw_top(array $options = array())
     }
 
     if (session::logged_in() && (session::check_perm(USER_PERM_FORUM_TOOLS, 0) || session::check_perm(USER_PERM_ADMIN_TOOLS, 0) || session::get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Admin'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_style_image('msie/admintool.ico', true, true));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Admin'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_style_image('msie/admin_tool.ico', true, true));
     }
 
     printf("<meta name=\"msapplication-starturl\" content=\"%s\" />\n", html_get_forum_file_path("index.php?webtag=$webtag"));

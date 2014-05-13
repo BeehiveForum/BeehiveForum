@@ -182,11 +182,11 @@ body {
 }
 
 #header a.reply_all {
-    background-image: url('images/reply_all.png');
+    background-image: url('images/mobile_reply_all.png');
 }
 
 #header a.navigation {
-    background-image: url('images/navigation.png');
+    background-image: url('images/mobile_navigation.png');
 }
 
 #footer {
@@ -268,7 +268,7 @@ span.back a {
     #header ul li a:not(.main) {
         background-position: 8px center;
         line-height: 46px;
-        padding-left: 32px;
+        padding-left: 46px;
         text-align: left;
         text-indent: 0;
     }
@@ -465,11 +465,11 @@ div.menu.navigation a:last-child {
 }
 
 .folder ul li.pm_unread {
-    background: url('images/pmunread.png') transparent no-repeat scroll 0 0;
+    background: url('images/pm_unread.png') transparent no-repeat scroll 0 0;
 }
 
 .folder ul li.pm_read {
-    background: url('images/pmread.png') transparent no-repeat scroll 0 0;
+    background: url('images/pm_read.png') transparent no-repeat scroll 0 0;
 }
 
 .folder ul li > span.thread_title > span {
@@ -866,7 +866,7 @@ a.pm_send_new {
 }
 
 .pm_bar_inner {
-    background: url("images/pbar.png") transparent repeat-x scroll 0 0;
+    background: url("images/progress_bar.png") transparent repeat-x scroll 0 0;
     height: 11px;
 }
 

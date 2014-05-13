@@ -161,7 +161,7 @@ looks a bit like this:
         |  |- styles
         |  |  |- default
         |  |  |  |- images
-        |  |  |  |  |- admintool.png
+        |  |  |  |  |- admin_tool.png
         |  |  |  |  |- attach.png
         |  |  |  |  |- ...
         |  |  |  |

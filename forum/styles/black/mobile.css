@@ -392,11 +392,11 @@ body {
 }
 
 .folder ul li.pm_unread {
-    background: url('images/pmunread.png') transparent no-repeat scroll 0 0;
+    background: url('images/pm_unread.png') transparent no-repeat scroll 0 0;
 }
 
 .folder ul li.pm_read {
-    background: url('images/pmread.png') transparent no-repeat scroll 0 0;
+    background: url('images/pm_read.png') transparent no-repeat scroll 0 0;
 }
 
 .folder ul li > span.thread_title > span {
@@ -818,7 +818,7 @@ a.folder_list_link {
 }
 
 .pm_bar_inner {
-    background: url("images/pbar.png") transparent repeat-x scroll 0 0;
+    background: url("images/progress_bar.png") transparent repeat-x scroll 0 0;
     height: 11px;
 }
 

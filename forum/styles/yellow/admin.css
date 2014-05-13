@@ -742,7 +742,7 @@ div.poll_option_list ol li {
 }
 
 .pmbar {
-    background: transparent url('images/pbar.png') repeat-x;
+    background: transparent url('images/progress_bar.png') repeat-x;
     height: 11px;
 }
 

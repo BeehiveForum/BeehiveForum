@@ -293,6 +293,8 @@ function light_navigation_bar(array $options = array())
 
     if (isset($back)) {
         echo "    <span class=\"back\"><a href=\"$back\">", gettext("Back"), "</a></span>\n";
+    } else {
+        echo "    <span class=\"icon\"><a>", gettext("Beehive Forum"), "</a></span>\n";
     }
 
     echo "    <img src=\"", html_style_image('mobile_logo.png'), "\" alt=\"", gettext("Beehive Forum Logo"), "\" />\n";

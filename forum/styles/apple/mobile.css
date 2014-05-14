@@ -204,10 +204,9 @@ body {
     margin: 20px 0;
 }
 
-span.back {
-    background: url("images/mobile_back.png") no-repeat scroll center center #568000;
+#header span.back,
+#header span.icon {
     color: #FFFFFF;
-    cursor: pointer;
     display: inline-block;
     font-weight: bold;
     height: 100%;
@@ -215,15 +214,26 @@ span.back {
     width: 46px;
 }
 
-span.back a {
+#header span.back {
+    background: url("images/mobile_back.png") no-repeat scroll center center;
+    cursor: pointer;
+}
+
+#header span.icon {
+    background: url("images/mobile_icon.png") no-repeat scroll center center;
+    cursor: default;
+}
+
+#header span.back a,
+#header span.icon a {
     display: inline-block;
     height: 100%;
     text-indent: 9999px;
     width: 100%;
+    white-space: nowrap;
 }
 
 #header ul {
-    background-color: #568000;
     color: #FFFFFF;
     cursor: pointer;
     display: inline-block;

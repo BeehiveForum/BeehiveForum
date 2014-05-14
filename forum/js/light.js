@@ -38,11 +38,11 @@ $(beehive).bind('init', function () {
             $menuItem = $body.find('div.menu.' + this.className),
             right = $menu.width() - $link.position().left - $menuItem.outerWidth(true);
 
-        $body.find('div.menu').hide();
-
         if ($menuItem.length == 0) {
             return;
         }
+
+        $body.find('div.menu').not($menuItem).hide();
 
         if (right < 5) {
             right = 5;
@@ -50,7 +50,7 @@ $(beehive).bind('init', function () {
 
         $menuItem.css('right', right);
 
-        $menuItem.show();
+        $menuItem.toggle();
 
         $message_vote_form.removeClass('popup');
 

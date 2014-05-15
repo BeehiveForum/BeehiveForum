@@ -742,6 +742,20 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
 
     $db->query($sql);
 
+    if (!install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_LINKS_VOTE", 'VOTED')) {
+
+        if (install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_LINKS_VOTE", 'TSTAMP')) {
+
+            $sql = "ALTER TABLE `{$table_data['PREFIX']}LINKS_VOTE` CHANGE TSTAMP VOTED DATETIME NOT NULL";
+            $db->query($sql);
+
+        } else {
+
+            $sql = "ALTER TABLE `{$table_data['PREFIX']}LINKS_VOTE` ADD COLUMN VOTED DATETIME NOT NULL AFTER RATING";
+            $db->query($sql);
+        }
+    }
+
     $sql = "ALTER TABLE `{$table_data['PREFIX']}LINKS_VOTE` ";
     $sql .= "CHANGE LID LID SMALLINT(5) UNSIGNED NOT NULL FIRST, ";
     $sql .= "CHANGE UID UID MEDIUMINT(8) UNSIGNED NOT NULL AFTER LID, ";

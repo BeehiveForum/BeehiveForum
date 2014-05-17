@@ -248,47 +248,24 @@ echo "                          </table>\n";
 echo "                        </td>\n";
 echo "                        <td valign=\"top\" width=\"110\">\n";
 echo "                          <table width=\"100%\">\n";
+echo "                            <tr>\n";
+echo "                              <td align=\"right\" class=\"subhead\">\n";
+echo "                                <div class=\"profile_image\">\n";
 
 if (isset($user_profile['PIC_URL'])) {
 
-    echo "                            <tr>\n";
-    echo "                              <td align=\"right\" class=\"subhead\">\n";
-    echo "                                <div class=\"profile_image\">\n";
-    echo "                                  <img src=\"{$user_profile['PIC_URL']}\" width=\"95\" height=\"95\" alt=\"\" />\n";
-    echo "                                </div>\n";
-    echo "                              </td>\n";
-    echo "                            </tr>\n";
+    echo "                                  <img src=\"{$user_profile['PIC_URL']}\" alt=\"\" />\n";
 
 } else if (isset($user_profile['PIC_AID']) && ($attachment = attachments_get_by_aid($user_profile['PIC_AID']))) {
 
     if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false)) !== false) {
 
-        echo "                            <tr>\n";
-        echo "                              <td align=\"right\" class=\"subhead\">\n";
-        echo "                                <div class=\"profile_image\">\n";
-        echo "                                  <img src=\"$profile_picture_href&amp;profile_picture\" width=\"95\" height=\"95\" alt=\"\" />\n";
-        echo "                                </div>\n";
-        echo "                              </td>\n";
-        echo "                            </tr>\n";
-
-    } else {
-
-        echo "                            <tr>\n";
-        echo "                              <td align=\"right\" class=\"subhead\">\n";
-        echo "                                <div class=\"profile_image_none\"></div>\n";
-        echo "                              </td>\n";
-        echo "                            </tr>\n";
+        echo "                                  <img src=\"$profile_picture_href&amp;profile_picture\" alt=\"\" />\n";
     }
-
-} else {
-
-    echo "                            <tr>\n";
-    echo "                              <td align=\"right\" class=\"subhead\">\n";
-    echo "                                <div class=\"profile_image_none\"></div>\n";
-    echo "                              </td>\n";
-    echo "                            </tr>\n";
 }
 
+echo "                              </td>\n";
+echo "                            </tr>\n";
 echo "                          </table>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";

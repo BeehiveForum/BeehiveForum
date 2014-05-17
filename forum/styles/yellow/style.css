@@ -929,17 +929,19 @@ div.poll_option_list ol li {
 }
 
 .profile_image {
-    border: 1px solid #000000;
     height: 95px;
     margin: 10px;
+    position: relative;
     width: 95px;
 }
 
-.profile_image_none {
-    border: 1px solid #FFA41A;
-    height: 95px;
-    margin: 10px;
-    width: 95px;
+.profile_image img {
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
 .profile_item_name {

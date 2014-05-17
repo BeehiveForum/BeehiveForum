@@ -286,6 +286,7 @@ function get_guest_access_ignore_files()
     return array(
         'admin.php',
         'index.php',
+        'forgot_pw.php',
         'forums.php',
         'lforums.php',
         'llogon.php',

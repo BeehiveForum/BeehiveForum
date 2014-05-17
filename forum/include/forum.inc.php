@@ -289,7 +289,7 @@ function forum_restricted_message()
         $forum_owner_link_target = html_get_top_frame_name();
     }
 
-    if (($restricted_message = forum_get_setting('restricted_message')) !== false) {
+    if (($restricted_message = forum_get_setting('restricted_message', null, false)) !== false) {
 
         html_draw_error(fix_html($restricted_message), '600', 'center');
 

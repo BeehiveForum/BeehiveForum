@@ -40,6 +40,7 @@ require_once BH_INCLUDE_PATH . 'pm.inc.php';
 require_once BH_INCLUDE_PATH . 'poll.inc.php';
 require_once BH_INCLUDE_PATH . 'post.inc.php';
 require_once BH_INCLUDE_PATH . 'search.inc.php';
+require_once BH_INCLUDE_PATH . 'server.inc.php';
 require_once BH_INCLUDE_PATH . 'session.inc.php';
 require_once BH_INCLUDE_PATH . 'thread.inc.php';
 require_once BH_INCLUDE_PATH . 'threads.inc.php';

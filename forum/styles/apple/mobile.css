@@ -229,8 +229,8 @@ body {
     display: inline-block;
     height: 100%;
     text-indent: 9999px;
-    width: 100%;
     white-space: nowrap;
+    width: 100%;
 }
 
 #header ul {
@@ -1128,4 +1128,16 @@ span.thread_length {
     float: right;
     font-weight: normal;
     text-align: right;
+}
+
+.attachments .summary div {
+    margin: 2px 0;
+}
+
+.attachments .summary span.used_post_space,
+.attachments .summary span.free_post_space,
+.attachments .summary span.free_upload_space {
+    display: inline-block;
+    margin-right: 5px;
+    min-width: 60px;
 }

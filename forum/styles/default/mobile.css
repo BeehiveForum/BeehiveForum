@@ -230,8 +230,8 @@ body {
     display: inline-block;
     height: 100%;
     text-indent: 9999px;
-    width: 100%;
     white-space: nowrap;
+    width: 100%;
 }
 
 #header ul {

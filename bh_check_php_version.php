@@ -63,9 +63,10 @@ if (isset($_SERVER['argc']) && ($_SERVER['argc'] > 1)) {
         'debug' => false,
         'recurse_dir' => true,
         'ignore_dirs' => array(
-            'forum/include/languages',
+            'forum/ckeditor',
+            'forum/include/htmlpurifier',
+            'forum/include/locale',
             'forum/include/swift',
-            'forum/tiny_mce'
         ),
     );
 

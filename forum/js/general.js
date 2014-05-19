@@ -82,6 +82,7 @@ var beehive = $.extend({}, beehive, {
 
         $(context).find('frame').each(function () {
 
+            //noinspection JSUnresolvedVariable
             if (!$.inArray($(this).prop('name'), beehive.frames)) {
                 return true;
             }

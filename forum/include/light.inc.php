@@ -64,8 +64,6 @@ function light_html_draw_top(array $options = array())
 
     $forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
 
-    $available_back_button_files = implode("|^", array_map('preg_quote_callback', get_light_back_button_files()));
-
     foreach ($options as $key => $value) {
 
         switch ($key) {

@@ -55,6 +55,8 @@ $error_msg_array = array();
 $t_name_new = null;
 $t_new_name = null;
 
+$psid = null;
+
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {

@@ -24,8 +24,7 @@ $(beehive).bind('init', function () {
     var $body = $('body'),
         $header = $('div#header'),
         $menu = $header.find('ul'),
-        $message_vote_form = $('.message_vote_form'),
-        $message_navigation = $('.message_navigation');
+        $message_vote_form = $('.message_vote_form');
 
     $body.bind('click', function () {
         $body.find('div.menu').hide();

@@ -209,6 +209,7 @@ $(beehive).bind('init', function () {
 
             $('img#quote_img_' + pid).prop('src', beehive.images['quote_disabled.png']);
 
+            //noinspection JSUnresolvedVariable
             $link.html(beehive.lang.quote);
 
             for (check_post_id in beehive.quote_list) {

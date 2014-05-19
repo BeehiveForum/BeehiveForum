@@ -49,6 +49,8 @@ $error_msg_array = array();
 
 $user_peer = null;
 
+$peer_uid = null;
+
 // Are we returning somewhere?
 if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
     $ret = "messages.php?webtag=$webtag&msg={$_GET['msg']}";

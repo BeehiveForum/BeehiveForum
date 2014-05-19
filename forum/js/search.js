@@ -44,6 +44,7 @@ $(beehive).bind('init', function () {
 
         search_logon = window.open('search_popup.php?' + $.param(search_query), $(this).prop('id'), window_options.join(','));
 
+        //noinspection JSPrimitiveTypeWrapperUsage
         search_logon.return_result = return_result;
     });
 
@@ -63,6 +64,7 @@ $(beehive).bind('init', function () {
             //noinspection JSUnresolvedVariable
             top.frames[beehive.frames.main].frames[beehive.frames.left].location.replace('search.php?webtag=' + beehive.webtag + '&page=1');
         } else if (top.document.body.cols) {
+            //noinspection JSUnresolvedVariable
             top.frames[beehive.frames.left].location.replace('search.php?webtag=$webtag&page=1');
         }
 

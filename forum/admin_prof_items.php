@@ -49,6 +49,14 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 // Perform additional admin login.
 admin_check_credentials();
 
+$t_type_new = null;
+$t_new_name = null;
+$t_options_new = null;
+$t_section_new = null;
+$t_name_new = null;
+
+$psid = null;
+
 if (isset($_GET['sect_page']) && is_numeric($_GET['sect_page'])) {
     $sect_page = ($_GET['sect_page'] > 0) ? $_GET['sect_page'] : 1;
 } else if (isset($_POST['sect_page']) && is_numeric($_POST['sect_page'])) {
@@ -80,12 +88,6 @@ if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
 
 // Array to hold error messages
 $error_msg_array = array();
-
-$t_type_new = null;
-$t_new_name = null;
-$t_options_new = null;
-$t_section_new = null;
-$t_name_new = null;
 
 // Array of valid profile item types
 $profile_item_valid_types = array(

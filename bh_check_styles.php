@@ -132,6 +132,23 @@ function parse_array_to_css($css_rules_array, $indent = 0)
     return $css_file_contents;
 }
 
+function array_intersect_key_recursive($array1, $array2)
+{
+    if (!is_array($array1) || !is_array($array2)) {
+        return $array1;
+    }
+
+    $keys = array_intersect(array_keys($array1), array_keys($array2));
+
+    $return = array();
+
+    foreach ($keys as $key) {
+        $return[$key] = array_intersect_key_recursive($array1[$key], $array2[$key]);
+    }
+
+    return $return;
+}
+
 function sort_array_by_array(&$array, $sort_by)
 {
     $common_keys = array_intersect_key(array_flip(array_keys($sort_by)), $array);
@@ -217,6 +234,11 @@ foreach ($style_css_files_array as $style_name => &$style_css_files) {
         $style_css_rules = array_replace_recursive(
             $default_css_files_array[$style_css_filename],
             $style_css_rules
+        );
+
+        $style_css_rules = array_intersect_key_recursive(
+            $style_css_rules,
+            $default_css_files_array[$style_css_filename]
         );
 
         sort_array_by_array(

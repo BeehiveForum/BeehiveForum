@@ -23,60 +23,113 @@ USA
 
 date_default_timezone_set('UTC');
 
-define("BH_INCLUDE_PATH", __DIR__. "/forum/include/");
+define("BH_INCLUDE_PATH", __DIR__ . "/forum/include/");
 
 define("BEEHIVEMODE_LIGHT", true);
 
-require_once BH_INCLUDE_PATH. 'errorhandler.inc.php';
+require_once BH_INCLUDE_PATH . 'errorhandler.inc.php';
 
-require_once BH_INCLUDE_PATH. 'format.inc.php';
+require_once BH_INCLUDE_PATH . 'format.inc.php';
 
-$exclude_files_array = array('start_main.css', 'style_ie6.css', 'gallery.css');
+$exclude_files_array = array('style_ie6.css');
 
 $exclude_dirs_array = array('default', 'tehforum');
 
-function parse_css_to_array($css_file_contents)
+function parse_css_to_array(&$css_file_contents, $selector = null)
 {
-    $css_rules_array = array();
+    $buffer = '';
 
-    preg_match_all('/([^}]+){([^}]+)}/im', $css_file_contents, $rule_matches_array, PREG_SET_ORDER);
+    $property = '';
 
-    foreach ($rule_matches_array as $rule_match) {
+    $properties = array();
 
-        $selector = preg_replace('/ +/', ' ', preg_replace("/\r|\r\n|\n/", " ", trim($rule_match[1])));
+    while (strlen($css_file_contents) > 0) {
 
-        $css_rules_array[$selector] = array();
+        if (substr($css_file_contents, 0, 1) == '{') {
 
-        $attributes_array = array_filter(array_map('trim', explode(';', $rule_match[2])), 'strlen');
+            $selector = $property . $buffer;
 
-        foreach ($attributes_array as $attribute_line) {
+            $css_file_contents = substr($css_file_contents, 1);
 
-            list($attribute, $value) = explode(':', $attribute_line);
-            $css_rules_array[$selector][trim($attribute)] = trim($value);
+            if (!isset($properties[$selector])) {
+                $properties[$selector] = array();
+            }
+
+            $properties[$selector] = array_merge(
+                $properties[$selector],
+                parse_css_to_array($css_file_contents, $selector)
+            );
+
+            $buffer = '';
+            $selector = '';
+
+        } else if (substr($css_file_contents, 0, 1) == '}') {
+
+            $css_file_contents = substr($css_file_contents, 1);
+            return $properties;
+
+        } else if ($selector) {
+
+            if (substr($css_file_contents, 0, 1) == ':') {
+
+                $property = trim(substr($buffer, 1));
+                $buffer = '';
+
+            } else if (substr($css_file_contents, 0, 1) == ';') {
+
+                if (strlen(trim($property)) > 0 && strlen(trim($buffer)) > 0) {
+                    $properties[$property] = trim(substr($buffer, 1));
+                }
+
+                $property = '';
+                $buffer = '';
+            }
         }
-    }
 
-    return $css_rules_array;
+        $buffer .= substr($css_file_contents, 0, 1);
+        $css_file_contents = substr($css_file_contents, 1);
+    };
+
+    return $properties;
 }
 
-function parse_array_to_css($css_rules_array)
+function parse_array_to_css($css_rules_array, $indent = 0)
 {
     $css_file_contents = '';
 
     foreach ($css_rules_array as $selector => $rules_set) {
 
-        ksort($rules_set);
-
         $selector = implode(",\n", array_map('trim', explode(',', $selector)));
 
-        $css_file_contents.= sprintf(
-            "%s {\n    %s;\n}\n\n",
+        $rules = '';
+
+        foreach ($rules_set as $property => $value) {
+
+            if (is_array($value)) {
+
+                $rules = parse_array_to_css($rules_set, $indent + 4);
+
+            } else {
+
+                $rules .= sprintf(
+                    "%1\$s%2\$s: %3\$s;\n",
+                    str_repeat(' ', $indent + 4),
+                    $property,
+                    $value
+                );
+            }
+        }
+
+        $css_file_contents .= sprintf(
+            "\n%1\$s%3\$s {\n%2\$s%4\$s\n%1\$s}\n",
+            str_repeat(' ', $indent),
+            str_repeat(' ', $indent + 4),
             $selector,
-            implode_assoc($rules_set, ': ', ";\n    ")
+            trim($rules)
         );
     }
 
-    return trim($css_file_contents);
+    return $css_file_contents;
 }
 
 function sort_array_by_array(&$array, $sort_by)
@@ -92,43 +145,44 @@ function get_css_styles($path, $pattern, $exclude_dirs_array, $exclude_files_arr
 
     $directory_iterator = new DirectoryIterator($path);
 
-    foreach ($directory_iterator as $fileinfo) {
+    foreach ($directory_iterator as $dirinfo) {
 
-        /** @var DirectoryIterator $fileinfo */
-        if ($fileinfo->isDir() && !$fileinfo->isDot() && !in_array($fileinfo->getBasename(), $exclude_dirs_array)) {
+        /** @var DirectoryIterator $dirinfo */
+        if (!$dirinfo->isDir() || $dirinfo->isDot() || in_array($dirinfo->getBasename(), $exclude_dirs_array)) {
+            continue;
+        }
 
-            $style_name = $fileinfo->getBasename();
+        $style_name = $dirinfo->getBasename();
 
-            $style_pathname = $fileinfo->getPathname();
+        $style_pathname = str_replace(DIRECTORY_SEPARATOR, '/', $dirinfo->getPathname());
 
-            $regex_iterator = new RegexIterator(
-                new RecursiveIteratorIterator(
-                    new RecursiveDirectoryIterator($style_pathname)
-                ),
-                $pattern,
-                RegexIterator::GET_MATCH
-            );
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($style_pathname)
+        );
 
-            foreach ($regex_iterator as $filename => $regex_match) {
+        foreach ($iterator as $fileinfo) {
 
-                if (!in_array(basename($filename), $exclude_files_array)) {
-
-                    $css_filename = ltrim(
-                        str_replace(
-                            $style_pathname,
-                            '',
-                            $filename
-                        ),
-                        '/'
-                    );
-
-                    if (!isset($output[$style_name])) {
-                        $output[$style_name] = array();
-                    }
-
-                    $output[$style_name][$css_filename] = parse_css_to_array(file_get_contents($filename));
-                }
+            /** @var SplFileInfo $fileinfo */
+            if ($fileinfo->isDir()) {
+                continue;
             }
+
+            if (in_array($fileinfo->getBasename(), $exclude_files_array)) {
+                continue;
+            }
+
+            if (!preg_match($pattern, str_replace(DIRECTORY_SEPARATOR, '/', $fileinfo->getPathname()))) {
+                continue;
+            }
+
+            $css_filename = ltrim(str_replace(DIRECTORY_SEPARATOR, '/', str_replace($style_pathname, '', $fileinfo->getPathname())), '/');
+
+            if (!isset($output[$style_name])) {
+                $output[$style_name] = array();
+            }
+
+            $css_file_contents = file_get_contents($fileinfo->getPathname());
+            $output[$style_name][$css_filename] = parse_css_to_array($css_file_contents);
         }
     }
 
@@ -152,64 +206,23 @@ foreach ($default_css_files_array as $default_css_filename => $default_css_rules
             'forum/styles/default/%s',
             $default_css_filename
         ),
-        parse_array_to_css($default_css_rules)
+        trim(parse_array_to_css($default_css_rules))
     );
-
-    foreach ($style_css_files_array as $style_name => $style_css_files) {
-
-        if (!isset($style_css_files_array[$style_name][$default_css_filename])) {
-
-            $style_css_files_array[$style_name][$default_css_filename] = $default_css_rules;
-            continue;
-        }
-
-        foreach ($default_css_rules as $default_css_selector => $default_css_properties) {
-
-            if (!isset($style_css_files_array[$style_name][$default_css_filename][$default_css_selector])) {
-
-                $style_css_files_array[$style_name][$default_css_filename][$default_css_selector] = $default_css_properties;
-                continue;
-            }
-
-            foreach ($default_css_properties as $default_property_name => $default_property_value) {
-
-                if (preg_match('/(#[0-9A-F]{3,6}|rgba?)/i', $default_property_value) > 0) {
-                    continue;
-                }
-
-                if (preg_match('/color/i', $default_property_name) > 0) {
-                    continue;
-                }
-
-                $style_css_files_array[$style_name][$default_css_filename][$default_css_selector][$default_property_name] = $default_property_value;
-            }
-
-            sort_array_by_array(
-                $style_css_files_array[$style_name][$default_css_filename][$default_css_selector],
-                $default_css_files_array[$default_css_filename][$default_css_selector]
-            );
-        }
-
-        foreach ($style_css_files as $style_css_filename => $style_css_rules) {
-
-            foreach ($style_css_rules as $style_css_selector => $style_css_properties) {
-
-                if (!isset($default_css_files_array[$style_css_filename][$style_css_selector])) {
-                    unset($style_css_files_array[$style_name][$style_css_filename][$style_css_selector]);
-                }
-            }
-        }
-
-        sort_array_by_array(
-            $style_css_files_array[$style_name][$default_css_filename],
-            $default_css_files_array[$default_css_filename]
-        );
-    }
 }
 
-foreach ($style_css_files_array as $style_name => $style_css_files) {
+foreach ($style_css_files_array as $style_name => &$style_css_files) {
 
     foreach ($style_css_files as $style_css_filename => $style_css_rules) {
+
+        $style_css_rules = array_replace_recursive(
+            $default_css_files_array[$style_css_filename],
+            $style_css_rules
+        );
+
+        sort_array_by_array(
+            $style_css_files_array[$style_name][$style_css_filename],
+            $default_css_files_array[$style_css_filename]
+        );
 
         file_put_contents(
             sprintf(
@@ -217,7 +230,7 @@ foreach ($style_css_files_array as $style_name => $style_css_files) {
                 $style_name,
                 $style_css_filename
             ),
-            parse_array_to_css($style_css_rules)
+            trim(parse_array_to_css($style_css_rules))
         );
     }
 }

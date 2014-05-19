@@ -326,7 +326,6 @@ div.menu.main li a {
 }
 
 div.menu.navigation a {
-    border-right: 1px solid rgba(255, 255, 255, 0.4);
     display: inline-block;
     padding: 5px 10px;
 }

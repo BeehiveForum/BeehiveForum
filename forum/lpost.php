@@ -388,7 +388,7 @@ if ($allow_html == false) {
 
 if ((mb_strlen($content) + mb_strlen($sig)) >= 65535) {
 
-    $error_msg_array[] = sprintf(gettext("Combined Message and signature length must be less than 65,535 characters (currently: %s)"), number_format(mb_strlen($content) + mb_strlen($sig)));
+    $error_msg_array[] = sprintf(gettext("Combined Message and signature length must be less than 65,535 characters (currently: %s)"), format_number(mb_strlen($content) + mb_strlen($sig)));
 
     $valid = false;
 }

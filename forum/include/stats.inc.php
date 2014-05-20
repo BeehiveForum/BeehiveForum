@@ -128,20 +128,20 @@ function stats_get_html()
         if (forum_get_setting('guest_show_recent', 'Y') && user_guest_enabled()) {
 
             if ($user_stats['GUESTS'] <> 1) {
-                $user_list_array[] = sprintf(gettext("<b>%s</b> guests"), $user_stats['GUESTS']);
+                $user_list_array[] = sprintf(gettext("<b>%s</b> guests"), format_number($user_stats['GUESTS']));
             } else {
                 $user_list_array[] = gettext("<b>1</b> guest");
             }
         }
 
         if ($user_stats['USER_COUNT'] <> 1) {
-            $user_list_array[] = sprintf(gettext("<b>%s</b> members"), $user_stats['USER_COUNT']);
+            $user_list_array[] = sprintf(gettext("<b>%s</b> members"), format_number($user_stats['USER_COUNT']));
         } else {
             $user_list_array[] = gettext("<b>1</b> member");
         }
 
         if ($user_stats['ANON_USERS'] <> 1) {
-            $user_list_array[] = sprintf(gettext("<b>%s</b> anonymous members"), $user_stats['ANON_USERS']);
+            $user_list_array[] = sprintf(gettext("<b>%s</b> anonymous members"), format_number($user_stats['ANON_USERS']));
         } else {
             $user_list_array[] = gettext("<b>1</b> anonymous member");
         }
@@ -255,7 +255,7 @@ function stats_get_html()
         if (count($users_birthdays_array) == 1) {
             $html .= gettext("<b>1</b> member is celebrating their birthday today:");
         } else {
-            $html .= sprintf(gettext("<b>%d</b> members are celebrating their birthdays today:"), count($users_birthdays_array));
+            $html .= sprintf(gettext("<b>%d</b> members are celebrating their birthdays today:"), format_number(count($users_birthdays_array)));
         }
 
         $html .= "</td>\n";
@@ -346,13 +346,13 @@ function stats_get_html()
     $html .= "    <td>";
 
     if ($thread_count <> 1) {
-        $num_threads_display = sprintf(gettext("<b>%s</b> threads"), number_format($thread_count, 0, ".", ","));
+        $num_threads_display = sprintf(gettext("<b>%s</b> threads"), format_number($thread_count));
     } else {
         $num_threads_display = gettext("<b>1</b> thread");
     }
 
     if ($post_count <> 1) {
-        $num_posts_display = sprintf(gettext("<b>%s</b> posts"), number_format($post_count, 0, ".", ","));
+        $num_posts_display = sprintf(gettext("<b>%s</b> posts"), format_number($post_count));
     } else {
         $num_posts_display = gettext("<b>1</b> post");
     }
@@ -371,7 +371,7 @@ function stats_get_html()
         $longest_thread_title = word_filter_add_ob_tags($longest_thread['TITLE'], true);
 
         $longest_thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%d.1\">%s</a>", $longest_thread['TID'], $longest_thread_title);
-        $longest_thread_post_count = ($longest_thread['LENGTH'] <> 1) ? sprintf(gettext("<b>%s</b> posts"), $longest_thread['LENGTH']) : gettext("<b>1</b> post");
+        $longest_thread_post_count = ($longest_thread['LENGTH'] <> 1) ? sprintf(gettext("<b>%s</b> posts"), format_number($longest_thread['LENGTH'])) : gettext("<b>1</b> post");
 
         $html .= sprintf(gettext("Longest thread is <b>%s</b> with %s."), $longest_thread_link, $longest_thread_post_count);
 
@@ -387,7 +387,7 @@ function stats_get_html()
         $most_read_thread_title = word_filter_add_ob_tags($most_read_thread['TITLE'], true);
 
         $most_read_thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%d.1\">%s</a>", $most_read_thread['TID'], $most_read_thread_title);
-        $most_read_thread_view_count = ($most_read_thread['VIEWCOUNT'] <> 1) ? sprintf(gettext("<b>%s</b> views"), $most_read_thread['VIEWCOUNT']) : gettext("<b>1</b> view");
+        $most_read_thread_view_count = ($most_read_thread['VIEWCOUNT'] <> 1) ? sprintf(gettext("<b>%s</b> views"), format_number($most_read_thread['VIEWCOUNT'])) : gettext("<b>1</b> view");
 
         $html .= sprintf(gettext("Most read thread is <b>%s</b> with %s."), $most_read_thread_link, $most_read_thread_view_count);
 
@@ -402,12 +402,8 @@ function stats_get_html()
     $html .= "    <td>";
 
     if ($recent_post_count <> 1) {
-
-        $recent_post_count = number_format($recent_post_count, 0, ",", ",");
-        $html .= sprintf(gettext("There have been <b>%s</b> posts made in the last 60 minutes."), $recent_post_count);
-
+        $html .= sprintf(gettext("There have been <b>%s</b> posts made in the last 60 minutes."), format_number($recent_post_count));
     } else {
-
         $html .= gettext("There has been <b>1</b> post made in the last 60 minutes.");
     }
 
@@ -421,9 +417,11 @@ function stats_get_html()
             $html .= "  <tr>\n";
             $html .= "    <td>";
 
-            $post_stats_record_date = format_date_time($most_posts['MOST_POSTS_DATE']);
-
-            $html .= sprintf(gettext("Most posts ever made in a single 60 minute period is <b>%s</b> on %s."), $most_posts['MOST_POSTS_COUNT'], $post_stats_record_date);
+            $html .= sprintf(
+                gettext("Most posts ever made in a single 60 minute period is <b>%s</b> on %s."),
+                format_number($most_posts['MOST_POSTS_COUNT']),
+                format_date_time($most_posts['MOST_POSTS_DATE'])
+            );
 
             $html .= "    </td>\n";
             $html .= "  </tr>\n";
@@ -445,12 +443,11 @@ function stats_get_html()
                 $user_newest_display = word_filter_add_ob_tags(format_user_name($newest_member['LOGON'], $newest_member['NICKNAME']), true);
                 $user_newest_profile_link = sprintf($new_user_profile_link, $webtag, $newest_member['UID'], $user_newest_display);
 
-                $html .= sprintf(gettext("We have <b>%s</b> registered members and the newest member is <b>%s</b>."), $user_count, $user_newest_profile_link);
+                $html .= sprintf(gettext("We have <b>%s</b> registered members and the newest member is <b>%s</b>."), format_number($user_count), $user_newest_profile_link);
 
             } else {
 
                 $html .= sprintf(gettext("We have %s registered members."), $user_count);
-
             }
 
         } else {
@@ -469,10 +466,8 @@ function stats_get_html()
             $html .= "  <tr>\n";
             $html .= "    <td>";
 
-            $most_users_count = number_format($most_users['MOST_USERS_COUNT'], 0, ",", ",");
             $most_users_date = format_date_time($most_users['MOST_USERS_DATE']);
-
-            $html .= sprintf(gettext("Most users ever online was <b>%s</b> on %s."), $most_users_count, $most_users_date);
+            $html .= sprintf(gettext("Most users ever online was <b>%s</b> on %s."), format_number($most_users['MOST_USERS_COUNT']), $most_users_date);
 
             $html .= "    </td>\n";
             $html .= "  </tr>\n";

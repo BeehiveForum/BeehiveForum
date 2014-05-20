@@ -717,7 +717,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
             echo "                  <td align=\"left\"><a href=\"index.php?webtag={$forum_data['WEBTAG']}\" title=\"", sprintf(gettext("Visit Forum: %s"), $forum_data['FORUM_NAME']), "\" target=\"_blank\">{$forum_data['FORUM_NAME']}</a></td>\n";
 
             if (isset($forum_data['MESSAGES'])) {
-                echo "                  <td align=\"left\">", number_format($forum_data['MESSAGES'], 0), " ", ($forum_data['MESSAGES'] > 1) ? gettext("Messages") : gettext("Message"), "</td>\n";
+                echo "                  <td align=\"left\">", format_number($forum_data['MESSAGES']), " ", ($forum_data['MESSAGES'] > 1) ? gettext("Messages") : gettext("Message"), "</td>\n";
             } else {
                 echo "                  <td align=\"left\">", gettext("Unknown"), "</td>\n";
             }

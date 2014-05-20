@@ -1292,16 +1292,16 @@ function light_draw_my_forums()
 
                     if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
 
-                        echo sprintf(gettext("%s Unread Messages"), number_format($forum['UNREAD_MESSAGES'], 0, ".", ",")), " (", sprintf(gettext("%s Unread &quot;To: Me&quot;"), number_format($forum['UNREAD_TO_ME'], 0, ",", ",")), ")\n";
+                        echo sprintf(gettext("%s Unread Messages"), format_number($forum['UNREAD_MESSAGES'])), " (", sprintf(gettext("%s Unread &quot;To: Me&quot;"), format_number($forum['UNREAD_TO_ME'])), ")\n";
 
                     } else {
 
-                        echo sprintf(gettext("%s Unread &quot;To: Me&quot;"), number_format($forum['UNREAD_TO_ME'], 0, ".", ","));
+                        echo sprintf(gettext("%s Unread &quot;To: Me&quot;"), format_number($forum['UNREAD_TO_ME']));
                     }
 
                 } else if (isset($forum['UNREAD_MESSAGES']) && is_numeric($forum['UNREAD_MESSAGES']) && $forum['UNREAD_MESSAGES'] > 0) {
 
-                    echo sprintf(gettext("%s Unread Messages"), number_format($forum['UNREAD_MESSAGES'], 0, ".", ","));
+                    echo sprintf(gettext("%s Unread Messages"), format_number($forum['UNREAD_MESSAGES']));
 
                 } else {
 
@@ -1345,7 +1345,7 @@ function light_draw_my_forums()
                 echo "<div class=\"forum_info\">", $forum['FORUM_DESC'], "</div>";
                 echo "<ul>\n";
                 echo "<li>\n";
-                echo "<span class=\"forum_messages\">", number_format($forum['MESSAGES']), " ", gettext("Messages"), "</span>\n";
+                echo "<span class=\"forum_messages\">", format_number($forum['MESSAGES']), " ", gettext("Messages"), "</span>\n";
                 echo "</li>\n";
                 echo "</ul>\n";
                 echo "</div>\n";
@@ -1628,7 +1628,7 @@ function light_poll_graph_display($options_array)
         $poll_display .= "<div class=\"poll_bar poll_bar_horizontal poll_bar_$bar_color\">\n";
         $poll_display .= "  <div class=\"poll_bar_inner poll_bar_inner_$bar_color\" style=\"width: {$poll_bar_width}%; left: -{$poll_bar_width}%\"></div>\n";
         $poll_display .= "</div>\n";
-        $poll_display .= "<div class=\"poll_vote_result\">" . word_filter_add_ob_tags($option['OPTION_NAME']) . ": " . sizeof($option['VOTES_ARRAY']) . " " . gettext("Votes") . " (" . number_format($vote_percent, 2) . "%)</div>\n";
+        $poll_display .= "<div class=\"poll_vote_result\">" . word_filter_add_ob_tags($option['OPTION_NAME']) . ": " . sizeof($option['VOTES_ARRAY']) . " " . gettext("Votes") . " (" . format_number($vote_percent, 2) . "%)</div>\n";
 
         $bar_color++;
 

@@ -925,7 +925,7 @@ function poll_horizontal_graph($options_array, $poll_data, $total_votes)
         $poll_display .= "      </td>\n";
         $poll_display .= "    </tr>\n";
         $poll_display .= "    <tr>\n";
-        $poll_display .= "      <td class=\"postbody\">" . word_filter_add_ob_tags($option['OPTION_NAME']) . ": " . sizeof($option['VOTES_ARRAY']) . " " . gettext("Votes") . " (" . number_format($vote_percent, 2) . "%)</td>\n";
+        $poll_display .= "      <td class=\"postbody\">" . word_filter_add_ob_tags($option['OPTION_NAME']) . ": " . sizeof($option['VOTES_ARRAY']) . " " . gettext("Votes") . " (" . format_number($vote_percent, 2) . "%)</td>\n";
         $poll_display .= "    </tr>\n";
 
         if (($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC)) {
@@ -978,7 +978,7 @@ function poll_vertical_graph($options_array, $total_votes)
 
         $vote_percent = ((sizeof($option['VOTES_ARRAY']) > 0) && ($total_votes > 0)) ? (sizeof($option['VOTES_ARRAY']) / $total_votes) * 100 : 0;
 
-        $poll_display .= "      <td class=\"postbody\" align=\"center\">" . word_filter_add_ob_tags($option['OPTION_NAME']) . "<br />" . sizeof($option['VOTES_ARRAY']) . " " . gettext("Votes") . " (" . number_format($vote_percent, 2) . "%)</td>\n";
+        $poll_display .= "      <td class=\"postbody\" align=\"center\">" . word_filter_add_ob_tags($option['OPTION_NAME']) . "<br />" . sizeof($option['VOTES_ARRAY']) . " " . gettext("Votes") . " (" . format_number($vote_percent, 2) . "%)</td>\n";
     }
 
     $poll_display .= "    </tr>\n";
@@ -1061,7 +1061,7 @@ function poll_table_graph($poll_results, $total_votes)
 
                 $vote_percent = ($total_votes > 0) ? ($row_col_vote_count / $total_votes) * 100 : 0;
 
-                $poll_display .= "      <td align=\"center\" width=\"$col_width\">" . $row_col_vote_count . " (" . number_format($vote_percent, 2) . "%)</td>\n";
+                $poll_display .= "      <td align=\"center\" width=\"$col_width\">" . $row_col_vote_count . " (" . format_number($vote_percent, 2) . "%)</td>\n";
             }
         }
 
@@ -1069,7 +1069,7 @@ function poll_table_graph($poll_results, $total_votes)
 
             $vote_percent = ($total_votes > 0) ? ($row_vote_count_array[$row_option['OPTION_ID']] / $total_votes) * 100 : 0;
 
-            $poll_display .= "      <th class=\"posthead\" align=\"center\" width=\"$col_width\">" . $row_vote_count_array[$row_option['OPTION_ID']] . " (" . number_format($vote_percent, 2) . "%)</td>\n";
+            $poll_display .= "      <th class=\"posthead\" align=\"center\" width=\"$col_width\">" . $row_vote_count_array[$row_option['OPTION_ID']] . " (" . format_number($vote_percent, 2) . "%)</td>\n";
 
         } else {
 
@@ -1088,7 +1088,7 @@ function poll_table_graph($poll_results, $total_votes)
 
             $vote_percent = ($total_votes > 0) ? ($col_vote_count_array[$col_option['OPTION_ID']] / $total_votes) * 100 : 0;
 
-            $poll_display .= "      <th class=\"posthead\" align=\"center\" width=\"$col_width\">" . $col_vote_count_array[$col_option['OPTION_ID']] . " (" . number_format($vote_percent, 2) . "%)</td>\n";
+            $poll_display .= "      <th class=\"posthead\" align=\"center\" width=\"$col_width\">" . $col_vote_count_array[$col_option['OPTION_ID']] . " (" . format_number($vote_percent, 2) . "%)</td>\n";
 
         } else {
 

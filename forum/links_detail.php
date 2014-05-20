@@ -289,14 +289,14 @@ if (isset($link['RATING']) && is_numeric($link['RATING'])) {
 
         echo "                    <tr>\n";
         echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", gettext("Rating"), ":</td>\n";
-        echo "                      <td align=\"left\">", number_format($link['RATING'], 1, ".", ","), " (1 ", gettext("Vote"), ")</td>\n";
+        echo "                      <td align=\"left\">", format_number($link['RATING'], 1), " (1 ", gettext("Vote"), ")</td>\n";
         echo "                    </tr>\n";
 
     } else {
 
         echo "                    <tr>\n";
         echo "                      <td align=\"left\" style=\"white-space: nowrap\" valign=\"top\">", gettext("Rating"), ":</td>\n";
-        echo "                      <td align=\"left\">", number_format($link['RATING'], 1, ".", ","), " ({$link['VOTES']} ", gettext("Votes"), ")</td>\n";
+        echo "                      <td align=\"left\">", format_number($link['RATING'], 1), " ({$link['VOTES']} ", gettext("Votes"), ")</td>\n";
         echo "                    </tr>\n";
     }
 

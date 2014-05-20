@@ -75,7 +75,7 @@ function format_file_size($size)
 
     } while ($size > 99);
 
-    return number_format(floor($size * 100) / 100, 2) . $units[$b];
+    return format_number(floor($size * 100) / 100, 2) . $units[$b];
 }
 
 function convert_shorthand_filesize($size)
@@ -276,6 +276,12 @@ function format_time_display($seconds, $abbrv_units = true)
     }
 
     return sprintf(ngettext($periods_array[1][0], $periods_array[1][1], $seconds), $seconds);
+}
+
+function format_number($number, $decimals = 0)
+{
+    $locale = localeconv();
+    return number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
 }
 
 function htmlentities_array($var)

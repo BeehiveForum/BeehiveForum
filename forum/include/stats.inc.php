@@ -110,21 +110,19 @@ function stats_get_html()
     // Search Engine Bot link
     $search_engine_bot_link = '<a href="%s" target="_blank"><span class="user_stats_normal">%s</span></a>';
 
-    $html = '';
+    $html = "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+    $html .= "  <tr>\n";
+    $html .= "    <td rowspan=\"19\" width=\"35\">&nbsp;</td>\n";
+    $html .= "    <td>&nbsp;</td>\n";
+    $html .= "    <td rowspan=\"19\" width=\"35\">&nbsp;</td>\n";
+    $html .= "  </tr>\n";
 
     // Output the HTML.
     if (($user_stats = stats_get_active_user_list()) !== false) {
 
         $user_list_array = array();
 
-        $html = "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
         $html .= "  <tr>\n";
-        $html .= "    <td width=\"35\">&nbsp;</td>\n";
-        $html .= "    <td>&nbsp;</td>\n";
-        $html .= "    <td width=\"35\">&nbsp;</td>\n";
-        $html .= "  </tr>\n";
-        $html .= "  <tr>\n";
-        $html .= "    <td>&nbsp;</td>\n";
         $html .= "    <td>";
 
         if (forum_get_setting('guest_show_recent', 'Y') && user_guest_enabled()) {
@@ -154,9 +152,8 @@ function stats_get_html()
 
         $html .= sprintf(gettext("%s active in the past %s."), $user_list, $user_time);
 
-        $html .= " [ <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"" . html_get_frame_name('main') . "\">" . gettext("View Complete List") . "</a> ]\n";
+        $html .= " <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"" . html_get_frame_name('main') . "\">" . gettext("View More Visitors") . "</a>\n";
         $html .= "    </td>\n";
-        $html .= "    <td width=\"35\">&nbsp;</td>\n";
         $html .= "  </tr>\n";
 
         if (sizeof($user_stats['USERS']) > 0) {
@@ -239,26 +236,20 @@ function stats_get_html()
             }
 
             $html .= "  <tr>";
-            $html .= "    <td>&nbsp;</td>\n";
             $html .= "    <td class=\"activeusers\">\n";
             $html .= "      " . implode(", ", $users_array) . "\n";
             $html .= "    </td>\n";
-            $html .= "    <td width=\"35\">&nbsp;</td>\n";
             $html .= "  </tr>\n";
         }
 
         $html .= "  <tr>\n";
-        $html .= "    <td width=\"35\">&nbsp;</td>\n";
         $html .= "    <td>&nbsp;</td>\n";
         $html .= "  </tr>\n";
-        $html .= "</table>\n";
     }
 
     if (($users_birthdays_array = user_get_todays_birthdays()) !== false) {
 
-        $html .= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
         $html .= "  <tr>\n";
-        $html .= "    <td width=\"35\">&nbsp;</td>\n";
         $html .= "    <td>";
 
         if (count($users_birthdays_array) == 1) {
@@ -268,7 +259,6 @@ function stats_get_html()
         }
 
         $html .= "</td>\n";
-        $html .= "    <td width=\"35\">&nbsp;</td>\n";
         $html .= "  </tr>\n";
 
         $users_array = array();
@@ -339,27 +329,20 @@ function stats_get_html()
         }
 
         $html .= "  <tr>\n";
-        $html .= "    <td width=\"35\">&nbsp;</td>\n";
         $html .= "    <td class=\"birthdayusers\">\n";
         $html .= "      " . implode(", ", $users_array) . "\n";
         $html .= "    </td>\n";
-        $html .= "    <td width=\"35\">&nbsp;</td>\n";
         $html .= "  </tr>\n";
         $html .= "  <tr>\n";
-        $html .= "    <td width=\"35\">&nbsp;</td>\n";
         $html .= "    <td>&nbsp;</td>\n";
-        $html .= "    <td width=\"35\">&nbsp;</td>\n";
         $html .= "  </tr>\n";
-        $html .= "</table>\n";
     }
 
     $thread_count = stats_get_thread_count();
 
     $post_count = stats_get_post_count();
 
-    $html .= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
     $html .= "  <tr>\n";
-    $html .= "    <td width=\"35\">&nbsp;</td>\n";
     $html .= "    <td>";
 
     if ($thread_count <> 1) {
@@ -375,15 +358,14 @@ function stats_get_html()
     }
 
     $html .= sprintf(gettext("Our members have made a total of %s and %s."), $num_threads_display, $num_posts_display) . '<br />';
-    $html .= "    <td width=\"35\">&nbsp;</td>\n";
     $html .= "  </tr>\n";
-    $html .= "</table>\n";
+    $html .= "  <tr>\n";
+    $html .= "    <td>&nbsp;</td>\n";
+    $html .= "  </tr>\n";
 
     if (($longest_thread = stats_get_longest_thread()) !== false) {
 
-        $html .= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
         $html .= "  <tr>\n";
-        $html .= "    <td width=\"35\">&nbsp;</td>\n";
         $html .= "    <td>";
 
         $longest_thread_title = word_filter_add_ob_tags($longest_thread['TITLE'], true);
@@ -394,21 +376,29 @@ function stats_get_html()
         $html .= sprintf(gettext("Longest thread is <b>%s</b> with %s."), $longest_thread_link, $longest_thread_post_count);
 
         $html .= "    </td>\n";
-        $html .= "    <td width=\"35\">&nbsp;</td>\n";
         $html .= "  </tr>\n";
-        $html .= "</table>\n";
     }
 
-    $html .= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
+    if (($most_read_thread = stats_get_most_read_thread()) !== false) {
+
+        $html .= "  <tr>\n";
+        $html .= "    <td>";
+
+        $most_read_thread_title = word_filter_add_ob_tags($most_read_thread['TITLE'], true);
+
+        $most_read_thread_link = sprintf("<a href=\"index.php?webtag=$webtag&amp;msg=%d.1\">%s</a>", $most_read_thread['TID'], $most_read_thread_title);
+        $most_read_thread_view_count = ($most_read_thread['VIEWCOUNT'] <> 1) ? sprintf(gettext("<b>%s</b> views"), $most_read_thread['VIEWCOUNT']) : gettext("<b>1</b> view");
+
+        $html .= sprintf(gettext("Most read thread is <b>%s</b> with %s."), $most_read_thread_link, $most_read_thread_view_count);
+
+        $html .= "    </td>\n";
+        $html .= "  </tr>\n";
+    }
+
     $html .= "  <tr>\n";
-    $html .= "    <td width=\"35\">&nbsp;</td>\n";
     $html .= "    <td>&nbsp;</td>\n";
-    $html .= "    <td width=\"35\">&nbsp;</td>\n";
     $html .= "  </tr>\n";
-    $html .= "</table>\n";
-    $html .= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
     $html .= "  <tr>\n";
-    $html .= "    <td width=\"35\">&nbsp;</td>\n";
     $html .= "    <td>";
 
     if ($recent_post_count <> 1) {
@@ -422,17 +412,13 @@ function stats_get_html()
     }
 
     $html .= "    </td>\n";
-    $html .= "    <td width=\"35\">&nbsp;</td>\n";
     $html .= "  </tr>\n";
-    $html .= "</table>\n";
 
     if (($most_posts = stats_get_most_posts()) !== false) {
 
         if (($most_posts['MOST_POSTS_COUNT'] > 0) && ($most_posts['MOST_POSTS_DATE'] > 0)) {
 
-            $html .= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
             $html .= "  <tr>\n";
-            $html .= "    <td width=\"35\">&nbsp;</td>\n";
             $html .= "    <td>";
 
             $post_stats_record_date = format_date_time($most_posts['MOST_POSTS_DATE']);
@@ -440,22 +426,16 @@ function stats_get_html()
             $html .= sprintf(gettext("Most posts ever made in a single 60 minute period is <b>%s</b> on %s."), $most_posts['MOST_POSTS_COUNT'], $post_stats_record_date);
 
             $html .= "    </td>\n";
-            $html .= "    <td width=\"35\">&nbsp;</td>\n";
             $html .= "  </tr>\n";
-            $html .= "</table>\n";
         }
     }
 
     if (($user_count = user_count()) !== false) {
 
-        $html .= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
         $html .= "  <tr>\n";
-        $html .= "    <td width=\"35\">&nbsp;</td>\n";
         $html .= "    <td>&nbsp;</td>\n";
-        $html .= "    <td width=\"35\">&nbsp;</td>\n";
         $html .= "  </tr>\n";
         $html .= "  <tr>\n";
-        $html .= "    <td width=\"35\">&nbsp;</td>\n";
         $html .= "    <td>";
 
         if ($user_count <> 1) {
@@ -479,18 +459,14 @@ function stats_get_html()
         }
 
         $html .= "    </td>\n";
-        $html .= "    <td width=\"35\">&nbsp;</td>\n";
         $html .= "  </tr>\n";
-        $html .= "</table>\n";
     }
 
     if (($most_users = stats_get_most_users()) !== false) {
 
         if (($most_users['MOST_USERS_COUNT'] > 0) && ($most_users['MOST_USERS_DATE'] > 0)) {
 
-            $html .= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
             $html .= "  <tr>\n";
-            $html .= "    <td width=\"35\">&nbsp;</td>\n";
             $html .= "    <td>";
 
             $most_users_count = number_format($most_users['MOST_USERS_COUNT'], 0, ",", ",");
@@ -499,24 +475,12 @@ function stats_get_html()
             $html .= sprintf(gettext("Most users ever online was <b>%s</b> on %s."), $most_users_count, $most_users_date);
 
             $html .= "    </td>\n";
-            $html .= "    <td width=\"35\">&nbsp;</td>\n";
             $html .= "  </tr>\n";
-            $html .= "</table>\n";
         }
     }
 
-    $html .= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
     $html .= "  <tr>\n";
-    $html .= "    <td width=\"35\">&nbsp;</td>\n";
     $html .= "    <td>&nbsp;</td>\n";
-    $html .= "    <td width=\"35\">&nbsp;</td>\n";
-    $html .= "  </tr>\n";
-    $html .= "</table>\n";
-    $html .= "<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" class=\"posthead\">\n";
-    $html .= "  <tr>\n";
-    $html .= "    <td width=\"35\">&nbsp;</td>\n";
-    $html .= "    <td>&nbsp;</td>\n";
-    $html .= "    <td width=\"35\">&nbsp;</td>\n";
     $html .= "  </tr>\n";
     $html .= "</table>\n";
 

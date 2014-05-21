@@ -165,7 +165,7 @@ function sphinx_search_execute($search_arguments, &$error)
     $sphinx_search_index_delta = sprintf('%s_DELTA', $sphinx_search_index);
 
     // Build query including main and delta indexes.
-    $sql = "SELECT * FROM $sphinx_search_index, $sphinx_search_index_delta ";
+    $sql = "SELECT *, WEIGHT() FROM $sphinx_search_index, $sphinx_search_index_delta ";
     $sql .= "$where_sql $group_sql $order_sql LIMIT 1000";
 
     // Execute the query
@@ -182,9 +182,17 @@ function sphinx_search_execute($search_arguments, &$error)
 
     while (($search_result = $result->fetch_assoc()) !== null) {
 
+        if (isset($search_result['weight()'])){
+            $weight = $search_result['weight()'];
+        } else if (isset($search_result['weight'])){
+            $weight = $search_result['weight'];
+        } else {
+            $weight = 0;
+        }
+
         $sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, TID, PID, RELEVANCE) ";
         $sql .= "SELECT '{$_SESSION['UID']}' AS UID, '$forum_fid' AS FORUM, THREAD.TID, POST.PID, ";
-        $sql .= "{$search_result['weight']} AS RELEVANCE FROM `{$table_prefix}POST` ";
+        $sql .= "{$weight} AS RELEVANCE FROM `{$table_prefix}POST` ";
         $sql .= "POST INNER JOIN `{$table_prefix}THREAD` THREAD ON (THREAD.TID = POST.TID) ";
         $sql .= "WHERE THREAD.TID = '{$search_result['tid']}' AND POST.PID = '{$search_result['pid']}' ";
         $sql .= "AND THREAD.LENGTH > 0 AND THREAD.DELETED = 'N' AND (THREAD.APPROVED IS NOT NULL ";

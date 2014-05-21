@@ -894,7 +894,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"270\">", gettext("Limit Searches to"), ":</td>\n";
+echo "                        <td align=\"left\" width=\"250\">", gettext("Limit Searches to"), ":</td>\n";
 echo "                        <td align=\"left\">", sprintf(gettext("%s search(es) every %s seconds"), form_input_text("search_limit_count", (isset($forum_global_settings['search_limit_count'])) ? htmlentities_array($forum_global_settings['search_limit_count']) : 1, 4, 3), form_input_text("search_limit_time", (isset($forum_global_settings['search_limit_time'])) ? htmlentities_array($forum_global_settings['search_limit_time']) : 30, 4, 3)), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -946,7 +946,7 @@ if (isset($forum_global_settings['sphinx_search_enabled']) && $forum_global_sett
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">", gettext("Enable Sphinx Search integration"), ":</td>\n";
+echo "                        <td align=\"left\" width=\"250\">", gettext("Enable Sphinx Search integration"), ":</td>\n";
 echo "                        <td align=\"left\">", form_radio("sphinx_search_enabled", "Y", gettext("Yes"), (isset($forum_global_settings['sphinx_search_enabled']) && $forum_global_settings['sphinx_search_enabled'] == 'Y')), "&nbsp;", form_radio("sphinx_search_enabled", "N", gettext("No"), (isset($forum_global_settings['sphinx_search_enabled']) && $forum_global_settings['sphinx_search_enabled'] == 'N') || !isset($forum_global_settings['sphinx_search_enabled'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";

@@ -465,22 +465,30 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     if (!install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_POST", 'INDEXED')) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}POST` ADD COLUMN INDEXED DATETIME NULL";
-
-        $db->query($sql);
-
-        $sql = "DROP TABLE IF EXISTS `{$table_data['PREFIX']}POST_SEARCH_ID`";
-
-        $db->query($sql);
-
-        $sql = "CREATE TABLE `{$table_data['PREFIX']}POST_SEARCH_ID` (";
-        $sql .= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
-        $sql .= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql .= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
-        $sql .= "  PRIMARY KEY  (SID,TID,PID)";
-        $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
-
         $db->query($sql);
     }
+
+    $sql = "DROP TABLE IF EXISTS `{$table_data['PREFIX']}POST_SEARCH_ID`";
+
+    $db->query($sql);
+
+    $sql = "CREATE TABLE `{$table_data['PREFIX']}POST_SEARCH_ID` (";
+    $sql .= "  SID MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,";
+    $sql .= "  TID MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql .= "  PID MEDIUMINT(8) UNSIGNED NOT NULL,";
+    $sql .= "  PRIMARY KEY  (SID,TID,PID)";
+    $sql .= ") ENGINE=MYISAM  DEFAULT CHARSET=UTF8";
+
+    $db->query($sql);
+
+    $sql = "TRUNCATE `{$table_data['PREFIX']}POST_SEARCH_ID";
+
+    $db->query($sql);
+
+    $sql = "INSERT INTO `{$table_data['PREFIX']}POST_SEARCH_ID` (TID, PID) ";
+    $sql .= "SELECT TID, PID FROM `{$table_data['PREFIX']}POST`";
+
+    $db->query($sql);
 
     if (!install_table_exists($config['db_database'], "{$table_data['WEBTAG']}_POST_RATING")) {
 

@@ -320,7 +320,7 @@ if ($current_folder == PM_FOLDER_INBOX) {
     $messages_array = pm_fetch_search_results($sort_by, $sort_dir, $page, 10);
 }
 
-echo "<h1>", gettext("Private Messages"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$folder_names_array[$current_folder]}</h1>\n";
+echo "<h1>", gettext("Private Messages"), html_style_image('separator'), "{$folder_names_array[$current_folder]}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -382,56 +382,77 @@ if (isset($messages_array['message_array']) && sizeof($messages_array['message_a
 
 $col_width = ($current_folder == PM_FOLDER_SAVED || $current_folder == PM_SEARCH_RESULTS) ? '35%' : '50%';
 
+echo "                  <td class=\"subhead\" align=\"left\" width=\"$col_width\" style=\"white-space: nowrap\" colspan=\"2\">\n";
+
 if ($sort_by == 'PM.SUBJECT' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"$col_width\" style=\"white-space: nowrap\" colspan=\"2\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("Subject"), "</a></td>\n";
+    echo "                    <a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("Subject"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
 } else if ($sort_by == 'PM.SUBJECT' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"$col_width\" style=\"white-space: nowrap\" colspan=\"2\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("Subject"), "</a></td>\n";
+    echo "                    <a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("Subject"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
 } else if ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\" style=\"white-space: nowrap\" colspan=\"2\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("Subject"), "</a></td>\n";
+    echo "                    <a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("Subject"), "</a>\n";
 } else {
-    echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\" style=\"white-space: nowrap\" colspan=\"2\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("Subject"), "</a></td>\n";
+    echo "                    <a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=SUBJECT&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("Subject"), "</a>\n";
 }
+
+echo "                  </td>\n";
 
 if ($current_folder == PM_FOLDER_INBOX || $current_folder == PM_FOLDER_SAVED || $current_folder == PM_SEARCH_RESULTS) {
 
     $col_width = ($current_folder == PM_FOLDER_SAVED || $current_folder == PM_SEARCH_RESULTS) ? '15%' : '30%';
+    echo "                  <td class=\"subhead\" align=\"left\" width=\"$col_width\" style=\"white-space: nowrap\">\n";
 
     if ($sort_by == 'PM.FROM_UID' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"$col_width\" style=\"white-space: nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=FROM_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("From"), "</a></td>\n";
+        echo "                    <a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=FROM_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("From"), "</a>\n";
+        echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
     } else if ($sort_by == 'PM.FROM_UID' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"$col_width\" style=\"white-space: nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=FROM_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("From"), "</a></td>\n";
+        echo "                    <a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=FROM_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("From"), "</a>\n";
+        echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
     } else if ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\" style=\"white-space: nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=FROM_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("From"), "</a></td>\n";
+        echo "                    <a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=FROM_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("From"), "</a>\n";
     } else {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\" style=\"white-space: nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=FROM_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("From"), "</a></td>\n";
+        echo "                    <a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=FROM_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("From"), "</a>\n";
     }
+
+    echo "                  </td>\n";
 }
 
 if ($current_folder == PM_FOLDER_SENT || $current_folder == PM_FOLDER_OUTBOX || $current_folder == PM_FOLDER_DRAFTS || $current_folder == PM_FOLDER_SAVED || $current_folder == PM_SEARCH_RESULTS) {
 
     $col_width = ($current_folder == PM_FOLDER_SAVED || $current_folder == PM_SEARCH_RESULTS) ? '15%' : '30%';
+    echo "                  <td class=\"subhead\" align=\"left\" width=\"$col_width\" style=\"white-space: nowrap\">\n";
 
     if ($sort_by == 'PM.TO_UID' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" width=\"$col_width\" style=\"white-space: nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=TO_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("To"), "</a></td>\n";
+        echo "                    <a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=TO_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("To"), "</a>\n";
+        echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
     } else if ($sort_by == 'PM.TO_UID' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" width=\"$col_width\" style=\"white-space: nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=TO_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("To"), "</a></td>\n";
+        echo "                    <a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=TO_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("To"), "</a>\n";
+        echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
     } else if ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\" style=\"white-space: nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=TO_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("To"), "</a></td>\n";
+        echo "                    <a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=TO_UID&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("To"), "</a>\n";
     } else {
-        echo "                   <td class=\"subhead\" align=\"left\" width=\"$col_width\" style=\"white-space: nowrap\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=TO_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("To"), "</a></td>\n";
+        echo "                    <a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=TO_UID&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("To"), "</a>\n";
     }
+
+    echo "                  </td>\n";
 }
+
+echo "                  <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\" width=\"20%\">\n";
 
 if ($sort_by == 'CREATED' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" style=\"white-space: nowrap\" width=\"20%\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("Time Sent"), "</a></td>\n";
+    echo "                    <a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("Time Sent"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
 } else if ($sort_by == 'CREATED' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" style=\"white-space: nowrap\" width=\"20%\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("Time Sent"), "</a></td>\n";
+    echo "                    <a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("Time Sent"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
 } else if ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\" width=\"20%\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("Time Sent"), "</a></td>\n";
+    echo "                    <a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("Time Sent"), "</a>\n";
 } else {
-    echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\" width=\"20%\"><a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("Time Sent"), "</a></td>\n";
+    echo "                    <a href=\"pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;page=$page&amp;folder=$current_folder\" target=\"_self\">", gettext("Time Sent"), "</a>\n";
 }
 
+echo "                  </td>\n";
 echo "                </tr>\n";
 
 if (isset($messages_array['message_array']) && sizeof($messages_array['message_array']) > 0) {
@@ -443,15 +464,15 @@ if (isset($messages_array['message_array']) && sizeof($messages_array['message_a
 
         if ($mid == $message['MID']) {
 
-            echo "                  <td class=\"postbody\" align=\"center\" valign=\"top\" width=\"1%\"><img src=\"", html_style_image('current_thread.png'), "\" title=\"", gettext("Current Message"), "\" alt=\"", gettext("Current Message"), "\" /></td>";
+            echo "                  <td class=\"postbody\" align=\"center\" valign=\"top\" width=\"1%\">", html_style_image('current_thread', gettext("Current Message")), "</td>";
 
         } else if (($current_folder == PM_FOLDER_INBOX) && ($message['TYPE'] == PM_UNREAD)) {
 
-            echo "                  <td class=\"postbody\" align=\"center\" valign=\"top\" width=\"1%\"><img src=\"", html_style_image('pm_unread.png'), "\" title=\"", gettext("Unread Message"), "\" alt=\"", gettext("Unread Message"), "\" /></td>";
+            echo "                  <td class=\"postbody\" align=\"center\" valign=\"top\" width=\"1%\">", html_style_image('pm_unread', gettext("Unread Message")), "</td>";
 
         } else {
 
-            echo "                  <td class=\"postbody\" align=\"center\" valign=\"top\" width=\"1%\"><img src=\"", html_style_image('pm_read.png'), "\" title=\"", gettext("Read Message"), "\" alt=\"", gettext("Read Message"), "\" /></td>";
+            echo "                  <td class=\"postbody\" align=\"center\" valign=\"top\" width=\"1%\">", html_style_image('pm_read', gettext("Read Message")), "</td>";
         }
 
         echo "                  <td align=\"left\" class=\"postbody\" width=\"50%\" valign=\"top\">";
@@ -466,7 +487,7 @@ if (isset($messages_array['message_array']) && sizeof($messages_array['message_a
         }
 
         if (isset($message['ATTACHMENT_COUNT']) && $message['ATTACHMENT_COUNT'] > 0) {
-            echo "                    &nbsp;&nbsp;<img src=\"", html_style_image('attach.png'), "\" border=\"0\" alt=\"", gettext("Attachment"), "\" title=\"", gettext("Attachment"), "\" />";
+            echo "                    &nbsp;&nbsp;", html_style_image('attach', gettext("Attachment")), "";
         }
 
         echo "                  </td>\n";

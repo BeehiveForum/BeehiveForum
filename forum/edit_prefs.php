@@ -517,7 +517,7 @@ if ($admin_edit === true) {
         )
     );
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage User"), html_style_image('separator'), word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
 
 } else {
 

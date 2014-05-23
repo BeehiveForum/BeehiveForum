@@ -60,61 +60,61 @@ if (forum_check_webtag_available($webtag, false)) {
         echo "    <td align=\"left\" class=\"subhead\">", gettext("Admin Tools"), "</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Users"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_users.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Users"), "</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_user_groups.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("User Groups"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_user_groups.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("User Groups"), "</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_banned.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Ban Controls"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_banned.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Ban Controls"), "</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_folders.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Folders"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_folders.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Folders"), "</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_rss_feeds.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("RSS Feeds"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_rss_feeds.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("RSS Feeds"), "</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_prof_sect.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Profiles"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_prof_sect.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Profiles"), "</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_forum_settings.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Forum Settings"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_forum_settings.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Forum Settings"), "</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_startpage.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Start page"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_startpage.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Start page"), "</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_wordfilter.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Word Filter"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_wordfilter.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Word Filter"), "</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_forum_stats.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Forum Stats"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_forum_stats.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Forum Stats"), "</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_post_stats.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Posting Stats"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_post_stats.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Posting Stats"), "</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_forum_links.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Forum Links"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_forum_links.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Forum Links"), "</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_viewlog.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("View Log"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_viewlog.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("View Log"), "</a></td>\n";
         echo "  </tr>\n";
 
         if (session::get_folders_by_perm(USER_PERM_FOLDER_MODERATE)) {
 
             echo "  <tr>\n";
-            echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_post_approve.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Post Approval Queue"), "</a></td>\n";
+            echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_post_approve.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Post Approval Queue"), "</a></td>\n";
             echo "  </tr>\n";
         }
 
         if (session::get_folders_by_perm(USER_PERM_LINKS_MODERATE)) {
 
             echo "  <tr>\n";
-            echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_link_approve.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Link Approval Queue"), "</a></td>\n";
+            echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_link_approve.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Link Approval Queue"), "</a></td>\n";
             echo "  </tr>\n";
         }
 
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_visitor_log.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Visitor Log"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_visitor_log.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Visitor Log"), "</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
@@ -128,7 +128,7 @@ if (forum_check_webtag_available($webtag, false)) {
         echo "    <td align=\"left\" class=\"subhead\">", gettext("Admin Tools"), "</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_post_approve.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Post Approval Queue"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_post_approve.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Post Approval Queue"), "</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
@@ -143,10 +143,10 @@ if (forum_check_webtag_available($webtag, false)) {
         echo "    <td align=\"left\" class=\"subhead\">", gettext("Forum Management"), "</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_forums.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Manage Forums"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_forums.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Manage Forums"), "</a></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_default_forum_settings.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Global Forum Settings"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_default_forum_settings.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Global Forum Settings"), "</a></td>\n";
         echo "  </tr>\n";
         echo "</table>\n";
     }
@@ -158,13 +158,13 @@ if (forum_check_webtag_available($webtag, false)) {
     echo "    <td align=\"left\" class=\"subhead\">", gettext("Forum Management"), "</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_users.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Users"), "</a></td>\n";
+    echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_users.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Users"), "</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_forums.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Manage Forums"), "</a></td>\n";
+    echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_forums.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Manage Forums"), "</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"admin_default_forum_settings.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Global Forum Settings"), "</a></td>\n";
+    echo "    <td align=\"left\" class=\"postbody\">", html_style_image('bullet'), "&nbsp;<a href=\"admin_default_forum_settings.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Global Forum Settings"), "</a></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
 }

@@ -337,7 +337,7 @@ html_draw_top(
 
 $link_approval_array = admin_get_link_approval_queue($page);
 
-echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Link Approval Queue"), "</h1>\n";
+echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Link Approval Queue"), "</h1>\n";
 
 if (isset($_GET['link_approve_success']) && is_numeric($_GET['link_approve_success'])) {
 

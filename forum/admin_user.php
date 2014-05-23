@@ -547,7 +547,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
             )
         );
 
-        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
+        echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage User"), html_style_image('separator'), word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
 
         html_display_warning_msg(gettext("If this user has forgotten their password you can reset it for them here."), '800', 'center');
 
@@ -611,7 +611,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
         $user_history_array = admin_get_user_history($user['UID']);
 
-        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("User History"), "</h1>\n";
+        echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage User"), html_style_image('separator'), word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), html_style_image('separator'), gettext("User History"), "</h1>\n";
 
         if (is_array($user_history_array) && sizeof($user_history_array) < 1) {
             html_display_warning_msg(gettext("No History Records Saved"), '800', 'center');
@@ -780,7 +780,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
             $user_alias_array = admin_get_user_referer_matches($user['UID']);
         }
 
-        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Possible Aliases"), "</h1>\n";
+        echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage User"), html_style_image('separator'), word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), html_style_image('separator'), gettext("Possible Aliases"), "</h1>\n";
 
         if (is_array($user_alias_array) && sizeof($user_alias_array) < 1) {
             html_display_warning_msg(gettext("Search Returned No Results"), '700', 'center');
@@ -831,11 +831,11 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
                     if (email_is_banned($user_alias['EMAIL'])) {
 
-                        echo "                  <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
+                        echo "                  <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\">", html_style_image('link', gettext("External Link")), "</a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
 
                     } else {
 
-                        echo "                  <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;</td>\n";
+                        echo "                  <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_email={$user_alias['EMAIL']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\">", html_style_image('link', gettext("External Link")), "</a>&nbsp;</td>\n";
                     }
 
                 } else if ($user_alias_view == USER_ALIAS_PASSWD) {
@@ -857,11 +857,11 @@ if (isset($action) && strlen(trim($action)) > 0) {
 
                     if (referer_is_banned($user_alias['REFERER'])) {
 
-                        echo "                  <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user_alias['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['REFERER']}</a>&nbsp;<a href=\"{$user_alias['REFERER_FULL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
+                        echo "                  <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user_alias['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['REFERER']}</a>&nbsp;<a href=\"{$user_alias['REFERER_FULL']}\">", html_style_image('link', gettext("External Link")), "</a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
 
                     } else {
 
-                        echo "                  <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user_alias['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['REFERER']}</a>&nbsp;<a href=\"{$user_alias['REFERER_FULL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;</td>\n";
+                        echo "                  <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user_alias['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$user_alias['REFERER']}</a>&nbsp;<a href=\"{$user_alias['REFERER_FULL']}\">", html_style_image('link', gettext("External Link")), "</a>&nbsp;</td>\n";
                     }
                 }
 
@@ -939,7 +939,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
             )
         );
 
-        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
+        echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage User"), html_style_image('separator'), word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
@@ -1001,7 +1001,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
             )
         );
 
-        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
+        echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage User"), html_style_image('separator'), word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
@@ -1060,7 +1060,7 @@ if (isset($action) && strlen(trim($action)) > 0) {
             )
         );
 
-        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
+        echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage User"), html_style_image('separator'), word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user.php\" method=\"post\">\n";
@@ -1120,7 +1120,7 @@ html_draw_top(
     )
 );
 
-echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
+echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage User"), html_style_image('separator'), word_filter_add_ob_tags(format_user_name($user['LOGON'], $user['NICKNAME']), true), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -1188,14 +1188,14 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"200\">", gettext("Email address"), ":</td>\n";
-            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a> (", gettext("Banned"), ")</td>\n";
+            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\">", html_style_image('link', gettext("External Link")), "</a> (", gettext("Banned"), ")</td>\n";
             echo "                      </tr>\n";
 
         } else {
 
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" width=\"200\">", gettext("Email address"), ":</td>\n";
-            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a></td>\n";
+            echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_email=", rawurlencode($user['EMAIL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['EMAIL']}\">{$user['EMAIL']}</a>&nbsp;<a href=\"mailto:{$user['EMAIL']}\">", html_style_image('link', gettext("External Link")), "</a></td>\n";
             echo "                      </tr>\n";
         }
 
@@ -1226,14 +1226,14 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"200\">", gettext("Sign-up Referer:"), "</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a> (", gettext("Banned"), ")</td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\">", html_style_image('link', gettext("External Link")), "</a> (", gettext("Banned"), ")</td>\n";
                 echo "                      </tr>\n";
 
             } else {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"200\">", gettext("Sign-up Referer:"), "</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a></td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['REFERER_FULL']}\">{$user['REFERER']}</a>&nbsp;<a href=\"{$user['REFERER_FULL']}\" target=\"_blank\">", html_style_image('link', gettext("External Link")), "</a></td>\n";
                 echo "                      </tr>\n";
             }
 
@@ -1262,14 +1262,14 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"200\">", gettext("Session Referer"), "</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['SESSION_REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['SESSION_REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a> (", gettext("Banned"), ")</td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($user['SESSION_REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['SESSION_REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\">", html_style_image('link', gettext("External Link")), "</a> (", gettext("Banned"), ")</td>\n";
                 echo "                      </tr>\n";
 
             } else {
 
                 echo "                      <tr>\n";
                 echo "                        <td align=\"left\" width=\"200\">", gettext("Session Referer"), "</td>\n";
-                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['SESSION_REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['SESSION_REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a></td>\n";
+                echo "                        <td align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($user['SESSION_REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$user['SESSION_REFERER_FULL']}\">{$user['SESSION_REFERER']}</a>&nbsp;<a href=\"{$user['SESSION_REFERER_FULL']}\" target=\"_blank\">", html_style_image('link', gettext("External Link")), "</a></td>\n";
                 echo "                      </tr>\n";
             }
 

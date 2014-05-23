@@ -563,7 +563,7 @@ if (isset($error_array) && sizeof($error_array) > 0) {
     echo "      <td align=\"left\" colspan=\"2\"><hr /></td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
-    echo "      <td align=\"left\"><img src=\"../styles/default/images/warning.png\" alt=\"Warning\" title=\"Warning\" /></td>\n";
+    echo "      <td align=\"left\"><span class=\"image warning\"></span></td>\n";
     echo "      <td align=\"left\"><h2>The following errors need correcting before you continue</h2></td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";

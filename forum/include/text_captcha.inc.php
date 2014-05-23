@@ -24,6 +24,7 @@ USA
 // Required includes
 require_once BH_INCLUDE_PATH . 'constants.inc.php';
 require_once BH_INCLUDE_PATH . 'forum.inc.php';
+
 // End Required includes
 
 class captcha
@@ -111,6 +112,26 @@ class captcha
         return true;
     }
 
+    protected function generate_public_key()
+    {
+        $this->public_key = mb_substr(md5(uniqid(mt_rand(), true)), 0, $this->num_chars);
+        $this->pub_key_done = true;
+
+        return true;
+    }
+
+    protected function generate_private_key()
+    {
+        if (!$this->pub_key_done) {
+            return false;
+        }
+
+        $this->private_key = mb_substr(md5($this->key . $this->public_key), 16 - $this->num_chars / 2, $this->num_chars);
+        $this->prv_key_done = true;
+
+        return true;
+    }
+
     public function verify_keys($private_key_check)
     {
         $this->generate_private_key();
@@ -132,6 +153,15 @@ class captcha
         return $this->private_key;
     }
 
+    protected function check_keys()
+    {
+        if (!$this->pub_key_done || !$this->prv_key_done) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function get_public_key()
     {
         if (!$this->check_keys()) {
@@ -145,6 +175,16 @@ class captcha
     public function get_error()
     {
         return $this->error;
+    }
+
+    public function get_width()
+    {
+        return $this->image_x;
+    }
+
+    public function get_height()
+    {
+        return $this->image_y;
     }
 
     public function make_image()
@@ -295,33 +335,27 @@ class captcha
         return (mb_substr(mb_strtolower($file), -3) == 'ttf');
     }
 
-    protected function generate_public_key()
+    protected function allocate_colours(&$image)
     {
-        $this->public_key = mb_substr(md5(uniqid(mt_rand(), true)), 0, $this->num_chars);
-        $this->pub_key_done = true;
+        for ($red = 0; $red <= 255; $red += 51) {
 
-        return true;
+            for ($green = 0; $green <= 255; $green += 51) {
+
+                for ($blue = 0; $blue <= 255; $blue += 51) {
+
+                    imagecolorallocate($image, $red, $green, $blue);
+                }
+            }
+        }
     }
 
-    protected function generate_private_key()
+    protected function random_color($min, $max)
     {
-        if (!$this->pub_key_done) {
-            return false;
-        }
+        $this->color_red = intval(mt_rand($min, $max));
 
-        $this->private_key = mb_substr(md5($this->key . $this->public_key), 16 - $this->num_chars / 2, $this->num_chars);
-        $this->prv_key_done = true;
+        $this->color_green = intval(mt_rand($min, $max));
 
-        return true;
-    }
-
-    protected function check_keys()
-    {
-        if (!$this->pub_key_done || !$this->prv_key_done) {
-            return false;
-        }
-
-        return true;
+        $this->color_blue = intval(mt_rand($min, $max));
     }
 
     protected function random_font()
@@ -344,28 +378,5 @@ class captcha
         }
 
         return "{$this->text_captcha_dir}/fonts/{$this->current_font}";
-    }
-
-    protected function allocate_colours(&$image)
-    {
-        for ($red = 0; $red <= 255; $red += 51) {
-
-            for ($green = 0; $green <= 255; $green += 51) {
-
-                for ($blue = 0; $blue <= 255; $blue += 51) {
-
-                    imagecolorallocate($image, $red, $green, $blue);
-                }
-            }
-        }
-    }
-
-    protected function random_color($min, $max)
-    {
-        $this->color_red = intval(mt_rand($min, $max));
-
-        $this->color_green = intval(mt_rand($min, $max));
-
-        $this->color_blue = intval(mt_rand($min, $max));
     }
 }

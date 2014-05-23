@@ -167,15 +167,15 @@ if (sizeof($user_peers_array['user_array']) > 0) {
 
         if ($user_peer['RELATIONSHIP'] & USER_FRIEND) {
 
-            echo "                  <td align=\"center\"><img src=\"", html_style_image("friend.png"), "\" alt=\"", gettext("Friend"), "\" title=\"", gettext("Friend"), "\" /></td>\n";
+            echo "                  <td align=\"center\">", html_style_image('friend', gettext("Friend")), "</td>\n";
 
         } else if ($user_peer['RELATIONSHIP'] & USER_IGNORED) {
 
-            echo "                  <td align=\"center\"><img src=\"", html_style_image("enemy.png"), "\" alt=\"", gettext("Ignored"), "\" title=\"", gettext("Ignored"), "\" /></td>\n";
+            echo "                  <td align=\"center\">", html_style_image('enemy', gettext("Ignored")), "</td>\n";
 
         } else if ($user_peer['RELATIONSHIP'] & USER_IGNORED_COMPLETELY) {
 
-            echo "                  <td align=\"center\"><img src=\"", html_style_image("enemy.png"), "\" alt=\"", gettext("Ignored Completely"), "\" title=\"", gettext("Ignored Completely"), "\" /><img src=\"", html_style_image("enemy.png"), "\" alt=\"", gettext("Ignored Completely"), "\" title=\"", gettext("Ignored Completely"), "\" /></td>\n";
+            echo "                  <td align=\"center\">", html_style_image('enemy', gettext("Ignored Completely")), "", html_style_image('enemy', gettext("Ignored Completely")), "</td>\n";
 
         } else {
 
@@ -184,20 +184,20 @@ if (sizeof($user_peers_array['user_array']) > 0) {
 
         if ($user_peer['RELATIONSHIP'] & USER_IGNORED_SIG) {
 
-            echo "                  <td align=\"center\"><img src=\"", html_style_image("enemy.png"), "\" alt=\"", gettext("Ignored"), "\" title=\"", gettext("Ignored"), "\" /></td>\n";
+            echo "                  <td align=\"center\">", html_style_image('enemy', gettext("Ignored")), "</td>\n";
 
         } else {
 
-            echo "                  <td align=\"center\"><img src=\"", html_style_image("friend.png"), "\" alt=\"", gettext("Display"), "\" title=\"", gettext("Display"), "\" /></td>\n";
+            echo "                  <td align=\"center\">", html_style_image('friend', gettext("Display")), "</td>\n";
         }
 
         if ($user_peer['RELATIONSHIP'] & USER_BLOCK_PM) {
 
-            echo "                  <td align=\"center\"><img src=\"", html_style_image("enemy.png"), "\" alt=\"", gettext("Block"), "\" title=\"", gettext("Block"), "\" /></td>\n";
+            echo "                  <td align=\"center\">", html_style_image('enemy', gettext("Block")), "</td>\n";
 
         } else {
 
-            echo "                  <td align=\"center\"><img src=\"", html_style_image("friend.png"), "\" alt=\"", gettext("Allow"), "\" title=\"", gettext("Allow"), "\" /></td>\n";
+            echo "                  <td align=\"center\">", html_style_image('friend', gettext("Allow")), "</td>\n";
         }
 
         echo "                </tr>\n";

@@ -137,22 +137,33 @@ light_html_draw_top(
     )
 );
 
+$nav_links = array(
+    array(
+        'text' => gettext('Show messages'),
+        'url' => '#',
+        'class' => 'navigation',
+        'html' => light_messages_navigation_strip($tid, $pid, $thread_data['LENGTH'], 10),
+        'image' => 'mobile_navigation'
+    )
+);
+
+if (!$thread_data['CLOSED'] && session::check_perm(USER_PERM_POST_CREATE, $folder_data['FID'])) {
+
+    $nav_links = array_merge(
+        array(
+            'text' => gettext('Reply to All'),
+            'url' => "lpost.php?webtag=$webtag&amp;reply_to=$tid.0&amp;return_msg=$tid.$pid",
+            'class' => 'reply_all',
+            'image' => 'mobile_reply_all',
+        ),
+        $nav_links
+    );
+}
+
 light_navigation_bar(
     array(
         'back' => "lthread_list.php?webtag=$webtag",
-        'nav_links' => array(
-            array(
-                'text' => gettext('Reply to All'),
-                'url' => "lpost.php?webtag=$webtag&amp;reply_to=$tid.0&amp;return_msg=$tid.$pid",
-                'class' => 'reply_all',
-            ),
-            array(
-                'text' => gettext('Show messages'),
-                'url' => '#',
-                'class' => 'navigation',
-                'html' => light_messages_navigation_strip($tid, $pid, $thread_data['LENGTH'], 10)
-            )
-        )
+        'nav_links' => $nav_links,
     )
 );
 

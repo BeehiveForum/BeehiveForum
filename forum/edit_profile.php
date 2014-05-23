@@ -165,7 +165,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
             )
         );
 
-        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
+        echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage User"), html_style_image('separator'), format_user_name($user['LOGON'], $user['NICKNAME']), "</h1>\n";
 
     } else {
 

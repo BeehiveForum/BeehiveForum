@@ -231,7 +231,7 @@ function messages_get_ratings($tid, &$messages_array)
 
     $sql = "SELECT PID, SUM(RATING) AS RATING, COUNT(RATING) AS RATING_COUNT ";
     $sql .= "FROM `{$table_prefix}POST_RATING` WHERE TID = $tid ";
-    $sql .= "AND PID IN ('$pid_list') GROUP BY PID";
+    $sql .= "AND RATING IN (-1, 1) AND PID IN ('$pid_list') GROUP BY PID";
 
     if (($result = $db->query($sql))) {
 
@@ -392,30 +392,30 @@ function messages_top($tid, $pid, $folder_fid, $folder_title, $thread_title, $th
     }
 
     if ($folder_interest_level == FOLDER_SUBSCRIBED) {
-        echo "<p><a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_fid\" target=\"_blank\" class=\"popup 550x400\"><img src=\"" . html_style_image('folder_subscribed.png') . "\" alt=\"", gettext("Subscribed Folder"), "\" title=\"", gettext("Subscribed Folder"), "\" border=\"0\" /></a>&nbsp;";
+        echo "<p><a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_fid\" target=\"_blank\" class=\"popup 550x400\">", html_style_image('folder_subscribed', gettext("Subscribed Folder")), "</a>&nbsp;";
     } else if ($folder_interest_level == FOLDER_IGNORED) {
-        echo "<p><a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_fid\" target=\"_blank\" class=\"popup 550x400\"><img src=\"" . html_style_image('folder_ignored.png') . "\" alt=\"", gettext("Ignored Folder"), "\" title=\"", gettext("Ignored Folder"), "\" border=\"0\" /></a>&nbsp;";
+        echo "<p><a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_fid\" target=\"_blank\" class=\"popup 550x400\">", html_style_image('folder_ignored', gettext("Ignored Folder")), "</a>&nbsp;";
     } else {
-        echo "<p><a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_fid\" target=\"_blank\" class=\"popup 550x400\"><img src=\"" . html_style_image('folder.png') . "\" alt=\"", gettext("Folder"), "\" title=\"", gettext("Folder"), "\" border=\"0\" /></a>&nbsp;";
+        echo "<p><a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_fid\" target=\"_blank\" class=\"popup 550x400\">", html_style_image('folder', gettext("Folder")), "</a>&nbsp;";
     }
 
     if ($frame_links) {
 
         echo "<a href=\"index.php?webtag=$webtag&amp;folder=$folder_fid\" target=\"$frame_top_target\">", word_filter_add_ob_tags($folder_title, true), "</a>";
-        echo "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />";
+        echo html_style_image('separator');
         echo "<a href=\"index.php?webtag=$webtag&amp;msg=$tid.$pid\" target=\"$frame_top_target\" title=\"", gettext("View in Frameset"), "\">", word_filter_add_ob_tags($thread_title), "</a>";
 
     } else {
 
-        echo word_filter_add_ob_tags($folder_title, true), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" />", word_filter_add_ob_tags($thread_title);
+        echo word_filter_add_ob_tags($folder_title, true), html_style_image('separator'), word_filter_add_ob_tags($thread_title);
     }
 
-    if ($closed) echo "&nbsp;<img src=\"", html_style_image('thread_closed.png'), "\" alt=\"", gettext("Closed"), "\" title=\"", gettext("Closed"), "\" />\n";
-    if ($thread_interest_level == THREAD_INTERESTED) echo "&nbsp;<img src=\"", html_style_image('high_interest.png'), "\" alt=\"", gettext("High Interest"), "\" title=\"", gettext("High Interest"), "\" />";
-    if ($thread_interest_level == THREAD_SUBSCRIBED) echo "&nbsp;<img src=\"", html_style_image('subscribe.png'), "\" alt=\"", gettext("Subscribed"), "\" title=\"", gettext("Subscribed"), "\" />";
-    if ($sticky == "Y") echo "&nbsp;<img src=\"", html_style_image('sticky.png'), "\" alt=\"", gettext("Sticky"), "\" title=\"", gettext("Sticky"), "\" />";
-    if ($locked) echo "&nbsp;<img src=\"", html_style_image('admin_locked.png'), "\" alt=\"", gettext("Locked"), "\" title=\"", gettext("Locked"), "\" />\n";
-    if ($deleted) echo "&nbsp;<img src=\"", html_style_image('delete.png'), "\" alt=\"", gettext("Deleted"), "\" title=\"", gettext("Deleted"), "\" />\n";
+    if ($closed) echo "&nbsp;", html_style_image('thread_closed', gettext("Closed")), "\n";
+    if ($thread_interest_level == THREAD_INTERESTED) echo "&nbsp;", html_style_image('high_interest', gettext("High Interest")), "";
+    if ($thread_interest_level == THREAD_SUBSCRIBED) echo "&nbsp;", html_style_image('subscribe', gettext("Subscribed")), "";
+    if ($sticky == "Y") echo "&nbsp;", html_style_image('sticky', gettext("Sticky")), "";
+    if ($locked) echo "&nbsp;", html_style_image('admin_locked', gettext("Locked")), "\n";
+    if ($deleted) echo "&nbsp;", html_style_image('delete', gettext("Deleted")), "\n";
 
     echo "</p>";
 }
@@ -523,10 +523,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     // Add emoticons/WikiLinks and ignore signature ----------------------------
     if (isset($_SESSION['IMAGES_TO_LINKS']) && ($_SESSION['IMAGES_TO_LINKS'] == 'Y')) {
-
-        $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/iu', '[href: <a\1href="\2"\3>\2</a>][img: <a\1href="\4"\3>\4</a>]', $message['CONTENT']);
-        $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/iu', '[img: <a href="\1">\1</a>]', $message['CONTENT']);
-        $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/iu', '[object: <a href="\1">\1</a>]', $message['CONTENT']);
+        $message['CONTENT'] = message_images_to_links($message['CONTENT']);
     }
 
     if (!$is_poll || (isset($message['PID']) && $message['PID'] > 1)) {
@@ -594,7 +591,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
         if (isset($message['AVATAR_URL']) && strlen($message['AVATAR_URL']) > 0) {
 
-            echo "<img src=\"{$message['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true), "\" border=\"0\" style=\"max-height: 16px; max-width: 16px\" />&nbsp;";
+            echo html_style_image('profile_image profile_image_small', format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), null, array('background-image' => sprintf("url('%s')", $message['AVATAR_URL'])));
 
         } else if (isset($message['AVATAR_AID']) && is_numeric($message['AVATAR_AID'])) {
 
@@ -602,7 +599,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false)) !== false) {
 
-                echo "<img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), true), "\" border=\"0\" style=\"max-height: 16px; max-width: 16px\" />&nbsp;";
+                echo html_style_image('profile_image profile_image_small', format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), null, array('background-image' => sprintf("url('%s&amp;profile_picture')", $profile_picture_href)));
             }
         }
     }
@@ -614,24 +611,24 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_FRIEND)) {
 
-        echo "<img src=\"", html_style_image('friend.png'), "\" alt=\"", gettext("Friend"), "\" title=\"", gettext("Friend"), "\" />&nbsp;";
+        echo "", html_style_image('friend', gettext("Friend")), "&nbsp;";
 
     } else if ((isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED))) {
 
-        echo "<img src=\"", html_style_image('enemy.png'), "\" alt=\"", gettext("Ignored user"), "\" title=\"", gettext("Ignored user"), "\" />&nbsp;";
+        echo "", html_style_image('enemy', gettext("Ignored user")), "&nbsp;";
     }
 
     if ((isset($message['ANON_LOGON']) && $message['ANON_LOGON'] > USER_ANON_DISABLED) || !isset($message['USER_ACTIVE']) || is_null($message['USER_ACTIVE'])) {
 
-        echo "<img src=\"", html_style_image('status_offline.png'), "\" alt=\"\" title=\"", gettext("Inactive / Offline"), "\" />&nbsp;";
+        echo html_style_image('status_offline', gettext("Inactive / Offline")), "&nbsp;";
 
     } else {
 
-        echo "<img src=\"", html_style_image('status_online.png'), "\" alt=\"\" title=\"", gettext("Online"), "\" />&nbsp;";
+        echo html_style_image('status_online', gettext("Online")), "&nbsp;";
     }
 
     if (isset($message['FROM_UID']) && isset($message['THREAD_BY_UID']) && $message['FROM_UID'] == $message['THREAD_BY_UID'] && $first_msg > 1) {
-        echo "<img src=\"", html_style_image('thread_starter.png'), "\" alt=\"\" title=\"", gettext("Thread Starter"), "\" />&nbsp;";
+        echo html_style_image('thread_starter', gettext("Thread Starter")), "&nbsp;";
     }
 
     echo "</td>\n";
@@ -672,7 +669,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                 if (isset($recipient['AVATAR_URL']) && strlen($recipient['AVATAR_URL']) > 0) {
 
-                    echo "<img src=\"{$recipient['AVATAR_URL']}\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($recipient['LOGON'], $recipient['NICKNAME']), true), "\" border=\"0\" style=\"max-height: 16px; max-width: 16px\" />&nbsp;";
+                    echo html_style_image('profile_image profile_image_small', format_user_name($recipient['LOGON'], $recipient['NICKNAME']), null, array('background-image' => sprintf("url('%s')", $recipient['AVATAR_URL'])));
 
                 } else if (isset($recipient['AVATAR_AID']) && is_numeric($recipient['AVATAR_AID'])) {
 
@@ -680,32 +677,32 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                     if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false)) !== false) {
 
-                        echo "<img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"\" title=\"", word_filter_add_ob_tags(format_user_name($recipient['LOGON'], $recipient['NICKNAME']), true), "\" border=\"0\" style=\"max-height: 16px; max-width: 16px\" />&nbsp;";
+                        echo html_style_image('profile_image profile_image_small', format_user_name($recipient['LOGON'], $recipient['NICKNAME']), null, array('background-image' => sprintf("url('%s&amp;profile_picture')", $profile_picture_href)));
                     }
                 }
             }
 
             if ((isset($recipient['ANON_LOGON']) && $recipient['ANON_LOGON'] > USER_ANON_DISABLED) || !isset($recipient['USER_ACTIVE']) || is_null($recipient['USER_ACTIVE'])) {
 
-                echo "<img src=\"", html_style_image('status_offline.png'), "\" alt=\"\" title=\"", gettext("Inactive / Offline"), "\" />&nbsp;";
+                echo html_style_image('status_offline', gettext("Inactive / Offline")), "&nbsp;";
 
             } else {
 
-                echo "<img src=\"", html_style_image('status_online.png'), "\" alt=\"\" title=\"", gettext("Online"), "\" />&nbsp;";
+                echo html_style_image('status_online', gettext("Online")), "&nbsp;";
             }
 
             if (isset($recipient['UID']) && isset($message['THREAD_BY_UID']) && $recipient['UID'] == $message['THREAD_BY_UID'] && $first_msg > 1) {
-                echo "<img src=\"", html_style_image('thread_starter.png'), "\" alt=\"\" title=\"", gettext("Thread Starter"), "\" />&nbsp;";
+                echo html_style_image('thread_starter', gettext("Thread Starter")), "&nbsp;";
             }
 
             if (isset($recipient['VIEWED']) && $recipient['VIEWED'] > 0) {
 
-                echo "<img src=\"", html_style_image('post_read.png'), "\" alt=\"\" title=\"", sprintf(gettext("Read: %s"), format_date_time($recipient['VIEWED'])), "\" />&nbsp;&nbsp;";
+                echo html_style_image('post_read', sprintf(gettext("Read: %s"), format_date_time($recipient['VIEWED']))), "&nbsp;&nbsp;";
 
             } else {
 
                 if ($is_preview == false) {
-                    echo "<img src=\"", html_style_image('post_unread.png'), "\" alt=\"\" title=\"", gettext("Unread Message"), "\" />&nbsp;&nbsp;";
+                    echo html_style_image('post_unread', gettext("Unread Message")), "&nbsp;&nbsp;";
                 } else {
                     echo "&nbsp;&nbsp;";
                 }
@@ -728,7 +725,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     } else if ($in_list && $msg_count > 0) {
 
         if ($is_poll) {
-            echo "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_blank\" class=\"popup 800x600\"><img src=\"", html_style_image('poll.png'), "\" border=\"0\" alt=\"", gettext("This is a poll. Click to view results."), "\" title=\"", gettext("This is a poll. Click to view results."), "\" /></a> ", gettext("Poll"), " ";
+            echo "<a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_blank\" class=\"popup 800x600\">", html_style_image('poll', "This is a poll. Click to view results."), "</a> ", gettext("Poll"), " ";
         }
 
         echo sprintf(gettext("%s of %s"), $message['PID'], $msg_count);
@@ -852,16 +849,16 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                     if ($quick_reply == 'Y') {
 
-                        echo "<img src=\"", html_style_image('quick_reply.png'), "\" border=\"0\" alt=\"", gettext("Quick Reply"), "\" title=\"", gettext("Quick Reply"), "\" />\n";
+                        echo "", html_style_image('quick_reply', "Quick Reply"), "\n";
                         echo "<a href=\"Javascript:void(0)\" data-msg=\"$tid.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\">", gettext("Quick Reply"), "</a>\n";
 
                     } else {
 
-                        echo "<img src=\"", html_style_image('post.png'), "\" border=\"0\" alt=\"", gettext("Reply"), "\" title=\"", gettext("Reply"), "\" />";
+                        echo "", html_style_image('post', "Reply"), "";
                         echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;reply_to=$tid.{$message['PID']}&amp;return_msg=$tid.$first_msg\" target=\"_parent\" id=\"reply_{$message['PID']}\">", gettext("Reply"), "</a>";
                     }
 
-                    echo "&nbsp;&nbsp;<img src=\"", html_style_image('quote_disabled.png'), "\" border=\"0\" alt=\"", gettext("Quote"), "\" title=\"", gettext("Quote"), "\" id=\"quote_img_{$message['PID']}\" />";
+                    echo "&nbsp;&nbsp;", html_style_image('quote_disabled', gettext("Quote"), "quote_img_{$message['PID']}");
                     echo "&nbsp;<a href=\"post.php?webtag=$webtag&amp;reply_to=$tid.{$message['PID']}&amp;quote_list={$message['PID']}&amp;return_msg=$tid.$first_msg\" target=\"_parent\" title=\"", gettext("Quote"), "\" id=\"quote_{$message['PID']}\" data-pid=\"{$message['PID']}\">", gettext("Quote"), "</a>";
 
                     if ((!(session::check_perm(USER_PERM_PILLORIED, 0)) && ((($_SESSION['UID'] != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($_SESSION['UID'] == $message['FROM_UID'])) && session::check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
@@ -870,13 +867,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                             if (!poll_is_closed($tid) || $perm_is_moderator) {
 
-                                echo "&nbsp;&nbsp;<img src=\"", html_style_image('edit.png'), "\" border=\"0\" alt=\"", gettext("Edit Poll"), "\" title=\"", gettext("Edit Poll"), "\" />";
+                                echo "&nbsp;&nbsp;", html_style_image('edit', "Edit Poll"), "";
                                 echo "&nbsp;<a href=\"edit_poll.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;return_msg=$tid.$first_msg\" target=\"_parent\">", gettext("Edit Poll"), "</a>\n";
                             }
 
                         } else {
 
-                            echo "&nbsp;&nbsp;<img src=\"", html_style_image('edit.png'), "\" border=\"0\" alt=\"", gettext("Edit"), "\" title=\"", gettext("Edit"), "\" />";
+                            echo "&nbsp;&nbsp;", html_style_image('edit', "Edit"), "";
                             echo "&nbsp;<a href=\"edit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;return_msg=$tid.$first_msg\" target=\"_parent\">", gettext("Edit"), "</a>";
                         }
                     }
@@ -890,7 +887,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             echo "</td>\n";
             echo "                <td align=\"right\" style=\"white-space: nowrap\">\n";
             echo "                  <span class=\"post_options\" id=\"post_options_{$tid}_{$first_msg}_{$message['PID']}\">\n";
-            echo "                    ", gettext("More"), "&nbsp;<img class=\"post_options\" src=\"", html_style_image("post_options.png"), "\" border=\"0\" />\n";
+            echo "                    ", gettext("More"), "&nbsp;", html_style_image('post_options', gettext("More"), 'post_options'), "\n";
             echo "                  </span>\n";
             echo "                </td>\n";
             echo "              </tr>";
@@ -922,6 +919,13 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     echo "</div>\n";
     echo ($in_list) ? "<br />\n" : '';
+}
+
+function message_images_to_links($content)
+{
+    $content = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/iu', '[href: <a\1href="\2"\3>\2</a>][img: <a\1href="\4"\3>\4</a>]', $content);
+    $content = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/iu', '[img: <a href="\1">\1</a>]', $content);
+    return preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/iu', '[object: <a href="\1">\1</a>]', $content);
 }
 
 function message_get_post_options_html($tid, $pid, $message)
@@ -959,12 +963,12 @@ function message_get_post_options_html($tid, $pid, $message)
 
     if ($quick_reply == 'N') {
 
-        $html .= "                        <td align=\"left\"><a href=\"Javascript:void(0)\" data-msg=\"{$message['TID']}.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\"><img src=\"" . html_style_image('quick_reply.png') . "\" border=\"0\" alt=\"" . gettext("Quick Reply") . "\" title=\"" . gettext("Quick Reply") . "\" /></a></td>\n";
+        $html .= "                        <td align=\"left\"><a href=\"Javascript:void(0)\" data-msg=\"{$message['TID']}.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\">" . html_style_image('quick_reply', gettext("Quick Reply")) . "</a></td>\n";
         $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"Javascript:void(0)\" data-msg=\"{$message['TID']}.{$message['PID']}\" target=\"_self\" class=\"quick_reply_link\">" . gettext("Quick Reply") . "</a></td>\n";
 
     } else {
 
-        $html .= "                        <td align=\"left\"><img src=\"" . html_style_image('post.png') . "\" border=\"0\" alt=\"" . gettext("Reply") . "\" title=\"" . gettext("Reply") . "\" /></td>\n";
+        $html .= "                        <td align=\"left\">" . html_style_image('post', gettext("Reply")) . "</td>\n";
         $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"post.php?webtag=$webtag&amp;reply_to={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\" id=\"reply_{$message['PID']}\">" . gettext("Reply") . "</a></td>\n";
     }
 
@@ -973,28 +977,28 @@ function message_get_post_options_html($tid, $pid, $message)
     if (($_SESSION['UID'] == $message['FROM_UID'] && session::check_perm(USER_PERM_POST_DELETE, $message['FID']) && !session::check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
 
         $html .= "                      <tr>\n";
-        $html .= "                        <td align=\"left\"><a href=\"delete.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\"><img src=\"" . html_style_image('delete.png') . "\" border=\"0\" alt=\"" . gettext("Delete") . "\" title=\"" . gettext("Delete") . "\" /></a></td>\n";
+        $html .= "                        <td align=\"left\"><a href=\"delete.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\">" . html_style_image('delete', gettext("Delete")) . "</a></td>\n";
         $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"delete.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\">" . gettext("Delete") . "</a></td>\n";
         $html .= "                      </tr>\n";
     }
 
     $html .= "                      <tr>\n";
-    $html .= "                        <td align=\"left\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\" title=\"" . gettext("Reply as PM") . "\"><img src=\"" . html_style_image('pm_unread.png') . "\" border=\"0\" alt=\"" . gettext("Reply as PM") . "\" title=\"" . gettext("Reply as PM") . "\" /></a></td>\n";
+    $html .= "                        <td align=\"left\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\" title=\"" . gettext("Reply as PM") . "\">" . html_style_image('pm_unread', gettext("Reply as PM")). "</a></td>\n";
     $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\" title=\"" . gettext("Reply as PM") . "\">" . gettext("Reply as PM") . "</a></td>\n";
     $html .= "                      </tr>\n";
     $html .= "                      <tr>\n";
-    $html .= "                        <td align=\"left\"><a href=\"display.php?webtag=$webtag&amp;print_msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"" . gettext("Print") . "\"><img src=\"" . html_style_image('print.png') . "\" border=\"0\" alt=\"" . gettext("Print") . "\" title=\"" . gettext("Print") . "\" /></a></td>\n";
+    $html .= "                        <td align=\"left\"><a href=\"display.php?webtag=$webtag&amp;print_msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"" . gettext("Print") . "\">" . html_style_image('print', gettext("Print")) . "></a></td>\n";
     $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"display.php?webtag=$webtag&amp;print_msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"" . gettext("Print") . "\">" . gettext("Print") . "</a></td>\n";
     $html .= "                      </tr>\n";
     $html .= "                      <tr>\n";
-    $html .= "                        <td align=\"left\"><a href=\"thread_options.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;markasread=" . ($message['PID'] - 1) . "&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"" . gettext("Mark as unread") . "\"><img src=\"" . html_style_image('mark_as_unread.png') . "\" border=\"0\" alt=\"" . gettext("Mark as unread") . "\" title=\"" . gettext("Mark as unread") . "\" /></a></td>\n";
+    $html .= "                        <td align=\"left\"><a href=\"thread_options.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;markasread=" . ($message['PID'] - 1) . "&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"" . gettext("Mark as unread") . "\">" . html_style_image('mark_as_unread', gettext("Mark as unread")) . "</a></td>\n";
     $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"thread_options.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&amp;markasread=" . ($message['PID'] - 1) . "&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"" . gettext("Mark as unread") . "\">" . gettext("Mark as unread") . "</a></td>\n";
     $html .= "                      </tr>\n";
 
     if ($_SESSION['UID'] != $message['FROM_UID']) {
 
         $html .= "                      <tr>\n";
-        $html .= "                        <td align=\"left\"><a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"" . gettext("Relationship") . "\"><img src=\"" . html_style_image('enemy.png') . "\" border=\"0\" alt=\"" . gettext("Relationship") . "\" title=\"" . gettext("Relationship") . "\" /></a></td>\n";
+        $html .= "                        <td align=\"left\"><a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"" . gettext("Relationship") . "\">" . html_style_image('enemy', gettext("Relationship")) . "</a></td>\n";
         $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"user_rel.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"" . gettext("Relationship") . "\">" . gettext("Relationship") . "</a></td>\n";
         $html .= "                      </tr>\n";
     }
@@ -1002,7 +1006,7 @@ function message_get_post_options_html($tid, $pid, $message)
     if ($perm_has_admin_access) {
 
         $html .= "                      <tr>\n";
-        $html .= "                        <td align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"" . gettext("Privileges") . "\"><img src=\"" . html_style_image('admin_tool.png') . "\" border=\"0\" alt=\"" . gettext("Privileges") . "\" title=\"" . gettext("Privileges") . "\" /></a></td>\n";
+        $html .= "                        <td align=\"left\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"" . gettext("Privileges") . "\">" . html_style_image('admin_tool', gettext("Privileges")) . "</a></td>\n";
         $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_user.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"" . gettext("Privileges") . "\">" . gettext("Privileges") . "</a></td>\n";
         $html .= "                      </tr>\n";
     }
@@ -1012,7 +1016,7 @@ function message_get_post_options_html($tid, $pid, $message)
         if (!isset($message['APPROVED']) && $perm_is_moderator) {
 
             $html .= "                      <tr>\n";
-            $html .= "                        <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D{$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"" . gettext("Approve Post") . "\"><img src=\"" . html_style_image('approved.png') . "\" border=\"0\" alt=\"" . gettext("Approve Post") . "\" title=\"" . gettext("Approve Post") . "\" /></a></td>\n";
+            $html .= "                        <td align=\"left\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D{$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"" . gettext("Approve Post") . "\">" . html_style_image('approved', gettext("Approve Post")) . "</a></td>\n";
             $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_post_approve.php?webtag=$webtag&amp;msg={$message['TID']}.{$message['PID']}&ret=messages.php%3Fwebtag%3D$webtag%26msg%3D{$message['TID']}.{$message['PID']}\" target=\"_self\" title=\"" . gettext("Approve Post") . "\">" . gettext("Approve Post") . "</a></td>\n";
             $html .= "                      </tr>\n";
         }
@@ -1068,19 +1072,19 @@ function message_get_vote_form_html($message)
 
         if ($message['USER_POST_RATING'] > 0) {
 
-            $html .= "  " . form_submit_image(html_style_image('vote_down_off.png'), 'post_vote_down', null, sprintf('title="%s"', htmlentities_array(gettext('Vote Down'))), 'post_vote_down') . "\n";
-            $html .= "  " . form_submit_image(html_style_image('vote_up_on.png'), 'post_vote_up', null, sprintf('title="%s"', htmlentities_array(gettext('Clear Vote'))), 'post_vote_up') . "\n";
+            $html .= "  " . form_submit_image('vote_down_off', 'post_vote_down', null, sprintf('title="%s"', htmlentities_array(gettext('Vote Down'))), 'post_vote_down') . "\n";
+            $html .= "  " . form_submit_image('vote_up_on', 'post_vote_up', null, sprintf('title="%s"', htmlentities_array(gettext('Clear Vote'))), 'post_vote_up') . "\n";
 
         } else {
 
-            $html .= "  " . form_submit_image(html_style_image('vote_down_on.png'), 'post_vote_down', null, sprintf('title="%s"', htmlentities_array(gettext('Clear Vote'))), 'post_vote_down') . "\n";
-            $html .= "  " . form_submit_image(html_style_image('vote_up_off.png'), 'post_vote_up', null, sprintf('title="%s"', htmlentities_array(gettext('Vote Up'))), 'post_vote_up') . "\n";
+            $html .= "  " . form_submit_image('vote_down_on', 'post_vote_down', null, sprintf('title="%s"', htmlentities_array(gettext('Clear Vote'))), 'post_vote_down') . "\n";
+            $html .= "  " . form_submit_image('vote_up_off', 'post_vote_up', null, sprintf('title="%s"', htmlentities_array(gettext('Vote Up'))), 'post_vote_up') . "\n";
         }
 
     } else {
 
-        $html .= "  " . form_submit_image(html_style_image('vote_down_off.png'), 'post_vote_down', null, sprintf('title="%s"', htmlentities_array(gettext('Vote Down'))), 'post_vote_down') . "\n";
-        $html .= "  " . form_submit_image(html_style_image('vote_up_off.png'), 'post_vote_up', null, sprintf('title="%s"', htmlentities_array(gettext('Vote Up'))), 'post_vote_up') . "\n";
+        $html .= "  " . form_submit_image('vote_down_off', 'post_vote_down', null, sprintf('title="%s"', htmlentities_array(gettext('Vote Down'))), 'post_vote_down') . "\n";
+        $html .= "  " . form_submit_image('vote_up_off', 'post_vote_up', null, sprintf('title="%s"', htmlentities_array(gettext('Vote Up'))), 'post_vote_up') . "\n";
     }
 
     $html .= "</form>\n";
@@ -1104,12 +1108,12 @@ function message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_p
         if (($pid - 1) < $first_msg) {
 
             echo "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.", $pid - 1, "\" target=\"_self\">";
-            echo "<img src=\"", html_style_image("message_up.png"), "\" border=\"0\" alt=\"", gettext("Previous"), "\" title=\"", gettext("Previous"), "\" /></a>";
+            echo html_style_image('message_up', gettext("Previous")), "</a>";
 
         } else {
 
             echo "<a href=\"#a{$tid}_", $pid - 1, "\" target=\"_self\">";
-            echo "<img src=\"", html_style_image("message_up.png"), "\" border=\"0\" alt=\"", gettext("Previous"), "\" title=\"", gettext("Previous"), "\" /></a>";
+            echo html_style_image('message_up', gettext("Previous")), "</a>";
         }
     }
 
@@ -1123,12 +1127,12 @@ function message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_p
         if (($pid + 1) > (($first_msg + $posts_per_page) - 1)) {
 
             echo "<a href=\"messages.php?webtag=$webtag&amp;msg=$tid.", $pid + 1, "\" target=\"_self\">";
-            echo "<img src=\"", html_style_image("message_down.png"), "\" border=\"0\" alt=\"", gettext("Next"), "\" title=\"", gettext("Next"), "\" /></a>";
+            echo html_style_image('message_down', gettext("Next")), "</a>";
 
         } else {
 
             echo "<a href=\"#a{$tid}_", $pid + 1, "\" target=\"_self\">";
-            echo "<img src=\"", html_style_image("message_down.png"), "\" border=\"0\" alt=\"", gettext("Next"), "\" title=\"", gettext("Next"), "\" /></a>";
+            echo html_style_image('message_down', gettext("Next")), "</a>";
         }
     }
 
@@ -1752,11 +1756,11 @@ function messages_forum_stats($tid, $pid)
 
         } else if (isset($_SESSION['SHOW_STATS']) && ($_SESSION['SHOW_STATS'] == 'Y')) {
 
-            echo "                            ", form_submit_image('hide.png', 'forum_stats_toggle', 'hide', null, 'button_image toggle_button'), "\n";
+            echo "                            ", form_submit_image('hide', 'forum_stats_toggle', 'hide', null, 'button_image toggle_button'), "\n";
 
         } else {
 
-            echo "                            ", form_submit_image('show.png', 'forum_stats_toggle', 'show', null, 'button_image toggle_button'), "\n";
+            echo "                            ", form_submit_image('show', 'forum_stats_toggle', 'show', null, 'button_image toggle_button'), "\n";
         }
 
         echo "                          </td>\n";

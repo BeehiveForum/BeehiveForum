@@ -369,9 +369,9 @@ function form_submit_image($image, $name = "submit", $value = 'Submit', $custom_
         $custom_html = sprintf(" %s", trim($custom_html));
     }
 
-    $html = '<input type="image" name="%s" id="%s" class="%s"%s src="%s" value="%s" />';
+    $html = '<input type="image" name="%s" id="%s" class="image %s %s"%s value="%s" />';
 
-    return sprintf($html, $name, $id, $class, $custom_html, html_style_image($image), $value);
+    return sprintf($html, $name, $id, $class, $image, $custom_html, $value);
 }
 
 // Creates a button with custom HTML, for onclick methods, etc.

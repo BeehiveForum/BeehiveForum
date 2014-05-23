@@ -109,7 +109,7 @@ html_draw_top(
     )
 );
 
-echo "<h1>", links_get_folder_path_links($fid, $folders, false), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Folder"), "</h1>\n";
+echo "<h1>", links_get_folder_path_links($fid, $folders, false), html_style_image('separator'), gettext("Edit Folder"), "</h1>\n";
 echo "<br />\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {

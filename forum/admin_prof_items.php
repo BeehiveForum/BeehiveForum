@@ -405,7 +405,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
         )
     );
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add new item"), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage Profile Sections"), html_style_image('separator'), profile_section_get_name($psid), html_style_image('separator'), gettext("Add new item"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '700', 'center');
@@ -505,7 +505,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
         )
     );
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit item"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($profile_item['NAME'], true), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage Profile Sections"), html_style_image('separator'), profile_section_get_name($psid), html_style_image('separator'), gettext("Edit item"), html_style_image('separator'), word_filter_add_ob_tags($profile_item['NAME'], true), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '700', 'center');
@@ -595,7 +595,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     $profile_items = profile_items_get_by_page($psid, $page);
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", profile_section_get_name($psid), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("View items"), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage Profile Sections"), html_style_image('separator'), profile_section_get_name($psid), html_style_image('separator'), gettext("View items"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -648,7 +648,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
             echo "                <tr>\n";
             echo "                  <td valign=\"top\" align=\"center\" width=\"25\">", form_checkbox("delete_item[{$profile_item['PIID']}]", "Y"), "</td>\n";
             echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid=$psid&amp;piid={$profile_item['PIID']}&amp;sect_page=$sect_page\">", word_filter_add_ob_tags($profile_item['NAME'], true), "</a></td>\n";
-            echo "                  <td align=\"center\" width=\"50\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
+            echo "                  <td align=\"center\" width=\"50\" style=\"white-space: nowrap\">", form_submit_image('move_up', "move_up[{$profile_item['PIID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down', "move_down[{$profile_item['PIID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
 
             if (isset($item_types_array[$profile_item['TYPE']])) {
                 echo "                  <td valign=\"top\" align=\"left\" width=\"100\">{$item_types_array[$profile_item['TYPE']]}</td>\n";

@@ -49,13 +49,13 @@ $(beehive).bind('init', function () {
         return $.vsprintf(
             '<li><input type="text" dir="ltr" maxlength="255" size="45" value="" class="bhinputtext" name="poll_questions[%(0)d][options][%(1)d]">&nbsp;\
                <button title="%(2)s" class="button_image delete_option disabled" name="delete_option[%(0)d][%(1)d]" type="submit">\
-                 <img alt="" src="%(3)s">\
+                 <span class="image delete"></span>\
                </button>\
              </li>', [
-                [ question_id,
+                [
+                    question_id,
                     option_id,
-                    beehive.lang.deleteoption,
-                    beehive.images['delete.png']
+                    beehive.lang.deleteoption
                 ]
             ]);
     };
@@ -69,29 +69,28 @@ $(beehive).bind('init', function () {
                  <div class="poll_question_input">\
                    <input type="text" dir="ltr" maxlength="255" size="40" value="" class="bhinputtext" name="poll_questions[%(0)d][question]">&nbsp;\
                    <button title="%(2)s" class="button_image delete_question disabled" name="delete_question[%(0)d]" type="submit">\
-                     <img alt="" src="%(3)s">\
+                     <span class="image delete"></span>\
                    </button>\
                  </div>\
                  <div class="poll_question_checkbox">\
                    <span class="bhinputcheckbox">\
-                     <input type="checkbox" value="Y" id="poll_questions>%(4)sallow_multi" name="poll_questions[%(0)d][allow_multi]">\
-                     <label for="poll_questions>%(4)sallow_multi">%(4)s</label>\
+                     <input type="checkbox" value="Y" id="poll_questions>%(3)sallow_multi" name="poll_questions[%(0)d][allow_multi]">\
+                     <label for="poll_questions>%(3)sallow_multi">%(3)s</label>\
                    </span>\
                  </div>\
                  <div class="poll_options_list">\
-                   <ol>%(5)s%(6)s</ol>\
+                   <ol>%(4)s%(5)s</ol>\
                  </div>\
                </div>\
-               <button class="button_image add_option" name="add_option[%(0)d]" type="submit"><img alt="" src="%(7)s">&nbsp;%(8)s</button>\
+               <button class="button_image add_option" name="add_option[%(0)d]" type="submit"><span class="image add"></span>&nbsp;%(6)s</button>\
              </fieldset>', [
-                [ question_id,
+                [
+                    question_id,
                     beehive.lang.pollquestion,
                     beehive.lang.deletequestion,
-                    beehive.images['delete.png'],
                     beehive.lang.allowmultipleoptions,
                     option_html(question_id, 1),
                     option_html(question_id, 2),
-                    beehive.images['add.png'],
                     beehive.lang.addnewoption
                 ]
             ]);

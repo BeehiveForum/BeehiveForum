@@ -397,7 +397,7 @@ html_draw_top(
 
 $post_approval_array = admin_get_post_approval_queue($page);
 
-echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Post Approval Queue"), "</h1>\n";
+echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Post Approval Queue"), "</h1>\n";
 
 if (isset($_GET['post_approve_success']) && validate_msg($_GET['post_approve_success'])) {
 

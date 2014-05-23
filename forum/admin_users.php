@@ -151,7 +151,7 @@ html_draw_top(
     )
 );
 
-echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Users"), "</h1>\n";
+echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage Users"), "</h1>\n";
 
 if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0)) {
 
@@ -286,47 +286,66 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                 <tr>\n";
 echo "                   <td class=\"subhead\" width=\"20\">&nbsp;</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">\n";
 
 if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("User"), "</a></td>\n";
+    echo "                     <a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("User"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
 } else if ($sort_by == 'LOGON' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("User"), "</a></td>\n";
+    echo "                     <a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("User"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
 } else if ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("User"), "</a></td>\n";
+    echo "                     <a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("User"), "</a>\n";
 } else {
-    echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("User"), "</a></td>\n";
+    echo "                     <a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("User"), "</a>\n";
 }
+
+echo "                   </td>\n";
+echo "                   <td class=\"subhead\" align=\"left\">\n";
 
 if ($sort_by == 'LAST_VISIT' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Last Logon"), "</a></td>\n";
+    echo "                     <a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Last Logon"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
 } else if ($sort_by == 'LAST_VISIT' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Last Logon"), "</a></td>\n";
+    echo "                     <a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Last Logon"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
 } else if ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Last Logon"), "</a></td>\n";
+    echo "                     <a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Last Logon"), "</a>\n";
 } else {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Last Logon"), "</a></td>\n";
+    echo "                     <a href=\"admin_users.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Last Logon"), "</a>\n";
 }
+
+echo "                   </td>\n";
+echo "                   <td class=\"subhead\" align=\"left\">\n";
 
 if ($sort_by == 'REGISTERED' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Registered"), "</a></td>\n";
+    echo "                     <a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Registered"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
 } else if ($sort_by == 'REGISTERED' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Registered"), "</a></td>\n";
+    echo "                     <a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Registered"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
 } else if ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Registered"), "</a></td>\n";
+    echo "                     <a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Registered"), "</a>\n";
 } else {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Registered"), "</a></td>\n";
+    echo "                     <a href=\"admin_users.php?webtag=$webtag&amp;sort_by=REGISTERED&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Registered"), "</a>\n";
 }
+
+echo "                   </td>\n";
+echo "                   <td class=\"subhead\" align=\"left\">\n";
 
 if ($sort_by == 'ACTIVE' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Active"), "</a></td>\n";
+    echo "                     <a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Active"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
 } else if ($sort_by == 'ACTIVE' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Active"), "</a></td>\n";
+    echo "                     <a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Active"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
 } else if ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Active"), "</a></td>\n";
+    echo "                     <a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=ASC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Active"), "</a>\n";
 } else {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Active"), "</a></td>\n";
+    echo "                     <a href=\"admin_users.php?webtag=$webtag&amp;sort_by=ACTIVE&amp;sort_dir=DESC&amp;user_search=", htmlentities_array($user_search), "&amp;page=$page&amp;filter=$filter\">", gettext("Active"), "</a>\n";
 }
 
+echo "                   </td>\n";
 echo "                 </tr>\n";
 
 if (sizeof($admin_user_array['user_array']) > 0) {

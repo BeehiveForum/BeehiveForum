@@ -770,13 +770,8 @@ function install_draw_top()
     echo "<head>\n";
     echo "<title>Beehive Forum ", BEEHIVE_VERSION, " Installation</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-    echo "<style type=\"text/css\">\n";
-    echo "<!--\n";
-
-    readfile(__DIR__ . "/../styles/install.css");
-
-    echo "//-->\n";
-    echo "</style>\n";
+    echo "<link rel=\"stylesheet\" href=\"./../styles/default/style.css\" type=\"text/css\" media=\"screen\" />\n";
+    echo "<link rel=\"stylesheet\" href=\"./../styles/default/images.css\" type=\"text/css\" media=\"screen\" />\n";
 
     $arg_array = func_get_args();
 

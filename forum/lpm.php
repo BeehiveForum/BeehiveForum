@@ -69,7 +69,18 @@ if (isset($mid) && is_numeric($mid)) {
 
 } else {
 
-    light_navigation_bar();
+    light_navigation_bar(
+        array(
+            'nav_links' => array(
+                array(
+                    'text' => gettext('Send New PM'),
+                    'url' => "lpm_write.php?webtag=$webtag",
+                    'class' => 'pm_send_new',
+                    'image' => 'mobile_post',
+                ),
+            )
+        )
+    );
 }
 
 light_draw_pm_inbox();

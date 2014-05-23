@@ -28,10 +28,7 @@ $(beehive).bind('init', function () {
         var html = $('<p>').append($emoticon).html();
 
         var element = CKEDITOR.dom.element.createFromHtml(
-            $.sprintf(
-                '<img data-cke-real-element-type="emoticon" src="%s">',
-                beehive.images['blank.png']
-            )
+            '<img data-cke-real-element-type="emoticon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAABGdBTUEAALGPC/xhBQAAAANQTFRF////p8QbyAAAAAF0Uk5TAEDm2GYAAAAJcEhZcwAAHsEAAB7BAcNpVFMAAAAHdElNRQfcDB4LNzBmlcQgAAAACklEQVQIHWNgAAAAAgABz8g15QAAAABJRU5ErkJggg=="/>'
         );
 
         element.setAttributes({
@@ -43,7 +40,7 @@ $(beehive).bind('init', function () {
             'alt': $emoticon.prop('title')
         });
 
-        if (beehive.active_editor){
+        if (beehive.active_editor) {
             beehive.active_editor.insertText(' ');
             beehive.active_editor.insertElement(element);
             beehive.active_editor.insertText(' ');

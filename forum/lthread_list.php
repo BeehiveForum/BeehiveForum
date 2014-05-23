@@ -197,12 +197,31 @@ if (forums_get_available_count() > 1 || !forum_get_default()) {
     light_navigation_bar(
         array(
             'back' => "lforums.php?webtag=$webtag",
+            'nav_links' => array(
+                array(
+                    'text' => gettext('New Discussion'),
+                    'url' => "lpost.php?webtag=$webtag",
+                    'class' => 'post_new',
+                    'image' => 'mobile_post',
+                ),
+            )
         )
     );
 
 } else {
 
-    light_navigation_bar();
+    light_navigation_bar(
+        array(
+            'nav_links' => array(
+                array(
+                    'text' => gettext('New Discussion'),
+                    'url' => "lpost.php?webtag=$webtag",
+                    'class' => 'post_new',
+                    'image' => 'mobile_post',
+                ),
+            )
+        )
+    );
 }
 
 light_draw_thread_list($mode, $folder, $page);

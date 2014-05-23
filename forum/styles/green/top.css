@@ -1,0 +1,36 @@
+body {
+    background-color: #24374A;
+    margin: 0;
+    position: relative;
+}
+
+div.beehive-logo {
+    background-color: #2E8B2E;
+    height: 60px;
+    position: absolute;
+    width: 350px;
+}
+
+div.sourceforge-logo {
+    background: url('http://sourceforge.net/sflogo.php?group_id=50772&type=2') no-repeat transparent;
+    height: 37px;
+    position: absolute;
+    right: 10px;
+    top: 11px;
+    width: 125px;
+}
+
+div.beehive-logo a {
+    display: block;
+    height: 60px;
+    text-indent: -9999px;
+    width: 350px;
+}
+
+div.sourceforge-logo a {
+    display: block;
+    height: 37px;
+    text-indent: -9999px;
+    top: 11px;
+    width: 125px;
+}

@@ -240,7 +240,7 @@ if (isset($_POST) && sizeof($_POST) > 0) {
 
         light_thread_list_draw_top(SEARCH_RESULTS);
 
-        echo "<img src=\"", html_style_image('search.png'), "\" alt=\"", gettext("matches"), "\" title=\"", gettext("matches"), "\" />&nbsp;", gettext("Found"), ": 0 ", gettext("matches"), "<br /><br />\n";
+        echo "", html_style_image('search'), "&nbsp;", gettext("Found"), ": 0 ", gettext("matches"), "<br /><br />\n";
     }
 
     light_html_draw_bottom();

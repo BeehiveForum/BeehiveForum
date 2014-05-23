@@ -1566,21 +1566,21 @@ function thread_list_draw_top($mode, $folder = false)
 
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('post.png'), "\" alt=\"", gettext("New Discussion"), "\" title=\"", gettext("New Discussion"), "\" />&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("New Discussion"), "</a></td>\n";
+    echo "    <td align=\"left\" class=\"postbody\">", html_style_image('post', gettext("New Discussion")), "&nbsp;<a href=\"post.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("New Discussion"), "</a></td>\n";
     echo "  </tr>\n";
 
     if (forum_get_setting('allow_polls', 'Y')) {
 
         echo "  <tr>\n";
-        echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('poll.png'), "\" alt=\"", gettext("Create Poll"), "\" title=\"", gettext("Create Poll"), "\" />&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Create Poll"), "</a></td>\n";
+        echo "    <td align=\"left\" class=\"postbody\">", html_style_image('poll', gettext("Create Poll")), "&nbsp;<a href=\"create_poll.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Create Poll"), "</a></td>\n";
         echo "  </tr>\n";
     }
 
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('search.png'), "\" alt=\"", gettext("Search"), "\" title=\"", gettext("Search"), "\" />&nbsp;<a href=\"search.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Search"), "</a></td>\n";
+    echo "    <td align=\"left\" class=\"postbody\">", html_style_image('search', gettext("Search")), "&nbsp;<a href=\"search.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Search"), "</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"postbody\"><img src=\"", html_style_image('pm_unread.png'), "\" alt=\"", gettext("Inbox"), "\" title=\"", gettext("Inbox"), "\" />&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Inbox"), "</a> <span class=\"pmnewcount\" id=\"pm_message_count\"></span></td>\n";
+    echo "    <td align=\"left\" class=\"postbody\">", html_style_image('pm_unread', gettext("Inbox")), "&nbsp;<a href=\"pm.php?webtag=$webtag\" target=\"", html_get_frame_name('main'), "\">", gettext("Inbox"), "</a> <span class=\"pmnewcount\" id=\"pm_message_count\"></span></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
     echo "<br />\n";

@@ -142,7 +142,7 @@ html_draw_top(
     )
 );
 
-echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("User Groups"), "</h1>\n";
+echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("User Groups"), "</h1>\n";
 
 if (isset($_GET['added'])) {
 
@@ -189,57 +189,81 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table class=\"posthead\" width=\"100%\">\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" class=\"subhead\" width=\"20\">&nbsp;</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\">\n";
 
 if ($sort_by == 'GROUP_NAME' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=DESC&amp;page=$page\">", gettext("Groups"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=DESC&amp;page=$page\">", gettext("Groups"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
 } else if ($sort_by == 'GROUP_NAME' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=ASC&amp;page=$page\">", gettext("Groups"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=ASC&amp;page=$page\">", gettext("Groups"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
 } else if ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=ASC&amp;page=$page\">", gettext("Groups"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=ASC&amp;page=$page\">", gettext("Groups"), "</a>\n";
 } else {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=DESC&amp;page=$page\">", gettext("Groups"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_NAME&amp;sort_dir=DESC&amp;page=$page\">", gettext("Groups"), "</a>\n";
 }
+
+echo "                   </td>\n";
+echo "                   <td class=\"subhead\" align=\"left\">\n";
 
 if ($sort_by == 'GROUP_DESC' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=DESC&amp;page=$page\">", gettext("Description"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=DESC&amp;page=$page\">", gettext("Description"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
 } else if ($sort_by == 'GROUP_DESC' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=ASC&amp;page=$page\">", gettext("Description"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=ASC&amp;page=$page\">", gettext("Description"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
 } else if ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=ASC&amp;page=$page\">", gettext("Description"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=ASC&amp;page=$page\">", gettext("Description"), "</a>\n";
 } else {
-    echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=DESC&amp;page=$page\">", gettext("Description"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=GROUP_DESC&amp;sort_dir=DESC&amp;page=$page\">", gettext("Description"), "</a>\n";
 }
+
+echo "                   </td>\n";
+echo "                   <td class=\"subhead\" align=\"center\">\n";
 
 if ($sort_by == 'PERMS' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=PERMS&amp;sort_dir=DESC&amp;page=$page\">", gettext("Group Status"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=PERMS&amp;sort_dir=DESC&amp;page=$page\">", gettext("Group Status"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
 } else if ($sort_by == 'PERMS' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"center\" class=\"header_sort_desc\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=PERMS&amp;sort_dir=ASC&amp;page=$page\">", gettext("Group Status"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=PERMS&amp;sort_dir=ASC&amp;page=$page\">", gettext("Group Status"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
 } else if ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=PERMS&amp;sort_dir=ASC&amp;page=$page\">", gettext("Group Status"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=PERMS&amp;sort_dir=ASC&amp;page=$page\">", gettext("Group Status"), "</a>\n";
 } else {
-    echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=PERMS&amp;sort_dir=DESC&amp;page=$page\">", gettext("Group Status"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=PERMS&amp;sort_dir=DESC&amp;page=$page\">", gettext("Group Status"), "</a>\n";
 }
+
+echo "                   </td>\n";
+echo "                   <td class=\"subhead\" align=\"center\">\n";
 
 if ($sort_by == 'USER_COUNT' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=DESC&amp;page=$page\">", gettext("Users"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=DESC&amp;page=$page\">", gettext("Users"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
 } else if ($sort_by == 'USER_COUNT' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"center\" class=\"header_sort_desc\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=ASC&amp;page=$page\">", gettext("Users"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=ASC&amp;page=$page\">", gettext("Users"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
 } else if ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=ASC&amp;page=$page\">", gettext("Users"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=ASC&amp;page=$page\">", gettext("Users"), "</a>\n";
 } else {
-    echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=DESC&amp;page=$page\">", gettext("Users"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=USER_COUNT&amp;sort_dir=DESC&amp;page=$page\">", gettext("Users"), "</a>\n";
 }
+
+echo "                   </td>\n";
+echo "                   <td class=\"subhead\" align=\"center\">\n";
 
 if ($sort_by == 'DEFAULT_GROUP' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=DEFAULT_GROUP&amp;sort_dir=DESC&amp;page=$page\">", gettext("Default"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=DEFAULT_GROUP&amp;sort_dir=DESC&amp;page=$page\">", gettext("Default"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
 } else if ($sort_by == 'DEFAULT_GROUP' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"center\" class=\"header_sort_desc\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=DEFAULT_GROUP&amp;sort_dir=ASC&amp;page=$page\">", gettext("Default"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=DEFAULT_GROUP&amp;sort_dir=ASC&amp;page=$page\">", gettext("Default"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
 } else if ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=DEFAULT_GROUP&amp;sort_dir=ASC&amp;page=$page\">", gettext("Default"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=DEFAULT_GROUP&amp;sort_dir=ASC&amp;page=$page\">", gettext("Default"), "</a>\n";
 } else {
-    echo "                   <td class=\"subhead\" align=\"center\"><a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=DEFAULT_GROUP&amp;sort_dir=DESC&amp;page=$page\">", gettext("Default"), "</a></td>\n";
+    echo "                     <a href=\"admin_user_groups.php?webtag=$webtag&amp;sort_by=DEFAULT_GROUP&amp;sort_dir=DESC&amp;page=$page\">", gettext("Default"), "</a>\n";
 }
 
+echo "                   </td>\n";
 echo "                </tr>\n";
 
 if (sizeof($user_groups_array['user_groups_array']) > 0) {
@@ -271,9 +295,9 @@ if (sizeof($user_groups_array['user_groups_array']) > 0) {
         echo "                  <td align=\"center\" style=\"white-space: nowrap\">";
 
         if (isset($default_user_group) && ($default_user_group == $user_group['GID'])) {
-            echo "<a href=\"admin_user_groups.php?webtag=$webtag&amp;page=$page&amp;sort_dir=$sort_dir&amp;sort_by=$sort_by&amp;set_default=0\"><img src=\"", html_style_image('default_group.png'), "\" border=\"0\" alt=\"", gettext("Unset Default"), "\" title=\"", gettext("Unset Default"), "\" /></a>\n";
+            echo "<a href=\"admin_user_groups.php?webtag=$webtag&amp;page=$page&amp;sort_dir=$sort_dir&amp;sort_by=$sort_by&amp;set_default=0\">", html_style_image('default_group', gettext("Unset Default")), "</a>\n";
         } else {
-            echo "<a href=\"admin_user_groups.php?webtag=$webtag&amp;page=$page&amp;sort_dir=$sort_dir&amp;sort_by=$sort_by&amp;set_default={$user_group['GID']}\"><img src=\"", html_style_image('set_default_group.png'), "\" border=\"0\" alt=\"", gettext("Make Default"), "\" title=\"", gettext("Make Default"), "\" /></a>\n";
+            echo "<a href=\"admin_user_groups.php?webtag=$webtag&amp;page=$page&amp;sort_dir=$sort_dir&amp;sort_by=$sort_by&amp;set_default={$user_group['GID']}\">", html_style_image('set_default_group', gettext("Make Default")), "</a>\n";
         }
 
         echo "                  </td>\n";

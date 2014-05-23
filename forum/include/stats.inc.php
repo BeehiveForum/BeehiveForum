@@ -102,7 +102,7 @@ function stats_get_html()
     stats_update($session_count, $recent_post_count);
 
     // User Profile link
-    $user_profile_link = '%s<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500"><span class="%s" title="%s">%s</span></a>';
+    $user_profile_link = '%s&nbsp;<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500"><span class="%s" title="%s">%s</span></a>';
 
     // Newest user Profile link
     $new_user_profile_link = '<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">%s</a>';
@@ -203,14 +203,16 @@ function stats_get_html()
 
                     if (isset($user['AVATAR_URL']) && strlen($user['AVATAR_URL']) > 0) {
 
-                        $user_avatar = sprintf(
-                            '<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
-                               <img src="%s" title="%s" alt="" border="0" width="16" height="16" />
-                             </a>',
-                            $webtag,
-                            $user['UID'],
-                            $user['AVATAR_URL'],
-                            htmlentities_array($user_title)
+                        $user_avatar = html_style_image(
+                            'profile_image profile_image_small',
+                            htmlentities_array($user_title),
+                            null,
+                            array(
+                                'background-image' => sprintf(
+                                    "url('%s')",
+                                    $user['AVATAR_URL']
+                                )
+                            )
                         );
 
                     } else if (isset($user['AVATAR_AID']) && is_numeric($user['AVATAR_AID'])) {
@@ -219,14 +221,16 @@ function stats_get_html()
 
                         if (($user_avatar_picture = attachments_make_link($attachment, false, false, false, false)) !== false) {
 
-                            $user_avatar = sprintf(
-                                '<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
-                                   <img src="%s&amp;avatar_picture" title="%s" alt="" border="0" width="16" height="16" />
-                                 </a>',
-                                $webtag,
-                                $user['UID'],
-                                $user_avatar_picture,
-                                htmlentities_array($user_title)
+                            $user_avatar = html_style_image(
+                                'profile_image profile_image_small',
+                                htmlentities_array($user_title),
+                                null,
+                                array(
+                                    'background-image' => sprintf(
+                                        "url('%s&amp;profile_picture')",
+                                        $user_avatar_picture
+                                    )
+                                )
                             );
                         }
                     }
@@ -289,14 +293,16 @@ function stats_get_html()
 
             if (isset($user['AVATAR_URL']) && strlen($user['AVATAR_URL']) > 0) {
 
-                $user_avatar = sprintf(
-                    '<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
-                       <img src="%s" title="%s" alt="" border="0" width="16" height="16" />
-                     </a>',
-                    $webtag,
-                    $user['UID'],
-                    $user['AVATAR_URL'],
-                    htmlentities_array($user_title)
+                $user_avatar = html_style_image(
+                    'profile_image profile_image_small',
+                    htmlentities_array($user_title),
+                    null,
+                    array(
+                        'background-image' => sprintf(
+                            "url('%s')",
+                            $user['AVATAR_URL']
+                        )
+                    )
                 );
 
             } else if (isset($user['AVATAR_AID']) && is_numeric($user['AVATAR_AID'])) {
@@ -305,14 +311,16 @@ function stats_get_html()
 
                 if (($user_avatar_picture = attachments_make_link($attachment, false, false, false, false)) !== false) {
 
-                    $user_avatar = sprintf(
-                        '<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">
-                           <img src="%s&amp;avatar_picture" title="%s" alt="" border="0" width="16" height="16" />
-                         </a>',
-                        $webtag,
-                        $user['UID'],
-                        $user_avatar_picture,
-                        htmlentities_array($user_title)
+                    $user_avatar = html_style_image(
+                        'profile_image profile_image_small',
+                        htmlentities_array($user_title),
+                        null,
+                        array(
+                            'background-image' => sprintf(
+                                "url('%s&amp;profile_picture')",
+                                $user_avatar_picture
+                            )
+                        )
                     );
                 }
             }

@@ -277,7 +277,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
         )
     );
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Forum Links"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add New Forum Link"), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Forum Links"), html_style_image('separator'), gettext("Add New Forum Link"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '700', 'center');
@@ -365,7 +365,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
         )
     );
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> ", gettext("Forum Links"), " <img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> ", gettext("Edit Link"), " <img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> ", word_filter_add_ob_tags($forum_link['TITLE'], true), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Forum Links"), html_style_image('separator'), gettext("Edit Link"), html_style_image('separator'), word_filter_add_ob_tags($forum_link['TITLE'], true), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '700', 'center');
@@ -436,7 +436,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
     $forum_links_array = forum_links_get_links_by_page($page);
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> ", gettext("Edit Forum Links"), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Edit Forum Links"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -494,7 +494,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
             echo "                  <td valign=\"top\" align=\"center\" width=\"1%\">", form_checkbox("t_delete[{$forum_link['LID']}]", "Y"), "</td>\n";
             echo "                  <td align=\"left\"><a href=\"admin_forum_links.php?webtag=$webtag&amp;page=$page&amp;lid={$forum_link['LID']}\">", word_filter_add_ob_tags($forum_link['TITLE'], true), "</a></td>\n";
             echo "                  <td align=\"left\">", $forum_link['URI'], "</a></td>\n";
-            echo "                  <td align=\"center\" width=\"50\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
+            echo "                  <td align=\"center\" width=\"50\" style=\"white-space: nowrap\">", form_submit_image('move_up', "move_up[{$forum_link['LID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down', "move_down[{$forum_link['LID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
             echo "                </tr>\n";
         }
     }

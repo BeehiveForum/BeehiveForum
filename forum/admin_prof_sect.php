@@ -190,7 +190,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
         )
     );
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add new profile section"), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage Profile Sections"), html_style_image('separator'), gettext("Add new profile section"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '700', 'center');
@@ -274,7 +274,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
         )
     );
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($profile_section['NAME'], true), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage Profile Sections"), html_style_image('separator'), word_filter_add_ob_tags($profile_section['NAME'], true), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '700', 'center');
@@ -340,7 +340,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
     $profile_sections = profile_sections_get_by_page($page);
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Profile Sections"), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage Profile Sections"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -389,7 +389,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
             echo "                <tr>\n";
             echo "                  <td valign=\"top\" align=\"center\" width=\"25\">", form_checkbox("delete_section[{$profile_section['PSID']}]", "Y"), "</td>\n";
             echo "                  <td valign=\"top\" align=\"left\"><a href=\"admin_prof_sect.php?webtag=$webtag&amp;page=$page&amp;psid={$profile_section['PSID']}\">", word_filter_add_ob_tags($profile_section['NAME'], true), "</a></td>\n";
-            echo "                  <td align=\"center\" width=\"50\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$profile_section['PSID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$profile_section['PSID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
+            echo "                  <td align=\"center\" width=\"50\" style=\"white-space: nowrap\">", form_submit_image('move_up', "move_up[{$profile_section['PSID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down', "move_down[{$profile_section['PSID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
             echo "                  <td valign=\"top\" align=\"center\" width=\"100\"><a href=\"admin_prof_items.php?webtag=$webtag&amp;psid={$profile_section['PSID']}&amp;sect_page=$page&amp;viewitems=yes\">", htmlentities_array($profile_section['ITEM_COUNT']), "</a></td>\n";
             echo "                </tr>\n";
         }

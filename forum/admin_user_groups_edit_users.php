@@ -178,7 +178,7 @@ html_draw_top(
 
 $group_users_array = perm_group_get_users($gid, $start_main);
 
-echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage User Groups"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$group['GROUP_NAME']}<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add/Remove Users"), "</h1>\n";
+echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage User Groups"), html_style_image('separator'), "{$group['GROUP_NAME']}", html_style_image('separator'), "", gettext("Add/Remove Users"), "</h1>\n";
 
 if (isset($_GET['added'])) {
 

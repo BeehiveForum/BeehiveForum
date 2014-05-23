@@ -283,10 +283,10 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
         echo "<br />\n";
         echo "<h1>", gettext("Search Results"), "</h1>\n";
-        echo "<img src=\"", html_style_image('search.png'), "\" alt=\"", gettext("Found"), "\" title=\"", gettext("Found"), "\" />&nbsp;", gettext("Found"), ": {$search_results_array['result_count']} ", gettext("matches"), "<br />\n";
+        echo "", html_style_image('search', gettext("Found")), "&nbsp;", gettext("Found"), ": {$search_results_array['result_count']} ", gettext("matches"), "<br />\n";
 
         if ($page > 1) {
-            echo "<img src=\"" . html_style_image('current_thread.png') . "\" alt=\"", gettext("Previous page"), "\" title=\"", gettext("Previous page"), "\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;page=", $page - 1, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">", gettext("Previous page"), "</a>\n";
+            echo "", html_style_image('current_thread', gettext("Previous page")), "&nbsp;<a href=\"search.php?webtag=$webtag&amp;page=", $page - 1, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">", gettext("Previous page"), "</a>\n";
         }
 
         echo "<ol start=\"", (($page * 20) - 20) + 1, "\">\n";
@@ -335,7 +335,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         echo "</ol>\n";
 
         if (ceil($search_results_array['result_count'] / 20) > $page) {
-            echo "<img src=\"", html_style_image('current_thread.png'), "\" alt=\"", gettext("Find more"), "\" title=\"", gettext("Find more"), "\" />&nbsp;<a href=\"search.php?webtag=$webtag&amp;page=", $page + 1, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">", gettext("Find more"), "</a><br />\n";
+            echo "", html_style_image('current_thread'), "&nbsp;<a href=\"search.php?webtag=$webtag&amp;page=", $page + 1, "&amp;sort_by=$sort_by&amp;sort_dir=$sort_dir\">", gettext("Find more"), "</a><br />\n";
         }
 
         echo "<br />\n";
@@ -375,7 +375,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
         echo "<br />\n";
         echo "<h1>", gettext("Error"), "</h1>\n";
-        echo "<img src=\"", html_style_image('search.png'), "\" alt=\"", gettext("matches"), "\" title=\"", gettext("matches"), "\" />&nbsp;", gettext("Found"), ": 0 ", gettext("matches"), "<br /><br />\n";
+        echo "", html_style_image('search'), "&nbsp;", gettext("Found"), ": 0 ", gettext("matches"), "<br /><br />\n";
     }
 
     echo "<table cellpadding=\"2\" cellspacing=\"0\">\n";

@@ -102,6 +102,10 @@ $(beehive).bind('init', function () {
             $link = $(link),
             options = $link.prop('id').match(/post_options_(\d+)_(\d+)_(\d+)/);
 
+        if (!options) {
+            return;
+        }
+
         event.preventDefault();
         event.stopPropagation();
 
@@ -198,7 +202,7 @@ $(beehive).bind('init', function () {
 
         if ($.inArray(pid, beehive.quote_list) < 0) {
 
-            $('img#quote_img_' + pid).prop('src', beehive.images['quote_enabled.png']);
+            $('span.image#quote_img_' + pid).removeClass('quote_disabled').addClass('quote_enabled');
 
             //noinspection JSUnresolvedVariable
             $link.html(beehive.lang.unquote);
@@ -207,7 +211,7 @@ $(beehive).bind('init', function () {
 
         } else {
 
-            $('img#quote_img_' + pid).prop('src', beehive.images['quote_disabled.png']);
+            $('span.image#quote_img_' + pid).addClass('quote_enabled').removeClass('quote_disabled');
 
             //noinspection JSUnresolvedVariable
             $link.html(beehive.lang.quote);

@@ -127,6 +127,7 @@ $(beehive).bind('init', function () {
                         '<li class="attachment" data-hash="%(0)s">\
                            <label>\
                              <input checked="checked" class="bhinputcheckbox" name="attachment[]" type="checkbox" value="%(0)s" />\
+                             <span class="image"></span>\
                              <span class="filename">%(1)s</span>\
                              <span class="progress"></span>\
                              <span class="retry" title="%(2)s">%(2)s</span>\

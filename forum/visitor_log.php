@@ -275,30 +275,39 @@ echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "               <table width=\"100%\">\n";
 echo "                 <tr>\n";
 echo "                   <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
+echo "                   <td class=\"subhead\" align=\"left\" valign=\"top\">\n";
 
 if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead_sort_asc\" align=\"left\" valign=\"top\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", htmlentities_array($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">", gettext("Member"), "</a></td>\n";
+    echo "                     <a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", htmlentities_array($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">", gettext("Member"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
 } else if ($sort_by == 'LOGON' && $sort_dir == 'DESC') {
-    echo "                   <td class=\"subhead_sort_desc\" align=\"left\" valign=\"top\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", htmlentities_array($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">", gettext("Member"), "</a></td>\n";
+    echo "                     <a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", htmlentities_array($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">", gettext("Member"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
 } else if ($sort_dir == 'ASC') {
-    echo "                   <td class=\"subhead\" align=\"left\" valign=\"top\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", htmlentities_array($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">", gettext("Member"), "</a></td>\n";
+    echo "                     <a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", htmlentities_array($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">", gettext("Member"), "</a>\n";
 } else {
-    echo "                   <td class=\"subhead\" align=\"left\" valign=\"top\"><a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", htmlentities_array($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">", gettext("Member"), "</a></td>\n";
+    echo "                     <a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", htmlentities_array($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">", gettext("Member"), "</a>\n";
 }
+
+echo "                   </td>\n";
+echo "                   <td class=\"subhead\" align=\"left\" valign=\"top\" width=\"20%\">\n";
 
 foreach ($profile_items_selected_array as $key => $profile_item_selected) {
 
     if ($sort_by == $key && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead_sort_asc\" align=\"left\" valign=\"top\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", gettext("Close"), sprintf('title="%s"', gettext("Close")), "profile_browse_close button_image"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", htmlentities_array($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
+        echo "                     ", form_submit_image('close', "remove_column[$key]", gettext("Close"), sprintf('title="%s"', gettext("Close")), "profile_browse_close button_image"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", htmlentities_array($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a>\n";
+        echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
     } else if ($sort_by == $key && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead_sort_desc\" align=\"left\" valign=\"top\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", gettext("Close"), sprintf('title="%s"', gettext("Close")), "profile_browse_close button_image"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", htmlentities_array($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
+        echo "                     ", form_submit_image('close', "remove_column[$key]", gettext("Close"), sprintf('title="%s"', gettext("Close")), "profile_browse_close button_image"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", htmlentities_array($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a>\n";
+        echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
     } else if ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\" valign=\"top\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", gettext("Close"), sprintf('title="%s"', gettext("Close")), "profile_browse_close button_image"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", htmlentities_array($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
+        echo "                     ", form_submit_image('close', "remove_column[$key]", gettext("Close"), sprintf('title="%s"', gettext("Close")), "profile_browse_close button_image"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=ASC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", htmlentities_array($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a>\n";
     } else {
-        echo "                   <td class=\"subhead\" align=\"left\" valign=\"top\" width=\"20%\">", form_submit_image('close.png', "remove_column[$key]", gettext("Close"), sprintf('title="%s"', gettext("Close")), "profile_browse_close button_image"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", htmlentities_array($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a></td>\n";
+        echo "                     ", form_submit_image('close', "remove_column[$key]", gettext("Close"), sprintf('title="%s"', gettext("Close")), "profile_browse_close button_image"), "&nbsp;<a href=\"visitor_log.php?webtag=$webtag&amp;sort_by=$key&amp;sort_dir=DESC&amp;page=$page&amp;profile_selection=$profile_items_selected_encoded_string&amp;user_search=", htmlentities_array($user_search), "&amp;hide_empty=$hide_empty&amp;hide_guests=$hide_guests\">{$profile_item_selected}</a>\n";
     }
 }
 
+echo "                   </td>\n";
 echo "                 </tr>\n";
 
 if (sizeof($user_profile_array['user_array']) > 0) {
@@ -311,7 +320,9 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
             if (isset($user_array['AVATAR_URL']) && strlen($user_array['AVATAR_URL']) > 0) {
 
-                echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"{$user_array['AVATAR_URL']}\" alt=\"", word_filter_add_ob_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME']), true), "\" title=\"", word_filter_add_ob_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME']), true), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
+                echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\">\n";
+                echo "                     ", html_style_image('profile_image profile_image_small', format_user_name($user_array['LOGON'], $user_array['NICKNAME']), null, array('background-image' => sprintf("url('%s')", $user_array['AVATAR_URL']))), "\n";
+                echo "                   </td>\n";
 
             } else if (isset($user_array['AVATAR_AID']) && is_numeric($user_array['AVATAR_AID'])) {
 
@@ -319,21 +330,23 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
                 if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false)) !== false) {
 
-                    echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\"><img src=\"$profile_picture_href&amp;avatar_picture\" alt=\"", word_filter_add_ob_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME']), true), "\" title=\"", word_filter_add_ob_tags(format_user_name($user_array['LOGON'], $user_array['NICKNAME']), true), "\" border=\"0\" width=\"16\" height=\"16\" /></td>\n";
+                    echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\">\n";
+                    echo "                     ", html_style_image('profile_image profile_image_small', format_user_name($user_array['LOGON'], $user_array['NICKNAME']), null, array('background-image' => sprintf("url('%s&amp;profile_picture')", $profile_picture_href))), "\n";
+                    echo "                   </td>\n";
 
                 } else {
 
-                    echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"", gettext("User"), "\" title=\"", gettext("User"), "\" /></td>\n";
+                    echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\">", html_style_image('bullet', gettext("User")), "</td>\n";
                 }
 
             } else {
 
-                echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"", gettext("User"), "\" title=\"", gettext("User"), "\" /></td>\n";
+                echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\">", html_style_image('bullet', gettext("User")), "</td>\n";
             }
 
         } else {
 
-            echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\"><img src=\"", html_style_image('bullet.png'), "\" alt=\"", gettext("User"), "\" title=\"", gettext("User"), "\" /></td>\n";
+            echo "                   <td align=\"left\" valign=\"top\" class=\"postbody\">", html_style_image('bullet', gettext("User")), "</td>\n";
         }
 
         if (isset($user_array['SID']) && !is_null($user_array['SID'])) {

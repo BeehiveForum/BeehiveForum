@@ -192,7 +192,7 @@ function html_display_error_array(array $error_list, $width = '600', $align = 'c
     echo "<div align=\"$align\"", ($id ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td rowspan=\"2\" valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", html_style_image('error.png'), "\" alt=\"", gettext("Error"), "\" title=\"", gettext("Error"), "\" /></td>\n";
+    echo "      <td rowspan=\"2\" valign=\"top\" width=\"25\" class=\"error_msg_icon\">", html_style_image('error', gettext("Error")), "</td>\n";
     echo "      <td class=\"error_msg_text\">", gettext("The following errors were encountered:"), "</td>\n";
     echo "    </tr>\n";
     echo "    <tr>\n";
@@ -223,7 +223,7 @@ function html_display_success_msg($message, $width = '600', $align = 'center', $
     echo "<div align=\"$align\"", ($id ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"success_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td valign=\"top\" width=\"25\" class=\"success_msg_icon\"><img src=\"", html_style_image('success.png'), "\" alt=\"", gettext("Success"), "\" title=\"", gettext("Success"), "\" /></td>\n";
+    echo "      <td valign=\"top\" width=\"25\" class=\"success_msg_icon\">", html_style_image('success', gettext("Success")), "</td>\n";
     echo "      <td valign=\"top\" class=\"success_msg_text\">$message</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
@@ -247,7 +247,7 @@ function html_display_error_msg($message, $width = '600', $align = 'center', $id
     echo "<div align=\"$align\"", ($id ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"error_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td valign=\"top\" width=\"25\" class=\"error_msg_icon\"><img src=\"", html_style_image('error.png'), "\" alt=\"", gettext("Error"), "\" title=\"", gettext("Error"), "\" /></td>\n";
+    echo "      <td valign=\"top\" width=\"25\" class=\"error_msg_icon\">", html_style_image('error', gettext("Error")), "</td>\n";
     echo "      <td valign=\"top\" class=\"error_msg_text\">$message</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
@@ -271,7 +271,7 @@ function html_display_warning_msg($message, $width = '600', $align = 'center', $
     echo "<div align=\"$align\"", ($id ? " id=\"$id\"" : ""), ">\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"$width\" class=\"warning_msg\">\n";
     echo "    <tr>\n";
-    echo "      <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\"><img src=\"", html_style_image('warning.png'), "\" alt=\"", gettext("Warning"), "\" title=\"", gettext("Warning"), "\" /></td>\n";
+    echo "      <td valign=\"top\" width=\"25\" class=\"warning_msg_icon\">", html_style_image('warning', gettext("Warning")), "</td>\n";
     echo "      <td valign=\"top\" class=\"warning_msg_text\">$message</td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
@@ -325,26 +325,10 @@ function html_get_user_style_path()
     return $user_style;
 }
 
-function html_get_style_sheet($filename = null, $allow_cdn = true)
-{
-    $filename = !isset($filename) ? 'style.css' : $filename;
-    if (!($user_style = html_get_user_style_path())) $user_style = 'default';
-    return html_get_forum_file_path(sprintf('styles/%s/%s', basename($user_style), basename($filename)), $allow_cdn);
-}
-
-function html_get_script_style_sheet($filename = null, $allow_cdn = true)
+function html_get_style_file($filename, $allow_cdn = true)
 {
     if (!($user_style = html_get_user_style_path())) $user_style = 'default';
-
-    $script_style_sheet = sprintf('%s.css', basename($_SERVER['PHP_SELF'], '.php'));
-
-    if ($script_style_sheet == $filename) return false;
-
-    $script_style_sheet = sprintf('styles/%s/%s', basename($user_style), $script_style_sheet);
-
-    if (!file_exists($script_style_sheet)) return false;
-
-    return html_get_forum_file_path($script_style_sheet, $allow_cdn);
+    return html_get_forum_file_path(sprintf('styles/%s/%s', basename($user_style), $filename), $allow_cdn);
 }
 
 function html_get_top_page($allow_cdn = true)
@@ -496,6 +480,8 @@ function html_draw_top(array $options = array())
 
     $main_css = null;
 
+    $images_css = null;
+
     $inline_css = null;
 
     $emoticons = null;
@@ -523,6 +509,7 @@ function html_draw_top(array $options = array())
             case 'base_target':
             case 'robots':
             case 'main_css':
+            case 'images_css':
             case 'inline_css':
             case 'emoticons':
 
@@ -562,6 +549,14 @@ function html_draw_top(array $options = array())
 
                 break;
         }
+    }
+
+    if (!isset($main_css)) {
+        $main_css = 'style.css';
+    }
+
+    if (!isset($images_css)) {
+        $images_css = 'images.css';
     }
 
     if ($frame_set_html === false) {
@@ -639,23 +634,23 @@ function html_draw_top(array $options = array())
 
     if (forum_check_webtag_available($webtag)) {
 
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Messages'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=discussion.php%3Fwebtag%3D$webtag")), html_style_image('msie/unread_thread.ico', true, true));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Messages'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=discussion.php%3Fwebtag%3D$webtag")), html_get_style_file('images/msie/unread_thread.ico', true, true));
 
         if (forum_get_setting('show_links', 'Y')) {
-            printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Links'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=links.php%3Fwebtag%3D$webtag")), html_style_image('msie/link.ico', true, true));
+            printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Links'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=links.php%3Fwebtag%3D$webtag")), html_get_style_file('images/msie/link.ico', true, true));
         }
     }
 
     if (forum_get_setting('show_pms', 'Y')) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Inbox'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=pm.php%3Fwebtag%3D$webtag")), html_style_image('msie/pm_unread.ico', true, true));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Inbox'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=pm.php%3Fwebtag%3D$webtag")), html_get_style_file('images/msie/pm_unread.ico', true, true));
     }
 
     if (forum_check_webtag_available($webtag)) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('My Controls'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=user.php%3Fwebtag%3D$webtag")), html_style_image('msie/user_controls.ico', true, true));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('My Controls'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=user.php%3Fwebtag%3D$webtag")), html_get_style_file('images/msie/user_controls.ico', true, true));
     }
 
     if (session::logged_in() && (session::check_perm(USER_PERM_FORUM_TOOLS, 0) || session::check_perm(USER_PERM_ADMIN_TOOLS, 0) || session::get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Admin'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_style_image('msie/admin_tool.ico', true, true));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Admin'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_get_style_file('images/msie/admin_tool.ico', true, true));
     }
 
     printf("<meta name=\"msapplication-starturl\" content=\"%s\" />\n", html_get_forum_file_path("index.php?webtag=$webtag"));
@@ -687,23 +682,16 @@ function html_draw_top(array $options = array())
 
     printf("<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"%s\" href=\"%s\" />\n", $forum_name, $opensearch_path);
 
-    if (($style_sheet = html_get_style_sheet($main_css)) !== false) {
+    if (($style_sheet = html_get_style_file($main_css)) !== false) {
         echo html_include_css($style_sheet);
-    }
-
-    if (($script_style_sheet = html_get_script_style_sheet($main_css)) !== false) {
-        echo html_include_css($script_style_sheet);
     }
 
     if (($emoticon_style_sheet = html_get_emoticon_style_sheet($emoticons)) !== false) {
         echo html_include_css($emoticon_style_sheet, 'print, screen');
     }
 
-    if (($style_path_ie6 = html_get_style_sheet('style_ie6.css')) !== false) {
-
-        echo "<!--[if IE 6]>\n";
-        echo html_include_css($style_path_ie6);
-        echo "<![endif]-->\n";
+    if (($images_style_sheet = html_get_style_file($images_css)) !== false) {
+        echo html_include_css($images_style_sheet);
     }
 
     if (isset($inline_css)) {
@@ -1068,13 +1056,28 @@ function html_js_safe_str($str)
     return strtr($str, $unsafe_chars_tbl);
 }
 
-function html_style_image($image, $allow_cdn = true)
+function html_style_image($class, $title = null, $id = null, array $css = array())
 {
-    if (!($user_style = html_get_user_style_path())) $user_style = 'default';
-    return html_get_forum_file_path(sprintf('styles/%s/images/%s?version=%s', basename($user_style), basename($image), BEEHIVE_VERSION), $allow_cdn);
+    $classes = array('image', $class);
+
+    $html = sprintf('<span class="%s"', implode(' ', $classes));
+
+    if (count($css) > 0) {
+        $html .= sprintf('style="%s"', implode_assoc($css, ':', ';'));
+    }
+
+    if (isset($title) && is_string($title)) {
+        $html .= sprintf(' title="%s"', htmlentities_array($title));
+    }
+
+    if (isset($id) && is_string($id)) {
+        $html .= sprintf(' id="%s"', htmlentities_array($id));
+    }
+
+    return $html . '></span>';
 }
 
-function html_set_cookie($name, $value, $expires = 0, $path = '/')
+function html_set_cookie($name, $value, $expires = 0, $path = ' / ')
 {
     $cookie_secure = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on');
     return setcookie($name, $value, $expires, $path, '', $cookie_secure, true);
@@ -1100,7 +1103,7 @@ function html_remove_all_cookies()
         $cookies = array_map('trim', explode(';', $_SERVER['HTTP_COOKIE']));
 
         foreach ($cookies as $key => $cookie) {
-            list($cookies[$key]) = explode('=', $cookie, 2);
+            list($cookies[$key]) = explode(' = ', $cookie, 2);
         }
 
     } else {
@@ -1111,7 +1114,7 @@ function html_remove_all_cookies()
     foreach ($cookies as $cookie) {
 
         html_set_cookie($cookie, '', time() - YEAR_IN_SECONDS);
-        html_set_cookie($cookie, '', time() - YEAR_IN_SECONDS, '/');
+        html_set_cookie($cookie, '', time() - YEAR_IN_SECONDS, ' / ');
     }
 }
 
@@ -1131,13 +1134,13 @@ function href_cleanup_query_keys($uri, $remove_keys = null)
             unset($uri_query_array[$remove_keys]);
         }
 
-        $uri_array['query'] = http_build_query($uri_query_array, null, '&');
+        $uri_array['query'] = http_build_query($uri_query_array, null, ' & ');
     }
 
     return build_url_str($uri_array);
 }
 
-function html_query_string_add($query_string, $key, $value, $arg_separator = '&')
+function html_query_string_add($query_string, $key, $value, $arg_separator = ' & ')
 {
     parse_str($query_string, $query_array);
 
@@ -1146,7 +1149,7 @@ function html_query_string_add($query_string, $key, $value, $arg_separator = '&'
     return http_build_query($query_array, null, $arg_separator);
 }
 
-function html_query_string_remove($query_string, $key, $value = null, $arg_separator = '&')
+function html_query_string_remove($query_string, $key, $value = null, $arg_separator = ' & ')
 {
     parse_str($query_string, $query_array);
 
@@ -1163,7 +1166,7 @@ function html_page_links($uri, $page, $record_count, $rows_per_page, $page_var =
 
     $page_count = ceil($record_count / $rows_per_page);
 
-    $sep = strstr($uri, '?') ? "&amp;" : "?";
+    $sep = strstr($uri, ' ? ') ? "&amp;" : "?";
 
     if ($page < 1) $page = 1;
 
@@ -1325,10 +1328,10 @@ function html_get_forum_uri($append_path = null)
         }
     }
 
-    $uri_array['path'] = str_replace(DIRECTORY_SEPARATOR, '/', dirname(rtrim($uri_array['path'], '/') . '/a'));
+    $uri_array['path'] = str_replace(DIRECTORY_SEPARATOR, ' / ', dirname(rtrim($uri_array['path'], ' / ') . ' / a'));
 
     if (strlen(trim($append_path)) > 0) {
-        $uri_array['path'] = rtrim($uri_array['path'], '/') . '/' . $append_path;
+        $uri_array['path'] = rtrim($uri_array['path'], ' / ') . ' / ' . $append_path;
     }
 
     $server_uri = (isset($uri_array['scheme'])) ? "{$uri_array['scheme']}://" : '';
@@ -1355,20 +1358,20 @@ function html_get_forum_file_path($file_path, $allow_cdn = true)
 
         // Disable CDN for everything but CSS, icons, images and Javascript
         if (($url_file_path = @parse_url($file_path, PHP_URL_PATH)) !== false) {
-            $allow_cdn = (preg_match('/\.png$|\.css$|\.ico$|\.js$/Diu', $url_file_path) > 0) ? $allow_cdn : false;
+            $allow_cdn = (preg_match(' / \.png$|\.css$|\.ico$|\.js$/Diu', $url_file_path) > 0) ? $allow_cdn : false;
         }
 
         // If CDN is allowed, get the CDN path including the domain.
         if (($allow_cdn === true) && ($cdn_domain = forum_get_content_delivery_path($file_path))) {
-            $final_file_path = sprintf('%s://%s/%s', $http_scheme, trim($cdn_domain, '/'), $file_path);
+            $final_file_path = sprintf(' % s://%s/%s', $http_scheme, trim($cdn_domain, '/'), $file_path);
         } else {
             $final_file_path = rtrim($forum_path, '/') . '/' . $file_path;
         }
 
-        // Add final file path to the cache.
+// Add final file path to the cache.
         $file_path_cache_array[$file_path] = $final_file_path;
     }
 
-    // Return the cached entry.
+// Return the cached entry.
     return $file_path_cache_array[$file_path];
 }

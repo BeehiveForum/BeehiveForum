@@ -179,7 +179,7 @@ html_draw_top(
 
 if (isset($manage_folder) && is_numeric($manage_folder)) {
 
-    echo "<h1>", gettext("Private Messages"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Folder"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$pm_folder_names_array[$manage_folder]}</h1>\n";
+    echo "<h1>", gettext("Private Messages"), html_style_image('separator'), gettext("Manage Folder"), html_style_image('separator'), "{$pm_folder_names_array[$manage_folder]}</h1>\n";
 
     if (isset($_GET['folder_renamed'])) {
 
@@ -256,7 +256,7 @@ foreach ($pm_folder_names_array as $folder_type => $folder_name) {
         echo "      <td align=\"left\">\n";
         echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
         echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"foldername\"><a href=\"pm_folders.php?webtag=$webtag&amp;manage_folder=$folder_type\" target=\"", html_get_frame_name('pm_messages'), "\"><img src=\"", html_style_image('folder.png'), "\" alt=\"", gettext("Folder"), "\" title=\"", gettext("Manage Folder"), "\" border=\"0\" /></a>&nbsp;<a href=\"pm_messages.php?webtag=$webtag&amp;folder=$folder_type\" title=\"", ($pm_message_count_array[$folder_type] <> 1) ? sprintf(gettext("%s messages"), $pm_message_count_array[$folder_type]) : gettext("1 message"), "\">$folder_name</a> <span class=\"pm_message_count\">({$pm_message_count_array[$folder_type]})</span></td>\n";
+        echo "            <td align=\"left\" class=\"foldername\"><a href=\"pm_folders.php?webtag=$webtag&amp;manage_folder=$folder_type\" target=\"", html_get_frame_name('pm_messages'), "\">", html_style_image('folder', gettext("Folder")), "</a>&nbsp;<a href=\"pm_messages.php?webtag=$webtag&amp;folder=$folder_type\" title=\"", ($pm_message_count_array[$folder_type] <> 1) ? sprintf(gettext("%s messages"), $pm_message_count_array[$folder_type]) : gettext("1 message"), "\">$folder_name</a> <span class=\"pm_message_count\">({$pm_message_count_array[$folder_type]})</span></td>\n";
         echo "          </tr>\n";
         echo "        </table>\n";
         echo "      </td>\n";
@@ -280,7 +280,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"foldername\"><img src=\"", html_style_image('post.png'), "\" alt=\"", gettext("Send New PM"), "\" title=\"", gettext("Send New PM"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag\" title=\"", gettext("Send New PM"), "\" target=\"", html_get_frame_name('main'), "\">", gettext("Send New PM"), "</a></td>\n";
+echo "            <td align=\"left\" class=\"foldername\">", html_style_image('post', gettext("Send New PM")), "&nbsp;<a href=\"pm_write.php?webtag=$webtag\" title=\"", gettext("Send New PM"), "\" target=\"", html_get_frame_name('main'), "\">", gettext("Send New PM"), "</a></td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
@@ -291,7 +291,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"foldername\"><img src=\"", html_style_image('options.png'), "\" alt=\"", gettext("Private Message Options"), "\" title=\"", gettext("Private Message Options"), "\" />&nbsp;<a href=\"pm_options.php?webtag=$webtag\" title=\"", gettext("Private Message Options"), "\">", gettext("Private Message Options"), "</a></td>\n";
+echo "            <td align=\"left\" class=\"foldername\">", html_style_image('options', gettext("Private Message Options")), "&nbsp;<a href=\"pm_options.php?webtag=$webtag\" title=\"", gettext("Private Message Options"), "\">", gettext("Private Message Options"), "</a></td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
@@ -302,7 +302,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
 echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "          <tr>\n";
-echo "            <td align=\"left\" class=\"foldername\"><img src=\"", html_style_image('export.png'), "\" alt=\"", gettext("Export Private Messages"), "\" title=\"", gettext("Export Private Messages"), "\" />&nbsp;<a href=\"pm_export.php?webtag=$webtag\" title=\"", gettext("Export Private Messages"), "\">", gettext("Export Private Messages"), "</a></td>\n";
+echo "            <td align=\"left\" class=\"foldername\">", html_style_image('export', gettext("Export Private Messages")), "&nbsp;<a href=\"pm_export.php?webtag=$webtag\" title=\"", gettext("Export Private Messages"), "\">", gettext("Export Private Messages"), "</a></td>\n";
 echo "          </tr>\n";
 echo "        </table>\n";
 echo "      </td>\n";
@@ -346,7 +346,7 @@ if (pm_auto_prune_enabled()) {
     echo "            <td align=\"left\" class=\"postbody\">&nbsp;</td>\n";
     echo "          </tr>\n";
     echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"pmbar_text\"><img src=\"", html_style_image('warning.png'), "\" alt=\"", gettext("PM Folder pruning is enabled!"), "\" title=\"", gettext("PM Folder pruning is enabled!"), "\" /> ", gettext("PM Folder pruning is enabled!"), "&nbsp;[<a class=\"help_popup\" title=\"", gettext("This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items folders are subject to automatic deletion. Any messages you wish to keep should be moved to your 'Saved Items' folder so that they are not deleted."), "\">?</a>]</td>\n";
+    echo "            <td align=\"left\" class=\"pmbar_text\">", html_style_image('warning'), " ", gettext("PM Folder pruning is enabled!"), "&nbsp;[<a class=\"help_popup\" title=\"", gettext("This forum uses PM folder pruning. The messages you have stored in your Inbox and Sent Items folders are subject to automatic deletion. Any messages you wish to keep should be moved to your 'Saved Items' folder so that they are not deleted."), "\">?</a>]</td>\n";
     echo "          </tr>\n";
 }
 

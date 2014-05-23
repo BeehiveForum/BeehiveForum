@@ -171,7 +171,7 @@ $peer_relationship = user_get_relationship($_SESSION['UID'], $peer_uid);
 
 $peer_nickname = user_get_peer_nickname($_SESSION['UID'], $peer_uid);
 
-echo "<h1>", gettext("User Relationship"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags($peer_user_display, true), "</a></h1>\n";
+echo "<h1>", gettext("User Relationship"), html_style_image('separator'), "<a href=\"user_profile.php?webtag=$webtag&amp;uid=$peer_uid\" target=\"_blank\" class=\"popup 650x500\">", word_filter_add_ob_tags($peer_user_display, true), "</a></h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -263,7 +263,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"200\" valign=\"top\">", gettext("Nickname"), "</td>\n";
-echo "                        <td align=\"left\" width=\"400\">", form_input_text("nickname", htmlentities_array($peer_nickname), 32), "&nbsp;", form_submit_image('reload.png', "reset_nickname", "Y", sprintf('title="%s"', gettext("Restore User's Nickname"))), "</td>\n";
+echo "                        <td align=\"left\" width=\"400\">", form_input_text("nickname", htmlentities_array($peer_nickname), 32), "&nbsp;", form_submit_image('reload', "reset_nickname", "Y", sprintf('title="%s"', gettext("Restore User's Nickname"))), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

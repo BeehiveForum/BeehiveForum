@@ -133,7 +133,7 @@ html_draw_top(
     )
 );
 
-echo "<h1>", gettext("Thread Subscriptions"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$header_text_array[$view]}</h1>\n";
+echo "<h1>", gettext("Thread Subscriptions"), html_style_image('separator'), "{$header_text_array[$view]}</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

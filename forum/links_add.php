@@ -223,7 +223,7 @@ if ($mode == LINKS_ADD_LINK) {
         )
     );
 
-    echo "<h1>", gettext("Links"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add a link"), "</h1>\n";
+    echo "<h1>", gettext("Links"), html_style_image('separator'), gettext("Add a link"), "</h1>\n";
     echo "<p>", gettext("Adding link in"), ": <b>" . links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
@@ -291,7 +291,7 @@ if ($mode == LINKS_ADD_LINK) {
         )
     );
 
-    echo "<h1>", gettext("Links"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add a new folder"), "</h1>\n";
+    echo "<h1>", gettext("Links"), html_style_image('separator'), gettext("Add a new folder"), "</h1>\n";
     echo "<p>", gettext("Adding new folder under"), ": <b>" . links_get_folder_path_links($fid, $folders, false) . "</b></p>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {

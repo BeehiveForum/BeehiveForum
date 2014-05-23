@@ -1203,7 +1203,7 @@ function poll_get_question_html($question_number)
     $html .= "  <div>\n";
     $html .= "    <h2>" . gettext("Poll Question") . "</h2>\n";
     $html .= "    <div class=\"poll_question_input\">\n";
-    $html .= "      " . form_input_text("poll_questions[{$question_number}][question]", null, 40, 255) . "&nbsp;" . form_button_html("delete_question[{$question_number}]", 'submit', 'button_image delete_question', sprintf("<img src=\"%s\" alt=\"\" />", html_style_image('delete.png')), sprintf('title="%s"', gettext("Delete question"))) . "<br />\n";
+    $html .= "      " . form_input_text("poll_questions[{$question_number}][question]", null, 40, 255) . "&nbsp;" . form_button_html("delete_question[{$question_number}]", 'submit', 'button_image delete_question', html_style_image('delete'), sprintf('title="%s"', gettext("Delete question"))) . "<br />\n";
     $html .= "    </div>\n";
     $html .= "    <div class=\"poll_question_checkbox\">\n";
     $html .= "      " . form_checkbox("poll_questions[{$question_number}][allow_multi]", "Y", gettext("Allow multiple options to be selected")) . "\n";
@@ -1214,7 +1214,7 @@ function poll_get_question_html($question_number)
     $html .= "      </ol>\n";
     $html .= "    </div>\n";
     $html .= "  </div>\n";
-    $html .= "  " . form_button_html("add_option[{$question_number}]", 'submit', 'button_image add_option', sprintf("<img src=\"%s\" alt=\"\" />&nbsp;%s", html_style_image('add.png'), gettext("Add new option"))) . "\n";
+    $html .= "  " . form_button_html("add_option[{$question_number}]", 'submit', 'button_image add_option', html_style_image('add', gettext("Add new option")) . '&nbsp;' . gettext("Add new option")) . "\n";
     $html .= "</fieldset>\n";
 
     return $html;
@@ -1226,7 +1226,7 @@ function poll_get_option_html($question_number, $option_number)
 
     if (!is_numeric($option_number)) return false;
 
-    return sprintf("<li>%s&nbsp;%s</li>\n", form_input_text("poll_questions[{$question_number}][options][{$option_number}]", null, 45, 255), form_button_html("delete_option[{$question_number}][{$option_number}]", 'submit', 'button_image delete_option', sprintf("<img src=\"%s\" alt=\"\"/>", html_style_image('delete.png')), sprintf('title="%s"', gettext("Delete option"))));
+    return sprintf("<li>%s&nbsp;%s</li>\n", form_input_text("poll_questions[{$question_number}][options][{$option_number}]", null, 45, 255), form_button_html("delete_option[{$question_number}][{$option_number}]", 'submit', 'button_image delete_option', html_style_image('delete'), sprintf('title="%s"', gettext("Delete option"))));
 }
 
 function poll_close($tid)

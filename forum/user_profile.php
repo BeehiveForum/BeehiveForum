@@ -96,7 +96,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\" width=\"95%\">\n";
 echo "                    <table width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\" class=\"subhead\"><h2 class=\"profile_logon\" id=\"profile_options\">", word_filter_add_ob_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']), true), "&nbsp;<img src=\"", html_style_image('post_options.png'), "\" class=\"post_options\" alt=\"", gettext("Options"), "\" title=\"", gettext("Options"), "\" border=\"0\" /></h2>\n";
+echo "                        <td align=\"left\" class=\"subhead\"><h2 class=\"profile_logon\" id=\"profile_options\">", word_filter_add_ob_tags(format_user_name($user_profile['LOGON'], $user_profile['NICKNAME']), true), "&nbsp;", html_style_image('post_options', gettext("Options")), "</h2>\n";
 echo "                          <div class=\"profile_options_container\" id=\"profile_options_container\">\n";
 echo "                            <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "                              <tr>\n";
@@ -115,43 +115,43 @@ echo "                                              <table width=\"95%\" class=\
 if (isset($user_profile['HOMEPAGE_URL'])) {
 
     echo "                                                <tr>\n";
-    echo "                                                  <td align=\"left\"><a href=\"{$user_profile['HOMEPAGE_URL']}\" target=\"_blank\" title=\"", gettext("Visit Homepage"), "\"><img src=\"", html_style_image('home.png'), "\" border=\"0\" alt=\"", gettext("Visit Homepage"), "\" title=\"", gettext("Visit Homepage"), "\" /></a></td>\n";
+    echo "                                                  <td align=\"left\"><a href=\"{$user_profile['HOMEPAGE_URL']}\" target=\"_blank\" title=\"", gettext("Visit Homepage"), "\">", html_style_image('home', gettext("Visit Homepage")), "</a></td>\n";
     echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"{$user_profile['HOMEPAGE_URL']}\" target=\"_blank\" title=\"", gettext("Visit Homepage"), "\">", gettext("Visit Homepage"), "</a></td>\n";
     echo "                                                </tr>\n";
 }
 
 echo "                                                <tr>\n";
-echo "                                                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=pm_write.php%3Fwebtag%3D$webtag%26uid=$uid\" target=\"_blank\" title=\"", gettext("Send PM"), "\"><img src=\"", html_style_image('pm_unread.png'), "\" border=\"0\" alt=\"", gettext("Send PM"), "\" title=\"", gettext("Send PM"), "\" /></a></td>\n";
+echo "                                                  <td align=\"left\"><a href=\"index.php?webtag=$webtag&amp;final_uri=pm_write.php%3Fwebtag%3D$webtag%26uid=$uid\" target=\"_blank\" title=\"", gettext("Send PM"), "\">", html_style_image('pm_unread', gettext("Send PM")), "</a></td>\n";
 echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"index.php?webtag=$webtag&amp;final_uri=pm_write.php%3Fwebtag%3D$webtag%26uid=$uid\" target=\"_blank\" title=\"", gettext("Send PM"), "\">", gettext("Send PM"), "</a></td>\n";
 echo "                                                </tr>\n";
 echo "                                                <tr>\n";
-echo "                                                  <td align=\"left\"><a href=\"email.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" title=\"", gettext("Send email"), "\"><img src=\"", html_style_image('email.png'), "\" border=\"0\" alt=\"", gettext("Send email"), "\" title=\"", gettext("Send email"), "\" /></a></td>\n";
+echo "                                                  <td align=\"left\"><a href=\"email.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" title=\"", gettext("Send email"), "\">", html_style_image('email', gettext("Send email")), "</a></td>\n";
 echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"email.php?webtag=$webtag&amp;uid=$uid\" target=\"_blank\" title=\"", gettext("Send email"), "\">", gettext("Send email"), "</a></td>\n";
 echo "                                                </tr>\n";
 
 if ($uid <> $_SESSION['UID']) {
 
     echo "                                                <tr>\n";
-    echo "                                                  <td align=\"left\"><a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=user_profile.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\" title=\"", gettext("Relationship"), "\"><img src=\"", html_style_image('enemy.png'), "\" border=\"0\" alt=\"", gettext("Relationship"), "\" title=\"", gettext("Relationship"), "\" /></a></td>\n";
+    echo "                                                  <td align=\"left\"><a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=user_profile.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\" title=\"", gettext("Relationship"), "\">", html_style_image('enemy', gettext("Relationship")), "</a></td>\n";
     echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"user_rel.php?webtag=$webtag&amp;uid=$uid&amp;ret=user_profile.php%3Fwebtag%3D$webtag%26uid%3D$uid\" target=\"_self\" title=\"", gettext("Relationship"), "\">", gettext("Relationship"), "</a></td>\n";
     echo "                                                </tr>\n";
     echo "                                                <tr>\n";
-    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"", sprintf(gettext("Find Threads started by %s"), $logon), "\" class=\"opener_top\"><img src=\"", html_style_image('search.png'), "\" border=\"0\" alt=\"", sprintf(gettext("Find Threads started by %s"), $logon), "\" title=\"", sprintf(gettext("Find Posts made by %s"), $logon), "\" /></a></td>\n";
+    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"", sprintf(gettext("Find Threads started by %s"), $logon), "\" class=\"opener_top\">", html_style_image('search', sprintf(gettext("Find Threads started by %s"), $logon)), "</a></td>\n";
     echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"", sprintf(gettext("Find Threads started by %s"), $logon), "\" class=\"opener_top\">", sprintf(gettext("Find Threads started by %s"), $logon), "</a></td>\n";
     echo "                                                </tr>\n";
     echo "                                                <tr>\n";
-    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"", sprintf(gettext("Find Posts made by %s"), $logon), "\" class=\"opener_top\"><img src=\"", html_style_image('search.png'), "\" border=\"0\" alt=\"", sprintf(gettext("Find Posts made by %s"), $logon), "\" title=\"", sprintf(gettext("Find Posts made by %s"), $logon), "\" /></a></td>\n";
+    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"", sprintf(gettext("Find Posts made by %s"), $logon), "\" class=\"opener_top\">", html_style_image('search', sprintf(gettext("Find Posts made by %s"), $logon)), "</a></td>\n";
     echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"", sprintf(gettext("Find Posts made by %s"), $logon), "\" class=\"opener_top\">", sprintf(gettext("Find Posts made by %s"), $logon), "</a></td>\n";
     echo "                                                </tr>\n";
 
 } else {
 
     echo "                                                <tr>\n";
-    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"", gettext("Find Threads started by me"), "\" class=\"opener_top\"><img src=\"", html_style_image('search.png'), "\" border=\"0\" alt=\"", gettext("Find Threads started by me"), "\" title=\"", gettext("Find Threads started by me"), "\" /></a></td>\n";
+    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"", gettext("Find Threads started by me"), "\" class=\"opener_top\">", html_style_image('search', gettext("Find Threads started by me")), "</a></td>\n";
     echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon&amp;user_include=1\" target=\"_blank\" title=\"", gettext("Find Threads started by me"), "\" class=\"opener_top\">", gettext("Find Threads started by me"), "</a></td>\n";
     echo "                                                </tr>\n";
     echo "                                                <tr>\n";
-    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"", gettext("Find Posts made by me"), "\" class=\"opener_top\"><img src=\"", html_style_image('search.png'), "\" border=\"0\" alt=\"", gettext("Find Posts made by me"), "\" title=\"", gettext("Find Posts made by me"), "\" /></a></td>\n";
+    echo "                                                  <td align=\"left\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"", gettext("Find Posts made by me"), "\" class=\"opener_top\">", html_style_image('search', gettext("Find Posts made by me")), "</a></td>\n";
     echo "                                                  <td align=\"left\" style=\"white-space: nowrap\"><a href=\"search.php?webtag=$webtag&amp;logon=$logon\" target=\"_blank\" title=\"", gettext("Send email"), "\" class=\"opener_top\">", gettext("Find Posts made by me"), "</a></td>\n";
     echo "                                                </tr>\n";
 }
@@ -171,11 +171,11 @@ echo "                        </td>\n";
 
 if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_FRIEND)) {
 
-    echo "                        <td align=\"right\" class=\"subhead\"><img src=\"", html_style_image('friend.png'), "\" alt=\"", gettext("Friend"), "\" title=\"", gettext("Friend"), "\" /></td>\n";
+    echo "                        <td align=\"right\" class=\"subhead\">", html_style_image('friend', gettext("Friend")), "</td>\n";
 
 } else if (isset($user_profile['RELATIONSHIP']) && ($user_profile['RELATIONSHIP'] & USER_IGNORED)) {
 
-    echo "                        <td align=\"right\" class=\"subhead\"><img src=\"", html_style_image('enemy.png'), "\" alt=\"", gettext("Ignored user"), "\" title=\"", gettext("Ignored user"), "\" /></td>\n";
+    echo "                        <td align=\"right\" class=\"subhead\">", html_style_image('enemy', gettext("Ignored user")), "</td>\n";
 
 }
 
@@ -250,17 +250,15 @@ echo "                        <td valign=\"top\" width=\"110\">\n";
 echo "                          <table width=\"100%\">\n";
 echo "                            <tr>\n";
 echo "                              <td align=\"right\" class=\"subhead\">\n";
-echo "                                <div class=\"profile_image\">\n";
 
 if (isset($user_profile['PIC_URL'])) {
 
-    echo "                                  <img src=\"{$user_profile['PIC_URL']}\" alt=\"\" />\n";
+    echo "                                  ", html_style_image('profile_image profile_image_large', null, null, array('background-image' => sprintf("url('%s')", $user_profile['PIC_URL']))), "\n";
 
 } else if (isset($user_profile['PIC_AID']) && ($attachment = attachments_get_by_aid($user_profile['PIC_AID']))) {
 
     if (($profile_picture_href = attachments_make_link($attachment, false, false, false, false)) !== false) {
-
-        echo "                                  <img src=\"$profile_picture_href&amp;profile_picture\" alt=\"\" />\n";
+        echo "                                  ", html_style_image('profile_image profile_image_large', null, null, array('background-image' => sprintf("url('%s&amp;profile_picture')", $profile_picture_href))), "\n";
     }
 }
 

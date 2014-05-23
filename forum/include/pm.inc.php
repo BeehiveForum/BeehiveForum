@@ -866,25 +866,25 @@ function pm_display($message_data, $preview = false, $export_html = false)
 
         if (($message_data['TYPE'] & PM_INBOX_ITEMS)) {
 
-            echo "<img src=\"", html_style_image('post.png'), "\" border=\"0\" alt=\"", gettext("Reply"), "\" title=\"", gettext("Reply"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;reply_to={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Reply"), "</a>&nbsp;\n";
+            echo "", html_style_image('post', "Reply"), "&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;reply_to={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Reply"), "</a>&nbsp;\n";
 
             if (isset($message_data['RECIPIENTS']) && sizeof($message_data['RECIPIENTS']) > 1) {
-                echo "<img src=\"", html_style_image('reply_all.png'), "\" border=\"0\" alt=\"", gettext("Reply All"), "\" title=\"", gettext("Reply All"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyall={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Reply All"), "</a>&nbsp;\n";
+                echo "", html_style_image('reply_all', "Reply All"), "&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;replyall={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Reply All"), "</a>&nbsp;\n";
             }
 
-            echo "<img src=\"", html_style_image('forward.png'), "\" border=\"0\" alt=\"", gettext("Forward"), "\" title=\"", gettext("Forward"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Forward"), "</a>&nbsp;\n";
+            echo "", html_style_image('forward', "Forward"), "&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Forward"), "</a>&nbsp;\n";
 
         } else if (($message_data['TYPE'] & PM_DRAFT_ITEMS)) {
 
-            echo "<img src=\"", html_style_image('edit.png'), "\" border=\"0\" alt=\"", gettext("Edit"), "\" title=\"", gettext("Edit"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;editmsg={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Edit"), "</a>&nbsp;\n";
+            echo "", html_style_image('edit', "Edit"), "&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;editmsg={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Edit"), "</a>&nbsp;\n";
 
         } else {
 
             if ($message_data['EDITABLE'] == 1) {
-                echo "<img src=\"", html_style_image('post.png'), "\" border=\"0\" alt=\"", gettext("Edit"), "\" title=\"", gettext("Edit"), "\" />&nbsp;<a href=\"pm_edit.php?webtag=$webtag&amp;mid={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Edit"), "</a>&nbsp;\n";
+                echo "", html_style_image('post', "Edit"), "&nbsp;<a href=\"pm_edit.php?webtag=$webtag&amp;mid={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Edit"), "</a>&nbsp;\n";
             }
 
-            echo "<img src=\"", html_style_image('forward.png'), "\" border=\"0\" alt=\"", gettext("Forward"), "\" title=\"", gettext("Forward"), "\" />&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Forward"), "</a>&nbsp;\n";
+            echo "", html_style_image('forward', "Forward"), "&nbsp;<a href=\"pm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" target=\"", html_get_frame_name('main'), "\">", gettext("Forward"), "</a>&nbsp;\n";
         }
     }
 
@@ -1638,7 +1638,7 @@ function pm_export_html_top($message = null)
         $html .= "<title>" . gettext("Messages") . "</title>\n";
     }
 
-    if (($user_style = html_get_style_sheet())) {
+    if (($user_style = html_get_style_file('style.css'))) {
         $html .= "<link rel=\"stylesheet\" href=\"" . html_get_forum_domain() . $user_style . "\" type=\"text/css\" media=\"screen\" />";
     }
 
@@ -1885,7 +1885,7 @@ function pm_export_attachments($message_array, ZipArchive $zip)
         }
     }
 
-    if ($attachments_added_success == true && $attach_img = html_style_image('attach.png', true)) {
+    if ($attachments_added_success == true && $attach_img = html_style_image('attach', true)) {
         $zip->addFile($attach_img, $attach_img);
     }
 

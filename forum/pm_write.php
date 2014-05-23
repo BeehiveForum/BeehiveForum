@@ -548,7 +548,7 @@ html_draw_top(
     )
 );
 
-echo "<h1>", gettext("Private Messages"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Send New PM"), "</h1>\n";
+echo "<h1>", gettext("Private Messages"), html_style_image('separator'), gettext("Send New PM"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '960', 'left');
@@ -654,9 +654,9 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack)) !== false)
     echo "                              <td align=\"left\" class=\"subhead\">", gettext("Emoticons"), "</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'emots_toggle', 'hide', null, 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide', 'emots_toggle', 'hide', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     } else {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'emots_toggle', 'show', null, 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show', 'emots_toggle', 'show', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     }
 
     echo "                            </tr>\n";
@@ -719,9 +719,9 @@ if (attachments_check_dir()) {
     echo "                              <td align=\"left\" class=\"subhead\">", gettext("Attachments"), "</td>\n";
 
     if (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'attachment_toggle', 'hide', null, 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide', 'attachment_toggle', 'hide', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     } else {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'attachment_toggle', 'show', null, 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show', 'attachment_toggle', 'show', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     }
 
     echo "                            </tr>\n";

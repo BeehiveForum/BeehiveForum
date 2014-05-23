@@ -253,7 +253,7 @@ html_draw_top(
     )
 );
 
-echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Folders"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Folder"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($folder_data['TITLE'], true), "</h1>\n";
+echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage Folders"), html_style_image('separator'), gettext("Edit Folder"), html_style_image('separator'), word_filter_add_ob_tags($folder_data['TITLE'], true), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     html_display_error_array($error_msg_array, '800', 'center');

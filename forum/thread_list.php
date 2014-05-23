@@ -453,7 +453,7 @@ if (($page > 1) && !is_numeric($folder)) {
 
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\"><img src=\"", html_style_image('current_thread.png'), "\" alt=\"", gettext("Previous 50 threads"), "\" title=\"", gettext("Previous 50 threads"), "\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page - 1), "\" title=\"", gettext("Show previous 50 threads"), "\">", gettext("Previous 50 threads"), "</a></td>\n";
+    echo "    <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\">", html_style_image('current_thread'), "&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page - 1), "\" title=\"", gettext("Show previous 50 threads"), "\">", gettext("Previous 50 threads"), "</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";
@@ -480,20 +480,20 @@ foreach ($folder_order as $folder_number) {
         echo "          <td align=\"left\" valign=\"top\" class=\"foldername\">\n";
 
         if (session::logged_in() && ($folder_info[$folder_number]['INTEREST'] == FOLDER_SUBSCRIBED)) {
-            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 550x400\"><img src=\"", html_style_image('folder_subscribed.png'), "\" alt=\"", gettext("Subscribed Folder"), "\" title=\"", gettext("Subscribed Folder"), "\" border=\"0\" /></a>\n";
+            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 550x400\">", html_style_image('folder_subscribed', gettext("Subscribed Folder")), "</a>\n";
         } else if (session::logged_in() && ($folder_info[$folder_number]['INTEREST'] == FOLDER_IGNORED)) {
-            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 550x400\"><img src=\"", html_style_image('folder_ignored.png'), "\" alt=\"", gettext("Ignored Folder"), "\" title=\"", gettext("Ignored Folder"), "\" border=\"0\" /></a>\n";
+            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 550x400\">", html_style_image('folder_ignored', gettext("Ignored Folder")), "</a>\n";
         } else {
-            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 550x400\"><img src=\"", html_style_image('folder.png'), "\" alt=\"", gettext("Folder"), "\" title=\"", gettext("Folder"), "\" border=\"0\" /></a>\n";
+            echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 550x400\">", html_style_image('folder', gettext("Folder")), "</a>\n";
         }
 
         echo "            <a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder_number\" title=\"", word_filter_add_ob_tags($folder_info[$folder_number]['DESCRIPTION'], true), "\">", word_filter_add_ob_tags($folder_info[$folder_number]['TITLE'], true), "</a>\n";
         echo "          </td>\n";
 
-        echo "          <td align=\"left\" class=\"folderpostnew\" style=\"white-space: nowrap\"><a href=\"threads_rss.php?webtag=DEFAULT&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 580x450\" id=\"mods_list_$folder_number\"><img src=\"" . html_style_image('rss.png') . "\" border=\"0\" alt=\"", gettext("RSS"), "\" title=\"", gettext("RSS"), "\" /></a></td>";
+        echo "          <td align=\"left\" class=\"folderpostnew\" style=\"white-space: nowrap\"><a href=\"threads_rss.php?webtag=DEFAULT&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 580x450\" id=\"mods_list_$folder_number\">", html_style_image('rss', gettext("RSS")), "</a></td>";
 
         if ($_SESSION['UID'] > 0) {
-            echo "          <td align=\"left\" class=\"folderpostnew\" style=\"white-space: nowrap\"><a href=\"mods_list.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 580x450\" id=\"mods_list_$folder_number\"><img src=\"" . html_style_image('mods_list.png') . "\" border=\"0\" alt=\"", gettext("View moderators"), "\" title=\"", gettext("View moderators"), "\" /></a></td>";
+            echo "          <td align=\"left\" class=\"folderpostnew\" style=\"white-space: nowrap\"><a href=\"mods_list.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 580x450\" id=\"mods_list_$folder_number\">", html_style_image('mods_list', gettext("View moderators")), "</a></td>";
         }
 
         echo "        </tr>\n";
@@ -584,11 +584,11 @@ foreach ($folder_order as $folder_number) {
                                 if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo "<img src=\"", html_style_image('current_thread.png'), "\" class=\"thread_bullet current_thread\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
+                                    echo html_style_image('thread_bullet current_thread', gettext("Thread Options"), "t{$thread['TID']}");
 
                                 } else {
 
-                                    echo "<img src=\"", html_style_image('unread_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
+                                    echo html_style_image('thread_bullet unread_thread', gettext("Thread Options"), "t{$thread['TID']}");
                                 }
 
                             } else if ($thread['LAST_READ'] < $thread['LENGTH']) {
@@ -613,11 +613,11 @@ foreach ($folder_order as $folder_number) {
                                 if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo "<img src=\"", html_style_image('current_thread.png'), "\" class=\"thread_bullet current_thread\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
+                                    echo html_style_image('thread_bullet current_thread', gettext("Thread Options"), "t{$thread['TID']}");
 
                                 } else {
 
-                                    echo "<img src=\"", html_style_image('unread_thread.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
+                                    echo html_style_image('thread_bullet unread_thread', gettext("Thread Options"), "t{$thread['TID']}");
                                 }
 
                             } else {
@@ -638,11 +638,11 @@ foreach ($folder_order as $folder_number) {
                                 if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo "<img src=\"", html_style_image('current_thread.png'), "\" class=\"thread_bullet current_thread\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
+                                    echo html_style_image('thread_bullet current_thread', gettext("Thread Options"), "t{$thread['TID']}");
 
                                 } else {
 
-                                    echo "<img src=\"", html_style_image('bullet.png'), "\" class=\"thread_bullet\" id=\"t{$thread['TID']}\" alt=\"", gettext("Thread Options"), "\" title=\"", gettext("Thread Options"), "\" border=\"0\" />";
+                                    echo html_style_image('thread_bullet bullet', gettext("Thread Options"), "t{$thread['TID']}");
                                 }
                             }
 
@@ -659,37 +659,37 @@ foreach ($folder_order as $folder_number) {
                             if (session::logged_in()) {
 
                                 if (isset($thread['INTEREST']) && ($thread['INTEREST'] == THREAD_INTERESTED)) {
-                                    echo "<img src=\"", html_style_image('high_interest.png'), "\" alt=\"", gettext("High Interest"), "\" title=\"", gettext("High Interest"), "\" /> ";
+                                    echo "", html_style_image('high_interest', gettext("High Interest")), " ";
                                 }
 
                                 if (isset($thread['INTEREST']) && ($thread['INTEREST'] == THREAD_SUBSCRIBED)) {
-                                    echo "<img src=\"", html_style_image('subscribe.png'), "\" alt=\"", gettext("Subscribed"), "\" title=\"", gettext("Subscribed"), "\" /> ";
+                                    echo "", html_style_image('subscribe', gettext("Subscribed")), " ";
                                 }
 
                                 if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) {
-                                    echo "<img src=\"", html_style_image('friend.png'), "\" alt=\"", gettext("Friend"), "\" title=\"", gettext("Friend"), "\" /> ";
+                                    echo "", html_style_image('friend', gettext("Friend")), " ";
                                 }
                             }
 
                             if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') {
-                                echo "<a href=\"poll_results.php?webtag=$webtag&amp;tid={$thread['TID']}\" target=\"_blank\" class=\"popup 800x600\"><img src=\"", html_style_image('poll.png'), "\" border=\"0\" alt=\"", gettext("This is a poll. Click to view results."), "\" title=\"", gettext("This is a poll. Click to view results."), "\" /></a> ";
+                                echo "<a href=\"poll_results.php?webtag=$webtag&amp;tid={$thread['TID']}\" target=\"_blank\" class=\"popup 800x600\">", html_style_image('poll', gettext("This is a poll. Click to view results.")), "</a> ";
                             }
 
                             if (isset($thread['STICKY']) && $thread['STICKY'] == "Y") {
-                                echo "<img src=\"", html_style_image('sticky.png'), "\" alt=\"", gettext("Sticky"), "\" title=\"", gettext("Sticky"), "\" /> ";
+                                echo "", html_style_image('sticky', gettext("Sticky")), " ";
                             }
 
                             if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_SPLIT) {
 
-                                echo "<img src=\"", html_style_image('split_thread.png'), "\" alt=\"", gettext("Thread has been split"), "\" title=\"", gettext("Thread has been split"), "\" /> ";
+                                echo "", html_style_image('split_thread', gettext("Thread has been split")), " ";
 
                             } else if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_MERGE) {
 
-                                echo "<img src=\"", html_style_image('merge_thread.png'), "\" alt=\"", gettext("Thread has been merged"), "\" title=\"", gettext("Thread has been merged"), "\" /> ";
+                                echo "", html_style_image('merge_thread', gettext("Thread has been merged")), " ";
                             }
 
                             if (isset($thread['ATTACHMENT_COUNT']) && $thread['ATTACHMENT_COUNT'] > 0) {
-                                echo "<img src=\"", html_style_image('attach.png'), "\" alt=\"", gettext("Attachment"), "\" title=\"", gettext("Attachment"), "\" /> ";
+                                echo "", html_style_image('attach', gettext("Attachment")), " ";
                             }
 
                             echo "<span class=\"threadxnewofy\">{$number}</span></td>\n";
@@ -797,7 +797,7 @@ if (!is_numeric($folder) && ($thread_count >= 50)) {
     echo "  <td colspan=\"2\">&nbsp;</td>\n";
     echo "</tr>\n";
     echo "<tr>\n";
-    echo "  <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\"><img src=\"", html_style_image('current_thread.png'), "\" alt=\"", gettext("Next 50 threads"), "\" title=\"", gettext("Next 50 threads"), "\" />&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page + 1), "\" title=\"", gettext("Show next 50 threads"), "\">", gettext("Next 50 threads"), "</a></td>\n";
+    echo "  <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\">", html_style_image('current_thread'), "&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page + 1), "\" title=\"", gettext("Show next 50 threads"), "\">", gettext("Next 50 threads"), "</a></td>\n";
     echo "</tr>\n";
 }
 
@@ -813,7 +813,7 @@ if (session::logged_in()) {
     echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">", gettext("Mark as Read"), ":</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\">&nbsp;</td>\n";
+    echo "    <td align=\"left\" width=\"15\">&nbsp;</td>\n";
     echo "    <td align=\"left\" class=\"smalltext\">\n";
     echo "      <form accept-charset=\"utf-8\" name=\"f_mark\" method=\"post\" action=\"thread_list.php\">\n";
     echo "        ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
@@ -858,7 +858,7 @@ echo "  <tr>\n";
 echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">", gettext("Navigate"), ":</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\">&nbsp;</td>\n";
+echo "    <td align=\"left\" width=\"15\">&nbsp;</td>\n";
 echo "    <td align=\"left\" class=\"smalltext\">\n";
 echo "      <form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"", html_get_frame_name('right'), "\">\n";
 echo "        ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";

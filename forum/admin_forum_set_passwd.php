@@ -176,7 +176,7 @@ html_draw_top(
     )
 );
 
-echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Change Password"), "</h1>\n";
+echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Change Password"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

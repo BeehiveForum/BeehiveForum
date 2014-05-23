@@ -164,12 +164,16 @@ function light_html_draw_top(array $options = array())
         echo "<meta name=\"robots\" content=\"$robots\" />\n";
     }
 
-    if (($stylesheet = html_get_style_sheet('mobile.css')) !== false) {
+    if (($stylesheet = html_get_style_file('mobile.css')) !== false) {
         echo html_include_css($stylesheet);
     }
 
     if (($emoticon_stylesheet = html_get_emoticon_style_sheet(true)) !== false) {
         echo html_include_css($emoticon_stylesheet, 'print, screen');
+    }
+
+    if (($stylesheet = html_get_style_file('images.css')) !== false) {
+        echo html_include_css($stylesheet);
     }
 
     $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag");
@@ -256,7 +260,7 @@ function light_navigation_bar(array $options = array())
 
                     throw new InvalidArgumentException(
                         sprintf(
-                            'Expecting light_navigation_bar argument %s to be an array of arrays, each with class and url keys',
+                            'Expecting light_navigation_bar argument %s to be an array of arrays, each with class, url, text and image keys',
                             $key
                         )
                     );
@@ -291,20 +295,27 @@ function light_navigation_bar(array $options = array())
     echo "  <span class=\"left\">\n";
 
     if (isset($back)) {
-        echo "    <span class=\"back\"><a href=\"$back\">", gettext("Back"), "</a></span>\n";
+        echo "    <span class=\"back\"><a href=\"$back\">", html_style_image('mobile_back', gettext("Back")), "</a></span>\n";
     } else {
-        echo "    <span class=\"icon\"><a>", gettext("Beehive Forum"), "</a></span>\n";
+        echo "    <span class=\"icon\">", html_style_image('mobile_icon', gettext("Beehive Forum")), "</span>\n";
     }
 
-    echo "    <img src=\"", html_style_image('mobile_logo.png'), "\" alt=\"", gettext("Beehive Forum Logo"), "\" />\n";
+    echo "    ", html_style_image('mobile_logo', gettext("Beehive Forum Logo")), "\n";
     echo "  </span>\n";
     echo "  <ul>\n";
 
     foreach ($nav_links as $nav_link) {
-        echo "    <li><a class=\"{$nav_link['class']}\" href=\"{$nav_link['url']}\">{$nav_link['text']}</a></li>\n";
+
+        echo "    <li>\n";
+        echo "      <a class=\"{$nav_link['class']}\" href=\"{$nav_link['url']}\">\n";
+        echo "        ", html_style_image($nav_link['image']), "<span class=\"text\">", $nav_link['text'], "</span>\n";
+        echo "      </a>\n";
+        echo "    </li>\n";
     }
 
-    echo "    <li><a class=\"main\" href=\"#\">", gettext("Menu"), "</a></li>\n";
+    echo "    <li>\n";
+    echo "      <a class=\"main\" href=\"#\">", html_style_image('mobile_menu', gettext("Menu")), "</a>\n";
+    echo "    </li>\n";
     echo "  </ul>\n";
     echo "</div>\n";
     echo "<div class=\"menu main\">\n";
@@ -378,7 +389,7 @@ function light_html_draw_bottom()
 
 function light_validate_nav_link($nav_link)
 {
-    return is_array($nav_link) && isset($nav_link['class'], $nav_link['url'], $nav_link['text']);
+    return is_array($nav_link) && isset($nav_link['class'], $nav_link['url'], $nav_link['text'], $nav_link['image']);
 }
 
 function light_draw_logon_form($error_msg_array = array())
@@ -540,17 +551,15 @@ function light_draw_messages($tid, $pid, array $thread_data, array $messages)
     unset($messages, $message);
 
     echo "</div>\n";
-    echo "<div class=\"message_page_footer\">\n";
-    echo "<ul>\n";
 
     if ($last_pid < $thread_data['LENGTH']) {
 
-        $next_pid = $last_pid + 1;
-        echo "<li class=\"right_col\">", light_form_quick_button("lmessages.php", gettext("Keep reading&hellip;"), array('msg' => "$tid.$next_pid"), '_self', 'keep_reading'), "</li>\n";
+        echo "<div class=\"message_page_footer\">\n";
+        echo "<ul>\n";
+        echo "<li class=\"right_col\">", light_form_quick_button("lmessages.php", gettext("Keep reading&hellip;"), array('msg' => $tid . '.' . ($last_pid + 1)), '_self', 'keep_reading'), "</li>\n";
+        echo "</ul>\n";
+        echo "</div>\n";
     }
-
-    echo "</ul>\n";
-    echo "</div>\n";
 
     if (($msg_count > 0 && session::logged_in())) {
         messages_update_read($tid, $last_pid, $thread_data['LAST_READ'], $thread_data['LENGTH'], $thread_data['MODIFIED']);
@@ -813,7 +822,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
         if (isset($folder_info[$folder_number]) && is_array($folder_info[$folder_number])) {
 
             echo "<div class=\"folder\">\n";
-            echo "  <h3><a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder_number\">", word_filter_add_ob_tags($folder_info[$folder_number]['TITLE'], true), "</a></h3>";
+            echo "  <h3>", html_style_image('folder'), "<a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode&amp;folder=$folder_number\">", word_filter_add_ob_tags($folder_info[$folder_number]['TITLE'], true), "</a></h3>";
             echo "  <div class=\"folder_inner\">\n";
 
             if ((!session::logged_in()) || ($folder_info[$folder_number]['INTEREST'] > FOLDER_IGNORED) || ($mode == UNREAD_DISCUSSIONS_TO_ME) || (isset($folder) && $folder == $folder_number)) {
@@ -858,7 +867,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
                                 $folder_list_start = true;
                             }
 
-                            echo "<li>\n";
+                            echo "<li>";
 
                             if ($thread['LAST_READ'] == 0) {
 
@@ -881,6 +890,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
                             // work out how long ago the thread was posted and format the time to display
                             $thread_time = format_date_time($thread['MODIFIED']);
 
+                            echo "<span class=\"thread_icon\">", html_style_image('bullet'), "</span>";
                             echo "<span class=\"thread_title\">";
                             echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$thread['TID']}.$latest_post\" ";
                             echo "title=\"", sprintf(gettext("Thread #%s Started by %s. Viewed %s"), $thread['TID'], word_filter_add_ob_tags(format_user_name($thread['LOGON'], $thread['NICKNAME']), true), ($thread['VIEWCOUNT'] == 1) ? gettext("1 time") : sprintf(gettext("%d times"), $thread['VIEWCOUNT'])), "\">";
@@ -888,14 +898,14 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
                             echo "<span class=\"thread_detail\">";
 
-                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo "<span class=\"thread_high_interest\" title=\"", gettext("High Interest"), "\">[H]</span>";
-                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo "<span class=\"thread_subscribed\" title=\"", gettext("Subscribed"), "\">[S]</span>";
-                            if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo "<span class=\"thread_poll\" title=\"", gettext("Poll"), "\">[P]</span>";
-                            if (isset($thread['STICKY']) && $thread['STICKY'] == 'Y') echo "<span class=\"thread_sticky\" title=\"", gettext("Sticky"), "\">[ST]</span>";
-                            if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) echo "<span class=\"thread_friend\" title=\"", gettext("Friend"), "\">[F]</span>";
-                            if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_SPLIT) echo "<span class=\"thread_split\" title=\"", gettext("Thread has been split"), "\">[TS]</span>";
-                            if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_MERGE) echo "<span class=\"thread_merge\" title=\"", gettext("Thread has been merged"), "\">[TM]</span>";
-                            if (isset($thread['ATTACHMENT_COUNT']) && $thread['ATTACHMENT_COUNT'] > 0) echo "<span class=\"thread_attachment\" title=\"", gettext("Attachment"), "\">[A]</span>";
+                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_INTERESTED) echo html_style_image('high_interest', gettext("High Interest"));
+                            if (isset($thread['INTEREST']) && $thread['INTEREST'] == THREAD_SUBSCRIBED) echo html_style_image('subscribe', gettext("Subscribed"));
+                            if (isset($thread['POLL_FLAG']) && $thread['POLL_FLAG'] == 'Y') echo html_style_image('poll', gettext("Poll"));
+                            if (isset($thread['STICKY']) && $thread['STICKY'] == 'Y') echo html_style_image('sticky', gettext("Sticky"));
+                            if (isset($thread['RELATIONSHIP']) && $thread['RELATIONSHIP'] & USER_FRIEND) echo html_style_image('friend', gettext("Friend"));
+                            if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_SPLIT) echo html_style_image('split_thread', gettext("Thread has been split"));
+                            if (isset($thread['TRACK_TYPE']) && $thread['TRACK_TYPE'] == THREAD_TYPE_MERGE) echo html_style_image('merge_thread', gettext("Thread has been merged"));
+                            if (isset($thread['ATTACHMENT_COUNT']) && $thread['ATTACHMENT_COUNT'] > 0) echo html_style_image('attach', gettext("Attachment"));
 
                             echo "<span class=\"thread_length\">$number</span>";
                             echo "</span>";
@@ -1175,7 +1185,7 @@ function light_draw_pm_inbox()
         if (isset($message_count_array[$current_folder]) && is_numeric($message_count_array[$current_folder])) {
 
             echo "<div class=\"folder\">";
-            echo "  <h3>{$folder_names_array[$current_folder]}</h3>\n";
+            echo "  <h3>", html_style_image('folder'), "{$folder_names_array[$current_folder]}</h3>\n";
             echo "  <div class=\"folder_inner\">\n";
             echo "    <div class=\"folder_info\">{$message_count_array[$current_folder]} ", gettext("Messages"), "</div>\n";
 
@@ -1210,13 +1220,16 @@ function light_draw_pm_inbox()
 
                 foreach ($messages_array['message_array'] as $message) {
 
+                    echo "<li>";
+                    echo "<span class=\"pm_icon\">";
+
                     if ($message['TYPE'] == PM_UNREAD) {
-                        echo "<li class=\"pm_unread\">";
+                        echo html_style_image('pm_unread');
                     } else {
-                        echo "<li class=\"pm_read\">";
+                        echo html_style_image('pm_read');
                     }
 
-                    echo "<span class=\"pm_title\">";
+                    echo "</span><span class=\"pm_title\">";
                     echo "<a href=\"lpm.php?webtag=$webtag&amp;folder=$current_folder&amp;mid={$message['MID']}\">{$message['SUBJECT']}</a>";
                     echo "</span>";
                     echo "<span class=\"pm_time\">", format_date_time($message['CREATED']), "</span>";
@@ -1235,8 +1248,6 @@ function light_draw_pm_inbox()
             echo "  </div>\n";
             echo "</div>\n";
         }
-
-        echo "<a href=\"lpm_write.php?webtag=$webtag\" class=\"pm_send_new\">", gettext("Send New PM"), "</a>\n";
 
         $free_space = pm_get_free_space($_SESSION['UID']);
 
@@ -1409,12 +1420,12 @@ function light_messages_top($tid, $pid, $thread_title, $thread_interest_level = 
     echo "<h3 class=\"thread_title\">";
     echo "<a href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.$pid"), "\">", word_filter_add_ob_tags($thread_title, true), "</a> ";
 
-    if ($closed) echo "<span class=\"thread_closed\" title=\"", gettext("Closed"), "\">[C]</span>\n";
-    if ($thread_interest_level == THREAD_INTERESTED) echo "<span class=\"thread_high_interest\" title=\"", gettext("High Interest"), "\">[H]</span>";
-    if ($thread_interest_level == THREAD_SUBSCRIBED) echo "<span class=\"thread_subscribed\" title=\"", gettext("Subscribed"), "\">[S]</span>";
-    if ($sticky == "Y") echo "<span class=\"thread_sticky\" title=\"", gettext("Sticky"), "\">[ST]</span>";
-    if ($locked) echo "<span class=\"thread_locked\" title=\"", gettext("Locked"), "\">[L]</span>\n";
-    if ($deleted) echo "<span class=\"thread_deleted\" title=\"", gettext("Deleted"), "\">[D]</span>\n";
+    if ($closed) echo html_style_image('closed', gettext("Closed"));
+    if ($thread_interest_level == THREAD_INTERESTED) echo html_style_image('high_interest', gettext("High Interest"));
+    if ($thread_interest_level == THREAD_SUBSCRIBED) echo html_style_image('subscribe', gettext("Subscribed"));
+    if ($sticky == "Y") echo html_style_image('sticky', gettext("Sticky"));
+    if ($locked) echo html_style_image('admin_locked', gettext("Admin Locked"));
+    if ($deleted) echo html_style_image('delete', gettext("Deleted"));
 
     echo "</h3>\n";
 }
@@ -1699,10 +1710,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     }
 
     if (isset($_SESSION['IMAGES_TO_LINKS']) && ($_SESSION['IMAGES_TO_LINKS'] == 'Y')) {
-
-        $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/iu', '[img: <a\1href="\2"\3>\4</a>]', $message['CONTENT']);
-        $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/iu', '[img: <a href="\1">\1</a>]', $message['CONTENT']);
-        $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/iu', '[object: <a href="\1">\1</a>]', $message['CONTENT']);
+        $message['CONTENT'] = message_images_to_links($message['CONTENT']);
     }
 
     if ((mb_strlen(strip_tags($message['CONTENT'])) > intval(forum_get_setting('maximum_post_length', null, 6226))) && $limit_text) {
@@ -1731,11 +1739,11 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
     if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_FRIEND)) {
 
-        echo "<span class=\"user_friend\" title=\"", gettext("Friend"), "\">", gettext("Friend"), "</span>";
+        echo html_style_image('friend', gettext("Friend"));
 
     } else if (isset($message['RELATIONSHIP']) && ($message['RELATIONSHIP'] & USER_IGNORED)) {
 
-        echo "<span class=\"user_enemy\" title=\"", gettext("Ignored user"), "\">", gettext("Enemy"), "</span>";
+        echo html_style_image('enemy', gettext("Ignored user"));
     }
 
     // If the user posting a poll is ignored, remove ignored status for this message only so the poll can be seen
@@ -1772,13 +1780,13 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
             if (isset($recipient['VIEWED']) && $recipient['VIEWED'] > 0) {
 
-                echo "<span class=\"smalltext\"><img src=\"", html_style_image('post_read.png'), "\" alt=\"\" title=\"", sprintf(gettext("Read: %s"), format_date_time($recipient['VIEWED'])), "\" /></span>\n";
+                echo "<span class=\"smalltext\">", html_style_image('post_read', sprintf(gettext("Read: %s"), format_date_time($recipient['VIEWED']))), "</span>\n";
 
             } else {
 
                 if ($is_preview == false) {
 
-                    echo "<span class=\"smalltext\"><img src=\"", html_style_image('post_unread.png'), "\" alt=\"\" title=\"", gettext("Unread Message"), "\" /></span>\n";
+                    echo "<span class=\"smalltext\">", html_style_image('post_unread', gettext("Unread Message")), "</span>\n";
                 }
             }
         }
@@ -1795,13 +1803,6 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     echo "<div class=\"clearer\"></div>\n";
     echo "</div>\n";
     echo "</div>\n";
-
-    if (isset($_SESSION['IMAGES_TO_LINKS']) && ($_SESSION['IMAGES_TO_LINKS'] == 'Y')) {
-
-        $message['CONTENT'] = preg_replace('/<a([^>]*)href="([^"]*)"([^\>]*)><img[^>]*src="([^"]*)"[^>]*><\/a>/iu', '[href: <a\1href="\2"\3>\2</a>][img: <a\1href="\4"\3>\4</a>]', $message['CONTENT']);
-        $message['CONTENT'] = preg_replace('/<img[^>]*src="([^"]*)"[^>]*>/iu', '[img: <a href="\1">\1</a>]', $message['CONTENT']);
-        $message['CONTENT'] = preg_replace('/<embed[^>]*src="([^"]*)"[^>]*>/iu', '[object: <a href="\1">\1</a>]', $message['CONTENT']);
-    }
 
     if (!$is_poll || (isset($message['PID']) && $message['PID'] > 1)) {
         $message['CONTENT'] = message_apply_formatting($message['CONTENT'], true);
@@ -1886,7 +1887,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
                 foreach ($attachments_array as $attachment) {
 
                     if (($attachment_link = light_attachments_make_link($attachment)) !== false) {
-                        echo "<li>", $attachment_link, "</li>\n";
+                        echo "<li>", html_style_image('attach'), $attachment_link, "</li>\n";
                     }
                 }
 
@@ -1900,20 +1901,18 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
             $links_array = array();
 
             if (!$closed && session::check_perm(USER_PERM_POST_CREATE, $folder_fid)) {
-
-                $links_array[] = "<a href=\"lpost.php?webtag=$webtag&amp;reply_to=$tid.{$message['PID']}&return_msg=$tid.$first_msg\" class=\"reply\">" . gettext("Reply") . "</a>";
+                $links_array[] = "<a href=\"lpost.php?webtag=$webtag&amp;reply_to=$tid.{$message['PID']}&return_msg=$tid.$first_msg\" class=\"reply\">" . html_style_image('post') . gettext("Reply") . "</a>";
             }
 
             if (($_SESSION['UID'] == $message['FROM_UID'] && session::check_perm(USER_PERM_POST_DELETE, $folder_fid) && !session::check_perm(USER_PERM_PILLORIED, 0)) || $perm_is_moderator) {
-
-                $links_array[] = "<a href=\"ldelete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;return_msg=$tid.$first_msg\" class=\"delete\">" . gettext("Delete") . "</a>";
+                $links_array[] = "<a href=\"ldelete.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;return_msg=$tid.$first_msg\" class=\"delete\">" . html_style_image('delete') . gettext("Delete") . "</a>";
             }
 
             if ((!(session::check_perm(USER_PERM_PILLORIED, 0)) && ((($_SESSION['UID'] != $message['FROM_UID']) && ($from_user_permissions & USER_PERM_PILLORIED)) || ($_SESSION['UID'] == $message['FROM_UID'])) && session::check_perm(USER_PERM_POST_EDIT, $folder_fid) && ($post_edit_time == 0 || (time() - $message['CREATED']) < ($post_edit_time * HOUR_IN_SECONDS)) && forum_get_setting('allow_post_editing', 'Y')) || $perm_is_moderator) {
 
                 if (!$is_poll || ($is_poll && isset($message['PID']) && $message['PID'] > 1)) {
 
-                    $links_array[] = "<a href=\"ledit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;return_msg=$tid.$first_msg\" class=\"edit\">" . gettext("Edit") . "</a>";
+                    $links_array[] = "<a href=\"ledit.php?webtag=$webtag&amp;msg=$tid.{$message['PID']}&amp;return_msg=$tid.$first_msg\" class=\"edit\">" . html_style_image('edit') . gettext("Edit") . "</a>";
                 }
             }
 
@@ -1952,19 +1951,19 @@ function light_message_get_vote_form_html($message)
 
         if ($message['USER_POST_RATING'] > 0) {
 
-            $html .= "  <img src=\"" . html_style_image('vote_down_off.png') . "\" title=\"" . gettext('Vote Down') . "\" class=\"post_vote_down\" />\n";
-            $html .= "  <img src=\"" . html_style_image('vote_up_on.png') . "\" title=\"" . gettext('Clear Vote') . "\" class=\"post_vote_up\" />\n";
+            $html .= "  " . html_style_image('vote_down_off', 'Vote Down', 'post_vote_down') . "\n";
+            $html .= "  " . html_style_image('vote_up_on', 'Clear Vote', 'post_vote_up') . "\n";
 
         } else {
 
-            $html .= "  <img src=\"" . html_style_image('vote_down_on.png') . "\" title=\"" . gettext('Clear Vote') . "\" class=\"post_vote_down\" />\n";
-            $html .= "  <img src=\"" . html_style_image('vote_up_off.png') . "\" title=\"" . gettext('Vote Up') . "\" class=\"post_vote_up\" />\n";
+            $html .= "  " . html_style_image('vote_down_on', 'Clear Vote', 'post_vote_down') . "\n";
+            $html .= "  " . html_style_image('vote_up_off', 'Vote Up', 'post_vote_up') . "\n";
         }
 
     } else {
 
-        $html .= "  <img src=\"" . html_style_image('vote_down_off.png') . "\" title=\"" . gettext('Vote Down') . "\" class=\"post_vote_down\" />\n";
-        $html .= "  <img src=\"" . html_style_image('vote_up_off.png') . "\" title=\"" . gettext('Vote Up') . "\" class=\"post_vote_up\" />\n";
+        $html .= "  " . html_style_image('vote_down_off', 'Vote Down', 'post_vote_down') . "\n";
+        $html .= "  " . html_style_image('vote_up_off', 'Vote Up', 'post_vote_up') . "\n";
     }
 
     return $html;
@@ -2313,7 +2312,7 @@ function light_html_display_msg($header, $message, $href = null, $method = 'get'
     }
 
     echo "<div class=\"message_box message_question\">\n";
-    echo "  <h3>", $header, "</h3>\n";
+    echo "  <h3>", html_style_image('help'), $header, "</h3>\n";
     echo "  <p>", $message, "</p>\n";
 
     if (is_string($href) && strlen(trim($href)) > 0) {
@@ -2342,7 +2341,7 @@ function light_html_display_msg($header, $message, $href = null, $method = 'get'
 function light_html_display_error_array($error_list_array)
 {
     echo "<div class=\"message_box message_error\">\n";
-    echo "  <h3>", gettext("The following errors were encountered:"), "</h3>\n";
+    echo "  <h3>", html_style_image('error'), gettext("The following errors were encountered:"), "</h3>\n";
     echo "  <ul>\n";
     echo "    <li>", implode("</li>\n<li>", $error_list_array), "</li>\n";
     echo "  </ul>\n";
@@ -2352,14 +2351,14 @@ function light_html_display_error_array($error_list_array)
 function light_html_display_success_msg($string_msg)
 {
     echo "<div class=\"message_box message_success\">\n";
-    echo "  <h3>", $string_msg, "</h3>\n";
+    echo "  <h3>", html_style_image('success'), $string_msg, "</h3>\n";
     echo "</div>\n";
 }
 
 function light_html_display_warning_msg($string_msg)
 {
     echo "<div class=\"message_box message_warning\">\n";
-    echo "  <h3>", $string_msg, "</h3>\n";
+    echo "  <h3>", html_style_image('warning'), $string_msg, "</h3>\n";
     echo "</div>\n";
 }
 
@@ -2477,7 +2476,7 @@ function light_pm_display($message_data, $preview = false)
             foreach ($attachments_array as $attachment) {
 
                 if (($attachment_link = light_attachments_make_link($attachment)) !== false) {
-                    echo "<li>", $attachment_link, "</li>\n";
+                    echo "<li>", html_style_image('attach'), $attachment_link, "</li>\n";
                 }
             }
 
@@ -2492,30 +2491,30 @@ function light_pm_display($message_data, $preview = false)
 
         if (($message_data['TYPE'] & PM_INBOX_ITEMS) > 0) {
 
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;reply_to={$message_data['MID']}\" class=\"reply\">" . gettext("Reply") . "</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;reply_to={$message_data['MID']}\" class=\"reply\">" . html_style_image('post') . gettext("Reply") . "</a>";
 
             if (isset($message_data['RECIPIENTS']) && sizeof($message_data['RECIPIENTS']) > 1) {
-                $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;replyall={$message_data['MID']}\" class=\"replyall\">" . gettext("Reply All") . "</a>";
+                $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;replyall={$message_data['MID']}\" class=\"replyall\">" . html_style_image('reply_all') . gettext("Reply All") . "</a>";
             }
 
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" class=\"forward\">" . gettext("Forward") . "</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;delete_msg={$message_data['MID']}\" class=\"delete\">" . gettext("Delete") . "</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" class=\"forward\">" . html_style_image('forward') . gettext("Forward") . "</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;delete_msg={$message_data['MID']}\" class=\"delete\">" . html_style_image('delete') . gettext("Delete") . "</a>";
 
         } else if (($message_data['TYPE'] & PM_OUTBOX_ITEMS) > 0) {
 
-            $links_array[] = "<a href=\"lpm_edit.php?webtag=$webtag&amp;mid={$message_data['MID']}\" class=\"edit\">" . gettext("Edit") . "</a>";
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" class=\"forward\">" . gettext("Forward") . "</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;delete_msg={$message_data['MID']}\" class=\"delete\">" . gettext("Delete") . "</a>";
+            $links_array[] = "<a href=\"lpm_edit.php?webtag=$webtag&amp;mid={$message_data['MID']}\" class=\"edit\">" . html_style_image('edit') . gettext("Edit") . "</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" class=\"forward\">" . html_style_image('forward') . gettext("Forward") . "</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;delete_msg={$message_data['MID']}\" class=\"delete\">" . html_style_image('delete') . gettext("Delete") . "</a>";
 
         } else if (($message_data['TYPE'] & PM_DRAFT_ITEMS) > 0) {
 
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$message_data['MID']}\" class=\"edit\">" . gettext("Edit") . "</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;delete_msg={$message_data['MID']}\" class=\"delete\">" . gettext("Delete") . "</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;editmsg={$message_data['MID']}\" class=\"edit\">" . html_style_image('edit') . gettext("Edit") . "</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;delete_msg={$message_data['MID']}\" class=\"delete\">" . html_style_image('delete') . gettext("Delete") . "</a>";
 
         } else {
 
-            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" class=\"forward\">" . gettext("Forward") . "</a>";
-            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;delete_msg={$message_data['MID']}\" class=\"delete\">" . gettext("Delete") . "</a>";
+            $links_array[] = "<a href=\"lpm_write.php?webtag=$webtag&amp;fwdmsg={$message_data['MID']}\" class=\"forward\">" . html_style_image('forward') . gettext("Forward") . "</a>";
+            $links_array[] = "<a href=\"lpm.php?webtag=$webtag&amp;delete_msg={$message_data['MID']}\" class=\"delete\">" . html_style_image('delete') . gettext("Delete") . "</a>";
         }
 
         if (sizeof($links_array) > 0) {

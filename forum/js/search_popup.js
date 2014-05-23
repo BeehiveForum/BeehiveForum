@@ -27,7 +27,7 @@ $(beehive).bind('init', function () {
 
         var $container = $('<div class="bhinputsearch">');
 
-        var $search_button = $('<img src="' + beehive.images['search_button.png'] + '" class="search_button" />');
+        var $search_button = $('<span class="image search_button">');
 
         $search_button.bind('click', function () {
 

@@ -276,7 +276,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
         )
     );
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Word Filter"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add word filter"), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Word Filter"), html_style_image('separator'), gettext("Add word filter"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '700', 'center');
@@ -374,7 +374,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
         )
     );
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Word Filter"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Word Filter"), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Word Filter"), html_style_image('separator'), gettext("Edit Word Filter"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '700', 'center');
@@ -458,7 +458,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     $word_filter_array = admin_get_word_filter_list($page);
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Word Filter"), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Word Filter"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

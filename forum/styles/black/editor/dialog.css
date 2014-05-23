@@ -249,7 +249,6 @@ a.cke_dialog_close_button span {
 }
 
 .cke_dialog a.cke_btn_reset {
-    background: url(images/mini.gif) no-repeat 0 -32px;
     border: 1px none;
     float: right;
     font-size: 1px;
@@ -259,7 +258,6 @@ a.cke_dialog_close_button span {
 
 .cke_dialog a.cke_btn_locked,
 .cke_dialog a.cke_btn_unlocked {
-    background: url(images/mini.gif) no-repeat 0 0;
     border: none 1px;
     float: left;
     font-size: 1px;
@@ -269,10 +267,6 @@ a.cke_dialog_close_button span {
 
 .cke_dialog a.cke_btn_locked .cke_icon {
     display: none;
-}
-
-.cke_dialog a.cke_btn_unlocked {
-    background: url(images/mini.gif) 0 -16px;
 }
 
 .cke_dialog .cke_btn_over {

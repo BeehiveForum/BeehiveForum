@@ -464,7 +464,7 @@ $(beehive).bind('init', function () {
 
             $element.slideUp(150, function () {
 
-                $button.prop('src', beehive.images['show.png']);
+                $button.removeClass('hide').addClass('show');
 
                 $.ajax({
 
@@ -485,7 +485,7 @@ $(beehive).bind('init', function () {
 
             $element.slideDown(150, function () {
 
-                $button.prop('src', beehive.images['hide.png']);
+                $button.removeClass('show').addClass('hide');
 
                 $.ajax({
 

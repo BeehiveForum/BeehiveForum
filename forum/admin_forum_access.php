@@ -196,7 +196,7 @@ html_draw_top(
 
 $user_permissions_array = forum_get_permissions($forum_fid, $main_page);
 
-echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Forum Permissions"), "</h1>\n";
+echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage Forum Permissions"), "</h1>\n";
 
 if (isset($_GET['added'])) {
 

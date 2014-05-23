@@ -39,9 +39,7 @@ $(window.beehive).bind('init', function () {
 
                     var $resize_banner = $('<div class="image_resize_text">');
 
-                    var $resize_icon = $('<img class="image_resize_icon" />');
-
-                    $resize_icon.prop('src', beehive.images['warning.png']);
+                    var $resize_icon = $('<span class="image_resize_icon image warning" />');
 
                     $resize_banner.append($resize_icon);
 

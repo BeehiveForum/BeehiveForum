@@ -492,7 +492,7 @@ if (isset($return_msg)) {
     if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
         $back = "lmessages.php?webtag=$webtag&msg=$tid.$reply_to_pid";
     } else {
-        $back = "lmessages.php?webtag=$webtag";
+        $back = "lthread_list.php?webtag=$webtag";
     }
 }
 
@@ -610,7 +610,7 @@ if (isset($return_msg)) {
     if (isset($tid) && is_numeric($tid) && isset($reply_to_pid) && is_numeric($reply_to_pid)) {
         echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg=$tid.$reply_to_pid\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
     } else {
-        echo "<a href=\"lmessages.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
+        echo "<a href=\"lthread_list.php?webtag=$webtag\" class=\"button\" target=\"_self\"><span>", gettext("Cancel"), "</span></a>\n";
     }
 }
 

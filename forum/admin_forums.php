@@ -111,7 +111,7 @@ if (isset($_POST['delete'])) {
             )
         );
 
-        echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Forums"), "</h1>\n";
+        echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage Forums"), "</h1>\n";
         echo "<br />\n";
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"f_folders\" action=\"admin_forums.php\" method=\"post\">\n";
@@ -427,7 +427,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
         )
     );
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Forums"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /> ", gettext("Add Forum"), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage Forums"), html_style_image('separator'), gettext("Add Forum"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
         html_display_error_array($error_msg_array, '700', 'center');
@@ -550,7 +550,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
         )
     );
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Forums"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Forum"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />{$forum_data['WEBTAG']}</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage Forums"), html_style_image('separator'), gettext("Edit Forum"), html_style_image('separator'), "{$forum_data['WEBTAG']}</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -663,7 +663,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     $forums_array = admin_get_forum_list($page);
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Forums"), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage Forums"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -728,12 +728,12 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
                 echo "                  <td align=\"left\">", gettext("Unknown"), "</td>\n";
             }
 
-            echo "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"index.php?webtag={$forum_data['WEBTAG']}&amp;final_uri=admin_forum_settings.php%3Fwebtag%3D{$forum_data['WEBTAG']}\" target=\"", html_get_top_frame_name(), "\"><img src=\"", html_style_image('edit.png'), "\" border=\"0\" alt=\"", gettext("Forum Settings"), "\" title=\"", gettext("Forum Settings"), "\" /></a>&nbsp;";
+            echo "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"index.php?webtag={$forum_data['WEBTAG']}&amp;final_uri=admin_forum_settings.php%3Fwebtag%3D{$forum_data['WEBTAG']}\" target=\"", html_get_top_frame_name(), "\">", html_style_image('edit', gettext("Forum Settings")), "</a>&nbsp;";
 
             if (isset($forum_data['DEFAULT_FORUM']) && $forum_data['DEFAULT_FORUM'] == 1) {
-                echo "<a href=\"admin_forums.php?webtag=$webtag&amp;page=$page&amp;default=0\"><img src=\"", html_style_image('default_forum.png'), "\" border=\"0\" alt=\"", gettext("Unset Default"), "\" title=\"", gettext("Unset Default"), "\" /></a>\n";
+                echo "<a href=\"admin_forums.php?webtag=$webtag&amp;page=$page&amp;default=0\">", html_style_image('default_forum', gettext("Unset Default")), "</a>\n";
             } else {
-                echo "<a href=\"admin_forums.php?webtag=$webtag&amp;page=$page&amp;default={$forum_data['FID']}\"><img src=\"", html_style_image('set_default_forum.png'), "\" border=\"0\" alt=\"", gettext("Make Default"), "\" title=\"", gettext("Make Default"), "\" /></a>\n";
+                echo "<a href=\"admin_forums.php?webtag=$webtag&amp;page=$page&amp;default={$forum_data['FID']}\">", html_style_image('set_default_forum', gettext("Make Default")), "</a>\n";
             }
 
             echo "                  </td>\n";

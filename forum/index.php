@@ -189,30 +189,44 @@ if (forum_check_webtag_available($webtag, false)) {
             return;
         }
 
-        light_html_draw_top(
-            array(
-                'js' => array(
-                    'js/messages.js'
+        if (browser_mobile()) {
+
+            light_html_draw_top(
+                array(
+                    'js' => array(
+                        'js/messages.js'
+                    )
                 )
+            );
+        }
+
+        $nav_links = array(
+            array(
+                'text' => gettext('Show messages'),
+                'url' => '#',
+                'class' => 'navigation',
+                'html' => light_messages_navigation_strip($tid, $pid, $thread_data['LENGTH'], 10),
+                'image' => 'mobile_navigation'
             )
         );
+
+        if (!$thread_data['CLOSED'] && session::check_perm(USER_PERM_POST_CREATE, $folder_data['FID'])) {
+
+            $nav_links = array_merge(
+                array(
+                    'text' => gettext('Reply to All'),
+                    'url' => "lpost.php?webtag=$webtag&amp;reply_to=$tid.0&amp;return_msg=$tid.$pid",
+                    'class' => 'reply_all',
+                    'image' => 'mobile_reply_all',
+                ),
+                $nav_links
+            );
+        }
 
         light_navigation_bar(
             array(
                 'back' => "lthread_list.php?webtag=$webtag",
-                'nav_links' => array(
-                    array(
-                        'text' => gettext('Reply to All'),
-                        'url' => "lpost.php?webtag=$webtag&amp;reply_to=$tid.0&amp;return_msg=$tid.$pid",
-                        'class' => 'reply_all',
-                    ),
-                    array(
-                        'text' => gettext('Show messages'),
-                        'url' => '#',
-                        'class' => 'navigation',
-                        'html' => light_messages_navigation_strip($tid, $pid, $thread_data['LENGTH'], 10)
-                    )
-                )
+                'nav_links' => $nav_links,
             )
         );
 
@@ -228,13 +242,16 @@ if (forum_check_webtag_available($webtag, false)) {
 
         pm_user_prune_folders($_SESSION['UID']);
 
-        light_html_draw_top(
-            array(
-                'js' => array(
-                    'js/pm.js'
+        if (browser_mobile()) {
+
+            light_html_draw_top(
+                array(
+                    'js' => array(
+                        'js/pm.js'
+                    )
                 )
-            )
-        );
+            );
+        }
 
         light_navigation_bar(
             array(
@@ -294,13 +311,16 @@ if (forum_check_webtag_available($webtag, false)) {
             }
         }
 
-        light_html_draw_top(
-            array(
-                'js' => array(
-                    'js/thread_list.js'
+        if (browser_mobile()) {
+
+            light_html_draw_top(
+                array(
+                    'js' => array(
+                        'js/thread_list.js'
+                    )
                 )
-            )
-        );
+            );
+        }
 
         if (forums_get_available_count() > 1 || !forum_get_default()) {
 
@@ -320,7 +340,9 @@ if (forum_check_webtag_available($webtag, false)) {
 
 } else {
 
-    light_html_draw_top();
+    if (browser_mobile()) {
+        light_html_draw_top();
+    }
 
     light_navigation_bar();
 
@@ -329,6 +351,7 @@ if (forum_check_webtag_available($webtag, false)) {
 
 if (!browser_mobile() && !session::is_search_engine()) {
 
+    echo "</div>\n";
     echo "</body>\n";
     echo "</noframes>\n";
     echo "</frameset>\n";

@@ -145,7 +145,7 @@ html_draw_top(
 
 $folder_array = folder_get_all_by_page($page);
 
-echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Manage Folders"), "</h1>\n";
+echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Manage Folders"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -199,7 +199,7 @@ if (sizeof($folder_array['folder_array']) > 0) {
         echo "                <tr>\n";
         echo "                  <td valign=\"top\" align=\"center\" width=\"1%\">", form_checkbox("t_delete[{$folder['FID']}]", "Y"), "</td>\n";
         echo "                  <td align=\"left\"><a href=\"admin_folder_edit.php?webtag=$webtag&amp;page=$page&amp;fid={$folder['FID']}\" title=\"", gettext("Click To Edit Folder"), "\">", word_filter_add_ob_tags($folder['TITLE'], true), "</a></td>\n";
-        echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up.png', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down.png', "move_down[{$folder['FID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
+        echo "                  <td align=\"right\" width=\"40\" style=\"white-space: nowrap\">", form_submit_image('move_up', "move_up[{$folder['FID']}]", "Move Up", "title=\"Move Up\"", "move_up_ctrl"), form_submit_image('move_down', "move_down[{$folder['FID']}]", "Move Down", "title=\"Move Down\"", "move_down_ctrl"), "</td>\n";
 
         if (isset($folder['THREAD_COUNT']) && $folder['THREAD_COUNT'] > 0) {
             echo "                  <td align=\"center\" width=\"15%\">{$folder['THREAD_COUNT']}</td>\n";

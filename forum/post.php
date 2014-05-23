@@ -806,9 +806,9 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack)) !== false)
     echo "                              <td align=\"left\" class=\"subhead\">", gettext("Emoticons"), "</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'emots_toggle', 'hide', null, 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide', 'emots_toggle', 'hide', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     } else {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'emots_toggle', 'show', null, 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show', 'emots_toggle', 'show', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     }
 
     echo "                            </tr>\n";
@@ -867,9 +867,9 @@ if (attachments_check_dir() && (session::check_perm(USER_PERM_POST_ATTACHMENTS |
     echo "                              <td align=\"left\" class=\"subhead\">", gettext("Attachments"), "</td>\n";
 
     if (($page_prefs & POST_ATTACHMENT_DISPLAY) > 0) {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'attachment_toggle', 'hide', null, 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide', 'attachment_toggle', 'hide', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     } else {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'attachment_toggle', 'show', null, 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show', 'attachment_toggle', 'show', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     }
 
     echo "                            </tr>\n";
@@ -897,9 +897,9 @@ if ($allow_sig == true) {
     echo "                              <td align=\"left\" class=\"subhead\">", gettext("Signature"), "</td>\n";
 
     if (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide.png', 'sig_toggle', 'hide', null, 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide', 'sig_toggle', 'hide', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     } else {
-        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show.png', 'sig_toggle', 'show', null, 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show', 'sig_toggle', 'show', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     }
 
     echo "                            </tr>\n";
@@ -969,7 +969,7 @@ if (!$new_thread) {
     echo "  <br />\n";
     echo "  <table  width=\"960\">\n";
     echo "    <tr>\n";
-    echo "      <td align=\"center\"><img src=\"", html_style_image('current_thread.png'), "\" border=\"0\" alt=\"\" />&nbsp;<a href=\"index.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\" title=\"", gettext("Review entire thread in new window"), "\">", gettext("Review Thread"), "</a></td>\n";
+    echo "      <td align=\"center\">", html_style_image('current_thread'), "&nbsp;<a href=\"index.php?webtag=$webtag&amp;msg={$thread_data['TID']}.1\" target=\"_blank\" title=\"", gettext("Review entire thread in new window"), "\">", gettext("Review Thread"), "</a></td>\n";
     echo "    </tr>\n";
     echo "  </table>\n";
 }

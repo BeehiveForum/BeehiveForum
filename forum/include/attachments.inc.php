@@ -496,6 +496,7 @@ function attachments_form_list($attachments_array, $hash_array)
             '<li class="attachment complete" data-hash="%1$s">
                <label>
                  <input %2$s class="bhinputcheckbox" name="attachment[]" type="checkbox" value="%1$s" />
+                 <span class="image"></span>
                  <span class="filename">
                    <a href="get_attachment.php?webtag=%3$s&amp;hash=%1$s&amp;filename=%4$s">%5$s</a>
                  </span>
@@ -682,17 +683,14 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
                 $thumbnail_height--;
             }
 
-            $attachment_link = "<span class=\"attachment_thumb\"><a href=\"$attachment_href\" title=\"$title\" ";
-            $attachment_link .= "target=\"_blank\"><img src=\"$attachment_href&amp;thumb=1\"";
-            $attachment_link .= "border=\"0\" width=\"$thumbnail_width\" height=\"$thumbnail_height\"";
-            $attachment_link .= "alt=\"$title\" title=\"$title\" /></a></span>";
+            $attachment_link = "<a href=\"$attachment_href\" target=\"_blank\"><span class=\"attachment_thumb\" ";
+            $attachment_link .= "style=\"background-image: url('$attachment_href&amp;thumb=1'); ";
+            $attachment_link .= "width: {$thumbnail_width}px; height: {$thumbnail_height}px\" ";
+            $attachment_link .= "title=\"$title\"></span></a>";
 
         } else {
 
-            $attachment_link = "<img src=\"" . html_style_image('attach.png');
-            $attachment_link .= "\" width=\"14\" height=\"14\" border=\"0\" ";
-            $attachment_link .= "alt=\"" . gettext("Attachment") . "\" ";
-            $attachment_link .= "title=\"" . gettext("Attachment") . "\" />";
+            $attachment_link = html_style_image('attach', gettext("Attachment"));
             $attachment_link .= "<a href=\"$attachment_href\" title=\"$title\" ";
             $attachment_link .= "target=\"_blank\">{$attachment['filename']}</a>";
         }

@@ -493,7 +493,7 @@ if ($thread_data['DELETED'] == 'N') {
         )
     );
 
-    echo "<h1>", gettext("Thread Options"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" /><a href=\"messages.php?webtag=$webtag&amp;msg=$return_msg\" target=\"_self\">", word_filter_add_ob_tags($thread_data['TITLE'], true), "</a></h1>\n";
+    echo "<h1>", gettext("Thread Options"), html_style_image('separator'), "<a href=\"messages.php?webtag=$webtag&amp;msg=$return_msg\" target=\"_self\">", word_filter_add_ob_tags($thread_data['TITLE'], true), "</a></h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

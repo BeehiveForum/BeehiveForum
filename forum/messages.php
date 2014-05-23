@@ -400,7 +400,7 @@ echo "  <tr>\n";
 if (($thread_data['CLOSED'] == 0 && session::check_perm(USER_PERM_POST_CREATE, $thread_data['FID'])) || session::check_perm(USER_PERM_FOLDER_MODERATE, $thread_data['FID'])) {
 
     echo "    <td width=\"33%\" align=\"left\" style=\"white-space: nowrap\" class=\"postbody\">";
-    echo "      <img src=\"" . html_style_image('reply_all.png') . "\" alt=\"", gettext("Reply to All"), "\" title=\"", gettext("Reply to All"), "\" border=\"0\" /> ";
+    echo "      ", html_style_image('reply_all', gettext("Reply to All")), " ";
     echo "      <a href=\"post.php?webtag=$webtag&amp;reply_to=$tid.0&amp;return_msg=$tid.$pid\" target=\"_parent\" id=\"reply_0\"><b>", gettext("Reply to All"), "</b></a>\n";
     echo "    </td>\n";
 
@@ -413,11 +413,11 @@ if (session::logged_in()) {
 
     if ($thread_data['LENGTH'] > 0) {
 
-        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"" . html_style_image('thread_options.png') . "\" alt=\"", gettext("Edit Thread Options"), "\" title=\"", gettext("Edit Thread Options"), "\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg&amp;return_msg=$tid.$pid\" target=\"_self\"><b>", gettext("Edit Thread Options"), "</b></a></td>\n";
+        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\">", html_style_image('thread_options', gettext("Edit Thread Options")), " <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg&amp;return_msg=$tid.$pid\" target=\"_self\"><b>", gettext("Edit Thread Options"), "</b></a></td>\n";
 
     } else {
 
-        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\"><img src=\"" . html_style_image('thread_options.png') . "\" alt=\"", gettext("Undelete Thread"), "\" title=\"", gettext("Undelete Thread"), "\" border=\"0\" /> <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg&amp;return_msg=$tid.$pid\" target=\"_self\"><b>", gettext("Undelete Thread"), "</b></a></td>\n";
+        echo "    <td width=\"33%\" align=\"center\" style=\"white-space: nowrap\" class=\"postbody\">", html_style_image('thread_options', gettext("Undelete Thread")), " <a href=\"thread_options.php?webtag=$webtag&amp;msg=$msg&amp;return_msg=$tid.$pid\" target=\"_self\"><b>", gettext("Undelete Thread"), "</b></a></td>\n";
     }
 
 } else {
@@ -441,7 +441,7 @@ echo "  </tr>\n";
 if (session::logged_in()) {
 
     echo "  <tr>\n";
-    echo "    <td colspan=\"3\" align=\"center\" class=\"postbody\"><img src=\"" . html_style_image('quick_reply_all.png') . "\" alt=\"", gettext("Quick Reply to All"), "\" title=\"", gettext("Quick Reply to All"), "\" border=\"0\" /> <a href=\"javascript:void(0)\" target=\"_self\" data-msg=\"$tid.0\" class=\"quick_reply_link\"><b>", gettext("Quick Reply to All"), "</b></a></td>\n";
+    echo "    <td colspan=\"3\" align=\"center\" class=\"postbody\">", html_style_image('quick_reply_all', gettext("Quick Reply to All")), " <a href=\"javascript:void(0)\" target=\"_self\" data-msg=\"$tid.0\" class=\"quick_reply_link\"><b>", gettext("Quick Reply to All"), "</b></a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td colspan=\"3\">\n";

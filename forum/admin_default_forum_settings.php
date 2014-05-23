@@ -550,7 +550,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
                     )
                 );
 
-                echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Global Forum Settings"), "</h1>\n";
+                echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Global Forum Settings"), "</h1>\n";
                 echo "<br />\n";
                 echo "<div align=\"center\">\n";
                 echo "<form accept-charset=\"utf-8\" name=\"prefsform\" action=\"admin_default_forum_settings.php\" method=\"post\" target=\"_self\">\n";
@@ -647,7 +647,7 @@ html_draw_top(
     )
 );
 
-echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Global Forum Settings"), "</h1>\n";
+echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Global Forum Settings"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

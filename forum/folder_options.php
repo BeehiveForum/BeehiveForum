@@ -101,7 +101,7 @@ html_draw_top(
     )
 );
 
-echo "<h1>", gettext("Folder Options"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($folder_data['TITLE'], true), "</h1>\n";
+echo "<h1>", gettext("Folder Options"), html_style_image('separator'), word_filter_add_ob_tags($folder_data['TITLE'], true), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

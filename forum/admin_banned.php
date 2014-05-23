@@ -480,7 +480,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
         )
     );
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Ban Controls"), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Ban Controls"), "</h1>\n";
 
     if (isset($_POST['newbantype']) && is_numeric($_POST['newbantype'])) {
         $add_new_ban_type = $_POST['newbantype'];
@@ -652,7 +652,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
         )
     );
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Ban Controls"), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Ban Controls"), "</h1>\n";
 
     if (isset($_POST['edit_check'])) {
 
@@ -804,7 +804,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     $ban_list_array = admin_get_ban_data($sort_by, $sort_dir, $page);
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Ban Controls"), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Ban Controls"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -842,37 +842,51 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "              <table class=\"posthead\" width=\"100%\">\n";
     echo "                 <tr>\n";
     echo "                   <td class=\"subhead\" align=\"left\" width=\"20\">&nbsp;</td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">\n";
 
     if ($sort_by == 'BANDATA' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">", gettext("Ban Data"), "</a></td>\n";
+        echo "                     <a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">", gettext("Ban Data"), "</a>\n";
+        echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
     } else if ($sort_by == 'BANDATA' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">", gettext("Ban Data"), "</a></td>\n";
+        echo "                     <a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">", gettext("Ban Data"), "</a>\n";
+        echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
     } else if ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">", gettext("Ban Data"), "</a></td>\n";
+        echo "                     <a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">", gettext("Ban Data"), "</a>\n";
     } else {
-        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=DESC&amp;page=$page\">", gettext("Ban Data"), "</a></td>\n";
+        echo "                     <a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANDATA&amp;sort_dir=ASC&amp;page=$page\">", gettext("Ban Data"), "</a>\n";
     }
+
+    echo "                   </td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">\n";
 
     if ($sort_by == 'BANTYPE' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">", gettext("Ban Type"), "</a></td>\n";
+        echo "                   <a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">", gettext("Ban Type"), "</a>\n";
+        echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
     } else if ($sort_by == 'BANTYPE' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">", gettext("Ban Type"), "</a></td>\n";
+        echo "                   <a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">", gettext("Ban Type"), "</a>\n";
+        echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
     } else if ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">", gettext("Ban Type"), "</a></td>\n";
+        echo "                   <a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=ASC&amp;page=$page\">", gettext("Ban Type"), "</a>\n";
     } else {
-        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">", gettext("Ban Type"), "</a></td>\n";
+        echo "                   <a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=BANTYPE&amp;sort_dir=DESC&amp;page=$page\">", gettext("Ban Type"), "</a>\n";
     }
+
+    echo "                   </td>\n";
+    echo "                   <td class=\"subhead\" align=\"left\">\n";
 
     if ($sort_by == 'EXPIRES' && $sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=EXPIRES&amp;sort_dir=DESC&amp;page=$page\">", gettext("Ban Expires"), "</a></td>\n";
+        echo "                   <a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=EXPIRES&amp;sort_dir=DESC&amp;page=$page\">", gettext("Ban Expires"), "</a>\n";
+        echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
     } else if ($sort_by == 'EXPIRES' && $sort_dir == 'DESC') {
-        echo "                   <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=EXPIRES&amp;sort_dir=ASC&amp;page=$page\">", gettext("Ban Expires"), "</a></td>\n";
+        echo "                   <a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=EXPIRES&amp;sort_dir=ASC&amp;page=$page\">", gettext("Ban Expires"), "</a>\n";
+        echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
     } else if ($sort_dir == 'ASC') {
-        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=EXPIRES&amp;sort_dir=ASC&amp;page=$page\">", gettext("Ban Expires"), "</a></td>\n";
+        echo "                   <a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=EXPIRES&amp;sort_dir=ASC&amp;page=$page\">", gettext("Ban Expires"), "</a>\n";
     } else {
-        echo "                   <td class=\"subhead\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=EXPIRES&amp;sort_dir=DESC&amp;page=$page\">", gettext("Ban Expires"), "</a></td>\n";
+        echo "                   <a href=\"admin_banned.php?webtag=$webtag&amp;sort_by=EXPIRES&amp;sort_dir=DESC&amp;page=$page\">", gettext("Ban Expires"), "</a>\n";
     }
 
+    echo "                   </td>\n";
     echo "                 </tr>\n";
 
     if (sizeof($ban_list_array['ban_array']) > 0) {

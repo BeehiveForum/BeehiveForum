@@ -67,7 +67,7 @@ html_draw_top(
     )
 );
 
-echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Forum Stats"), "</h1>\n";
+echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Forum Stats"), "</h1>\n";
 echo "  <br />\n";
 echo "  <div align=\"center\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";

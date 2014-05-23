@@ -445,7 +445,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
         )
     );
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("RSS Feeds"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Add New Feed"), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("RSS Feeds"), html_style_image('separator'), gettext("Add New Feed"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -583,7 +583,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
         )
     );
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("RSS Feeds"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Edit Feed"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", word_filter_add_ob_tags($rss_feed['NAME'], true), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("RSS Feeds"), html_style_image('separator'), gettext("Edit Feed"), html_style_image('separator'), word_filter_add_ob_tags($rss_feed['NAME'], true), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -704,7 +704,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     $rss_feeds = rss_feed_get_feeds($page);
 
-    echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("RSS Feeds"), "</h1>\n";
+    echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("RSS Feeds"), "</h1>\n";
 
     if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

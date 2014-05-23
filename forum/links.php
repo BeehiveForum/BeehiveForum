@@ -183,7 +183,7 @@ if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
         foreach ($subfolders as $key => $folder) {
 
             echo "                          <tr>\n";
-            echo "                            <td class=\"postbody\"><img src=\"" . html_style_image("folder.png") . "\" alt=\"", gettext("Folder"), "\" title=\"", gettext("Folder"), "\" /></td>\n";
+            echo "                            <td class=\"postbody\">", html_style_image('folder', gettext("Folder")), "</td>\n";
             echo "                            <td align=\"left\" class=\"postbody\"><a href=\"links.php?webtag=$webtag&amp;fid=$folder\" class=\"", ($folders[$folder]['VISIBLE'] == "N") ? "link_hidden" : "", "\">", word_filter_add_ob_tags($folders[$folder]['NAME'], true), "</a>";
 
             if (session::check_perm(USER_PERM_LINKS_MODERATE, 0) && $folders[$folder]['VISIBLE'] == "Y") {
@@ -395,10 +395,10 @@ echo "      <td align=\"left\">\n";
 echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" width=\"33%\">\n";
-echo "              <img src=\"", html_style_image("link_add.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_LINK, "&amp;fid=$fid\">", gettext("Add link here"), "</a><br />\n";
+echo "              ", html_style_image('link_add'), " <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_LINK, "&amp;fid=$fid\">", gettext("Add link here"), "</a><br />\n";
 
 if ($viewmode == LINKS_VIEW_HIERARCHICAL) {
-    echo "              <img src=\"", html_style_image("folder_add.png"), "\" alt=\"\" /> <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_FOLDER, "&amp;fid=$fid\">", gettext("New Folder"), "</a>\n";
+    echo "              ", html_style_image('folder_add'), " <a href=\"links_add.php?webtag=$webtag&amp;mode=", LINKS_ADD_FOLDER, "&amp;fid=$fid\">", gettext("New Folder"), "</a>\n";
 }
 
 echo "            </td>\n";

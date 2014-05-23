@@ -222,7 +222,7 @@ html_draw_top(
 
 $admin_log_array = admin_get_log_entries($page, $group_by, $sort_by, $sort_dir);
 
-echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Admin Access Log"), "</h1>\n";
+echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Admin Access Log"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -250,51 +250,72 @@ echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "              <table width=\"100%\">\n";
 echo "                <tr>\n";
+echo "                  <td class=\"subhead\" width=\"10%\" align=\"left\">\n";
 
 if ($sort_by == 'CREATED' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead_sort_asc\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Date/Time"), "</a></td>\n";
+    echo "                    <a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Date/Time"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
 } else if ($sort_by == 'CREATED' && $sort_dir == 'DESC') {
-    echo "                    <td class=\"subhead_sort_desc\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Date/Time"), "</a></td>\n";
+    echo "                    <a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Date/Time"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
 } else if ($sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Date/Time"), "</a></td>\n";
+    echo "                    <a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Date/Time"), "</a>\n";
 } else {
-    echo "                    <td class=\"subhead\" width=\"100\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Date/Time"), "</a></td>\n";
+    echo "                    <a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=CREATED&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Date/Time"), "</a>\n";
 }
+
+echo "                  </td>\n";
+echo "                  <td class=\"subhead\" width=\"10%\" align=\"left\">\n";
 
 if ($sort_by == 'UID' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead_sort_asc\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a></td>\n";
+    echo "                    <a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
 } else if ($sort_by == 'UID' && $sort_dir == 'DESC') {
-    echo "                    <td class=\"subhead_sort_desc\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a></td>\n";
+    echo "                    <a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
 } else if ($sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a></td>\n";
+    echo "                    <a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a>\n";
 } else {
-    echo "                    <td class=\"subhead\" width=\"200\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a></td>\n";
+    echo "                    <a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=UID&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a>\n";
 }
 
+echo "                  </td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">\n";
+
 if ($sort_by == 'ACTION' && $sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead_sort_asc\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Action"), "</a></td>\n";
+    echo "                    <a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Action"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
 } else if ($sort_by == 'ACTION' && $sort_dir == 'DESC') {
-    echo "                    <td class=\"subhead_sort_desc\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Action"), "</a></td>\n";
+    echo "                    <a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Action"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
 } else if ($sort_dir == 'ASC') {
-    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Action"), "</a></td>\n";
+    echo "                    <a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Action"), "</a>\n";
 } else {
-    echo "                    <td class=\"subhead\" align=\"left\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Action"), "</a></td>\n";
+    echo "                    <a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=ACTION&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Action"), "</a>\n";
 }
+
+echo "                  </td>\n";
 
 if (isset($group_by) && $group_by != ADMIN_LOG_GROUP_NONE) {
 
+    echo "                  <td class=\"subhead\" width=\"10%\" align=\"center\">\n";
+
     if ($sort_by == 'COUNT' && $sort_dir == 'ASC') {
-        echo "                    <td class=\"subhead_sort_asc\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;group_by=$group_by&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a></td>\n";
+        echo "                    <a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;group_by=$group_by&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a>\n";
+        echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
     } else if ($sort_by == 'COUNT' && $sort_dir == 'DESC') {
-        echo "                    <td class=\"subhead_sort_desc\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a></td>\n";
+        echo "                    <a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a>\n";
+        echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
     } else if ($sort_dir == 'ASC') {
-        echo "                    <td class=\"subhead\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a></td>\n";
+        echo "                    <a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a>\n";
     } else {
-        echo "                    <td class=\"subhead\" align=\"center\"><a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a></td>\n";
+        echo "                    <a href=\"admin_viewlog.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a>\n";
     }
+
+    echo "                  </td>\n";
 }
 
-echo "                  </tr>\n";
+echo "                </tr>\n";
 
 if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
@@ -302,8 +323,8 @@ if (sizeof($admin_log_array['admin_log_array']) > 0) {
 
         $auto_update = false;
 
-        echo "                  <tr>\n";
-        echo "                    <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\"><span title=\"", format_date_time($admin_log_entry['CREATED']), "\">", format_date_time($admin_log_entry['CREATED']), "</td>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\"><span title=\"", format_date_time($admin_log_entry['CREATED']), "\">", format_date_time($admin_log_entry['CREATED']), "</td>\n";
 
         $entry_array = htmlentities_array($admin_log_entry['ENTRY']);
 

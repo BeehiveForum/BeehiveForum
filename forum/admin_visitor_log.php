@@ -93,7 +93,7 @@ html_draw_top(
 
 $admin_visitor_log_array = admin_get_visitor_log($page);
 
-echo "<h1>", gettext("Admin"), "<img src=\"", html_style_image('separator.png'), "\" alt=\"\" border=\"0\" />", gettext("Visitor Log"), "</h1>\n";
+echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Visitor Log"), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
@@ -177,9 +177,9 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
             }
 
             if (referer_is_banned($visitor['REFERER'])) {
-                echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a>&nbsp;<a href=\"{$visitor['REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a>&nbsp;(", gettext("Banned"), ")</td>\n";
+                echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a>&nbsp;<a href=\"{$visitor['REFERER_FULL']}\" target=\"_blank\">", html_style_image('link', gettext("External Link")), "</a>&nbsp;(", gettext("Banned"), ")</td>\n";
             } else {
-                echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a>&nbsp;<a href=\"{$visitor['REFERER_FULL']}\" target=\"_blank\"><img src=\"", html_style_image('link.png'), "\" border=\"0\" align=\"top\" alt=\"", gettext("External Link"), "\" title=\"", gettext("External Link"), "\" /></a></td>\n";
+                echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a>&nbsp;<a href=\"{$visitor['REFERER_FULL']}\" target=\"_blank\">", html_style_image('link', gettext("External Link")), "</a></td>\n";
             }
 
         } else {

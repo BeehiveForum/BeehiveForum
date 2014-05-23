@@ -37,9 +37,9 @@ $exclude_dirs_array = array('default', 'tehforum');
 
 function parse_css_to_array(&$css_file_contents, $selector = null)
 {
-    $buffer = '';
+    $buffer = null;
 
-    $property = '';
+    $property = null;
 
     $properties = array();
 
@@ -47,7 +47,7 @@ function parse_css_to_array(&$css_file_contents, $selector = null)
 
         if (substr($css_file_contents, 0, 1) == '{') {
 
-            $selector = $property . $buffer;
+            $selector = trim($property . $buffer);
 
             $css_file_contents = substr($css_file_contents, 1);
 
@@ -60,8 +60,8 @@ function parse_css_to_array(&$css_file_contents, $selector = null)
                 parse_css_to_array($css_file_contents, $selector)
             );
 
-            $buffer = '';
-            $selector = '';
+            $buffer = null;
+            $selector = null;
 
         } else if (substr($css_file_contents, 0, 1) == '}') {
 
@@ -70,19 +70,22 @@ function parse_css_to_array(&$css_file_contents, $selector = null)
 
         } else if ($selector) {
 
-            if (substr($css_file_contents, 0, 1) == ':') {
+            if (empty($property) && substr($css_file_contents, 0, 1) == ':') {
 
-                $property = trim(substr($buffer, 1));
-                $buffer = '';
+                $css_file_contents = substr($css_file_contents, 1);
+                $property = trim($buffer);
+                $buffer = null;
 
             } else if (substr($css_file_contents, 0, 1) == ';') {
 
-                if (strlen(trim($property)) > 0 && strlen(trim($buffer)) > 0) {
-                    $properties[$property] = trim(substr($buffer, 1));
+                $css_file_contents = substr($css_file_contents, 1);
+
+                if (!empty($property) && !empty($buffer)) {
+                    $properties[$property] = trim($buffer);
                 }
 
-                $property = '';
-                $buffer = '';
+                $property = null;
+                $buffer = null;
             }
         }
 

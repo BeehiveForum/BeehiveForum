@@ -212,14 +212,14 @@ if (forum_check_webtag_available($webtag, false)) {
 
         if (!$thread_data['CLOSED'] && session::check_perm(USER_PERM_POST_CREATE, $folder_data['FID'])) {
 
-            $nav_links = array_merge(
+            array_unshift(
+                $nav_links,
                 array(
                     'text' => gettext('Reply to All'),
                     'url' => "lpost.php?webtag=$webtag&amp;reply_to=$tid.0&amp;return_msg=$tid.$pid",
                     'class' => 'reply_all',
                     'image' => 'mobile_reply_all',
-                ),
-                $nav_links
+                )
             );
         }
 

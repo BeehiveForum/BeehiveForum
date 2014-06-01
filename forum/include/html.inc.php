@@ -1328,7 +1328,7 @@ function html_get_forum_uri($append_path = null)
         }
     }
 
-    $uri_array['path'] = str_replace(DIRECTORY_SEPARATOR, '/', dirname(rtrim($uri_array['path'], '/') . ' / a'));
+    $uri_array['path'] = str_replace(DIRECTORY_SEPARATOR, '/', dirname(rtrim($uri_array['path'], '/') . '/a'));
 
     if (strlen(trim($append_path)) > 0) {
         $uri_array['path'] = rtrim($uri_array['path'], '/') . '/' . $append_path;
@@ -1358,20 +1358,20 @@ function html_get_forum_file_path($file_path, $allow_cdn = true)
 
         // Disable CDN for everything but CSS, icons, images and Javascript
         if (($url_file_path = @parse_url($file_path, PHP_URL_PATH)) !== false) {
-            $allow_cdn = (preg_match(' / \.png$|\.css$|\.ico$|\.js$/Diu', $url_file_path) > 0) ? $allow_cdn : false;
+            $allow_cdn = (preg_match('/\.png$|\.css$|\.ico$|\.js$/Diu', $url_file_path) > 0) ? $allow_cdn : false;
         }
 
         // If CDN is allowed, get the CDN path including the domain.
         if (($allow_cdn === true) && ($cdn_domain = forum_get_content_delivery_path($file_path))) {
-            $final_file_path = sprintf(' % s://%s/%s', $http_scheme, trim($cdn_domain, '/'), $file_path);
+            $final_file_path = sprintf('%s://%s/%s', $http_scheme, trim($cdn_domain, '/'), $file_path);
         } else {
             $final_file_path = rtrim($forum_path, '/') . '/' . $file_path;
         }
 
-// Add final file path to the cache.
+        // Add final file path to the cache.
         $file_path_cache_array[$file_path] = $final_file_path;
     }
 
-// Return the cached entry.
+    // Return the cached entry.
     return $file_path_cache_array[$file_path];
 }

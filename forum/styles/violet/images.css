@@ -482,12 +482,6 @@
     height: 12px;
 }
 
-image.uploading {
-    background-image: url('./images/loading.gif');
-    width: 15px;
-    height: 15px;
-}
-
 .image.vote_down_off {
     background-position: -336px -146px;
     width: 12px;
@@ -510,4 +504,10 @@ image.uploading {
     background-position: -156px -153px;
     width: 12px;
     height: 12px;
+}
+
+image.loading {
+    background-image: url('./images/loading.gif');
+    width: 15px;
+    height: 15px;
 }

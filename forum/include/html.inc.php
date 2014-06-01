@@ -1077,7 +1077,7 @@ function html_style_image($class, $title = null, $id = null, array $css = array(
     return $html . '></span>';
 }
 
-function html_set_cookie($name, $value, $expires = 0, $path = ' / ')
+function html_set_cookie($name, $value, $expires = 0, $path = '/')
 {
     $cookie_secure = (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on');
     return setcookie($name, $value, $expires, $path, '', $cookie_secure, true);
@@ -1103,7 +1103,7 @@ function html_remove_all_cookies()
         $cookies = array_map('trim', explode(';', $_SERVER['HTTP_COOKIE']));
 
         foreach ($cookies as $key => $cookie) {
-            list($cookies[$key]) = explode(' = ', $cookie, 2);
+            list($cookies[$key]) = explode('=', $cookie, 2);
         }
 
     } else {
@@ -1114,7 +1114,7 @@ function html_remove_all_cookies()
     foreach ($cookies as $cookie) {
 
         html_set_cookie($cookie, '', time() - YEAR_IN_SECONDS);
-        html_set_cookie($cookie, '', time() - YEAR_IN_SECONDS, ' / ');
+        html_set_cookie($cookie, '', time() - YEAR_IN_SECONDS, '/');
     }
 }
 
@@ -1134,13 +1134,13 @@ function href_cleanup_query_keys($uri, $remove_keys = null)
             unset($uri_query_array[$remove_keys]);
         }
 
-        $uri_array['query'] = http_build_query($uri_query_array, null, ' & ');
+        $uri_array['query'] = http_build_query($uri_query_array, null, '&');
     }
 
     return build_url_str($uri_array);
 }
 
-function html_query_string_add($query_string, $key, $value, $arg_separator = ' & ')
+function html_query_string_add($query_string, $key, $value, $arg_separator = '&')
 {
     parse_str($query_string, $query_array);
 
@@ -1149,7 +1149,7 @@ function html_query_string_add($query_string, $key, $value, $arg_separator = ' &
     return http_build_query($query_array, null, $arg_separator);
 }
 
-function html_query_string_remove($query_string, $key, $value = null, $arg_separator = ' & ')
+function html_query_string_remove($query_string, $key, $value = null, $arg_separator = '&')
 {
     parse_str($query_string, $query_array);
 
@@ -1328,10 +1328,10 @@ function html_get_forum_uri($append_path = null)
         }
     }
 
-    $uri_array['path'] = str_replace(DIRECTORY_SEPARATOR, ' / ', dirname(rtrim($uri_array['path'], ' / ') . ' / a'));
+    $uri_array['path'] = str_replace(DIRECTORY_SEPARATOR, '/', dirname(rtrim($uri_array['path'], '/') . ' / a'));
 
     if (strlen(trim($append_path)) > 0) {
-        $uri_array['path'] = rtrim($uri_array['path'], ' / ') . ' / ' . $append_path;
+        $uri_array['path'] = rtrim($uri_array['path'], '/') . '/' . $append_path;
     }
 
     $server_uri = (isset($uri_array['scheme'])) ? "{$uri_array['scheme']}://" : '';

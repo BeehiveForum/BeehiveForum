@@ -1166,7 +1166,7 @@ function html_page_links($uri, $page, $record_count, $rows_per_page, $page_var =
 
     $page_count = ceil($record_count / $rows_per_page);
 
-    $sep = strstr($uri, ' ? ') ? "&amp;" : "?";
+    $sep = strstr($uri, '?') ? "&amp;" : "?";
 
     if ($page < 1) $page = 1;
 

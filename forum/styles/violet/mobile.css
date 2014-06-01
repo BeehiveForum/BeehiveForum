@@ -945,7 +945,10 @@ span.thread_length {
     font-size: 11pt;
     line-height: 160%;
     margin: 0;
-    padding-left: 25px;
+}
+
+.message_box span.image {
+    margin-right: 10px;
 }
 
 .message_box a {

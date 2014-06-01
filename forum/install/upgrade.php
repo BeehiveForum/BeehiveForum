@@ -1065,6 +1065,12 @@ if (!install_index_exists($config['db_database'], 'VISITOR_LOG', 'FORUM_LAST_LOG
     $db->query($sql);
 }
 
+if (!install_index_exists($config['db_database'], 'VISITOR_LOG', 'IPADDRESS')) {
+
+    $sql = "ALTER TABLE `VISITOR_LOG` ADD KEY IPADDRESS(IPADDRESS)";
+    $db->query($sql);
+}
+
 $sql = "DELETE FROM POST_ATTACHMENT_IDS WHERE AID NOT IN (SELECT AID FROM POST_ATTACHMENT_FILES)";
 
 $db->query($sql);

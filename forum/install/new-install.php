@@ -405,6 +405,7 @@ $sql .= "  UNIQUE KEY SID (SID),";
 $sql .= "  KEY FORUM (FORUM),";
 $sql .= "  KEY LAST_LOGON (LAST_LOGON),";
 $sql .= "  KEY FORUM_LAST_LOGON (FORUM, LAST_LOGON)";
+$sql .= "  KEY IPADDRESS (IPADDRESS)";
 $sql .= ") ENGINE=MYISAM DEFAULT CHARSET=UTF8";
 
 $db->query($sql);

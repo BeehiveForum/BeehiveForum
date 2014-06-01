@@ -78,7 +78,7 @@ function admin_prune_log($remove_type, $remove_days)
     return true;
 }
 
-function admin_get_log_entries($page = 1, $group_by = 'DAY', $sort_by = 'CREATED', $sort_dir = 'DESC')
+function admin_get_log_entries($page = 1, $group_by = ADMIN_LOG_GROUP_NONE, $sort_by = 'CREATED', $sort_dir = 'DESC')
 {
     if (!$db = db::get()) return false;
 
@@ -894,7 +894,7 @@ function admin_get_link_approval_queue($page = 1)
     );
 }
 
-function admin_get_visitor_log($page = 1)
+function admin_get_visitor_log($page = 1, $group_by = ADMIN_VISITOR_LOG_GROUP_NONE, $sort_by = 'LAST_LOGON', $sort_dir = 'DESC')
 {
     if (!$db = db::get()) return false;
 
@@ -906,23 +906,48 @@ function admin_get_visitor_log($page = 1)
 
     if (!($forum_fid = get_forum_fid())) return false;
 
+    $group_by_array = array(
+        ADMIN_VISITOR_LOG_GROUP_NONE => 'VISITOR_LOG.VID',
+        ADMIN_VISITOR_LOG_GROUP_IP=> 'VISITOR_LOG.IPADDRESS',
+    );
+
+    $sort_by_array = array(
+        'LOGON',
+        'LAST_LOGON',
+        'IPADDRESS',
+        'REFERER',
+        'COUNT'
+    );
+
+    $sort_dir_array = array(
+        'ASC',
+        'DESC'
+    );
+
     $users_get_recent_array = array();
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+
+    if (!isset($group_by_array[$group_by])) $group_by = ADMIN_LOG_GROUP_NONE;
+
+    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
+
+    if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS VISITOR_LOG.UID, USER.LOGON, ";
     $sql .= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
     $sql .= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
     $sql .= "VISITOR_LOG.IPADDRESS, VISITOR_LOG.REFERER, ";
+    $sql .= "{$group_by_array[$group_by]} AS GROUP_BY, COUNT(*) AS COUNT, ";
     $sql .= "SEB.SID, SEB.NAME, SEB.URL FROM VISITOR_LOG VISITOR_LOG ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql .= "ON (USER_PEER.PEER_UID = USER.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql .= "LEFT JOIN SEARCH_ENGINE_BOTS SEB ";
-    $sql .= "ON (SEB.SID = VISITOR_LOG.SID) ";
+    $sql .= "LEFT JOIN SEARCH_ENGINE_BOTS SEB ON (SEB.SID = VISITOR_LOG.SID) ";
     $sql .= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
-    $sql .= "AND VISITOR_LOG.FORUM = '$forum_fid' ";
-    $sql .= "ORDER BY VISITOR_LOG.LAST_LOGON DESC LIMIT $offset, 10";
+    $sql .= "AND VISITOR_LOG.FORUM = '$forum_fid' GROUP BY GROUP_BY ";
+    $sql .= "ORDER BY $sort_by $sort_dir ";
+    $sql .= "LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;
 

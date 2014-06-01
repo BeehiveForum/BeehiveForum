@@ -50,6 +50,48 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 // Perform additional admin login.
 admin_check_credentials();
 
+$admin_visitor_log_group_type_array = array(
+    ADMIN_VISITOR_LOG_GROUP_NONE => gettext("Do Not Group"),
+    ADMIN_VISITOR_LOG_GROUP_IP=> gettext("Group by IP Address"),
+);
+
+$group_by = ADMIN_VISITOR_LOG_GROUP_NONE;
+
+$sort_by = "LAST_LOGON";
+
+$sort_dir = "DESC";
+
+if (isset($_GET['group_by']) && is_numeric($_GET['group_by'])) {
+
+    if (isset($admin_visitor_log_group_type_array[$_GET['group_by']])) {
+        $group_by = $_GET['group_by'];
+    }
+}
+
+if (isset($_GET['sort_by'])) {
+
+    if ($_GET['sort_by'] == "LOGON") {
+        $sort_by = "LOGON";
+    } else if ($_GET['sort_by'] == "LAST_LOGON") {
+        $sort_by = "LAST_LOGON";
+    } else if ($_GET['sort_by'] == "IPADDRESS") {
+        $sort_by = "IPADDRESS";
+    } else if ($_GET['sort_by'] == "REFERER") {
+        $sort_by = "REFERER";
+    } else if ($_GET['sort_by'] == "COUNT") {
+        $sort_by = "COUNT";
+    }
+}
+
+if (isset($_GET['sort_dir'])) {
+
+    if ($_GET['sort_dir'] == "DESC") {
+        $sort_dir = "DESC";
+    } else {
+        $sort_dir = "ASC";
+    }
+}
+
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
 } else {
@@ -72,7 +114,7 @@ if (isset($_POST['prune_log'])) {
 
         if (admin_prune_visitor_log($remove_days)) {
 
-            header_redirect("admin_visitor_log.php?webtag=$webtag&pruned=true");
+            header_redirect("admin_visitor_log.php?webtag=$webtag&group_by=$group_by&pruned=true");
             exit;
 
         } else {
@@ -91,7 +133,7 @@ html_draw_top(
     )
 );
 
-$admin_visitor_log_array = admin_get_visitor_log($page);
+$admin_visitor_log_array = admin_get_visitor_log($page, $group_by, $sort_by, $sort_dir);
 
 echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Visitor Log"), "</h1>\n";
 
@@ -117,12 +159,88 @@ echo "        <table class=\"box\" width=\"100%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\" class=\"posthead\">\n";
 echo "               <table width=\"100%\">\n";
-echo "                 <tr>\n";
-echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">", gettext("Member"), "</td>\n";
-echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">", gettext("Last Visit"), "</td>\n";
-echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">", gettext("Last IP Address"), "</td>\n";
-echo "                   <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">", gettext("Referer"), "</td>\n";
-echo "                 </tr>\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" width=\"10%\" align=\"left\">\n";
+
+if ($sort_by == 'LOGON' && $sort_dir == 'ASC') {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
+} else if ($sort_by == 'LOGON' && $sort_dir == 'DESC') {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
+} else if ($sort_dir == 'ASC') {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a>\n";
+} else {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=LOGON&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Logon"), "</a>\n";
+}
+
+echo "                  </td>\n";
+echo "                  <td class=\"subhead\" width=\"10%\" align=\"left\">\n";
+
+if ($sort_by == 'LAST_LOGON' && $sort_dir == 'ASC') {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Last Visit"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
+} else if ($sort_by == 'LAST_LOGON' && $sort_dir == 'DESC') {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Last Visit"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
+} else if ($sort_dir == 'ASC') {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Last Visit"), "</a>\n";
+} else {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=LAST_LOGON&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Last Visit"), "</a>\n";
+}
+
+echo "                  </td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">\n";
+
+if ($sort_by == 'IPADDRESS' && $sort_dir == 'ASC') {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=IPADDRESS&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("IP Address"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
+} else if ($sort_by == 'IPADDRESS' && $sort_dir == 'DESC') {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=IPADDRESS&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("IP Address"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
+} else if ($sort_dir == 'ASC') {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=IPADDRESS&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("IP Address"), "</a>\n";
+} else {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=IPADDRESS&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("IP Address"), "</a>\n";
+}
+
+echo "                  </td>\n";
+echo "                  <td class=\"subhead\" align=\"left\">\n";
+
+if ($sort_by == 'REFERER' && $sort_dir == 'ASC') {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Referer"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
+} else if ($sort_by == 'REFERER' && $sort_dir == 'DESC') {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Referer"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
+} else if ($sort_dir == 'ASC') {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Referer"), "</a>\n";
+} else {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Referer"), "</a>\n";
+}
+
+echo "                  </td>\n";
+
+if (isset($group_by) && $group_by != ADMIN_LOG_GROUP_NONE) {
+
+    echo "                  <td class=\"subhead\" width=\"10%\" align=\"center\">\n";
+
+    if ($sort_by == 'COUNT' && $sort_dir == 'ASC') {
+        echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=COUNT&amp;group_by=$group_by&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a>\n";
+        echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
+    } else if ($sort_by == 'COUNT' && $sort_dir == 'DESC') {
+        echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a>\n";
+        echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
+    } else if ($sort_dir == 'ASC') {
+        echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a>\n";
+    } else {
+        echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=COUNT&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Count"), "</a>\n";
+    }
+
+    echo "                  </td>\n";
+}
+
+echo "                </tr>\n";
 
 if (sizeof($admin_visitor_log_array['user_array']) > 0) {
 
@@ -187,6 +305,10 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
             echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;", gettext("Unknown"), "</td>\n";
         }
 
+        if (isset($group_by) && $group_by != ADMIN_LOG_GROUP_NONE) {
+            echo "                    <td align=\"center\">{$visitor['COUNT']}</td>\n";
+        }        
+
         echo "                 </tr>\n";
     }
 }
@@ -206,7 +328,7 @@ echo "    </tr>\n";
 echo "    <tr>\n";
 echo "      <td align=\"center\">";
 
-html_page_links("admin_visitor_log.php?webtag=$webtag", $page, $admin_visitor_log_array['user_count'], 10);
+html_page_links("admin_visitor_log.php?webtag=$webtag&group_by=$group_by", $page, $admin_visitor_log_array['user_count'], 10);
 
 echo "      </td>\n";
 echo "    </tr>\n";
@@ -214,6 +336,42 @@ echo "    <tr>\n";
 echo "      <td align=\"left\">&nbsp;</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
+echo "  <br />\n";
+echo "  <form accept-charset=\"utf-8\" action=\"admin_visitor_log.php\" method=\"get\" target=\"_self\">\n";
+echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
+echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
+echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
+echo "    <tr>\n";
+echo "      <td align=\"left\">\n";
+echo "        <table class=\"box\" width=\"100%\">\n";
+echo "          <tr>\n";
+echo "            <td align=\"left\" class=\"posthead\">\n";
+echo "              <table width=\"100%\">\n";
+echo "                <tr>\n";
+echo "                  <td class=\"subhead\" align=\"left\">", gettext("Options"), "</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"center\">\n";
+echo "                    <table class=\"posthead\" width=\"95%\">\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\">", gettext("Group Visitor Log Entries"), ":&nbsp;</td>\n";
+echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" width=\"100%\">", form_dropdown_array("group_by", array(ADMIN_VISITOR_LOG_GROUP_NONE => gettext("Do Not Group"), ADMIN_VISITOR_LOG_GROUP_IP => gettext("Group by IP Address")), $group_by, null, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", gettext("Go")), "</td>\n";
+echo "                      </tr>\n";
+echo "                    </table>\n";
+echo "                  </td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" colspan=\"6\">&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "              </table>\n";
+echo "            </td>\n";
+echo "          </tr>\n";
+echo "        </table>\n";
+echo "      </td>\n";
+echo "    </tr>\n";
+echo "  </table>\n";
+echo "  </form>\n";
+echo "  <br />\n";
 echo "  <form accept-charset=\"utf-8\" action=\"admin_visitor_log.php\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";

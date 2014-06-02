@@ -584,11 +584,11 @@ foreach ($folder_order as $folder_number) {
                                 if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo html_style_image('thread_bullet current_thread', gettext("Thread Options"), "t{$thread['TID']}");
+                                    echo html_style_image('bullet current_thread', gettext("Thread Options"), "t{$thread['TID']}");
 
                                 } else {
 
-                                    echo html_style_image('thread_bullet unread_thread', gettext("Thread Options"), "t{$thread['TID']}");
+                                    echo html_style_image('bullet unread_thread', gettext("Thread Options"), "t{$thread['TID']}");
                                 }
 
                             } else if ($thread['LAST_READ'] < $thread['LENGTH']) {
@@ -613,11 +613,11 @@ foreach ($folder_order as $folder_number) {
                                 if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo html_style_image('thread_bullet current_thread', gettext("Thread Options"), "t{$thread['TID']}");
+                                    echo html_style_image('bullet current_thread', gettext("Thread Options"), "t{$thread['TID']}");
 
                                 } else {
 
-                                    echo html_style_image('thread_bullet unread_thread', gettext("Thread Options"), "t{$thread['TID']}");
+                                    echo html_style_image('bullet unread_thread', gettext("Thread Options"), "t{$thread['TID']}");
                                 }
 
                             } else {
@@ -638,11 +638,11 @@ foreach ($folder_order as $folder_number) {
                                 if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
 
                                     $first_thread = $thread['TID'];
-                                    echo html_style_image('thread_bullet current_thread', gettext("Thread Options"), "t{$thread['TID']}");
+                                    echo html_style_image('bullet current_thread', gettext("Thread Options"), "t{$thread['TID']}");
 
                                 } else {
 
-                                    echo html_style_image('thread_bullet bullet', gettext("Thread Options"), "t{$thread['TID']}");
+                                    echo html_style_image('bullet bullet', gettext("Thread Options"), "t{$thread['TID']}");
                                 }
                             }
 

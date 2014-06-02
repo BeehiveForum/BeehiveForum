@@ -27,12 +27,12 @@ $(beehive).bind('init', function () {
 
     $('a.threadname').bind('click', function () {
 
-        $('span.thread_bullet.current_thread')
+        $('span.image.current_thread')
             .addClass('bullet')
             .removeClass('current_thread');
 
         $('span#' + $(this).data('tid'))
-            .removeClass('bullet')
+            .removeClass('bullet unread_thread')
             .addClass('current_thread');
     });
 

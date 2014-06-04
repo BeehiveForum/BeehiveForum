@@ -987,7 +987,7 @@ function message_get_post_options_html($tid, $pid, $message)
     $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\" title=\"" . gettext("Reply as PM") . "\">" . gettext("Reply as PM") . "</a></td>\n";
     $html .= "                      </tr>\n";
     $html .= "                      <tr>\n";
-    $html .= "                        <td align=\"left\"><a href=\"display.php?webtag=$webtag&amp;print_msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"" . gettext("Print") . "\">" . html_style_image('print', gettext("Print")) . "></a></td>\n";
+    $html .= "                        <td align=\"left\"><a href=\"display.php?webtag=$webtag&amp;print_msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"" . gettext("Print") . "\">" . html_style_image('print', gettext("Print")) . "</a></td>\n";
     $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"display.php?webtag=$webtag&amp;print_msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_self\" title=\"" . gettext("Print") . "\">" . gettext("Print") . "</a></td>\n";
     $html .= "                      </tr>\n";
     $html .= "                      <tr>\n";

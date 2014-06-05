@@ -1434,7 +1434,7 @@ function messages_update_read($tid, $pid, $last_read, $length, $modified)
     // Guest users' can't mark as read!
     if (session::logged_in() && ($pid > $last_read)) {
 
-        if (($unread_cutoff_timestamp !== false) && ($modified > $unread_cutoff_timestamp)) {
+        if (($unread_cutoff_timestamp !== false) && ($modified >= $unread_cutoff_timestamp)) {
 
             $unread_cutoff_datetime = forum_get_unread_cutoff_datetime();
 
@@ -1496,7 +1496,7 @@ function messages_set_read($tid, $pid, $modified)
     // Guest users' can't mark as read!
     if (session::logged_in()) {
 
-        if (($unread_cutoff_timestamp !== false) && ($modified > $unread_cutoff_timestamp)) {
+        if (($unread_cutoff_timestamp !== false) && ($modified >= $unread_cutoff_timestamp)) {
 
             $sql = "UPDATE LOW_PRIORITY `{$table_prefix}USER_THREAD` ";
             $sql .= "SET LAST_READ = '$pid', LAST_READ_AT = NULL ";

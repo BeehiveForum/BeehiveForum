@@ -602,28 +602,23 @@ h3.message_subject span.image {
 }
 
 .message_vote_form span {
-    font-size: 75%;
-    line-height: 16px;
     vertical-align: 2px;
 }
 
 .message_vote_form.popup {
     background-color: #FFFFFF;
     border: 1px solid #000000;
-    height: 68px;
     padding: 10px;
-}
-
-.message_vote_form.popup span {
-    font-size: 400%;
-    line-height: 68px;
-    vertical-align: top;
-}
-
-.message_vote_form.popup img {
-    height: 48px;
-    margin: 10px;
-    width: 48px;
+    transform: scale(3);
+    transform-origin: 0;
+    -moz-transform: scale(3);
+    -moz-transform-origin: 0;
+    -o-transform: scale(3);
+    -o-transform-origin: 0;
+    -webkit-transform: scale(3);
+    -webkit-transform-origin: 0;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=3, M12=0, M21=0, M22=3, SizingMethod='auto expand')";
+    filter: progid:DXImageTransform.Microsoft.Matrix(M11=3, M12=0, M21=0, M22=3, SizingMethod='auto expand');
 }
 
 .message_footer_links {

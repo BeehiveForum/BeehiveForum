@@ -23,12 +23,45 @@ $(beehive).bind('init', function () {
 
     var $body = $('body'),
         $header = $('div#header'),
-        $menu = $header.find('ul'),
-        $message_vote_form = $('.message_vote_form');
+        $menu = $header.find('ul');
+
+    function render_message_form() {
+
+        var $message_vote_form = $(this),
+            $rating_text = $message_vote_form.find('span.rating'),
+            $vote_down = $message_vote_form.find('span.vote_down'),
+            $vote_up = $message_vote_form.find('span.vote_up'),
+            rating_position;
+
+        $message_vote_form.addClass('popup');
+
+        /*rating_position = $rating_text.position();
+
+        $vote_down.css(
+            {
+                left: (($rating_text.width()) * 4) + (rating_position.left * 2),
+                top: (($rating_text.height() - $vote_down.height()) / 2) * 4
+            }
+        );
+
+        $vote_up.css(
+            {
+                left: (($rating_text.width() + $vote_down.width()) * 4) + (rating_position.left * 3),
+                top: (($rating_text.height() - $vote_down.height()) / 2) * 4
+            }
+        );
+
+        $message_vote_form.css(
+            {
+                width: (($vote_up.width() + $vote_down.width() + $rating_text.width()) * 4) + (rating_position.left * 4),
+                height: $rating_text.height() * 4
+            }
+        );*/
+    }
 
     $body.bind('click', function () {
         $body.find('div.menu').hide();
-        $message_vote_form.removeClass('popup');
+        $body.find('.message_vote_form').removeClass('popup');
     });
 
     $('div#header ul li a').bind('click', function (event) {
@@ -51,7 +84,7 @@ $(beehive).bind('init', function () {
 
         $menuItem.toggle();
 
-        $message_vote_form.removeClass('popup');
+        $body.find('.message_vote_form').removeClass('popup');
 
         event.stopPropagation();
         event.preventDefault();
@@ -65,15 +98,14 @@ $(beehive).bind('init', function () {
 
     $body.on('click', '.message_vote_form', function (event) {
 
-        $(this).addClass('popup');
         event.stopPropagation();
+        render_message_form.call(this);
     });
 
-    $body.on('click', '.message_vote_form.popup img', function (event) {
+    $body.on('click', '.message_vote_form.popup span.vote', function (event) {
 
-        var $button = $(this);
-
-        var $container = $button.closest('.message_vote_form');
+        var $button = $(this),
+            $container = $button.closest('.message_vote_form');
 
         event.preventDefault();
 
@@ -85,7 +117,7 @@ $(beehive).bind('init', function () {
                 webtag: beehive.webtag,
                 ajax: 'true',
                 action: 'post_vote',
-                post_rating: $button.hasClass('post_vote_up') ? 1 : -1,
+                post_rating: $button.hasClass('vote_up') ? 1 : -1,
                 mobile: 'true',
                 msg: $container.data('msg')
             },
@@ -97,6 +129,7 @@ $(beehive).bind('init', function () {
                 try {
 
                     $container.html(data).show();
+                    render_message_form.call($container[0]);
 
                 } catch (exception) {
 
@@ -106,5 +139,6 @@ $(beehive).bind('init', function () {
         });
     });
 
-    $message_vote_form.show();
-});
+    $body.find('.message_vote_form').show();
+})
+;

@@ -1942,28 +1942,28 @@ function light_message_get_vote_form_html($message)
     forum_check_webtag_available($webtag);
 
     if (isset($message['POST_RATING'])) {
-        $html = "  <span>" . ($message['POST_RATING'] > 0 ? '+' : '') . $message['POST_RATING'] . "/" . $message['POST_RATING_COUNT'] . "</span>";
+        $html = "  <span class=\"rating\">" . ($message['POST_RATING'] > 0 ? '+' : '') . $message['POST_RATING'] . "/" . $message['POST_RATING_COUNT'] . "</span>";
     } else {
-        $html = "  <span>0/0</span>";
+        $html = "  <span class=\"rating\">0/0</span>";
     }
 
     if (isset($message['USER_POST_RATING']) && in_array($message['USER_POST_RATING'], array(-1, 1))) {
 
         if ($message['USER_POST_RATING'] > 0) {
 
-            $html .= "  " . html_style_image('vote_down_off', 'Vote Down', 'post_vote_down') . "\n";
-            $html .= "  " . html_style_image('vote_up_on', 'Clear Vote', 'post_vote_up') . "\n";
+            $html .= "  " . html_style_image('vote vote_down vote_down_off', 'Vote Down') . "\n";
+            $html .= "  " . html_style_image('vote vote_up vote_up_on', 'Clear Vote') . "\n";
 
         } else {
 
-            $html .= "  " . html_style_image('vote_down_on', 'Clear Vote', 'post_vote_down') . "\n";
-            $html .= "  " . html_style_image('vote_up_off', 'Vote Up', 'post_vote_up') . "\n";
+            $html .= "  " . html_style_image('vote vote_down vote_down_on', 'Clear Vote') . "\n";
+            $html .= "  " . html_style_image('vote vote_up vote_up_off', 'Vote Up') . "\n";
         }
 
     } else {
 
-        $html .= "  " . html_style_image('vote_down_off', 'Vote Down', 'post_vote_down') . "\n";
-        $html .= "  " . html_style_image('vote_up_off', 'Vote Up', 'post_vote_up') . "\n";
+        $html .= "  " . html_style_image('vote vote_down vote_down_off', 'Vote Down') . "\n";
+        $html .= "  " . html_style_image('vote vote_up vote_up_off', 'Vote Up') . "\n";
     }
 
     return $html;

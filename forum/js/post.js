@@ -61,10 +61,10 @@ $(beehive).bind('init', function () {
 
     var $body = $('body');
 
-    $body.on('click', 'input.post_vote_up, input.post_vote_down', function (event) {
+    $body.on('click', '.message_vote_form span.vote', function (event) {
 
         var $button = $(this),
-            $form = $button.closest('form');
+            $container = $button.closest('.message_vote_form');
 
         event.preventDefault();
 
@@ -76,8 +76,9 @@ $(beehive).bind('init', function () {
                 webtag: beehive.webtag,
                 ajax: 'true',
                 action: 'post_vote',
-                post_rating: $button.hasClass('post_vote_up') ? 1 : -1,
-                msg: $form.data('msg')
+                post_rating: $button.hasClass('vote_up') ? 1 : -1,
+                mobile: 'true',
+                msg: $container.data('msg')
             },
 
             url: beehive.forum_path + '/ajax.php',
@@ -86,7 +87,7 @@ $(beehive).bind('init', function () {
 
                 try {
 
-                    $form.replaceWith($(data));
+                    $container.html(data).show();
 
                 } catch (exception) {
 

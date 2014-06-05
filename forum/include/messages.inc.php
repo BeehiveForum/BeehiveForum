@@ -839,7 +839,9 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
             echo "            <table width=\"100%\" class=\"postresponse\" cellspacing=\"1\" cellpadding=\"0\">\n";
             echo "              <tr>\n";
             echo "                <td align=\"left\" width=\"25%\">";
-            echo "                  ", message_get_vote_form_html($message), "\n";
+            echo "                  <div class=\"message_vote_form\" data-msg=\"$tid.{$message['PID']}\">\n";
+            echo "                    ", message_get_vote_form_html($message), "\n";
+            echo "                  </div>\n";
             echo "                </td>\n";
             echo "                <td width=\"50%\" style=\"white-space: nowrap\">";
 
@@ -1058,36 +1060,30 @@ function message_get_vote_form_html($message)
 
     forum_check_webtag_available($webtag);
 
-    $html = "<form method=\"POST\" action=\"messages.php\" target=\"_self\" data-msg=\"{$message['TID']}.{$message['PID']}\">\n";
-    $html .= "  " . form_input_hidden("webtag", htmlentities_array($webtag)) . "\n";
-    $html .= "  " . form_input_hidden("msg", htmlentities_array("{$message['TID']}.{$message['PID']}")) . "\n";
-
     if (isset($message['POST_RATING'])) {
-        $html .= "  <span class=\"smallertext\">" . gettext("Score") . ": " . ($message['POST_RATING'] > 0 ? '+' : '') . $message['POST_RATING'] . "/" . $message['POST_RATING_COUNT'] . "</span>";
+        $html = "  <span class=\"smallertext\">" . ($message['POST_RATING'] > 0 ? '+' : '') . $message['POST_RATING'] . "/" . $message['POST_RATING_COUNT'] . "</span>";
     } else {
-        $html .= "  <span class=\"smallertext\">" . gettext("Score") . ": 0/0</span>";
+        $html = "  <span class=\"smallertext\">0/0</span>";
     }
 
     if (isset($message['USER_POST_RATING']) && in_array($message['USER_POST_RATING'], array(-1, 1))) {
 
         if ($message['USER_POST_RATING'] > 0) {
 
-            $html .= "  " . form_submit_image('vote_down_off', 'post_vote_down', null, sprintf('title="%s"', htmlentities_array(gettext('Vote Down'))), 'post_vote_down') . "\n";
-            $html .= "  " . form_submit_image('vote_up_on', 'post_vote_up', null, sprintf('title="%s"', htmlentities_array(gettext('Clear Vote'))), 'post_vote_up') . "\n";
+            $html .= "  " . html_style_image('vote vote_down vote_down_off', 'Vote Down') . "\n";
+            $html .= "  " . html_style_image('vote vote_up vote_up_on', 'Clear Vote') . "\n";
 
         } else {
 
-            $html .= "  " . form_submit_image('vote_down_on', 'post_vote_down', null, sprintf('title="%s"', htmlentities_array(gettext('Clear Vote'))), 'post_vote_down') . "\n";
-            $html .= "  " . form_submit_image('vote_up_off', 'post_vote_up', null, sprintf('title="%s"', htmlentities_array(gettext('Vote Up'))), 'post_vote_up') . "\n";
+            $html .= "  " . html_style_image('vote vote_down vote_down_on', 'Clear Vote') . "\n";
+            $html .= "  " . html_style_image('vote vote_up vote_up_off', 'Vote Up') . "\n";
         }
 
     } else {
 
-        $html .= "  " . form_submit_image('vote_down_off', 'post_vote_down', null, sprintf('title="%s"', htmlentities_array(gettext('Vote Down'))), 'post_vote_down') . "\n";
-        $html .= "  " . form_submit_image('vote_up_off', 'post_vote_up', null, sprintf('title="%s"', htmlentities_array(gettext('Vote Up'))), 'post_vote_up') . "\n";
+        $html .= "  " . html_style_image('vote vote_down vote_down_off', 'Vote Down') . "\n";
+        $html .= "  " . html_style_image('vote vote_up vote_up_off', 'Vote Up') . "\n";
     }
-
-    $html .= "</form>\n";
 
     return $html;
 }

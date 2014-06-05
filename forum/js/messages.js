@@ -84,6 +84,7 @@ $(beehive).bind('init', function () {
                 if ($data.length > 0) {
 
                     $messages.append($data);
+                    $messages.find('.message_vote_form').show();
                     navigation_options[1] = pid;
                 }
 

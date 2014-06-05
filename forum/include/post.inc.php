@@ -243,13 +243,11 @@ function post_update_thread_length($tid, $length)
     if (!is_numeric($tid)) return false;
     if (!is_numeric($length)) return false;
 
-    $current_datetime = date(MYSQL_DATETIME, time());
-
     $modified_cutoff_datetime = forum_get_unread_cutoff_datetime();
 
     $sql = "UPDATE LOW_PRIORITY `{$table_prefix}THREAD` SET LENGTH = '$length', ";
-    $sql .= "MODIFIED = IF(MODIFIED < CAST('$modified_cutoff_datetime' AS DATETIME), ";
-    $sql .= "MODIFIED, CAST('$current_datetime' AS DATETIME)) WHERE TID = '$tid'";
+    $sql .= "MODIFIED = CAST('$modified_cutoff_datetime' AS DATETIME) ";
+    $sql .= "WHERE TID = '$tid'";
 
     if (!$db->query($sql)) return false;
 

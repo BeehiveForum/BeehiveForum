@@ -816,6 +816,9 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
         echo "<div class=\"thread_pagination\"><a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page - 1), "\">", gettext("Previous 50 threads"), "</a></div>\n";
     }
 
+    // Unread cut-off
+    $thread_unread_cutoff = threads_get_unread_cutoff();
+
     // Iterate through the information we've just got and display it in the right order
     foreach ($folder_order as $folder_number) {
 
@@ -869,22 +872,22 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
                             echo "<li>";
 
-                            if ($thread['LAST_READ'] == 0) {
-
-                                $number = "[{$thread['LENGTH']}&nbsp;new]";
-                                $latest_post = 1;
-
-                            } else if ($thread['LAST_READ'] < $thread['LENGTH']) {
+                            if (($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) && $thread['MODIFIED'] > $thread_unread_cutoff) {
 
                                 $new_posts = $thread['LENGTH'] - $thread['LAST_READ'];
-                                $number = "[{$new_posts}&nbsp;new&nbsp;of&nbsp;{$thread['LENGTH']}]";
+
+                                if ($new_posts == $thread['LENGTH']) {
+                                    $number = "[{$thread['LENGTH']}&nbsp;new]";
+                                } else {
+                                    $number = "[{$new_posts}&nbsp;new&nbsp;of&nbsp;{$thread['LENGTH']}]";
+                                }
+
                                 $latest_post = $thread['LAST_READ'] + 1;
 
                             } else {
 
                                 $number = "[{$thread['LENGTH']}]";
                                 $latest_post = 1;
-
                             }
 
                             // work out how long ago the thread was posted and format the time to display

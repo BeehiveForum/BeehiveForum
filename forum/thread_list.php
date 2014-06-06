@@ -467,6 +467,9 @@ $visible_threads_array = array();
 // Variable to track first thread
 $first_thread = false;
 
+// Unread cut-off
+$thread_unread_cutoff = threads_get_unread_cutoff();
+
 // Iterate through the information we've just got and display it in the right order
 foreach ($folder_order as $folder_number) {
 
@@ -564,38 +567,17 @@ foreach ($folder_order as $folder_number) {
                             echo "                      <td align=\"center\" valign=\"top\" style=\"white-space: nowrap\" width=\"25\">";
                             echo "<a href=\"thread_options.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"", html_get_frame_name('right'), "\">";
 
-                            if ($thread['LAST_READ'] == 0) {
-
-                                if ($thread['LENGTH'] > 1) {
-
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to first post in thread") . "\">[</a>";
-                                    $number .= sprintf(gettext("%d new"), $thread['LENGTH']);
-                                    $number .= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}." . thread_get_last_page_pid($thread['LENGTH'], $posts_per_page) . "\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to last post in thread") . "\">]</a>";
-
-                                } else {
-
-                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to first post in thread") . "\">[</a>";
-                                    $number .= sprintf(gettext("%d new"), $thread['LENGTH']);
-                                    $number .= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}." . thread_get_last_page_pid($thread['LENGTH'], $posts_per_page) . "\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to last post in thread") . "\">]</a>";
-                                }
-
-                                $latest_post = 1;
-
-                                if (!is_numeric($first_thread) && isset($selected_tid) && ($selected_tid == $thread['TID'])) {
-
-                                    $first_thread = $thread['TID'];
-                                    echo html_style_image('bullet current_thread', gettext("Thread Options"), "t{$thread['TID']}");
-
-                                } else {
-
-                                    echo html_style_image('bullet unread_thread', gettext("Thread Options"), "t{$thread['TID']}");
-                                }
-
-                            } else if ($thread['LAST_READ'] < $thread['LENGTH']) {
+                            if (($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) && $thread['MODIFIED'] > $thread_unread_cutoff) {
 
                                 $new_posts = $thread['LENGTH'] - $thread['LAST_READ'];
 
-                                if ($new_posts > 1) {
+                                if ($new_posts == $thread['LENGTH']) {
+
+                                    $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to first post in thread") . "\">[</a>";
+                                    $number .= sprintf(gettext("%d new"), $thread['LENGTH']);
+                                    $number .= "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}." . thread_get_last_page_pid($thread['LENGTH'], $posts_per_page) . "\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to last post in thread") . "\">]</a>";
+
+                                } else if ($new_posts > 1) {
 
                                     $number = "<a href=\"messages.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"" . html_get_frame_name('right') . "\" title=\"" . gettext("Go to first post in thread") . "\">[</a>";
                                     $number .= sprintf(gettext("%d new of %d"), $new_posts, $thread['LENGTH']);

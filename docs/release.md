@@ -1,5 +1,24 @@
 # Beehive Forum Release Notes
 
+## What's new in 1.4.3 (Released ??? June 2014)
+
+- Changes from 1.4.2
+
+    - Fixed threads older than cut-off showing as
+      unread
+    - New Mobile mode theme with better Beehive
+      branding
+    - CSS Sprites now used for images.
+    - HTML emails for post notifications and more.
+    - Added column sorting and grouping to Admin
+      Visitor Log page.
+    - Fixed issues with newer versions of Sphinxsearch.
+    - Correctly localise numbers with digit grouping.
+    - Fix upgrade issues when coming from very old
+      versions.
+
+    For more detail please see changelog.
+
 ## What's new in 1.4.2 (Released 26th March 2014)
 
 - Changes from 1.4.1

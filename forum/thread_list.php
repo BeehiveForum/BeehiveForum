@@ -567,7 +567,7 @@ foreach ($folder_order as $folder_number) {
                             echo "                      <td align=\"center\" valign=\"top\" style=\"white-space: nowrap\" width=\"25\">";
                             echo "<a href=\"thread_options.php?webtag=$webtag&amp;msg={$thread['TID']}.1\" target=\"", html_get_frame_name('right'), "\">";
 
-                            if (($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) && $thread['MODIFIED'] > $thread_unread_cutoff) {
+                            if (!session::logged_in() || (($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) && $thread['MODIFIED'] > $thread_unread_cutoff)) {
 
                                 $new_posts = $thread['LENGTH'] - $thread['LAST_READ'];
 

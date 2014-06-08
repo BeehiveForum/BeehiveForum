@@ -872,7 +872,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
                             echo "<li>";
 
-                            if (($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) && $thread['MODIFIED'] > $thread_unread_cutoff) {
+                            if (!session::logged_in() || ($thread['LAST_READ'] == 0 || $thread['LAST_READ'] < $thread['LENGTH']) && $thread['MODIFIED'] > $thread_unread_cutoff) {
 
                                 $new_posts = $thread['LENGTH'] - $thread['LAST_READ'];
 

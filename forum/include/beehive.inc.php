@@ -30,14 +30,14 @@ function draw_beehive_bar()
     echo "<div align=\"center\">\n";
     echo "<table width=\"98%\">\n";
     echo "  <tr>\n";
-    echo "    <td width=\"60%\" class=\"smalltext\" align=\"left\">\n";
+    echo "    <td width=\"60%\" align=\"left\">\n";
     echo "      Beehive Forum ", BEEHIVE_VERSION, "&nbsp;|&nbsp;\n";
     echo "      <a href=\"http://www.beehiveforum.co.uk/faq/\" target=\"_blank\">", gettext("FAQ"), "</a>&nbsp;|&nbsp;\n";
     echo "      <a href=\"http://www.beehiveforum.co.uk/docs/\" target=\"_blank\">", gettext("Docs"), "</a>&nbsp;|&nbsp;\n";
     echo "      <a href=\"http://www.beehiveforum.co.uk/support/\" target=\"_blank\">", gettext("Support"), "</a>&nbsp;|&nbsp;\n";
     echo "      <a href=\"http://www.beehiveforum.co.uk/donate/\" target=\"_blank\">", gettext("Donate!"), "</a>\n";
     echo "    </td>\n";
-    echo "    <td width=\"40%\" align=\"right\" class=\"smalltext\">&copy;2002 - ", strftime("%Y", time()), " <a href=\"http://www.beehiveforum.co.uk/\" target=\"_blank\">Project&nbsp;Beehive&nbsp;Forum</a></td>\n";
+    echo "    <td width=\"40%\" align=\"right\">&copy;2002 - ", strftime("%Y", time()), " <a href=\"http://www.beehiveforum.co.uk/\" target=\"_blank\">Project&nbsp;Beehive&nbsp;Forum</a></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
     echo "</div>\n";

@@ -530,7 +530,7 @@ echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form
 echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("show_stats_global", "Y", null, (isset($user_prefs['SHOW_STATS_GLOBAL']) ? $user_prefs['SHOW_STATS_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("show_stats_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
-echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("use_word_filter", "Y", gettext("Enable word filter."), (isset($user_prefs['USE_WORD_FILTER']) && $user_prefs['USE_WORD_FILTER'] == "Y")), "&nbsp;<span class=\"smalltext\">[<a href=\"edit_wordfilter.php?webtag=$webtag\">", gettext("Edit Word Filter"), "</a>]</span></td>\n";
+echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("use_word_filter", "Y", gettext("Enable word filter."), (isset($user_prefs['USE_WORD_FILTER']) && $user_prefs['USE_WORD_FILTER'] == "Y")), "&nbsp;<span>[<a href=\"edit_wordfilter.php?webtag=$webtag\">", gettext("Edit Word Filter"), "</a>]</span></td>\n";
 echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("use_word_filter_global", "Y", null, (isset($user_prefs['USE_WORD_FILTER_GLOBAL']) ? $user_prefs['USE_WORD_FILTER_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("use_word_filter_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";

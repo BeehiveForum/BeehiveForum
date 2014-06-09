@@ -1783,13 +1783,13 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
             if (isset($recipient['VIEWED']) && $recipient['VIEWED'] > 0) {
 
-                echo "<span class=\"smalltext\">", html_style_image('post_read', sprintf(gettext("Read: %s"), format_date_time($recipient['VIEWED']))), "</span>\n";
+                echo "<span>", html_style_image('post_read', sprintf(gettext("Read: %s"), format_date_time($recipient['VIEWED']))), "</span>\n";
 
             } else {
 
                 if ($is_preview == false) {
 
-                    echo "<span class=\"smalltext\">", html_style_image('post_unread', gettext("Unread Message")), "</span>\n";
+                    echo "<span>", html_style_image('post_unread', gettext("Unread Message")), "</span>\n";
                 }
             }
         }

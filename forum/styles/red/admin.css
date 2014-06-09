@@ -1073,10 +1073,6 @@ div.poll_option_list ol li {
     text-decoration: none;
 }
 
-.smalltext {
-    font-size: 90%;
-}
-
 .smallertext {
     font-size: 80%;
 }
@@ -1450,22 +1446,17 @@ div.spoiler_reveal * {
     display: inline-block;
 }
 
-.attachments ul li.complete span.image {
-    background-position: -272px -94px;
+.attachments ul li span.image {
     width: 16px;
     height: 16px;
+}
+
+.attachments ul li.complete span.image {
+    background-position: -272px -94px;
 }
 
 .attachments ul li.error span.image {
     background-position: -110px -110px;
-    width: 16px;
-    height: 16px;
-}
-
-.attachments ul li.uploading span.image {
-    background: transparent url('./images/loading.gif') no-repeat 0 50%;
-    width: 16px;
-    height: 16px;
 }
 
 .attachments ul li label {
@@ -1488,6 +1479,12 @@ div.spoiler_reveal * {
 
 .attachments ul li.attachment span.retry {
     background-position: -2px -146px;
+    width: 16px;
+    height: 16px;
+}
+
+.attachments ul li.uploading span.image {
+    background: transparent url('./images/loading.gif') no-repeat 0 50%;
     width: 16px;
     height: 16px;
 }

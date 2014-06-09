@@ -271,7 +271,7 @@ echo "    <tr>\n";
 echo "      <td align=\"left\" class=\"foldername\">", gettext("Search"), ":</td>\n";
 echo "    </tr>\n";
 echo "    <tr>\n";
-echo "      <td align=\"left\" class=\"smalltext\">", form_input_text("search_string", null, 24), "&nbsp;", form_submit('search', gettext("Find")), "</td>\n";
+echo "      <td align=\"left\">", form_input_text("search_string", null, 24), "&nbsp;", form_submit('search', gettext("Find")), "</td>\n";
 echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";

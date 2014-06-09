@@ -321,12 +321,12 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
                     if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
 
                         echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
-                        echo "<span class=\"smalltext\"><b>", gettext("From"), ":</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']), true), ", ", format_date_time($search_result['CREATED']), "</span></p></li>\n";
+                        echo "<span><b>", gettext("From"), ":</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']), true), ", ", format_date_time($search_result['CREATED']), "</span></p></li>\n";
 
                     } else {
 
                         echo "  <li><p><a href=\"messages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\" target=\"", html_get_frame_name('right'), "\"><b>{$message['TITLE']}</b></a><br />";
-                        echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>", gettext("From"), ":</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']), true), ", ", format_date_time($search_result['CREATED']), "</span></p></li>\n";
+                        echo "{$message['CONTENT']}<br /><span><b>", gettext("From"), ":</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']), true), ", ", format_date_time($search_result['CREATED']), "</span></p></li>\n";
                     }
                 }
             }
@@ -344,7 +344,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
         echo "  ", form_input_hidden("page", isset($page) ? htmlentities_array($page) : 1), "\n";
         echo "  <table cellpadding=\"2\" cellspacing=\"0\">\n";
         echo "    <tr>\n";
-        echo "      <td align=\"left\" class=\"smalltext\" colspan=\"2\">", gettext("Sort Results"), ":</td>\n";
+        echo "      <td align=\"left\" colspan=\"2\">", gettext("Sort Results"), ":</td>\n";
         echo "    </tr>\n";
         echo "    <tr>\n";
         echo "      <td align=\"left\">&nbsp;</td>\n";
@@ -380,11 +380,11 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
     echo "<table cellpadding=\"2\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">", gettext("Navigate"), ":</td>\n";
+    echo "    <td align=\"left\" colspan=\"2\">", gettext("Navigate"), ":</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";
-    echo "    <td align=\"left\" class=\"smalltext\">\n";
+    echo "    <td align=\"left\">\n";
     echo "      <form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"", html_get_frame_name('right'), "\">\n";
     echo "        ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "        ", form_input_text('msg', '1.1', 10) . "\n";
@@ -396,11 +396,11 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     echo "<br />\n";
     echo "<table cellpadding=\"2\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">", gettext("Search Again"), " (<a href=\"search.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Advanced"), "</a>):</td>\n";
+    echo "    <td align=\"left\" colspan=\"2\">", gettext("Search Again"), " (<a href=\"search.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("Advanced"), "</a>):</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";
-    echo "    <td align=\"left\" class=\"smalltext\">\n";
+    echo "    <td align=\"left\">\n";
     echo "      <form accept-charset=\"utf-8\" method=\"post\" action=\"search.php\" target=\"", html_get_frame_name('right'), "\">\n";
     echo "        ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "        ", form_input_text("search_string", null, 20) . "\n";

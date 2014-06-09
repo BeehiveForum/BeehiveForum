@@ -453,7 +453,7 @@ if (($page > 1) && !is_numeric($folder)) {
 
     echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\">", html_style_image('current_thread'), "&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page - 1), "\" title=\"", gettext("Show previous 50 threads"), "\">", gettext("Previous 50 threads"), "</a></td>\n";
+    echo "    <td align=\"left\" valign=\"top\" colspan=\"2\">", html_style_image('current_thread'), "&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page - 1), "\" title=\"", gettext("Show previous 50 threads"), "\">", gettext("Previous 50 threads"), "</a></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\">&nbsp;</td>\n";
@@ -779,7 +779,7 @@ if (!is_numeric($folder) && ($thread_count >= 50)) {
     echo "  <td colspan=\"2\">&nbsp;</td>\n";
     echo "</tr>\n";
     echo "<tr>\n";
-    echo "  <td align=\"left\" valign=\"top\" class=\"smalltext\" colspan=\"2\">", html_style_image('current_thread'), "&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page + 1), "\" title=\"", gettext("Show next 50 threads"), "\">", gettext("Next 50 threads"), "</a></td>\n";
+    echo "  <td align=\"left\" valign=\"top\" colspan=\"2\">", html_style_image('current_thread'), "&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page + 1), "\" title=\"", gettext("Show next 50 threads"), "\">", gettext("Next 50 threads"), "</a></td>\n";
     echo "</tr>\n";
 }
 
@@ -792,11 +792,11 @@ if (session::logged_in()) {
 
     echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
     echo "  <tr>\n";
-    echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">", gettext("Mark as Read"), ":</td>\n";
+    echo "    <td align=\"left\" colspan=\"2\">", gettext("Mark as Read"), ":</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=\"left\" width=\"15\">&nbsp;</td>\n";
-    echo "    <td align=\"left\" class=\"smalltext\">\n";
+    echo "    <td align=\"left\">\n";
     echo "      <form accept-charset=\"utf-8\" name=\"f_mark\" method=\"post\" action=\"thread_list.php\">\n";
     echo "        ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "        ", form_input_hidden("mode", htmlentities_array($mode)), "\n";
@@ -837,11 +837,11 @@ if (session::logged_in()) {
 
 echo "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\">\n";
 echo "  <tr>\n";
-echo "    <td align=\"left\" class=\"smalltext\" colspan=\"2\">", gettext("Navigate"), ":</td>\n";
+echo "    <td align=\"left\" colspan=\"2\">", gettext("Navigate"), ":</td>\n";
 echo "  </tr>\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\" width=\"15\">&nbsp;</td>\n";
-echo "    <td align=\"left\" class=\"smalltext\">\n";
+echo "    <td align=\"left\">\n";
 echo "      <form accept-charset=\"utf-8\" name=\"f_nav\" method=\"get\" action=\"messages.php\" target=\"", html_get_frame_name('right'), "\">\n";
 echo "        ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 

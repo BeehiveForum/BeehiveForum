@@ -215,12 +215,12 @@ if (isset($_POST) && sizeof($_POST) > 0) {
                     if ((thread_is_poll($search_result['TID']) && $search_result['PID'] == 1) || strlen($message['CONTENT']) < 1) {
 
                         echo "  <li><p><a href=\"lmessages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;hightlight=yes\"><b>{$message['TITLE']}</b></a><br />";
-                        echo "<span class=\"smalltext\"><b>", gettext("From"), ":</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']), true), ", ", format_date_time($search_result['CREATED']), "</span></p></li>\n";
+                        echo "<span><b>", gettext("From"), ":</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']), true), ", ", format_date_time($search_result['CREATED']), "</span></p></li>\n";
 
                     } else {
 
                         echo "  <li><p><a href=\"lmessages.php?webtag=$webtag&amp;msg={$search_result['TID']}.{$search_result['PID']}&amp;highlight=yes\"><b>{$message['TITLE']}</b></a><br />";
-                        echo "{$message['CONTENT']}<br /><span class=\"smalltext\"><b>", gettext("From"), ":</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']), true), ", ", format_date_time($search_result['CREATED']), "</span></p></li>\n";
+                        echo "{$message['CONTENT']}<br /><span><b>", gettext("From"), ":</b> ", word_filter_add_ob_tags(format_user_name($search_result['FROM_LOGON'], $search_result['FROM_NICKNAME']), true), ", ", format_date_time($search_result['CREATED']), "</span></p></li>\n";
                     }
                 }
             }

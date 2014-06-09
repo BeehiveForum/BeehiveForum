@@ -193,7 +193,7 @@ function logon_draw_form($logon_options)
         if (user_guest_enabled()) {
 
             echo "<form accept-charset=\"utf-8\" name=\"guest\" action=\"logon.php?webtag=$webtag\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
-            echo "  <p class=\"smalltext\">", sprintf(gettext("Enter as a %s"), form_submit('guest_logon', gettext("Guest"))), "</p>\n";
+            echo "  <p>", sprintf(gettext("Enter as a %s"), form_submit('guest_logon', gettext("Guest"))), "</p>\n";
             echo "</form>\n";
         }
 
@@ -213,23 +213,23 @@ function logon_draw_form($logon_options)
             $register_link = rawurlencode("register.php?webtag=$webtag&final_uri=$final_uri");
             $forgot_pw_link = rawurlencode("forgot_pw.php?webtag=$webtag&final_uri=$final_uri");
 
-            echo "<p class=\"smalltext\">", sprintf(gettext("Don't have an account? %s"), "<a href=\"index.php?webtag=$webtag&amp;final_uri=$register_link\" target=\"" . html_get_top_frame_name() . "\">" . gettext("Register now") . "</a>") . "</p>\n";
+            echo "<p>", sprintf(gettext("Don't have an account? %s"), "<a href=\"index.php?webtag=$webtag&amp;final_uri=$register_link\" target=\"" . html_get_top_frame_name() . "\">" . gettext("Register now") . "</a>") . "</p>\n";
             echo "<hr class=\"bhlogonseparator\" />\n";
             echo "<h2>", gettext("Problems logging on?"), "</h2>\n";
-            echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;delete_cookie=yes&amp;final_uri=$final_uri\" target=\"", html_get_top_frame_name(), "\">", gettext("Delete Cookies"), "</a></p>\n";
-            echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;final_uri=$forgot_pw_link\" target=\"", html_get_top_frame_name(), "\">", gettext("Forgotten your password?"), "</a></p>\n";
+            echo "<p><a href=\"logon.php?webtag=$webtag&amp;delete_cookie=yes&amp;final_uri=$final_uri\" target=\"", html_get_top_frame_name(), "\">", gettext("Delete Cookies"), "</a></p>\n";
+            echo "<p><a href=\"index.php?webtag=$webtag&amp;final_uri=$forgot_pw_link\" target=\"", html_get_top_frame_name(), "\">", gettext("Forgotten your password?"), "</a></p>\n";
 
         } else {
 
-            echo "<p class=\"smalltext\">", sprintf(gettext("Don't have an account? %s"), "<a href=\"index.php?webtag=$webtag&amp;final_uri=register.php%3Fwebtag%3D$webtag\" target=\"" . html_get_top_frame_name() . "\">" . gettext("Register now") . "</a>"), "</p>\n";
+            echo "<p>", sprintf(gettext("Don't have an account? %s"), "<a href=\"index.php?webtag=$webtag&amp;final_uri=register.php%3Fwebtag%3D$webtag\" target=\"" . html_get_top_frame_name() . "\">" . gettext("Register now") . "</a>"), "</p>\n";
             echo "<hr class=\"bhlogonseparator\" />\n";
             echo "<h2>", gettext("Problems logging on?"), "</h2>\n";
-            echo "<p class=\"smalltext\"><a href=\"logon.php?webtag=$webtag&amp;delete_cookie=yes\" target=\"", html_get_top_frame_name(), "\">", gettext("Delete Cookies"), "</a></p>\n";
-            echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;final_uri=forgot_pw.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">", gettext("Forgotten your password?"), "</a></p>\n";
+            echo "<p><a href=\"logon.php?webtag=$webtag&amp;delete_cookie=yes\" target=\"", html_get_top_frame_name(), "\">", gettext("Delete Cookies"), "</a></p>\n";
+            echo "<p><a href=\"index.php?webtag=$webtag&amp;final_uri=forgot_pw.php%3Fwebtag%3D$webtag\" target=\"", html_get_top_frame_name(), "\">", gettext("Forgotten your password?"), "</a></p>\n";
         }
 
         echo "<hr class=\"bhlogonseparator\" />\n";
         echo "<h2>", gettext("Using a mobile device?"), "</h2>\n";
-        echo "<p class=\"smalltext\"><a href=\"index.php?webtag=$webtag&amp;view=mobile\" target=\"", html_get_top_frame_name(), "\">", gettext("Mobile version"), "</a></p>\n";
+        echo "<p><a href=\"index.php?webtag=$webtag&amp;view=mobile\" target=\"", html_get_top_frame_name(), "\">", gettext("Mobile version"), "</a></p>\n";
     }
 }

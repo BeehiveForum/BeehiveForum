@@ -189,27 +189,27 @@ if (isset($user_profile['GROUPS']) && sizeof($user_profile['GROUPS']) > 0) {
     $user_groups_list = (mb_strlen(trim($user_profile['GROUPS'])) > 50) ? mb_substr($user_profile['GROUPS'], 0, 47) . "&hellip;" : $user_profile['GROUPS'];
 
     echo "                            <tr>\n";
-    echo "                              <td align=\"left\" class=\"subhead\"><div title=\"", gettext("Groups"), ": ", word_filter_add_ob_tags($user_profile['GROUPS'], true), "\"><span class=\"smalltext\">", gettext("Groups"), ": ", word_filter_add_ob_tags($user_groups_list), "</span></div></td>\n";
+    echo "                              <td align=\"left\" class=\"subhead\"><div title=\"", gettext("Groups"), ": ", word_filter_add_ob_tags($user_profile['GROUPS'], true), "\"><span>", gettext("Groups"), ": ", word_filter_add_ob_tags($user_groups_list), "</span></div></td>\n";
     echo "                            </tr>\n";
 }
 
 echo "                            <tr>\n";
-echo "                              <td class=\"subhead\" align=\"left\"><span class=\"smalltext\">", gettext("Posts"), ": {$user_profile['POST_COUNT']}</span></td>\n";
+echo "                              <td class=\"subhead\" align=\"left\"><span>", gettext("Posts"), ": {$user_profile['POST_COUNT']}</span></td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
-echo "                              <td  class=\"subhead\" align=\"left\"><span class=\"smalltext\">", gettext("Registered"), ": {$user_profile['REGISTERED']}</span></td>\n";
+echo "                              <td  class=\"subhead\" align=\"left\"><span>", gettext("Registered"), ": {$user_profile['REGISTERED']}</span></td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
-echo "                              <td class=\"subhead\" align=\"left\"><span class=\"smalltext\">", gettext("Member No."), ": #{$user_profile['UID']}</span></td>\n";
+echo "                              <td class=\"subhead\" align=\"left\"><span>", gettext("Member No."), ": #{$user_profile['UID']}</span></td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
-echo "                              <td align=\"left\" class=\"subhead\"><span class=\"smalltext\">", gettext("Last Visit"), ": {$user_profile['LAST_LOGON']}</span></td>\n";
+echo "                              <td align=\"left\" class=\"subhead\"><span>", gettext("Last Visit"), ": {$user_profile['LAST_LOGON']}</span></td>\n";
 echo "                            </tr>\n";
 
 if (isset($user_profile['AGE'])) {
 
     echo "                            <tr>\n";
-    echo "                              <td  class=\"subhead\" align=\"left\"><span class=\"smalltext\">";
+    echo "                              <td  class=\"subhead\" align=\"left\"><span>";
 
     if (isset($user_profile['DOB'])) {
 
@@ -225,21 +225,21 @@ if (isset($user_profile['AGE'])) {
 } else if (isset($user_profile['DOB'])) {
 
     echo "                            <tr>\n";
-    echo "                              <td  class=\"subhead\" align=\"left\"><span class=\"smalltext\">", gettext("Birthday"), ": {$user_profile['DOB']}</span></td>\n";
+    echo "                              <td  class=\"subhead\" align=\"left\"><span>", gettext("Birthday"), ": {$user_profile['DOB']}</span></td>\n";
     echo "                            </tr>\n";
 }
 
 echo "                            <tr>\n";
-echo "                              <td class=\"subhead\" align=\"left\"><span class=\"smalltext\">", gettext("User's Local Time"), ": {$user_profile['LOCAL_TIME']}</span></td>\n";
+echo "                              <td class=\"subhead\" align=\"left\"><span>", gettext("User's Local Time"), ": {$user_profile['LOCAL_TIME']}</span></td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
-echo "                              <td class=\"subhead\" align=\"left\"><span class=\"smalltext\">", gettext("Status"), ": {$user_profile['STATUS']}</span></td>\n";
+echo "                              <td class=\"subhead\" align=\"left\"><span>", gettext("Status"), ": {$user_profile['STATUS']}</span></td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
-echo "                              <td class=\"subhead\" align=\"left\"><span class=\"smalltext\">", gettext("Total Post Rating"), ": ", ($user_profile['POST_RATING'] > 0 ? '+' : ''), $user_profile['POST_RATING'], "</span></td>\n";
+echo "                              <td class=\"subhead\" align=\"left\"><span>", gettext("Total Post Rating"), ": ", ($user_profile['POST_RATING'] > 0 ? '+' : ''), $user_profile['POST_RATING'], "</span></td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
-echo "                              <td class=\"subhead\" align=\"left\"><span class=\"smalltext\">", gettext("Votes Cast"), ": ", sprintf(gettext("%d total, %d down - %d up"), $user_profile['POST_VOTE_TOTAL'], $user_profile['POST_VOTE_DOWN'], $user_profile['POST_VOTE_UP']), "</span></td>\n";
+echo "                              <td class=\"subhead\" align=\"left\"><span>", gettext("Votes Cast"), ": ", sprintf(gettext("%d total, %d down - %d up"), $user_profile['POST_VOTE_TOTAL'], $user_profile['POST_VOTE_DOWN'], $user_profile['POST_VOTE_UP']), "</span></td>\n";
 echo "                            </tr>\n";
 echo "                            <tr>\n";
 echo "                              <td>&nbsp;</td>\n";

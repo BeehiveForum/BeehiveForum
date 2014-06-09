@@ -608,10 +608,10 @@ echo "                        <td align=\"left\" class=\"postbody\"><input type=
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
-echo "                          <p class=\"smalltext\">", gettext("For new installations please select <b>New Install</b> from the drop-down and enter a Default Forum Webtag. A webtag may contain the characters A-Z, 0-9 and underscore. If you enter any other characters, errors will occur during install."), "</p>\n";
-echo "                          <p class=\"smalltext\">", gettext("If you are performing a <b>Reinstall</b>, please enter a webtag as above. Any existing Beehive Forum tables will be automatically removed and all data within them will be permanently deleted."), "</p>\n";
-echo "                          <p class=\"smalltext\">", gettext("For <b>Reconnections</b>, the database portion of the setup is skipped and the installation simply rewrites your config.inc.php file. Use this when you need to change your config.inc.php without reinstalling your Beehive Forum."), "</p>\n";
-echo "                          <p class=\"smalltext\">", gettext("Finally, for <b>Upgrades</b> please select the correct upgrade path. The webtag field is also ignored when using this option. Selecting the wrong option here can have dire consequences for your forum if you have not backed-up."), "</p>\n";
+echo "                          <p>", gettext("For new installations please select <b>New Install</b> from the drop-down and enter a Default Forum Webtag. A webtag may contain the characters A-Z, 0-9 and underscore. If you enter any other characters, errors will occur during install."), "</p>\n";
+echo "                          <p>", gettext("If you are performing a <b>Reinstall</b>, please enter a webtag as above. Any existing Beehive Forum tables will be automatically removed and all data within them will be permanently deleted."), "</p>\n";
+echo "                          <p>", gettext("For <b>Reconnections</b>, the database portion of the setup is skipped and the installation simply rewrites your config.inc.php file. Use this when you need to change your config.inc.php without reinstalling your Beehive Forum."), "</p>\n";
+echo "                          <p>", gettext("Finally, for <b>Upgrades</b> please select the correct upgrade path. The webtag field is also ignored when using this option. Selecting the wrong option here can have dire consequences for your forum if you have not backed-up."), "</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
@@ -664,7 +664,7 @@ echo "                        <td align=\"left\" class=\"postbody\"><input type=
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
-echo "                          <p class=\"smalltext\">", gettext("These are the MySQL database details required to install and run your Beehive Forum. If you do not know what these settings are please contact your hosting provider."), "</p>\n";
+echo "                          <p>", gettext("These are the MySQL database details required to install and run your Beehive Forum. If you do not know what these settings are please contact your hosting provider."), "</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
@@ -709,7 +709,7 @@ echo "                        <td align=\"left\" class=\"postbody\"><input type=
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
-echo "                          <p class=\"smalltext\">", gettext("The credentials of the user you want to have initial Admin access. This information is only required for new installations. Upgrades will leave the existing user accounts intact."), "</p>\n";
+echo "                          <p>", gettext("The credentials of the user you want to have initial Admin access. This information is only required for new installations. Upgrades will leave the existing user accounts intact."), "</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
@@ -744,9 +744,9 @@ echo "                        <td align=\"left\" class=\"postbody\"><span class=
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td colspan=\"2\">\n";
-echo "                          <p class=\"smalltext\">", gettext("<b>Caution!</b> These options are recommended for advanced users only. There use can have a detrimental effect on the functionality of your Beehive Forum AND other software you may have installed."), "</p>\n";
-echo "                          <p class=\"smalltext\">", gettext("<b>Automatically remove tables</b> permanently removes tables that would have conflicted with those used by Beehive Forum. If other tables exist which conflict with those used by the Beehive Forum software then enabling this option may cause any other scripts or software which rely on them to fail."), "</p>\n";
-echo "                          <p class=\"smalltext\">", gettext("<b>Enable error reports</b> enables verbose error reporting for your Beehive Forum and sends these reports to the Admin User's Email Address. These error reports can be useful for helping to diagnose problems and find bugs that you can submit back to Project Beehive Forum. This option is only available when performing a new installation. To enable post-install please see readme.txt for instructions."), "</p>\n";
+echo "                          <p>", gettext("<b>Caution!</b> These options are recommended for advanced users only. There use can have a detrimental effect on the functionality of your Beehive Forum AND other software you may have installed."), "</p>\n";
+echo "                          <p>", gettext("<b>Automatically remove tables</b> permanently removes tables that would have conflicted with those used by Beehive Forum. If other tables exist which conflict with those used by the Beehive Forum software then enabling this option may cause any other scripts or software which rely on them to fail."), "</p>\n";
+echo "                          <p>", gettext("<b>Enable error reports</b> enables verbose error reporting for your Beehive Forum and sends these reports to the Admin User's Email Address. These error reports can be useful for helping to diagnose problems and find bugs that you can submit back to Project Beehive Forum. This option is only available when performing a new installation. To enable post-install please see readme.txt for instructions."), "</p>\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";

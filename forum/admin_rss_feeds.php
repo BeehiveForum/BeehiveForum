@@ -523,7 +523,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Max Item Count"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_max_item_count_new", (isset($_POST['t_max_item_count_new']) ? htmlentities_array($_POST['t_max_item_count_new']) : 10), 6, 4), "&nbsp;<span class=\"smalltext\">", gettext("Min: 1, Max: 10"), "</span></td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_max_item_count_new", (isset($_POST['t_max_item_count_new']) ? htmlentities_array($_POST['t_max_item_count_new']) : 10), 6, 4), "&nbsp;<span>", gettext("Min: 1, Max: 10"), "</span></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -662,7 +662,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\" width=\"200\" class=\"posthead\">", gettext("Max Item Count"), ":</td>\n";
-    echo "                        <td align=\"left\">", form_input_text("t_max_item_count", (isset($_POST['t_max_item_count']) ? htmlentities_array($_POST['t_max_item_count']) : (isset($rss_feed['MAX_ITEM_COUNT']) ? $rss_feed['MAX_ITEM_COUNT'] : 10)), 6, 4), form_input_hidden("t_max_item_count_old", (isset($rss_feed['MAX_ITEM_COUNT']) ? htmlentities_array($rss_feed['MAX_ITEM_COUNT']) : 10)), "&nbsp;<span class=\"smalltext\">", gettext("Min: 1, Max: 10"), "</span></td>\n";
+    echo "                        <td align=\"left\">", form_input_text("t_max_item_count", (isset($_POST['t_max_item_count']) ? htmlentities_array($_POST['t_max_item_count']) : (isset($rss_feed['MAX_ITEM_COUNT']) ? $rss_feed['MAX_ITEM_COUNT'] : 10)), 6, 4), form_input_hidden("t_max_item_count_old", (isset($rss_feed['MAX_ITEM_COUNT']) ? htmlentities_array($rss_feed['MAX_ITEM_COUNT']) : 10)), "&nbsp;<span>", gettext("Min: 1, Max: 10"), "</span></td>\n";
     echo "                      </tr>\n";
     echo "                      <tr>\n";
     echo "                        <td align=\"left\">&nbsp;</td>\n";

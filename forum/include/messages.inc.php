@@ -985,7 +985,7 @@ function message_get_post_options_html($tid, $pid, $message)
     }
 
     $html .= "                      <tr>\n";
-    $html .= "                        <td align=\"left\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\" title=\"" . gettext("Reply as PM") . "\">" . html_style_image('pm_unread', gettext("Reply as PM")). "</a></td>\n";
+    $html .= "                        <td align=\"left\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\" title=\"" . gettext("Reply as PM") . "\">" . html_style_image('pm_unread', gettext("Reply as PM")) . "</a></td>\n";
     $html .= "                        <td align=\"left\" style=\"white-space: nowrap\"><a href=\"pm_write.php?webtag=$webtag&amp;uid={$message['FROM_UID']}&amp;msg={$message['TID']}.{$message['PID']}&amp;return_msg=$tid.$pid\" target=\"_parent\" title=\"" . gettext("Reply as PM") . "\">" . gettext("Reply as PM") . "</a></td>\n";
     $html .= "                      </tr>\n";
     $html .= "                      <tr>\n";
@@ -1333,14 +1333,27 @@ function messages_nav_strip($tid, $pid, $length, $posts_per_page)
 
             $separator = true;
 
-            $navigation[$key] = sprintf(
-                '<a href="messages.php?webtag=%s&amp;msg=%s.%s" target="_self">%s&ndash;%s</a>',
-                urlencode($webtag),
-                urlencode($tid),
-                urlencode(min($range)),
-                htmlentities(min($range)),
-                htmlentities(max($range))
-            );
+            if (min($range) == max($range)) {
+
+                $navigation[$key] = sprintf(
+                    '<a href="messages.php?webtag=%s&amp;msg=%s.%s" target="_self">%s</a>',
+                    urlencode($webtag),
+                    urlencode($tid),
+                    urlencode(min($range)),
+                    htmlentities(min($range))
+                );
+
+            } else {
+
+                $navigation[$key] = sprintf(
+                    '<a href="messages.php?webtag=%s&amp;msg=%s.%s" target="_self">%s&ndash;%s</a>',
+                    urlencode($webtag),
+                    urlencode($tid),
+                    urlencode(min($range)),
+                    htmlentities(min($range)),
+                    htmlentities(max($range))
+                );
+            }
 
         } else if ($separator) {
 

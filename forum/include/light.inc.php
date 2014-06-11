@@ -2034,14 +2034,27 @@ function light_messages_navigation_strip($tid, $pid, $length, $posts_per_page)
 
             $separator = true;
 
-            $navigation[$key] = sprintf(
-                '<a href="lmessages.php?webtag=%s&amp;msg=%s.%s">%s&ndash;%s</a>',
-                urlencode($webtag),
-                urlencode($tid),
-                urlencode(min($range)),
-                htmlentities(min($range)),
-                htmlentities(max($range))
-            );
+            if (min($range) == max($range)) {
+
+                $navigation[$key] = sprintf(
+                    '<a href="lmessages.php?webtag=%s&amp;msg=%s.%s">%s</a>',
+                    urlencode($webtag),
+                    urlencode($tid),
+                    urlencode(min($range)),
+                    htmlentities(min($range))
+                );
+
+            } else {
+
+                $navigation[$key] = sprintf(
+                    '<a href="lmessages.php?webtag=%s&amp;msg=%s.%s">%s&ndash;%s</a>',
+                    urlencode($webtag),
+                    urlencode($tid),
+                    urlencode(min($range)),
+                    htmlentities(min($range)),
+                    htmlentities(max($range))
+                );
+            }
 
         } else if ($separator) {
 

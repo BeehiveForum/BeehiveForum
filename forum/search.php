@@ -487,7 +487,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"40%\">", gettext("Keywords"), ":</td>\n";
-echo "                        <td align=\"left\">", form_input_text("search_string", (isset($search_arguments['search_string']) ? htmlentities_array($search_arguments['search_string']) : ''), 32), "&nbsp;</td>\n";
+echo "                        <td align=\"left\">", form_input_text("search_string", (isset($search_arguments['search_string']) ? htmlentities_array($search_arguments['search_string']) : ''), 32, null, null, 'bhinputtext focus'), "&nbsp;</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

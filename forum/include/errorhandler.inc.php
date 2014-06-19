@@ -113,7 +113,7 @@ function bh_exception_handler(Exception $exception)
         echo "<head>\n";
         echo "<title>Beehive Forum - Error Handler</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-        echo "<link rel=\"icon\" href=\"images/favicon.ico\" type=\"image/ico\" />\n";
+        echo "<link rel=\"icon\" href=\"", rtrim($forum_path, '/'), "/styles/images/favicon.ico\" type=\"image/ico\" />\n";
         echo "<link rel=\"stylesheet\" href=\"", rtrim($forum_path, '/'), "/styles/default/style.css?", md5(uniqid(rand())), "\" type=\"text/css\" />\n";
         echo "</head>\n";
         echo "<body>\n";

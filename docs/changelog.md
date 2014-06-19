@@ -1,7 +1,38 @@
-# Beehive Forum Change Log (Generated: Fri, 06 Jun 2014 19:27:00)
+# Beehive Forum Change Log (Generated: Thu, 19 Jun 2014 19:12:33)
+
+## Date: Thu, 19 Jun 2014
+
+- Changed: Updated dependencies.
+- Fixed: CSS not being applied to installer checks and exceptions.
+
+## Date: Fri, 13 Jun 2014
+
+- Fixed: Search results bounce to bottom of list due to focus on input
+         field.
+
+## Date: Wed, 11 Jun 2014
+
+- Fixed: Show only first PID if only 1 message on next page of
+         messages.
+
+## Date: Mon, 09 Jun 2014
+
+- Changed: Remove smalltext class.
+
+## Date: Sun, 08 Jun 2014
+
+- Changed: Always show threads as unread to guests.
+- Changed: Updated British English locale.
+
+## Date: Sat, 07 Jun 2014
+
+- Fixed: Don't use thread unread cutoff when updating thread modified
+         date after creating a new post.
 
 ## Date: Fri, 06 Jun 2014
 
+- Changed: Updated version and documentation for pending release of
+           1.4.3
 - Fixed: Thread list showing threads older than cut-off as unread.
 
 ## Date: Thu, 05 Jun 2014

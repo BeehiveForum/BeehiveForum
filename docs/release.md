@@ -9,7 +9,7 @@
     - New Mobile mode theme with better Beehive
       branding
     - CSS Sprites now used for images.
-    - HTML emails for post notifications and more.
+    - HTML emails for post notifications.
     - Added column sorting and grouping to Admin
       Visitor Log page.
     - Fixed issues with newer versions of Sphinxsearch.

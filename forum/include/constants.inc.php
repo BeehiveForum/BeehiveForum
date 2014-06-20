@@ -388,6 +388,8 @@ define('ADMIN_LOG_GROUP_SECOND', 6);
 // Admin visitor log grouping
 define('ADMIN_VISITOR_LOG_GROUP_NONE', 0);
 define('ADMIN_VISITOR_LOG_GROUP_IP', 1);
+define('ADMIN_VISITOR_LOG_GROUP_REFERER', 2);
+define('ADMIN_VISITOR_LOG_GROUP_USER_AGENT', 3);
 
 // Link viewmode constants
 define('LINKS_VIEW_HIERARCHICAL', 0);

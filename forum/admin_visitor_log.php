@@ -52,7 +52,9 @@ admin_check_credentials();
 
 $admin_visitor_log_group_type_array = array(
     ADMIN_VISITOR_LOG_GROUP_NONE => gettext("Do Not Group"),
-    ADMIN_VISITOR_LOG_GROUP_IP=> gettext("Group by IP Address"),
+    ADMIN_VISITOR_LOG_GROUP_IP => gettext("Group by IP Address"),
+    ADMIN_VISITOR_LOG_GROUP_REFERER => gettext("Group by Referer"),
+    ADMIN_VISITOR_LOG_GROUP_USER_AGENT => gettext("Group by User Agent"),
 );
 
 $group_by = ADMIN_VISITOR_LOG_GROUP_NONE;
@@ -190,7 +192,7 @@ if ($sort_by == 'LAST_LOGON' && $sort_dir == 'ASC') {
 }
 
 echo "                  </td>\n";
-echo "                  <td class=\"subhead\" align=\"left\">\n";
+echo "                  <td class=\"subhead\" width=\"10%\" align=\"left\">\n";
 
 if ($sort_by == 'IPADDRESS' && $sort_dir == 'ASC') {
     echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=IPADDRESS&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("IP Address"), "</a>\n";
@@ -205,7 +207,7 @@ if ($sort_by == 'IPADDRESS' && $sort_dir == 'ASC') {
 }
 
 echo "                  </td>\n";
-echo "                  <td class=\"subhead\" align=\"left\">\n";
+echo "                  <td class=\"subhead\" align=\"left\" width=\"20%\">\n";
 
 if ($sort_by == 'REFERER' && $sort_dir == 'ASC') {
     echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Referer"), "</a>\n";
@@ -217,6 +219,21 @@ if ($sort_by == 'REFERER' && $sort_dir == 'ASC') {
     echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("Referer"), "</a>\n";
 } else {
     echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=REFERER&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("Referer"), "</a>\n";
+}
+
+echo "                  </td>\n";
+echo "                  <td class=\"subhead\" align=\"left\" width=\"20%\">\n";
+
+if ($sort_by == 'USER_AGENT' && $sort_dir == 'ASC') {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=USER_AGENT&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("User Agent"), "</a>\n";
+    echo "                     ", html_style_image('sort_asc', gettext("Sort Ascending")), "\n";
+} else if ($sort_by == 'USER_AGENT' && $sort_dir == 'DESC') {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=USER_AGENT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("User Agent"), "</a>\n";
+    echo "                     ", html_style_image('sort_desc', gettext("Sort Descending")), "\n";
+} else if ($sort_dir == 'ASC') {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=USER_AGENT&amp;sort_dir=ASC&amp;group_by=$group_by&amp;page=$page\">", gettext("User Agent"), "</a>\n";
+} else {
+    echo "                    <a href=\"admin_visitor_log.php?webtag=$webtag&amp;sort_by=USER_AGENT&amp;sort_dir=DESC&amp;group_by=$group_by&amp;page=$page\">", gettext("User Agent"), "</a>\n";
 }
 
 echo "                  </td>\n";
@@ -262,25 +279,25 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
         }
 
         if (isset($visitor['LAST_LOGON']) && $visitor['LAST_LOGON'] > 0) {
-            echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">", format_date_time($visitor['LAST_LOGON']), "</td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\">", format_date_time($visitor['LAST_LOGON']), "</td>\n";
         } else {
-            echo "                   <td class=\"postbody\" align=\"left\" width=\"100\">", gettext("Unknown"), "</td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\">", gettext("Unknown"), "</td>\n";
         }
 
         if (isset($visitor['IPADDRESS']) && strlen($visitor['IPADDRESS']) > 0) {
 
             if (ip_is_banned($visitor['IPADDRESS'])) {
 
-                echo "                   <td class=\"postbody\" align=\"left\" width=\"200\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$visitor['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$visitor['IPADDRESS']}</a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
+                echo "                   <td class=\"postbody\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_ipaddress={$visitor['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$visitor['IPADDRESS']}</a>&nbsp;(", gettext("Banned"), ")&nbsp;</td>\n";
 
             } else {
 
-                echo "                   <td class=\"postbody\" align=\"left\" width=\"200\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$visitor['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$visitor['IPADDRESS']}</a>&nbsp;</td>\n";
+                echo "                   <td class=\"postbody\" align=\"left\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_ipaddress={$visitor['IPADDRESS']}&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" target=\"_self\">{$visitor['IPADDRESS']}</a>&nbsp;</td>\n";
             }
 
         } else {
 
-            echo "                   <td class=\"postbody\" align=\"left\" width=\"200\">", gettext("Unknown"), "</td>\n";
+            echo "                   <td class=\"postbody\" align=\"left\">", gettext("Unknown"), "</td>\n";
         }
 
         if (isset($visitor['REFERER']) && strlen(trim($visitor['REFERER'])) > 0) {
@@ -288,26 +305,43 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
             $visitor['REFERER_FULL'] = $visitor['REFERER'];
 
             if (!$visitor['REFERER'] = split_url($visitor['REFERER'])) {
-                if (mb_strlen($visitor['REFERER_FULL']) > 25) {
-                    $visitor['REFERER'] = mb_substr($visitor['REFERER_FULL'], 0, 25);
+
+                if (mb_strlen($visitor['REFERER_FULL']) > 35) {
+
+                    $visitor['REFERER'] = mb_substr($visitor['REFERER_FULL'], 0, 35);
                     $visitor['REFERER'] .= "&hellip;";
                 }
             }
 
             if (referer_is_banned($visitor['REFERER'])) {
-                echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a>&nbsp;<a href=\"{$visitor['REFERER_FULL']}\" target=\"_blank\">", html_style_image('link', gettext("External Link")), "</a>&nbsp;(", gettext("Banned"), ")</td>\n";
+                echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_banned.php?webtag=$webtag&amp;unban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a>&nbsp;<a href=\"{$visitor['REFERER_FULL']}\" target=\"_blank\">", html_style_image('link', gettext("External Link")), "</a>&nbsp;(", gettext("Banned"), ")</td>\n";
             } else {
-                echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;<a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a>&nbsp;<a href=\"{$visitor['REFERER_FULL']}\" target=\"_blank\">", html_style_image('link', gettext("External Link")), "</a></td>\n";
+                echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\"><a href=\"admin_banned.php?webtag=$webtag&amp;ban_referer=", rawurlencode($visitor['REFERER_FULL']), "&amp;ret=", rawurlencode(get_request_uri(true, false)), "\" title=\"{$visitor['REFERER_FULL']}\">{$visitor['REFERER']}</a>&nbsp;<a href=\"{$visitor['REFERER_FULL']}\" target=\"_blank\">", html_style_image('link', gettext("External Link")), "</a></td>\n";
             }
 
         } else {
 
-            echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">&nbsp;", gettext("Unknown"), "</td>\n";
+            echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">", gettext("Unknown"), "</td>\n";
+        }
+
+        if (isset($visitor['USER_AGENT']) && strlen(trim($visitor['USER_AGENT'])) > 0) {
+
+            $visitor['USER_AGENT_FULL'] = htmlentities_array($visitor['USER_AGENT']);
+
+            if (mb_strlen($visitor['USER_AGENT']) > 35) {
+                $visitor['USER_AGENT'] = mb_substr($visitor['USER_AGENT_FULL'], 0, 35) . "&hellip;";
+            }
+
+            echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\"><span title=\"{$visitor['USER_AGENT_FULL']}\">{$visitor['USER_AGENT']}</span></td>\n";
+
+        } else {
+
+            echo "                   <td class=\"posthead\" align=\"left\" style=\"white-space: nowrap\">", gettext("Unknown/None"), "</td>\n";
         }
 
         if (isset($group_by) && $group_by != ADMIN_LOG_GROUP_NONE) {
-            echo "                    <td align=\"center\">{$visitor['COUNT']}</td>\n";
-        }        
+            echo "                    <td align=\"center\">", format_number($visitor['COUNT']), "</td>\n";
+        }
 
         echo "                 </tr>\n";
     }
@@ -355,7 +389,7 @@ echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\">", gettext("Group Visitor Log Entries"), ":&nbsp;</td>\n";
-echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" width=\"100%\">", form_dropdown_array("group_by", array(ADMIN_VISITOR_LOG_GROUP_NONE => gettext("Do Not Group"), ADMIN_VISITOR_LOG_GROUP_IP => gettext("Group by IP Address")), $group_by, null, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", gettext("Go")), "</td>\n";
+echo "                        <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\" width=\"100%\">", form_dropdown_array("group_by", $admin_visitor_log_group_type_array, $group_by, null, 'bhlogondropdown'), "&nbsp;", form_submit("select_action", gettext("Go")), "</td>\n";
 echo "                      </tr>\n";
 echo "                    </table>\n";
 echo "                  </td>\n";

@@ -908,7 +908,9 @@ function admin_get_visitor_log($page = 1, $group_by = ADMIN_VISITOR_LOG_GROUP_NO
 
     $group_by_array = array(
         ADMIN_VISITOR_LOG_GROUP_NONE => 'VISITOR_LOG.VID',
-        ADMIN_VISITOR_LOG_GROUP_IP=> 'VISITOR_LOG.IPADDRESS',
+        ADMIN_VISITOR_LOG_GROUP_IP => 'VISITOR_LOG.IPADDRESS',
+        ADMIN_VISITOR_LOG_GROUP_REFERER => 'VISITOR_LOG.REFERER',
+        ADMIN_VISITOR_LOG_GROUP_USER_AGENT => 'VISITOR_LOG.USER_AGENT'
     );
 
     $sort_by_array = array(
@@ -916,6 +918,7 @@ function admin_get_visitor_log($page = 1, $group_by = ADMIN_VISITOR_LOG_GROUP_NO
         'LAST_LOGON',
         'IPADDRESS',
         'REFERER',
+        'USER_AGENT',
         'COUNT'
     );
 
@@ -934,10 +937,9 @@ function admin_get_visitor_log($page = 1, $group_by = ADMIN_VISITOR_LOG_GROUP_NO
 
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
-    $sql = "SELECT SQL_CALC_FOUND_ROWS VISITOR_LOG.UID, USER.LOGON, ";
-    $sql .= "USER.NICKNAME, USER_PEER.PEER_NICKNAME, ";
-    $sql .= "UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
-    $sql .= "VISITOR_LOG.IPADDRESS, VISITOR_LOG.REFERER, ";
+    $sql = "SELECT SQL_CALC_FOUND_ROWS VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, ";
+    $sql .= "USER_PEER.PEER_NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
+    $sql .= "VISITOR_LOG.IPADDRESS, VISITOR_LOG.REFERER, VISITOR_LOG.USER_AGENT, ";
     $sql .= "{$group_by_array[$group_by]} AS GROUP_BY, COUNT(*) AS COUNT, ";
     $sql .= "SEB.SID, SEB.NAME, SEB.URL FROM VISITOR_LOG VISITOR_LOG ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";

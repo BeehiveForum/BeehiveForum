@@ -154,7 +154,6 @@ function get_available_files()
 function get_available_admin_files()
 {
     return array(
-        'admin.php',
         'admin_banned.php',
         'admin_default_forum_settings.php',
         'admin_folder_add.php',
@@ -201,19 +200,6 @@ function get_available_user_files()
         'folder_subscriptions.php',
         'forum_options.php',
         'pm_options.php',
-    );
-}
-
-function get_available_pm_files()
-{
-    return array(
-        'pm.php',
-        'pm_edit.php',
-        'pm_export.php',
-        'pm_folders.php',
-        'pm_messages.php',
-        'pm_options.php',
-        'pm_write.php',
     );
 }
 

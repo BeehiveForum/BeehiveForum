@@ -883,3 +883,19 @@ function var_dump_pre()
     call_user_func_array('var_dump', func_get_args());
     echo '</pre>';
 }
+
+function wordwrap_html($content, $width = 75, $break = '<br />', $cut = false)
+{
+    $content_parts = preg_split('/([<|>])/u', $content, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+    foreach ($content_parts as $key => $content_part) {
+
+        if (($key % 4)) {
+            continue;
+        }
+
+        $content_parts[$key] = wordwrap($content_part, $width, $break, $cut);
+    }
+
+    return implode('', $content_parts);
+}

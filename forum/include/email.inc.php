@@ -85,7 +85,7 @@ function email_send_notification($tid, $pid)
 
         $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $email_data['UID'], true);
 
-        $subject = word_filter_apply(sprintf(gettext("Message Notification from %s"), $forum_name), $email_data['UID'], true);
+        $subject = word_filter_apply(sprintf(gettext("Message Notification from %1\$s"), $forum_name), $email_data['UID'], true);
 
         $recipient = word_filter_apply(format_user_name($email_data['LOGON'], $email_data['NICKNAME']), $email_data['UID'], true);
 
@@ -106,7 +106,7 @@ function email_send_notification($tid, $pid)
         $message->setBody(
             wordwrap(
                 sprintf(
-                    gettext("Hello %s,\n\n%s posted a message to you on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, please go to:\n%s\n\nNote: If you do not wish to receive email notifications of forum messages posted to you, go to: %s, un-select the Email Notification checkbox and press Save."),
+                    gettext("Hello %1\$s,\n\n%2\$s posted a message to you on %3\$s.\n\nThe subject is: %4\$s.\n\nTo read that message and others in the same discussion, please go to:\n%5\$s\n\nNote: If you do not wish to receive email notifications of forum messages posted to you, go to: %6\$s and turn off email notifications."),
                     $recipient,
                     $message_author,
                     $forum_name,
@@ -118,9 +118,9 @@ function email_send_notification($tid, $pid)
         );
 
         $message->addPart(
-            wordwrap(
+            wordwrap_html(
                 sprintf(
-                    gettext("<p>Hello %s,</p><p>%s posted a message to you on %s.</p><p>The subject is: %s.</p><p>To read that message and others in the same discussion, please <a href=\"%s\">click here</a>.</p><p>Note: If you do not wish to receive email notifications of forum messages posted to you, <a href=\"%s\">click here</a>, un-select the Email Notification checkbox and press Save.</p>"),
+                    gettext("<p>Hello %1\$s,</p><p>%2\$s posted a message to you on %3\$s.</p><p>The subject is: %4\$s.</p><p>To read that message and others in the same discussion, please go to:<br /><a href=\"%5\$s\">%5\$s</a></p><p>Note: If you do not wish to receive email notifications of forum messages posted to you, go to: <a href=\"%6\$s\">%6\$s</a><br />and turn off email notifications.</p>"),
                     $recipient,
                     $message_author,
                     $forum_name,
@@ -190,7 +190,7 @@ function email_send_thread_subscription($tid, $pid)
 
         $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $email_data['UID'], true);
 
-        $subject = word_filter_apply(sprintf(gettext("Thread Subscription Notification from %s"), $forum_name), $email_data['UID'], true);
+        $subject = word_filter_apply(sprintf(gettext("Thread Subscription Notification from %1\$s"), $forum_name), $email_data['UID'], true);
 
         $recipient = word_filter_apply(format_user_name($email_data['LOGON'], $email_data['NICKNAME']), $email_data['UID'], true);
 
@@ -209,26 +209,24 @@ function email_send_thread_subscription($tid, $pid)
         $message->setBody(
             wordwrap(
                 sprintf(
-                    gettext("Hello %s,\n\n%s posted a message in a thread you have subscribed to on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, please go to:\n%s\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level at the bottom of the page."),
+                    gettext("Hello %1\$s,\n\n%2\$s posted a message in a thread you have subscribed to on %3\$s.\n\nThe subject is: %4\$s.\n\nTo read that message and others in the same discussion, please go to:\n%5\$s\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %5\$s and adjust your Interest level at the bottom of the page."),
                     $recipient,
                     $message_author,
                     $forum_name,
                     $thread_title,
-                    $message_link,
                     $message_link
                 )
             )
         );
 
         $message->addPart(
-            wordwrap(
+            wordwrap_html(
                 sprintf(
-                    gettext("<p>Hello %s,</p><p>%s posted a message in a thread you have subscribed to on %s.</p><p>The subject is: %s.</p><p>To read that message and others in the same discussion, please <a href=\"%s\">click here</a></p><p>Note: If you do not wish to receive email notifications of new messages in this thread, <a href=\"%s\">click here</a> and adjust your Interest level at the bottom of the page.</p>"),
+                    gettext("<p>Hello %1\$s,</p><p>%2\$s posted a message in a thread you have subscribed to on %3\$s.</p><p>The subject is: %4\$s.</p><p>To read that message and others in the same discussion, please go to:<br /><a href=\"%5\$s\">%5\$s</a></p><p>Note: If you do not wish to receive email notifications of new messages in this thread, go to: <a href=\"%5\$s\">%5\$s</a><br />and adjust your Interest level at the bottom of the page.</p>"),
                     $recipient,
                     $message_author,
                     $forum_name,
                     $thread_title,
-                    $message_link,
                     $message_link
                 )
             ),
@@ -296,7 +294,7 @@ function email_send_folder_subscription($tid, $pid)
 
         $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $email_data['UID'], true);
 
-        $subject = word_filter_apply(sprintf(gettext("Folder Subscription Notification from %s"), $forum_name), $email_data['UID'], true);
+        $subject = word_filter_apply(sprintf(gettext("Folder Subscription Notification from %1\$s"), $forum_name), $email_data['UID'], true);
 
         $recipient = word_filter_apply(format_user_name($email_data['LOGON'], $email_data['NICKNAME']), $email_data['UID'], true);
 
@@ -317,7 +315,7 @@ function email_send_folder_subscription($tid, $pid)
         $message->setBody(
             wordwrap(
                 sprintf(
-                    gettext("Hello %s,\n\n%s posted a message in a folder you are subscribed to on %s.\n\nThe subject is: %s.\n\nTo read that message and others in the same discussion, please go to:\n%s\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %s and adjust your Interest level by clicking on the folder's icon at the top of page."),
+                    gettext("Hello %1\$s,\n\n%2\$s posted a message in a folder you are subscribed to on %3\$s.\n\nThe subject is: %4\$s.\n\nTo read that message and others in the same discussion, please go to:\n%5\$s\n\nNote: If you do not wish to receive email notifications of new messages in this thread, go to: %6\$s and adjust your Interest level by clicking on the folder's icon at the top of page."),
                     $recipient,
                     $message_author,
                     $forum_name,
@@ -329,9 +327,9 @@ function email_send_folder_subscription($tid, $pid)
         );
 
         $message->addPart(
-            wordwrap(
+            wordwrap_html(
                 sprintf(
-                    gettext("<p>Hello %s,</p><p>%s posted a message in a folder you are subscribed to on %s.</p><p>The subject is: %s.</p><p>To read that message and others in the same discussion, please <a href=\"%s\">click here</a>.</p><p>Note: If you do not wish to receive email notifications of new messages in this thread, <a href=\"%s\">click here</a> and adjust your Interest level by clicking on the folder's icon at the top of page.</p>"),
+                    gettext("<p>Hello %1\$s,</p><p>%2\$s posted a message in a folder you are subscribed to on %3\$s.</p><p>The subject is: %4\$s.</p><p>To read that message and others in the same discussion, please go to:<br /><a href=\"%5\$s\">%5\$s</a></p><p>Note: If you do not wish to receive email notifications of new messages in this thread, go to: <a href=\"%6\$s\">%6\$s</a><br />and adjust your Interest level by clicking on the folder's icon at the top of page.</p>"),
                     $recipient,
                     $message_author,
                     $forum_name,
@@ -384,7 +382,7 @@ function email_send_pm_notification($mid)
 
         $forum_name = forum_get_setting('forum_name', null, 'A Beehive Forum');
 
-        $subject = sprintf(gettext("PM Notification from %s"), $forum_name);
+        $subject = sprintf(gettext("PM Notification from %1\$s"), $forum_name);
 
         $message_author = format_user_name($email_data['FROM_LOGON'], $email_data['FROM_NICKNAME']);
 
@@ -405,7 +403,7 @@ function email_send_pm_notification($mid)
         $message->setBody(
             wordwrap(
                 sprintf(
-                    gettext("Hello %s,\n\n%s posted a PM to you on %s.\n\nThe subject is: %s.\n\nTo read the message, please go to:\n%s\n\nNote: If you do not wish to receive email notifications of new PM messages posted to you, go to: %s , un-select the PM Notification checkbox and press Save."),
+                    gettext("Hello %1\$s,\n\n%2\$s posted a PM to you on %3\$s.\n\nThe subject is: %4\$s.\n\nTo read the message, please go to:\n%5\$s\n\nNote: If you do not wish to receive email notifications of new PM messages posted to you, go to: %6\$s and turn off PM notifications."),
                     $recipient,
                     $message_author,
                     $forum_name,
@@ -417,9 +415,9 @@ function email_send_pm_notification($mid)
         );
 
         $message->addPart(
-            wordwrap(
+            wordwrap_html(
                 sprintf(
-                    gettext("<p>Hello %s,</p><p>%s posted a PM to you on %s.</p><p>The subject is: %s.</p><p>To read the message, please <a href=\"%s\">click here</a>.</p><p>Note: If you do not wish to receive email notifications of new PM messages posted to you, <a href=\"%s\">click here</a>, un-select the PM Notification checkbox and press Save.</p>"),
+                    gettext("<p>Hello %1\$s,</p><p>%2\$s posted a PM to you on %3\$s.</p><p>The subject is: %4\$s.</p><p>To read the message, please go to:<br /><a href=\"%5\$s\">%5\$s</a></p><p>Note: If you do not wish to receive email notifications of new PM messages posted to you, go to: <a href=\"%6\$s\">%6\$s</a><br />and turn off PM notifications.</p>"),
                     $recipient,
                     $message_author,
                     $forum_name,
@@ -457,7 +455,7 @@ function email_send_pw_reminder($logon)
 
     $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_user['UID'], true);
 
-    $subject = word_filter_apply(sprintf(gettext("Your password reset request from %s"), $forum_name), $to_user['UID'], true);
+    $subject = word_filter_apply(sprintf(gettext("Your password reset request from %1\$s"), $forum_name), $to_user['UID'], true);
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_user['UID'], true);
 
@@ -472,7 +470,7 @@ function email_send_pw_reminder($logon)
     $message->setBody(
         wordwrap(
             sprintf(
-                gettext("Hello %s,\n\nYou requested this e-mail from %s because you have forgotten your password.\n\nTo reset your password, please go to:\n%s"),
+                gettext("Hello %1\$s,\n\nYou requested this e-mail from %2\$s because you have forgotten your password.\n\nTo reset your password, please go to:\n%3\$s"),
                 $recipient,
                 $forum_name,
                 $change_pw_link
@@ -481,9 +479,9 @@ function email_send_pw_reminder($logon)
     );
 
     $message->addPart(
-        wordwrap(
+        wordwrap_html(
             sprintf(
-                gettext("<p>Hello %s,</p><p>You requested this e-mail from %s because you have forgotten your password.</p><p>To reset your password, please <a href=\"%s\">click here</a>.</p>"),
+                gettext("<p>Hello %1\$s,</p><p>You requested this e-mail from %2\$s because you have forgotten your password.</p><p>To reset your password, please go to:<br /><a href=\"%3\$s\">%3\$s</a></p>"),
                 $recipient,
                 $forum_name,
                 $change_pw_link
@@ -517,11 +515,11 @@ function email_send_new_pw_notification($to_uid, $from_uid, $new_password)
 
     $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $subject = word_filter_apply(sprintf(gettext("Password change notification from %s"), $forum_name), $to_uid, true);
+    $subject = word_filter_apply(sprintf(gettext("Password change notification from %1\$s"), $forum_name), $to_uid, true);
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
-    $passwd_changed_by = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $to_uid, true);
+    $password_changed_by = word_filter_apply(format_user_name($from_user['LOGON'], $from_user['NICKNAME']), $to_uid, true);
 
     $message->setTo($to_user['EMAIL'], $recipient);
 
@@ -530,24 +528,24 @@ function email_send_new_pw_notification($to_uid, $from_uid, $new_password)
     $message->setBody(
         wordwrap(
             sprintf(
-                gettext("Hello %s,\n\nThis a notification email to inform you that your password on %s has been changed.\n\nIt has been changed to: %s and was changed by: %s.\n\nIf you have received this email in error or were not expecting a change to your password please contact the forum owner or a moderator on %s immediately to correct it."),
+                gettext("Hello %1\$s,\n\nThis a notification email to inform you that your password on %2\$s has been changed.\n\nIt has been changed to: %3\$s and was changed by: %4\$s.\n\nIf you have received this email in error or were not expecting a change to your password please contact the forum owner or a moderator on %5\$s immediately to correct it."),
                 $recipient,
                 $forum_name,
                 $new_password,
-                $passwd_changed_by,
+                $password_changed_by,
                 $forum_name
             )
         )
     );
 
     $message->addPart(
-        wordwrap(
+        wordwrap_html(
             sprintf(
-                gettext("<p>Hello %s,</p><p>This a notification email to inform you that your password on %s has been successfully changed.</p><p>It has been changed to: %s and was changed by: %s.</p><p>If you have received this email in error or were not expecting a change to your password please contact the forum owner or a moderator on %s immediately to correct it.</p>"),
+                gettext("<p>Hello %1\$s,</p><p>This a notification email to inform you that your password on %2\$s has been changed.</p><p>It has been changed to: %3\$s and was changed by: %4\$s.</p><p>If you have received this email in error or were not expecting a change to your password please contact the forum owner or a moderator on %5\$s immediately to correct it.</p>"),
                 $recipient,
                 $forum_name,
                 $new_password,
-                $passwd_changed_by,
+                $password_changed_by,
                 $forum_name
             )
         ),
@@ -579,7 +577,7 @@ function email_send_user_confirmation($to_uid)
 
     $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $subject = word_filter_apply(sprintf(gettext("Email confirmation required for %s"), $forum_name), $to_uid, true);
+    $subject = word_filter_apply(sprintf(gettext("Email confirmation required for %1\$s"), $forum_name), $to_uid, true);
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
@@ -594,24 +592,22 @@ function email_send_user_confirmation($to_uid)
     $message->setBody(
         wordwrap(
             sprintf(
-                gettext("Hello %s,\n\nYou recently created a new user account on %s.\n\nBefore you can start posting we need to confirm your email address. To confirm your email address, please go to:\n%s\n\nOnce confirmation is complete you may login and start posting immediately.\n\nIf you did not create a user account on %s please accept our apologies and forward this email to %s so that the source of it may be investigated."),
+                gettext("Hello %1\$s,\n\nYou recently created a new user account on %2\$s.\n\nBefore you can start posting we need to confirm your email address. To confirm your email address, please go to:\n%3\$s\n\nOnce confirmation is complete you may login and start posting immediately.\n\nIf you did not create a user account on %2\$s please accept our apologies and forward this email to %4\$s so that the source of it may be investigated."),
                 $recipient,
                 $forum_name,
                 $confirm_link,
-                $forum_name,
                 $forum_email
             )
         )
     );
 
     $message->addPart(
-        wordwrap(
+        wordwrap_html(
             sprintf(
-                gettext("<p>Hello %s,</p><p>You recently created a new user account on %s.</p><p>Before you can start posting we need to confirm your email address. To confirm your email, please <a href=\"%s\">click here</a>.</p><p>Once confirmation is complete you may login and start posting immediately.</p><p>If you did not create a user account on %s please accept our apologies and forward this email to %s so that the source of it may be investigated.</p>"),
+                gettext("<p>Hello %1\$s,</p><p>You recently created a new user account on %2\$s.</p><p>Before you can start posting we need to confirm your email address. To confirm your email address, please go to:<br /><a href=\"%3\$s\">%3\$s</a></p><p>Once confirmation is complete you may login and start posting immediately.</p><p>If you did not create a user account on %2\$s please accept our apologies and forward this email to %4\$s so that the source of it may be investigated.</p>"),
                 $recipient,
                 $forum_name,
                 $confirm_link,
-                $forum_name,
                 $forum_email
             )
         ),
@@ -643,7 +639,7 @@ function email_send_changed_email_confirmation($to_uid)
 
     $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $subject = word_filter_apply(sprintf(gettext("Email confirmation required for %s"), $forum_name), $to_uid, true);
+    $subject = word_filter_apply(sprintf(gettext("Email confirmation required for %1\$s"), $forum_name), $to_uid, true);
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
@@ -658,24 +654,22 @@ function email_send_changed_email_confirmation($to_uid)
     $message->setBody(
         wordwrap(
             sprintf(
-                gettext("Hello %s,\n\nYou recently changed your email on %s.\n\nBefore you can start posting again we need to confirm your new email address. To reconfirm your email, please go to:\n%s\n\nOnce confirmation is complete you may continue to use the forum as normal.\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated."),
+                gettext("Hello %1\$s,\n\nYou recently changed your email on %2\$s.\n\nBefore you can start posting again we need to confirm your new email address. To reconfirm your email, please go to:\n%3\$s\n\nOnce confirmation is complete you may continue to use the forum as normal.\n\nIf you were not expecting this email from %2\$s please accept our apologies and forward this email to %4\$s so that the source of it may be investigated."),
                 $recipient,
                 $forum_name,
                 $confirm_link,
-                $forum_name,
                 $forum_email
             )
         )
     );
 
     $message->addPart(
-        wordwrap(
+        wordwrap_html(
             sprintf(
-                gettext("<p>Hello %s,</p><p>You recently changed your email on %s.</p><p>Before you can start posting again we need to confirm your new email address. To reconfirm your email address, please <a href=\"%s\">click here</a>.</p><p>Once confirmation is complete you may continue to use the forum as normal.</p><p>If you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated.</p>"),
+                gettext("<p>Hello %1\$s,</p><p>You recently changed your email on %2\$s.</p><p>Before you can start posting again we need to confirm your new email address. To reconfirm your email, please go to:<br /><a href=\"%3\$s\">%3\$s</a></p><p>Once confirmation is complete you may continue to use the forum as normal.</p><p>If you were not expecting this email from %2\$s please accept our apologies and forward this email to %4\$s so that the source of it may be investigated.</p>"),
                 $recipient,
                 $forum_name,
                 $confirm_link,
-                $forum_name,
                 $forum_email
             )
         ),
@@ -707,7 +701,7 @@ function email_send_user_approval_notification($to_uid, $new_user_uid)
 
     $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $subject = word_filter_apply(sprintf(gettext("New User Approval Notification for %s"), $forum_name), $to_uid, true);
+    $subject = word_filter_apply(sprintf(gettext("New User Approval Notification for %1\$s"), $forum_name), $to_uid, true);
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
@@ -724,7 +718,7 @@ function email_send_user_approval_notification($to_uid, $new_user_uid)
     $message->setBody(
         wordwrap(
             sprintf(
-                gettext("Hello %s,\n\nA new user account has been created on %s.\n\nThe name of the new user account is: %s\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account, please go to:\n%s\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."),
+                gettext("Hello %1\$s,\n\nA new user account has been created on %2\$s.\n\nThe name of the new user account is: %3\$s\n\nAs you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.\n\nTo approve this account, please go to:\n%4\$s\n\nNote: Other Administrators on this forum will also receive this notification and may have already acted upon this request."),
                 $recipient,
                 $forum_name,
                 $new_user_logon,
@@ -734,9 +728,9 @@ function email_send_user_approval_notification($to_uid, $new_user_uid)
     );
 
     $message->addPart(
-        wordwrap(
+        wordwrap_html(
             sprintf(
-                gettext("<p>Hello %s,</p><p>A new user account has been created on %s.</p><p>The name of the new user account is: %s</p><p>As you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.</p><p>To approve this account, please <a href=\"%s\">click here</a></p><p>Note: Other Administrators on this forum will also receive this notification and may have already acted upon this request.</p>"),
+                gettext("<p>Hello %1\$s,</p><p>A new user account has been created on %2\$s.</p><p>The name of the new user account is: %3\$s</p><p>As you are an Administrator of this forum you are required to approve this user account before it can be used by it's owner.</p><p>To approve this account, please go to:<br /><a href=\"%4\$s\">%4\$s</a></p><p>Note: Other Administrators on this forum will also receive this notification and may have already acted upon this request.</p>"),
                 $recipient,
                 $forum_name,
                 $new_user_logon,
@@ -773,7 +767,7 @@ function email_send_new_user_notification($to_uid, $new_user_uid)
 
     $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $subject = word_filter_apply(sprintf(gettext("New User Account Notification for %s"), $forum_name), $to_uid, true);
+    $subject = word_filter_apply(sprintf(gettext("New User Account Notification for %1\$s"), $forum_name), $to_uid, true);
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
@@ -790,7 +784,7 @@ function email_send_new_user_notification($to_uid, $new_user_uid)
     $message->setBody(
         wordwrap(
             sprintf(
-                gettext("Hello %s,\n\nA new user account has been created on %s.\n\nThe name of the new user account is: %s\n\nTo view this user account, please go to:\n%s"),
+                gettext("Hello %1\$s,\n\nA new user account has been created on %2\$s.\n\nThe name of the new user account is: %3\$s\n\nTo view this user account, please go to:\n%4\$s"),
                 $recipient,
                 $forum_name,
                 $new_user_logon,
@@ -800,9 +794,9 @@ function email_send_new_user_notification($to_uid, $new_user_uid)
     );
 
     $message->addPart(
-        wordwrap(
+        wordwrap_html(
             sprintf(
-                gettext("<p>Hello %s,</p><p>A new user account has been created on %s.</p><p>The name of the new user account is: %s</p><p>To view this user account, please <a href=\"%s\">click here</a></p>"),
+                gettext("<p>Hello %1\$s,</p><p>A new user account has been created on %2\$s.</p><p>The name of the new user account is: %3\$s</p><p>To view this user account, please go to:<br /><a href=\"%4\$s\">%4\$s</a></p>"),
                 $recipient,
                 $forum_name,
                 $new_user_logon,
@@ -837,7 +831,7 @@ function email_send_user_approved_notification($to_uid)
 
     $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $subject = word_filter_apply(sprintf(gettext("User approval notification for %s"), $forum_name), $to_uid, true);
+    $subject = word_filter_apply(sprintf(gettext("User approval notification for %1\$s"), $forum_name), $to_uid, true);
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
@@ -850,24 +844,22 @@ function email_send_user_approved_notification($to_uid)
     $message->setBody(
         wordwrap(
             sprintf(
-                gettext("Hello %s,\n\nYour user account at %s has been approved. You can login and start posting immediately by going to:\n%s\n\nIf you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated."),
+                gettext("Hello %1\$s,\n\nYour user account at %2\$s has been approved. You can login and start posting immediately by going to:\n%3\$s\n\nIf you were not expecting this email from %2\$s please accept our apologies and forward this email to %4\$s so that the source of it may be investigated."),
                 $recipient,
                 $forum_name,
                 $forum_link,
-                $forum_name,
                 $forum_email
             )
         )
     );
 
     $message->addPart(
-        wordwrap(
+        wordwrap_html(
             sprintf(
-                gettext("<p>Hello %s,</p><p>Your user account at %s has been approved. You can login and start posting immediately by <a href=\"%s\">clicking here</a>.</p><p>If you were not expecting this email from %s please accept our apologies and forward this email to %s so that the source of it may be investigated.</p>"),
+                gettext("<p>Hello %1\$s,</p><p>Your user account at %2\$s has been approved. You can login and start posting immediately by going to:<br /><a href=\"%3\$s\">%3\$s</a></p><p>If you were not expecting this email from %2\$s please accept our apologies and forward this email to %4\$s so that the source of it may be investigated.</p>"),
                 $recipient,
                 $forum_name,
                 $forum_link,
-                $forum_name,
                 $forum_email
             )
         ),
@@ -897,7 +889,7 @@ function email_send_post_approval_notification($to_uid)
 
     $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $subject = word_filter_apply(sprintf(gettext("Post Approval Notification for %s"), $forum_name), $to_uid, true);
+    $subject = word_filter_apply(sprintf(gettext("Post Approval Notification for %1\$s"), $forum_name), $to_uid, true);
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
@@ -912,7 +904,7 @@ function email_send_post_approval_notification($to_uid)
     $message->setBody(
         wordwrap(
             sprintf(
-                gettext("Hello %s,\n\nA new post has been created on %s.\n\nAs you are a Moderator on this forum you are required to approve this post before it can be read by other users.\n\nYou can approve this post by going to:\n%s\n\nNote: Other Moderators on this forum will also receive this notification and may have already acted upon this request."),
+                gettext("Hello %1\$s,\n\nA new post has been created on %2\$s.\n\nAs you are a Moderator on this forum you are required to approve this post before it can be read by other users.\n\nYou can approve this post by going to:\n%3\$s\n\nNote: Other Moderators on this forum will also receive this notification and may have already acted upon this request."),
                 $recipient,
                 $forum_name,
                 $admin_post_approval_link
@@ -921,9 +913,9 @@ function email_send_post_approval_notification($to_uid)
     );
 
     $message->addPart(
-        wordwrap(
+        wordwrap_html(
             sprintf(
-                gettext("<p>Hello %s,</p><p>A new post has been created on %s.</p><p>As you are a Moderator on this forum you are required to approve this post before it can be read by other users.</p><p>You can approve this post by <a href=\"%s\">clicking here</a></p><p>Note: Other Moderators on this forum will also receive this notification and may have already acted upon this request.</p>"),
+                gettext("<p>Hello %1\$s,</p><p>A new post has been created on %2\$s.</p><p>As you are a Moderator on this forum you are required to approve this post before it can be read by other users.</p><p>You can approve this post by going to:<br /><a href=\"%3\$s\">%3\$s</a></p><p>Note: Other Moderators on this forum will also receive this notification and may have already acted upon this request.</p>"),
                 $recipient,
                 $forum_name,
                 $admin_post_approval_link
@@ -955,7 +947,7 @@ function email_send_link_approval_notification($to_uid)
 
     $forum_name = word_filter_apply(forum_get_setting('forum_name', null, 'A Beehive Forum'), $to_uid, true);
 
-    $subject = word_filter_apply(sprintf(gettext("Link Approval Notification for %s"), $forum_name), $to_uid, true);
+    $subject = word_filter_apply(sprintf(gettext("Link Approval Notification for %1\$s"), $forum_name), $to_uid, true);
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
@@ -970,7 +962,7 @@ function email_send_link_approval_notification($to_uid)
     $message->setBody(
         wordwrap(
             sprintf(
-                gettext("Hello %s,\n\nA new link has been created on %s.\n\nAs you are a Link Moderator on this forum you are required to approve this link before it can be read by other users.\n\nYou can approve this link by going to:\n%s\n\nNote: Other Moderators on this forum will also receive this notification and may have already acted upon this request."),
+                gettext("Hello %1\$s,\n\nA new link has been created on %2\$s.\n\nAs you are a Link Moderator on this forum you are required to approve this link before it can be read by other users.\n\nYou can approve this link by going to:\n%3\$s\n\nNote: Other Moderators on this forum will also receive this notification and may have already acted upon this request."),
                 $recipient,
                 $forum_name,
                 $admin_post_approval_link
@@ -979,9 +971,9 @@ function email_send_link_approval_notification($to_uid)
     );
 
     $message->addPart(
-        wordwrap(
+        wordwrap_html(
             sprintf(
-                gettext("<p>Hello %s,</p><p>A new link has been created on %s.</p><p>As you are a Link Moderator on this forum you are required to approve this link before it can be read by other users.</p><p>You can approve this link by <a href=\"%s\">clicking here</a>.</p><p>Note: Other Moderators on this forum will also receive this notification and may have already acted upon this request.</p>"),
+                gettext("<p>Hello %1\$s,</p><p>A new link has been created on %2\$s.</p><p>As you are a Link Moderator on this forum you are required to approve this link before it can be read by other users.</p><p>You can approve this link by going to:<br /><a href=\"%3\$s\">%3\$s</a></p><p>Note: Other Moderators on this forum will also receive this notification and may have already acted upon this request.</p>"),
                 $recipient,
                 $forum_name,
                 $admin_post_approval_link
@@ -1027,11 +1019,11 @@ function email_send_message_to_user($to_uid, $from_uid, $subject, $message_body,
 
     $message->setBody(
         sprintf(
-            "%s\n\n%s",
+            "%1\$s\n\n%2\$s",
             word_filter_apply(strip_tags($message_body), $to_uid, true),
             wordwrap(
                 sprintf(
-                    gettext("This message was sent from %s by %s"),
+                    gettext("This message was sent from %1\$s by %2\$s"),
                     $forum_name,
                     $sent_from
                 )
@@ -1041,11 +1033,11 @@ function email_send_message_to_user($to_uid, $from_uid, $subject, $message_body,
 
     $message->addPart(
         sprintf(
-            "<p>%s</p><p>%s</p>",
+            "<p>%1\$s</p><p>%2\$s</p>",
             word_filter_apply(strip_tags($message_body), $to_uid, true),
-            wordwrap(
+            wordwrap_html(
                 sprintf(
-                    gettext("This message was sent from %s by %s"),
+                    gettext("This message was sent from %1\$s by %2\$s"),
                     $forum_name,
                     $sent_from
                 )

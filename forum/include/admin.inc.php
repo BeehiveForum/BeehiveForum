@@ -50,10 +50,20 @@ function admin_add_log_entry($action, array $data = array())
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "INSERT INTO `{$table_prefix}ADMIN_LOG` (CREATED, UID, ACTION, ENTRY) ";
-    $sql .= "VALUES (CAST('$current_datetime' AS DATETIME), '{$_SESSION['UID']}', '$action', '$data')";
+    $sql = "SELECT UNIX_TIMESTAMP(MAX(CREATED)) FROM `{$table_prefix}ADMIN_LOG` ";
+    $sql .= "WHERE UID = '{$_SESSION['UID']}' AND ACTION = '$action' AND ENTRY = '$data'";
 
-    if (!$db->query($sql)) return false;
+    if (!($result = $db->query($sql))) return false;
+
+    list($created) = $result->fetch_array(MYSQLI_NUM);
+
+    if ($created < (time() - HOUR_IN_SECONDS)) {
+
+        $sql = "INSERT INTO `{$table_prefix}ADMIN_LOG` (CREATED, UID, ACTION, ENTRY) ";
+        $sql .= "VALUES (CAST('$current_datetime' AS DATETIME), '{$_SESSION['UID']}', '$action', '$data')";
+
+        if (!$db->query($sql)) return false;
+    }
 
     return true;
 }

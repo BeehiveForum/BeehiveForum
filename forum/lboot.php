@@ -119,6 +119,9 @@ session::init();
 // Populate the session store.
 session::start($_SESSION['UID']);
 
+// Perform ban check
+ban_check($_SESSION);
+
 // Update User's last forum visit
 forum_update_last_visit($_SESSION['UID']);
 
@@ -130,9 +133,6 @@ lang_init();
 
 // Enable the word filter ob filter
 ob_start('word_filter_ob_callback');
-
-// Perform ban check
-ban_check($_SESSION);
 
 // Check to see if user account has been banned.
 if (session::user_banned()) {

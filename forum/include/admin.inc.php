@@ -1576,14 +1576,19 @@ function admin_prepare_affected_sessions($affected_session)
 
     if ($affected_session['UID'] > 0) {
 
-        $affected_session_text = "<a href=\"user_profile.php?webtag=$webtag&amp;uid={$affected_session['UID']};\" ";
-        $affected_session_text .= "target=\"_blank\" class=\"popup 650x500\">";
-        $affected_session_text .= word_filter_add_ob_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), true);
-        $affected_session_text .= "</a></li>\n";
+        $affected_session_text = sprintf(
+            '<a href="user_profile.php?webtag=%s&amp;uid=%s" target="_blank" class="popup 650x500">%s</a>',
+            urlencode($webtag),
+            urlencode($affected_session['UID']),
+            word_filter_add_ob_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), true)
+        );
 
     } else {
 
-        $affected_session_text = word_filter_add_ob_tags(format_user_name($affected_session['LOGON'], $affected_session['NICKNAME']), true);
+        $affected_session_text = sprintf(
+            ngettext('%s Guest', '%s Guests', $affected_session['SESSION_COUNT']),
+            $affected_session['SESSION_COUNT']
+        );
     }
 
     return $affected_session_text;

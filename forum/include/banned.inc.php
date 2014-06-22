@@ -466,19 +466,18 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
 
     $current_datetime = time();
 
-    $sql = "SELECT DISTINCT SESSIONS.UID, USER.LOGON, ";
-    $sql .= "USER_PEER.PEER_NICKNAME, USER.NICKNAME FROM SESSIONS ";
-    $sql .= "LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
-    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql .= "ON (USER_PEER.PEER_UID = SESSIONS.UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
-    $sql .= "WHERE ($ban_expires > $current_datetime OR $ban_expires = 0) ";
-    $sql .= "AND SESSIONS.UID > 0 AND (((SESSIONS.IPADDRESS LIKE '$ban_data' ";
+    $sql = "SELECT SESSIONS.UID, USER.LOGON, USER_PEER.PEER_NICKNAME, USER.NICKNAME, ";
+    $sql .= "COUNT(*) AS SESSION_COUNT FROM SESSIONS LEFT JOIN USER USER ON (USER.UID = SESSIONS.UID) ";
+    $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON (USER_PEER.PEER_UID = SESSIONS.UID ";
+    $sql .= "AND USER_PEER.UID = '{$_SESSION['UID']}') WHERE ($ban_expires > $current_datetime ";
+    $sql .= "OR $ban_expires = 0) AND (((SESSIONS.IPADDRESS LIKE '$ban_data' ";
     $sql .= "OR USER.IPADDRESS LIKE '$ban_data') AND '$ban_type' = '$ban_type_ip') ";
     $sql .= "OR ((SESSIONS.REFERER LIKE '$ban_data' OR USER.REFERER LIKE '$ban_data') ";
     $sql .= "AND '$ban_type' = '$ban_type_ref') OR (USER.LOGON LIKE '$ban_data' ";
     $sql .= "AND '$ban_type' = '$ban_type_logon') OR (USER.NICKNAME LIKE '$ban_data' ";
     $sql .= "AND '$ban_type' = '$ban_type_nick') OR (USER.EMAIL LIKE '$ban_data' ";
-    $sql .= "AND '$ban_type' = '$ban_type_email'))";
+    $sql .= "AND '$ban_type' = '$ban_type_email') OR USER.UID IS NULL) ";
+    $sql .= "GROUP BY SESSIONS.UID";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -486,35 +485,25 @@ function check_affected_sessions($ban_type, $ban_data, $ban_expires)
 
         while (($ban_result = $result->fetch_assoc()) !== null) {
 
-            if (isset($ban_result['LOGON']) && isset($ban_result['PEER_NICKNAME'])) {
-                if (!is_null($ban_result['PEER_NICKNAME']) && strlen($ban_result['PEER_NICKNAME']) > 0) {
-                    $ban_result['NICKNAME'] = $ban_result['PEER_NICKNAME'];
-                }
-            }
+            if ($ban_result['UID'] == 0) {
 
-            if (!isset($ban_result['LOGON'])) $ban_result['LOGON'] = gettext("Unknown user");
-            if (!isset($ban_result['NICKNAME'])) $ban_result['NICKNAME'] = "";
+                $ban_result['LOGON'] = gettext("Guest");
+                $ban_result['NICKNAME'] = gettext("Guest");
+
+            } else {
+
+                if (isset($ban_result['LOGON']) && isset($ban_result['PEER_NICKNAME'])) {
+                    if (!is_null($ban_result['PEER_NICKNAME']) && strlen($ban_result['PEER_NICKNAME']) > 0) {
+                        $ban_result['NICKNAME'] = $ban_result['PEER_NICKNAME'];
+                    }
+                }
+
+                if (!isset($ban_result['LOGON'])) $ban_result['LOGON'] = gettext("Unknown user");
+                if (!isset($ban_result['NICKNAME'])) $ban_result['NICKNAME'] = "";
+            }
 
             $affected_sessions[$ban_result['UID']] = $ban_result;
         }
-    }
-
-    $sql = "SELECT COUNT(SESSIONS.UID) FROM SESSIONS WHERE SESSIONS.UID = 0 ";
-    $sql .= "AND (('$ban_data' LIKE SESSIONS.IPADDRESS AND '$ban_type' = '$ban_type_ip') ";
-    $sql .= "OR (SESSIONS.REFERER LIKE '$ban_data' AND '$ban_type' = '$ban_type_ref')) ";
-    $sql .= "AND ($ban_expires > CAST('$current_datetime' AS DATETIME) OR $ban_expires = 0)";
-
-    if (!($result = $db->query($sql))) return false;
-
-    list($affected_guest_count) = $result->fetch_row();
-
-    for ($i = 0; $i < $affected_guest_count; $i++) {
-
-        $affected_sessions[] = array(
-            'UID' => 0,
-            'LOGON' => 'GUEST',
-            'NICKNAME' => 'GUEST'
-        );
     }
 
     return (sizeof($affected_sessions) > 0) ? $affected_sessions : false;

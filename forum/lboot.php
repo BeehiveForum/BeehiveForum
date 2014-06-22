@@ -116,6 +116,15 @@ require_once BH_INCLUDE_PATH . 'session.inc.php';
 // Initialise the session
 session::init();
 
+// Populate the session store.
+session::start($_SESSION['UID']);
+
+// Update User's last forum visit
+forum_update_last_visit($_SESSION['UID']);
+
+// Update the visitor log
+session::update_visitor_log($_SESSION['UID']);
+
 // Initialise gettext
 lang_init();
 

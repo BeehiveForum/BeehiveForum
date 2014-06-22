@@ -409,7 +409,13 @@ if (isset($_POST['register'])) {
             user_update_sig($new_uid, $sig_content, true);
 
             // Initialise the new user session.
-            session::start($new_uid, true);
+            session::start($new_uid);
+
+            // Update User's last forum visit
+            forum_update_last_visit($new_uid);
+
+            // Update the visitor log
+            session::update_visitor_log($new_uid, true);
 
             // Check to see if the user is going somewhere after they have registered.
             $final_uri = (isset($final_uri)) ? rawurlencode($final_uri) : '';
@@ -785,7 +791,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
             echo "                      <tr>\n";
             echo "                        <td align=\"left\" valign=\"top\" rowspan=\"2\">", sprintf(gettext("To prevent automated registrations this forum requires you enter a confirmation code. The code is displayed in the image to the right. If you are visually impaired or cannot otherwise read the code please contact the %s."), $forum_owner_link), "</td>\n";
             echo "                        <td align=\"left\" valign=\"top\" rowspan=\"2\">&nbsp;</td>\n";
-            echo "                        <td align=\"left\" valign=\"top\">", html_style_image('text_captcha_image', gettext("This is a captcha-picture. It is used to prevent automatic registration"), 'text_captcha_image', array( 'background-image' => sprintf("url('data:image/jpeg;base64,%s')", base64_encode(file_get_contents($text_captcha_image))), 'width' => "{$text_captcha->get_width()}px", 'height' => "{$text_captcha->get_height()}px")), "\n";
+            echo "                        <td align=\"left\" valign=\"top\">", html_style_image('text_captcha_image', gettext("This is a captcha-picture. It is used to prevent automatic registration"), 'text_captcha_image', array('background-image' => sprintf("url('data:image/jpeg;base64,%s')", base64_encode(file_get_contents($text_captcha_image))), 'width' => "{$text_captcha->get_width()}px", 'height' => "{$text_captcha->get_height()}px")), "\n";
             echo "                        <td align=\"left\" valign=\"top\">", html_style_image('text_captcha_reload reload', null, 'text_captcha_reload'), "</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";

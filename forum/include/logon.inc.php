@@ -41,7 +41,10 @@ function logon_perform()
         if (!user_guest_enabled()) return false;
 
         // Initialise Guest user session.
-        session::start(0, true);
+        session::start(0);
+
+        // Update the visitor log
+        session::update_visitor_log(0, true);
 
         // Success
         return true;
@@ -58,7 +61,13 @@ function logon_perform()
         if (($uid = user_logon($user_logon, $user_password)) !== false) {
 
             // Initialise a user session.
-            session::start($uid, true);
+            session::start($uid);
+
+            // Update User's last forum visit
+            forum_update_last_visit($uid);
+
+            // Update the visitor log
+            session::update_visitor_log($uid, true);
 
             // Check if we should save a token to allow auto logon,
             if (isset($_POST['user_remember']) && ($_POST['user_remember'] == 'Y')) {

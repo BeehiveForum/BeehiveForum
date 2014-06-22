@@ -948,9 +948,12 @@ function admin_get_visitor_log($page = 1, $group_by = ADMIN_VISITOR_LOG_GROUP_NO
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, ";
-    $sql .= "USER_PEER.PEER_NICKNAME, UNIX_TIMESTAMP(VISITOR_LOG.LAST_LOGON) AS LAST_LOGON, ";
+    $sql .= "USER_PEER.PEER_NICKNAME, UNIX_TIMESTAMP(MAX(VISITOR_LOG.LAST_LOGON)) AS LAST_LOGON, ";
     $sql .= "VISITOR_LOG.IPADDRESS, VISITOR_LOG.REFERER, VISITOR_LOG.USER_AGENT, ";
     $sql .= "{$group_by_array[$group_by]} AS GROUP_BY, COUNT(*) AS COUNT, ";
+    $sql .= "COUNT(DISTINCT VISITOR_LOG.IPADDRESS) AS IPADDRESS_COUNT, ";
+    $sql .= "COUNT(DISTINCT VISITOR_LOG.REFERER) AS REFERER_COUNT, ";
+    $sql .= "COUNT(DISTINCT VISITOR_LOG.USER_AGENT) AS USER_AGENT_COUNT, ";
     $sql .= "SEB.SID, SEB.NAME, SEB.URL FROM VISITOR_LOG VISITOR_LOG ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = VISITOR_LOG.UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
@@ -970,7 +973,7 @@ function admin_get_visitor_log($page = 1, $group_by = ADMIN_VISITOR_LOG_GROUP_NO
     list($users_get_recent_count) = $result_count->fetch_row();
 
     if (($result->num_rows == 0) && ($users_get_recent_count > 0) && ($page > 1)) {
-        return admin_get_visitor_log($page - 1);
+        return admin_get_visitor_log($page - 1, $group_by, $sort_by);
     }
 
     while (($visitor_array = $result->fetch_assoc()) !== null) {
@@ -992,16 +995,7 @@ function admin_get_visitor_log($page = 1, $group_by = ADMIN_VISITOR_LOG_GROUP_NO
             $visitor_array['NICKNAME'] = "";
         }
 
-        if (isset($visitor_array['REFERER']) && strlen(trim($visitor_array['REFERER'])) > 0) {
-
-            $forum_uri_preg = preg_quote(html_get_forum_uri(), '/');
-
-            if (preg_match("/^$forum_uri_preg/iu", trim($visitor_array['REFERER'])) > 0) {
-                $visitor_array['REFERER'] = "";
-            }
-
-        } else {
-
+        if (!isset($visitor_array['REFERER']) || strlen(trim($visitor_array['REFERER'])) == 0) {
             $visitor_array['REFERER'] = "";
         }
 

@@ -910,11 +910,13 @@ function admin_get_visitor_log($page = 1, $group_by = ADMIN_VISITOR_LOG_GROUP_NO
 
     if (!is_numeric($page) || ($page < 1)) $page = 0;
 
-    $offset = calculate_page_offset($page, 10);
-
     if (!($table_prefix = get_table_prefix())) return false;
 
     if (!($forum_fid = get_forum_fid())) return false;
+
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+
+    $offset = calculate_page_offset($page, 10);
 
     $group_by_array = array(
         ADMIN_VISITOR_LOG_GROUP_NONE => 'VISITOR_LOG.VID',
@@ -923,34 +925,74 @@ function admin_get_visitor_log($page = 1, $group_by = ADMIN_VISITOR_LOG_GROUP_NO
         ADMIN_VISITOR_LOG_GROUP_USER_AGENT => 'VISITOR_LOG.USER_AGENT'
     );
 
-    $sort_by_array = array(
-        'LOGON',
-        'LAST_LOGON',
-        'IPADDRESS',
-        'REFERER',
-        'USER_AGENT',
-        'COUNT'
-    );
+    if (!isset($group_by_array[$group_by])) $group_by = ADMIN_LOG_GROUP_NONE;
+
+    switch ($group_by) {
+
+        case ADMIN_VISITOR_LOG_GROUP_IP:
+
+            $sort_by_array = array(
+                'LOGON' => 'LOGON_COUNT',
+                'LAST_LOGON' => 'LOGON_COUNT',
+                'IPADDRESS' => 'VISITOR_LOG.IPADDRESS',
+                'REFERER' => 'REFERER_COUNT',
+                'USER_AGENT' => 'USER_AGENT_COUNT',
+            );
+
+            break;
+
+        case ADMIN_VISITOR_LOG_GROUP_REFERER:
+
+            $sort_by_array = array(
+                'LOGON' => 'LOGON_COUNT',
+                'LAST_LOGON' => 'LOGON_COUNT',
+                'IPADDRESS' => 'IPADDRESS_COUNT',
+                'REFERER' => 'VISITOR_LOG.REFERER',
+                'USER_AGENT' => 'USER_AGENT_COUNT',
+            );
+
+            break;
+
+        case ADMIN_VISITOR_LOG_GROUP_USER_AGENT:
+
+            $sort_by_array = array(
+                'LOGON' => 'LOGON_COUNT',
+                'LAST_LOGON' => 'LOGON_COUNT',
+                'IPADDRESS' => 'IPADDRESS_COUNT',
+                'REFERER' => 'REFERER_COUNT',
+                'USER_AGENT' => 'VISITOR_LOG.USER_AGENT',
+            );
+
+            break;
+
+        default:
+
+            $sort_by_array = array(
+                'LOGON' => 'USER.LOGON',
+                'LAST_LOGON' => 'VISITOR_LOG.LAST_LOGON',
+                'IPADDRESS' => 'VISITOR_LOG.IPADDRESS',
+                'REFERER' => 'VISITOR_LOG.REFERER',
+                'USER_AGENT' => 'VISITOR_LOG.USER_AGENT',
+            );
+
+            break;
+    }
 
     $sort_dir_array = array(
         'ASC',
         'DESC'
     );
 
-    $users_get_recent_array = array();
-
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
-
-    if (!isset($group_by_array[$group_by])) $group_by = ADMIN_LOG_GROUP_NONE;
-
-    if (!in_array($sort_by, $sort_by_array)) $sort_by = 'CREATED';
+    if (!isset($sort_by_array[$sort_by])) $sort_by = 'LAST_LOGON';
 
     if (!in_array($sort_dir, $sort_dir_array)) $sort_dir = 'DESC';
+
+    $users_get_recent_array = array();
 
     $sql = "SELECT SQL_CALC_FOUND_ROWS VISITOR_LOG.UID, USER.LOGON, USER.NICKNAME, ";
     $sql .= "USER_PEER.PEER_NICKNAME, UNIX_TIMESTAMP(MAX(VISITOR_LOG.LAST_LOGON)) AS LAST_LOGON, ";
     $sql .= "VISITOR_LOG.IPADDRESS, VISITOR_LOG.REFERER, VISITOR_LOG.USER_AGENT, ";
-    $sql .= "{$group_by_array[$group_by]} AS GROUP_BY, COUNT(*) AS COUNT, ";
+    $sql .= "{$group_by_array[$group_by]} AS GROUP_BY, COUNT(*) AS LOGON_COUNT, ";
     $sql .= "COUNT(DISTINCT VISITOR_LOG.IPADDRESS) AS IPADDRESS_COUNT, ";
     $sql .= "COUNT(DISTINCT VISITOR_LOG.REFERER) AS REFERER_COUNT, ";
     $sql .= "COUNT(DISTINCT VISITOR_LOG.USER_AGENT) AS USER_AGENT_COUNT, ";
@@ -961,7 +1003,7 @@ function admin_get_visitor_log($page = 1, $group_by = ADMIN_VISITOR_LOG_GROUP_NO
     $sql .= "LEFT JOIN SEARCH_ENGINE_BOTS SEB ON (SEB.SID = VISITOR_LOG.SID) ";
     $sql .= "WHERE VISITOR_LOG.LAST_LOGON IS NOT NULL AND VISITOR_LOG.LAST_LOGON > 0 ";
     $sql .= "AND VISITOR_LOG.FORUM = '$forum_fid' GROUP BY GROUP_BY ";
-    $sql .= "ORDER BY $sort_by $sort_dir ";
+    $sql .= "ORDER BY {$sort_by_array[$sort_by]} $sort_dir ";
     $sql .= "LIMIT $offset, 10";
 
     if (!($result = $db->query($sql))) return false;

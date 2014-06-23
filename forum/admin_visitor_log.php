@@ -248,7 +248,7 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
 
         if ($group_by <> ADMIN_VISITOR_LOG_GROUP_NONE) {
 
-            printf(ngettext("%s user", "%s users", $visitor['COUNT']), $visitor['COUNT']);
+            printf(ngettext("%s user", "%s users", $visitor['LOGON_COUNT']), $visitor['LOGON_COUNT']);
 
         } else if (isset($visitor['SID']) && !is_null($visitor['SID'])) {
 
@@ -266,9 +266,16 @@ if (sizeof($admin_visitor_log_array['user_array']) > 0) {
         echo "</td>\n";
         echo "                   <td class=\"postbody\" align=\"left\">";
 
-        if (isset($visitor['LAST_LOGON']) && $visitor['LAST_LOGON'] > 0) {
+        if ($group_by <> ADMIN_VISITOR_LOG_GROUP_NONE) {
+
+            printf(ngettext("%s user", "%s users", $visitor['LOGON_COUNT']), $visitor['LOGON_COUNT']);
+
+        } else if (isset($visitor['LAST_LOGON']) && $visitor['LAST_LOGON'] > 0) {
+
             echo format_date_time($visitor['LAST_LOGON']);
+
         } else {
+
             echo gettext("Unknown");
         }
 

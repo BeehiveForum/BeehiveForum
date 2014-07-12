@@ -1,6 +1,6 @@
 # Beehive Forum Release Notes
 
-## What's new in 1.4.3 (Released ??? June 2014)
+## What's new in 1.4.3 (Released 12th July 2014)
 
 - Changes from 1.4.2
 

@@ -2,7 +2,7 @@
 
 <http://www.beehiveforum.co.uk/>
 
-Version 1.4.3 / ??? June 2014
+Version 1.4.3 / 12th July 2014
 
 A list of changes since previous Beehive Forum versions can be found
 in release.txt.

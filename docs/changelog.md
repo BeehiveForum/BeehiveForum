@@ -1,7 +1,36 @@
-# Beehive Forum Change Log (Generated: Thu, 19 Jun 2014 19:12:33)
+# Beehive Forum Change Log (Generated: Sat, 12 Jul 2014 07:23:19)
+
+## Date: Mon, 23 Jun 2014
+
+- Fixed: Sorting of grouped Admin visitor log columns didn't behave
+         correctly.
+
+## Date: Sun, 22 Jun 2014
+
+- Changed: Remove count column from Admin Visitor log and show counts
+           of each distinct column value instead.
+- Changed: Perform ban check before updating visitor log.
+- Changed: Perform ban check before updating visitor log.
+- Changed: Rate limit the admin log to prevent flooding occurring.
+- Changed: Move calls made within session::start() out into boot.php.
+- Changed: Only update visitor log if an update hasn't been made in
+           the last hour.
+- Changed: Use a single query to fetch affected sessions for bans and
+           group results by UID with a count.
+
+## Date: Sat, 21 Jun 2014
+
+- Changed: HTML emails now look more like the original plaintext ones.
+- Fixed: Double admin menu when following link from email
+         notification.
+
+## Date: Fri, 20 Jun 2014
+
+- Added: More group by options added to Admin Visitor Log.
 
 ## Date: Thu, 19 Jun 2014
 
+- Changed: Updates docs
 - Changed: Updated dependencies.
 - Fixed: CSS not being applied to installer checks and exceptions.
 

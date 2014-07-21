@@ -92,7 +92,6 @@ $json_data = array(
         'delete' => gettext('Delete'),
         'upload' => gettext('Upload'),
     ),
-    'images' => array(),
     'font_size' => $font_size,
     'user_style' => $user_style,
     'emoticons' => $user_emoticons,
@@ -118,15 +117,6 @@ $json_data = array(
         'pm_messages' => html_get_frame_name('pm_messages')
     )
 );
-
-if (($images_array = glob("styles/$user_style/images/*")) !== false) {
-
-    foreach ($images_array as $image_filename) {
-
-        $image_filename = basename($image_filename);
-        $json_data['images'][$image_filename] = html_style_image($image_filename);
-    }
-}
 
 // Decide on the correct Content-Type and encoding
 // of the content. This allows Beehive to reload the

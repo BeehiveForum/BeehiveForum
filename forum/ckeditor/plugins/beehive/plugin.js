@@ -289,7 +289,7 @@ USA
 
                             var emoticon = editor.createFakeParserElement(element, 'cke_emoticon', 'emoticon', 'false');
 
-                            emoticon.attributes.src = beehive.images['blank.png'];
+                            emoticon.attributes.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAABGdBTUEAALGPC/xhBQAAAANQTFRF////p8QbyAAAAAF0Uk5TAEDm2GYAAAAJcEhZcwAAHsEAAB7BAcNpVFMAAAAHdElNRQfcDB4LNzBmlcQgAAAACklEQVQIHWNgAAAAAgABz8g15QAAAABJRU5ErkJggg==";
 
                             emoticon.attributes['class'] = element.attributes['class'];
                             emoticon.attributes['title'] = element.attributes['title'];

@@ -703,6 +703,9 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
 
                 $poll_display .= "              </td>\n";
                 $poll_display .= "            </tr>\n";
+                $poll_display .= "            <tr>\n";
+                $poll_display .= "              <td align=\"left\" colspan=\"2\">&nbsp;</td>";
+                $poll_display .= "            </tr>\n";
 
                 if ($poll_data['CHANGEVOTE'] != POLL_VOTE_CANNOT_CHANGE) {
 

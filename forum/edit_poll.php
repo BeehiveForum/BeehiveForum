@@ -740,7 +740,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
                 if ($poll_data['POLLTYPE'] == POLL_VERTICAL_GRAPH) {
 
                     $poll_display .= "                <tr>\n";
-                    $poll_display .= "                  <td align=\"left\" colspan=\"2\">" . poll_vertical_graph($poll_question['OPTIONS_ARRAY'], $poll_data, $total_vote_count) . "</td>\n";
+                    $poll_display .= "                  <td align=\"left\" colspan=\"2\">" . poll_vertical_graph($poll_question['OPTIONS_ARRAY'], $total_vote_count) . "</td>\n";
                     $poll_display .= "                </tr>\n";
 
                 } else if ($poll_data['VOTETYPE'] == POLL_VOTE_PUBLIC) {

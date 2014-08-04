@@ -1,5 +1,15 @@
 # Beehive Forum Release Notes
 
+## What's new in 1.4.4 (Released 4th August 2014)
+
+- Changes from 1.4.3
+
+    - Fixed an error during installation creating
+      the VISITOR_LOG table
+    - Fixed not being able to edit vertical polls.
+    - Fixed broken images appearing for emoticons
+      when editing a post.
+
 ## What's new in 1.4.3 (Released 12th July 2014)
 
 - Changes from 1.4.2

@@ -21,15 +21,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Beehive Forum\n"
-"POT-Creation-Date: 2014-06-08 13:53-0000\n"
-"PO-Revision-Date: 2014-06-08 13:58-0000\n"
+"POT-Creation-Date: 2014-08-20 09:24-0000\n"
+"PO-Revision-Date: 2014-08-20 09:26-0000\n"
 "Last-Translator: Matt Beale <matt@beehiveforum.co.uk>\n"
 "Language-Team: Matt Beale <matt@beehiveforum.co.uk>\n"
 "Language: en_GB\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.4\n"
+"X-Generator: Poedit 1.6.8\n"
 "X-Poedit-Basepath: .\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -126,7 +126,7 @@ msgstr ""
 #: ../../../../edit_poll.php:129 ../../../../edit_prefs.php:436
 #: ../../../../include/html.inc.php:195 ../../../../include/html.inc.php:250
 #: ../../../../include/html.inc.php:843 ../../../../include/html.inc.php:846
-#: ../../../../include/light.inc.php:2379 ../../../../ldelete.php:61
+#: ../../../../include/light.inc.php:2392 ../../../../ldelete.php:61
 #: ../../../../ldelete.php:81 ../../../../ldelete.php:95
 #: ../../../../ldelete.php:129 ../../../../ldelete.php:143
 #: ../../../../ldelete.php:161 ../../../../ldelete.php:175
@@ -170,7 +170,7 @@ msgstr "Error"
 #: ../../../../admin_user_groups_edit.php:214
 #: ../../../../admin_user_groups_edit_users.php:181
 #: ../../../../admin_users.php:154 ../../../../admin_viewlog.php:225
-#: ../../../../admin_visitor_log.php:138 ../../../../admin_wordfilter.php:279
+#: ../../../../admin_visitor_log.php:140 ../../../../admin_wordfilter.php:279
 #: ../../../../admin_wordfilter.php:377 ../../../../admin_wordfilter.php:461
 #: ../../../../create_poll.php:862 ../../../../edit_prefs.php:520
 #: ../../../../edit_profile.php:168 ../../../../edit_signature.php:171
@@ -297,7 +297,7 @@ msgstr "Check Ban"
 #: ../../../../pm_write.php:701 ../../../../pm_write.php:703
 #: ../../../../pm_write.php:705 ../../../../post.php:849
 #: ../../../../post.php:851 ../../../../post.php:853
-#: ../../../../register.php:813 ../../../../register.php:869
+#: ../../../../register.php:819 ../../../../register.php:875
 #: ../../../../thread_list.php:199 ../../../../user_rel.php:402
 msgid "Cancel"
 msgstr "Cancel"
@@ -408,9 +408,9 @@ msgstr ""
 #: ../../../../admin_users.php:323 ../../../../admin_users.php:338
 #: ../../../../admin_viewlog.php:257 ../../../../admin_viewlog.php:272
 #: ../../../../admin_viewlog.php:287 ../../../../admin_viewlog.php:305
-#: ../../../../admin_visitor_log.php:167 ../../../../admin_visitor_log.php:182
-#: ../../../../admin_visitor_log.php:197 ../../../../admin_visitor_log.php:212
-#: ../../../../admin_visitor_log.php:230 ../../../../forums.php:345
+#: ../../../../admin_visitor_log.php:169 ../../../../admin_visitor_log.php:184
+#: ../../../../admin_visitor_log.php:199 ../../../../admin_visitor_log.php:214
+#: ../../../../admin_visitor_log.php:229 ../../../../forums.php:345
 #: ../../../../forums.php:360 ../../../../forums.php:376
 #: ../../../../forums.php:571 ../../../../forums.php:586
 #: ../../../../forums.php:602 ../../../../pm_messages.php:389
@@ -428,9 +428,9 @@ msgstr "Sort Ascending"
 #: ../../../../admin_users.php:326 ../../../../admin_users.php:341
 #: ../../../../admin_viewlog.php:260 ../../../../admin_viewlog.php:275
 #: ../../../../admin_viewlog.php:290 ../../../../admin_viewlog.php:308
-#: ../../../../admin_visitor_log.php:170 ../../../../admin_visitor_log.php:185
-#: ../../../../admin_visitor_log.php:200 ../../../../admin_visitor_log.php:215
-#: ../../../../admin_visitor_log.php:233 ../../../../forums.php:348
+#: ../../../../admin_visitor_log.php:172 ../../../../admin_visitor_log.php:187
+#: ../../../../admin_visitor_log.php:202 ../../../../admin_visitor_log.php:217
+#: ../../../../admin_visitor_log.php:232 ../../../../forums.php:348
 #: ../../../../forums.php:363 ../../../../forums.php:379
 #: ../../../../forums.php:574 ../../../../forums.php:589
 #: ../../../../forums.php:605 ../../../../pm_messages.php:392
@@ -446,8 +446,8 @@ msgstr "Sort Descending"
 #: ../../../../admin_user.php:1244 ../../../../admin_user.php:1280
 #: ../../../../admin_user.php:1297 ../../../../admin_users.php:362
 #: ../../../../admin_users.php:368 ../../../../admin_viewlog.php:830
-#: ../../../../admin_visitor_log.php:267 ../../../../admin_visitor_log.php:283
-#: ../../../../admin_visitor_log.php:305
+#: ../../../../admin_visitor_log.php:279 ../../../../admin_visitor_log.php:300
+#: ../../../../admin_visitor_log.php:334
 #: ../../../../include/timezone.inc.php:115
 #: ../../../../include/user_profile.inc.php:116
 #: ../../../../include/user_profile.inc.php:122
@@ -705,9 +705,9 @@ msgstr "Are you sure you want to change the unread cut-off?"
 #: ../../../../edit_poll.php:1010 ../../../../edit_poll.php:1037
 #: ../../../../edit_poll.php:1060 ../../../../edit_wordfilter.php:58
 #: ../../../../edit_wordfilter.php:307 ../../../../edit_wordfilter.php:405
-#: ../../../../pm_messages.php:204 ../../../../register.php:646
-#: ../../../../register.php:650 ../../../../register.php:654
-#: ../../../../register.php:658 ../../../../search.php:588
+#: ../../../../pm_messages.php:204 ../../../../register.php:652
+#: ../../../../register.php:656 ../../../../register.php:660
+#: ../../../../register.php:664 ../../../../search.php:588
 #: ../../../../thread_options.php:851 ../../../../thread_options.php:858
 #: ../../../../thread_options.php:1002
 msgid "Yes"
@@ -771,8 +771,8 @@ msgstr "Yes"
 #: ../../../../edit_poll.php:1040 ../../../../edit_poll.php:1063
 #: ../../../../edit_wordfilter.php:57 ../../../../edit_wordfilter.php:307
 #: ../../../../edit_wordfilter.php:405 ../../../../pm_messages.php:205
-#: ../../../../register.php:646 ../../../../register.php:650
-#: ../../../../register.php:654 ../../../../register.php:658
+#: ../../../../register.php:652 ../../../../register.php:656
+#: ../../../../register.php:660 ../../../../register.php:664
 #: ../../../../search.php:588 ../../../../thread_options.php:824
 #: ../../../../thread_options.php:852 ../../../../thread_options.php:859
 #: ../../../../thread_options.php:916 ../../../../thread_options.php:1002
@@ -1350,7 +1350,7 @@ msgstr ""
 "move or close any thread for any reason.</p>"
 
 #: ../../../../admin_default_forum_settings.php:1312
-#: ../../../../register.php:840
+#: ../../../../register.php:846
 msgid "Forum Rules"
 msgstr "Forum Rules"
 
@@ -1552,7 +1552,7 @@ msgstr ""
 #: ../../../../edit_attachments.php:244 ../../../../edit_attachments.php:253
 #: ../../../../edit_attachments.php:274 ../../../../edit_attachments.php:316
 #: ../../../../include/light.inc.php:1887
-#: ../../../../include/light.inc.php:2476
+#: ../../../../include/light.inc.php:2489
 #: ../../../../include/messages.inc.php:823 ../../../../include/pm.inc.php:848
 #: ../../../../ledit.php:410 ../../../../lpm_edit.php:283
 #: ../../../../lpm_write.php:641 ../../../../lpost.php:621
@@ -1931,10 +1931,10 @@ msgstr "Reset user permissions"
 #: ../../../../delete.php:208 ../../../../edit_attachments.php:375
 #: ../../../../edit_wordfilter.php:423 ../../../../include/light.inc.php:1135
 #: ../../../../include/light.inc.php:1911
-#: ../../../../include/light.inc.php:2504
-#: ../../../../include/light.inc.php:2510
-#: ../../../../include/light.inc.php:2515
-#: ../../../../include/light.inc.php:2520
+#: ../../../../include/light.inc.php:2517
+#: ../../../../include/light.inc.php:2523
+#: ../../../../include/light.inc.php:2528
+#: ../../../../include/light.inc.php:2533
 #: ../../../../include/messages.inc.php:982
 #: ../../../../include/messages.inc.php:983 ../../../../json.php:92
 #: ../../../../ldelete.php:253 ../../../../links.php:204
@@ -2099,7 +2099,7 @@ msgstr "Search Returned No Results"
 
 #: ../../../../admin_forum_access.php:312
 #: ../../../../admin_user_groups_edit_users.php:285 ../../../../forums.php:69
-#: ../../../../forums.php:314 ../../../../include/light.inc.php:2256
+#: ../../../../forums.php:314 ../../../../include/light.inc.php:2269
 #: ../../../../include/pm.inc.php:1918
 #: ../../../../include/threads.inc.php:1642 ../../../../pm_folders.php:63
 #: ../../../../pm_messages.php:66 ../../../../search.php:285
@@ -2308,14 +2308,14 @@ msgid "New Password"
 msgstr "New Password"
 
 #: ../../../../admin_forum_set_passwd.php:223 ../../../../admin_user.php:758
-#: ../../../../include/admin.inc.php:1806
+#: ../../../../include/admin.inc.php:1859
 #: ../../../../include/forum.inc.php:413 ../../../../include/light.inc.php:425
-#: ../../../../include/logon.inc.php:146 ../../../../register.php:525
+#: ../../../../include/logon.inc.php:155 ../../../../register.php:531
 msgid "Password"
 msgstr "Password"
 
 #: ../../../../admin_forum_set_passwd.php:229 ../../../../change_pw.php:181
-#: ../../../../edit_password.php:180 ../../../../register.php:529
+#: ../../../../edit_password.php:180 ../../../../register.php:535
 msgid "Confirm Password"
 msgstr "Confirm Password"
 
@@ -2368,7 +2368,7 @@ msgstr "Default Emoticons"
 #: ../../../../ledit.php:403 ../../../../lpm_edit.php:277
 #: ../../../../lpm_write.php:604 ../../../../lpost.php:605
 #: ../../../../pm_edit.php:341 ../../../../pm_write.php:696
-#: ../../../../post.php:846 ../../../../register.php:736
+#: ../../../../post.php:846 ../../../../register.php:742
 #: ../../../../user_rel.php:212
 msgid "Preview"
 msgstr "Preview"
@@ -2378,17 +2378,17 @@ msgid "Default Language"
 msgstr "Default Language"
 
 #: ../../../../admin_forum_settings.php:498 ../../../../forum_options.php:410
-#: ../../../../include/visitor_log.inc.php:132 ../../../../register.php:682
+#: ../../../../include/visitor_log.inc.php:132 ../../../../register.php:688
 msgid "Time Zone"
 msgstr "Time Zone"
 
 #: ../../../../admin_forum_settings.php:506 ../../../../forum_options.php:416
-#: ../../../../register.php:690
+#: ../../../../register.php:696
 msgid "Time zone"
 msgstr "Time zone"
 
 #: ../../../../admin_forum_settings.php:511 ../../../../forum_options.php:421
-#: ../../../../register.php:695
+#: ../../../../register.php:701
 msgid "Adjust for daylight saving"
 msgstr "Adjust for daylight saving"
 
@@ -2705,7 +2705,7 @@ msgstr ""
 "they will be hidden for all users."
 
 #: ../../../../admin_forum_settings.php:994
-#: ../../../../include/light.inc.php:2253
+#: ../../../../include/light.inc.php:2266
 #: ../../../../include/threads.inc.php:1639
 msgid "Polls"
 msgstr "Polls"
@@ -2755,7 +2755,7 @@ msgid "Admin - Forum Stats"
 msgstr "Admin - Forum Stats"
 
 #: ../../../../admin_forum_stats.php:70 ../../../../admin_menu.php:90
-#: ../../../../include/messages.inc.php:1746
+#: ../../../../include/messages.inc.php:1759
 msgid "Forum Stats"
 msgstr "Forum Stats"
 
@@ -3108,12 +3108,13 @@ msgstr "You must supply a forum webtag"
 
 #: ../../../../admin_forums.php:247 ../../../../admin_forums.php:332
 #: ../../../../admin_link_approve.php:462
-#: ../../../../include/admin.inc.php:155 ../../../../include/admin.inc.php:979
-#: ../../../../include/admin.inc.php:1086
-#: ../../../../include/admin.inc.php:1131
-#: ../../../../include/admin.inc.php:1173
-#: ../../../../include/admin.inc.php:1218
-#: ../../../../include/banned.inc.php:495
+#: ../../../../include/admin.inc.php:165
+#: ../../../../include/admin.inc.php:1036
+#: ../../../../include/admin.inc.php:1134
+#: ../../../../include/admin.inc.php:1179
+#: ../../../../include/admin.inc.php:1221
+#: ../../../../include/admin.inc.php:1266
+#: ../../../../include/banned.inc.php:501
 #: ../../../../include/forum.inc.php:1810
 #: ../../../../include/links.inc.php:113 ../../../../include/links.inc.php:437
 #: ../../../../include/links.inc.php:513 ../../../../include/links.inc.php:682
@@ -3122,7 +3123,7 @@ msgstr "You must supply a forum webtag"
 #: ../../../../include/pm.inc.php:379 ../../../../include/pm.inc.php:419
 #: ../../../../include/pm.inc.php:422 ../../../../include/pm.inc.php:446
 #: ../../../../include/poll.inc.php:316 ../../../../include/poll.inc.php:317
-#: ../../../../include/poll.inc.php:1127
+#: ../../../../include/poll.inc.php:1130
 #: ../../../../include/rss_feed.inc.php:362
 #: ../../../../include/rss_feed.inc.php:457
 #: ../../../../include/search.inc.php:606
@@ -3448,7 +3449,7 @@ msgstr "View Log"
 msgid "Post Approval Queue"
 msgstr "Post Approval Queue"
 
-#: ../../../../admin_menu.php:117 ../../../../admin_visitor_log.php:138
+#: ../../../../admin_menu.php:117 ../../../../admin_visitor_log.php:140
 #: ../../../../visitor_log.php:240 ../../../../visitor_log.php:245
 msgid "Visitor Log"
 msgstr "Visitor Log"
@@ -3649,7 +3650,7 @@ msgstr "Total posts for this period"
 #: ../../../../admin_post_stats.php:239 ../../../../admin_prof_items.php:445
 #: ../../../../admin_prof_items.php:551 ../../../../admin_user.php:894
 #: ../../../../admin_users.php:426 ../../../../admin_viewlog.php:888
-#: ../../../../admin_visitor_log.php:351 ../../../../admin_visitor_log.php:385
+#: ../../../../admin_visitor_log.php:408 ../../../../admin_visitor_log.php:442
 #: ../../../../admin_wordfilter.php:542 ../../../../edit_signature.php:329
 #: ../../../../edit_wordfilter.php:524 ../../../../user_profile.php:99
 #: ../../../../user_profile.php:109 ../../../../visitor_log.php:455
@@ -4274,13 +4275,13 @@ msgstr "HTTP Referer Matches"
 msgid "IP"
 msgstr "IP"
 
-#: ../../../../admin_user.php:757 ../../../../register.php:574
+#: ../../../../admin_user.php:757 ../../../../register.php:580
 msgid "Email"
 msgstr "Email"
 
-#: ../../../../admin_user.php:759 ../../../../admin_visitor_log.php:211
-#: ../../../../admin_visitor_log.php:214 ../../../../admin_visitor_log.php:217
-#: ../../../../admin_visitor_log.php:219
+#: ../../../../admin_user.php:759 ../../../../admin_visitor_log.php:213
+#: ../../../../admin_visitor_log.php:216 ../../../../admin_visitor_log.php:219
+#: ../../../../admin_visitor_log.php:221
 msgid "Referer"
 msgstr "Referer"
 
@@ -4291,17 +4292,17 @@ msgstr "Possible Aliases"
 #: ../../../../admin_user.php:805 ../../../../admin_users.php:59
 #: ../../../../admin_viewlog.php:271 ../../../../admin_viewlog.php:274
 #: ../../../../admin_viewlog.php:277 ../../../../admin_viewlog.php:279
-#: ../../../../admin_visitor_log.php:166 ../../../../admin_visitor_log.php:169
-#: ../../../../admin_visitor_log.php:172 ../../../../admin_visitor_log.php:174
-#: ../../../../include/admin.inc.php:1825
+#: ../../../../admin_visitor_log.php:168 ../../../../admin_visitor_log.php:171
+#: ../../../../admin_visitor_log.php:174 ../../../../admin_visitor_log.php:176
+#: ../../../../include/admin.inc.php:1878
 #: ../../../../include/forum.inc.php:429 ../../../../include/light.inc.php:411
-#: ../../../../include/light.inc.php:427 ../../../../include/logon.inc.php:134
-#: ../../../../include/logon.inc.php:183
+#: ../../../../include/light.inc.php:427 ../../../../include/logon.inc.php:143
+#: ../../../../include/logon.inc.php:192
 msgid "Logon"
 msgstr "Logon"
 
 #: ../../../../admin_user.php:806 ../../../../admin_user.php:1181
-#: ../../../../edit_prefs.php:603 ../../../../register.php:570
+#: ../../../../edit_prefs.php:603 ../../../../register.php:576
 #: ../../../../user_rel.php:259 ../../../../user_rel.php:265
 msgid "Nickname"
 msgstr "Nickname"
@@ -4309,8 +4310,8 @@ msgstr "Nickname"
 #: ../../../../admin_user.php:823 ../../../../admin_user.php:834
 #: ../../../../admin_user.php:860 ../../../../admin_user.php:1191
 #: ../../../../admin_user.php:1229 ../../../../admin_user.php:1265
-#: ../../../../admin_user.php:1289 ../../../../admin_visitor_log.php:274
-#: ../../../../admin_visitor_log.php:298
+#: ../../../../admin_user.php:1289 ../../../../admin_visitor_log.php:291
+#: ../../../../admin_visitor_log.php:327
 #: ../../../../include/user_profile.inc.php:203
 msgid "Banned"
 msgstr "Banned"
@@ -4320,7 +4321,7 @@ msgstr "Banned"
 #: ../../../../admin_user.php:1191 ../../../../admin_user.php:1198
 #: ../../../../admin_user.php:1229 ../../../../admin_user.php:1236
 #: ../../../../admin_user.php:1265 ../../../../admin_user.php:1272
-#: ../../../../admin_visitor_log.php:298 ../../../../admin_visitor_log.php:300
+#: ../../../../admin_visitor_log.php:327 ../../../../admin_visitor_log.php:329
 msgid "External Link"
 msgstr "External Link"
 
@@ -4387,9 +4388,9 @@ msgstr "User Details"
 #: ../../../../admin_users.php:481 ../../../../edit_prefs.php:590
 #: ../../../../edit_prefs.php:597 ../../../../edit_prefs.php:632
 #: ../../../../edit_relations.php:259 ../../../../forgot_pw.php:98
-#: ../../../../include/admin.inc.php:1802
-#: ../../../../include/light.inc.php:424 ../../../../include/logon.inc.php:142
-#: ../../../../register.php:521 ../../../../search.php:524
+#: ../../../../include/admin.inc.php:1855
+#: ../../../../include/light.inc.php:424 ../../../../include/logon.inc.php:151
+#: ../../../../register.php:527 ../../../../search.php:524
 #: ../../../../search_popup.php:305 ../../../../visitor_log.php:517
 msgid "Username"
 msgstr "Username"
@@ -4829,7 +4830,7 @@ msgstr "Users awaiting approval"
 
 #: ../../../../admin_users.php:403 ../../../../admin_users.php:407
 #: ../../../../admin_users.php:436 ../../../../admin_users.php:441
-#: ../../../../admin_viewlog.php:895 ../../../../admin_visitor_log.php:358
+#: ../../../../admin_viewlog.php:895 ../../../../admin_visitor_log.php:415
 #: ../../../../forums.php:499 ../../../../forums.php:729
 #: ../../../../forums.php:859
 msgid "Go"
@@ -5116,7 +5117,7 @@ msgid "StopForumSpam Ban Check Results"
 msgstr "StopForumSpam Ban Check Results"
 
 #: ../../../../admin_viewlog.php:129 ../../../../admin_viewlog.php:895
-#: ../../../../admin_visitor_log.php:54 ../../../../admin_visitor_log.php:358
+#: ../../../../admin_visitor_log.php:54
 msgid "Do Not Group"
 msgstr "Do Not Group"
 
@@ -5181,8 +5182,6 @@ msgstr "Action"
 
 #: ../../../../admin_viewlog.php:304 ../../../../admin_viewlog.php:307
 #: ../../../../admin_viewlog.php:310 ../../../../admin_viewlog.php:312
-#: ../../../../admin_visitor_log.php:229 ../../../../admin_visitor_log.php:232
-#: ../../../../admin_visitor_log.php:235 ../../../../admin_visitor_log.php:237
 msgid "Count"
 msgstr "Count"
 
@@ -5493,8 +5492,11 @@ msgstr "Merged threads '%s' and '%s' into new thread '%s'"
 #: ../../../../admin_viewlog.php:688 ../../../../admin_viewlog.php:710
 #: ../../../../admin_viewlog.php:732 ../../../../admin_viewlog.php:754
 #: ../../../../admin_viewlog.php:776 ../../../../admin_viewlog.php:795
-#: ../../../../include/admin.inc.php:974 ../../../../include/admin.inc.php:975
-#: ../../../../include/logon.inc.php:196
+#: ../../../../include/admin.inc.php:1031
+#: ../../../../include/admin.inc.php:1032
+#: ../../../../include/banned.inc.php:490
+#: ../../../../include/banned.inc.php:491
+#: ../../../../include/logon.inc.php:205
 #: ../../../../include/visitor_log.inc.php:96
 #: ../../../../include/visitor_log.inc.php:97
 #: ../../../../include/visitor_log.inc.php:393
@@ -5557,7 +5559,7 @@ msgid "Group Similar Log Entries"
 msgstr "Group Similar Log Entries"
 
 #: ../../../../admin_viewlog.php:922 ../../../../admin_viewlog.php:933
-#: ../../../../admin_visitor_log.php:410
+#: ../../../../admin_visitor_log.php:467
 msgid "Prune Log"
 msgstr "Prune Log"
 
@@ -5565,43 +5567,88 @@ msgstr "Prune Log"
 msgid "Remove Entries Relating to Action"
 msgstr "Remove Entries Relating to Action"
 
-#: ../../../../admin_viewlog.php:932 ../../../../admin_visitor_log.php:391
+#: ../../../../admin_viewlog.php:932 ../../../../admin_visitor_log.php:448
 msgid "Remove Entries Older Than (Days)"
 msgstr "Remove Entries Older Than (Days)"
 
-#: ../../../../admin_visitor_log.php:55 ../../../../admin_visitor_log.php:358
+#: ../../../../admin_visitor_log.php:55
 msgid "Group by IP Address"
 msgstr "Group by IP Address"
 
-#: ../../../../admin_visitor_log.php:122
+#: ../../../../admin_visitor_log.php:56
+msgid "Group by Referer"
+msgstr "Group by Referer"
+
+#: ../../../../admin_visitor_log.php:57
+msgid "Group by User Agent"
+msgstr "Group by User Agent"
+
+#: ../../../../admin_visitor_log.php:124
 msgid "Failed To Prune Visitor Log"
 msgstr "Failed To Prune Visitor Log"
 
-#: ../../../../admin_visitor_log.php:130
+#: ../../../../admin_visitor_log.php:132
 msgid "Admin - Visitor Log"
 msgstr "Admin - Visitor Log"
 
-#: ../../../../admin_visitor_log.php:146
+#: ../../../../admin_visitor_log.php:148
 msgid "Successfully Pruned Visitor Log"
 msgstr "Successfully Pruned Visitor Log"
 
-#: ../../../../admin_visitor_log.php:150
+#: ../../../../admin_visitor_log.php:152
 msgid "No Visitors Logged"
 msgstr "No Visitors Logged"
 
-#: ../../../../admin_visitor_log.php:181 ../../../../admin_visitor_log.php:184
-#: ../../../../admin_visitor_log.php:187 ../../../../admin_visitor_log.php:189
+#: ../../../../admin_visitor_log.php:183 ../../../../admin_visitor_log.php:186
+#: ../../../../admin_visitor_log.php:189 ../../../../admin_visitor_log.php:191
 #: ../../../../include/visitor_log.inc.php:128
 #: ../../../../user_profile.php:206
 msgid "Last Visit"
 msgstr "Last Visit"
 
-#: ../../../../admin_visitor_log.php:196 ../../../../admin_visitor_log.php:199
-#: ../../../../admin_visitor_log.php:202 ../../../../admin_visitor_log.php:204
+#: ../../../../admin_visitor_log.php:198 ../../../../admin_visitor_log.php:201
+#: ../../../../admin_visitor_log.php:204 ../../../../admin_visitor_log.php:206
 msgid "IP Address"
 msgstr "IP Address"
 
-#: ../../../../admin_visitor_log.php:357
+#: ../../../../admin_visitor_log.php:228 ../../../../admin_visitor_log.php:231
+#: ../../../../admin_visitor_log.php:234 ../../../../admin_visitor_log.php:236
+msgid "User Agent"
+msgstr "User Agent"
+
+#: ../../../../admin_visitor_log.php:251 ../../../../admin_visitor_log.php:271
+#, php-format
+msgid "%s user"
+msgid_plural "%s users"
+msgstr[0] "%s user"
+msgstr[1] "%s users"
+
+#: ../../../../admin_visitor_log.php:305
+#, php-format
+msgid "%s IP Address"
+msgid_plural "%s IP Addresses"
+msgstr[0] "%s IP Address"
+msgstr[1] "%s IP Addresses"
+
+#: ../../../../admin_visitor_log.php:339
+#, php-format
+msgid "%s Referer"
+msgid_plural "%s Referers"
+msgstr[0] "%s Referer"
+msgstr[1] "%s Referers"
+
+#: ../../../../admin_visitor_log.php:359
+msgid "Unknown/None"
+msgstr "Unknown/None"
+
+#: ../../../../admin_visitor_log.php:364
+#, php-format
+msgid "%s User Agent"
+msgid_plural "%s User Agents"
+msgstr[0] "%s User Agent"
+msgstr[1] "%s User Agents"
+
+#: ../../../../admin_visitor_log.php:414
 msgid "Group Visitor Log Entries"
 msgstr "Group Visitor Log Entries"
 
@@ -5793,8 +5840,8 @@ msgstr "Your password has been changed."
 
 #: ../../../../change_pw.php:118 ../../../../confirm_email.php:83
 #: ../../../../confirm_email.php:94 ../../../../edit_prefs.php:428
-#: ../../../../edit_prefs.php:440 ../../../../register.php:440
-#: ../../../../register.php:452 ../../../../register.php:465
+#: ../../../../edit_prefs.php:440 ../../../../register.php:446
+#: ../../../../register.php:458 ../../../../register.php:471
 #: ../../../../thread_options.php:432
 msgid "Continue"
 msgstr "Continue"
@@ -5820,7 +5867,7 @@ msgstr "You cannot delete posts in this folder"
 
 #: ../../../../close_poll.php:132 ../../../../edit.php:248
 #: ../../../../edit.php:320 ../../../../edit_poll.php:145
-#: ../../../../include/light.inc.php:2291 ../../../../include/post.inc.php:690
+#: ../../../../include/light.inc.php:2304 ../../../../include/post.inc.php:690
 #: ../../../../ledit.php:249 ../../../../ledit.php:321
 msgid "You are not permitted to edit this message."
 msgstr "You are not permitted to edit this message."
@@ -5830,7 +5877,7 @@ msgid "Close Poll"
 msgstr "Close Poll"
 
 #: ../../../../close_poll.php:211 ../../../../close_poll.php:233
-#: ../../../../include/poll.inc.php:701 ../../../../include/poll.inc.php:740
+#: ../../../../include/poll.inc.php:701 ../../../../include/poll.inc.php:743
 msgid "End Poll"
 msgstr "End Poll"
 
@@ -6063,28 +6110,28 @@ msgstr ""
 "two separate options."
 
 #: ../../../../create_poll.php:921 ../../../../edit_poll.php:859
-#: ../../../../include/poll.inc.php:1204 ../../../../json.php:84
+#: ../../../../include/poll.inc.php:1207 ../../../../json.php:84
 msgid "Poll Question"
 msgstr "Poll Question"
 
 #: ../../../../create_poll.php:923 ../../../../edit_poll.php:861
-#: ../../../../include/poll.inc.php:1206 ../../../../json.php:85
+#: ../../../../include/poll.inc.php:1209 ../../../../json.php:85
 msgid "Delete question"
 msgstr "Delete question"
 
 #: ../../../../create_poll.php:926 ../../../../edit_poll.php:864
-#: ../../../../include/poll.inc.php:1209 ../../../../json.php:86
+#: ../../../../include/poll.inc.php:1212 ../../../../json.php:86
 msgid "Allow multiple options to be selected"
 msgstr "Allow multiple options to be selected"
 
 #: ../../../../create_poll.php:934 ../../../../create_poll.php:939
 #: ../../../../edit_poll.php:872 ../../../../edit_poll.php:877
-#: ../../../../include/poll.inc.php:1229 ../../../../json.php:88
+#: ../../../../include/poll.inc.php:1232 ../../../../json.php:88
 msgid "Delete option"
 msgstr "Delete option"
 
 #: ../../../../create_poll.php:949 ../../../../edit_poll.php:887
-#: ../../../../include/poll.inc.php:1217 ../../../../json.php:87
+#: ../../../../include/poll.inc.php:1220 ../../../../json.php:87
 msgid "Add new option"
 msgstr "Add new option"
 
@@ -6206,7 +6253,7 @@ msgstr "Do you want to include an additional post after the poll?"
 
 #: ../../../../create_poll.php:1220 ../../../../edit.php:531
 #: ../../../../edit_relations.php:156 ../../../../edit_signature.php:275
-#: ../../../../post.php:897 ../../../../register.php:603
+#: ../../../../post.php:897 ../../../../register.php:609
 #: ../../../../user_menu.php:79 ../../../../user_rel.php:338
 msgid "Signature"
 msgstr "Signature"
@@ -6292,7 +6339,7 @@ msgid "Message Preview"
 msgstr "Message Preview"
 
 #: ../../../../edit.php:412 ../../../../include/light.inc.php:1772
-#: ../../../../include/light.inc.php:2447
+#: ../../../../include/light.inc.php:2460
 #: ../../../../include/messages.inc.php:654 ../../../../include/pm.inc.php:808
 #: ../../../../ledit.php:374 ../../../../lpm_edit.php:249
 #: ../../../../lpm_write.php:585 ../../../../lpost.php:601
@@ -6304,7 +6351,7 @@ msgid "To"
 msgstr "To"
 
 #: ../../../../edit.php:427 ../../../../include/light.inc.php:1799
-#: ../../../../include/light.inc.php:2639
+#: ../../../../include/light.inc.php:2652
 #: ../../../../include/messages.inc.php:714
 #: ../../../../include/post.inc.php:310 ../../../../include/post.inc.php:383
 #: ../../../../include/post.inc.php:454 ../../../../include/search.inc.php:881
@@ -6313,7 +6360,7 @@ msgid "ALL"
 msgstr "ALL"
 
 #: ../../../../edit.php:484 ../../../../edit_poll.php:1092
-#: ../../../../include/messages.inc.php:1382 ../../../../ledit.php:402
+#: ../../../../include/messages.inc.php:1395 ../../../../ledit.php:402
 #: ../../../../lpm_edit.php:276 ../../../../pm_edit.php:339
 msgid "Apply"
 msgstr "Apply"
@@ -6545,12 +6592,12 @@ msgid "%s contains invalid characters!"
 msgstr "%s contains invalid characters!"
 
 #: ../../../../edit_prefs.php:222 ../../../../edit_prefs.php:614
-#: ../../../../register.php:562
+#: ../../../../register.php:568
 msgid "First name"
 msgstr "First name"
 
 #: ../../../../edit_prefs.php:233 ../../../../edit_prefs.php:618
-#: ../../../../register.php:566
+#: ../../../../register.php:572
 msgid "Last name"
 msgstr "Last name"
 
@@ -6658,7 +6705,7 @@ msgstr "User Information"
 msgid "Member No."
 msgstr "Member No."
 
-#: ../../../../edit_prefs.php:622 ../../../../register.php:578
+#: ../../../../edit_prefs.php:622 ../../../../register.php:584
 msgid "Date of Birth"
 msgstr "Date of Birth"
 
@@ -6761,7 +6808,7 @@ msgstr "Ignored Completely"
 
 #: ../../../../edit_relations.php:182 ../../../../folder_options.php:139
 #: ../../../../folder_subscriptions.php:192
-#: ../../../../include/messages.inc.php:1370
+#: ../../../../include/messages.inc.php:1383
 #: ../../../../thread_options.php:539 ../../../../user_rel.php:300
 msgid "Normal"
 msgstr "Normal"
@@ -6815,7 +6862,7 @@ msgstr "Subscribed Threads"
 
 #: ../../../../edit_subscriptions.php:116
 #: ../../../../edit_subscriptions.php:230
-#: ../../../../include/messages.inc.php:1371
+#: ../../../../include/messages.inc.php:1384
 #: ../../../../thread_options.php:543
 msgid "Interested"
 msgstr "Interested"
@@ -6862,7 +6909,7 @@ msgstr "Current Interest"
 #: ../../../../include/light.inc.php:905
 #: ../../../../include/light.inc.php:1428
 #: ../../../../include/messages.inc.php:415
-#: ../../../../include/messages.inc.php:1372 ../../../../thread_list.php:648
+#: ../../../../include/messages.inc.php:1385 ../../../../thread_list.php:648
 msgid "Subscribed"
 msgstr "Subscribed"
 
@@ -6942,7 +6989,7 @@ msgid "Send Email to %s"
 msgstr "Send Email to %s"
 
 #: ../../../../email.php:174 ../../../../include/light.inc.php:1741
-#: ../../../../include/light.inc.php:2442
+#: ../../../../include/light.inc.php:2455
 #: ../../../../include/messages.inc.php:577 ../../../../include/pm.inc.php:775
 #: ../../../../include/pm.inc.php:780 ../../../../lsearch.php:218
 #: ../../../../lsearch.php:223 ../../../../pm_messages.php:407
@@ -6988,7 +7035,7 @@ msgid "Interest"
 msgstr "Interest"
 
 #: ../../../../folder_options.php:135
-#: ../../../../include/messages.inc.php:1369
+#: ../../../../include/messages.inc.php:1382
 #: ../../../../thread_options.php:535 ../../../../user_rel.php:348
 msgid "Ignore"
 msgstr "Ignore"
@@ -7066,7 +7113,7 @@ msgstr "Request"
 msgid "My Controls - Forum Options"
 msgstr "My Controls - Forum Options"
 
-#: ../../../../forum_options.php:388 ../../../../register.php:719
+#: ../../../../forum_options.php:388 ../../../../register.php:725
 #: ../../../../user_menu.php:67
 msgid "Forum Options"
 msgstr "Forum Options"
@@ -7075,7 +7122,7 @@ msgstr "Forum Options"
 msgid "Language"
 msgstr "Language"
 
-#: ../../../../forum_options.php:454 ../../../../register.php:740
+#: ../../../../forum_options.php:454 ../../../../register.php:746
 msgid "Preferred language"
 msgstr "Preferred language"
 
@@ -7156,7 +7203,7 @@ msgid "Show social network share links at top of each thread"
 msgstr "Show social network share links at top of each thread"
 
 #: ../../../../forum_options.php:572 ../../../../forum_options.php:579
-#: ../../../../register.php:730
+#: ../../../../register.php:736
 msgid "Style"
 msgstr "Style"
 
@@ -7172,7 +7219,7 @@ msgstr "Font size"
 msgid "Forum style"
 msgstr "Forum style"
 
-#: ../../../../forum_options.php:609 ../../../../register.php:736
+#: ../../../../forum_options.php:609 ../../../../register.php:742
 msgid "Forum emoticons"
 msgstr "Forum emoticons"
 
@@ -7311,34 +7358,41 @@ msgstr "Missing or invalid attachment hash"
 msgid "Attachment type is not permitted."
 msgstr "Attachment type is not permitted."
 
-#: ../../../../include/admin.inc.php:1262
+#: ../../../../include/admin.inc.php:1310
 #, php-format
 msgid "Changed Logon from %s to %s"
 msgstr "Changed Logon from %s to %s"
 
-#: ../../../../include/admin.inc.php:1266
+#: ../../../../include/admin.inc.php:1314
 #, php-format
 msgid "Changed Nickname from %s to %s"
 msgstr "Changed Nickname from %s to %s"
 
-#: ../../../../include/admin.inc.php:1270
+#: ../../../../include/admin.inc.php:1318
 #, php-format
 msgid "Changed Email from %s to %s"
 msgstr "Changed Email from %s to %s"
 
-#: ../../../../include/admin.inc.php:1761
+#: ../../../../include/admin.inc.php:1635
+#, php-format
+msgid "%s Guest"
+msgid_plural "%s Guests"
+msgstr[0] "%s Guest"
+msgstr[1] "%s Guests"
+
+#: ../../../../include/admin.inc.php:1814
 msgid "The username or password you supplied are not valid."
 msgstr "The username or password you supplied are not valid."
 
-#: ../../../../include/admin.inc.php:1772
+#: ../../../../include/admin.inc.php:1825
 msgid "To save any changes you must re-authenticate yourself"
 msgstr "To save any changes you must re-authenticate yourself"
 
-#: ../../../../include/admin.inc.php:1774
+#: ../../../../include/admin.inc.php:1827
 msgid "To access the Admin area you must re-authenticate yourself"
 msgstr "To access the Admin area you must re-authenticate yourself"
 
-#: ../../../../include/admin.inc.php:1794
+#: ../../../../include/admin.inc.php:1847
 msgid "Please enter your password"
 msgstr "Please enter your password"
 
@@ -7407,617 +7461,621 @@ msgstr "Donate!"
 
 #: ../../../../include/email.inc.php:88
 #, php-format
-msgid "Message Notification from %s"
-msgstr "Message Notification from %s"
+msgid "Message Notification from %1$s"
+msgstr "Message Notification from %1$s"
 
 #: ../../../../include/email.inc.php:109
 #, php-format
 msgid ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"%s posted a message to you on %s.\n"
+"%2$s posted a message to you on %3$s.\n"
 "\n"
-"The subject is: %s.\n"
+"The subject is: %4$s.\n"
 "\n"
 "To read that message and others in the same discussion, please go to:\n"
-"%s\n"
+"%5$s\n"
 "\n"
 "Note: If you do not wish to receive email notifications of forum messages "
-"posted to you, go to: %s, un-select the Email Notification checkbox and "
-"press Save."
+"posted to you, go to: %6$s and turn off email notifications."
 msgstr ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"%s posted a message to you on %s.\n"
+"%2$s posted a message to you on %3$s.\n"
 "\n"
-"The subject is: %s.\n"
+"The subject is: %4$s.\n"
 "\n"
 "To read that message and others in the same discussion, please go to:\n"
-"%s\n"
+"%5$s\n"
 "\n"
 "Note: If you do not wish to receive email notifications of forum messages "
-"posted to you, go to: %s, un-select the Email Notification checkbox and "
-"press Save."
+"posted to you, go to: %6$s and turn off email notifications."
 
 #: ../../../../include/email.inc.php:123
 #, php-format
 msgid ""
-"<p>Hello %s,</p><p>%s posted a message to you on %s.</p><p>The subject is: "
-"%s.</p><p>To read that message and others in the same discussion, please <a "
-"href=\"%s\">click here</a>.</p><p>Note: If you do not wish to receive email "
-"notifications of forum messages posted to you, <a href=\"%s\">click here</"
-"a>, un-select the Email Notification checkbox and press Save.</p>"
+"<p>Hello %1$s,</p><p>%2$s posted a message to you on %3$s.</p><p>The subject "
+"is: %4$s.</p><p>To read that message and others in the same discussion, "
+"please go to:<br /><a href=\"%5$s\">%5$s</a></p><p>Note: If you do not wish "
+"to receive email notifications of forum messages posted to you, go to: <a "
+"href=\"%6$s\">%6$s</a><br />and turn off email notifications.</p>"
 msgstr ""
-"<p>Hello %s,</p><p>%s posted a message to you on %s.</p><p>The subject is: "
-"%s.</p><p>To read that message and others in the same discussion, please <a "
-"href=\"%s\">click here</a>.</p><p>Note: If you do not wish to receive email "
-"notifications of forum messages posted to you, <a href=\"%s\">click here</"
-"a>, un-select the Email Notification checkbox and press Save.</p>"
+"<p>Hello %1$s,</p><p>%2$s posted a message to you on %3$s.</p><p>The subject "
+"is: %4$s.</p><p>To read that message and others in the same discussion, "
+"please go to:<br /><a href=\"%5$s\">%5$s</a></p><p>Note: If you do not wish "
+"to receive email notifications of forum messages posted to you, go to: <a "
+"href=\"%6$s\">%6$s</a><br />and turn off email notifications.</p>"
 
 #: ../../../../include/email.inc.php:193
 #, php-format
-msgid "Thread Subscription Notification from %s"
-msgstr "Thread Subscription Notification from %s"
+msgid "Thread Subscription Notification from %1$s"
+msgstr "Thread Subscription Notification from %1$s"
 
 #: ../../../../include/email.inc.php:212
 #, php-format
 msgid ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"%s posted a message in a thread you have subscribed to on %s.\n"
+"%2$s posted a message in a thread you have subscribed to on %3$s.\n"
 "\n"
-"The subject is: %s.\n"
+"The subject is: %4$s.\n"
 "\n"
 "To read that message and others in the same discussion, please go to:\n"
-"%s\n"
+"%5$s\n"
 "\n"
 "Note: If you do not wish to receive email notifications of new messages in "
-"this thread, go to: %s and adjust your Interest level at the bottom of the "
+"this thread, go to: %5$s and adjust your Interest level at the bottom of the "
 "page."
 msgstr ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"%s posted a message in a thread you have subscribed to on %s.\n"
+"%2$s posted a message in a thread you have subscribed to on %3$s.\n"
 "\n"
-"The subject is: %s.\n"
+"The subject is: %4$s.\n"
 "\n"
 "To read that message and others in the same discussion, please go to:\n"
-"%s\n"
+"%5$s\n"
 "\n"
 "Note: If you do not wish to receive email notifications of new messages in "
-"this thread, go to: %s and adjust your Interest level at the bottom of the "
+"this thread, go to: %5$s and adjust your Interest level at the bottom of the "
 "page."
 
-#: ../../../../include/email.inc.php:226
+#: ../../../../include/email.inc.php:225
 #, php-format
 msgid ""
-"<p>Hello %s,</p><p>%s posted a message in a thread you have subscribed to on "
-"%s.</p><p>The subject is: %s.</p><p>To read that message and others in the "
-"same discussion, please <a href=\"%s\">click here</a></p><p>Note: If you do "
-"not wish to receive email notifications of new messages in this thread, <a "
-"href=\"%s\">click here</a> and adjust your Interest level at the bottom of "
-"the page.</p>"
+"<p>Hello %1$s,</p><p>%2$s posted a message in a thread you have subscribed "
+"to on %3$s.</p><p>The subject is: %4$s.</p><p>To read that message and "
+"others in the same discussion, please go to:<br /><a href=\"%5$s\">%5$s</a></"
+"p><p>Note: If you do not wish to receive email notifications of new messages "
+"in this thread, go to: <a href=\"%5$s\">%5$s</a><br />and adjust your "
+"Interest level at the bottom of the page.</p>"
 msgstr ""
-"<p>Hello %s,</p><p>%s posted a message in a thread you have subscribed to on "
-"%s.</p><p>The subject is: %s.</p><p>To read that message and others in the "
-"same discussion, please <a href=\"%s\">click here</a></p><p>Note: If you do "
-"not wish to receive email notifications of new messages in this thread, <a "
-"href=\"%s\">click here</a> and adjust your Interest level at the bottom of "
-"the page.</p>"
+"<p>Hello %1$s,</p><p>%2$s posted a message in a thread you have subscribed "
+"to on %3$s.</p><p>The subject is: %4$s.</p><p>To read that message and "
+"others in the same discussion, please go to:<br /><a href=\"%5$s\">%5$s</a></"
+"p><p>Note: If you do not wish to receive email notifications of new messages "
+"in this thread, go to: <a href=\"%5$s\">%5$s</a><br />and adjust your "
+"Interest level at the bottom of the page.</p>"
 
-#: ../../../../include/email.inc.php:299
+#: ../../../../include/email.inc.php:297
 #, php-format
-msgid "Folder Subscription Notification from %s"
-msgstr "Folder Subscription Notification from %s"
+msgid "Folder Subscription Notification from %1$s"
+msgstr "Folder Subscription Notification from %1$s"
 
-#: ../../../../include/email.inc.php:320
+#: ../../../../include/email.inc.php:318
 #, php-format
 msgid ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"%s posted a message in a folder you are subscribed to on %s.\n"
+"%2$s posted a message in a folder you are subscribed to on %3$s.\n"
 "\n"
-"The subject is: %s.\n"
+"The subject is: %4$s.\n"
 "\n"
 "To read that message and others in the same discussion, please go to:\n"
-"%s\n"
+"%5$s\n"
 "\n"
 "Note: If you do not wish to receive email notifications of new messages in "
-"this thread, go to: %s and adjust your Interest level by clicking on the "
+"this thread, go to: %6$s and adjust your Interest level by clicking on the "
 "folder's icon at the top of page."
 msgstr ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"%s posted a message in a folder you are subscribed to on %s.\n"
+"%2$s posted a message in a folder you are subscribed to on %3$s.\n"
 "\n"
-"The subject is: %s.\n"
+"The subject is: %4$s.\n"
 "\n"
 "To read that message and others in the same discussion, please go to:\n"
-"%s\n"
+"%5$s\n"
 "\n"
 "Note: If you do not wish to receive email notifications of new messages in "
-"this thread, go to: %s and adjust your Interest level by clicking on the "
+"this thread, go to: %6$s and adjust your Interest level by clicking on the "
 "folder's icon at the top of page."
 
-#: ../../../../include/email.inc.php:334
+#: ../../../../include/email.inc.php:332
 #, php-format
 msgid ""
-"<p>Hello %s,</p><p>%s posted a message in a folder you are subscribed to on "
-"%s.</p><p>The subject is: %s.</p><p>To read that message and others in the "
-"same discussion, please <a href=\"%s\">click here</a>.</p><p>Note: If you do "
-"not wish to receive email notifications of new messages in this thread, <a "
-"href=\"%s\">click here</a> and adjust your Interest level by clicking on the "
-"folder's icon at the top of page.</p>"
+"<p>Hello %1$s,</p><p>%2$s posted a message in a folder you are subscribed to "
+"on %3$s.</p><p>The subject is: %4$s.</p><p>To read that message and others "
+"in the same discussion, please go to:<br /><a href=\"%5$s\">%5$s</a></"
+"p><p>Note: If you do not wish to receive email notifications of new messages "
+"in this thread, go to: <a href=\"%6$s\">%6$s</a><br />and adjust your "
+"Interest level by clicking on the folder's icon at the top of page.</p>"
 msgstr ""
-"<p>Hello %s,</p><p>%s posted a message in a folder you are subscribed to on "
-"%s.</p><p>The subject is: %s.</p><p>To read that message and others in the "
-"same discussion, please <a href=\"%s\">click here</a>.</p><p>Note: If you do "
-"not wish to receive email notifications of new messages in this thread, <a "
-"href=\"%s\">click here</a> and adjust your Interest level by clicking on the "
-"folder's icon at the top of page.</p>"
+"<p>Hello %1$s,</p><p>%2$s posted a message in a folder you are subscribed to "
+"on %3$s.</p><p>The subject is: %4$s.</p><p>To read that message and others "
+"in the same discussion, please go to:<br /><a href=\"%5$s\">%5$s</a></"
+"p><p>Note: If you do not wish to receive email notifications of new messages "
+"in this thread, go to: <a href=\"%6$s\">%6$s</a><br />and adjust your "
+"Interest level by clicking on the folder's icon at the top of page.</p>"
 
-#: ../../../../include/email.inc.php:387
+#: ../../../../include/email.inc.php:385
 #, php-format
-msgid "PM Notification from %s"
-msgstr "PM Notification from %s"
+msgid "PM Notification from %1$s"
+msgstr "PM Notification from %1$s"
 
-#: ../../../../include/email.inc.php:408
+#: ../../../../include/email.inc.php:406
 #, php-format
 msgid ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"%s posted a PM to you on %s.\n"
+"%2$s posted a PM to you on %3$s.\n"
 "\n"
-"The subject is: %s.\n"
+"The subject is: %4$s.\n"
 "\n"
 "To read the message, please go to:\n"
-"%s\n"
+"%5$s\n"
 "\n"
 "Note: If you do not wish to receive email notifications of new PM messages "
-"posted to you, go to: %s , un-select the PM Notification checkbox and press "
-"Save."
+"posted to you, go to: %6$s and turn off PM notifications."
 msgstr ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"%s posted a PM to you on %s.\n"
+"%2$s posted a PM to you on %3$s.\n"
 "\n"
-"The subject is: %s.\n"
+"The subject is: %4$s.\n"
 "\n"
 "To read the message, please go to:\n"
-"%s\n"
+"%5$s\n"
 "\n"
 "Note: If you do not wish to receive email notifications of new PM messages "
-"posted to you, go to: %s , un-select the PM Notification checkbox and press "
-"Save."
+"posted to you, go to: %6$s and turn off PM notifications."
 
-#: ../../../../include/email.inc.php:422
+#: ../../../../include/email.inc.php:420
 #, php-format
 msgid ""
-"<p>Hello %s,</p><p>%s posted a PM to you on %s.</p><p>The subject is: %s.</"
-"p><p>To read the message, please <a href=\"%s\">click here</a>.</p><p>Note: "
-"If you do not wish to receive email notifications of new PM messages posted "
-"to you, <a href=\"%s\">click here</a>, un-select the PM Notification "
-"checkbox and press Save.</p>"
+"<p>Hello %1$s,</p><p>%2$s posted a PM to you on %3$s.</p><p>The subject is: "
+"%4$s.</p><p>To read the message, please go to:<br /><a href=\"%5$s\">%5$s</"
+"a></p><p>Note: If you do not wish to receive email notifications of new PM "
+"messages posted to you, go to: <a href=\"%6$s\">%6$s</a><br />and turn off "
+"PM notifications.</p>"
 msgstr ""
-"<p>Hello %s,</p><p>%s posted a PM to you on %s.</p><p>The subject is: %s.</"
-"p><p>To read the message, please <a href=\"%s\">click here</a>.</p><p>Note: "
-"If you do not wish to receive email notifications of new PM messages posted "
-"to you, <a href=\"%s\">click here</a>, un-select the PM Notification "
-"checkbox and press Save.</p>"
+"<p>Hello %1$s,</p><p>%2$s posted a PM to you on %3$s.</p><p>The subject is: "
+"%4$s.</p><p>To read the message, please go to:<br /><a href=\"%5$s\">%5$s</"
+"a></p><p>Note: If you do not wish to receive email notifications of new PM "
+"messages posted to you, go to: <a href=\"%6$s\">%6$s</a><br />and turn off "
+"PM notifications.</p>"
 
-#: ../../../../include/email.inc.php:460
+#: ../../../../include/email.inc.php:458
 #, php-format
-msgid "Your password reset request from %s"
-msgstr "Your password reset request from %s"
+msgid "Your password reset request from %1$s"
+msgstr "Your password reset request from %1$s"
 
-#: ../../../../include/email.inc.php:475
+#: ../../../../include/email.inc.php:473
 #, php-format
 msgid ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"You requested this e-mail from %s because you have forgotten your password.\n"
+"You requested this e-mail from %2$s because you have forgotten your "
+"password.\n"
 "\n"
 "To reset your password, please go to:\n"
-"%s"
+"%3$s"
 msgstr ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"You requested this e-mail from %s because you have forgotten your password.\n"
+"You requested this e-mail from %2$s because you have forgotten your "
+"password.\n"
 "\n"
 "To reset your password, please go to:\n"
-"%s"
+"%3$s"
 
-#: ../../../../include/email.inc.php:486
+#: ../../../../include/email.inc.php:484
 #, php-format
 msgid ""
-"<p>Hello %s,</p><p>You requested this e-mail from %s because you have "
-"forgotten your password.</p><p>To reset your password, please <a href=\"%s"
-"\">click here</a>.</p>"
+"<p>Hello %1$s,</p><p>You requested this e-mail from %2$s because you have "
+"forgotten your password.</p><p>To reset your password, please go to:<br /><a "
+"href=\"%3$s\">%3$s</a></p>"
 msgstr ""
-"<p>Hello %s,</p><p>You requested this e-mail from %s because you have "
-"forgotten your password.</p><p>To reset your password, please <a href=\"%s"
-"\">click here</a>.</p>"
+"<p>Hello %1$s,</p><p>You requested this e-mail from %2$s because you have "
+"forgotten your password.</p><p>To reset your password, please go to:<br /><a "
+"href=\"%3$s\">%3$s</a></p>"
 
-#: ../../../../include/email.inc.php:520
+#: ../../../../include/email.inc.php:518
 #, php-format
-msgid "Password change notification from %s"
-msgstr "Password change notification from %s"
+msgid "Password change notification from %1$s"
+msgstr "Password change notification from %1$s"
 
-#: ../../../../include/email.inc.php:533
+#: ../../../../include/email.inc.php:531
 #, php-format
 msgid ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"This a notification email to inform you that your password on %s has been "
+"This a notification email to inform you that your password on %2$s has been "
 "changed.\n"
 "\n"
-"It has been changed to: %s and was changed by: %s.\n"
+"It has been changed to: %3$s and was changed by: %4$s.\n"
 "\n"
 "If you have received this email in error or were not expecting a change to "
-"your password please contact the forum owner or a moderator on %s "
+"your password please contact the forum owner or a moderator on %5$s "
 "immediately to correct it."
 msgstr ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"This a notification email to inform you that your password on %s has been "
+"This a notification email to inform you that your password on %2$s has been "
 "changed.\n"
 "\n"
-"It has been changed to: %s and was changed by: %s.\n"
+"It has been changed to: %3$s and was changed by: %4$s.\n"
 "\n"
 "If you have received this email in error or were not expecting a change to "
-"your password please contact the forum owner or a moderator on %s "
+"your password please contact the forum owner or a moderator on %5$s "
 "immediately to correct it."
 
-#: ../../../../include/email.inc.php:546
+#: ../../../../include/email.inc.php:544
 #, php-format
 msgid ""
-"<p>Hello %s,</p><p>This a notification email to inform you that your "
-"password on %s has been successfully changed.</p><p>It has been changed to: "
-"%s and was changed by: %s.</p><p>If you have received this email in error or "
-"were not expecting a change to your password please contact the forum owner "
-"or a moderator on %s immediately to correct it.</p>"
+"<p>Hello %1$s,</p><p>This a notification email to inform you that your "
+"password on %2$s has been changed.</p><p>It has been changed to: %3$s and "
+"was changed by: %4$s.</p><p>If you have received this email in error or were "
+"not expecting a change to your password please contact the forum owner or a "
+"moderator on %5$s immediately to correct it.</p>"
 msgstr ""
-"<p>Hello %s,</p><p>This a notification email to inform you that your "
-"password on %s has been successfully changed.</p><p>It has been changed to: "
-"%s and was changed by: %s.</p><p>If you have received this email in error or "
-"were not expecting a change to your password please contact the forum owner "
-"or a moderator on %s immediately to correct it.</p>"
+"<p>Hello %1$s,</p><p>This a notification email to inform you that your "
+"password on %2$s has been changed.</p><p>It has been changed to: %3$s and "
+"was changed by: %4$s.</p><p>If you have received this email in error or were "
+"not expecting a change to your password please contact the forum owner or a "
+"moderator on %5$s immediately to correct it.</p>"
 
-#: ../../../../include/email.inc.php:582 ../../../../include/email.inc.php:646
+#: ../../../../include/email.inc.php:580 ../../../../include/email.inc.php:642
 #, php-format
-msgid "Email confirmation required for %s"
-msgstr "Email confirmation required for %s"
+msgid "Email confirmation required for %1$s"
+msgstr "Email confirmation required for %1$s"
 
-#: ../../../../include/email.inc.php:597
+#: ../../../../include/email.inc.php:595
 #, php-format
 msgid ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"You recently created a new user account on %s.\n"
+"You recently created a new user account on %2$s.\n"
 "\n"
 "Before you can start posting we need to confirm your email address. To "
 "confirm your email address, please go to:\n"
-"%s\n"
+"%3$s\n"
 "\n"
 "Once confirmation is complete you may login and start posting immediately.\n"
 "\n"
-"If you did not create a user account on %s please accept our apologies and "
-"forward this email to %s so that the source of it may be investigated."
+"If you did not create a user account on %2$s please accept our apologies and "
+"forward this email to %4$s so that the source of it may be investigated."
 msgstr ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"You recently created a new user account on %s.\n"
+"You recently created a new user account on %2$s.\n"
 "\n"
 "Before you can start posting we need to confirm your email address. To "
 "confirm your email address, please go to:\n"
-"%s\n"
+"%3$s\n"
 "\n"
 "Once confirmation is complete you may login and start posting immediately.\n"
 "\n"
-"If you did not create a user account on %s please accept our apologies and "
-"forward this email to %s so that the source of it may be investigated."
+"If you did not create a user account on %2$s please accept our apologies and "
+"forward this email to %4$s so that the source of it may be investigated."
 
-#: ../../../../include/email.inc.php:610
+#: ../../../../include/email.inc.php:607
 #, php-format
 msgid ""
-"<p>Hello %s,</p><p>You recently created a new user account on %s.</"
+"<p>Hello %1$s,</p><p>You recently created a new user account on %2$s.</"
 "p><p>Before you can start posting we need to confirm your email address. To "
-"confirm your email, please <a href=\"%s\">click here</a>.</p><p>Once "
-"confirmation is complete you may login and start posting immediately.</"
-"p><p>If you did not create a user account on %s please accept our apologies "
-"and forward this email to %s so that the source of it may be investigated.</"
-"p>"
+"confirm your email address, please go to:<br /><a href=\"%3$s\">%3$s</a></"
+"p><p>Once confirmation is complete you may login and start posting "
+"immediately.</p><p>If you did not create a user account on %2$s please "
+"accept our apologies and forward this email to %4$s so that the source of it "
+"may be investigated.</p>"
 msgstr ""
-"<p>Hello %s,</p><p>You recently created a new user account on %s.</"
+"<p>Hello %1$s,</p><p>You recently created a new user account on %2$s.</"
 "p><p>Before you can start posting we need to confirm your email address. To "
-"confirm your email, please <a href=\"%s\">click here</a>.</p><p>Once "
-"confirmation is complete you may login and start posting immediately.</"
-"p><p>If you did not create a user account on %s please accept our apologies "
-"and forward this email to %s so that the source of it may be investigated.</"
-"p>"
+"confirm your email address, please go to:<br /><a href=\"%3$s\">%3$s</a></"
+"p><p>Once confirmation is complete you may login and start posting "
+"immediately.</p><p>If you did not create a user account on %2$s please "
+"accept our apologies and forward this email to %4$s so that the source of it "
+"may be investigated.</p>"
 
-#: ../../../../include/email.inc.php:661
+#: ../../../../include/email.inc.php:657
 #, php-format
 msgid ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"You recently changed your email on %s.\n"
+"You recently changed your email on %2$s.\n"
 "\n"
 "Before you can start posting again we need to confirm your new email "
 "address. To reconfirm your email, please go to:\n"
-"%s\n"
+"%3$s\n"
 "\n"
 "Once confirmation is complete you may continue to use the forum as normal.\n"
 "\n"
-"If you were not expecting this email from %s please accept our apologies and "
-"forward this email to %s so that the source of it may be investigated."
+"If you were not expecting this email from %2$s please accept our apologies "
+"and forward this email to %4$s so that the source of it may be investigated."
 msgstr ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"You recently changed your email on %s.\n"
+"You recently changed your email on %2$s.\n"
 "\n"
 "Before you can start posting again we need to confirm your new email "
 "address. To reconfirm your email, please go to:\n"
-"%s\n"
+"%3$s\n"
 "\n"
 "Once confirmation is complete you may continue to use the forum as normal.\n"
 "\n"
-"If you were not expecting this email from %s please accept our apologies and "
-"forward this email to %s so that the source of it may be investigated."
+"If you were not expecting this email from %2$s please accept our apologies "
+"and forward this email to %4$s so that the source of it may be investigated."
 
-#: ../../../../include/email.inc.php:674
+#: ../../../../include/email.inc.php:669
 #, php-format
 msgid ""
-"<p>Hello %s,</p><p>You recently changed your email on %s.</p><p>Before you "
-"can start posting again we need to confirm your new email address. To "
-"reconfirm your email address, please <a href=\"%s\">click here</a>.</"
+"<p>Hello %1$s,</p><p>You recently changed your email on %2$s.</p><p>Before "
+"you can start posting again we need to confirm your new email address. To "
+"reconfirm your email, please go to:<br /><a href=\"%3$s\">%3$s</a></"
 "p><p>Once confirmation is complete you may continue to use the forum as "
-"normal.</p><p>If you were not expecting this email from %s please accept our "
-"apologies and forward this email to %s so that the source of it may be "
+"normal.</p><p>If you were not expecting this email from %2$s please accept "
+"our apologies and forward this email to %4$s so that the source of it may be "
 "investigated.</p>"
 msgstr ""
-"<p>Hello %s,</p><p>You recently changed your email on %s.</p><p>Before you "
-"can start posting again we need to confirm your new email address. To "
-"reconfirm your email address, please <a href=\"%s\">click here</a>.</"
+"<p>Hello %1$s,</p><p>You recently changed your email on %2$s.</p><p>Before "
+"you can start posting again we need to confirm your new email address. To "
+"reconfirm your email, please go to:<br /><a href=\"%3$s\">%3$s</a></"
 "p><p>Once confirmation is complete you may continue to use the forum as "
-"normal.</p><p>If you were not expecting this email from %s please accept our "
-"apologies and forward this email to %s so that the source of it may be "
+"normal.</p><p>If you were not expecting this email from %2$s please accept "
+"our apologies and forward this email to %4$s so that the source of it may be "
 "investigated.</p>"
 
-#: ../../../../include/email.inc.php:710
+#: ../../../../include/email.inc.php:704
 #, php-format
-msgid "New User Approval Notification for %s"
-msgstr "New User Approval Notification for %s"
+msgid "New User Approval Notification for %1$s"
+msgstr "New User Approval Notification for %1$s"
 
-#: ../../../../include/email.inc.php:727
+#: ../../../../include/email.inc.php:721
 #, php-format
 msgid ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"A new user account has been created on %s.\n"
+"A new user account has been created on %2$s.\n"
 "\n"
-"The name of the new user account is: %s\n"
+"The name of the new user account is: %3$s\n"
 "\n"
 "As you are an Administrator of this forum you are required to approve this "
 "user account before it can be used by it's owner.\n"
 "\n"
 "To approve this account, please go to:\n"
-"%s\n"
+"%4$s\n"
 "\n"
 "Note: Other Administrators on this forum will also receive this notification "
 "and may have already acted upon this request."
 msgstr ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"A new user account has been created on %s.\n"
+"A new user account has been created on %2$s.\n"
 "\n"
-"The name of the new user account is: %s\n"
+"The name of the new user account is: %3$s\n"
 "\n"
 "As you are an Administrator of this forum you are required to approve this "
 "user account before it can be used by it's owner.\n"
 "\n"
 "To approve this account, please go to:\n"
-"%s\n"
+"%4$s\n"
 "\n"
 "Note: Other Administrators on this forum will also receive this notification "
 "and may have already acted upon this request."
 
-#: ../../../../include/email.inc.php:739
+#: ../../../../include/email.inc.php:733
 #, php-format
 msgid ""
-"<p>Hello %s,</p><p>A new user account has been created on %s.</p><p>The name "
-"of the new user account is: %s</p><p>As you are an Administrator of this "
-"forum you are required to approve this user account before it can be used by "
-"it's owner.</p><p>To approve this account, please <a href=\"%s\">click here</"
-"a></p><p>Note: Other Administrators on this forum will also receive this "
-"notification and may have already acted upon this request.</p>"
+"<p>Hello %1$s,</p><p>A new user account has been created on %2$s.</p><p>The "
+"name of the new user account is: %3$s</p><p>As you are an Administrator of "
+"this forum you are required to approve this user account before it can be "
+"used by it's owner.</p><p>To approve this account, please go to:<br /><a "
+"href=\"%4$s\">%4$s</a></p><p>Note: Other Administrators on this forum will "
+"also receive this notification and may have already acted upon this request."
+"</p>"
 msgstr ""
-"<p>Hello %s,</p><p>A new user account has been created on %s.</p><p>The name "
-"of the new user account is: %s</p><p>As you are an Administrator of this "
-"forum you are required to approve this user account before it can be used by "
-"it's owner.</p><p>To approve this account, please <a href=\"%s\">click here</"
-"a></p><p>Note: Other Administrators on this forum will also receive this "
-"notification and may have already acted upon this request.</p>"
+"<p>Hello %1$s,</p><p>A new user account has been created on %2$s.</p><p>The "
+"name of the new user account is: %3$s</p><p>As you are an Administrator of "
+"this forum you are required to approve this user account before it can be "
+"used by it's owner.</p><p>To approve this account, please go to:<br /><a "
+"href=\"%4$s\">%4$s</a></p><p>Note: Other Administrators on this forum will "
+"also receive this notification and may have already acted upon this request."
+"</p>"
 
-#: ../../../../include/email.inc.php:776
+#: ../../../../include/email.inc.php:770
 #, php-format
-msgid "New User Account Notification for %s"
-msgstr "New User Account Notification for %s"
+msgid "New User Account Notification for %1$s"
+msgstr "New User Account Notification for %1$s"
 
-#: ../../../../include/email.inc.php:793
+#: ../../../../include/email.inc.php:787
 #, php-format
 msgid ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"A new user account has been created on %s.\n"
+"A new user account has been created on %2$s.\n"
 "\n"
-"The name of the new user account is: %s\n"
+"The name of the new user account is: %3$s\n"
 "\n"
 "To view this user account, please go to:\n"
-"%s"
+"%4$s"
 msgstr ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"A new user account has been created on %s.\n"
+"A new user account has been created on %2$s.\n"
 "\n"
-"The name of the new user account is: %s\n"
+"The name of the new user account is: %3$s\n"
 "\n"
 "To view this user account, please go to:\n"
-"%s"
+"%4$s"
 
-#: ../../../../include/email.inc.php:805
+#: ../../../../include/email.inc.php:799
 #, php-format
 msgid ""
-"<p>Hello %s,</p><p>A new user account has been created on %s.</p><p>The name "
-"of the new user account is: %s</p><p>To view this user account, please <a "
-"href=\"%s\">click here</a></p>"
+"<p>Hello %1$s,</p><p>A new user account has been created on %2$s.</p><p>The "
+"name of the new user account is: %3$s</p><p>To view this user account, "
+"please go to:<br /><a href=\"%4$s\">%4$s</a></p>"
 msgstr ""
-"<p>Hello %s,</p><p>A new user account has been created on %s.</p><p>The name "
-"of the new user account is: %s</p><p>To view this user account, please <a "
-"href=\"%s\">click here</a></p>"
+"<p>Hello %1$s,</p><p>A new user account has been created on %2$s.</p><p>The "
+"name of the new user account is: %3$s</p><p>To view this user account, "
+"please go to:<br /><a href=\"%4$s\">%4$s</a></p>"
 
-#: ../../../../include/email.inc.php:840
+#: ../../../../include/email.inc.php:834
 #, php-format
-msgid "User approval notification for %s"
-msgstr "User approval notification for %s"
+msgid "User approval notification for %1$s"
+msgstr "User approval notification for %1$s"
 
-#: ../../../../include/email.inc.php:853
+#: ../../../../include/email.inc.php:847
 #, php-format
 msgid ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"Your user account at %s has been approved. You can login and start posting "
+"Your user account at %2$s has been approved. You can login and start posting "
 "immediately by going to:\n"
-"%s\n"
+"%3$s\n"
 "\n"
-"If you were not expecting this email from %s please accept our apologies and "
-"forward this email to %s so that the source of it may be investigated."
+"If you were not expecting this email from %2$s please accept our apologies "
+"and forward this email to %4$s so that the source of it may be investigated."
 msgstr ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"Your user account at %s has been approved. You can login and start posting "
+"Your user account at %2$s has been approved. You can login and start posting "
 "immediately by going to:\n"
-"%s\n"
+"%3$s\n"
 "\n"
-"If you were not expecting this email from %s please accept our apologies and "
-"forward this email to %s so that the source of it may be investigated."
+"If you were not expecting this email from %2$s please accept our apologies "
+"and forward this email to %4$s so that the source of it may be investigated."
 
-#: ../../../../include/email.inc.php:866
+#: ../../../../include/email.inc.php:859
 #, php-format
 msgid ""
-"<p>Hello %s,</p><p>Your user account at %s has been approved. You can login "
-"and start posting immediately by <a href=\"%s\">clicking here</a>.</p><p>If "
-"you were not expecting this email from %s please accept our apologies and "
-"forward this email to %s so that the source of it may be investigated.</p>"
+"<p>Hello %1$s,</p><p>Your user account at %2$s has been approved. You can "
+"login and start posting immediately by going to:<br /><a href=\"%3$s\">%3$s</"
+"a></p><p>If you were not expecting this email from %2$s please accept our "
+"apologies and forward this email to %4$s so that the source of it may be "
+"investigated.</p>"
 msgstr ""
-"<p>Hello %s,</p><p>Your user account at %s has been approved. You can login "
-"and start posting immediately by <a href=\"%s\">clicking here</a>.</p><p>If "
-"you were not expecting this email from %s please accept our apologies and "
-"forward this email to %s so that the source of it may be investigated.</p>"
+"<p>Hello %1$s,</p><p>Your user account at %2$s has been approved. You can "
+"login and start posting immediately by going to:<br /><a href=\"%3$s\">%3$s</"
+"a></p><p>If you were not expecting this email from %2$s please accept our "
+"apologies and forward this email to %4$s so that the source of it may be "
+"investigated.</p>"
 
-#: ../../../../include/email.inc.php:900
+#: ../../../../include/email.inc.php:892
 #, php-format
-msgid "Post Approval Notification for %s"
-msgstr "Post Approval Notification for %s"
+msgid "Post Approval Notification for %1$s"
+msgstr "Post Approval Notification for %1$s"
 
-#: ../../../../include/email.inc.php:915
+#: ../../../../include/email.inc.php:907
 #, php-format
 msgid ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"A new post has been created on %s.\n"
+"A new post has been created on %2$s.\n"
 "\n"
 "As you are a Moderator on this forum you are required to approve this post "
 "before it can be read by other users.\n"
 "\n"
 "You can approve this post by going to:\n"
-"%s\n"
+"%3$s\n"
 "\n"
 "Note: Other Moderators on this forum will also receive this notification and "
 "may have already acted upon this request."
 msgstr ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"A new post has been created on %s.\n"
+"A new post has been created on %2$s.\n"
 "\n"
 "As you are a Moderator on this forum you are required to approve this post "
 "before it can be read by other users.\n"
 "\n"
 "You can approve this post by going to:\n"
-"%s\n"
+"%3$s\n"
 "\n"
 "Note: Other Moderators on this forum will also receive this notification and "
 "may have already acted upon this request."
 
-#: ../../../../include/email.inc.php:926
+#: ../../../../include/email.inc.php:918
 #, php-format
 msgid ""
-"<p>Hello %s,</p><p>A new post has been created on %s.</p><p>As you are a "
+"<p>Hello %1$s,</p><p>A new post has been created on %2$s.</p><p>As you are a "
 "Moderator on this forum you are required to approve this post before it can "
-"be read by other users.</p><p>You can approve this post by <a href=\"%s"
-"\">clicking here</a></p><p>Note: Other Moderators on this forum will also "
+"be read by other users.</p><p>You can approve this post by going to:<br /><a "
+"href=\"%3$s\">%3$s</a></p><p>Note: Other Moderators on this forum will also "
 "receive this notification and may have already acted upon this request.</p>"
 msgstr ""
-"<p>Hello %s,</p><p>A new post has been created on %s.</p><p>As you are a "
+"<p>Hello %1$s,</p><p>A new post has been created on %2$s.</p><p>As you are a "
 "Moderator on this forum you are required to approve this post before it can "
-"be read by other users.</p><p>You can approve this post by <a href=\"%s"
-"\">clicking here</a></p><p>Note: Other Moderators on this forum will also "
+"be read by other users.</p><p>You can approve this post by going to:<br /><a "
+"href=\"%3$s\">%3$s</a></p><p>Note: Other Moderators on this forum will also "
 "receive this notification and may have already acted upon this request.</p>"
 
-#: ../../../../include/email.inc.php:958
+#: ../../../../include/email.inc.php:950
 #, php-format
-msgid "Link Approval Notification for %s"
-msgstr "Link Approval Notification for %s"
+msgid "Link Approval Notification for %1$s"
+msgstr "Link Approval Notification for %1$s"
 
-#: ../../../../include/email.inc.php:973
+#: ../../../../include/email.inc.php:965
 #, php-format
 msgid ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"A new link has been created on %s.\n"
+"A new link has been created on %2$s.\n"
 "\n"
 "As you are a Link Moderator on this forum you are required to approve this "
 "link before it can be read by other users.\n"
 "\n"
 "You can approve this link by going to:\n"
-"%s\n"
+"%3$s\n"
 "\n"
 "Note: Other Moderators on this forum will also receive this notification and "
 "may have already acted upon this request."
 msgstr ""
-"Hello %s,\n"
+"Hello %1$s,\n"
 "\n"
-"A new link has been created on %s.\n"
+"A new link has been created on %2$s.\n"
 "\n"
 "As you are a Link Moderator on this forum you are required to approve this "
 "link before it can be read by other users.\n"
 "\n"
 "You can approve this link by going to:\n"
-"%s\n"
+"%3$s\n"
 "\n"
 "Note: Other Moderators on this forum will also receive this notification and "
 "may have already acted upon this request."
 
-#: ../../../../include/email.inc.php:984
+#: ../../../../include/email.inc.php:976
 #, php-format
 msgid ""
-"<p>Hello %s,</p><p>A new link has been created on %s.</p><p>As you are a "
+"<p>Hello %1$s,</p><p>A new link has been created on %2$s.</p><p>As you are a "
 "Link Moderator on this forum you are required to approve this link before it "
-"can be read by other users.</p><p>You can approve this link by <a href=\"%s"
-"\">clicking here</a>.</p><p>Note: Other Moderators on this forum will also "
-"receive this notification and may have already acted upon this request.</p>"
+"can be read by other users.</p><p>You can approve this link by going to:<br /"
+"><a href=\"%3$s\">%3$s</a></p><p>Note: Other Moderators on this forum will "
+"also receive this notification and may have already acted upon this request."
+"</p>"
 msgstr ""
-"<p>Hello %s,</p><p>A new link has been created on %s.</p><p>As you are a "
+"<p>Hello %1$s,</p><p>A new link has been created on %2$s.</p><p>As you are a "
 "Link Moderator on this forum you are required to approve this link before it "
-"can be read by other users.</p><p>You can approve this link by <a href=\"%s"
-"\">clicking here</a>.</p><p>Note: Other Moderators on this forum will also "
-"receive this notification and may have already acted upon this request.</p>"
+"can be read by other users.</p><p>You can approve this link by going to:<br /"
+"><a href=\"%3$s\">%3$s</a></p><p>Note: Other Moderators on this forum will "
+"also receive this notification and may have already acted upon this request."
+"</p>"
 
-#: ../../../../include/email.inc.php:1034
-#: ../../../../include/email.inc.php:1048
+#: ../../../../include/email.inc.php:1026
+#: ../../../../include/email.inc.php:1040
 #, php-format
-msgid "This message was sent from %s by %s"
-msgstr "This message was sent from %s by %s"
+msgid "This message was sent from %1$s by %2$s"
+msgstr "This message was sent from %1$s by %2$s"
 
 #: ../../../../include/form.inc.php:54 ../../../../include/form.inc.php:141
 #: ../../../../include/html.inc.php:572 ../../../../include/light.inc.php:112
@@ -8062,7 +8120,7 @@ msgstr ""
 msgid "Password Protected Forum"
 msgstr "Password Protected Forum"
 
-#: ../../../../include/forum.inc.php:379 ../../../../include/logon.inc.php:102
+#: ../../../../include/forum.inc.php:379 ../../../../include/logon.inc.php:111
 #: ../../../../llogon.php:84 ../../../../logon.php:97
 #: ../../../../logon.php:102 ../../../../register.php:396
 msgid "The username or password you supplied is not valid."
@@ -8097,20 +8155,20 @@ msgstr ""
 "are:"
 
 #: ../../../../include/html.inc.php:60 ../../../../include/html.inc.php:64
-#: ../../../../include/html.inc.php:68 ../../../../include/light.inc.php:2064
+#: ../../../../include/html.inc.php:68 ../../../../include/light.inc.php:2077
 msgid "Sorry, you need to be logged in to use this feature."
 msgstr "Sorry, you need to be logged in to use this feature."
 
-#: ../../../../include/html.inc.php:68 ../../../../include/light.inc.php:2068
+#: ../../../../include/html.inc.php:68 ../../../../include/light.inc.php:2081
 msgid "Login now"
 msgstr "Login now"
 
 #: ../../../../include/html.inc.php:68 ../../../../nav.php:89
-#: ../../../../register.php:813 ../../../../register.php:869
+#: ../../../../register.php:819 ../../../../register.php:875
 msgid "Register"
 msgstr "Register"
 
-#: ../../../../include/html.inc.php:196 ../../../../include/light.inc.php:2347
+#: ../../../../include/html.inc.php:196 ../../../../include/light.inc.php:2360
 msgid "The following errors were encountered:"
 msgstr "The following errors were encountered:"
 
@@ -8122,7 +8180,7 @@ msgstr "Success"
 msgid "Warning"
 msgstr "Warning"
 
-#: ../../../../include/html.inc.php:289 ../../../../include/light.inc.php:2392
+#: ../../../../include/html.inc.php:289 ../../../../include/light.inc.php:2405
 msgid ""
 "Your user account needs to be approved by a forum admin before you can "
 "access the requested forum."
@@ -8130,7 +8188,7 @@ msgstr ""
 "Your user account needs to be approved by a forum admin before you can "
 "access the requested forum."
 
-#: ../../../../include/html.inc.php:298 ../../../../include/light.inc.php:2401
+#: ../../../../include/html.inc.php:298 ../../../../include/light.inc.php:2414
 msgid ""
 "Email confirmation is required before you can post. If you have not received "
 "a confirmation email please click the button below and a new one will be "
@@ -8144,11 +8202,11 @@ msgstr ""
 "requesting a new confirmation email. You may change your email address by "
 "click My Controls above and then User Details"
 
-#: ../../../../include/html.inc.php:298 ../../../../include/light.inc.php:2401
+#: ../../../../include/html.inc.php:298 ../../../../include/light.inc.php:2414
 msgid "Resend Confirmation"
 msgstr "Resend Confirmation"
 
-#: ../../../../include/html.inc.php:305 ../../../../include/light.inc.php:2201
+#: ../../../../include/html.inc.php:305 ../../../../include/light.inc.php:2214
 msgid ""
 "You cannot post this thread type as there are no available folders that "
 "allow it."
@@ -8207,11 +8265,11 @@ msgstr "Top"
 msgid "Desktop Version"
 msgstr "Desktop Version"
 
-#: ../../../../include/light.inc.php:402 ../../../../include/logon.inc.php:100
+#: ../../../../include/light.inc.php:402 ../../../../include/logon.inc.php:109
 msgid "You have successfully logged out."
 msgstr "You have successfully logged out."
 
-#: ../../../../include/light.inc.php:426 ../../../../include/logon.inc.php:159
+#: ../../../../include/light.inc.php:426 ../../../../include/logon.inc.php:168
 msgid "Remember me"
 msgstr "Remember me"
 
@@ -8318,7 +8376,7 @@ msgstr "%d times"
 
 #: ../../../../include/light.inc.php:904
 #: ../../../../include/light.inc.php:1427
-#: ../../../../include/light.inc.php:2244
+#: ../../../../include/light.inc.php:2257
 #: ../../../../include/messages.inc.php:414
 #: ../../../../include/threads.inc.php:1630 ../../../../thread_list.php:644
 msgid "High Interest"
@@ -8349,8 +8407,8 @@ msgid "Mark as Read"
 msgstr "Mark as Read"
 
 #: ../../../../include/light.inc.php:973
-#: ../../../../include/light.inc.php:2228
-#: ../../../../include/light.inc.php:2237
+#: ../../../../include/light.inc.php:2241
+#: ../../../../include/light.inc.php:2250
 #: ../../../../include/threads.inc.php:1614
 #: ../../../../include/threads.inc.php:1623 ../../../../thread_list.php:807
 msgid "All Discussions"
@@ -8449,17 +8507,17 @@ msgstr "Poll has ended"
 
 #: ../../../../include/light.inc.php:1587
 #: ../../../../include/light.inc.php:1600 ../../../../include/poll.inc.php:689
-#: ../../../../include/poll.inc.php:730 ../../../../links_detail.php:292
+#: ../../../../include/poll.inc.php:733 ../../../../links_detail.php:292
 msgid "Vote"
 msgstr "Vote"
 
-#: ../../../../include/light.inc.php:1591 ../../../../include/poll.inc.php:710
+#: ../../../../include/light.inc.php:1591 ../../../../include/poll.inc.php:713
 msgid "Change vote"
 msgstr "Change vote"
 
 #: ../../../../include/light.inc.php:1595
-#: ../../../../include/light.inc.php:1603 ../../../../include/poll.inc.php:720
-#: ../../../../include/poll.inc.php:752
+#: ../../../../include/light.inc.php:1603 ../../../../include/poll.inc.php:723
+#: ../../../../include/poll.inc.php:755
 msgid ""
 "<b>Warning</b>: This is a public ballot. Your name will be visible next to "
 "the option you vote for."
@@ -8467,8 +8525,8 @@ msgstr ""
 "<b>Warning</b>: This is a public ballot. Your name will be visible next to "
 "the option you vote for."
 
-#: ../../../../include/light.inc.php:1645 ../../../../include/poll.inc.php:928
-#: ../../../../include/poll.inc.php:981 ../../../../links_detail.php:299
+#: ../../../../include/light.inc.php:1645 ../../../../include/poll.inc.php:931
+#: ../../../../include/poll.inc.php:984 ../../../../links_detail.php:299
 msgid "Votes"
 msgstr "Votes"
 
@@ -8534,7 +8592,7 @@ msgid "APPROVED: %s by %s"
 msgstr "APPROVED: %s by %s"
 
 #: ../../../../include/light.inc.php:1907
-#: ../../../../include/light.inc.php:2497
+#: ../../../../include/light.inc.php:2510
 #: ../../../../include/messages.inc.php:860
 #: ../../../../include/messages.inc.php:973
 #: ../../../../include/messages.inc.php:974 ../../../../include/pm.inc.php:869
@@ -8542,8 +8600,8 @@ msgid "Reply"
 msgstr "Reply"
 
 #: ../../../../include/light.inc.php:1918
-#: ../../../../include/light.inc.php:2508
-#: ../../../../include/light.inc.php:2514
+#: ../../../../include/light.inc.php:2521
+#: ../../../../include/light.inc.php:2527
 #: ../../../../include/messages.inc.php:879 ../../../../include/pm.inc.php:879
 #: ../../../../include/pm.inc.php:884 ../../../../links.php:200
 msgid "Edit"
@@ -8568,102 +8626,102 @@ msgstr "This message has been moved %s"
 msgid "Message %s.%s is awaiting approval by a moderator"
 msgstr "Message %s.%s is awaiting approval by a moderator"
 
-#: ../../../../include/light.inc.php:2229
-#: ../../../../include/light.inc.php:2240
+#: ../../../../include/light.inc.php:2242
+#: ../../../../include/light.inc.php:2253
 #: ../../../../include/threads.inc.php:1615
 #: ../../../../include/threads.inc.php:1626
 msgid "Today's Discussions"
 msgstr "Today's Discussions"
 
-#: ../../../../include/light.inc.php:2230
-#: ../../../../include/light.inc.php:2242
+#: ../../../../include/light.inc.php:2243
+#: ../../../../include/light.inc.php:2255
 #: ../../../../include/threads.inc.php:1616
 #: ../../../../include/threads.inc.php:1628
 msgid "2 Days Back"
 msgstr "2 Days Back"
 
-#: ../../../../include/light.inc.php:2231
-#: ../../../../include/light.inc.php:2243
+#: ../../../../include/light.inc.php:2244
+#: ../../../../include/light.inc.php:2256
 #: ../../../../include/threads.inc.php:1617
 #: ../../../../include/threads.inc.php:1629
 msgid "7 Days Back"
 msgstr "7 Days Back"
 
-#: ../../../../include/light.inc.php:2238
+#: ../../../../include/light.inc.php:2251
 #: ../../../../include/threads.inc.php:1624
 msgid "Unread Discussions"
 msgstr "Unread Discussions"
 
-#: ../../../../include/light.inc.php:2239
+#: ../../../../include/light.inc.php:2252
 #: ../../../../include/threads.inc.php:1625
 msgid "Unread &quot;To: Me&quot;"
 msgstr "Unread &quot;To: Me&quot;"
 
-#: ../../../../include/light.inc.php:2241
+#: ../../../../include/light.inc.php:2254
 #: ../../../../include/threads.inc.php:1627
 msgid "Unread today"
 msgstr "Unread today"
 
-#: ../../../../include/light.inc.php:2245
+#: ../../../../include/light.inc.php:2258
 #: ../../../../include/threads.inc.php:1631
 msgid "Unread High Interest"
 msgstr "Unread High Interest"
 
-#: ../../../../include/light.inc.php:2246
+#: ../../../../include/light.inc.php:2259
 #: ../../../../include/threads.inc.php:1632
 msgid "I've recently seen"
 msgstr "I've recently seen"
 
-#: ../../../../include/light.inc.php:2247
+#: ../../../../include/light.inc.php:2260
 #: ../../../../include/threads.inc.php:1633
 msgid "I've ignored"
 msgstr "I've ignored"
 
-#: ../../../../include/light.inc.php:2248
+#: ../../../../include/light.inc.php:2261
 #: ../../../../include/threads.inc.php:1634
 msgid "By ignored users"
 msgstr "By ignored users"
 
-#: ../../../../include/light.inc.php:2249
+#: ../../../../include/light.inc.php:2262
 #: ../../../../include/threads.inc.php:1635
 msgid "I've subscribed to"
 msgstr "I've subscribed to"
 
-#: ../../../../include/light.inc.php:2250
+#: ../../../../include/light.inc.php:2263
 #: ../../../../include/threads.inc.php:1636
 msgid "Started by friend"
 msgstr "Started by friend"
 
-#: ../../../../include/light.inc.php:2251
+#: ../../../../include/light.inc.php:2264
 #: ../../../../include/threads.inc.php:1637
 msgid "Unread started by friend"
 msgstr "Unread started by friend"
 
-#: ../../../../include/light.inc.php:2252
+#: ../../../../include/light.inc.php:2265
 #: ../../../../include/threads.inc.php:1638
 msgid "Started by me"
 msgstr "Started by me"
 
-#: ../../../../include/light.inc.php:2254
+#: ../../../../include/light.inc.php:2267
 #: ../../../../include/threads.inc.php:1640
 msgid "Sticky Threads"
 msgstr "Sticky Threads"
 
-#: ../../../../include/light.inc.php:2255
+#: ../../../../include/light.inc.php:2268
 #: ../../../../include/threads.inc.php:1641
 msgid "Most unread posts"
 msgstr "Most unread posts"
 
-#: ../../../../include/light.inc.php:2257
+#: ../../../../include/light.inc.php:2270
 #: ../../../../include/threads.inc.php:1643
 msgid "Deleted Threads"
 msgstr "Deleted Threads"
 
-#: ../../../../include/light.inc.php:2406 ../../../../include/pm.inc.php:72
+#: ../../../../include/light.inc.php:2419 ../../../../include/pm.inc.php:72
 msgid "Cannot view PM. Message does not exist or it is inaccessible by you"
 msgstr "Cannot view PM. Message does not exist or it is inaccessible by you"
 
-#: ../../../../include/light.inc.php:2411 ../../../../include/pm.inc.php:67
+#: ../../../../include/light.inc.php:2424 ../../../../include/pm.inc.php:67
 msgid ""
 "Cannot edit this PM. It has already been viewed by the recipient or the "
 "message does not exist or it is inaccessible by you"
@@ -8671,37 +8729,37 @@ msgstr ""
 "Cannot edit this PM. It has already been viewed by the recipient or the "
 "message does not exist or it is inaccessible by you"
 
-#: ../../../../include/light.inc.php:2417 ../../../../include/pm.inc.php:41
+#: ../../../../include/light.inc.php:2430 ../../../../include/pm.inc.php:41
 msgid "Personal Messages have been disabled by the forum owner."
 msgstr "Personal Messages have been disabled by the forum owner."
 
-#: ../../../../include/light.inc.php:2434 ../../../../include/pm.inc.php:803
+#: ../../../../include/light.inc.php:2447 ../../../../include/pm.inc.php:803
 #: ../../../../pm_messages.php:486
 msgid "No Subject"
 msgstr "No Subject"
 
-#: ../../../../include/light.inc.php:2457 ../../../../include/pm.inc.php:822
+#: ../../../../include/light.inc.php:2470 ../../../../include/pm.inc.php:822
 #: ../../../../include/visitor_log.inc.php:101 ../../../../lpm_edit.php:260
 #: ../../../../pm_messages.php:522
 msgid "Unknown User"
 msgstr "Unknown User"
 
-#: ../../../../include/light.inc.php:2500 ../../../../include/pm.inc.php:872
+#: ../../../../include/light.inc.php:2513 ../../../../include/pm.inc.php:872
 msgid "Reply All"
 msgstr "Reply All"
 
-#: ../../../../include/light.inc.php:2503
-#: ../../../../include/light.inc.php:2509
-#: ../../../../include/light.inc.php:2519 ../../../../include/pm.inc.php:875
+#: ../../../../include/light.inc.php:2516
+#: ../../../../include/light.inc.php:2522
+#: ../../../../include/light.inc.php:2532 ../../../../include/pm.inc.php:875
 #: ../../../../include/pm.inc.php:887
 msgid "Forward"
 msgstr "Forward"
 
-#: ../../../../include/light.inc.php:2555 ../../../../include/pm.inc.php:1369
+#: ../../../../include/light.inc.php:2568 ../../../../include/pm.inc.php:1369
 msgid "You have 1 new message. Would you like to go to your Inbox now?"
 msgstr "You have 1 new message. Would you like to go to your Inbox now?"
 
-#: ../../../../include/light.inc.php:2559 ../../../../include/pm.inc.php:1373
+#: ../../../../include/light.inc.php:2572 ../../../../include/pm.inc.php:1373
 msgid ""
 "You have 1 new message.\n"
 "\n"
@@ -8717,7 +8775,7 @@ msgstr ""
 "\n"
 "Would you like to go to your Inbox now?"
 
-#: ../../../../include/light.inc.php:2563 ../../../../include/pm.inc.php:1377
+#: ../../../../include/light.inc.php:2576 ../../../../include/pm.inc.php:1377
 msgid ""
 "You have 1 message awaiting delivery. To receive this message please clear "
 "some space in your Inbox.\n"
@@ -8729,12 +8787,12 @@ msgstr ""
 "\n"
 "Would you like to go to your Inbox now?"
 
-#: ../../../../include/light.inc.php:2567 ../../../../include/pm.inc.php:1381
+#: ../../../../include/light.inc.php:2580 ../../../../include/pm.inc.php:1381
 #, php-format
 msgid "You have %d new messages. Would you like to go to your Inbox now?"
 msgstr "You have %d new messages. Would you like to go to your Inbox now?"
 
-#: ../../../../include/light.inc.php:2571 ../../../../include/pm.inc.php:1385
+#: ../../../../include/light.inc.php:2584 ../../../../include/pm.inc.php:1385
 #, php-format
 msgid ""
 "You have %d new messages.\n"
@@ -8751,7 +8809,7 @@ msgstr ""
 "\n"
 "Would you like to go to your Inbox now?"
 
-#: ../../../../include/light.inc.php:2575 ../../../../include/pm.inc.php:1389
+#: ../../../../include/light.inc.php:2588 ../../../../include/pm.inc.php:1389
 #, php-format
 msgid ""
 "You have %d new messages.\n"
@@ -8768,7 +8826,7 @@ msgstr ""
 "\n"
 "Would you like to go to your Inbox now?"
 
-#: ../../../../include/light.inc.php:2579 ../../../../include/pm.inc.php:1393
+#: ../../../../include/light.inc.php:2592 ../../../../include/pm.inc.php:1393
 #, php-format
 msgid ""
 "You have 1 new message.\n"
@@ -8785,7 +8843,7 @@ msgstr ""
 "\n"
 "Would you like to go to your Inbox now?"
 
-#: ../../../../include/light.inc.php:2583 ../../../../include/pm.inc.php:1397
+#: ../../../../include/light.inc.php:2596 ../../../../include/pm.inc.php:1397
 #, php-format
 msgid ""
 "You have %d messages awaiting delivery. To receive these messages please "
@@ -8798,41 +8856,41 @@ msgstr ""
 "\n"
 "Would you like to go to your Inbox now?"
 
-#: ../../../../include/logon.inc.php:163
+#: ../../../../include/logon.inc.php:172
 msgid "Not recommended for shared computers"
 msgstr "Not recommended for shared computers"
 
-#: ../../../../include/logon.inc.php:196
+#: ../../../../include/logon.inc.php:205
 #, php-format
 msgid "Enter as a %s"
 msgstr "Enter as a %s"
 
-#: ../../../../include/logon.inc.php:216 ../../../../include/logon.inc.php:224
+#: ../../../../include/logon.inc.php:225 ../../../../include/logon.inc.php:233
 #, php-format
 msgid "Don't have an account? %s"
 msgstr "Don't have an account? %s"
 
-#: ../../../../include/logon.inc.php:216 ../../../../include/logon.inc.php:224
+#: ../../../../include/logon.inc.php:225 ../../../../include/logon.inc.php:233
 msgid "Register now"
 msgstr "Register now"
 
-#: ../../../../include/logon.inc.php:218 ../../../../include/logon.inc.php:226
+#: ../../../../include/logon.inc.php:227 ../../../../include/logon.inc.php:235
 msgid "Problems logging on?"
 msgstr "Problems logging on?"
 
-#: ../../../../include/logon.inc.php:219 ../../../../include/logon.inc.php:227
+#: ../../../../include/logon.inc.php:228 ../../../../include/logon.inc.php:236
 msgid "Delete Cookies"
 msgstr "Delete Cookies"
 
-#: ../../../../include/logon.inc.php:220 ../../../../include/logon.inc.php:228
+#: ../../../../include/logon.inc.php:229 ../../../../include/logon.inc.php:237
 msgid "Forgotten your password?"
 msgstr "Forgotten your password?"
 
-#: ../../../../include/logon.inc.php:232
+#: ../../../../include/logon.inc.php:241
 msgid "Using a mobile device?"
 msgstr "Using a mobile device?"
 
-#: ../../../../include/logon.inc.php:233
+#: ../../../../include/logon.inc.php:242
 msgid "Mobile version"
 msgstr "Mobile version"
 
@@ -8939,19 +8997,19 @@ msgstr "Not Logged"
 msgid "Message %s.%s deleted %s by %s"
 msgstr "Message %s.%s deleted %s by %s"
 
-#: ../../../../include/messages.inc.php:1380
+#: ../../../../include/messages.inc.php:1393
 msgid "Rate my interest"
 msgstr "Rate my interest"
 
-#: ../../../../include/messages.inc.php:1684
+#: ../../../../include/messages.inc.php:1697
 msgid "Adjust text size"
 msgstr "Adjust text size"
 
-#: ../../../../include/messages.inc.php:1690
+#: ../../../../include/messages.inc.php:1703
 msgid "Smaller"
 msgstr "Smaller"
 
-#: ../../../../include/messages.inc.php:1698
+#: ../../../../include/messages.inc.php:1711
 msgid "Larger"
 msgstr "Larger"
 
@@ -8976,51 +9034,51 @@ msgid "Poll has ended."
 msgstr "Poll has ended."
 
 #: ../../../../include/poll.inc.php:665 ../../../../include/poll.inc.php:697
-#: ../../../../include/poll.inc.php:736
+#: ../../../../include/poll.inc.php:739
 msgid "Results"
 msgstr "Results"
 
-#: ../../../../include/poll.inc.php:802
+#: ../../../../include/poll.inc.php:805
 #, php-format
 msgid "You voted for: '%s' on %s"
 msgstr "You voted for: '%s' on %s"
 
-#: ../../../../include/poll.inc.php:814
+#: ../../../../include/poll.inc.php:817
 msgid "No users"
 msgstr "No users"
 
-#: ../../../../include/poll.inc.php:816
+#: ../../../../include/poll.inc.php:819
 msgid "1 user"
 msgstr "1 user"
 
-#: ../../../../include/poll.inc.php:818
+#: ../../../../include/poll.inc.php:821
 #, php-format
 msgid "%s users"
 msgstr "%s users"
 
-#: ../../../../include/poll.inc.php:822
+#: ../../../../include/poll.inc.php:825
 msgid "no guests"
 msgstr "no guests"
 
-#: ../../../../include/poll.inc.php:824
+#: ../../../../include/poll.inc.php:827
 msgid "1 guest"
 msgstr "1 guest"
 
-#: ../../../../include/poll.inc.php:826
+#: ../../../../include/poll.inc.php:829
 #, php-format
 msgid "%s guests"
 msgstr "%s guests"
 
-#: ../../../../include/poll.inc.php:832
+#: ../../../../include/poll.inc.php:835
 #, php-format
 msgid "%s and %s voted."
 msgstr "%s and %s voted."
 
-#: ../../../../include/poll.inc.php:834 ../../../../include/poll.inc.php:842
+#: ../../../../include/poll.inc.php:837 ../../../../include/poll.inc.php:845
 msgid "Nobody voted"
 msgstr "Nobody voted"
 
-#: ../../../../include/poll.inc.php:840
+#: ../../../../include/poll.inc.php:843
 #, php-format
 msgid "%s and %s have voted."
 msgstr "%s and %s have voted."
@@ -9253,40 +9311,40 @@ msgstr "Show messages"
 msgid "Reply to All"
 msgstr "Reply to All"
 
-#: ../../../../install/index.php:611
-msgid ""
-"For new installations please select <b>New Install</b> from the drop-down "
-"and enter a Default Forum Webtag. A webtag may contain the characters A-Z, "
-"0-9 and underscore. If you enter any other characters, errors will occur "
-"during install."
-msgstr ""
-"For new installations please select <b>New Install</b> from the drop-down "
-"and enter a Default Forum Webtag. A webtag may contain the characters A-Z, "
-"0-9 and underscore. If you enter any other characters, errors will occur "
-"during install."
-
 #: ../../../../install/index.php:612
 msgid ""
-"If you are performing a <b>Reinstall</b>, please enter a webtag as above. "
-"Any existing Beehive Forum tables will be automatically removed and all data "
-"within them will be permanently deleted."
+"For new installations please select <b>New Install</b> from the drop-down "
+"and enter a Default Forum Webtag. A webtag may contain the characters A-Z, "
+"0-9 and underscore. If you enter any other characters, errors will occur "
+"during install."
 msgstr ""
-"If you are performing a <b>Reinstall</b>, please enter a webtag as above. "
-"Any existing Beehive Forum tables will be automatically removed and all data "
-"within them will be permanently deleted."
+"For new installations please select <b>New Install</b> from the drop-down "
+"and enter a Default Forum Webtag. A webtag may contain the characters A-Z, "
+"0-9 and underscore. If you enter any other characters, errors will occur "
+"during install."
 
 #: ../../../../install/index.php:613
 msgid ""
-"For <b>Reconnections</b>, the database portion of the setup is skipped and "
-"the installation simply rewrites your config.inc.php file. Use this when you "
-"need to change your config.inc.php without reinstalling your Beehive Forum."
+"If you are performing a <b>Reinstall</b>, please enter a webtag as above. "
+"Any existing Beehive Forum tables will be automatically removed and all data "
+"within them will be permanently deleted."
 msgstr ""
-"For <b>Reconnections</b>, the database portion of the setup is skipped and "
-"the installation simply rewrites your config.inc.php file. Use this when you "
-"need to change your config.inc.php without reinstalling your Beehive Forum."
+"If you are performing a <b>Reinstall</b>, please enter a webtag as above. "
+"Any existing Beehive Forum tables will be automatically removed and all data "
+"within them will be permanently deleted."
 
 #: ../../../../install/index.php:614
 msgid ""
+"For <b>Reconnections</b>, the database portion of the setup is skipped and "
+"the installation simply rewrites your config.inc.php file. Use this when you "
+"need to change your config.inc.php without reinstalling your Beehive Forum."
+msgstr ""
+"For <b>Reconnections</b>, the database portion of the setup is skipped and "
+"the installation simply rewrites your config.inc.php file. Use this when you "
+"need to change your config.inc.php without reinstalling your Beehive Forum."
+
+#: ../../../../install/index.php:615
+msgid ""
 "Finally, for <b>Upgrades</b> please select the correct upgrade path. The "
 "webtag field is also ignored when using this option. Selecting the wrong "
 "option here can have dire consequences for your forum if you have not backed-"
@@ -9297,7 +9355,7 @@ msgstr ""
 "option here can have dire consequences for your forum if you have not backed-"
 "up."
 
-#: ../../../../install/index.php:667
+#: ../../../../install/index.php:668
 msgid ""
 "These are the MySQL database details required to install and run your "
 "Beehive Forum. If you do not know what these settings are please contact "
@@ -9307,7 +9365,7 @@ msgstr ""
 "Beehive Forum. If you do not know what these settings are please contact "
 "your hosting provider."
 
-#: ../../../../install/index.php:712
+#: ../../../../install/index.php:713
 msgid ""
 "The credentials of the user you want to have initial Admin access. This "
 "information is only required for new installations. Upgrades will leave the "
@@ -9316,19 +9374,19 @@ msgstr ""
 "The credentials of the user you want to have initial Admin access. This "
 "information is only required for new installations. Upgrades will leave the "
 "existing user accounts intact."
-
-#: ../../../../install/index.php:747
-msgid ""
-"<b>Caution!</b> These options are recommended for advanced users only. There "
-"use can have a detrimental effect on the functionality of your Beehive Forum "
-"AND other software you may have installed."
-msgstr ""
-"<b>Caution!</b> These options are recommended for advanced users only. There "
-"use can have a detrimental effect on the functionality of your Beehive Forum "
-"AND other software you may have installed."
 
 #: ../../../../install/index.php:748
 msgid ""
+"<b>Caution!</b> These options are recommended for advanced users only. There "
+"use can have a detrimental effect on the functionality of your Beehive Forum "
+"AND other software you may have installed."
+msgstr ""
+"<b>Caution!</b> These options are recommended for advanced users only. There "
+"use can have a detrimental effect on the functionality of your Beehive Forum "
+"AND other software you may have installed."
+
+#: ../../../../install/index.php:749
+msgid ""
 "<b>Automatically remove tables</b> permanently removes tables that would "
 "have conflicted with those used by Beehive Forum. If other tables exist "
 "which conflict with those used by the Beehive Forum software then enabling "
@@ -9341,7 +9399,7 @@ msgstr ""
 "this option may cause any other scripts or software which rely on them to "
 "fail."
 
-#: ../../../../install/index.php:749
+#: ../../../../install/index.php:750
 msgid ""
 "<b>Enable error reports</b> enables verbose error reporting for your Beehive "
 "Forum and sends these reports to the Admin User's Email Address. These error "
@@ -10196,18 +10254,18 @@ msgstr "Text-captcha verification code was incorrect. Please re-enter it."
 msgid "Username and password must be different"
 msgstr "Username and password must be different"
 
-#: ../../../../register.php:436 ../../../../register.php:448
-#: ../../../../register.php:461 ../../../../register.php:480
-#: ../../../../register.php:491
+#: ../../../../register.php:442 ../../../../register.php:454
+#: ../../../../register.php:467 ../../../../register.php:486
+#: ../../../../register.php:497
 msgid "User Registration"
 msgstr "User Registration"
 
-#: ../../../../register.php:440 ../../../../register.php:452
-#: ../../../../register.php:465
+#: ../../../../register.php:446 ../../../../register.php:458
+#: ../../../../register.php:471
 msgid "Successfully created user account"
 msgstr "Successfully created user account"
 
-#: ../../../../register.php:440
+#: ../../../../register.php:446
 msgid ""
 "Your user account has been created but before you can start posting you must "
 "confirm your email address. Please check your email for a link that will "
@@ -10217,7 +10275,7 @@ msgstr ""
 "confirm your email address. Please check your email for a link that will "
 "allow you to confirm your address."
 
-#: ../../../../register.php:452
+#: ../../../../register.php:458
 msgid ""
 "Your user account has been created but the required confirmation email was "
 "not sent. Please contact the forum owner to rectify this. In this meantime "
@@ -10227,7 +10285,7 @@ msgstr ""
 "not sent. Please contact the forum owner to rectify this. In this meantime "
 "please click the continue button to login."
 
-#: ../../../../register.php:465
+#: ../../../../register.php:471
 msgid ""
 "Your user account has been created successfully! Click the continue button "
 "below to login"
@@ -10235,51 +10293,51 @@ msgstr ""
 "Your user account has been created successfully! Click the continue button "
 "below to login"
 
-#: ../../../../register.php:472
+#: ../../../../register.php:478
 msgid "Error creating user record"
 msgstr "Error creating user record"
 
-#: ../../../../register.php:499
+#: ../../../../register.php:505
 msgid "More Profile and Preference options are available once you register"
 msgstr "More Profile and Preference options are available once you register"
 
-#: ../../../../register.php:513
+#: ../../../../register.php:519
 msgid "Registration Information (Required)"
 msgstr "Registration Information (Required)"
 
-#: ../../../../register.php:554
+#: ../../../../register.php:560
 msgid "Profile Information"
 msgstr "Profile Information"
 
-#: ../../../../register.php:637
+#: ../../../../register.php:643
 msgid "Preferences"
 msgstr "Preferences"
 
-#: ../../../../register.php:645
+#: ../../../../register.php:651
 msgid "Notify on reply to me"
 msgstr "Notify on reply to me"
 
-#: ../../../../register.php:649
+#: ../../../../register.php:655
 msgid "Notify on new Private Message"
 msgstr "Notify on new Private Message"
 
-#: ../../../../register.php:653
+#: ../../../../register.php:659
 msgid "Pop up on new Private Message"
 msgstr "Pop up on new Private Message"
 
-#: ../../../../register.php:657
+#: ../../../../register.php:663
 msgid "Automatic high interest on post"
 msgstr "Automatic high interest on post"
 
-#: ../../../../register.php:767
+#: ../../../../register.php:773
 msgid "forum owner"
 msgstr "forum owner"
 
-#: ../../../../register.php:778
+#: ../../../../register.php:784
 msgid "Confirmation"
 msgstr "Confirmation"
 
-#: ../../../../register.php:786
+#: ../../../../register.php:792
 #, php-format
 msgid ""
 "To prevent automated registrations this forum requires you enter a "
@@ -10292,12 +10350,12 @@ msgstr ""
 "are visually impaired or cannot otherwise read the code please contact the "
 "%s."
 
-#: ../../../../register.php:788
+#: ../../../../register.php:794
 msgid "This is a captcha-picture. It is used to prevent automatic registration"
 msgstr ""
 "This is a captcha-picture. It is used to prevent automatic registration"
 
-#: ../../../../register.php:825
+#: ../../../../register.php:831
 #, php-format
 msgid ""
 "<p><b>Forum Rules</b></p><p>Registration to %1$s is free! We do insist that "
@@ -10330,11 +10388,11 @@ msgstr ""
 "p><p>The owners of %1$s reserve the right to remove, edit, move or close any "
 "thread for any reason.</p>"
 
-#: ../../../../register.php:846
+#: ../../../../register.php:852
 msgid "In order to proceed, you must agree with the following rules"
 msgstr "In order to proceed, you must agree with the following rules"
 
-#: ../../../../register.php:854
+#: ../../../../register.php:860
 msgid "I have read, and agree to abide by the forum rules."
 msgstr "I have read, and agree to abide by the forum rules."
 

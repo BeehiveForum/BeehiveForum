@@ -439,8 +439,8 @@ function html_include_javascript($script_filepath, $id = null)
 
     return sprintf(
         "<script type=\"text/javascript\" src=\"%s\"%s></script>\n",
-        $script_filepath,
-        isset($id) ? sprintf(" id=\"%s\"", $id) : ''
+        htmlentities_array($script_filepath),
+        isset($id) ? sprintf(" id=\"%s\"", htmlentities_array($id)) : ''
     );
 }
 
@@ -462,9 +462,9 @@ function html_include_css($script_filepath, $media = 'screen', $id = null)
 
     return sprintf(
         "<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\" media=\"%s\"%s />\n",
-        $script_filepath,
-        $media,
-        isset($id) ? sprintf(" id=\"%s\"", $id) : ''
+        htmlentities_array($script_filepath),
+        htmlentities_array($media),
+        isset($id) ? sprintf(" id=\"%s\"", htmlentities_array($id)) : ''
     );
 }
 
@@ -626,11 +626,11 @@ function html_draw_top(array $options = array())
 
     } else if (isset($robots)) {
 
-        echo "<meta name=\"robots\" content=\"$robots\" />\n";
+        echo "<meta name=\"robots\" content=\"", htmlentities_array($robots), "\" />\n";
     }
 
-    printf("<meta name=\"application-name\" content=\"%s\" />\n", word_filter_add_ob_tags($forum_name, true));
-    printf("<meta name=\"msapplication-tooltip\" content=\"%s\" />\n", word_filter_add_ob_tags($meta_description, true));
+    printf("<meta name=\"application-name\" content=\"%s\" />\n", htmlentities_array(word_filter_add_ob_tags($forum_name, true)));
+    printf("<meta name=\"msapplication-tooltip\" content=\"%s\" />\n", htmlentities_array(word_filter_add_ob_tags($meta_description, true)));
 
     if (forum_check_webtag_available($webtag)) {
 
@@ -653,34 +653,34 @@ function html_draw_top(array $options = array())
         printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Admin'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_get_style_file('images/msie/admin_tool.ico', true, true));
     }
 
-    printf("<meta name=\"msapplication-starturl\" content=\"%s\" />\n", html_get_forum_file_path("index.php?webtag=$webtag"));
+    printf("<meta name=\"msapplication-starturl\" content=\"%s\" />\n", htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag")));
 
     $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag");
 
-    printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array(gettext('RSS Feed')), $rss_feed_path);
+    printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array(gettext('RSS Feed')), htmlentities_array($rss_feed_path));
 
     if (($folders_array = folder_get_available_details()) !== false) {
 
         foreach ($folders_array as $folder) {
 
             $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag&amp;fid={$folder['FID']}");
-            printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array(gettext('RSS Feed')), $rss_feed_path);
+            printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array(gettext('RSS Feed')), htmlentities_array($rss_feed_path));
         }
     }
 
     if (($user_style_path = html_get_user_style_path()) !== false) {
 
-        printf("<link rel=\"apple-touch-icon\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-57x57.png', $user_style_path)));
-        printf("<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-72x72.png', $user_style_path)));
-        printf("<link rel=\"apple-touch-icon\" sizes=\"114x114\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-114x114.png', $user_style_path)));
-        printf("<link rel=\"apple-touch-icon\" sizes=\"144x144\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-144x144.png', $user_style_path)));
+        printf("<link rel=\"apple-touch-icon\" href=\"%s\" />\n", htmlentities_array(html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-57x57.png', $user_style_path))));
+        printf("<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"%s\" />\n", htmlentities_array(html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-72x72.png', $user_style_path))));
+        printf("<link rel=\"apple-touch-icon\" sizes=\"114x114\" href=\"%s\" />\n", htmlentities_array(html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-114x114.png', $user_style_path))));
+        printf("<link rel=\"apple-touch-icon\" sizes=\"144x144\" href=\"%s\" />\n", htmlentities_array(html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-144x144.png', $user_style_path))));
 
-        printf("<link rel=\"shortcut icon\" type=\"image/ico\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
+        printf("<link rel=\"shortcut icon\" type=\"image/ico\" href=\"%s\" />\n", htmlentities_array(html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', $user_style_path))));
     }
 
     $opensearch_path = html_get_forum_file_path(sprintf('search.php?webtag=%s&amp;opensearch', $webtag));
 
-    printf("<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"%s\" href=\"%s\" />\n", $forum_name, $opensearch_path);
+    printf("<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"%s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($opensearch_path));
 
     if (($style_sheet = html_get_style_file($main_css)) !== false) {
         echo html_include_css($style_sheet);
@@ -706,7 +706,7 @@ function html_draw_top(array $options = array())
         echo html_include_css(html_get_forum_file_path(sprintf('font_size.php?webtag=%s', $webtag)), 'screen', 'user_font');
     }
 
-    if ($base_target) echo "<base target=\"$base_target\" />\n";
+    if ($base_target) echo "<base target=\"", htmlentities_array($base_target), "\" />\n";
 
     echo html_include_javascript(html_get_forum_file_path('js/jquery.min.js'));
     echo html_include_javascript(html_get_forum_file_path('js/jquery.placeholder.min.js'));
@@ -789,7 +789,16 @@ function html_draw_top(array $options = array())
 
     if ($frame_set_html === false) {
 
-        echo "<body", ($class) ? " class=\"$class\">\n" : ">\n";
+        $classes = array(basename($_SERVER['PHP_SELF'], '.php'));
+
+        if ($class) {
+            $classes[] = $class;
+        }
+
+        printf(
+            "<body class=\"%s\">\n",
+            implode(' ', htmlentities_array($classes))
+        );
 
         if (html_output_adsense_settings() && adsense_check_user() && adsense_check_page()) {
 
@@ -879,17 +888,33 @@ class html_frameset_rows extends html_frameset
             $this->rows = $rows;
         }
 
-        if (is_numeric($framespacing)) $this->framespacing = $framespacing;
-        if (is_numeric($frameborder)) $this->frameborder = $frameborder;
+        if (is_numeric($framespacing)) {
+            $this->framespacing = $framespacing;
+        } else {
+            $this->framespacing = 0;
+        }
+
+        if (is_numeric($frameborder)) {
+            $this->frameborder = $frameborder;
+        } else {
+            $this->frameborder = 0;
+        }
 
         if (browser_check(BROWSER_MSIE)) {
-            $this->allowtransparency = " allowtransparency=\"true\"";
+            $this->allowtransparency = ' allowtransparency="true"';
         }
     }
 
     public function output_html($close_frameset = true)
     {
-        echo sprintf("<frameset id=\"%s\" rows=\"%s\" framespacing=\"%s\" border=\"%s\"%s>\n", $this->id, $this->rows, $this->framespacing, $this->frameborder, $this->allowtransparency);
+        printf(
+            "<frameset id=\"%s\" rows=\"%s\" framespacing=\"%s\" border=\"%s\"%s>\n",
+            htmlentities_array($this->id),
+            htmlentities_array($this->rows),
+            $this->framespacing,
+            $this->frameborder,
+            $this->allowtransparency
+        );
 
         /** @var html_frame[] $frames_array */
         $frames_array = parent::get_frames();
@@ -914,17 +939,33 @@ class html_frameset_cols extends html_frameset
             $this->cols = $cols;
         }
 
-        if (is_numeric($framespacing)) $this->framespacing = $framespacing;
-        if (is_numeric($frameborder)) $this->frameborder = $frameborder;
+        if (is_numeric($framespacing)) {
+            $this->framespacing = $framespacing;
+        } else {
+            $this->framespacing = 4;
+        }
+
+        if (is_numeric($frameborder)) {
+            $this->frameborder = $frameborder;
+        } else {
+            $this->frameborder = 4;
+        }
 
         if (browser_check(BROWSER_MSIE)) {
-            $this->allowtransparency = " allowtransparency=\"true\"";
+            $this->allowtransparency = ' allowtransparency="true"';
         }
     }
 
     public function output_html($close_frameset = true)
     {
-        echo sprintf("<frameset id=\"%s\" cols=\"%s\" framespacing=\"%s\" border=\"%s\"%s>\n", $this->id, $this->cols, $this->framespacing, $this->frameborder, $this->allowtransparency);
+        printf(
+            "<frameset id=\"%s\" cols=\"%s\" framespacing=\"%s\" border=\"%s\"%s>\n",
+            htmlentities_array($this->id),
+            htmlentities_array($this->cols),
+            $this->framespacing,
+            $this->frameborder,
+            $this->allowtransparency
+        );
 
         /** @var html_frame[] $frames_array */
         $frames_array = parent::get_frames();
@@ -951,8 +992,13 @@ class html_frame
         $this->src = $src;
         $this->name = $name;
 
-        if (in_array($scrolling, array('yes', 'no', ''))) $this->scrolling = $scrolling;
-        if (in_array($noresize, array('noresize', ''))) $this->noresize = $noresize;
+        if (in_array($scrolling, array('yes', 'no'))) {
+            $this->scrolling = sprintf(' scrolling="%s"', htmlentities_array($scrolling));
+        }
+
+        if (in_array($noresize, array('noresize'))) {
+            $this->noresize = sprintf(' noresize="%s"', htmlentities_array($noresize));
+        }
 
         if (browser_check(BROWSER_WEBKIT)) {
             $this->frameborder = 1;
@@ -961,16 +1007,22 @@ class html_frame
         }
 
         if (browser_check(BROWSER_MSIE)) {
-            $this->allowtransparency = "allowtransparency=\"true\" ";
+            $this->allowtransparency = ' allowtransparency="true"';
         }
     }
 
     function output_html()
     {
-        echo sprintf("<frame src=\"%s\" name=\"%s\" frameborder=\"%s\" ", $this->src, $this->name, $this->frameborder);
-        echo (strlen(trim($this->scrolling)) > 0) ? "scrolling=\"{$this->scrolling}\" " : "";
-        echo (strlen(trim($this->noresize)) > 0) ? "noresize=\"{$this->noresize}\" " : "";
-        echo sprintf("%s/>\n", $this->allowtransparency);
+        printf(
+            "<frame src=\"%s\" name=\"%s\" frameborder=\"%s\" class=\"%s\"%s%s%s/>\n",
+            htmlentities_array($this->src),
+            htmlentities_array($this->name),
+            htmlentities_array($this->frameborder),
+            htmlentities_array(basename(parse_url($this->src, PHP_URL_PATH), '.php')),
+            $this->scrolling,
+            $this->noresize,
+            $this->allowtransparency
+        );
     }
 }
 

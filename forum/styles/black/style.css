@@ -301,7 +301,7 @@ select.bhinputprofileitem {
     font-size: 100%;
 }
 
-.box {
+.box, .menu_box {
     background-color: #F4F4F4;
     border: 1px solid #000000;
     padding: 0;

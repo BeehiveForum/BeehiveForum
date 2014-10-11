@@ -45,7 +45,7 @@ echo "    <td align=\"left\" class=\"subhead\">", gettext("Menu"), "</td>\n";
 echo "  </tr>\n";
 
 echo "  <tr>\n";
-echo "    <td align=\"left\">", html_style_image('bullet'), "&nbsp;<a href=\"edit_prefs.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("User Details"), "</a><br /><span class=\"smallertext\">Mange account information, including profile picture and avatar.</span><br /><br /></td>\n";
+echo "    <td align=\"left\">", html_style_image('bullet'), "&nbsp;<a href=\"edit_prefs.php?webtag=$webtag\" target=\"", html_get_frame_name('right'), "\">", gettext("User Details"), "</a><br /><span class=\"smallertext\">Manage account information, including profile picture and avatar.</span><br /><br /></td>\n";
 echo "  </tr>\n";
 
 echo "  <tr>\n";

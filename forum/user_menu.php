@@ -39,7 +39,7 @@ if (!session::logged_in()) {
 
 html_draw_top();
 
-echo "<table width=\"100%\" class=\"menu_box\">\n";
+echo "<table width=\"100%\" border=\"0\">\n";
 echo "  <tr>\n";
 echo "    <td align=\"left\" class=\"subhead\">", gettext("Menu"), "</td>\n";
 echo "  </tr>\n";

@@ -1175,7 +1175,7 @@ echo "                                          <tr>\n";
 echo "                                            <td align=\"left\">", gettext("Do you want to include an additional post after the poll?"), "</td>\n";
 echo "                                          </tr>\n";
 echo "                                          <tr>\n";
-echo "                                            <td align=\"left\">", form_textarea('message_text', htmlentities_array(emoticons_apply($message_text)), 22, 100, 'tabindex="1"', 'create_poll post_content editor'), "</td>\n";
+echo "                                            <td align=\"left\" style=\"background-color: #F8F8FF;\">", form_textarea('message_text', htmlentities_array(emoticons_apply($message_text)), 22, 100, 'tabindex="1"', 'create_poll post_content editor'), "</td>\n";
 echo "                                          </tr>\n";
 echo "                                          <tr>\n";
 echo "                                            <td align=\"left\">&nbsp;</td>\n";

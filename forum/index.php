@@ -63,10 +63,6 @@ $hide_navigation = false;
 
 if (!browser_mobile() && !session::is_search_engine()) {
 
-    if (!user_guest_enabled() && (!isset($_SESSION['UID']) || $_SESSION['UID'] == 0)) {
-        $hide_navigation = true;
-    }
-
     if (isset($_GET['final_uri']) && strlen(trim($_GET['final_uri'])) > 0) {
 
         $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));

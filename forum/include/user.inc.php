@@ -330,11 +330,13 @@ function user_logon($logon, $password)
 
     $logon = $db->escape(mb_strtoupper($logon));
 
+    $email = $db->escape($logon);
+
     $ipaddress = get_ip_address();
 
     $ipaddress = $db->escape($ipaddress);
 
-    $sql = "SELECT UID, PASSWD, SALT FROM USER WHERE LOGON = '$logon'";
+    $sql = "SELECT UID, PASSWD, SALT FROM USER WHERE LOGON = '$logon' OR EMAIL = '$email'";
 
     if (!($result = $db->query($sql))) return false;
 

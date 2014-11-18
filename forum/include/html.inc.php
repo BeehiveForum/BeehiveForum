@@ -678,7 +678,7 @@ function html_draw_top(array $options = array())
         printf("<link rel=\"shortcut icon\" type=\"image/ico\" href=\"%s\" />\n", htmlentities_array(html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', $user_style_path))));
     }
 
-    $opensearch_path = html_get_forum_file_path(sprintf('search.php?webtag=%s&amp;opensearch', $webtag));
+    $opensearch_path = html_get_forum_uri(sprintf('search.php?webtag=%s&opensearch', $webtag));
 
     printf("<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"%s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($opensearch_path));
 

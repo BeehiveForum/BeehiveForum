@@ -951,23 +951,25 @@ function search_output_opensearch_xml()
 
     forum_check_webtag_available($webtag);
 
-    $title = forum_get_setting('forum_name', null, 'A Beehive Forum');
+    $forum_title = forum_get_setting('forum_name', null, 'A Beehive Forum');
 
-    $forum_opensearch_uri = html_get_forum_uri("search.php?webtag=$webtag&amp;search_string={searchTerms}");
+    $forum_description = html_get_forum_description();
+
+    $forum_opensearch_uri = html_get_forum_uri("search.php?webtag=$webtag&search_string={searchTerms}");
 
     header('Content-type: text/xml; charset=UTF-8', true);
 
-    echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    echo "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\">\n";
-    echo "<ShortName>$title</ShortName>\n";
-    echo "<Description>$title</Description>\n";
-    echo "<InputEncoding>UTF-8</InputEncoding>\n";
+    echo "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
+    echo "<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\" xmlns:moz=\"http://www.mozilla.org/2006/browser/search/\">\n";
+    echo "    <ShortName>", htmlentities_array($forum_title), "</ShortName>\n";
+    echo "    <Description>", htmlentities_array($forum_description), "</Description>\n";
+    echo "    <InputEncoding>UTF-8</InputEncoding>\n";
 
     if (($user_style_path = html_get_user_style_path()) !== false) {
-        printf("<Image height=\"16\" width=\"16\" type=\"image/x-icon\">%s</Image>\n", html_get_forum_uri(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
+        printf("    <Image height=\"16\" width=\"16\" type=\"image/x-icon\">%s</Image>\n", html_get_forum_uri(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
     }
 
-    echo "<Url type=\"text/html\" method=\"get\" template=\"$forum_opensearch_uri\"></Url>\n";
+    echo "    <Url type=\"text/html\" method=\"get\" template=\"", htmlentities_array($forum_opensearch_uri), "\"></Url>\n";
     echo "</OpenSearchDescription>\n";
     exit;
 }

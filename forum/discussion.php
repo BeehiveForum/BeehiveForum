@@ -85,8 +85,8 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
-        $frameset->html_frame("thread_list.php?webtag=$webtag&amp;mode=0&amp;folder=$fid", html_get_frame_name('left'));
-        $frameset->html_frame("messages.php?webtag=$webtag&amp;msg=$msg$post_success$edit_success$delete_success", html_get_frame_name('right'));
+        $frameset->html_frame("thread_list.php?webtag=$webtag&mode=0&folder=$fid", html_get_frame_name('left'));
+        $frameset->html_frame("messages.php?webtag=$webtag&msg=$msg$post_success$edit_success$delete_success", html_get_frame_name('right'));
 
         $frameset->output_html();
 
@@ -108,8 +108,8 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
     $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
-    $frameset->html_frame("thread_list.php?webtag=$webtag&amp;msg={$_GET['msg']}", html_get_frame_name('left'));
-    $frameset->html_frame("messages.php?webtag=$webtag&amp;msg={$_GET['msg']}$post_success$edit_success$delete_success", html_get_frame_name('right'));
+    $frameset->html_frame("thread_list.php?webtag=$webtag&msg={$_GET['msg']}", html_get_frame_name('left'));
+    $frameset->html_frame("messages.php?webtag=$webtag&msg={$_GET['msg']}$post_success$edit_success$delete_success", html_get_frame_name('right'));
 
     $frameset->output_html();
 
@@ -136,7 +136,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
         $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
         $frameset->html_frame("thread_list.php?webtag=$webtag", html_get_frame_name('left'));
-        $frameset->html_frame("search.php?webtag=$webtag&amp;search_error={$_GET['search_error']}", html_get_frame_name('right'));
+        $frameset->html_frame("search.php?webtag=$webtag&search_error={$_GET['search_error']}", html_get_frame_name('right'));
 
         $frameset->output_html();
 
@@ -181,8 +181,8 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
-        $frameset->html_frame("search.php?webtag=$webtag&amp;page=1", html_get_frame_name('left'));
-        $frameset->html_frame("messages.php?webtag=$webtag&amp;msg=$search_msg&amp;highlight=yes$post_success$edit_success$delete_success", html_get_frame_name('right'));
+        $frameset->html_frame("search.php?webtag=$webtag&page=1", html_get_frame_name('left'));
+        $frameset->html_frame("messages.php?webtag=$webtag&msg=$search_msg&highlight=yes$post_success$edit_success$delete_success", html_get_frame_name('right'));
 
         $frameset->output_html();
 
@@ -199,7 +199,7 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
-        $frameset->html_frame("search.php?webtag=$webtag&amp;page=1", html_get_frame_name('left'));
+        $frameset->html_frame("search.php?webtag=$webtag&page=1", html_get_frame_name('left'));
         $frameset->html_frame("search.php?webtag=$webtag", html_get_frame_name('right'));
 
         $frameset->output_html();
@@ -220,8 +220,8 @@ if (isset($_GET['folder']) && is_numeric($_GET['folder']) && folder_is_accessibl
 
         $frameset = new html_frameset_cols('discussion', "$left_frame_width,*");
 
-        $frameset->html_frame("thread_list.php?webtag=$webtag&amp;msg=$msg", html_get_frame_name('left'));
-        $frameset->html_frame("messages.php?webtag=$webtag&amp;msg=$msg$post_success$edit_success$delete_success", html_get_frame_name('right'));
+        $frameset->html_frame("thread_list.php?webtag=$webtag&msg=$msg", html_get_frame_name('left'));
+        $frameset->html_frame("messages.php?webtag=$webtag&msg=$msg$post_success$edit_success$delete_success", html_get_frame_name('right'));
 
         $frameset->output_html();
 

@@ -307,7 +307,7 @@ function light_navigation_bar(array $options = array())
     foreach ($nav_links as $nav_link) {
 
         echo "    <li>\n";
-        echo "      <a class=\"{$nav_link['class']}\" href=\"{$nav_link['url']}\">\n";
+        echo "      <a class=\"{$nav_link['class']}\" href=\"", htmlentities_array($nav_link['url']), "\">\n";
         echo "        ", html_style_image($nav_link['image']), "<span class=\"text\">", $nav_link['text'], "</span>\n";
         echo "      </a>\n";
         echo "    </li>\n";

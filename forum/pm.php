@@ -88,18 +88,18 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
     if (isset($_GET['message_sent'])) {
 
-        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$current_folder", html_get_frame_name('pm_folders'), 0);
-        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$current_folder&amp;message_sent=true#message", html_get_frame_name('pm_messages'), 0);
+        $frameset->html_frame("pm_folders.php?webtag=$webtag&mid=$mid&folder=$current_folder", html_get_frame_name('pm_folders'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder&message_sent=true#message", html_get_frame_name('pm_messages'), 0);
 
     } else if (isset($_GET['message_saved'])) {
 
-        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$current_folder", html_get_frame_name('pm_folders'), 0);
-        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$current_folder&amp;message_saved=true#message", html_get_frame_name('pm_messages'), 0);
+        $frameset->html_frame("pm_folders.php?webtag=$webtag&mid=$mid&folder=$current_folder", html_get_frame_name('pm_folders'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder&message_saved=true#message", html_get_frame_name('pm_messages'), 0);
 
     } else {
 
-        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;mid=$mid&amp;folder=$current_folder", html_get_frame_name('pm_folders'), 0);
-        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;mid=$mid&amp;folder=$current_folder#message", html_get_frame_name('pm_messages'), 0);
+        $frameset->html_frame("pm_folders.php?webtag=$webtag&mid=$mid&folder=$current_folder", html_get_frame_name('pm_folders'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder#message", html_get_frame_name('pm_messages'), 0);
     }
 
 } else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
@@ -108,13 +108,13 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
     if (isset($_GET['message_sent'])) {
 
-        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;folder=$current_folder", html_get_frame_name('pm_folders'), 0);
-        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;folder=$current_folder&message_sent=true", html_get_frame_name('pm_messages'), 0);
+        $frameset->html_frame("pm_folders.php?webtag=$webtag&folder=$current_folder", html_get_frame_name('pm_folders'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&folder=$current_folder&message_sent=true", html_get_frame_name('pm_messages'), 0);
 
     } else {
 
-        $frameset->html_frame("pm_folders.php?webtag=$webtag&amp;folder=$current_folder", html_get_frame_name('pm_folders'), 0);
-        $frameset->html_frame("pm_messages.php?webtag=$webtag&amp;folder=$current_folder", html_get_frame_name('pm_messages'), 0);
+        $frameset->html_frame("pm_folders.php?webtag=$webtag&folder=$current_folder", html_get_frame_name('pm_folders'), 0);
+        $frameset->html_frame("pm_messages.php?webtag=$webtag&folder=$current_folder", html_get_frame_name('pm_messages'), 0);
     }
 }
 

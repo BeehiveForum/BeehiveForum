@@ -82,12 +82,12 @@ if (!browser_mobile() && !session::is_search_engine()) {
             } else if (preg_match("/^$available_admin_files_preg/u", $final_uri) > 0) {
 
                 $final_uri = rawurlencode($final_uri);
-                $final_uri = "admin.php?webtag=$webtag&amp;page=$final_uri";
+                $final_uri = "admin.php?webtag=$webtag&page=$final_uri";
 
             } else if (preg_match("/^$my_controls_preg/u", $final_uri) > 0) {
 
                 $final_uri = rawurlencode(href_cleanup_query_keys($final_uri));
-                $final_uri = "user.php?webtag=$webtag&amp;page=$final_uri";
+                $final_uri = "user.php?webtag=$webtag&page=$final_uri";
             }
         }
     }
@@ -110,15 +110,15 @@ if (!browser_mobile() && !session::is_search_engine()) {
 
         if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-            $final_uri = "discussion.php?webtag=$webtag&amp;msg={$_GET['msg']}";
+            $final_uri = "discussion.php?webtag=$webtag&msg={$_GET['msg']}";
 
         } else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-            $final_uri = "discussion.php?webtag=$webtag&amp;folder={$_GET['folder']}";
+            $final_uri = "discussion.php?webtag=$webtag&folder={$_GET['folder']}";
 
         } else if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
-            $final_uri = "pm.php?webtag=$webtag&amp;mid={$_GET['mid']}";
+            $final_uri = "pm.php?webtag=$webtag&mid={$_GET['mid']}";
 
         } else {
 
@@ -212,7 +212,7 @@ if (forum_check_webtag_available($webtag, false)) {
                 $nav_links,
                 array(
                     'text' => gettext('Reply to All'),
-                    'url' => "lpost.php?webtag=$webtag&amp;reply_to=$tid.0&amp;return_msg=$tid.$pid",
+                    'url' => "lpost.php?webtag=$webtag&reply_to=$tid.0&return_msg=$tid.$pid",
                     'class' => 'reply_all',
                     'image' => 'mobile_reply_all',
                 )

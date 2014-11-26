@@ -153,7 +153,7 @@ if (!$thread_data['CLOSED'] && session::check_perm(USER_PERM_POST_CREATE, $folde
         $nav_links,
         array(
             'text' => gettext('Reply to All'),
-            'url' => "lpost.php?webtag=$webtag&amp;reply_to=$tid.0&amp;return_msg=$tid.$pid",
+            'url' => "lpost.php?webtag=$webtag&reply_to=$tid.0&return_msg=$tid.$pid",
             'class' => 'reply_all',
             'image' => 'mobile_reply_all',
         )

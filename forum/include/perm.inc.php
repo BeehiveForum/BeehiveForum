@@ -622,13 +622,12 @@ function perm_group_get_folders($gid)
 
     if (!($forum_fid = get_forum_fid())) return false;
 
-    $sql = "SELECT FID, TITLE, BIT_OR(PERM) AS STATUS  FROM ((SELECT FOLDER.FID, ";
-    $sql .= "FOLDER.TITLE, BIT_OR(GROUP_PERMS.PERM) AS PERM FROM GROUPS INNER JOIN GROUP_PERMS ";
-    $sql .= "ON (GROUP_PERMS.GID = GROUPS.GID) INNER JOIN `{$table_prefix}FOLDER` FOLDER ";
-    $sql .= "ON (FOLDER.FID = GROUP_PERMS.FID) WHERE GROUPS.FORUM = $forum_fid ";
-    $sql .= "AND GROUPS.GID= $gid GROUP BY GROUP_PERMS.FID) UNION ALL ";
-    $sql .= "(SELECT FOLDER.FID, FOLDER.TITLE, COALESCE(FOLDER.PERM, 0) AS STATUS ";
-    $sql .= "FROM `{$table_prefix}FOLDER` FOLDER)) AS GROUP_PERM GROUP BY FID";
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, COALESCE(GROUP_PERM, FOLDER.PERM, 0) AS STATUS ";
+    $sql.= "FROM `{$table_prefix}FOLDER` FOLDER LEFT JOIN (SELECT GROUP_PERMS.FID, ";
+    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS GROUP_PERM FROM GROUPS INNER JOIN GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.GID = GROUPS.GID) WHERE GROUPS.FORUM = $forum_fid ";
+    $sql.= "AND GROUPS.GID = $gid GROUP BY GROUP_PERMS.FID) AS GROUP_PERMS ";
+    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID)";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -740,13 +739,11 @@ function perm_user_get_folders($uid)
 
     if (!($forum_fid = get_forum_fid())) return false;
 
-    $sql = "SELECT FID, TITLE, BIT_OR(PERM) AS STATUS  FROM ((SELECT FOLDER.FID, ";
-    $sql .= "FOLDER.TITLE, BIT_OR(USER_PERM.PERM) AS PERM FROM USER INNER JOIN USER_PERM ";
-    $sql .= "ON (USER_PERM.UID = USER.UID) INNER JOIN `{$table_prefix}FOLDER` FOLDER ";
-    $sql .= "ON (FOLDER.FID = USER_PERM.FID) WHERE USER_PERM.FORUM = $forum_fid ";
-    $sql .= "AND USER_PERM.UID = $uid GROUP BY USER_PERM.FID) UNION ALL ";
-    $sql .= "(SELECT FOLDER.FID, FOLDER.TITLE, COALESCE(FOLDER.PERM, 0) AS STATUS ";
-    $sql .= "FROM `{$table_prefix}FOLDER` FOLDER)) AS USER_PERM GROUP BY FID";
+    $sql = "SELECT FOLDER.FID, FOLDER.TITLE, COALESCE(USER_PERM, FOLDER.PERM, 0) AS STATUS ";
+    $sql.= "FROM `{$table_prefix}FOLDER` FOLDER LEFT JOIN (SELECT USER_PERM.FID, ";
+    $sql.= "BIT_OR(USER_PERM.PERM) AS USER_PERM FROM USER INNER JOIN USER_PERM ON ";
+    $sql.= "(USER_PERM.UID = USER.UID) WHERE USER_PERM.FORUM = $forum_fid AND USER_PERM.UID = $uid ";
+    $sql.= "GROUP BY USER_PERM.FID) AS USER_PERMS ON (USER_PERMS.FID = FOLDER.FID)";
 
     if (!($result = $db->query($sql))) return false;
 

@@ -844,15 +844,13 @@ function get_request_uri($include_webtag = true, $encode_uri_query = true)
 
     $request_uri = basename($_SERVER['PHP_SELF']);
 
-    $query_string_array = array();
+    $query_string_array = $_GET;
 
-    unset($_GET['webtag']);
+    unset($query_string_array['webtag']);
 
     if ($include_webtag && $webtag) {
         $query_string_array['webtag'] = $webtag;
     }
-
-    $query_string_array = array_merge_recursive($_GET, $query_string_array);
 
     $query_string = http_build_query($query_string_array, null, (($encode_uri_query) ? '&amp;' : '&'));
 

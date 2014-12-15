@@ -727,7 +727,7 @@ function user_get_prefs($uid)
     $sql .= "USER_PREFS.USE_OVERFLOW_RESIZE, USER_PREFS.PIC_AID, USER_PREFS.AVATAR_URL, ";
     $sql .= "USER_PREFS.AVATAR_AID, USER_PREFS.REPLY_QUICK, USER_PREFS.THREADS_BY_FOLDER, ";
     $sql .= "USER_PREFS.THREAD_LAST_PAGE, USER_PREFS.LEFT_FRAME_WIDTH, USER_PREFS.SHOW_AVATARS, ";
-    $sql .= "USER_PREFS.SHOW_SHARE_LINKS, USER_PREFS.ENABLE_TAGS, ";
+    $sql .= "USER_PREFS.SHOW_SHARE_LINKS, USER_PREFS.ENABLE_TAGS, USER_PREFS.AUTO_SCROLL_MESSAGES, ";
     $sql .= "TIMEZONES.GMT_OFFSET, TIMEZONES.DST_OFFSET FROM USER_PREFS ";
     $sql .= "LEFT JOIN TIMEZONES ON (TIMEZONES.TZID = USER_PREFS.TIMEZONE) ";
     $sql .= "WHERE USER_PREFS.UID = '$uid'";
@@ -746,8 +746,8 @@ function user_get_prefs($uid)
         $sql .= "IMAGES_TO_LINKS, USE_WORD_FILTER, USE_ADMIN_FILTER, SHOW_THUMBS, ENABLE_WIKI_WORDS, ";
         $sql .= "ENABLE_WIKI_QUICK_LINKS, USE_MOVER_SPOILER, USE_LIGHT_MODE_SPOILER, USE_OVERFLOW_RESIZE, ";
         $sql .= "PIC_AID, AVATAR_URL, AVATAR_AID, REPLY_QUICK, THREADS_BY_FOLDER, THREAD_LAST_PAGE, ";
-        $sql .= "LEFT_FRAME_WIDTH, SHOW_AVATARS, SHOW_SHARE_LINKS, ENABLE_TAGS FROM `{$table_prefix}USER_PREFS` ";
-        $sql .= "WHERE UID = '$uid'";
+        $sql .= "LEFT_FRAME_WIDTH, SHOW_AVATARS, SHOW_SHARE_LINKS, ENABLE_TAGS, AUTO_SCROLL_MESSAGES ";
+        $sql .= "FROM `{$table_prefix}USER_PREFS` WHERE UID = '$uid'";
 
         if (!($result = $db->query($sql))) return false;
 
@@ -834,6 +834,7 @@ function user_update_prefs($uid, array $prefs, array $prefs_global = array())
         'ENABLE_WIKI_WORDS',
         'ENABLE_WIKI_QUICK_LINKS',
         'ENABLE_TAGS',
+        'AUTO_SCROLL_MESSAGES',
         'USE_MOVER_SPOILER',
         'USE_LIGHT_MODE_SPOILER',
         'USE_OVERFLOW_RESIZE',
@@ -845,7 +846,7 @@ function user_update_prefs($uid, array $prefs, array $prefs_global = array())
         'THREAD_LAST_PAGE',
         'LEFT_FRAME_WIDTH',
         'SHOW_AVATARS',
-        'SHOW_SHARE_LINKS'
+        'SHOW_SHARE_LINKS',
     );
 
     // names of preferences that can be set on a per-forum basis
@@ -869,6 +870,7 @@ function user_update_prefs($uid, array $prefs, array $prefs_global = array())
         'ENABLE_WIKI_WORDS',
         'ENABLE_WIKI_QUICK_LINKS',
         'ENABLE_TAGS',
+        'AUTO_SCROLL_MESSAGES',
         'USE_MOVER_SPOILER',
         'USE_LIGHT_MODE_SPOILER',
         'USE_OVERFLOW_RESIZE',
@@ -880,7 +882,7 @@ function user_update_prefs($uid, array $prefs, array $prefs_global = array())
         'THREAD_LAST_PAGE',
         'LEFT_FRAME_WIDTH',
         'SHOW_AVATARS',
-        'SHOW_SHARE_LINKS'
+        'SHOW_SHARE_LINKS',
     );
 
     // Loop through the passed preference names and check they're valid
@@ -1034,6 +1036,7 @@ function user_check_pref($name, $value)
         case "ENABLE_WIKI_WORDS":
         case "ENABLE_WIKI_QUICK_LINKS":
         case "ENABLE_TAGS":
+        case "AUTO_SCROLL_MESSAGES":
         case "USE_MOVER_SPOILER":
         case "USE_LIGHT_MODE_SPOILER":
         case "USE_OVERFLOW_RESIZE":

@@ -285,6 +285,18 @@ if (isset($_POST['save'])) {
         $user_prefs_global['ENABLE_TAGS'] = false;
     }
 
+    if (isset($_POST['auto_scroll_messages']) && $_POST['auto_scroll_messages'] == "Y") {
+        $user_prefs['AUTO_SCROLL_MESSAGES'] = "Y";
+    } else {
+        $user_prefs['AUTO_SCROLL_MESSAGES'] = "N";
+    }
+
+    if (isset($_POST['auto_scroll_messages_global'])) {
+        $user_prefs_global['AUTO_SCROLL_MESSAGES'] = ($_POST['auto_scroll_messages_global'] == "Y") ? true : false;
+    } else {
+        $user_prefs_global['AUTO_SCROLL_MESSAGES'] = false;
+    }
+
     if (isset($_POST['show_stats']) && $_POST['show_stats'] == "Y") {
         $user_prefs['SHOW_STATS'] = "Y";
     } else {
@@ -483,7 +495,7 @@ if ($show_set_all) {
 }
 
 echo "                <tr>\n";
-echo "                  <td align=\"left\" rowspan=\"18\" width=\"1%\">&nbsp;</td>\n";
+echo "                  <td align=\"left\" rowspan=\"19\" width=\"1%\">&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("threads_by_folder", "Y", gettext("Sort Thread List by folders"), (isset($user_prefs['THREADS_BY_FOLDER']) && $user_prefs['THREADS_BY_FOLDER'] == "Y") ? true : false), "</td>\n";
@@ -516,6 +528,10 @@ echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("enable_tags", "Y", gettext("Enable post tagging with #hashtags"), (isset($user_prefs['ENABLE_TAGS']) && $user_prefs['ENABLE_TAGS'] == "Y") ? true : false), "</td>\n";
 echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("enable_tags_global", "Y", null, (isset($user_prefs['ENABLE_TAGS_GLOBAL']) ? $user_prefs['ENABLE_TAGS_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("enable_tags_global", 'Y'), "&nbsp;</td>\n";
+echo "                </tr>\n";
+echo "                <tr>\n";
+echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("auto_scroll_messages", "Y", gettext("Auto load messages as you scroll to the bottom of the page"), (isset($user_prefs['AUTO_SCROLL_MESSAGES']) && $user_prefs['AUTO_SCROLL_MESSAGES'] == "Y") ? true : false), "</td>\n";
+echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("auto_scroll_messages_global", "Y", null, (isset($user_prefs['AUTO_SCROLL_MESSAGES_GLOBAL']) ? $user_prefs['AUTO_SCROLL_MESSAGES_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("auto_scroll_messages_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 echo "                <tr>\n";
 echo "                  <td align=\"left\" style=\"white-space: nowrap\">", form_checkbox("use_mover_spoiler", "Y", gettext("Reveal spoilers on mouse over"), (isset($user_prefs['USE_MOVER_SPOILER']) && $user_prefs['USE_MOVER_SPOILER'] == "Y")), "</td>\n";

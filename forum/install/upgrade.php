@@ -426,6 +426,12 @@ if (!install_column_exists($config['db_database'], 'USER_PREFS', 'ENABLE_TAGS'))
     $db->query($sql);
 }
 
+if (!install_column_exists($config['db_database'], 'USER_PREFS', 'AUTO_SCROLL_MESSAGES')) {
+
+    $sql = "ALTER TABLE USER_PREFS ADD COLUMN AUTO_SCROLL_MESSAGES CHAR(1) NULL";
+    $db->query($sql);
+}
+
 $sql = "DROP TABLE IF EXISTS SEARCH_RESULTS";
 
 $db->query($sql);
@@ -579,6 +585,12 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     if (!install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_USER_PREFS", 'ENABLE_TAGS')) {
 
         $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD COLUMN ENABLE_TAGS CHAR(1) NULL";
+        $db->query($sql);
+    }
+
+    if (!install_column_exists($config['db_database'], "{$table_data['WEBTAG']}_USER_PREFS", 'AUTO_SCROLL_MESSAGES')) {
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}USER_PREFS` ADD COLUMN AUTO_SCROLL_MESSAGES CHAR(1) NULL";
         $db->query($sql);
     }
 

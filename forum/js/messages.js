@@ -29,81 +29,85 @@ $(beehive).bind('init', function () {
         loading_messages = false,
         navigation_options;
 
-    navigation_options = $messages.data('navigation')
-        .split('_').map(function (option) {
-            return parseInt(option, 10);
-        });
+    //noinspection JSUnresolvedVariable
+    if (beehive.auto_scroll_messages == 'Y') {
 
-    $keep_reading.hide();
+        navigation_options = $messages.data('navigation')
+            .split('_').map(function (option) {
+                return parseInt(option, 10);
+            });
 
-    $window.on('scroll', function () {
+        $keep_reading.hide();
 
-        if (loading_messages) {
-            return;
-        }
+        $window.on('scroll', function () {
 
-        //noinspection JSValidateTypes
-        if ($window.scrollTop() < ($document.height() - $window.height())) {
-            return;
-        }
-
-        loading_messages = true;
-
-        var pid = navigation_options[1] + navigation_options[3],
-            msg = navigation_options[0] + "." + Math.min(navigation_options[2] + 1, pid),
-            last_pid;
-
-        last_pid = $messages.find('.message').last()
-            .prop('id').match(/^message_(\d+)_(\d+)$/)[2];
-
-        if (last_pid >= navigation_options[2]) {
-            return;
-        }
-
-        $.ajax({
-
-            cache: true,
-
-            data: {
-                webtag: beehive.webtag,
-                msg: msg
-            },
-
-            url: beehive.forum_path + ((beehive.mobile_version) ? '/lmessages.php' : '/messages.php'),
-
-            success: function (data) {
-
-                var $data;
-
-                if (beehive.mobile_version) {
-                    $data = $(data).find('div#messages').children();
-                } else {
-                    $data = $(data).filter('div#messages').children();
-                }
-
-                if ($data.length > 0) {
-
-                    $messages.append($data);
-                    $messages.find('.message_vote_form').show();
-                    navigation_options[1] = pid;
-                }
-
-                loading_messages = false;
+            if (loading_messages) {
+                return;
             }
-        })
-    });
-
-    $body.on('click', '.navigation a', function (event) {
-
-        var $anchor = $('a[name="a' + $.url($(this).attr('href')).param('msg').replace('.', '_') + '"]');
-
-        if ($anchor.length > 0) {
-
-            event.preventDefault();
-            event.stopPropagation();
 
             //noinspection JSValidateTypes
-            $window.scrollTop(Math.floor($anchor.offset().top));
-        }
-    });
+            if ($window.scrollTop() < ($document.height() - $window.height())) {
+                return;
+            }
+
+            loading_messages = true;
+
+            var pid = navigation_options[1] + navigation_options[3],
+                msg = navigation_options[0] + "." + Math.min(navigation_options[2] + 1, pid),
+                last_pid;
+
+            last_pid = $messages.find('.message').last()
+                .prop('id').match(/^message_(\d+)_(\d+)$/)[2];
+
+            if (last_pid >= navigation_options[2]) {
+                return;
+            }
+
+            $.ajax({
+
+                cache: true,
+
+                data: {
+                    webtag: beehive.webtag,
+                    msg: msg
+                },
+
+                url: beehive.forum_path + ((beehive.mobile_version) ? '/lmessages.php' : '/messages.php'),
+
+                success: function (data) {
+
+                    var $data;
+
+                    if (beehive.mobile_version) {
+                        $data = $(data).find('div#messages').children();
+                    } else {
+                        $data = $(data).filter('div#messages').children();
+                    }
+
+                    if ($data.length > 0) {
+
+                        $messages.append($data);
+                        $messages.find('.message_vote_form').show();
+                        navigation_options[1] = pid;
+                    }
+
+                    loading_messages = false;
+                }
+            })
+        });
+
+        $body.on('click', '.navigation a', function (event) {
+
+            var $anchor = $('a[name="a' + $.url($(this).attr('href')).param('msg').replace('.', '_') + '"]');
+
+            if ($anchor.length > 0) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                //noinspection JSValidateTypes
+                $window.scrollTop(Math.floor($anchor.offset().top));
+            }
+        });
+    }
 });

@@ -1333,6 +1333,7 @@ function forum_create($webtag, $forum_name, $owner_uid, $database_name, $access,
         $sql .= "  SHOW_AVATARS CHAR(1) DEFAULT NULL,";
         $sql .= "  SHOW_SHARE_LINKS CHAR(1) DEFAULT NULL,";
         $sql .= "  ENABLE_TAGS CHAR(1) DEFAULT NULL,";
+        $sql .= "  AUTO_SCROLL_MESSAGES CHAR(1) DEFAULT NULL,";
         $sql .= "  PRIMARY KEY (UID)";
         $sql .= ") ENGINE=MYISAM DEFAULT CHARSET=utf8";
 

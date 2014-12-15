@@ -100,6 +100,7 @@ $json_data = array(
     'forum_path' => server_get_forum_path(),
     'use_mover_spoiler' => (isset($_SESSION['USE_MOVER_SPOILER']) && $_SESSION['USE_MOVER_SPOILER'] == 'Y') ? 'Y' : 'N',
     'show_share_links' => (isset($_SESSION['SHOW_SHARE_LINKS']) && $_SESSION['SHOW_SHARE_LINKS'] == 'Y') ? 'Y' : 'N',
+    'auto_scroll_messages' => (isset($_SESSION['AUTO_SCROLL_MESSAGES']) && $_SESSION['AUTO_SCROLL_MESSAGES'] == 'Y') ? 'Y' : 'N',
     'attachment_size_limit' => $attachment_size_limit,
     'frames' => array(
         'index' => html_get_frame_name('index'),

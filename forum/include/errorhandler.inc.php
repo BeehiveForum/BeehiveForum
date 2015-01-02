@@ -115,6 +115,7 @@ function bh_exception_handler(Exception $exception)
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
         echo "<link rel=\"icon\" href=\"", rtrim($forum_path, '/'), "/styles/images/favicon.ico\" type=\"image/ico\" />\n";
         echo "<link rel=\"stylesheet\" href=\"", rtrim($forum_path, '/'), "/styles/default/style.css?", md5(uniqid(rand())), "\" type=\"text/css\" />\n";
+        echo "<link rel=\"stylesheet\" href=\"", rtrim($forum_path, '/'), "/styles/default/images.css?", md5(uniqid(rand())), "\" type=\"text/css\" />\n";
         echo "</head>\n";
         echo "<body>\n";
         echo "<h1>Error</h1>\n";

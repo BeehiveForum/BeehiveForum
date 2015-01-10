@@ -709,7 +709,7 @@ function post_set_user_rating($tid, $pid, $uid, $rating)
     $sql .= "CAST('$current_datetime' AS DATETIME) FROM `{$table_prefix}POST` POST ";
     $sql .= "INNER JOIN USER ON (USER.UID = $uid) LEFT JOIN `{$table_prefix}POST_RATING` POST_RATING ";
     $sql .= "ON (POST_RATING.TID = POST.TID AND POST_RATING.PID = POST.PID AND POST_RATING.UID = $uid) ";
-    $sql .= "WHERE POST.TID = $tid AND POST.PID = $pid";
+    $sql .= "WHERE POST.TID = $tid AND POST.PID = $pid AND POST.FROM_UID <> USER.UID";
 
     if (!$db->query($sql)) return false;
 

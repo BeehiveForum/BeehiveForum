@@ -510,7 +510,7 @@ switch ($_GET['action']) {
             exit;
         }
 
-        if (isset($_GET['mobile'])) {
+        if (isset($_GET['mobile']) && ($_GET['mobile'] == 'Y')) {
 
             if (!($content = light_message_get_vote_form_html($message))) {
 

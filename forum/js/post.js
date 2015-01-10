@@ -77,7 +77,7 @@ $(beehive).bind('init', function () {
                 ajax: 'true',
                 action: 'post_vote',
                 post_rating: $button.hasClass('vote_up') ? 1 : -1,
-                mobile: 'true',
+                mobile: beehive.mobile_version ? 'Y' : 'N',
                 msg: $container.data('msg')
             },
 

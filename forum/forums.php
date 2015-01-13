@@ -496,7 +496,7 @@ if (session::logged_in()) {
         html_page_links("forums.php?webtag=$webtag&view_type=$view_type&webtag_search=$webtag_search&sort_by=$sort_by&sort_dir=$sort_dir", $page, $forums_array['forums_count'], 10, 'page');
 
         echo "            </td>\n";
-        echo "            <td align=\"right\" width=\"33%\" style=\"white-space: nowrap\">", gettext("View"), ":&nbsp;", form_dropdown_array('view_type', $forum_search_header_array, FORUMS_SHOW_SEARCH, "onchange=\"submit()\""), "&nbsp;", form_submit('change_view', gettext("Go")), "</td>\n";
+        echo "            <td align=\"right\" width=\"33%\" style=\"white-space: nowrap\">", gettext("View"), ":&nbsp;", form_dropdown_array('view_type', $forum_search_header_array, FORUMS_SHOW_SEARCH, "onchange=\"submit()\""), "</td>\n";
         echo "          </tr>\n";
         echo "        </table>\n";
         echo "      </td>\n";
@@ -726,7 +726,7 @@ if (session::logged_in()) {
         html_page_links("forums.php?webtag=$webtag&view_type=$view_type&webtag_search=$webtag_search&sort_by=$sort_by&sort_dir=$sort_dir", $page, $forums_array['forums_count'], 10, 'page');
 
         echo "            </td>\n";
-        echo "            <td align=\"right\" width=\"33%\" style=\"white-space: nowrap\">", gettext("View"), ":&nbsp;", form_dropdown_array('view_type', $forum_header_array, $view_type, "onchange=\"submit()\""), "&nbsp;", form_submit('change_view', gettext("Go")), "</td>\n";
+        echo "            <td align=\"right\" width=\"33%\" style=\"white-space: nowrap\">", gettext("View"), ":&nbsp;", form_dropdown_array('view_type', $forum_header_array, $view_type, "onchange=\"submit()\""), "</td>\n";
         echo "          </tr>\n";
         echo "        </table>\n";
         echo "      </td>\n";
@@ -856,7 +856,7 @@ if (session::logged_in()) {
     html_page_links("forums.php?webtag=$webtag&view_type=$view_type", $page, $forums_array['forums_count'], 10, 'page');
 
     echo "            </td>\n";
-    echo "            <td align=\"right\" width=\"33%\" style=\"white-space: nowrap\">", gettext("View"), ":&nbsp;", form_dropdown_array('view_type', $forum_header_array, $view_type), "&nbsp;", form_submit('change_view', gettext("Go")), "</td>\n";
+    echo "            <td align=\"right\" width=\"33%\" style=\"white-space: nowrap\">", gettext("View"), ":&nbsp;", form_dropdown_array('view_type', $forum_header_array, $view_type), "</td>\n";
     echo "          </tr>\n";
     echo "        </table>\n";
     echo "      </td>\n";

@@ -25,32 +25,39 @@ $(window.beehive).bind('init', function () {
 
         resize_image: function () {
 
-            var max_width = beehive.get_resize_width.call(this);
+            var $image = $(this),
+                width = $image.width(),
+                height = $image.height(),
+                ratio = height / width,
+                max_width = beehive.get_resize_width.call(this),
+                max_height = Math.floor(max_width * ratio);
 
             if ($(this).parent('div.image_resize_container').length > 0) {
 
-                $(this).parent('div.image_resize_container').css('width', max_width * 0.95);
+                $(this).parent('div.image_resize_container').css({
+                    width: max_width * 0.95,
+                    height: max_height * 0.95
+                });
 
             } else {
 
                 if ($(this).width() > max_width) {
 
-                    var $parent_div = $('<div class="image_resize_container">');
-
-                    var $resize_banner = $('<div class="image_resize_text">');
-
-                    var $resize_icon = $('<span class="image_resize_icon image warning" />');
+                    var $parent_div = $('<div class="image_resize_container">'),
+                        $resize_banner = $('<div class="image_resize_text">'),
+                        $resize_icon = $('<span class="image_resize_icon image warning" />');
 
                     $resize_banner.append($resize_icon);
 
                     //noinspection JSUnresolvedVariable
-                    $resize_banner.append($.sprintf(beehive.lang.imageresized, $(this).width(), $(this).height()));
+                    $resize_banner.append($.sprintf(beehive.lang.imageresized, $image.width(), $image.height()));
 
-                    $(this).wrap($parent_div).css('width', '100%');
+                    $image.wrap($parent_div).css({
+                        width: '100%',
+                        height: '100%'
+                    });
 
-                    $(this).parent('div').prepend($resize_banner);
-
-                    var $image = $(this);
+                    $image.parent('div').prepend($resize_banner);
 
                     $resize_banner.bind('click', function () {
                         window.open($image.prop('src'));

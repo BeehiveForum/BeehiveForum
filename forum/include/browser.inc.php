@@ -42,13 +42,37 @@ function browser_check($browser_check)
 
             $browser = $browser | BROWSER_LYNX;
 
+        } else if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie') !== false) {
+
+            $browser = $browser | BROWSER_MSIE;
+
+            if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie 7') !== false) {
+                $browser = $browser | BROWSER_MSIE7;
+            }
+
+        } else if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'edge/12') !== false) {
+
+            $browser = $browser | BROWSER_MSIE;
+
         } else if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'chrome') !== false) {
 
             $browser = $browser | BROWSER_CHROME;
 
+            if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'webkit') !== false) {
+                $browser = $browser | BROWSER_WEBKIT;
+            }
+
         } else if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'safari') !== false) {
 
             $browser = $browser | BROWSER_SAFARI;
+
+            if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'webkit') !== false) {
+                $browser = $browser | BROWSER_WEBKIT;
+            }
+
+            if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'mobile') !== false) {
+                $browser = $browser | BROWSER_IPHONE;
+            }
 
         } else if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'konqueror') !== false) {
 
@@ -58,32 +82,19 @@ function browser_check($browser_check)
 
             $browser = $browser | BROWSER_GECKO;
 
-        } else if ((strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie') !== false)) {
-
-            $browser = $browser | BROWSER_MSIE;
-
         } else if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'opera') !== false) {
 
             $browser = $browser | BROWSER_OPERA;
 
+            if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'webkit') !== false) {
+                $browser = $browser | BROWSER_WEBKIT;
+            }
+
         } else if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'nav') !== false) {
 
-            if (strpos($_SERVER['HTTP_USER_AGENT'], 'Mozilla/4.') !== false) {
-
+            if (strpos($_SERVER['HTTP_USER_AGENT'], 'Mozilla/4') !== false) {
                 $browser = $browser | BROWSER_NETSCAPE4;
             }
-        }
-
-        if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'webkit') !== false) {
-            $browser = $browser | BROWSER_WEBKIT;
-        }
-
-        if ((($browser & BROWSER_SAFARI) > 0) && strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'mobile') !== false) {
-            $browser = $browser | BROWSER_IPHONE;
-        }
-
-        if (strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie 7') !== false) {
-            $browser = $browser | BROWSER_MSIE7;
         }
 
         if (($browser & BROWSER_MSIE) > 0) {

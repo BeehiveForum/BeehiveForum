@@ -163,8 +163,6 @@ top.window.beehive = {
 
         var toolbar = $editor.hasClass('mobile') ? 'mobile' : 'full';
 
-        top.window.beehive.init_editor();
-
         //noinspection JSCheckFunctionSignatures
         $('<div id="toolbar">').insertBefore($editor);
 
@@ -234,6 +232,8 @@ top.window.beehive = {
             toolbar: toolbar,
             width: $editor.width()
         });
+
+        top.window.beehive.init_editor();
 
         if (editor) {
 

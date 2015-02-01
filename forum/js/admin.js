@@ -19,7 +19,7 @@
  USA
  ======================================================================*/
 
-$(beehive).bind('init', function () {
+$(top.window.beehive).bind('init', function () {
 
     $('select#mail_function').bind('change', function () {
 
@@ -43,6 +43,6 @@ $(beehive).bind('init', function () {
     $('#forum_created,#forum_updated,#forum_removed').each(function () {
 
         //noinspection JSUnresolvedVariable
-        beehive.reload_frame(top.document, beehive.frames.fnav);
+        top.window.beehive.reload_frame(top.document, top.window.beehive.frames.fnav);
     });
 });

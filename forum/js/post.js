@@ -19,10 +19,10 @@
  USA
  ======================================================================*/
 
-$(beehive).bind('init', function () {
+$(top.window.beehive).bind('init', function () {
 
     //noinspection JSLint
-    beehive.quote_list = [];
+    top.window.beehive.quote_list = [];
 
     function hide_post_options_containers() {
 
@@ -73,15 +73,15 @@ $(beehive).bind('init', function () {
             cache: true,
 
             data: {
-                webtag: beehive.webtag,
+                webtag: top.window.beehive.webtag,
                 ajax: 'true',
                 action: 'post_vote',
                 post_rating: $button.hasClass('vote_up') ? 1 : -1,
-                mobile: beehive.mobile_version ? 'Y' : 'N',
+                mobile: top.window.beehive.mobile_version ? 'Y' : 'N',
                 msg: $container.data('msg')
             },
 
-            url: beehive.forum_path + '/ajax.php',
+            url: top.window.beehive.forum_path + '/ajax.php',
 
             success: function (data) {
 
@@ -91,7 +91,7 @@ $(beehive).bind('init', function () {
 
                 } catch (exception) {
 
-                    beehive.ajax_error(exception);
+                    top.window.beehive.ajax_error(exception);
                 }
             }
         });
@@ -123,14 +123,14 @@ $(beehive).bind('init', function () {
             cache: true,
 
             data: {
-                webtag: beehive.webtag,
+                webtag: top.window.beehive.webtag,
                 ajax: 'true',
                 action: 'post_options',
                 msg: options[1] + '.' + options[2],
                 pid: options[3]
             },
 
-            url: beehive.forum_path + '/ajax.php',
+            url: top.window.beehive.forum_path + '/ajax.php',
 
             success: function (data) {
 
@@ -141,7 +141,7 @@ $(beehive).bind('init', function () {
 
                 } catch (exception) {
 
-                    beehive.ajax_error(exception);
+                    top.window.beehive.ajax_error(exception);
                 }
             }
         });
@@ -187,7 +187,7 @@ $(beehive).bind('init', function () {
 
                 $quick_reply_container.appendTo($quick_reply_location).show();
 
-                $quick_reply_container.find('#content').each(beehive.editor);
+                $quick_reply_container.find('#content').each(top.window.beehive.editor);
 
                 $quick_reply_container.find('input#post').get(0).scrollIntoView(false);
             }
@@ -201,28 +201,28 @@ $(beehive).bind('init', function () {
             pid = $link.data('pid'),
             check_post_id;
 
-        if ($.inArray(pid, beehive.quote_list) < 0) {
+        if ($.inArray(pid, top.window.beehive.quote_list) < 0) {
 
             $('span.image#quote_img_' + pid).removeClass('quote_disabled').addClass('quote_enabled');
 
             //noinspection JSUnresolvedVariable
-            $link.html(beehive.lang.unquote);
+            $link.html(top.window.beehive.lang.unquote);
 
-            beehive.quote_list.push(pid);
+            top.window.beehive.quote_list.push(pid);
 
         } else {
 
             $('span.image#quote_img_' + pid).addClass('quote_enabled').removeClass('quote_disabled');
 
             //noinspection JSUnresolvedVariable
-            $link.html(beehive.lang.quote);
+            $link.html(top.window.beehive.lang.quote);
 
-            for (check_post_id in beehive.quote_list) {
+            for (check_post_id in top.window.beehive.quote_list) {
 
-                if (beehive.quote_list.hasOwnProperty(check_post_id)) {
+                if (top.window.beehive.quote_list.hasOwnProperty(check_post_id)) {
 
-                    if (beehive.quote_list[check_post_id] === pid) {
-                        beehive.quote_list.splice(check_post_id, 1);
+                    if (top.window.beehive.quote_list[check_post_id] === pid) {
+                        top.window.beehive.quote_list.splice(check_post_id, 1);
                     }
                 }
             }
@@ -232,8 +232,8 @@ $(beehive).bind('init', function () {
 
             var query_string = $.parseQuery($(this).prop('href').split('?')[1]);
 
-            if (beehive.quote_list.length > 0) {
-                query_string.quote_list = beehive.quote_list.join(',');
+            if (top.window.beehive.quote_list.length > 0) {
+                query_string.quote_list = top.window.beehive.quote_list.join(',');
             } else {
                 delete query_string.quote_list;
             }

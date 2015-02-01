@@ -19,7 +19,7 @@
  USA
  ======================================================================*/
 
-$(beehive).bind('init', function () {
+$(top.window.beehive).bind('init', function () {
 
     var $window = $(window),
         $body = $('body'),
@@ -30,7 +30,7 @@ $(beehive).bind('init', function () {
         navigation_options;
 
     //noinspection JSUnresolvedVariable
-    if (beehive.auto_scroll_messages == 'Y') {
+    if (top.window.beehive.auto_scroll_messages == 'Y') {
 
         navigation_options = $messages.data('navigation')
             .split('_').map(function (option) {
@@ -68,17 +68,17 @@ $(beehive).bind('init', function () {
                 cache: true,
 
                 data: {
-                    webtag: beehive.webtag,
+                    webtag: top.window.beehive.webtag,
                     msg: msg
                 },
 
-                url: beehive.forum_path + ((beehive.mobile_version) ? '/lmessages.php' : '/messages.php'),
+                url: top.window.beehive.forum_path + ((top.window.beehive.mobile_version) ? '/lmessages.php' : '/messages.php'),
 
                 success: function (data) {
 
                     var $data;
 
-                    if (beehive.mobile_version) {
+                    if (top.window.beehive.mobile_version) {
                         $data = $(data).find('div#messages').children();
                     } else {
                         $data = $(data).filter('div#messages').children();
@@ -105,7 +105,7 @@ $(beehive).bind('init', function () {
                 event.preventDefault();
                 event.stopPropagation();
 
-                //noinspection JSValidateTypes
+                //noinspection JSValidateTypes,JSCheckFunctionSignatures
                 $window.scrollTop(Math.floor($anchor.offset().top));
             }
         });

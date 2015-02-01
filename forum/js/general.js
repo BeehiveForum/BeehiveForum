@@ -19,7 +19,7 @@
  USA
  ======================================================================*/
 
-var beehive = $.extend({}, beehive, {
+top.window.beehive = {
 
     window_options: [
         'toolbox=0',
@@ -59,7 +59,7 @@ var beehive = $.extend({}, beehive, {
                 return false;
             }
 
-            return beehive.reload_frame(this.contentDocument, frame_name);
+            return top.window.beehive.reload_frame(this.contentDocument, frame_name);
         });
     },
 
@@ -68,13 +68,13 @@ var beehive = $.extend({}, beehive, {
         $(context).find('frame').each(function () {
 
             //noinspection JSUnresolvedVariable
-            if ($(this).prop('name') == beehive.frames.ftop) {
+            if ($(this).prop('name') == top.window.beehive.frames.ftop) {
 
                 $(this).prop('src', src);
                 return false;
             }
 
-            return beehive.reload_top_frame(this.contentDocument, src);
+            return top.window.beehive.reload_top_frame(this.contentDocument, src);
         });
     },
 
@@ -83,16 +83,16 @@ var beehive = $.extend({}, beehive, {
         $(context).find('frame').each(function () {
 
             //noinspection JSUnresolvedVariable
-            if (!$.inArray($(this).prop('name'), beehive.frames)) {
+            if (!$.inArray($(this).prop('name'), top.window.beehive.frames)) {
                 return true;
             }
 
-            return beehive.reload_user_font(this.contentDocument);
+            return top.window.beehive.reload_user_font(this.contentDocument);
         });
 
         var $user_font = $(context.head).find('link#user_font');
 
-        $user_font.prop('href', beehive.forum_path + '/font_size.php?webtag=' + beehive.webtag + '&_=' + new Date().getTime() / 1000);
+        $user_font.prop('href', top.window.beehive.forum_path + '/font_size.php?webtag=' + top.window.beehive.webtag + '&_=' + new Date().getTime() / 1000);
     },
 
     active_editor: null,
@@ -144,8 +144,7 @@ var beehive = $.extend({}, beehive, {
             }
         });
 
-        beehive.init_editor = function () {
-        };
+        top.window.beehive.init_editor = function () {};
     },
 
     editor: function () {
@@ -155,16 +154,16 @@ var beehive = $.extend({}, beehive, {
         var editor_id = $editor.prop('id');
 
         //noinspection JSUnresolvedVariable
-        var skin = beehive.forum_path + '/styles/' + beehive.user_style + '/editor/';
+        var skin = top.window.beehive.forum_path + '/styles/' + top.window.beehive.user_style + '/editor/';
 
         //noinspection JSUnresolvedVariable
-        var emoticons = beehive.forum_path + '/emoticons/' + beehive.emoticons + '/style.css';
+        var emoticons = top.window.beehive.forum_path + '/emoticons/' + top.window.beehive.emoticons + '/style.css';
 
         var contents = skin + 'content.css';
 
         var toolbar = $editor.hasClass('mobile') ? 'mobile' : 'full';
 
-        beehive.init_editor();
+        top.window.beehive.init_editor();
 
         //noinspection JSCheckFunctionSignatures
         $('<div id="toolbar">').insertBefore($editor);
@@ -240,7 +239,7 @@ var beehive = $.extend({}, beehive, {
 
             editor.on('focus', function (event) {
                 if (event.editor) {
-                    beehive.active_editor = event.editor;
+                    top.window.beehive.active_editor = event.editor;
                 }
             });
         }
@@ -278,22 +277,22 @@ var beehive = $.extend({}, beehive, {
     lang: {
 
     }
-});
+};
 
 $.ajaxSetup({
 
     cache: true,
 
     error: function (data) {
-        beehive.ajax_error(data);
+        top.window.beehive.ajax_error(data);
     }
 });
 
-$(beehive).bind('init', function () {
+$(top.window.beehive).bind('init', function () {
 
     var frame_resize_timeout;
 
-    beehive.mobile_version = $('body#mobile').length > 0;
+    top.window.beehive.mobile_version = $('body#mobile').length > 0;
 
     $('form[method="get"]').append(
         $('<input type="hidden" name="_">').val((new Date()).getTime())
@@ -307,7 +306,7 @@ $(beehive).bind('init', function () {
 
         var class_names = $(this).prop('class').split(' ');
 
-        var window_options = beehive.window_options;
+        var window_options = top.window.beehive.window_options;
 
         var dimensions;
 
@@ -357,35 +356,35 @@ $(beehive).bind('init', function () {
         var $parent = $this.closest('td');
 
         //noinspection JSUnresolvedVariable
-        if (beehive.uid == 0) {
+        if (top.window.beehive.uid == 0) {
             return true;
         }
 
         $.ajax({
             cache: true,
             data: {
-                webtag: beehive.webtag,
+                webtag: top.window.beehive.webtag,
                 ajax: 'true',
                 action: $this.prop('class'),
                 msg: $this.data('msg')
             },
             dataType: 'json',
-            url: beehive.forum_path + '/ajax.php',
+            url: top.window.beehive.forum_path + '/ajax.php',
             success: function (data) {
 
                 try {
 
                     $parent.html(data.html);
 
-                    beehive.font_size = data.font_size;
+                    top.window.beehive.font_size = data.font_size;
 
-                    beehive.reload_user_font(top.document);
+                    top.window.beehive.reload_user_font(top.document);
 
-                    $(top.document).find('frameset#index').prop('rows', '60,' + Math.max(beehive.font_size * 2, 22) + ',*');
+                    $(top.document).find('frameset#index').prop('rows', '60,' + Math.max(top.window.beehive.font_size * 2, 22) + ',*');
 
                 } catch (exception) {
 
-                    beehive.ajax_error(exception);
+                    top.window.beehive.ajax_error(exception);
                 }
             }
         });
@@ -396,13 +395,13 @@ $(beehive).bind('init', function () {
     $('#preferences_updated').each(function () {
 
         //noinspection JSUnresolvedVariable
-        beehive.reload_frame(top.document, beehive.frames.fnav);
+        top.window.beehive.reload_frame(top.document, top.window.beehive.frames.fnav);
 
         //noinspection JSUnresolvedVariable
-        beehive.reload_frame(top.document, beehive.frames.left);
+        top.window.beehive.reload_frame(top.document, top.window.beehive.frames.left);
 
         //noinspection JSUnresolvedVariable
-        beehive.reload_top_frame(top.document, beehive.top_frame);
+        top.window.beehive.reload_top_frame(top.document, top.window.beehive.top_frame);
     });
 
     $('input#print').bind('click', function () {
@@ -424,12 +423,12 @@ $(beehive).bind('init', function () {
         var frame_name = $(this).prop('name');
 
         //noinspection JSUnresolvedVariable
-        if ((frame_name != beehive.frames.left) && (frame_name != beehive.frames.pm_folders)) {
+        if ((frame_name != top.window.beehive.frames.left) && (frame_name != top.window.beehive.frames.pm_folders)) {
             return;
         }
 
         //noinspection JSUnresolvedVariable
-        if (beehive.uid == 0) {
+        if (top.window.beehive.uid == 0) {
             return;
         }
 
@@ -442,13 +441,13 @@ $(beehive).bind('init', function () {
                 cache: true,
 
                 data: {
-                    webtag: beehive.webtag,
+                    webtag: top.window.beehive.webtag,
                     ajax: true,
                     action: 'frame_resize',
                     size: Math.max(100, this.innerWidth)
                 },
 
-                url: beehive.forum_path + '/ajax.php'
+                url: top.window.beehive.forum_path + '/ajax.php'
             });
 
         }, 500);
@@ -471,13 +470,13 @@ $(beehive).bind('init', function () {
                     cache: true,
 
                     data: {
-                        webtag: beehive.webtag,
+                        webtag: top.window.beehive.webtag,
                         ajax: true,
                         action: $button.prop('id'),
                         display: 'false'
                     },
 
-                    url: beehive.forum_path + '/ajax.php'
+                    url: top.window.beehive.forum_path + '/ajax.php'
                 });
             });
 
@@ -492,16 +491,16 @@ $(beehive).bind('init', function () {
                     cache: true,
 
                     data: {
-                        webtag: beehive.webtag,
+                        webtag: top.window.beehive.webtag,
                         ajax: true,
                         action: $button.prop('id'),
                         display: 'true'
                     },
 
-                    url: beehive.forum_path + '/ajax.php',
+                    url: top.window.beehive.forum_path + '/ajax.php',
 
                     success: function () {
-                        $element.find('textarea.editor:visible').each(beehive.editor);
+                        $element.find('textarea.editor:visible').each(top.window.beehive.editor);
                     }
                 });
             });
@@ -510,12 +509,12 @@ $(beehive).bind('init', function () {
         return false;
     });
 
-    $('textarea.editor:visible').each(beehive.editor);
+    $('textarea.editor:visible').each(top.window.beehive.editor);
 
     $('input, textarea').placeholder();
 
     //noinspection JSUnresolvedVariable
-    if (beehive.show_share_links == 'Y') {
+    if (top.window.beehive.show_share_links == 'Y') {
 
         $.getScript(document.location.protocol + '//apis.google.com/js/plusone.js');
 

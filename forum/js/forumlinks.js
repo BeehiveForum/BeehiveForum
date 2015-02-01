@@ -19,7 +19,7 @@
  USA
  ======================================================================*/
 
-$(beehive).bind('init', function () {
+$(top.window.beehive).bind('init', function () {
 
     $('select#forum_links').bind('change', function () {
 

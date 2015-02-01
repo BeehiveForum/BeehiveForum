@@ -133,9 +133,9 @@ if (isset($_GET['json'])) {
 
     $content_type = 'text/javascript';
 
-    $content = sprintf('var beehive = $.extend({}, beehive, %s);
+    $content = sprintf('top.window.beehive = $.extend({}, top.window.beehive, %s);
                         $(document).ready(function() {
-                          $(beehive).trigger("init");
+                          $(top.window.beehive).trigger("init");
                         });', json_encode($json_data));
 }
 

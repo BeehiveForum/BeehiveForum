@@ -19,7 +19,7 @@
  USA
  ======================================================================*/
 
-$(beehive).bind('init', function () {
+$(top.window.beehive).bind('init', function () {
 
     $('select#mode').bind('change', function () {
         $(this).closest('form').submit();
@@ -39,7 +39,7 @@ $(beehive).bind('init', function () {
     $('#mark_read_submit').bind('click', function () {
 
         //noinspection JSUnresolvedVariable
-        if (window.confirm(beehive.lang.confirmmarkasread)) {
+        if (window.confirm(top.window.beehive.lang.confirmmarkasread)) {
 
             $('#mark_read_confirm').val('Y');
             return true;

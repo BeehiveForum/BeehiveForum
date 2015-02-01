@@ -19,7 +19,7 @@
  USA
  ======================================================================*/
 
-$(beehive).bind('init', function () {
+$(top.window.beehive).bind('init', function () {
 
     $('input.search_input').each(function () {
 
@@ -32,14 +32,14 @@ $(beehive).bind('init', function () {
         $search_button.bind('click', function () {
 
             var popup_query = {
-                webtag: beehive.webtag,
+                webtag: top.window.beehive.webtag,
                 obj_id: $search_input.prop('id'),
                 type: $search_input.hasClass('search_logon') ? 1 : 2,
                 multi: $search_input.hasClass('allow_multi') ? 'Y' : 'N',
                 selected: $search_input.val()
             };
 
-            window.open('search_popup.php?' + $.param(popup_query), null, beehive.window_options.join(','));
+            window.open('search_popup.php?' + $.param(popup_query), null, top.window.beehive.window_options.join(','));
         });
 
         $search_button.load(function () {
@@ -73,12 +73,12 @@ $(beehive).bind('init', function () {
                     $.ajax({
                         cache: false,
                         data: {
-                            webtag: beehive.webtag,
+                            webtag: top.window.beehive.webtag,
                             ajax: true,
                             action: 'user_autocomplete',
                             term: term
                         },
-                        url: beehive.forum_path + '/ajax.php',
+                        url: top.window.beehive.forum_path + '/ajax.php',
                         success: function (data) {
 
                             //noinspection JSUnresolvedVariable

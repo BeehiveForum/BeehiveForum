@@ -19,7 +19,7 @@
  USA
  ======================================================================*/
 
-$(beehive).bind('init', function () {
+$(top.window.beehive).bind('init', function () {
 
     $('.upload').each(function () {
 
@@ -29,9 +29,9 @@ $(beehive).bind('init', function () {
 
         var $select = $upload.closest('td').find('select');
 
-        var $upload_button = $('<a class="button upload">').text(beehive.lang['upload']);
+        var $upload_button = $('<a class="button upload">').text(top.window.beehive.lang['upload']);
 
-        var $cancel_button = $('<a class="button cancel" style="display: none">').text(beehive.lang['cancel']);
+        var $cancel_button = $('<a class="button cancel" style="display: none">').text(top.window.beehive.lang['cancel']);
 
         $upload.append($upload_button).append('&nbsp;').append($cancel_button);
 
@@ -44,7 +44,7 @@ $(beehive).bind('init', function () {
             request: {
                 endpoint: 'attachments.php',
                 params: {
-                    webtag: beehive.webtag
+                    webtag: top.window.beehive.webtag
                 },
                 forceMultipart: false,
                 inputName: 'upload[]'
@@ -83,13 +83,13 @@ $(beehive).bind('init', function () {
                     $.ajax({
                         cache: true,
                         data: {
-                            webtag: beehive.webtag,
+                            webtag: top.window.beehive.webtag,
                             ajax: 'true',
                             action: 'pref_attachment',
                             type: $select.prop('id')
                         },
                         dataType: 'json',
-                        url: beehive.forum_path + '/ajax.php',
+                        url: top.window.beehive.forum_path + '/ajax.php',
                         success: function (data) {
 
                             $option.remove();

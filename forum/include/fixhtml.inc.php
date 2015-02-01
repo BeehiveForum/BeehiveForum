@@ -198,6 +198,7 @@ function fix_html($html)
     /** @noinspection PhpParamsInspection */
     $purifier = new HTMLPurifier($config);
 
+    /** @var string $html */
     $html = $purifier->purify($html);
 
     set_error_handler($bh_error_handler);

@@ -19,9 +19,9 @@
  USA
  ======================================================================*/
 
-$(window.beehive).bind('init', function () {
+$(top.window.beehive).bind('init', function () {
 
-    window.beehive = $.extend({}, window.beehive, {
+    top.window.beehive = $.extend({}, top.window.beehive, {
 
         resize_image: function () {
 
@@ -29,7 +29,7 @@ $(window.beehive).bind('init', function () {
                 width = $image.width(),
                 height = $image.height(),
                 ratio = height / width,
-                max_width = beehive.get_resize_width.call(this),
+                max_width = top.window.beehive.get_resize_width.call(this),
                 max_height = Math.floor(max_width * ratio);
 
             if ($(this).parent('div.image_resize_container').length > 0) {
@@ -50,7 +50,7 @@ $(window.beehive).bind('init', function () {
                     $resize_banner.append($resize_icon);
 
                     //noinspection JSUnresolvedVariable
-                    $resize_banner.append($.sprintf(beehive.lang.imageresized, $image.width(), $image.height()));
+                    $resize_banner.append($.sprintf(top.window.beehive.lang.imageresized, $image.width(), $image.height()));
 
                     $image.wrap($parent_div).css({
                         width: '100%',
@@ -68,7 +68,7 @@ $(window.beehive).bind('init', function () {
 
         check_overflow: function () {
 
-            var max_width = beehive.get_resize_width.call(this);
+            var max_width = top.window.beehive.get_resize_width.call(this);
 
             if ($(this).find('div.overflow_fix').length > 0) {
 
@@ -93,11 +93,11 @@ $(window.beehive).bind('init', function () {
 
     $(window).bind('resize', function () {
 
-        $('.overflow_content img').each(beehive.resize_image);
-        $('.overflow_content').each(beehive.check_overflow);
+        $('.overflow_content img').each(top.window.beehive.resize_image);
+        $('.overflow_content').each(top.window.beehive.check_overflow);
     });
 
-    $('body').on('load', '.overflow_content img', beehive.resize_image);
+    $('body').on('load', '.overflow_content img', top.window.beehive.resize_image);
 
     $(window).trigger('resize');
 });

@@ -19,7 +19,7 @@
  USA
  ======================================================================*/
 
-$(beehive).bind('init', function () {
+$(top.window.beehive).bind('init', function () {
 
     var add_process_running = false;
 
@@ -55,7 +55,7 @@ $(beehive).bind('init', function () {
                 [
                     question_id,
                     option_id,
-                    beehive.lang.deleteoption
+                    top.window.beehive.lang.deleteoption
                 ]
             ]);
     };
@@ -86,12 +86,12 @@ $(beehive).bind('init', function () {
              </fieldset>', [
                 [
                     question_id,
-                    beehive.lang.pollquestion,
-                    beehive.lang.deletequestion,
-                    beehive.lang.allowmultipleoptions,
+                    top.window.beehive.lang.pollquestion,
+                    top.window.beehive.lang.deletequestion,
+                    top.window.beehive.lang.allowmultipleoptions,
                     option_html(question_id, 1),
                     option_html(question_id, 2),
-                    beehive.lang.addnewoption
+                    top.window.beehive.lang.addnewoption
                 ]
             ]);
     };

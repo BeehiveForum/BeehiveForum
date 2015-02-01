@@ -19,7 +19,7 @@
  USA
  ======================================================================*/
 
-$(beehive).bind('init', function () {
+$(top.window.beehive).bind('init', function () {
 
     $('div#page_content select#folder').bind('change', function () {
         $(this).closest('form').submit();
@@ -34,7 +34,7 @@ $(beehive).bind('init', function () {
         if ($(this).prop('id') == 'pm_delete_messages') {
 
             //noinspection JSUnresolvedVariable
-            if (!window.confirm(beehive.lang.deletemessagesconfirmation)) {
+            if (!window.confirm(top.window.beehive.lang.deletemessagesconfirmation)) {
                 return false;
             }
 
@@ -48,10 +48,10 @@ $(beehive).bind('init', function () {
 
         if (top.document.body.rows) {
             //noinspection JSUnresolvedVariable
-            top.frames[beehive.frames.main].frames[beehive.frames.pm_folders].location.reload();
+            top.frames[top.window.beehive.frames.main].frames[top.window.beehive.frames.pm_folders].location.reload();
         } else if (top.document.body.cols) {
             //noinspection JSUnresolvedVariable
-            top.frames[beehive.frames.pm_folders].location.reload();
+            top.frames[top.window.beehive.frames.pm_folders].location.reload();
         }
 
         return false;
@@ -60,12 +60,12 @@ $(beehive).bind('init', function () {
     $.ajax({
         cache: true,
         data: {
-            webtag: beehive.webtag,
+            webtag: top.window.beehive.webtag,
             ajax: true,
             action: 'pm_check_messages'
         },
         dataType: 'json',
-        url: beehive.forum_path + '/ajax.php',
+        url: top.window.beehive.forum_path + '/ajax.php',
         success: function (data) {
 
             try {
@@ -76,12 +76,12 @@ $(beehive).bind('init', function () {
                 if (data.notification && window.confirm(data.notification)) {
 
                     //noinspection JSUnresolvedVariable
-                    top.frames[beehive.frames.main].location.replace('pm.php?webtag=' + beehive.webtag);
+                    top.frames[top.window.beehive.frames.main].location.replace('pm.php?webtag=' + top.window.beehive.webtag);
                 }
 
             } catch (exception) {
 
-                beehive.ajax_error(exception);
+                top.window.beehive.ajax_error(exception);
             }
         }
     });

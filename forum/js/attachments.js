@@ -19,7 +19,7 @@
  USA
  ======================================================================*/
 
-$(beehive).bind('init', function () {
+$(top.window.beehive).bind('init', function () {
 
     $('input#toggle_main').bind('click', function () {
         var $checkboxes = $(this).closest('table.posthead').find('input:checkbox');
@@ -58,9 +58,9 @@ $(beehive).bind('init', function () {
 
         var $free_upload_space = $attachments.find('span.free_upload_space');
 
-        $buttons.append($('<a class="button upload">' + beehive.lang['upload'] + '</a>')).append('&nbsp;');
+        $buttons.append($('<a class="button upload">' + top.window.beehive.lang['upload'] + '</a>')).append('&nbsp;');
 
-        $buttons.append($('<a class="button delete" style="display: none">' + beehive.lang['delete'] + '</a>'));
+        $buttons.append($('<a class="button delete" style="display: none">' + top.window.beehive.lang['delete'] + '</a>'));
 
         var $upload_button = $buttons.find('a.button.upload');
 
@@ -72,7 +72,7 @@ $(beehive).bind('init', function () {
 
             $.ajax({
                 data: {
-                    webtag: beehive.webtag,
+                    webtag: top.window.beehive.webtag,
                     ajax: true,
                     summary: true,
                     hashes: $.map($selected, function (selected) {
@@ -109,14 +109,14 @@ $(beehive).bind('init', function () {
             request: {
                 endpoint: 'attachments.php',
                 params: {
-                    webtag: beehive.webtag
+                    webtag: top.window.beehive.webtag
                 },
                 forceMultipart: false,
                 inputName: 'upload[]'
             },
 
             validation: {
-                sizeLimit: beehive.attachment_size_limit
+                sizeLimit: top.window.beehive.attachment_size_limit
             },
 
             callbacks: {
@@ -139,8 +139,8 @@ $(beehive).bind('init', function () {
                             [
                                 id,
                                 format_file_name(filename),
-                                beehive.lang.retry,
-                                beehive.lang.cancel
+                                top.window.beehive.lang.retry,
+                                top.window.beehive.lang.cancel
                             ]
                         ]
                     ));
@@ -191,9 +191,9 @@ $(beehive).bind('init', function () {
                     //noinspection JSUnresolvedVariable
                     $filename.html(
                         '<a href="'
-                            + beehive.forum_path
+                            + top.window.beehive.forum_path
                             + '/get_attachment.php?webtag='
-                            + encodeURIComponent(beehive.webtag)
+                            + encodeURIComponent(top.window.beehive.webtag)
                             + '&amp;hash='
                             + encodeURIComponent(responseJSON.attachment.hash)
                             + '&amp;filename='
@@ -251,13 +251,13 @@ $(beehive).bind('init', function () {
             }
 
             //noinspection JSUnresolvedVariable
-            if (!window.confirm(beehive.lang.deleteattachmentconfirmation)) {
+            if (!window.confirm(top.window.beehive.lang.deleteattachmentconfirmation)) {
                 return;
             }
 
             $.ajax({
                 data: {
-                    webtag: beehive.webtag,
+                    webtag: top.window.beehive.webtag,
                     ajax: true,
                     delete: true,
                     hashes: $.map($selected, function (selected) {

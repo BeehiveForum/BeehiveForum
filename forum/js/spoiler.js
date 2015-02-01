@@ -19,9 +19,9 @@
  USA
  ======================================================================*/
 
-$(beehive).bind('init', function () {
+$(top.window.beehive).bind('init', function () {
 
-    if (beehive.use_mover_spoiler == 'Y' && !beehive.mobile_version) {
+    if (top.window.beehive.use_mover_spoiler == 'Y' && !top.window.beehive.mobile_version) {
 
         $('.spoiler').hover(function () {
 

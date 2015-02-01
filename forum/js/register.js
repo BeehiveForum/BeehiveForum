@@ -19,19 +19,19 @@
  USA
  ======================================================================*/
 
-$(beehive).bind('init', function () {
+$(top.window.beehive).bind('init', function () {
 
     $('#text_captcha_reload').bind('click', function () {
 
         $.ajax({
             cache: true,
             data: {
-                webtag: beehive.webtag,
+                webtag: top.window.beehive.webtag,
                 ajax: 'true',
                 action: 'reload_captcha'
             },
             dataType: 'json',
-            url: beehive.forum_path + '/ajax.php',
+            url: top.window.beehive.forum_path + '/ajax.php',
             success: function (data) {
 
                 try {
@@ -44,7 +44,7 @@ $(beehive).bind('init', function () {
 
                 } catch (exception) {
 
-                    beehive.ajax_error(exception);
+                    top.window.beehive.ajax_error(exception);
                 }
             }
         });

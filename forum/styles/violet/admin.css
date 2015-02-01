@@ -697,7 +697,7 @@ div.poll_option_list ol li {
 }
 
 .navpage {
-    background: #6d496d url('images/menu.png');
+    background: #6d496d;
     color: #FFFFFF;
     font-size: 65%;
     font-weight: bold;

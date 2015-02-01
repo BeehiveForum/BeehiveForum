@@ -19,7 +19,7 @@
  USA
  ======================================================================*/
 
-$(beehive).bind('init', function () {
+$(top.window.beehive).bind('init', function () {
 
     var $body = $('body'),
         $header = $('div#header'),
@@ -27,11 +27,7 @@ $(beehive).bind('init', function () {
 
     function render_message_form() {
 
-        var $message_vote_form = $(this),
-            $rating_text = $message_vote_form.find('span.rating'),
-            $vote_down = $message_vote_form.find('span.vote_down'),
-            $vote_up = $message_vote_form.find('span.vote_up'),
-            rating_position;
+        var $message_vote_form = $(this);
 
         $message_vote_form.addClass('popup');
 
@@ -114,7 +110,7 @@ $(beehive).bind('init', function () {
             cache: true,
 
             data: {
-                webtag: beehive.webtag,
+                webtag: top.window.beehive.webtag,
                 ajax: 'true',
                 action: 'post_vote',
                 post_rating: $button.hasClass('vote_up') ? 1 : -1,
@@ -122,7 +118,7 @@ $(beehive).bind('init', function () {
                 msg: $container.data('msg')
             },
 
-            url: beehive.forum_path + '/ajax.php',
+            url: top.window.beehive.forum_path + '/ajax.php',
 
             success: function (data) {
 
@@ -133,7 +129,7 @@ $(beehive).bind('init', function () {
 
                 } catch (exception) {
 
-                    beehive.ajax_error(exception);
+                    top.window.beehive.ajax_error(exception);
                 }
             }
         });

@@ -139,7 +139,7 @@ function user_get_profile($uid)
         }
     }
 
-    if (isset($user_prefs['PIC_URL']) && strlen($user_prefs['PIC_URL']) > 0) {
+    if (isset($user_prefs['PIC_URL']) && filter_var($user_prefs['PIC_URL'], FILTER_VALIDATE_URL)) {
         $user_profile['PIC_URL'] = $user_prefs['PIC_URL'];
     }
 
@@ -147,7 +147,7 @@ function user_get_profile($uid)
         $user_profile['PIC_AID'] = $user_prefs['PIC_AID'];
     }
 
-    if (isset($user_prefs['AVATAR_URL']) && strlen($user_prefs['AVATAR_URL']) > 0) {
+    if (isset($user_prefs['AVATAR_URL']) && filter_var($user_prefs['AVATAR_URL'], FILTER_VALIDATE_URL)) {
         $user_profile['AVATAR_URL'] = $user_prefs['AVATAR_URL'];
     }
 
@@ -155,7 +155,7 @@ function user_get_profile($uid)
         $user_profile['AVATAR_AID'] = $user_prefs['AVATAR_AID'];
     }
 
-    if (isset($user_prefs['HOMEPAGE_URL']) && strlen($user_prefs['HOMEPAGE_URL']) > 0) {
+    if (isset($user_prefs['HOMEPAGE_URL']) && filter_var($user_prefs['HOMEPAGE_URL'], FILTER_VALIDATE_URL)) {
         $user_profile['HOMEPAGE_URL'] = $user_prefs['HOMEPAGE_URL'];
     }
 
@@ -322,7 +322,9 @@ function user_get_profile_image($uid)
 
     $user_profile_data = $result->fetch_assoc();
 
-    if (!isset($user_profile_data['PIC_URL']) || strlen($user_profile_data['PIC_URL']) == 0) return false;
+    if (!isset($user_profile_data['PIC_URL']) || !filter_var($user_profile_data['PIC_URL'], FILTER_VALIDATE_URL)) {
+        return false;
+    }
 
     return $user_profile_data['PIC_URL'];
 }

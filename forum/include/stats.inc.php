@@ -201,7 +201,7 @@ function stats_get_html()
                         $user_title = '';
                     }
 
-                    if (isset($user['AVATAR_URL']) && strlen($user['AVATAR_URL']) > 0) {
+                    if (isset($user['AVATAR_URL']) && filter_var($user['AVATAR_URL'], FILTER_VALIDATE_URL)) {
 
                         $user_avatar = html_style_image(
                             'profile_image profile_image_small',
@@ -291,7 +291,7 @@ function stats_get_html()
                 $user_title = '';
             }
 
-            if (isset($user['AVATAR_URL']) && strlen($user['AVATAR_URL']) > 0) {
+            if (isset($user['AVATAR_URL']) && filter_var($user['AVATAR_URL'], FILTER_VALIDATE_URL)) {
 
                 $user_avatar = html_style_image(
                     'profile_image profile_image_small',
@@ -648,9 +648,9 @@ function stats_get_active_user_list()
             }
         }
 
-        if (isset($user_data['AVATAR_URL_FORUM']) && strlen($user_data['AVATAR_URL_FORUM']) > 0) {
+        if (isset($user_data['AVATAR_URL_FORUM']) && filter_var($user_data['AVATAR_URL_FORUM'], FILTER_VALIDATE_URL)) {
             $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_FORUM'];
-        } else if (isset($user_data['AVATAR_URL_GLOBAL']) && strlen($user_data['AVATAR_URL_GLOBAL']) > 0) {
+        } else if (isset($user_data['AVATAR_URL_GLOBAL']) && filter_var($user_data['AVATAR_URL_GLOBAL'], FILTER_VALIDATE_URL)) {
             $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_GLOBAL'];
         } else {
             $user_data['AVATAR_URL'] = null;

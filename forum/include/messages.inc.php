@@ -171,6 +171,10 @@ function messages_get_recipients($tid, &$messages_array)
             $messages_array[$recipient_data['PID']]['RECIPIENTS'] = array();
         }
 
+        if (!filter_var($recipient_data['AVATAR_URL'], FILTER_VALIDATE_URL)){
+            $recipient_data['AVATAR_URL'] = null;
+        }
+
         $messages_array[$recipient_data['PID']]['RECIPIENTS'][] = array(
             'UID' => $recipient_data['TO_UID'],
             'LOGON' => $recipient_data['LOGON'],
@@ -589,7 +593,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
     if (isset($_SESSION['SHOW_AVATARS']) && ($_SESSION['SHOW_AVATARS'] == 'Y')) {
 
-        if (isset($message['AVATAR_URL']) && strlen($message['AVATAR_URL']) > 0) {
+        if (isset($message['AVATAR_URL']) && filter_var($message['AVATAR_URL'], FILTER_VALIDATE_URL)) {
 
             echo html_style_image('profile_image profile_image_small', format_user_name($message['FROM_LOGON'], $message['FROM_NICKNAME']), null, array('background-image' => sprintf("url('%s')", $message['AVATAR_URL'])));
 
@@ -667,7 +671,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
             if (isset($_SESSION['SHOW_AVATARS']) && ($_SESSION['SHOW_AVATARS'] == 'Y')) {
 
-                if (isset($recipient['AVATAR_URL']) && strlen($recipient['AVATAR_URL']) > 0) {
+                if (isset($recipient['AVATAR_URL']) && filter_var($recipient['AVATAR_URL'], FILTER_VALIDATE_URL)) {
 
                     echo html_style_image('profile_image profile_image_small', format_user_name($recipient['LOGON'], $recipient['NICKNAME']), null, array('background-image' => sprintf("url('%s')", $recipient['AVATAR_URL'])));
 

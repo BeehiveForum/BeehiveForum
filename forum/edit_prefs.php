@@ -241,17 +241,10 @@ if (isset($_POST['save'])) {
         $user_prefs['HOMEPAGE_URL'] = trim($_POST['homepage_url']);
         $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global'])) ? $_POST['homepage_url_global'] == "Y" : true;
 
-        if (strlen(trim($user_prefs['HOMEPAGE_URL'])) > 0) {
+        if (strlen(trim($user_prefs['HOMEPAGE_URL'])) > 0 && !user_check_pref('HOMEPAGE_URL', $user_prefs['HOMEPAGE_URL'])) {
 
-            if (preg_match('/^http:\/\//u', $user_prefs['HOMEPAGE_URL']) < 1) {
-                $error_msg_array[] = gettext("Homepage URL must include http:// schema.");
-                $valid = false;
-
-            } else if (!user_check_pref('HOMEPAGE_URL', $user_prefs['HOMEPAGE_URL'])) {
-
-                $error_msg_array[] = sprintf(gettext("%s contains invalid characters!"), gettext("Homepage URL"));
-                $valid = false;
-            }
+            $error_msg_array[] = sprintf(gettext("%s is not a valid URL!"), gettext("Homepage URL"));
+            $valid = false;
         }
     }
 
@@ -260,17 +253,10 @@ if (isset($_POST['save'])) {
         $user_prefs['PIC_URL'] = trim($_POST['pic_url']);
         $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global'])) ? $_POST['pic_url_global'] == "Y" : true;
 
-        if (strlen(trim($user_prefs['PIC_URL'])) > 0) {
+        if (strlen(trim($user_prefs['PIC_URL'])) > 0 && !user_check_pref('PIC_URL', $user_prefs['PIC_URL'])) {
 
-            if (preg_match('/^http:\/\//u', $user_prefs['PIC_URL']) < 1) {
-                $error_msg_array[] = gettext("Picture URL must include http:// schema.");
-                $valid = false;
-
-            } else if (!user_check_pref('PIC_URL', $user_prefs['PIC_URL'])) {
-
-                $error_msg_array[] = sprintf(gettext("%s contains invalid characters!"), gettext("Picture URL"));
-                $valid = false;
-            }
+            $error_msg_array[] = sprintf(gettext("%s is not a valid URL!"), gettext("Picture URL"));
+            $valid = false;
         }
     }
 
@@ -332,17 +318,10 @@ if (isset($_POST['save'])) {
         $user_prefs['AVATAR_URL'] = trim($_POST['avatar_url']);
         $user_prefs_global['AVATAR_URL'] = (isset($_POST['avatar_url_global'])) ? $_POST['avatar_url_global'] == "Y" : true;
 
-        if (strlen(trim($user_prefs['AVATAR_URL'])) > 0) {
+        if (strlen(trim($user_prefs['AVATAR_URL'])) > 0 && !user_check_pref('AVATAR_URL', $user_prefs['AVATAR_URL'])) {
 
-            if (preg_match('/^http:\/\//u', $user_prefs['AVATAR_URL']) < 1) {
-                $error_msg_array[] = gettext("Avatar URL must include http:// schema.");
-                $valid = false;
-
-            } else if (!user_check_pref('AVATAR_URL', $user_prefs['AVATAR_URL'])) {
-
-                $error_msg_array[] = sprintf(gettext("%s contains invalid characters!"), gettext("Avatar URL"));
-                $valid = false;
-            }
+            $error_msg_array[] = sprintf(gettext("%s is not a valid URL!"), gettext("Avatar URL"));
+            $valid = false;
         }
     }
 
@@ -636,7 +615,7 @@ if ((session::check_perm(USER_PERM_ADMIN_TOOLS, 0, 0) && $admin_edit) || (($prof
 
 echo "                <tr>\n";
 echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\">", gettext("Homepage URL"), ":&nbsp;</td>\n";
-echo "                  <td align=\"left\">", form_input_text("homepage_url", (isset($user_prefs['HOMEPAGE_URL']) ? htmlentities_array($user_prefs['HOMEPAGE_URL']) : ""), 55, 255, null, "user_pref_field"), "</td>\n";
+echo "                  <td align=\"left\">", form_input_text("homepage_url", (isset($user_prefs['HOMEPAGE_URL']) && filter_var($user_prefs['HOMEPAGE_URL'], FILTER_VALIDATE_URL) ? htmlentities_array($user_prefs['HOMEPAGE_URL']) : ""), 55, 255, null, "user_pref_field"), "</td>\n";
 echo "                  <td align=\"left\" valign=\"top\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("homepage_url_global", "Y", null, (isset($user_prefs['HOMEPAGE_URL_GLOBAL']) ? $user_prefs['HOMEPAGE_URL_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("homepage_url_global", 'Y'), "&nbsp;</td>\n";
 echo "                </tr>\n";
 
@@ -674,7 +653,7 @@ if (attachments_check_dir()) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"175\" style=\"white-space: nowrap\">", gettext("Picture URL"), ":</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("pic_url", (isset($user_prefs['PIC_URL']) ? htmlentities_array($user_prefs['PIC_URL']) : ""), 55, 255, null, "user_pref_field"), "</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("pic_url", (isset($user_prefs['PIC_URL']) && filter_var($user_prefs['PIC_URL'], FILTER_VALIDATE_URL) ? htmlentities_array($user_prefs['PIC_URL']) : ""), 55, 255, null, "user_pref_field"), "</td>\n";
     echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("pic_url_global", "Y", null, (isset($user_prefs['PIC_URL_GLOBAL']) ? $user_prefs['PIC_URL_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("pic_url_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
@@ -713,7 +692,7 @@ if (attachments_check_dir()) {
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"175\" style=\"white-space: nowrap\">", gettext("Avatar URL"), ":</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("avatar_url", (isset($user_prefs['AVATAR_URL']) ? htmlentities_array($user_prefs['AVATAR_URL']) : ""), 55, 255, null, "user_pref_field"), "</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("avatar_url", (isset($user_prefs['AVATAR_URL']) && filter_var($user_prefs['AVATAR_URL'], FILTER_VALIDATE_URL) ? htmlentities_array($user_prefs['AVATAR_URL']) : ""), 55, 255, null, "user_pref_field"), "</td>\n";
     echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("avatar_url_global", "Y", null, (isset($user_prefs['AVATAR_URL_GLOBAL']) ? $user_prefs['AVATAR_URL_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("avatar_url_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
@@ -725,12 +704,12 @@ if (attachments_check_dir()) {
 
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"175\" style=\"white-space: nowrap\">", gettext("Picture URL"), ":</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("pic_url", (isset($user_prefs['PIC_URL']) ? htmlentities_array($user_prefs['PIC_URL']) : ""), 55, 255, null, "user_pref_field"), "</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("pic_url", (isset($user_prefs['PIC_URL']) && filter_var($user_prefs['PIC_URL'], FILTER_VALIDATE_URL) ? htmlentities_array($user_prefs['PIC_URL']) : ""), 55, 255, null, "user_pref_field"), "</td>\n";
     echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("pic_url_global", "Y", null, (isset($user_prefs['PIC_URL_GLOBAL']) ? $user_prefs['PIC_URL_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("pic_url_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
     echo "                <tr>\n";
     echo "                  <td align=\"left\" width=\"175\" style=\"white-space: nowrap\">", gettext("Avatar URL"), ":</td>\n";
-    echo "                  <td align=\"left\">", form_input_text("avatar_url", (isset($user_prefs['AVATAR_URL']) ? htmlentities_array($user_prefs['AVATAR_URL']) : ""), 55, 255, null, "user_pref_field"), "</td>\n";
+    echo "                  <td align=\"left\">", form_input_text("avatar_url", (isset($user_prefs['AVATAR_URL']) && filter_var($user_prefs['AVATAR_URL'], FILTER_VALIDATE_URL) ? htmlentities_array($user_prefs['AVATAR_URL']) : ""), 55, 255, null, "user_pref_field"), "</td>\n";
     echo "                  <td align=\"right\" style=\"white-space: nowrap\">", ($show_set_all) ? form_checkbox("avatar_url_global", "Y", null, (isset($user_prefs['AVATAR_URL_GLOBAL']) ? $user_prefs['AVATAR_URL_GLOBAL'] : false), sprintf('title="%s"', gettext("Set for all forums?"))) : form_input_hidden("avatar_url_global", 'Y'), "&nbsp;</td>\n";
     echo "                </tr>\n";
 }

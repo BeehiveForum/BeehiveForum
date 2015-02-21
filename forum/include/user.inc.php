@@ -1013,7 +1013,7 @@ function user_check_pref($name, $value)
         case "PIC_URL":
         case "AVATAR_URL":
 
-            return (preg_match('/^http:\/\/[_\.0-9a-z\-~]*/iu', $value) || $value == "");
+            return empty($value) || filter_var($value, FILTER_VALIDATE_URL);
             break;
 
         case "EMAIL_NOTIFY":
@@ -1166,9 +1166,9 @@ function user_get_todays_birthdays()
             }
         }
 
-        if (isset($user_data['AVATAR_URL_FORUM']) && strlen($user_data['AVATAR_URL_FORUM']) > 0) {
+        if (isset($user_data['AVATAR_URL_FORUM']) && filter_var($user_data['AVATAR_URL_FORUM'], FILTER_VALIDATE_URL)) {
             $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_FORUM'];
-        } else if (isset($user_data['AVATAR_URL_GLOBAL']) && strlen($user_data['AVATAR_URL_GLOBAL']) > 0) {
+        } else if (isset($user_data['AVATAR_URL_GLOBAL']) && filter_var($user_data['AVATAR_URL_GLOBAL'], FILTER_VALIDATE_URL)) {
             $user_data['AVATAR_URL'] = $user_data['AVATAR_URL_GLOBAL'];
         } else {
             $user_data['AVATAR_URL'] = null;

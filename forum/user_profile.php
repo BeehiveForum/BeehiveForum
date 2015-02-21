@@ -112,7 +112,7 @@ echo "                                          <tr>\n";
 echo "                                            <td align=\"center\">\n";
 echo "                                              <table width=\"95%\" class=\"profile_options_menu\">\n";
 
-if (isset($user_profile['HOMEPAGE_URL'])) {
+if (isset($user_profile['HOMEPAGE_URL']) && filter_var($user_profile['HOMEPAGE_URL'], FILTER_VALIDATE_URL)) {
 
     echo "                                                <tr>\n";
     echo "                                                  <td align=\"left\"><a href=\"{$user_profile['HOMEPAGE_URL']}\" target=\"_blank\" title=\"", gettext("Visit Homepage"), "\">", html_style_image('home', gettext("Visit Homepage")), "</a></td>\n";
@@ -251,7 +251,7 @@ echo "                          <table width=\"100%\">\n";
 echo "                            <tr>\n";
 echo "                              <td align=\"right\" class=\"subhead\">\n";
 
-if (isset($user_profile['PIC_URL'])) {
+if (isset($user_profile['PIC_URL']) && filter_var($user_profile['PIC_URL'], FILTER_VALIDATE_URL)) {
 
     echo "                                  ", html_style_image('profile_image profile_image_large', null, null, array('background-image' => sprintf("url('%s')", $user_profile['PIC_URL']))), "\n";
 

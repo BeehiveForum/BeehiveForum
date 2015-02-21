@@ -1,5 +1,13 @@
 # Beehive Forum Release Notes
 
+## What's new in 1.4.5 (Released 21st February 2015)
+
+- Changes from 1.4.4
+
+    - Fixed a security vulnerability in the user
+      profile fields: AVATAR_URL, PIC_URL and
+      HOMEPAGE_URL.
+
 ## What's new in 1.4.4 (Released 4th August 2014)
 
 - Changes from 1.4.3

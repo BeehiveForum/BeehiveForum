@@ -1,6 +1,6 @@
 # Beehive Forum Release Notes
 
-## What's new in 1.4.5 (Released 21st February 2015)
+## What's new in 1.4.5 (Released 28th February 2015)
 
 - Changes from 1.4.4
 

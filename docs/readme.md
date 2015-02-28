@@ -2,7 +2,7 @@
 
 <http://www.beehiveforum.co.uk/>
 
-Version 1.4.5 / 21st February 2015
+Version 1.4.5 / 28th February 2015
 
 A list of changes since previous Beehive Forum versions can be found
 in release.txt.

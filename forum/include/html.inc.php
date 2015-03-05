@@ -333,8 +333,13 @@ function html_get_style_file($filename, $allow_cdn = true)
 
 function html_get_top_page($allow_cdn = true)
 {
+    $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
+
     if (!($user_style = html_get_user_style_path())) $user_style = 'default';
-    return html_get_forum_file_path(sprintf('styles/%s/top.php', basename($user_style)), $allow_cdn);
+
+    return html_get_forum_file_path(sprintf("styles/%s/top.php?webtag=$webtag", basename($user_style)), $allow_cdn);
 }
 
 function html_get_emoticon_style_sheet($emoticon_set = false, $allow_cdn = true)

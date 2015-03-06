@@ -401,7 +401,6 @@ define('LINKS_ADD_FOLDER', 1);
 // Error codes for Text Captcha
 define('TEXT_CAPTCHA_NO_FONTS', 1);
 define('TEXT_CAPTCHA_KEY_ERROR', 2);
-define('TEXT_CAPTCHA_DIR_ERROR', 3);
 define('TEXT_CAPTCHA_GD_ERROR', 4);
 define('TEXT_CAPTCHA_FONT_ERROR', 5);
 

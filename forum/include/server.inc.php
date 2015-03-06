@@ -70,7 +70,6 @@ function get_available_files()
         'admin_wordfilter.php',
         'ajax.php',
         'attachments.php',
-        'boot.php',
         'change_pw.php',
         'close_poll.php',
         'confirm_email.php',
@@ -100,7 +99,6 @@ function get_available_files()
         'get_attachment.php',
         'index.php',
         'json.php',
-        'lboot.php',
         'ldelete.php',
         'ldisplay.php',
         'ledit.php',
@@ -291,6 +289,25 @@ function get_forum_access_ignore_files()
         get_available_user_files(),
         get_forum_check_webtag_ignore_files(),
         get_available_support_files()
+    );
+}
+
+function get_light_mode_files()
+{
+    return array(
+        'ldelete.php',
+        'ldisplay.php',
+        'ledit.php',
+        'lforums.php',
+        'llogon.php',
+        'llogout.php',
+        'lmessages.php',
+        'lpm.php',
+        'lpm_edit.php',
+        'lpm_write.php',
+        'lpost.php',
+        'lsearch.php',
+        'lthread_list.php',
     );
 }
 

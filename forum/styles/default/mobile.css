@@ -404,15 +404,15 @@ div.menu.navigation a:last-child {
     margin: 10px 0;
 }
 
-.forum h3,
-.folder h3 {
+.forum > h3,
+.folder > h3 {
     font-size: 11pt;
     line-height: 150%;
     margin: 0;
 }
 
-.forum h3 span.image,
-.folder h3 span.image {
+.forum > h3 span.image,
+.folder > h3 span.image {
     margin-right: 5px;
 }
 
@@ -681,7 +681,7 @@ div.poll hr {
     margin: 10px 0;
 }
 
-div.poll h3 {
+div.poll > h3 {
     font-size: 11pt;
     line-height: 200%;
     margin: 0;
@@ -760,8 +760,8 @@ div.search {
     padding: 2px;
 }
 
-div.post h3,
-div.search h3 {
+div.post > h3,
+div.search > h3 {
     background-color: #A6BED7;
     color: #FFFFFF;
     font-size: 11pt;
@@ -860,16 +860,26 @@ div.search .search_inner {
     height: 11px;
 }
 
-.logon {
+.logon,
+.register {
     background-color: #FFFFFF;
     border: 1px solid #000000;
     margin: 20px auto 0;
-    max-width: 350px;
     padding: 2px;
+}
+
+.logon {
+    max-width: 350px;
     width: 75%;
 }
 
-.logon h3 {
+.register {
+    max-width: 800px;
+    width: 95%;
+}
+
+.logon > h3,
+.register > h3 {
     background-color: #A6BED7;
     color: #FFFFFF;
     font-size: 11pt;
@@ -878,7 +888,8 @@ div.search .search_inner {
     padding: 2px 3px;
 }
 
-.logon .logon_inner {
+.logon .logon_inner,
+.register .register_inner {
     background-color: #C8D7E6;
     padding: 8px;
 }
@@ -886,16 +897,63 @@ div.search .search_inner {
 .logon_username,
 .logon_password,
 .logon_remember,
-.logon_buttons {
+.logon_buttons,
+.register_rules,
+.register_accept,
+.register_username,
+.register_password,
+.register_nickname,
+.register_email,
+.register_dob,
+.register_confirmation,
+.register_buttons {
     margin: 0 10px 10px 0;
 }
 
+.register_confirmation_image,
+.register_confirmation_input {
+    margin: 10px auto;
+    text-align: center;
+}
+
+.register_confirmation_input .text {
+    width: 200px;
+}
+
+.register_rules {
+    background-color: #FFFFFF;
+    max-height: 200px;
+    overflow: scroll;
+    padding: 10px;
+}
+
 .logon_username .text,
-.logon_password .password {
+.logon_password .password,
+.register_username .text,
+.register_password .password,
+.register_nickname .text,
+.register_email .text {
     width: 100%;
 }
 
-.logon_buttons {
+.register_dob span {
+    display: inline-block;
+    width: 100%;
+}
+
+.register_dob select#dob_day,
+.register_dob select#dob_month,
+.register_dob select#dob_year {
+    max-width: 258px;
+    width: 32%;
+}
+
+.register_link {
+    text-align: center;
+}
+
+.logon_buttons,
+.register_buttons{
     text-align: center;
 }
 
@@ -934,7 +992,7 @@ span.thread_length {
     padding: 10px;
 }
 
-.message_box h3 {
+.message_box > h3 {
     color: #000000;
     display: inline-block;
     font-size: 11pt;

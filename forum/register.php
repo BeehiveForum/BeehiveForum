@@ -505,7 +505,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
     html_display_warning_msg(gettext("More Profile and Preference options are available once you register"), '700', 'center');
 
     echo "<div align=\"center\">\n";
-    echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"register.php\" method=\"post\" target=\"_self\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('user_agree_rules', htmlentities_array($user_agree_rules)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
@@ -833,7 +833,7 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"register.php\" method=\"post\" target=\"_self\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";

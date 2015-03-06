@@ -188,11 +188,6 @@ class captcha
 
     public function make_image()
     {
-        if (!$this->check_working_dir()) {
-            $this->error = TEXT_CAPTCHA_DIR_ERROR;
-            return false;
-        }
-
         if (!$this->check_keys()) {
             $this->error = TEXT_CAPTCHA_KEY_ERROR;
             return false;
@@ -297,8 +292,6 @@ class captcha
     protected function check_working_dir()
     {
         if (!$this->text_captcha_dir) return false;
-
-        @mkdir("{$this->text_captcha_dir}/fonts", 0775, true);
 
         if (@is_dir("{$this->text_captcha_dir}/fonts")) {
             return true;

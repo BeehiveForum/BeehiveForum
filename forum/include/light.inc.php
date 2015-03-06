@@ -428,6 +428,7 @@ function light_draw_logon_form($error_msg_array = array())
     echo "</form>\n";
     echo "</div>\n";
     echo "</div>\n";
+    echo "<p class=\"register_link\">", sprintf(gettext("Don't have an account? %s"), "<a href=\"lregister.php?webtag=$webtag\">" . gettext("Register now") . "</a>"), "</p>\n";
 }
 
 function light_draw_messages($tid, $pid, array $thread_data, array $messages)
@@ -2207,6 +2208,31 @@ function light_form_input_text($name, $value = null, $width = null, $maxlength =
 function light_form_input_password($name, $value = null, $width = null, $maxlength = null, $custom_html = null, $placeholder = null)
 {
     return light_form_field($name, $value, $width, $maxlength, "password", $custom_html, $placeholder);
+}
+
+function light_form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true, $custom_html = null, $class = 'bhselect')
+{
+    if ($show_blank) {
+
+        $birthday_days = array_merge(array('&nbsp;'), range(1, 31));
+        $birthday_months = array_merge(array('&nbsp;'), lang_get_month_names());
+
+        $birthday_years = array(
+                '&nbsp;'
+            ) + range_keys(1900, date('Y', time()));
+
+    } else {
+
+        $birthday_days = range_keys(1, 31);
+        $birthday_months = lang_get_month_names();
+        $birthday_years = range_keys(1900, date('Y', time()));
+    }
+
+    $output = light_form_dropdown_array("dob_day", $birthday_days, $dob_day, $custom_html, $class) . "&nbsp;";
+    $output .= light_form_dropdown_array("dob_month", $birthday_months, $dob_month, $custom_html, $class) . "&nbsp;";
+    $output .= light_form_dropdown_array("dob_year", $birthday_years, $dob_year, $custom_html, $class) . "&nbsp;";
+
+    return $output;
 }
 
 function light_html_message_type_error()

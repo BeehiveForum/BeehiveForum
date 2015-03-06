@@ -1078,11 +1078,6 @@ if (isset($forum_global_settings['text_captcha_enabled']) && $forum_global_setti
                     html_display_error_msg(gettext("Text-captcha has been disabled automatically because there are no true type fonts available for it to use. Please upload some true type fonts to <b>text_captcha/fonts</b> on your server."), '95%', 'center');
                     break;
 
-                case TEXT_CAPTCHA_DIR_ERROR:
-
-                    html_display_error_msg(gettext("Text-captcha has been disabled because the text_captcha directory and it's sub-directories are not writable by the web server / PHP process."), '95%', 'center');
-                    break;
-
                 case TEXT_CAPTCHA_GD_ERROR:
 
                     html_display_error_msg(gettext("Text-captcha has been disabled because your server's PHP setup does not provide support for GD Image manipulation and / or TTF font support. Both are required for text-captcha support."), '95%', 'center');

@@ -46,7 +46,7 @@ $error_msg_array = array();
 // Retrieve the final_uri request
 if (isset($_GET['final_uri']) && strlen(trim($_GET['final_uri'])) > 0) {
 
-    $available_files_preg = implode("|^", array_map('preg_quote_callback', get_available_files()));
+    $available_files_preg = implode("|^", array_map('preg_quote_callback', get_light_mode_files()));
 
     if (preg_match("/^$available_files_preg/u", trim($_GET['final_uri'])) > 0) {
         $final_uri = href_cleanup_query_keys($_GET['final_uri']);
@@ -54,15 +54,15 @@ if (isset($_GET['final_uri']) && strlen(trim($_GET['final_uri'])) > 0) {
 
 } else if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-    $final_uri = "discussion.php?webtag=$webtag&amp;msg=" . $_GET['msg'];
+    $final_uri = "lmessages.php?webtag=$webtag&amp;msg=" . $_GET['msg'];
 
 } else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-    $final_uri = "discussion.php?webtag=$webtag&amp;folder=" . $_GET['folder'];
+    $final_uri = "lmessages.php?webtag=$webtag&amp;folder=" . $_GET['folder'];
 
 } else if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
-    $final_uri = "pm.php?webtag=$webtag&amp;mid=" . $_GET['pmid'];
+    $final_uri = "lpm.php?webtag=$webtag&amp;mid=" . $_GET['pmid'];
 }
 
 // Check for logon post data

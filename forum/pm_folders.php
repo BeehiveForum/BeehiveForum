@@ -320,7 +320,7 @@ echo "  <br />\n";
 echo "  <table width=\"90%\" border=\"0\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";
-echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"75%\">\n";
+echo "        <table cellpadding=\"2\" cellspacing=\"0\" width=\"75%\">\n";
 echo "          <tr>\n";
 echo "            <td align=\"left\">\n";
 echo "              <table cellpadding=\"0\" cellspacing=\"0\" class=\"pmbar_container\">\n";

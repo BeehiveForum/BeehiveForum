@@ -563,7 +563,10 @@ h3.message_subject span.image {
 
 .message_body,
 .message_attachments {
+    max-width: 100%;
+    overflow: hidden;
     padding: 4px;
+    word-wrap: break-word;
 }
 
 .message_body a {

@@ -42,19 +42,16 @@ $(top.window.beehive).bind('init', function () {
             window.open('search_popup.php?' + $.param(popup_query), null, top.window.beehive.window_options.join(','));
         });
 
-        $search_button.load(function () {
-
-            $search_input.css({
-                border: 'none',
-                width: $search_input.width() - ($(this).width())
-            });
-        });
-
         $search_input.before($container);
 
         $search_input.appendTo($container);
 
         $search_button.appendTo($container);
+
+        $search_input.css({
+            border: 'none',
+            width: $search_input.width() - $search_button.width()
+        });
 
         if ($search_input.hasClass('search_logon')) {
 

@@ -1375,9 +1375,18 @@ function threads_get_folder_msgs()
 
     if (!$db = db::get()) return false;
 
-    if (!($table_prefix = get_table_prefix())) return 0;
+    if (!($table_prefix = get_table_prefix())) return false;
 
-    $sql = "SELECT FID, COUNT(*) AS TOTAL FROM `{$table_prefix}THREAD` GROUP BY FID";
+    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+
+    if (!$available_folders = folder_get_available_array()) return false;
+
+    $folder = implode(',', $available_folders);
+
+    $sql = "SELECT FID, COUNT(*) AS TOTAL FROM `{$table_prefix}THREAD` ";
+    $sql .= "WHERE FID IN ($folder) AND DELETED = 'N' AND LENGTH > 0 ";
+    $sql .= "AND (APPROVED IS NOT NULL OR BY_UID = '{$_SESSION['UID']}') ";
+    $sql .= "GROUP BY FID";
 
     if (!($result = $db->query($sql))) return false;
 

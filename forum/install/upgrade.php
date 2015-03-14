@@ -940,6 +940,13 @@ foreach ($forum_prefix_array as $forum_fid => $table_data) {
     $sql .= "CHANGE FILTER_NAME FILTER_NAME VARCHAR(255) COLLATE UTF8_GENERAL_CI NOT NULL AFTER FID, ";
     $sql .= "CHANGE FILTER_TYPE FILTER_TYPE TINYINT(3) UNSIGNED NOT NULL AFTER REPLACE_TEXT, ";
     $sql .= "CHANGE FILTER_ENABLED FILTER_ENABLED TINYINT(3) UNSIGNED NOT NULL AFTER FILTER_TYPE";
+
+    if (!install_index_exists($config['db_database'], "{$table_data['WEBTAG']}_THREAD", 'COUNT')) {
+
+        $sql = "ALTER TABLE `{$table_data['PREFIX']}THREAD` ADD INDEX `COUNT` (`FID`, ";
+        $sql .= "`BY_UID`, `LENGTH`, `APPROVED`, `DELETED`); ";
+        $db->query($sql);
+    }
 }
 
 $sql = "UPDATE USER_PREFS INNER JOIN POST_ATTACHMENT_FILES ";

@@ -318,7 +318,7 @@ if (sizeof($user_profile_array['user_array']) > 0) {
 
         if (isset($_SESSION['SHOW_AVATARS']) && ($_SESSION['SHOW_AVATARS'] == 'Y')) {
 
-            if (isset($user_array['AVATAR_URL']) && filter_var($user_profile['AVATAR_URL'], FILTER_VALIDATE_URL)) {
+            if (isset($user_array['AVATAR_URL']) && filter_var($user_array['AVATAR_URL'], FILTER_VALIDATE_URL)) {
 
                 echo "                   <td class=\"postbody\" align=\"left\" valign=\"top\">\n";
                 echo "                     ", html_style_image('profile_image profile_image_small', format_user_name($user_array['LOGON'], $user_array['NICKNAME']), null, array('background-image' => sprintf("url('%s')", $user_array['AVATAR_URL']))), "\n";

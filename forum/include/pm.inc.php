@@ -582,57 +582,43 @@ function pm_get_folder_message_counts($include_search = true)
         PM_SEARCH_RESULTS => 0,
     );
 
-    $pm_inbox_items = PM_INBOX_ITEMS;
-    $pm_sent_items = PM_SENT_ITEMS;
-    $pm_outbox_items = PM_OUTBOX;
-    $pm_saved_items = PM_SAVED_ITEMS;
-    $pm_draft_items = PM_DRAFT_ITEMS;
+    $pm_inbox = PM_INBOX_ITEMS;
+    $pm_saved = PM_SAVED_ITEMS;
+    $pm_outbox = PM_OUTBOX_ITEMS;
+    $pm_sent = PM_SENT_ITEMS;
+    $pm_draft = PM_DRAFT_ITEMS;
 
-    $sql = "(SELECT PM_TYPE.TYPE, COUNT(DISTINCT PM.MID) AS MESSAGE_COUNT FROM PM ";
-    $sql .= "INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID) WHERE ((PM_TYPE.TYPE & $pm_inbox_items) ";
-    $sql .= "AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ((PM_TYPE.TYPE & $pm_saved_items) ";
-    $sql .= "AND PM_TYPE.UID = '{$_SESSION['UID']}') OR ((PM_TYPE.TYPE & $pm_draft_items) ";
-    $sql .= "AND PM.FROM_UID = '{$_SESSION['UID']}') GROUP BY PM_TYPE.TYPE) UNION ";
-    $sql .= "(SELECT $pm_sent_items AS TYPE, COUNT(*) AS MESSAGE_COUNT FROM (SELECT PM.MID, ";
-    $sql .= "COUNT(PM_RECIPIENT.TO_UID) AS RECIPIENT_COUNT, COALESCE(OUTBOX.COUNT, 0) AS OUTBOX_COUNT ";
-    $sql .= "FROM PM INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
-    $sql .= "INNER JOIN PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = PM.FROM_UID) ";
-    $sql .= "LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT FROM PM_TYPE ";
-    $sql .= "WHERE (PM_TYPE.TYPE & $pm_outbox_items) GROUP BY PM_TYPE.MID) AS OUTBOX ON (OUTBOX.MID = PM.MID) ";
-    $sql .= "WHERE (PM_TYPE.TYPE & $pm_sent_items) AND PM.FROM_UID = '{$_SESSION['UID']}' ";
-    $sql .= "GROUP BY PM.MID HAVING OUTBOX_COUNT < RECIPIENT_COUNT) AS SENT) UNION ";
-    $sql .= "(SELECT $pm_outbox_items AS TYPE, COUNT(*) AS MESSAGE_COUNT FROM (SELECT PM.MID, ";
-    $sql .= "COUNT(PM_RECIPIENT.TO_UID) AS RECIPIENT_COUNT, COALESCE(OUTBOX.COUNT, 0) AS OUTBOX_COUNT ";
-    $sql .= "FROM PM INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) ";
-    $sql .= "LEFT JOIN (SELECT PM_TYPE.MID, COUNT(*) AS COUNT FROM PM_TYPE ";
-    $sql .= "WHERE (PM_TYPE.TYPE & $pm_outbox_items) GROUP BY PM_TYPE.MID) AS OUTBOX ON (OUTBOX.MID = PM.MID) ";
-    $sql .= "WHERE PM.FROM_UID = '{$_SESSION['UID']}' GROUP BY PM.MID ";
-    $sql .= "HAVING RECIPIENT_COUNT = OUTBOX_COUNT) AS OUTBOX) ";
+    $sql = "(SELECT 1 AS FOLDER, COUNT(DISTINCT PM.MID) AS MESSAGE_COUNT FROM PM ";
+    $sql .= "INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) INNER JOIN PM_TYPE ";
+    $sql .= "ON (PM_TYPE.MID = PM.MID) WHERE PM_TYPE.TYPE & $pm_inbox AND PM_TYPE.UID = '{$_SESSION['UID']}' ";
+    $sql .= ") UNION (SELECT 4 AS FOLDER, COUNT(DISTINCT PM.MID) AS MESSAGE_COUNT FROM ";
+    $sql .= "PM INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) INNER JOIN ";
+    $sql .= "PM_TYPE ON (PM_TYPE.MID = PM.MID) WHERE PM_TYPE.TYPE & $pm_saved AND ";
+    $sql .= "PM_TYPE.UID = '{$_SESSION['UID']}') UNION (SELECT 5 AS FOLDER, ";
+    $sql .= "COUNT(DISTINCT PM.MID) AS MESSAGE_COUNT FROM PM INNER JOIN ";
+    $sql .= "PM_RECIPIENT ON ( PM_RECIPIENT.MID = PM.MID) INNER JOIN ";
+    $sql .= "PM_TYPE ON (PM_TYPE.MID = PM.MID) WHERE PM_TYPE.TYPE & $pm_draft ";
+    $sql .= "AND PM_TYPE.UID = '{$_SESSION['UID']}') UNION (SELECT 3 AS TYPE, ";
+    $sql .= "COUNT(DISTINCT MID) AS COUNT FROM (SELECT PM.MID, ";
+    $sql .= "COUNT(DISTINCT PM_TYPE_SENT.UID) AS OUTBOX_COUNT, ";
+    $sql .= "COUNT(DISTINCT PM_RECIPIENT.TO_UID) AS RECIPIENT_COUNT FROM ";
+    $sql .= "PM INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) LEFT JOIN ";
+    $sql .= "PM_TYPE PM_TYPE_SENT ON (PM_TYPE_SENT.MID = PM.MID AND PM_TYPE_SENT.TYPE = $pm_outbox) ";
+    $sql .= "WHERE PM.FROM_UID = '{$_SESSION['UID']}' GROUP BY PM.MID HAVING ";
+    $sql .= "OUTBOX_COUNT = RECIPIENT_COUNT) AS OUTBOX) UNION (SELECT 2 AS TYPE, ";
+    $sql .= "COUNT(DISTINCT MID) AS COUNT FROM (SELECT PM.MID, ";
+    $sql .= "COUNT(DISTINCT PM_TYPE_OUTBOX.UID) AS OUTBOX_COUNT, ";
+    $sql .= "COUNT(DISTINCT PM_RECIPIENT.TO_UID) AS RECIPIENT_COUNT FROM PM ";
+    $sql .= "INNER JOIN PM_RECIPIENT ON (PM_RECIPIENT.MID = PM.MID) INNER JOIN ";
+    $sql .= "PM_TYPE ON (PM_TYPE.MID = PM.MID AND PM_TYPE.UID = PM.FROM_UID AND ";
+    $sql .= "PM_TYPE.TYPE = $pm_sent) LEFT JOIN PM_TYPE PM_TYPE_OUTBOX ON (PM_TYPE_OUTBOX.MID = PM.MID ";
+    $sql .= "AND PM_TYPE_OUTBOX.TYPE = 1) WHERE PM.FROM_UID = '{$_SESSION['UID']}' ";
+    $sql .= "GROUP BY PM.MID HAVING OUTBOX_COUNT < RECIPIENT_COUNT) AS SENT) ";
 
     if (!($result = $db->query($sql))) return false;
 
     while (($pm_data_array = $result->fetch_assoc()) !== null) {
-
-        if ($pm_data_array['TYPE'] & PM_INBOX_ITEMS) {
-
-            $message_count_array[PM_FOLDER_INBOX] = $pm_data_array['MESSAGE_COUNT'];
-
-        } else if ($pm_data_array['TYPE'] & PM_SENT_ITEMS) {
-
-            $message_count_array[PM_FOLDER_SENT] = $pm_data_array['MESSAGE_COUNT'];
-
-        } else if ($pm_data_array['TYPE'] & PM_OUTBOX) {
-
-            $message_count_array[PM_FOLDER_OUTBOX] = $pm_data_array['MESSAGE_COUNT'];
-
-        } else if ($pm_data_array['TYPE'] & PM_SAVED_ITEMS) {
-
-            $message_count_array[PM_FOLDER_SAVED] = $pm_data_array['MESSAGE_COUNT'];
-
-        } else if ($pm_data_array['TYPE'] & PM_DRAFT_ITEMS) {
-
-            $message_count_array[PM_FOLDER_DRAFTS] = $pm_data_array['MESSAGE_COUNT'];
-        }
+        $message_count_array[$pm_data_array['FOLDER']] = $pm_data_array['MESSAGE_COUNT'];
     }
 
     if ($include_search) {
@@ -1629,7 +1615,7 @@ function pm_export_html_top($message = null)
 {
     $html = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     $html .= "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
-    $html .= "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"". gettext('en-gb'). "\" lang=\"". gettext('en-gb'). "\" dir=\"". gettext('ltr'). "\">\n";
+    $html .= "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"" . gettext('en-gb') . "\" lang=\"" . gettext('en-gb') . "\" dir=\"" . gettext('ltr') . "\">\n";
     $html .= "<head>\n";
 
     if (isset($message['SUBJECT']) && isset($message['MID'])) {

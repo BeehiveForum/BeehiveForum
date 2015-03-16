@@ -243,7 +243,8 @@ html_draw_top(
     array(
         'title' => gettext('Attachments'),
         'js' => array(
-            'js/attachments.js'
+            'js/attachments.js',
+            'js/prefs.js',
         ),
         'pm_popup_disabled' => true,
         'class' => 'window_title'

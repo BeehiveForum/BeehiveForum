@@ -162,7 +162,8 @@ if ($admin_edit === true) {
             'base_target' => '_blank',
             'js' => array(
                 'js/post.js',
-                'ckeditor/ckeditor.js'
+                'ckeditor/ckeditor.js',
+                'js/prefs.js'
             ),
             'class' => 'window_title max_width'
         )

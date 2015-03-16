@@ -161,7 +161,10 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
                     gettext('Admin - Edit Profile - %s'),
                     format_user_name($user['LOGON'], $user['NICKNAME'])
                 ),
-                'class' => 'window_title'
+                'class' => 'window_title',
+                'js' => array(
+                    'js/prefs.js',
+                )
             )
         );
 

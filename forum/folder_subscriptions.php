@@ -127,7 +127,8 @@ html_draw_top(
             $header_text_array[$view]
         ),
         'js' => array(
-            'js/edit_subscriptions.js'
+            'js/edit_subscriptions.js',
+            'js/prefs.js',
         ),
         'class' => 'window_title'
     )

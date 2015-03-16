@@ -49,7 +49,10 @@ html_draw_top(
     array(
         'title' => gettext('My Controls - User Relationships'),
         'base_target' => '_blank',
-        'class' => 'window_title'
+        'class' => 'window_title',
+        'js' => array(
+            'js/prefs.js',
+        )
     )
 );
 

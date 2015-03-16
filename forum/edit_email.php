@@ -118,7 +118,10 @@ $show_set_all = (forums_get_available_count() > 1) ? true : false;
 html_draw_top(
     array(
         'title' => gettext('My Controls - Email & Privacy'),
-        'class' => 'window_title'
+        'class' => 'window_title',
+        'js' => array(
+            'js/prefs.js',
+        )
     )
 );
 

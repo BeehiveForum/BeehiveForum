@@ -391,7 +391,8 @@ html_draw_top(
         'title' => gettext('My Controls - Forum Options'),
         'js' => array(
             'js/emoticons.js',
-            'js/forum_options.js'
+            'js/forum_options.js',
+            'js/prefs.js'
         ),
         'class' => 'window_title'
     )

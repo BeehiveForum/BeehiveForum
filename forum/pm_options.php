@@ -133,7 +133,8 @@ html_draw_top(
     array(
         'title' => gettext('Private Message Options'),
         'js' => array(
-            'js/emoticons.js'
+            'js/emoticons.js',
+            'js/prefs.js',
         ),
         'class' => 'window_title'
     )

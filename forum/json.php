@@ -91,6 +91,7 @@ $json_data = array(
         'cancel' => gettext('Cancel'),
         'delete' => gettext('Delete'),
         'upload' => gettext('Upload'),
+        'preferencesnotsaved' => gettext('Your preferences have not been saved'),
     ),
     'font_size' => $font_size,
     'user_style' => $user_style,

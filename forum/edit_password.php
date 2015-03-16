@@ -135,7 +135,10 @@ if (isset($_POST['save'])) {
 html_draw_top(
     array(
         'title' => gettext('My Controls - Change Password'),
-        'class' => 'window_title'
+        'class' => 'window_title',
+        'js' => array(
+            'js/prefs.js',
+        )
     )
 );
 

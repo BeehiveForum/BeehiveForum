@@ -239,7 +239,7 @@ if (isset($_POST['save'])) {
     if (isset($_POST['homepage_url'])) {
 
         $user_prefs['HOMEPAGE_URL'] = trim($_POST['homepage_url']);
-        $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global'])) ? $_POST['homepage_url_global'] == "Y" : true;
+        $user_prefs_global['HOMEPAGE_URL'] = (isset($_POST['homepage_url_global'])) ? $_POST['homepage_url_global'] == "Y" : false;
 
         if (strlen(trim($user_prefs['HOMEPAGE_URL'])) > 0 && !user_check_pref('HOMEPAGE_URL', $user_prefs['HOMEPAGE_URL'])) {
 
@@ -251,7 +251,7 @@ if (isset($_POST['save'])) {
     if (isset($_POST['pic_url'])) {
 
         $user_prefs['PIC_URL'] = trim($_POST['pic_url']);
-        $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global'])) ? $_POST['pic_url_global'] == "Y" : true;
+        $user_prefs_global['PIC_URL'] = (isset($_POST['pic_url_global'])) ? $_POST['pic_url_global'] == "Y" : false;
 
         if (strlen(trim($user_prefs['PIC_URL'])) > 0 && !user_check_pref('PIC_URL', $user_prefs['PIC_URL'])) {
 
@@ -262,7 +262,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['pic_aid'])) {
 
-        $user_prefs_global['PIC_AID'] = (isset($_POST['pic_url_global'])) ? $_POST['pic_url_global'] == "Y" : true;
+        $user_prefs_global['PIC_AID'] = (isset($_POST['pic_url_global'])) ? $_POST['pic_url_global'] == "Y" : false;
 
         if (is_numeric($_POST['pic_aid'])) {
 
@@ -316,7 +316,7 @@ if (isset($_POST['save'])) {
     if (isset($_POST['avatar_url'])) {
 
         $user_prefs['AVATAR_URL'] = trim($_POST['avatar_url']);
-        $user_prefs_global['AVATAR_URL'] = (isset($_POST['avatar_url_global'])) ? $_POST['avatar_url_global'] == "Y" : true;
+        $user_prefs_global['AVATAR_URL'] = (isset($_POST['avatar_url_global'])) ? $_POST['avatar_url_global'] == "Y" : false;
 
         if (strlen(trim($user_prefs['AVATAR_URL'])) > 0 && !user_check_pref('AVATAR_URL', $user_prefs['AVATAR_URL'])) {
 
@@ -327,7 +327,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['avatar_aid'])) {
 
-        $user_prefs_global['AVATAR_AID'] = (isset($_POST['avatar_url_global'])) ? $_POST['avatar_url_global'] == "Y" : true;
+        $user_prefs_global['AVATAR_AID'] = (isset($_POST['avatar_url_global'])) ? $_POST['avatar_url_global'] == "Y" : false;
 
         if (is_numeric($_POST['avatar_aid'])) {
 

@@ -129,4 +129,23 @@ $(top.window.beehive).bind('init', function () {
             uploader.cancel($option.data('id'));
         });
     });
+
+    $('form').bind('submit', function () {
+        $(this).removeClass('dirty');
+    });
+
+    $('input').bind('keypress', function () {
+        $(this).closest('form').addClass('dirty');
+    });
+
+    $('input:checkbox').bind('click', function () {
+        $(this).closest('form').addClass('dirty');
+    });
+
+    $(window).bind('beforeunload', function () {
+
+        if ($('form.dirty').length > 0) {
+            return top.window.beehive.lang['preferencesnotsaved'];
+        }
+    });
 });

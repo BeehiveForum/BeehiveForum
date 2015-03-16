@@ -254,7 +254,10 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     html_draw_top(
         array(
             'title' => gettext("My Controls - Edit Word Filter"),
-            'class' => 'window_title'
+            'class' => 'window_title',
+            'js' => array(
+                'js/prefs.js',
+            )
         )
     );
 
@@ -356,7 +359,10 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     html_draw_top(
         array(
             'title' => gettext("My Controls - Edit Word Filter"),
-            'class' => 'window_title'
+            'class' => 'window_title',
+            'js' => array(
+                'js/prefs.js',
+            )
         )
     );
 
@@ -435,7 +441,10 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     html_draw_top(
         array(
             'title' => gettext("My Controls - Edit Word Filter"),
-            'class' => 'window_title'
+            'class' => 'window_title',
+            'js' => array(
+                'js/prefs.js',
+            )
         )
     );
 

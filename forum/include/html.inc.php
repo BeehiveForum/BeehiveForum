@@ -590,15 +590,26 @@ function html_draw_top(array $options = array())
 
         if (($thread_data = thread_get($tid)) !== false) {
 
-            $prev_page = ($pid - 10 > 0) ? $pid - 10 : 1;
-            $next_page = ($pid + 10 < $thread_data['LENGTH']) ? $pid + 10 : $thread_data['LENGTH'];
-
-            echo "<link rel=\"first\" href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.1"), "\" />\n";
-            echo "<link rel=\"previous\" href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.{$thread_data['LENGTH']}"), "\" />\n";
-            echo "<link rel=\"next\" href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.$next_page"), "\" />\n";
-            echo "<link rel=\"last\" href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.$prev_page"), "\" />\n";
-
             echo "<title>", word_filter_add_ob_tags($thread_data['TITLE'], true), " - ", word_filter_add_ob_tags($forum_name, true), "</title>\n";
+            echo "<link rel=\"canonical\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.1"), "\" />\n";
+
+            if ($thread_data['LENGTH'] > 10) {
+
+                $prev_page = ($pid - 10 > 0) ? $pid - 10 : 1;
+                $next_page = ($pid + 10 < $thread_data['LENGTH']) ? $pid + 10 : $thread_data['LENGTH'];
+                $last_page = (floor($thread_data['LENGTH'] / 10) * 10) + 1;
+
+                echo "<link rel=\"first\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.1"), "\" />\n";
+                echo "<link rel=\"last\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$last_page"), "\" />\n";
+
+                if (($pid + 10) < $thread_data['LENGTH']) {
+                    echo "<link rel=\"next\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$next_page"), "\" />\n";
+                }
+
+                if ($pid > 1) {
+                    echo "<link rel=\"prev\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$prev_page"), "\" />\n";
+                }
+            }
 
         } else if (isset($title)) {
 
@@ -625,7 +636,7 @@ function html_draw_top(array $options = array())
     echo "<meta name=\"description\" content=\"", word_filter_add_ob_tags($meta_description, true), "\" />\n";
     echo "<meta name=\"rating\" content=\"$forum_content_rating\" />\n";
 
-    if (forum_get_setting('allow_search_spidering', 'N')) {
+    if (forum_get_setting('allow_search_spidering', 'N') || (isset($pid) && $pid > 1)) {
 
         echo "<meta name=\"robots\" content=\"noindex,nofollow\" />\n";
 

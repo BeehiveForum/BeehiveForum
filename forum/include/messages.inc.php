@@ -171,7 +171,7 @@ function messages_get_recipients($tid, &$messages_array)
             $messages_array[$recipient_data['PID']]['RECIPIENTS'] = array();
         }
 
-        if (!filter_var($recipient_data['AVATAR_URL'], FILTER_VALIDATE_URL)){
+        if (!filter_var($recipient_data['AVATAR_URL'], FILTER_VALIDATE_URL)) {
             $recipient_data['AVATAR_URL'] = null;
         }
 
@@ -263,16 +263,21 @@ function message_get_meta_content($msg, &$meta_keywords, &$meta_description)
 {
     if (!validate_msg($msg)) return;
 
-    list($tid, $pid) = explode('.', $msg);
+    list($tid) = explode('.', $msg);
 
-    if (($thread_data = thread_get($tid)) && ($message_content = message_get_content($tid, $pid))) {
+    if (($thread_data = thread_get($tid)) && ($message_content = message_get_content($tid, 1))) {
 
         $meta_keywords_array = search_extract_keywords(strip_tags(htmlentities_decode_array($message_content)));
 
-        $meta_description = $thread_data['TITLE'];
+        list($meta_description) = explode("\n", wordwrap($message_content, 150));
 
-        $meta_keywords = htmlentities_array(implode(',', $meta_keywords_array['keywords_array']));
+        $meta_keywords = htmlentities_array(implode(',', array_map('message_clean_meta_keyword', $meta_keywords_array['keywords_array'])));
     }
+}
+
+function message_clean_meta_keyword($keyword)
+{
+    return ucfirst(trim($keyword, '.,'));
 }
 
 function message_apply_formatting($message, $ignore_sig = false)

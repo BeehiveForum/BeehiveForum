@@ -103,32 +103,44 @@ function light_html_draw_top(array $options = array())
         }
     }
 
-    // Default Meta keywords and description.
-    $meta_keywords = html_get_forum_keywords();
-    $meta_description = html_get_forum_description();
-
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"", gettext('en-gb'), "\" lang=\"", gettext('en-gb'), "\" dir=\"", gettext('ltr'), "\">\n";
     echo "<head>\n";
+    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
+
+    // Default Meta keywords and description.
+    $meta_keywords = html_get_forum_keywords();
+    $meta_description = html_get_forum_description();
 
     if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
-        message_get_meta_content($_GET['msg'], $meta_keywords, $meta_description);
-
         list($tid, $pid) = explode('.', $_GET['msg']);
+
+        message_get_meta_content($_GET['msg'], $meta_keywords, $meta_description);
 
         if (($thread_data = thread_get($tid)) !== false) {
 
-            $prev_page = ($pid - 10 > 0) ? $pid - 10 : 1;
-            $next_page = ($pid + 10 < $thread_data['LENGTH']) ? $pid + 10 : $thread_data['LENGTH'];
-
-            echo "<link rel=\"first\" href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.1"), "\" />\n";
-            echo "<link rel=\"previous\" href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.{$thread_data['LENGTH']}"), "\" />\n";
-            echo "<link rel=\"next\" href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.$next_page"), "\" />\n";
-            echo "<link rel=\"last\" href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.$prev_page"), "\" />\n";
-
             echo "<title>", word_filter_add_ob_tags($thread_data['TITLE'], true), " - ", word_filter_add_ob_tags($forum_name, true), "</title>\n";
+            echo "<link rel=\"canonical\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.1"), "\" />\n";
+
+            if ($thread_data['LENGTH'] > 10) {
+
+                $prev_page = ($pid - 10 > 0) ? $pid - 10 : 1;
+                $next_page = ($pid + 10 < $thread_data['LENGTH']) ? $pid + 10 : $thread_data['LENGTH'];
+                $last_page = (floor($thread_data['LENGTH'] / 10) * 10) + 1;
+
+                echo "<link rel=\"first\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.1"), "\" />\n";
+                echo "<link rel=\"last\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$last_page"), "\" />\n";
+
+                if (($pid + 10) < $thread_data['LENGTH']) {
+                    echo "<link rel=\"next\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$next_page"), "\" />\n";
+                }
+
+                if ($pid > 1) {
+                    echo "<link rel=\"prev\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$prev_page"), "\" />\n";
+                }
+            }
 
         } else if (isset($title)) {
 
@@ -148,20 +160,20 @@ function light_html_draw_top(array $options = array())
         echo "<title>", htmlentities_array($forum_name), "</title>\n";
     }
 
-    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
+    $forum_content_rating = html_get_forum_content_rating();
+
     echo "<meta name=\"generator\" content=\"Beehive Forum ", BEEHIVE_VERSION, "\" />\n";
     echo "<meta name=\"keywords\" content=\"", word_filter_add_ob_tags($meta_keywords, true), "\" />\n";
     echo "<meta name=\"description\" content=\"", word_filter_add_ob_tags($meta_description, true), "\" />\n";
-    echo "<meta name=\"MobileOptimized\" content=\"0\" />\n";
-    echo "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n";
+    echo "<meta name=\"rating\" content=\"$forum_content_rating\" />\n";
 
-    if (forum_get_setting('allow_search_spidering', 'N')) {
+    if (forum_get_setting('allow_search_spidering', 'N') || (isset($pid) && $pid > 1)) {
 
         echo "<meta name=\"robots\" content=\"noindex,nofollow\" />\n";
 
     } else if (isset($robots)) {
 
-        echo "<meta name=\"robots\" content=\"$robots\" />\n";
+        echo "<meta name=\"robots\" content=\"", htmlentities_array($robots), "\" />\n";
     }
 
     if (($stylesheet = html_get_style_file('mobile.css')) !== false) {

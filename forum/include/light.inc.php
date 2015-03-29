@@ -172,6 +172,8 @@ function light_html_draw_top(array $options = array())
     echo "<meta name=\"keywords\" content=\"", word_filter_add_ob_tags($meta_keywords, true), "\" />\n";
     echo "<meta name=\"description\" content=\"", word_filter_add_ob_tags($meta_description, true), "\" />\n";
     echo "<meta name=\"rating\" content=\"$forum_content_rating\" />\n";
+    echo "<meta name=\"MobileOptimized\" content=\"0\" />\n";
+    echo "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n";
 
     if (forum_get_setting('allow_search_spidering', 'N') || (isset($pid) && $pid > 1)) {
 

@@ -83,7 +83,7 @@ USA
                         codeElement = editor.getSelection().getStartElement();
 
                         quoteTextElement = codeElement.getPrevious(function (element) {
-                            return (element && element.getName() == 'div' && element.hasClass('quotetext'));
+                            return (element && element.hasClass && element.hasClass('quotetext'));
                         });
 
                         if (quoteTextElement) {
@@ -106,7 +106,7 @@ USA
                             selectedText = selection.getNative();
                         }
 
-                        quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><strong>' + beehive.lang.code + ':</strong>&nbsp;</div>');
+                        quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><strong>' + top.window.beehive.lang.code + ':</strong>&nbsp;</div>');
                         codeElement = CKEDITOR.dom.element.createFromHtml('<pre class="code">' + selectedText + '</pre>');
 
                         selection.getRanges()[0].deleteContents();
@@ -146,8 +146,8 @@ USA
 
                         quoteElement = editor.getSelection().getStartElement();
 
-                        quoteTextElement = quoteElement.getPrevious(function (element) {
-                            return (element && element.getName() == 'div' && element.hasClass('quotetext'));
+                        quoteTextElement = quoteElement.getPrevious(function(element){
+                            return element && element.hasClass && element.hasClass('quotetext');
                         });
 
                         if (quoteTextElement) {
@@ -171,7 +171,7 @@ USA
                         }
 
                         //noinspection JSUnresolvedVariable
-                        quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><strong>' + beehive.lang.quote + ':</strong>&nbsp;</div>');
+                        quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><strong>' + top.window.beehive.lang.quote + ':</strong>&nbsp;</div>');
                         quoteElement = CKEDITOR.dom.element.createFromHtml('<div class="quote">' + selectedText + '</div>');
 
                         selection.getRanges()[0].deleteContents();

@@ -123,7 +123,13 @@ if (!$thread_data = thread_get($tid, $perm_folder_moderate, false, $perm_folder_
     return;
 }
 
-if (!$messages = messages_get($tid, $pid, 10)) {
+if (isset($_SESSION['POSTS_PER_PAGE']) && is_numeric($_SESSION['POSTS_PER_PAGE'])) {
+    $posts_per_page = max(min($_SESSION['POSTS_PER_PAGE'], 30), 10);
+} else {
+    $posts_per_page = 20;
+}
+
+if (!$messages = messages_get($tid, $pid, $posts_per_page)) {
 
     light_html_display_error_msg(gettext("That post does not exist in this thread!"));
     return;

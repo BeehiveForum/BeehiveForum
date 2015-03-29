@@ -588,21 +588,27 @@ function html_draw_top(array $options = array())
 
         message_get_meta_content($_GET['msg'], $meta_keywords, $meta_description);
 
+        if (isset($_SESSION['POSTS_PER_PAGE']) && is_numeric($_SESSION['POSTS_PER_PAGE'])) {
+            $posts_per_page = max(min($_SESSION['POSTS_PER_PAGE'], 30), 10);
+        } else {
+            $posts_per_page = 20;
+        }
+
         if (($thread_data = thread_get($tid)) !== false) {
 
             echo "<title>", word_filter_add_ob_tags($thread_data['TITLE'], true), " - ", word_filter_add_ob_tags($forum_name, true), "</title>\n";
             echo "<link rel=\"canonical\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.1"), "\" />\n";
 
-            if ($thread_data['LENGTH'] > 10) {
+            if ($thread_data['LENGTH'] > $posts_per_page) {
 
-                $prev_page = ($pid - 10 > 0) ? $pid - 10 : 1;
-                $next_page = ($pid + 10 < $thread_data['LENGTH']) ? $pid + 10 : $thread_data['LENGTH'];
-                $last_page = (floor($thread_data['LENGTH'] / 10) * 10) + 1;
+                $prev_page = ($pid - $posts_per_page > 0) ? $pid - $posts_per_page : 1;
+                $next_page = ($pid + $posts_per_page < $thread_data['LENGTH']) ? $pid + $posts_per_page : $thread_data['LENGTH'];
+                $last_page = (floor($thread_data['LENGTH'] / $posts_per_page) * $posts_per_page) + 1;
 
                 echo "<link rel=\"first\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.1"), "\" />\n";
                 echo "<link rel=\"last\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$last_page"), "\" />\n";
 
-                if (($pid + 10) < $thread_data['LENGTH']) {
+                if (($pid + $posts_per_page) < $thread_data['LENGTH']) {
                     echo "<link rel=\"next\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$next_page"), "\" />\n";
                 }
 

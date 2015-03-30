@@ -152,7 +152,7 @@ function stats_get_html()
 
         $html .= sprintf(gettext("%s active in the past %s."), $user_list, $user_time);
 
-        $html .= " <a href=\"start.php?webtag=$webtag&amp;show=visitors\" target=\"" . html_get_frame_name('main') . "\">" . gettext("View More Visitors") . "</a>\n";
+        $html .= " <a href=\"visitor_log.php?webtag=$webtag&amp;show=visitors\" target=\"_self"\">" . gettext("View More Visitors") . "</a>\n";
         $html .= "    </td>\n";
         $html .= "  </tr>\n";
 

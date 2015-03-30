@@ -281,7 +281,7 @@ echo "                <tr>\n";
 echo "                  <td align=\"center\">\n";
 echo "                    <table class=\"posthead\" width=\"95%\">\n";
 echo "                      <tr>\n";
-echo "                        <td align=\"left\">\n";
+echo "                        <td align=\"left\" style=\"background-color: #F8F8FF;\">\n";
 echo "                          ", form_textarea('sig_content', $sig_text, 12, 85, 'tabindex="7"', 'edit_signature_content editor');
 echo "                        </td>\n";
 echo "                      </tr>\n";

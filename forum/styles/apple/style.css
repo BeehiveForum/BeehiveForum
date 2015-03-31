@@ -45,6 +45,19 @@ input:focus {
     outline: 0;
 }
 
+.forum_title {
+    background-color: transparent;
+    color: #ffffff;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 175%;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    margin: 0px;
+    padding: 0px;
+    text-decoration: none;
+}
+
 form {
     margin: 0;
     padding: 0;

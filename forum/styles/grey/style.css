@@ -50,6 +50,19 @@ form {
     padding: 0;
 }
 
+.forum_title {
+    background-color: #666666;
+    color: #ffffff;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 175%;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    margin: 0px;
+    padding: 0px;
+    text-decoration: none;
+}
+
 frame {
     border: 0 none #000000;
     margin: 0 0 0 0;
@@ -224,7 +237,7 @@ select.bhinputprofileitem {
 }
 
 .bhinputprofileprivacy {
-    width: 80px;
+    width: 120px;
 }
 
 .bhinputsearch {
@@ -697,7 +710,7 @@ div.poll_option_list ol li {
 }
 
 .navpage {
-    background: #666666;
+    background-color: #666666;
     color: #FFFFFF;
     font-size: 65%;
     font-weight: bold;

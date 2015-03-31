@@ -51,16 +51,16 @@ form {
 }
 
 .forum_title {
-background-color: #2E8B2E;
-color: #ffffff;
-font-family: verdana, arial, helvetica, sans-serif;
-font-size: 175%;
-font-weight: bold;
-text-align: center;
-vertical-align: middle;
-margin: 0px;
-padding: 0px;
-text-decoration: none;
+    background-color: #2E8B2E;
+    color: #ffffff;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 175%;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    margin: 0px;
+    padding: 0px;
+    text-decoration: none;
 }
 
 frame {

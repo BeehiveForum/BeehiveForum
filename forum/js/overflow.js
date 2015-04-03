@@ -45,7 +45,7 @@ $(top.window.beehive).bind('init', function () {
 
                     var $parent_div = $('<div class="image_resize_container">'),
                         $resize_banner = $('<div class="image_resize_text">'),
-                        $resize_icon = $('<span class="image_resize_icon image warning" />');
+                        $resize_icon = $('<span class="image_resize_icon image warning">');
 
                     $resize_banner.append($resize_icon);
 

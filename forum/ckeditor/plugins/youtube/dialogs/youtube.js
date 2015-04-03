@@ -155,7 +155,7 @@ USA
                                         element.setStyle('margin', '0 auto');
                                         element.setStyle('width', '480px');
 
-                                        element.removeAttribute('allowfullscreen')
+                                        element.removeAttribute('allowfullscreen');
 
                                         previewContainer.setHtml(element.getOuterHtml());
 

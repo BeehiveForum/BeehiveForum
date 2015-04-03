@@ -13,19 +13,20 @@ in release.txt.
     1. Requirements
         1. Requirements Notes
     2. Instructions
-        1. Archive Extraction
-        2. Database setup
-        3. MySQL permissions
-        4. Upload
-        5. Installing the forum
-        6. Installing from CLI
-        7. Creating your config.inc.php
-        8. First use
-        9. Adminning
-        10. What to do if it doesn't work
-        11. Add your forum to our list
-        11. Email notifications
-    3. Customising your Beehive Forum
+        1. Manual Installation
+            1. Archive Extraction
+            2. Database setup
+            3. MySQL permissions
+            4. Upload
+            5. Installing the forum
+        2. Installation with Softaculous
+    3. Using your Beehive Forum
+        1. First use
+        2. Adminning
+        3. What to do if it doesn't work
+        4. Add your forum to our list
+        5. Enabling email notifications
+    4. Customising your Beehive Forum
         1. Start Page
         2. Stylesheet
         3. Images
@@ -33,7 +34,7 @@ in release.txt.
         5. Emoticons
         6. GeSHi
         7. WYSIWYG Editor
-    4. Upgrading from previous versions of Beehive Forum
+    5. Upgrading from previous versions of Beehive Forum
         1. Upgrading your Beehive Forum installation
             1. Make a back up of your database
             2. Back up your files
@@ -47,7 +48,7 @@ in release.txt.
         5. Upgrading from 0.2 to 0.3
         6. Upgrading from 0.1 / 0.1.1 to 0.2
         7. Upgrading from 0.1 or 0.2 to 0.4
-    5. Beehive Forum Error Reporter
+    6. Beehive Forum Error Reporter
         1. Enabling Error Reporter after upgrading
 2. Known Issues
 3. Support
@@ -104,7 +105,9 @@ You need web hosting which provides:
 
 #### 1.2 Instructions
 
-##### 1.2.1 Archive Extraction
+##### 1.2.1 Manual Installation
+
+###### 1.2.1.1 Archive Extraction
 
 How you extract the contents of the Beehive Forum distribution
 archive is very important. At all times please ensure that you retain
@@ -175,7 +178,7 @@ relevant files in them. If they are not extracted into the right
 place subsequently uploading them to your server will result in
 your Beehive Forum not working.
 
-##### 1.2.2 Database setup
+###### 1.2.1.2 Database setup
 
 There are several different ways you can create a database for your
 Beehive Forum to live in. Some hosts will may provide an
@@ -193,7 +196,7 @@ own database, and separate user credentials to use, but if you can't
 provide them it should work in an existing one so long as there are
 no conflicting table names.
 
-##### 1.2.3 MySQL permissions
+###### 1.2.1.3 MySQL permissions
 
 To ensure full functionality as a minimum Beehive Forum requires the
 following privileges granted on the user account it will use for
@@ -208,13 +211,13 @@ also require GRANT permission on the database you are to install
 Beehive to. Without the FILE privilege the installer for Beehive
 Forum will still function but it will take a lot longer to complete.
 
-##### 1.2.4 Upload
+###### 1.2.1.4 Upload
 
 You should now upload the forum onto your web space. We recommend
 that you simply upload the "forum" folder directly, either into the
 root of your web space or into another folder of your choosing.
 
-##### 1.2.5 Installing the forum
+###### 1.2.1.5 Installing the forum
 
 Once everything is uploaded, you will need to run the forum's install
 script. This is located in the /install subdirectory of your forum.
@@ -229,18 +232,17 @@ password for this stage, as well as the name of the database from
 step 1.2.2.  You should be able to get the information from your
 hosting provider if you're not running your own server.
 
-##### 1.2.6 Installing from CLI
+##### 1.2.2 Installation with Softaculous
 
-Support for the CLI installer has been discontinued. Please use the
-web based installer to set up your Beehive Forum.
+Beehive Forum can also be installed using Softaculous auto-install.
+If your hosting supports Softaculous, please visit the Softaculous
+Beehive Forum page here:
 
-##### 1.2.7 Creating your config.inc.php
+https://www.softaculous.com/apps/forums/Beehive
 
-Please use the web based installer to set up your Beehive Forum.
-Creation of your config.inc.php is handled automatically when
-installation is performed this way.
+##### 1.3 Using your Beehive Forum
 
-##### 1.2.8 First use
+###### 1.3.1 First use
 
 If all went well, you should now have a working forum! After deleting
 the /install subdirectory (as is described by the install script) you
@@ -249,7 +251,7 @@ the details you specified at install. This account gives you access
 to everything, so you can create folders, set user permissions and
 so forth.
 
-##### 1.2.9 Adminning
+###### 1.3.2 Adminning
 
 Now you're ready to create some folders, so click the admin link near
 the top of the page, then choose folders from the menu on the left,
@@ -269,7 +271,7 @@ them. You can also edit the forum 'start' page, change the forum
 style, add forum word filters and so forth. It's all explained in
 there.
 
-##### 1.2.10 What to do if it doesn't work
+###### 1.3.3 What to do if it doesn't work
 
 Don't panic. Pop over to <http://www.tehforum.co.uk/forum/> and ask us
 for help, but remember, we don't get paid for this, so be nice.
@@ -280,7 +282,7 @@ Windows/IIS, etc) and the version of PHP and MySQL that you're using.
 If your Beehive Forum threw up an error message, paste that in as
 well.
 
-##### 1.2.11 Add your forum to our list (optional)
+###### 1.3.4 Add your forum to our list (optional)
 
 If you like, you can add your shiny new forum to our list of live
 copies by going to <http://beehiveforum.co.uk/forums.php>
@@ -289,7 +291,7 @@ It could be a bit of publicity for your site, and it helps us to be
 able to say "Look, all these people are using it!", but if you don't
 want to, you don't have to.
 
-##### 1.2.12 Enabling email notifications
+###### 1.3.5 Enabling email notifications
 
 By default Beehive Forum uses PHP's built-in mail function to send
 email notifications to users. On *nix, PHP is set up to use sendmail.

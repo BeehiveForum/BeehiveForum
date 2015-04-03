@@ -201,13 +201,13 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
     echo "    <tr>\n";
-    echo "      <td align=\"left\">\n";
+    echo "      <td>\n";
     echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td align=\"left\">\n";
+    echo "            <td>\n";
     echo "              <table class=\"box\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"posthead\">\n";
+    echo "                  <td class=\"posthead\">\n";
     echo "                    <table class=\"posthead\" width=\"100%\">\n";
 
     $last_psid = false;
@@ -221,7 +221,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
             if ($last_psid !== false) {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\">&nbsp;</td>\n";
+                echo "                        <td>&nbsp;</td>\n";
                 echo "                      </tr>\n";
                 echo "                    </table>\n";
                 echo "                  </td>\n";
@@ -233,19 +233,19 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
                 echo "        <br />\n";
                 echo "        <table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n";
                 echo "          <tr>\n";
-                echo "            <td align=\"left\">\n";
+                echo "            <td>\n";
                 echo "              <table class=\"box\" width=\"100%\">\n";
                 echo "                <tr>\n";
-                echo "                  <td align=\"left\" class=\"posthead\">\n";
+                echo "                  <td class=\"posthead\">\n";
                 echo "                    <table class=\"posthead\" width=\"100%\">\n";
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\" class=\"subhead\" colspan=\"3\">{$profile_item['SECTION_NAME']}</td>\n";
+                echo "                        <td class=\"subhead\" colspan=\"3\">{$profile_item['SECTION_NAME']}</td>\n";
                 echo "                      </tr>\n";
 
             } else {
 
                 echo "                      <tr>\n";
-                echo "                        <td align=\"left\" class=\"subhead\" colspan=\"3\">{$profile_item['SECTION_NAME']}</td>\n";
+                echo "                        <td class=\"subhead\" colspan=\"3\">{$profile_item['SECTION_NAME']}</td>\n";
                 echo "                      </tr>\n";
             }
         }
@@ -253,12 +253,12 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
         $last_psid = $profile_item['PSID'];
 
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" width=\"1%\"></td>\n";
-        echo "                        <td align=\"left\" colspan=\"2\">{$profile_item['ITEM_NAME']}</td>\n";
+        echo "                        <td></td>\n";
+        echo "                        <td colspan=\"2\">{$profile_item['ITEM_NAME']}</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
-        echo "                        <td align=\"left\" width=\"1%\"></td>\n";
-        echo "                        <td align=\"left\" width=\"564\">\n";
+        echo "                        <td></td>\n";
+        echo "                        <td>\n";
 
         if (($profile_item['TYPE'] == PROFILE_ITEM_RADIO) || ($profile_item['TYPE'] == PROFILE_ITEM_DROPDOWN)) {
 
@@ -284,16 +284,16 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
         echo "</td>\n";
 
         if ($admin_edit === false) {
-            echo "                        <td align=\"left\" valign=\"top\" width=\"100\">", form_dropdown_array("t_entry_private[{$profile_item['PIID']}]", array(gettext("Public"), gettext("Friends"), gettext("Only Me")), $profile_item['PRIVACY'], null, 'bhinputprofileprivacy'), "</td>\n";
+            echo "                        <td>", form_dropdown_array("t_entry_private[{$profile_item['PIID']}]", array(gettext("Public"), gettext("Friends"), gettext("Only Me")), $profile_item['PRIVACY'], null, 'bhinputprofileprivacy'), "</td>\n";
         } else {
-            echo "                        <td align=\"left\" valign=\"top\">&nbsp;</td>\n";
+            echo "                        <td>&nbsp;</td>\n";
         }
 
         echo "                      </tr>\n";
     }
 
     echo "                      <tr>\n";
-    echo "                        <td align=\"left\">&nbsp;</td>\n";
+    echo "                        <td>&nbsp;</td>\n";
     echo "                      </tr>\n";
     echo "                    </table>\n";
     echo "                  </td>\n";
@@ -302,7 +302,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
     echo "            </td>\n";
     echo "          </tr>\n";
     echo "          <tr>\n";
-    echo "            <td align=\"left\">&nbsp;</td>\n";
+    echo "            <td>&nbsp;</td>\n";
     echo "          </tr>\n";
 
     if ($admin_edit === true) {

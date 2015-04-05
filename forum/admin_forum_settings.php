@@ -241,19 +241,19 @@ if (isset($_POST['changepermissions'])) {
     }
 
     if (isset($_POST['closed_message']) && strlen(trim($_POST['closed_message'])) > 0) {
-        $new_forum_settings['closed_message'] = fix_html(emoticons_strip($_POST['closed_message']));
+        $new_forum_settings['closed_message'] = fix_html(emoticons_strip($_POST['closed_message']), true);
     } else {
         $new_forum_settings['closed_message'] = "";
     }
 
     if (isset($_POST['restricted_message']) && strlen(trim($_POST['restricted_message'])) > 0) {
-        $new_forum_settings['restricted_message'] = fix_html(emoticons_strip($_POST['restricted_message']));
+        $new_forum_settings['restricted_message'] = fix_html(emoticons_strip($_POST['restricted_message']), true);
     } else {
         $new_forum_settings['restricted_message'] = "";
     }
 
     if (isset($_POST['password_protected_message']) && strlen(trim($_POST['password_protected_message'])) > 0) {
-        $new_forum_settings['password_protected_message'] = fix_html(emoticons_strip($_POST['password_protected_message']));
+        $new_forum_settings['password_protected_message'] = fix_html(emoticons_strip($_POST['password_protected_message']), true);
     } else {
         $new_forum_settings['password_protected_message'] = "";
     }

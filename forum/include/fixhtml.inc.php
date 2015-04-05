@@ -33,7 +33,7 @@ function html_purifier_error()
     return;
 }
 
-function fix_html($html)
+function fix_html($html, $allow_script = false)
 {
     $bh_error_handler = set_error_handler('html_purifier_error');
 
@@ -86,6 +86,7 @@ function fix_html($html)
          q,
          s,
          samp,
+         script[src|type],
          small,
          span[class],
          strike,
@@ -192,8 +193,25 @@ function fix_html($html)
         )
     );
 
-    /** @noinspection PhpUndefinedFieldInspection */
+    /** @var HTMLPurifier_ElementDef $embed */
     $embed->excludes = array('embed' => true);
+
+    if ($allow_script) {
+
+        $script = $definition->addElement(
+            'script',
+            'Block',
+            'Flow',
+            'Common',
+            array(
+                'type' => new HTMLPurifier_AttrDef_Text(),
+                'src' => new HTMLPurifier_AttrDef_URI()
+            )
+        );
+
+        /** @var HTMLPurifier_ElementDef $script */
+        $script->excludes = array('script' => true);
+    }
 
     /** @noinspection PhpParamsInspection */
     $purifier = new HTMLPurifier($config);

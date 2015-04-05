@@ -58,7 +58,7 @@ $error_msg_array = array();
 
 // Check to see if we're submitting new page or retrieving the old one.
 if (isset($_POST['t_content']) && strlen(trim($_POST['t_content'])) > 0) {
-    $t_content = fix_html(emoticons_strip($_POST['t_content']));
+    $t_content = fix_html(emoticons_strip($_POST['t_content']), true);
 } else {
     $t_content = forum_get_setting('start_page', 'strlen', '');
 }

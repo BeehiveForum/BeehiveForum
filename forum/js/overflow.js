@@ -91,13 +91,11 @@ $(top.window.beehive).bind('init', function () {
         }
     });
 
-    $(window).bind('resize', function () {
-
-        $('.overflow_content img').each(top.window.beehive.resize_image);
-        $('.overflow_content').each(top.window.beehive.check_overflow);
-    });
-
-    $('body').on('load', '.overflow_content img', top.window.beehive.resize_image);
-
-    $(window).trigger('resize');
+    setInterval(
+        function () {
+            $('.overflow_content img').each(top.window.beehive.resize_image);
+            $('.overflow_content').each(top.window.beehive.check_overflow);
+        },
+        1000
+    );
 });

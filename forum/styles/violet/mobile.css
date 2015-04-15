@@ -271,6 +271,27 @@ body {
     top: 0;
 }
 
+#header ul li a span.mobile_notification,
+div.menu ul li a span.mobile_notification {
+    background: none repeat scroll 0 0 #ff6666;
+    border-radius: 3px;
+    border: 1px solid #ff0000;
+    color: white;
+    display: block;
+    font-size: 10px;
+    height: 20px;
+    line-height: 20px;
+    position: absolute;
+    right: 10px;
+    text-align: center;
+    top: 13px;
+    width: 19px;
+}
+
+#header.menu_open ul li a span.mobile_notification {
+    display: none;
+}
+
 #header ul li a:not(.main) span.text {
     display: none;
 }
@@ -323,6 +344,7 @@ div.menu a {
     display: block;
     height: 36px;
     line-height: 36px;
+    position: relative;
     text-decoration: none;
 }
 

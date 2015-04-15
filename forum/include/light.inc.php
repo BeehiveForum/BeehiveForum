@@ -334,7 +334,15 @@ function light_navigation_bar(array $options = array())
     }
 
     echo "    <li>\n";
-    echo "      <a class=\"main\" href=\"#\">", html_style_image('mobile_menu', gettext("Menu")), "</a>\n";
+    echo "      <a class=\"main\" href=\"#\">", html_style_image('mobile_menu', gettext("Menu"));
+
+    $pm_unread_count = pm_get_unread_count();
+
+    if ($pm_unread_count > 0) {
+        echo "        <span class=\"mobile_notification\">", max(min($pm_unread_count, 99), 0), "</span>";
+    }
+
+    echo "      </a>";
     echo "    </li>\n";
     echo "  </ul>\n";
     echo "</div>\n";
@@ -349,7 +357,11 @@ function light_navigation_bar(array $options = array())
         echo "    <li><a href=\"lthread_list.php?webtag=$webtag\">", gettext("Messages"), "</a></li>\n";
     }
 
-    echo "    <li><a href=\"lpm.php?webtag=$webtag\">", gettext("Inbox"), "</a></li>\n";
+    if ($pm_unread_count > 0) {
+        echo "    <li><a href=\"lpm.php?webtag=$webtag\">", gettext("Inbox"), "<span class=\"mobile_notification\">", max(min($pm_unread_count, 99), 0), "</span></a></li>";
+    } else {
+        echo "    <li><a href=\"lpm.php?webtag=$webtag\">", gettext("Inbox"), "</a></li>\n";
+    }
 
     if (forum_check_webtag_available($webtag, false)) {
         echo "    <li><a href=\"lsearch.php?webtag=$webtag\">", gettext("Search"), "</a></li>\n";

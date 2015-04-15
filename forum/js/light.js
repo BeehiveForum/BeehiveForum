@@ -33,30 +33,31 @@ $(top.window.beehive).bind('init', function () {
 
         /*rating_position = $rating_text.position();
 
-        $vote_down.css(
-            {
-                left: (($rating_text.width()) * 4) + (rating_position.left * 2),
-                top: (($rating_text.height() - $vote_down.height()) / 2) * 4
-            }
-        );
+         $vote_down.css(
+         {
+         left: (($rating_text.width()) * 4) + (rating_position.left * 2),
+         top: (($rating_text.height() - $vote_down.height()) / 2) * 4
+         }
+         );
 
-        $vote_up.css(
-            {
-                left: (($rating_text.width() + $vote_down.width()) * 4) + (rating_position.left * 3),
-                top: (($rating_text.height() - $vote_down.height()) / 2) * 4
-            }
-        );
+         $vote_up.css(
+         {
+         left: (($rating_text.width() + $vote_down.width()) * 4) + (rating_position.left * 3),
+         top: (($rating_text.height() - $vote_down.height()) / 2) * 4
+         }
+         );
 
-        $message_vote_form.css(
-            {
-                width: (($vote_up.width() + $vote_down.width() + $rating_text.width()) * 4) + (rating_position.left * 4),
-                height: $rating_text.height() * 4
-            }
-        );*/
+         $message_vote_form.css(
+         {
+         width: (($vote_up.width() + $vote_down.width() + $rating_text.width()) * 4) + (rating_position.left * 4),
+         height: $rating_text.height() * 4
+         }
+         );*/
     }
 
     $body.bind('click', function () {
         $body.find('div.menu').hide();
+        $header.removeClass('menu_open');
         $body.find('.message_vote_form').removeClass('popup');
     });
 
@@ -80,13 +81,15 @@ $(top.window.beehive).bind('init', function () {
 
         $menuItem.toggle();
 
+        $header.toggleClass('menu_open');
+
         $body.find('.message_vote_form').removeClass('popup');
 
         event.stopPropagation();
         event.preventDefault();
     });
 
-    $body.on('focus', 'input,select,textarea',function () {
+    $body.on('focus', 'input,select,textarea', function () {
         $.mobile.zoom.disable(true);
     }).on('blur', 'input,select', function () {
         $.mobile.zoom.enable(true);

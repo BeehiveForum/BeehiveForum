@@ -851,7 +851,7 @@ function perm_folder_get_permissions($fid)
 
     if ($result->num_rows == 0) return false;
 
-    list($permissions_data) = $result->fetch_assoc();
+    list($permissions_data) = $result->fetch_row();
 
     return $permissions_data;
 }

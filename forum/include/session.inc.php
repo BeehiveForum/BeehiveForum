@@ -522,7 +522,7 @@ abstract class session
 
             if (!($result = session::$db->query($sql))) return false;
 
-            list($last_logon) = $result->fetch_array(MYSQLI_NUM);
+            list($last_logon) = $result->fetch_row();
         }
 
         if (!isset($last_logon) || ($last_logon < (time() - HOUR_IN_SECONDS))) {

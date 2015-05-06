@@ -55,7 +55,7 @@ function admin_add_log_entry($action, array $data = array())
 
     if (!($result = $db->query($sql))) return false;
 
-    list($created) = $result->fetch_array(MYSQLI_NUM);
+    list($created) = $result->fetch_row();
 
     if ($created < (time() - HOUR_IN_SECONDS)) {
 

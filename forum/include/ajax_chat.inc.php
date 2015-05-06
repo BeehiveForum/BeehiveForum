@@ -39,7 +39,7 @@ function ajax_chat_online_user_count()
 
     $result = $db->query($sql);
 
-    list($ajax_chat_online_users) = $result->fetch_array(MYSQLI_NUM);
+    list($ajax_chat_online_users) = $result->fetch_row();
 
     return $ajax_chat_online_users;
 }

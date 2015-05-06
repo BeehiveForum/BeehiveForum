@@ -411,7 +411,7 @@ function attachments_get_post_used_space($uid, $hash_array)
 
     if (!($result = $db->query($sql))) return 0;
 
-    list($post_attachment_space) = $result->fetch_array(MYSQLI_NUM);
+    list($post_attachment_space) = $result->fetch_row();
 
     return $post_attachment_space;
 }
@@ -427,7 +427,7 @@ function attachments_get_user_used_space($uid)
 
     if (!($result = $db->query($sql))) return 0;
 
-    list($user_attachment_space) = $result->fetch_array(MYSQLI_NUM);
+    list($user_attachment_space) = $result->fetch_row();
 
     return $user_attachment_space;
 }

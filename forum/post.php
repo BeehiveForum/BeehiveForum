@@ -451,7 +451,7 @@ if (isset($_POST['to_logon'])) {
 
             } else {
 
-                $error_msg_array[] = sprintf(gettext("User %s not found"), $to_logon);
+                $error_msg_array[] = sprintf(gettext("User %s not found"), htmlentities_array($to_logon));
                 $valid = false;
             }
         }

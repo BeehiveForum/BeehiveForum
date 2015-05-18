@@ -296,7 +296,7 @@ function htmlentities_array($var)
     $var = @iconv('UTF-8', 'UTF-8//TRANSLIT//IGNORE', $var);
 
     // Pass it through htmlentities.
-    return htmlentities($var, ENT_COMPAT, 'UTF-8');
+    return htmlentities($var, ENT_QUOTES, 'UTF-8');
 }
 
 function htmlentities_decode_array($var)

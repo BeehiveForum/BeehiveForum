@@ -262,7 +262,7 @@ if (isset($_POST['send']) || isset($_POST['preview']) || isset($_POST['save'])) 
 
             } else {
 
-                $error_msg_array[] = sprintf(gettext("User %s not found"), $to_logon);
+                $error_msg_array[] = sprintf(gettext("User %s not found"), htmlentities_array($to_logon));
                 $valid = false;
             }
         }

@@ -283,7 +283,7 @@ html_draw_top(
     array(
         'title' => sprintf(
             gettext('Private Messages - %s'),
-            $folder_names_array[$current_folder]
+            htmlentities_array($folder_names_array[$current_folder])
         ),
         'base_target' => '_blank',
         'js' => array(
@@ -320,7 +320,7 @@ if ($current_folder == PM_FOLDER_INBOX) {
     $messages_array = pm_fetch_search_results($sort_by, $sort_dir, $page, 10);
 }
 
-echo "<h1>", gettext("Private Messages"), html_style_image('separator'), "{$folder_names_array[$current_folder]}</h1>\n";
+echo "<h1>", gettext("Private Messages"), html_style_image('separator'), htmlentities_array($folder_names_array[$current_folder]), "</h1>\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

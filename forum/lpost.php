@@ -348,7 +348,7 @@ if (isset($_POST['to_logon'])) {
                 $to_logon_array[$to_user['UID']] = array('UID' => $to_user['UID'], 'LOGON' => $to_user['LOGON'], 'NICKNAME' => $to_user['NICKNAME']);
             } else {
 
-                $error_msg_array[] = sprintf(gettext("User %s not found"), $to_logon);
+                $error_msg_array[] = sprintf(gettext("User %s not found"), htmlentities_array($to_logon));
                 $valid = false;
             }
         }

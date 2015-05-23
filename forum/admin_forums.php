@@ -437,7 +437,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_forums.php\" method=\"post\" target=\"_self\">\n";
-    echo "    ", form_csrf_token_field(), "\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
     echo "  ", form_input_hidden('addforum', 'true'), "\n";
@@ -566,7 +566,7 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_forums.php\" method=\"post\" target=\"_self\">\n";
-    echo "    ", form_csrf_token_field(), "\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('fid', htmlentities_array($fid)), "\n";
     echo "  ", form_input_hidden("t_delete[$fid]", "Y"), "\n";

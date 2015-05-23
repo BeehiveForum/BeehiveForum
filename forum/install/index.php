@@ -365,7 +365,6 @@ if (isset($_POST['install_method'])) {
                     echo "        <tr>\n";
                     echo "          <td width=\"55%\" align=\"right\">\n";
                     echo "            <form accept-charset=\"utf-8\" method=\"post\" action=\"index.php\">\n";
-                    echo "              ", form_csrf_token_field(), "\n";
                     echo "              <input type=\"hidden\" name=\"db_server\" value=\"", htmlentities_array($config['db_server']), "\">\n";
                     echo "              <input type=\"hidden\" name=\"db_port\" value=\"", htmlentities_array($config['db_port']), "\">\n";
                     echo "              <input type=\"hidden\" name=\"db_username\" value=\"", htmlentities_array($config['db_username']), "\">\n";
@@ -549,7 +548,6 @@ if (isset($_POST['install_method'])) {
 install_draw_top("js/jquery.min.js", "js/install.js");
 
 echo "<form accept-charset=\"utf-8\" id=\"install_form\" method=\"post\" action=\"index.php\">\n";
-echo "  ", form_csrf_token_field(), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\">\n";

@@ -99,6 +99,11 @@ function html_display_msg($header_text, $string_msg, $href = null, $method = 'ge
     if (is_string($href) && strlen(trim($href)) > 0) {
 
         echo "<form accept-charset=\"utf-8\" action=\"$href\" method=\"$method\" target=\"$target\">\n";
+
+        if ($method == 'post') {
+            echo "  ", form_csrf_token_field(), "\n";
+        }
+
         echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
         if (is_array($vars)) {

@@ -199,7 +199,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_prof_sect.php\" method=\"post\" target=\"_self\">\n";
-    echo "    ", form_csrf_token_field(), "\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('addsection', 'true'), "\n";
     echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
@@ -284,7 +284,7 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_prof_sect.php\" method=\"post\" target=\"_self\">\n";
-    echo "    ", form_csrf_token_field(), "\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('psid', htmlentities_array($psid)), "\n";
     echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";

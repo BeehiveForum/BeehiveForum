@@ -80,7 +80,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <form accept-charset=\"utf-8\" name=\"forgot_pw\" action=\"forgot_pw.php\" method=\"post\">\n";
-echo "    ", form_csrf_token_field(), "\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"450\">\n";
 echo "      <tr>\n";

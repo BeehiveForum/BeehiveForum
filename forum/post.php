@@ -658,6 +658,7 @@ if (!$new_thread && isset($thread_data['CLOSED']) && $thread_data['CLOSED'] > 0 
 }
 
 echo "<br /><form accept-charset=\"utf-8\" name=\"f_post\" action=\"post.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('dedupe', htmlentities_array($dedupe)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"960\" class=\"max_width\">\n";

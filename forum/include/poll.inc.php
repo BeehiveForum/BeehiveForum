@@ -526,6 +526,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $poll_display .= "    <tr>\n";
     $poll_display .= "      <td align=\"center\">\n";
     $poll_display .= "        <form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+    $poll_display .= "          " . form_csrf_token_field() . "\n";
     $poll_display .= "          " . form_input_hidden("webtag", htmlentities_array($webtag)) . "\n";
     $poll_display .= "          " . form_input_hidden('msg', htmlentities_array("$tid.1")) . "\n";
     $poll_display .= "          <table width=\"560\">\n";

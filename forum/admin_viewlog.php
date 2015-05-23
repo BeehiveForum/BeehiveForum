@@ -910,7 +910,7 @@ echo "  </table>\n";
 echo "  </form>\n";
 echo "  <br />\n";
 echo "  <form accept-charset=\"utf-8\" action=\"admin_viewlog.php\" method=\"post\" target=\"_self\">\n";
-echo "    ", form_csrf_token_field(), "\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";

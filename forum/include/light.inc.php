@@ -1163,6 +1163,7 @@ function light_draw_pm_inbox()
         }
 
         echo "<form method=\"post\" action=\"lpm.php?delete_msg=$delete_mid&folder=$current_folder\">";
+        echo form_csrf_token_field();
 
         light_pm_display($message_data, true);
 
@@ -1537,6 +1538,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
 
     $poll_display = "<div class=\"poll\">\n";
     $poll_display .= "<form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+    $poll_display .= form_csrf_token_field();
     $poll_display .= form_input_hidden('webtag', htmlentities_array($webtag));
     $poll_display .= form_input_hidden('msg', htmlentities_array("$tid.1"));
 
@@ -2380,6 +2382,11 @@ function light_html_display_msg($header, $message, $href = null, $method = 'get'
     if (is_string($href) && strlen(trim($href)) > 0) {
 
         echo "<form accept-charset=\"utf-8\" action=\"$href\" method=\"$method\">\n";
+
+        if ($method == 'post') {
+            echo form_csrf_token_field(), "\n";
+        }
+
         echo form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
         if (is_array($vars)) {

@@ -229,6 +229,7 @@ if ($valid && isset($_POST['preview'])) {
 }
 
 echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"lpm_edit.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('mid', htmlentities_array($mid)), "\n";
 

@@ -22,9 +22,9 @@ USA
 ======================================================================*/
 
 // Include path
-define('BH_INCLUDE_PATH', __DIR__. '/forum/include/');
+define('BH_INCLUDE_PATH', __DIR__ . '/forum/include/');
 
- // Bootstrap
+// Bootstrap
 require_once 'forum/boot.php';
 
 function get_git_log_data($date)
@@ -50,11 +50,11 @@ function git_mysql_prepare_table($truncate_table = true)
     if (!$db = db::get()) return false;
 
     $sql = "CREATE TABLE IF NOT EXISTS BEEHIVE_GIT_LOG (";
-    $sql.= "  LOG_ID MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,";
-    $sql.= "  DATE DATE NOT NULL,";
-    $sql.= "  AUTHOR VARCHAR( 255 ) NOT NULL,";
-    $sql.= "  COMMENTS TEXT NOT NULL";
-    $sql.= ") ENGINE=MYISAM";
+    $sql .= "  LOG_ID MEDIUMINT( 8 ) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,";
+    $sql .= "  DATE DATE NOT NULL,";
+    $sql .= "  AUTHOR VARCHAR( 255 ) NOT NULL,";
+    $sql .= "  COMMENTS TEXT NOT NULL";
+    $sql .= ") ENGINE=MYISAM";
 
     if (!$db->query($sql)) return false;
 
@@ -99,7 +99,7 @@ function git_mysql_output_log($log_filename = null)
     if (!$db = db::get()) return;
 
     $sql = "SELECT UNIX_TIMESTAMP(DATE) AS DATE, AUTHOR, COMMENTS ";
-    $sql.= "FROM BEEHIVE_GIT_LOG ORDER BY DATE DESC";
+    $sql .= "FROM BEEHIVE_GIT_LOG ORDER BY DATE DESC";
 
     if (!$result = $db->query($sql)) return;
 

@@ -193,6 +193,7 @@ if (isset($manage_folder) && is_numeric($manage_folder)) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"pm_folder_options\" action=\"pm_folders.php\" method=\"post\" target=\"_self\">\n";
+    echo "    ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("manage_folder", htmlentities_array($manage_folder)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"500\">\n";
@@ -242,6 +243,7 @@ echo "<h1>", gettext("Private Messages"), "</h1>\n";
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"pm\" action=\"pm_messages.php\" method=\"post\" target=\"", html_get_frame_name('pm_messages'), "\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('folder', PM_SEARCH_RESULTS), "\n";
 

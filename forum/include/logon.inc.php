@@ -118,8 +118,10 @@ function logon_draw_form($logon_options)
     // a normal login, otherwise potentially a failed session.
     if (stristr($request_uri, 'logon.php')) {
         echo "  <form accept-charset=\"utf-8\" name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"", html_get_top_frame_name(), "\">\n";
+        echo "    ", form_csrf_token_field(), "\n";
     } else {
         echo "  <form accept-charset=\"utf-8\" name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+        echo "    ", form_csrf_token_field(), "\n";
     }
 
     // Check for any post data that we need to include in the form.
@@ -202,6 +204,7 @@ function logon_draw_form($logon_options)
         if (user_guest_enabled()) {
 
             echo "<form accept-charset=\"utf-8\" name=\"guest\" action=\"logon.php?webtag=$webtag\" method=\"post\" target=\"", html_get_top_frame_name(), "\">\n";
+            echo "  ", form_csrf_token_field(), "\n";
             echo "  <p>", sprintf(gettext("Enter as a %s"), form_submit('guest_logon', gettext("Guest"))), "</p>\n";
             echo "</form>\n";
         }

@@ -195,6 +195,7 @@ if (is_array($profile_items_array) && sizeof($profile_items_array) > 0) {
 
     echo "<br />\n";
     echo "<form accept-charset=\"utf-8\" name=\"f_profile\" action=\"edit_profile.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 
     if ($admin_edit === true) echo "  ", form_input_hidden('profile_uid', htmlentities_array($profile_uid)), "\n";

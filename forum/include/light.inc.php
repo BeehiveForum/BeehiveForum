@@ -443,6 +443,7 @@ function light_draw_logon_form($error_msg_array = array())
     echo "<h3>", gettext("Logon"), "</h3>\n";
     echo "<div class=\"logon_inner\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"logonform\" action=\"$request_uri\" method=\"post\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
 
     // Check for any post data that we need to include in the form.
     unset($_POST['user_logon'], $_POST['user_password'], $_POST['logon'], $_POST['webtag'], $_POST['register']);
@@ -996,6 +997,7 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
         echo "<div id=\"thread_mark_read\">\n";
         echo "<h3>", gettext("Mark as Read"), "</h3>\n";
         echo "<form accept-charset=\"utf-8\" name=\"f_mark\" method=\"post\" action=\"lthread_list.php\">\n";
+        echo "  ", form_csrf_token_field(), "\n";
 
         echo form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
         echo form_input_hidden("mode", htmlentities_array($mode)), "\n";

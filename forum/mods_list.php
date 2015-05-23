@@ -133,6 +133,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 echo "  <form accept-charset=\"utf-8\" method=\"post\" action=\"mods_list.php\" target=\"_self\">\n";
+echo "    ", form_csrf_token_field(), "\n";
 echo "    ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "    ", form_input_hidden('fid', htmlentities_array($fid)), "\n";
 echo "    " . form_button('close_popup', gettext("Close")) . "\n";

@@ -227,6 +227,7 @@ echo "    </tr>\n";
 echo "  </table>\n";
 echo "  <br />\n";
 echo "  <form accept-charset=\"utf-8\" action=\"admin_post_stats.php\" method=\"post\" target=\"_self\">\n";
+echo "    ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";

@@ -296,6 +296,7 @@ echo "</form>\n";
 echo "<div id=\"quick_reply_container\" class=\"quick_reply_container_closed\">\n";
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"quick_reply_form\" action=\"post.php\" method=\"post\" target=\"_parent\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('reply_to', htmlentities_array($msg)), "\n";
 echo "  ", form_input_hidden('post_interest', $high_interest), "\n";

@@ -166,6 +166,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"subscriptions\" action=\"edit_subscriptions.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
 echo "  ", form_input_hidden("search_keyword", htmlentities_array($search_keyword)), "\n";
@@ -245,6 +246,7 @@ echo "  </table>\n";
 echo "</form>\n";
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"edit_subscriptions.php\" target=\"_self\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
 echo "  ", form_input_hidden("view", htmlentities_array($view)), "\n";

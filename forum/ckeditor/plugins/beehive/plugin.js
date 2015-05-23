@@ -1,23 +1,23 @@
 /*======================================================================
-Copyright Project Beehive Forum 2002
+ Copyright Project Beehive Forum 2002
 
-This file is part of Beehive Forum.
+ This file is part of Beehive Forum.
 
-Beehive Forum is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+ Beehive Forum is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-Beehive Forum is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ Beehive Forum is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Beehive; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-USA
-======================================================================*/
+ You should have received a copy of the GNU General Public License
+ along with Beehive; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+ USA
+ ======================================================================*/
 (function () {
 
     CKEDITOR.plugins.add('beehive', {
@@ -146,7 +146,7 @@ USA
 
                         quoteElement = editor.getSelection().getStartElement();
 
-                        quoteTextElement = quoteElement.getPrevious(function(element){
+                        quoteTextElement = quoteElement.getPrevious(function (element) {
                             return element && element.hasClass && element.hasClass('quotetext');
                         });
 
@@ -274,32 +274,32 @@ USA
             if (dataFilter) {
 
                 dataFilter.addRules({
-                    elements: {
+                        elements: {
 
-                        span: function (element) {
+                            span: function (element) {
 
-                            var test = element.attributes &&
-                                element.attributes['title'] &&
-                                element.attributes['class'] &&
-                                element.attributes['class'].match(/emoticon/);
+                                var test = element.attributes &&
+                                    element.attributes['title'] &&
+                                    element.attributes['class'] &&
+                                    element.attributes['class'].match(/emoticon/);
 
-                            if (!test || test.length == 0) {
-                                return null;
+                                if (!test || test.length == 0) {
+                                    return null;
+                                }
+
+                                var emoticon = editor.createFakeParserElement(element, 'cke_emoticon', 'emoticon', 'false');
+
+                                emoticon.attributes.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAABGdBTUEAALGPC/xhBQAAAANQTFRF////p8QbyAAAAAF0Uk5TAEDm2GYAAAAJcEhZcwAAHsEAAB7BAcNpVFMAAAAHdElNRQfcDB4LNzBmlcQgAAAACklEQVQIHWNgAAAAAgABz8g15QAAAABJRU5ErkJggg==";
+
+                                emoticon.attributes['class'] = element.attributes['class'];
+                                emoticon.attributes['title'] = element.attributes['title'];
+                                emoticon.attributes['alt'] = element.attributes['title'];
+
+                                return emoticon;
                             }
-
-                            var emoticon = editor.createFakeParserElement(element, 'cke_emoticon', 'emoticon', 'false');
-
-                            emoticon.attributes.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAABGdBTUEAALGPC/xhBQAAAANQTFRF////p8QbyAAAAAF0Uk5TAEDm2GYAAAAJcEhZcwAAHsEAAB7BAcNpVFMAAAAHdElNRQfcDB4LNzBmlcQgAAAACklEQVQIHWNgAAAAAgABz8g15QAAAABJRU5ErkJggg==";
-
-                            emoticon.attributes['class'] = element.attributes['class'];
-                            emoticon.attributes['title'] = element.attributes['title'];
-                            emoticon.attributes['alt'] = element.attributes['title'];
-
-                            return emoticon;
                         }
-                    }
-                },
-                9);
+                    },
+                    9);
             }
         }
     });

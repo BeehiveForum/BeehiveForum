@@ -286,6 +286,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_forum_links.php\" method=\"post\" target=\"_self\">\n";
+    echo "    ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('addlink', 'true'), "\n";
     echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
@@ -374,6 +375,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_forum_links.php\" method=\"post\" target=\"_self\">\n";
+    echo "    ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('lid', htmlentities_array($lid)), "\n";
     echo "  ", form_input_hidden("t_delete[$lid]", "Y"), "\n";
@@ -470,6 +472,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_forum_links.php\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
@@ -528,6 +531,7 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
     echo "</form>\n";
     echo "<br />\n";
     echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_forum_links.php\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";

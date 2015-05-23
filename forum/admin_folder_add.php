@@ -154,6 +154,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_folder_add.php\" method=\"post\" target=\"_self\">\n";
+echo "    ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"800\">\n";

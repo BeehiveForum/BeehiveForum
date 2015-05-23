@@ -300,7 +300,7 @@ function links_get_folder_path_links($fid, $folders, $html = true, $link_last_to
             if (($val != $fid && $html) || $link_last_too) {
                 $result .= $html ? html_style_image('separator') . "<a href=\"$link_base&amp;fid=$val\">" . word_filter_add_ob_tags($folders[$val]['NAME'], true) . "</a>" : " &gt; " . word_filter_add_ob_tags($folders[$val]['NAME'], true);
             } else {
-                $result .= $html ? html_style_image('separator'). word_filter_add_ob_tags($folders[$val]['NAME'], true) : " &gt; " . word_filter_add_ob_tags($folders[$val]['NAME'], true);
+                $result .= $html ? html_style_image('separator') . word_filter_add_ob_tags($folders[$val]['NAME'], true) : " &gt; " . word_filter_add_ob_tags($folders[$val]['NAME'], true);
             }
         }
     }

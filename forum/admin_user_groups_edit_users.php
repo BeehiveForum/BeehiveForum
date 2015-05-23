@@ -192,6 +192,7 @@ if (isset($_GET['added'])) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_folders\" action=\"admin_user_groups_edit_users.php\" method=\"post\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('gid', htmlentities_array($gid)), "\n";
 echo "  ", form_input_hidden("main_page", htmlentities_array($main_page)), "\n";
@@ -268,6 +269,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
     }
 
     echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('gid', htmlentities_array($gid)), "\n";
     echo "  ", form_input_hidden("usersearch", htmlentities_array($usersearch)), "\n";
@@ -338,6 +340,7 @@ if (isset($usersearch) && strlen(trim($usersearch)) > 0) {
 }
 
 echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_user_groups_edit_users.php\" target=\"_self\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('gid', htmlentities_array($gid)), "\n";
 echo "  ", form_input_hidden("main_page", htmlentities_array($main_page)), "\n";

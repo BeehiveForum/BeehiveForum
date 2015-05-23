@@ -191,16 +191,16 @@ $(top.window.beehive).bind('init', function () {
                     //noinspection JSUnresolvedVariable
                     $filename.html(
                         '<a href="'
-                            + top.window.beehive.forum_path
-                            + '/get_attachment.php?webtag='
-                            + encodeURIComponent(top.window.beehive.webtag)
-                            + '&amp;hash='
-                            + encodeURIComponent(responseJSON.attachment.hash)
-                            + '&amp;filename='
-                            + encodeURIComponent(filename)
-                            + '">'
-                            + filename
-                            + '</a>'
+                        + top.window.beehive.forum_path
+                        + '/get_attachment.php?webtag='
+                        + encodeURIComponent(top.window.beehive.webtag)
+                        + '&amp;hash='
+                        + encodeURIComponent(responseJSON.attachment.hash)
+                        + '&amp;filename='
+                        + encodeURIComponent(filename)
+                        + '">'
+                        + filename
+                        + '</a>'
                     );
 
                     if ($attachments.find('li.attachment input:checkbox:checked').length > 0) {

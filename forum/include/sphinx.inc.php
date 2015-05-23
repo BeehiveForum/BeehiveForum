@@ -182,9 +182,9 @@ function sphinx_search_execute($search_arguments, &$error)
 
     while (($search_result = $result->fetch_assoc()) !== null) {
 
-        if (isset($search_result['weight()'])){
+        if (isset($search_result['weight()'])) {
             $weight = $search_result['weight()'];
-        } else if (isset($search_result['weight'])){
+        } else if (isset($search_result['weight'])) {
             $weight = $search_result['weight'];
         } else {
             $weight = 0;

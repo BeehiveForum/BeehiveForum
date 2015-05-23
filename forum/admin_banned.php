@@ -561,6 +561,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('addban', null), "\n";
     echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
@@ -733,6 +734,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('ban_id', htmlentities_array($ban_id)), "\n";
     echo "  ", form_input_hidden("delete_ban[$ban_id]", "Y"), "\n";
@@ -830,6 +832,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"admin_banned_form\" action=\"admin_banned.php\" method=\"post\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";
     echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";

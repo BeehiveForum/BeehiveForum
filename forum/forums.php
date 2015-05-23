@@ -323,6 +323,7 @@ if (session::logged_in()) {
 
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
+        echo "  ", form_csrf_token_field(), "\n";
         echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
         echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
         echo "  ", form_input_hidden("webtag_search", htmlentities_array($webtag_search)), "\n";
@@ -351,7 +352,7 @@ if (session::logged_in()) {
         } else {
             echo "                   <a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">", gettext("Forum Name"), "</a>\n";
         }
-        
+
         echo "                  </td>\n";
         echo "                  <td class=\"subhead\" align=\"left\">\n";
 
@@ -550,6 +551,7 @@ if (session::logged_in()) {
 
         echo "<div align=\"center\">\n";
         echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
+        echo "  ", form_csrf_token_field(), "\n";
         echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
         echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
         echo "  ", form_input_hidden("webtag_search", htmlentities_array($webtag_search)), "\n";
@@ -742,6 +744,7 @@ if (session::logged_in()) {
 
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"70%\">\n";
     echo "    <tr>\n";
@@ -788,6 +791,7 @@ if (session::logged_in()) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"prefs\" action=\"forums.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("page", htmlentities_array($page)), "\n";
     echo "  ", form_input_hidden("webtag_search", htmlentities_array($webtag_search)), "\n";

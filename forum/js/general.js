@@ -144,7 +144,8 @@ top.window.beehive = {
             }
         });
 
-        top.window.beehive.init_editor = function () {};
+        top.window.beehive.init_editor = function () {
+        };
     },
 
     editor: function () {
@@ -248,7 +249,7 @@ top.window.beehive = {
 
             var $post_button = $editor.closest('form').find('input#post');
 
-            if (editor ){
+            if (editor) {
 
                 editor.on('key', function (event) {
 
@@ -274,9 +275,7 @@ top.window.beehive = {
 
     forum_path: null,
 
-    lang: {
-
-    }
+    lang: {}
 };
 
 $.ajaxSetup({
@@ -408,7 +407,7 @@ $(top.window.beehive).bind('init', function () {
         window.print();
     });
 
-    $('a.button').bind('mousedown',function () {
+    $('a.button').bind('mousedown', function () {
         $(this).css('border', '1px inset');
     }).bind('mouseup mouseout', function () {
         $(this).css('border', '1px outset');

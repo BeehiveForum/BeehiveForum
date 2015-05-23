@@ -459,6 +459,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_rss_feeds.php\" method=\"post\" target=\"_self\">\n";
+    echo "    ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('addfeed', 'true'), "\n";
     echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
@@ -597,6 +598,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"admin_rss_feeds.php\" method=\"post\" target=\"_self\">\n";
+    echo "    ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('feed_id', htmlentities_array($feed_id)), "\n";
     echo "  ", form_input_hidden("t_delete[$feed_id]", "Y"), "\n";
@@ -730,6 +732,7 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"rss\" action=\"admin_rss_feeds.php\" method=\"post\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('page', htmlentities_array($page)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";

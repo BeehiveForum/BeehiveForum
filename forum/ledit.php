@@ -364,6 +364,7 @@ if ($valid && isset($_POST['preview'])) {
 }
 
 echo "<form accept-charset=\"utf-8\" name=\"f_edit\" action=\"ledit.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo form_input_hidden("msg", htmlentities_array($msg));
 echo form_input_hidden('return_msg', htmlentities_array($return_msg)), "\n";

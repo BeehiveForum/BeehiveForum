@@ -261,6 +261,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 echo "<form accept-charset=\"utf-8\" id=\"search_form\" method=\"post\" action=\"lsearch.php\" target=\"_self\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "<div class=\"search\">\n";
 echo "<h3>", gettext("Search discussions"), "</h3>\n";

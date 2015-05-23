@@ -24,6 +24,7 @@ USA
 // Required includes
 require_once BH_INCLUDE_PATH . 'constants.inc.php';
 require_once BH_INCLUDE_PATH . 'forum.inc.php';
+
 // End Required includes
 
 class captcha
@@ -95,12 +96,6 @@ class captcha
         }
     }
 
-    public function set_public_key($public_key)
-    {
-        $this->public_key = $public_key;
-        $this->pub_key_done = true;
-    }
-
     public function generate_keys()
     {
         if (!$this->generate_public_key() || !$this->generate_private_key()) {
@@ -169,6 +164,12 @@ class captcha
         }
 
         return $this->public_key;
+    }
+
+    public function set_public_key($public_key)
+    {
+        $this->public_key = $public_key;
+        $this->pub_key_done = true;
     }
 
     public function get_error()
@@ -289,17 +290,6 @@ class captcha
         return false;
     }
 
-    protected function check_working_dir()
-    {
-        if (!$this->text_captcha_dir) return false;
-
-        if (@is_dir("{$this->text_captcha_dir}/fonts")) {
-            return true;
-        }
-
-        return false;
-    }
-
     protected function load_fonts()
     {
         if (!$this->text_captcha_dir) return false;
@@ -370,5 +360,16 @@ class captcha
         }
 
         return "{$this->text_captcha_dir}/fonts/{$this->current_font}";
+    }
+
+    protected function check_working_dir()
+    {
+        if (!$this->text_captcha_dir) return false;
+
+        if (@is_dir("{$this->text_captcha_dir}/fonts")) {
+            return true;
+        }
+
+        return false;
     }
 }

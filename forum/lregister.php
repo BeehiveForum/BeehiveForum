@@ -424,6 +424,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 }
 
 echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "<div class=\"register\">\n";
 echo "<h3>", gettext("Register"), "</h3>\n";
 echo "<div class=\"register_inner\">\n";

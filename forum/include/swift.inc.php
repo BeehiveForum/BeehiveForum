@@ -144,11 +144,6 @@ class Swift_MessageBeehive extends Swift_Message
         $this->set_headers();
     }
 
-    public static function newInstance($subject = null, $body = null, $contentType = null, $charset = null)
-    {
-        return new self($subject, $body, $contentType, $charset);
-    }
-
     private function set_headers()
     {
         // Get the forum name.
@@ -183,5 +178,10 @@ class Swift_MessageBeehive extends Swift_Message
 
         // Set the Message Return-path Header
         $this->setReturnPath($forum_email);
+    }
+
+    public static function newInstance($subject = null, $body = null, $contentType = null, $charset = null)
+    {
+        return new self($subject, $body, $contentType, $charset);
     }
 }

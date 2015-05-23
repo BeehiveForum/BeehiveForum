@@ -414,6 +414,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"f_sections\" action=\"admin_prof_items.php\" method=\"post\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("psid", htmlentities_array($psid)), "\n";
     echo "  ", form_input_hidden("sect_page", htmlentities_array($sect_page)), "\n";
@@ -514,6 +515,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"f_sections\" action=\"admin_prof_items.php\" method=\"post\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("psid", htmlentities_array($psid)), "\n";
     echo "  ", form_input_hidden("piid", htmlentities_array($piid)), "\n";
@@ -621,6 +623,7 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"f_sections\" action=\"admin_prof_items.php\" method=\"post\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("psid", htmlentities_array($psid)), "\n";
     echo "  ", form_input_hidden("sect_page", htmlentities_array($sect_page)), "\n";

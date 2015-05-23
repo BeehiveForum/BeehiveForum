@@ -391,6 +391,7 @@ function forum_check_password($forum_fid)
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" method=\"post\" action=\"", get_request_uri(), "\" target=\"_self\" autocomplete=\"off\">\n";
+    echo "    ", form_csrf_token_field(), "\n";
 
     if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
         echo form_input_hidden_array($_POST);
@@ -586,6 +587,7 @@ function forum_check_setting_name($setting_name)
         'allow_post_editing',
         'allow_search_spidering',
         'closed_message',
+        'csrf_token_name',
         'default_emoticons',
         'default_language',
         'default_style',

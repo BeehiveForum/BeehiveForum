@@ -214,6 +214,7 @@ if (isset($_GET['added'])) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_user\" action=\"admin_forum_access.php\" method=\"post\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('ret', htmlentities_array($ret)), "\n";
 echo "  ", form_input_hidden("user_search", htmlentities_array($user_search)), "\n";
@@ -297,6 +298,7 @@ if (isset($user_search) && strlen(trim($user_search)) > 0) {
     }
 
     echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_forum_access.php\" target=\"_self\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('ret', htmlentities_array($ret)), "\n";
     echo "  ", form_input_hidden("user_search", htmlentities_array($user_search)), "\n";
@@ -364,6 +366,7 @@ if (isset($user_search) && strlen(trim($user_search)) > 0) {
 }
 
 echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_forum_access.php\" target=\"_self\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('ret', htmlentities_array($ret)), "\n";
 echo "  ", form_input_hidden("user_search", htmlentities_array($user_search)), "\n";

@@ -623,11 +623,11 @@ function perm_group_get_folders($gid)
     if (!($forum_fid = get_forum_fid())) return false;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, COALESCE(GROUP_PERM, FOLDER.PERM, 0) AS STATUS ";
-    $sql.= "FROM `{$table_prefix}FOLDER` FOLDER LEFT JOIN (SELECT GROUP_PERMS.FID, ";
-    $sql.= "BIT_OR(GROUP_PERMS.PERM) AS GROUP_PERM FROM GROUPS INNER JOIN GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.GID = GROUPS.GID) WHERE GROUPS.FORUM = $forum_fid ";
-    $sql.= "AND GROUPS.GID = $gid GROUP BY GROUP_PERMS.FID) AS GROUP_PERMS ";
-    $sql.= "ON (GROUP_PERMS.FID = FOLDER.FID)";
+    $sql .= "FROM `{$table_prefix}FOLDER` FOLDER LEFT JOIN (SELECT GROUP_PERMS.FID, ";
+    $sql .= "BIT_OR(GROUP_PERMS.PERM) AS GROUP_PERM FROM GROUPS INNER JOIN GROUP_PERMS ";
+    $sql .= "ON (GROUP_PERMS.GID = GROUPS.GID) WHERE GROUPS.FORUM = $forum_fid ";
+    $sql .= "AND GROUPS.GID = $gid GROUP BY GROUP_PERMS.FID) AS GROUP_PERMS ";
+    $sql .= "ON (GROUP_PERMS.FID = FOLDER.FID)";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -740,10 +740,10 @@ function perm_user_get_folders($uid)
     if (!($forum_fid = get_forum_fid())) return false;
 
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, COALESCE(USER_PERM, FOLDER.PERM, 0) AS STATUS ";
-    $sql.= "FROM `{$table_prefix}FOLDER` FOLDER LEFT JOIN (SELECT USER_PERM.FID, ";
-    $sql.= "BIT_OR(USER_PERM.PERM) AS USER_PERM FROM USER INNER JOIN USER_PERM ON ";
-    $sql.= "(USER_PERM.UID = USER.UID) WHERE USER_PERM.FORUM = $forum_fid AND USER_PERM.UID = $uid ";
-    $sql.= "GROUP BY USER_PERM.FID) AS USER_PERMS ON (USER_PERMS.FID = FOLDER.FID)";
+    $sql .= "FROM `{$table_prefix}FOLDER` FOLDER LEFT JOIN (SELECT USER_PERM.FID, ";
+    $sql .= "BIT_OR(USER_PERM.PERM) AS USER_PERM FROM USER INNER JOIN USER_PERM ON ";
+    $sql .= "(USER_PERM.UID = USER.UID) WHERE USER_PERM.FORUM = $forum_fid AND USER_PERM.UID = $uid ";
+    $sql .= "GROUP BY USER_PERM.FID) AS USER_PERMS ON (USER_PERMS.FID = FOLDER.FID)";
 
     if (!($result = $db->query($sql))) return false;
 

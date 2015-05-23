@@ -245,6 +245,7 @@ if (isset($_POST['preview_signature'])) {
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"relationship\" action=\"user_rel.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("uid", htmlentities_array($peer_uid)), "\n";
 echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";

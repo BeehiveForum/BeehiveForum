@@ -225,6 +225,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"admin_user_form\" action=\"admin_user_groups_edit.php\" method=\"post\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("gid", htmlentities_array($gid)), "\n";
 echo "  ", form_input_hidden('ret', htmlentities_array($ret)), "\n";

@@ -177,6 +177,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" action=\"search_popup.php\" method=\"post\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden("obj_id", htmlentities_array($obj_id)), "\n";
 echo "  ", form_input_hidden("type", htmlentities_array($type)), "\n";

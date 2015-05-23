@@ -552,6 +552,7 @@ if (!$new_thread) {
 }
 
 echo "<form accept-charset=\"utf-8\" name=\"f_post\" action=\"lpost.php\" method=\"post\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo form_input_hidden('webtag', htmlentities_array($webtag));
 echo form_input_hidden('dedupe', htmlentities_array($dedupe));
 

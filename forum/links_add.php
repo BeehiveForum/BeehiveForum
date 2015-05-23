@@ -231,6 +231,7 @@ if ($mode == LINKS_ADD_LINK) {
     }
 
     echo "<form accept-charset=\"utf-8\" name=\"linkadd\" action=\"links_add.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("fid", htmlentities_array($fid)) . "\n";
     echo "  ", form_input_hidden("mode", LINKS_ADD_LINK) . "\n";
@@ -299,6 +300,7 @@ if ($mode == LINKS_ADD_LINK) {
     }
 
     echo "<form accept-charset=\"utf-8\" name=\"folderadd\" action=\"links_add.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("fid", htmlentities_array($fid)) . "\n";
     echo "  ", form_input_hidden("mode", LINKS_ADD_FOLDER) . "\n";

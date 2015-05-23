@@ -285,6 +285,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('addfilter', 'true'), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
@@ -383,6 +384,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" name=\"startpage\" method=\"post\" action=\"admin_wordfilter.php\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('filter_id', htmlentities_array($filter_id)), "\n";
     echo "  ", form_input_hidden("delete_filters[$filter_id]", 'Y'), "\n";
@@ -476,6 +478,7 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"admin_wordfilter.php\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
     echo "    <tr>\n";

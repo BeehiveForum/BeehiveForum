@@ -147,6 +147,7 @@ if (isset($_POST['delete_confirm'])) {
 
             echo "<br />\n";
             echo "<form accept-charset=\"utf-8\" id=\"attachments\" enctype=\"multipart/form-data\" method=\"post\" action=\"edit_attachments.php\">\n";
+            echo "  ", form_csrf_token_field(), "\n";
             echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
             echo "    <tr>\n";
@@ -259,6 +260,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" name=\"attachments\" method=\"post\" action=\"edit_attachments.php\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"700\">\n";
 echo "    <tr>\n";

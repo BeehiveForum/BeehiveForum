@@ -1398,6 +1398,7 @@ function messages_interest_form($tid, $pid, $interest)
     echo "  <tr>\n";
     echo "    <td align=\"center\">\n";
     echo "      <form accept-charset=\"utf-8\" name=\"rate_interest\" target=\"_self\" action=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$pid\" method=\"post\">\n";
+    echo "        ", form_csrf_token_field(), "\n";
     echo "        ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "        ", gettext("Rate my interest"), ": ", form_radio_array("setinterest", $interest_levels_array, htmlentities_array($interest));
     echo "        ", form_input_hidden("tid", htmlentities_array($tid));

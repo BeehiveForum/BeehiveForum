@@ -33,10 +33,12 @@ $(top.window.beehive).bind('init', function () {
 
         var window_options = top.window.beehive.window_options;
 
-        var search_query = { webtag: top.window.beehive.webtag,
+        var search_query = {
+            webtag: top.window.beehive.webtag,
             type: '1',
             selection: $search_field.val(),
-            obj_name: $search_field.prop('name') };
+            obj_name: $search_field.prop('name')
+        };
 
         if ($(this).hasClass('allow_multi')) {
             search_query.allow_multi = 'Y';

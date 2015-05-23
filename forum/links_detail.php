@@ -329,6 +329,7 @@ if (session::logged_in()) {
     $vote = $vote ? $vote : -1;
 
     echo "<form accept-charset=\"utf-8\" name=\"link_vote\" action=\"links_detail.php\" method=\"post\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("type", "vote"), "\n";
     echo "  ", form_input_hidden("lid", htmlentities_array($lid)), "\n";
@@ -429,6 +430,7 @@ if (($comments_array = links_get_comments($lid)) !== false) {
 if (session::logged_in()) {
 
     echo "<form accept-charset=\"utf-8\" name=\"link_comment\" action=\"links_detail.php\" method=\"post\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("type", "comment"), "\n";
     echo "  ", form_input_hidden("lid", htmlentities_array($lid)), "\n";
@@ -475,6 +477,7 @@ if (session::logged_in()) {
 if ($user_perm_links_moderate || $link['UID'] == $_SESSION['UID']) {
 
     echo "<form accept-charset=\"utf-8\" name=\"link_moderation\" action=\"links_detail.php\" method=\"post\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("type", "moderation") . "\n";
     echo "  ", form_input_hidden("lid", htmlentities_array($lid)) . "\n";

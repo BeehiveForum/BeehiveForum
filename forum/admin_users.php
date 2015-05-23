@@ -273,6 +273,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" action=\"admin_users.php\" method=\"post\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_input_hidden('user_search', htmlentities_array($user_search)), "\n";
 echo "  ", form_input_hidden("sort_by", htmlentities_array($sort_by)), "\n";

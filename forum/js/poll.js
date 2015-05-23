@@ -102,7 +102,7 @@ $(top.window.beehive).bind('init', function () {
 
     toggle_delete_buttons();
 
-    $body.on('mouseenter', 'div.poll_question_input',function () {
+    $body.on('mouseenter', 'div.poll_question_input', function () {
 
         $(this).find('button.delete_question').show();
 
@@ -111,7 +111,7 @@ $(top.window.beehive).bind('init', function () {
         $(this).find('button.delete_question').hide();
     });
 
-    $body.on('mouseenter', 'div.poll_options_list ol li',function () {
+    $body.on('mouseenter', 'div.poll_options_list ol li', function () {
 
         $(this).find('button.delete_option').show();
 

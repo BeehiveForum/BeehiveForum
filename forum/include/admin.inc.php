@@ -1829,6 +1829,7 @@ function admin_check_credentials()
 
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"logonform\" method=\"post\" action=\"", get_request_uri(), "\" target=\"", html_get_frame_name('main'), "\" autocomplete=\"off\">\n";
+    echo "    ", form_csrf_token_field(), "\n";
 
     if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {
         echo form_input_hidden_array($_POST);

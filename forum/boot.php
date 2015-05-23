@@ -157,3 +157,6 @@ if (!forum_check_guest_access_allowed()) {
     $request_uri = rawurlencode(get_request_uri());
     header_redirect("logon.php?webtag=$webtag&final_uri=$request_uri");
 }
+
+// Check CSRF Token
+form_check_csrf_token();

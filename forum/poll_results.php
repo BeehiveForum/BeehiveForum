@@ -105,6 +105,7 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "<br />\n";
 echo "<form accept-charset=\"utf-8\" method=\"post\" action=\"poll_results.php\" target=\"_self\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
 echo "  ", form_button('close_popup', gettext("Close")), "\n";
 echo "</form>\n";

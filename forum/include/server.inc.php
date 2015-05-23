@@ -460,7 +460,7 @@ function disable_magic_quotes()
 
                 $process[$index][stripslashes($key)] = $value;
 
-                $process[] = & $process[$index][stripslashes($key)];
+                $process[] = &$process[$index][stripslashes($key)];
 
             } else {
 

@@ -28,6 +28,38 @@ require_once BH_INCLUDE_PATH . 'forum.inc.php';
 require_once BH_INCLUDE_PATH . 'lang.inc.php';
 // End Required includes
 
+function form_csrf_token_field()
+{
+    if (!($token_name = forum_get_setting('csrf_token_name'))) {
+        forum_save_settings(array('csrf_token_name' => $token_name = md5(uniqid(mt_rand()))));
+    }
+
+    if (!isset($_SESSION['csrf'][$token_name])) {
+        $_SESSION['csrf'][$token_name] = $token_value = md5(uniqid(mt_rand(), true));
+    }
+
+    return form_input_hidden($token_name, $_SESSION['csrf'][$token_name]);
+}
+
+function form_check_csrf_token()
+{
+    if (mb_strtoupper($_SERVER['REQUEST_METHOD']) !== 'POST') {
+        return;
+    }
+
+    if (!($token_name = forum_get_setting('csrf_token_name'))) {
+        html_draw_error(gettext('Sorry, you do not have access to this page.'));
+    }
+
+    if (!isset($_POST[$token_name], $_SESSION['csrf'][$token_name]) || (($_POST[$token_name] !== $_SESSION['csrf'][$token_name]))) {
+
+        unset($_POST[$token_name], $_SESSION['csrf'][$token_name]);
+        html_draw_error(gettext('Sorry, you do not have access to this page.'));
+    }
+
+    unset($_POST[$token_name], $_SESSION['csrf'][$token_name]);
+}
+
 // Create a form field
 function form_field($name, $value = null, $width = null, $maxchars = null, $type = 'text', $custom_html = null, $class = 'bhinputtext', $placeholder = null, $id = null)
 {

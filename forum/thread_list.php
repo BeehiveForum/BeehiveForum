@@ -798,6 +798,7 @@ if (session::logged_in()) {
     echo "    <td align=\"left\" width=\"15\">&nbsp;</td>\n";
     echo "    <td align=\"left\">\n";
     echo "      <form accept-charset=\"utf-8\" name=\"f_mark\" method=\"post\" action=\"thread_list.php\">\n";
+    echo "        ", form_csrf_token_field(), "\n";
     echo "        ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "        ", form_input_hidden("mode", htmlentities_array($mode)), "\n";
     echo "        ", form_input_hidden("page", htmlentities_array($page)), "\n";

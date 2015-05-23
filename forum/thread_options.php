@@ -511,6 +511,7 @@ if ($thread_data['DELETED'] == 'N') {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"thread_options.php\" method=\"post\" target=\"_self\">\n";
+    echo "    ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("msg", htmlentities_array($msg)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";
@@ -982,6 +983,7 @@ if ($thread_data['DELETED'] == 'N') {
     echo "<br />\n";
     echo "<div align=\"center\">\n";
     echo "  <form accept-charset=\"utf-8\" name=\"thread_options\" action=\"thread_options.php\" method=\"post\" target=\"_self\">\n";
+    echo "    ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden("webtag", htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden("msg", htmlentities_array($msg)), "\n";
     echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"600\">\n";

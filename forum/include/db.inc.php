@@ -24,6 +24,7 @@ USA
 // Required includes
 require_once BH_INCLUDE_PATH . 'constants.inc.php';
 require_once BH_INCLUDE_PATH . 'server.inc.php';
+
 // End Required includes
 
 class db extends mysqli
@@ -35,45 +36,6 @@ class db extends mysqli
     public function __construct($host = null, $username = null, $password = null, $database = null, $port = null, $socket = null)
     {
         parent::__construct($host, $username, $password, $database, $port, $socket);
-    }
-
-    public static function get($new_connection = false)
-    {
-        if (!isset(self::$config)) {
-            self::$config = server_get_config();
-        }
-
-        if (!db::$connection || $new_connection) {
-
-            $db = new self(self::$config['db_server'], self::$config['db_username'], self::$config['db_password'], self::$config['db_database'], self::$config['db_port']);
-
-            if (mysqli_connect_error()) {
-                throw new Exception(sprintf('Could not connect to database server. Error received: %s', mysqli_connect_error()), MYSQL_CONNECT_ERROR);
-            }
-
-            if (!$db->set_charset('utf8')) {
-                throw new Exception('Could not change MySQL character-set. Check your MySQL user credentials');
-            }
-
-            if (!$db->set_time_zone()) {
-                throw new Exception('Could not change MySQL time-zone. Check your MySQL user credentials');
-            }
-
-            if (isset(self::$config['mysql_big_selects']) && (self::$config['mysql_big_selects'] === true)) {
-
-                if (!$db->enable_compat_mode()) {
-                    throw new Exception('Could not change MYSQL compatbility options. Check your MySQL user permissions.');
-                }
-            }
-
-            $db->query("SET SESSION sql_mode = ''");
-
-            if ($new_connection) return $db;
-
-            db::$connection = $db;
-        }
-
-        return db::$connection;
     }
 
     public static function set_config(array $config)
@@ -128,9 +90,57 @@ class db extends mysqli
         );
     }
 
+    public static function get($new_connection = false)
+    {
+        if (!isset(self::$config)) {
+            self::$config = server_get_config();
+        }
+
+        if (!db::$connection || $new_connection) {
+
+            $db = new self(self::$config['db_server'], self::$config['db_username'], self::$config['db_password'], self::$config['db_database'], self::$config['db_port']);
+
+            if (mysqli_connect_error()) {
+                throw new Exception(sprintf('Could not connect to database server. Error received: %s', mysqli_connect_error()), MYSQL_CONNECT_ERROR);
+            }
+
+            if (!$db->set_charset('utf8')) {
+                throw new Exception('Could not change MySQL character-set. Check your MySQL user credentials');
+            }
+
+            if (!$db->set_time_zone()) {
+                throw new Exception('Could not change MySQL time-zone. Check your MySQL user credentials');
+            }
+
+            if (isset(self::$config['mysql_big_selects']) && (self::$config['mysql_big_selects'] === true)) {
+
+                if (!$db->enable_compat_mode()) {
+                    throw new Exception('Could not change MYSQL compatbility options. Check your MySQL user permissions.');
+                }
+            }
+
+            $db->query("SET SESSION sql_mode = ''");
+
+            if ($new_connection) return $db;
+
+            db::$connection = $db;
+        }
+
+        return db::$connection;
+    }
+
     protected function set_time_zone()
     {
         return $this->query("SET SESSION time_zone = '+0:00'");
+    }
+
+    public function query($sql, $result_mode = MYSQLI_STORE_RESULT)
+    {
+        if (($result = parent::query($sql, $result_mode)) === false) {
+            throw new Exception($sql . ' - ' . $this->error, $this->errno);
+        }
+
+        return $result;
     }
 
     protected function enable_compat_mode()
@@ -148,14 +158,5 @@ class db extends mysqli
         }
 
         return $this->real_escape_string($var);
-    }
-
-    public function query($sql, $result_mode = MYSQLI_STORE_RESULT)
-    {
-        if (($result = parent::query($sql, $result_mode)) === false) {
-            throw new Exception($sql . ' - ' . $this->error, $this->errno);
-        }
-
-        return $result;
     }
 }

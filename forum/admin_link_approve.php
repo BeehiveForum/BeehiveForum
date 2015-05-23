@@ -359,6 +359,7 @@ if (isset($_GET['link_approve_success']) && is_numeric($_GET['link_approve_succe
 echo "<br />\n";
 echo "<div align=\"center\">\n";
 echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"admin_link_approve.php\" method=\"post\" target=\"_self\">\n";
+echo "  ", form_csrf_token_field(), "\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"86%\">\n";
 echo "    <tr>\n";
 echo "      <td align=\"left\" colspan=\"3\">\n";
@@ -437,6 +438,7 @@ if (isset($lid, $link)) {
 
     echo "<br />\n";
     echo "<form accept-charset=\"utf-8\" name=\"f_delete\" action=\"admin_link_approve.php\" method=\"post\" target=\"_self\">\n";
+    echo "  ", form_csrf_token_field(), "\n";
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('lid', htmlentities_array($lid)), "\n";
     echo "  ", form_input_hidden("ret", htmlentities_array($ret)), "\n";

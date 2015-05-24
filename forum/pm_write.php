@@ -266,7 +266,7 @@ if (isset($_POST['send']) || isset($_POST['preview']) || isset($_POST['save'])) 
 
                 } else {
 
-                    $error_msg_array[] = sprintf(gettext("%s has opted out of receiving personal messages"), $to_logon);
+                    $error_msg_array[] = sprintf(gettext("%s has opted out of receiving personal messages"), htmlentities_array($to_logon));
                     $valid = false;
                 }
 

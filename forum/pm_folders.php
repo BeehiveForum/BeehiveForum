@@ -179,7 +179,7 @@ html_draw_top(
 
 if (isset($manage_folder) && is_numeric($manage_folder)) {
 
-    echo "<h1>", gettext("Private Messages"), html_style_image('separator'), gettext("Manage Folder"), html_style_image('separator'), "{$pm_folder_names_array[$manage_folder]}</h1>\n";
+    echo "<h1>", gettext("Private Messages"), html_style_image('separator'), gettext("Manage Folder"), html_style_image('separator'), htmlentities_array($pm_folder_names_array[$manage_folder]), "</h1>\n";
 
     if (isset($_GET['folder_renamed'])) {
 
@@ -258,7 +258,7 @@ foreach ($pm_folder_names_array as $folder_type => $folder_name) {
         echo "      <td align=\"left\">\n";
         echo "        <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
         echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"foldername\"><a href=\"pm_folders.php?webtag=$webtag&amp;manage_folder=$folder_type\" target=\"", html_get_frame_name('pm_messages'), "\">", html_style_image('folder', gettext("Folder")), "</a>&nbsp;<a href=\"pm_messages.php?webtag=$webtag&amp;folder=$folder_type\" title=\"", ($pm_message_count_array[$folder_type] <> 1) ? sprintf(gettext("%s messages"), $pm_message_count_array[$folder_type]) : gettext("1 message"), "\">$folder_name</a> <span class=\"pm_message_count\">({$pm_message_count_array[$folder_type]})</span></td>\n";
+        echo "            <td align=\"left\" class=\"foldername\"><a href=\"pm_folders.php?webtag=$webtag&amp;manage_folder=$folder_type\" target=\"", html_get_frame_name('pm_messages'), "\">", html_style_image('folder', gettext("Folder")), "</a>&nbsp;<a href=\"pm_messages.php?webtag=$webtag&amp;folder=$folder_type\" title=\"", ($pm_message_count_array[$folder_type] <> 1) ? sprintf(gettext("%s messages"), $pm_message_count_array[$folder_type]) : gettext("1 message"), "\">", htmlentities_array($folder_name), "</a> <span class=\"pm_message_count\">({$pm_message_count_array[$folder_type]})</span></td>\n";
         echo "          </tr>\n";
         echo "        </table>\n";
         echo "      </td>\n";

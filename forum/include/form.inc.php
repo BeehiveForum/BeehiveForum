@@ -43,7 +43,7 @@ function form_csrf_token_field()
 
 function form_check_csrf_token()
 {
-    if (mb_strtoupper($_SERVER['REQUEST_METHOD']) !== 'POST') {
+    if (!isset($_SERVER['REQUEST_METHOD']) || mb_strtoupper($_SERVER['REQUEST_METHOD']) !== 'POST') {
         return;
     }
 

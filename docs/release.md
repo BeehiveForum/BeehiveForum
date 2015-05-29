@@ -1,5 +1,23 @@
 # Beehive Forum Release Notes
 
+## What's new in 1.4.6 (Released 29th May 2015)
+
+- Changes from 1.4.5
+
+    - Fixed several XSS security vulnerabilities
+      in code across multiple pages.
+      
+    - Added CSRF checking for form posting.
+    
+    - Added support for installing Beehive using
+      Softaculous.
+      
+    - Added PM notification counter to Mobile mode.
+    
+    - Make correct use of canonical meta tags to 
+      help search engines correctly link pages
+      together in search results.
+
 ## What's new in 1.4.5 (Released 28th February 2015)
 
 - Changes from 1.4.4

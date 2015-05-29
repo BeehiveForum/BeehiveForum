@@ -1,72 +1,90 @@
-# Beehive Forum Change Log (Generated: Sat, 21 Feb 2015 18:24:25)
+# Beehive Forum Change Log (Generated: Fri, 29 May 2015 17:50:30)
 
-## Date: Sat, 21 Feb 2015
+## Date: Sun, 24 May 2015
 
-- Changed: Use filter\_var to validate URL inputs.
+- Fixed: XSS injections with PM folder names and recipient names.
 
-## Date: Sun, 01 Feb 2015
+## Date: Sat, 23 May 2015
 
-- Fixed: Call beehive.init\_editor after initialising CKEditor.
-- Changed: Use shared JavaScript beehive object across all frames by
-           referencing top.window.beehive.
-- Fixed: Remove menu.png from styles that still referenced it.
+- Fixed: Posts and poll forms not including csrf field
+- Fixed: Function html\_display\_msg not having csrf field on post
+         forms.
+- Added: CSRF checks to all HTTP POST forms.
 
-## Date: Sun, 25 Jan 2015
+## Date: Mon, 18 May 2015
 
-- Fixed: Don't detect MSIE 12 developer preview as Webkit.
+- Fixed: XSS issues in user search and folder rename functionality
 
-## Date: Thu, 22 Jan 2015
+## Date: Wed, 06 May 2015
 
-- Fixed: Image resize not maintaining ratio of images.
+- Fixed: Undefined index 0 in perms.inc.php on line 854.
+- Changed: Use fetch\_row() instead of fetch\_array(MYSQLI\_NUM) on
+           MySQLi result.
 
-## Date: Sat, 10 Jan 2015
+## Date: Wed, 15 Apr 2015
 
-- Fixed: Prevent users from voting on their own posts.
-- Fixed: Image resize banner icon wasn't displayed correctly.
-- Fixed: Post vote returned mobile HTML which displayed differently.
+- Added: Show notification icon for number of unread PMs on mobile
+         menu.
 
-## Date: Fri, 02 Jan 2015
+## Date: Sun, 05 Apr 2015
 
-- Changed: Bump PHP minimum version to 5.4 (5.3 is deprecated)
-- Fixed: Error Handler wasn't displaying images due to missing
-         images.css.
+- Changed: Allow start page, forums rules and forum closed, restricted
+           and password protected messages to have script tags.
+- Fixed: Overflow not working correctly.
 
-## Date: Mon, 15 Dec 2014
+## Date: Fri, 03 Apr 2015
 
-- Added: Allow auto-loading of messages to be switched off in user
-         preferences.
-- Fixed: Webtag being removed from $\_GET vars in get\_request\_uri
-         function.
+- Changed: Updated documentation and added details about Softaculous.
+- Changed: Removed widths from HTML of edit\_profile.php and increase
+           width of privacy select box.
+- Fixed: Some minor JavaScript issues.
 
-## Date: Wed, 10 Dec 2014
+## Date: Sun, 29 Mar 2015
 
-- Fixed: Checkboxes on Group and User permissions included each other,
-         making it impossible to deselect some permissions.
+- Fixed: Re-added MobileOptimized and viewport meta values.
+- Changed: Use POSTS\_PER\_PAGE settings in mobile mode.
+- Changed: Calculate next and prev rel links using POSTS\_PER\_PAGE.
+- Fixed: CKEditor plugin wasn't correctly referencing
+         top.window.beehive.
+- Fixed: Quote and Code plugin wouldn't correctly remove tag in
+         Chrome.
 
-## Date: Wed, 26 Nov 2014
+## Date: Wed, 25 Mar 2015
 
-- Fixed: Double encoded &amp;amp; in frameset HTML and mobile
-         nav\_links.
+- Fixed: Make correct use of canonical, next, prev, first and last
+         link tags.
+- Changed: Use first post in thread keywords in page, not the first
+           post on the current page.
 
-## Date: Tue, 18 Nov 2014
+## Date: Mon, 16 Mar 2015
 
-- Fixed: Opensearch wasn't working due to encoding issues HTML meta
-         tag and XML output.
+- Added: Use OnBeforeUnload event in My Controls to track when
+         preferences have been changed but not saved.
+- Fixed: User Details All Forums checkboxes were inverted and always
+         coming back ticked.
 
-## Date: Sat, 15 Nov 2014
+## Date: Sat, 14 Mar 2015
 
-- Fixed: Deleting a forum failed due to error while cleaning up
-         permissions.
-- Added: Allow logging in using email address.
-- Fixed: Don't hide the navigation if guest account is disabled.
+- Fixed: Menu disappearing if post content causing horizontal
+         scrolling.
+- Changed: Add index to speed up thread list count query.
+- Changed: Exclude empty and deleted threads from thread count.
+- Fixed: PM Folder counts were incorrect.
+- Changed: Decrease font-size of PM new count and increase PM bar
+           text.
+- Fixed: Search inputs were too wide since switch to CSS sprites.
+- Fixed: Undefined variable $user\_profile
 
-## Date: Sun, 28 Sep 2014
+## Date: Fri, 06 Mar 2015
 
-- Changed: Reimplement per-script CSS by having a class of the
-           filename on the body tag.
-- Fixed: Escape all HTML attributes.
+- Changed: Updated styles for Mobile register page.
+- Changed: Remove working directory functionality from text-captcha -
+           we now use the system temp path.
+- Changed: Removed bootstrap files from allowed file lists.
+- Changed: Added register form to Mobile mode.
 
-## Date: Wed, 20 Aug 2014
+## Date: Thu, 05 Mar 2015
 
-- Changed: Updated translations.
+- Changed: Pass webtag to top.php to allow customisation on a
+           per-forum basis.
 

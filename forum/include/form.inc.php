@@ -47,6 +47,10 @@ function form_check_csrf_token()
         return;
     }
 
+    if (in_array(basename($_SERVER['PHP_SELF']), get_csrf_exempt_files())) {
+        return;
+    }
+
     if (!($token_name = forum_get_setting('csrf_token_name'))) {
         html_draw_error(gettext('Sorry, you do not have access to this page.'));
     }

@@ -389,6 +389,13 @@ function get_message_display_files()
     );
 }
 
+function get_csrf_exempt_files()
+{
+    return array(
+        'attachments.php',
+    );
+}
+
 function get_proxy_cache_headers()
 {
     return array(

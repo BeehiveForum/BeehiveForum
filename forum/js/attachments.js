@@ -28,14 +28,14 @@ $(top.window.beehive).bind('init', function () {
 
     var format_file_size = function (filesize) {
 
-        var b = -1;
+        var b = 0;
 
         while (99 < filesize) {
             filesize /= 1024;
             b++;
         }
 
-        return (Math.floor(filesize * 100) / 100).toFixed(2) + "kB MB GB TB PB EB".split(" ")[b];
+        return (Math.floor(filesize * 100) / 100).toFixed(2) + "B kB MB GB TB PB EB".split(" ")[b];
     };
 
     var format_file_name = function (filename) {

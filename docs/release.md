@@ -1,5 +1,15 @@
 # Beehive Forum Release Notes
 
+## What's new in 1.4.7 (Released 4th June 2015)
+
+- Changes from 1.4.6
+
+    - Fixed unable to upload attachments by making
+      attachments exempt from CSRF checking.
+
+    - Fixed unable to edit posts due to missing CSRF
+      token.
+
 ## What's new in 1.4.6 (Released 29th May 2015)
 
 - Changes from 1.4.5

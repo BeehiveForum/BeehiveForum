@@ -22,7 +22,7 @@ USA
 ======================================================================*/
 
 // Beehive Version
-define('BEEHIVE_VERSION', "1.4.6");
+define('BEEHIVE_VERSION', "1.4.7");
 
 // Version supported for upgrades
 define('BEEHIVE_VERSION_UPGRADE', "1.3.1");

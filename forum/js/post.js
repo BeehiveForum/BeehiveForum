@@ -151,14 +151,14 @@ $(top.window.beehive).bind('init', function () {
         hide_post_options_containers();
     });
 
-    $body.on('click', '#quick_reply_container', function () {
+    $body.on('click', '#quick_reply_container input#cancel', function () {
 
         //noinspection JSLint
         if (CKEDITOR.instances.content) {
             CKEDITOR.instances.content.destroy();
         }
 
-        $(this).hide();
+        $(this).closest('#quick_reply_container').hide();
     });
 
     $body.on('click', '.quick_reply_link', function () {

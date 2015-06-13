@@ -1658,11 +1658,13 @@ function forum_delete_tables($webtag, $database_name)
         'POST_RATING',
         'POST_RECIPIENT',
         'POST_SEARCH_ID',
+        'POST_TAG',
         'PROFILE_ITEM',
         'PROFILE_SECTION',
         'RSS_FEEDS',
         'RSS_HISTORY',
         'STATS',
+        'TAG',
         'THREAD',
         'THREAD_STATS',
         'THREAD_TRACK',
@@ -1674,7 +1676,7 @@ function forum_delete_tables($webtag, $database_name)
         'USER_SIG',
         'USER_THREAD',
         'USER_TRACK',
-        'WORD_FILTER'
+        'WORD_FILTER',
     );
 
     foreach ($table_array as $table_name) {

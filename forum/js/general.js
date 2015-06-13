@@ -46,7 +46,7 @@ top.window.beehive = {
             return $max_width.prop('width');
         }
 
-        return $('body').prop('clientWidth');
+        return $(this).find('body').prop('clientWidth');
     },
 
     reload_frame: function (context, frame_name) {

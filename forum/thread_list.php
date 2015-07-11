@@ -477,10 +477,17 @@ foreach ($folder_order as $folder_number) {
 
         echo "<table width=\"100%\" border=\"0\" cellpadding=\"2\" cellspacing=\"0\">\n";
         echo "  <tr>\n";
-        echo "    <td align=\"left\" colspan=\"2\">\n";
+//Added break to allow space between thread list sections and show more thread list background. Members feature request.
+        echo "    <td align=\"left\" colspan=\"2\"><br />\n";
         echo "      <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
         echo "        <tr>\n";
         echo "          <td align=\"left\" valign=\"top\" class=\"foldername\">\n";
+
+//Added table to include rss and mod list icons in with foldername, allows one smooth border to surround them all. Members feature Request.
+
+        echo "      <table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+        echo "        <tr>\n";
+        echo "          <td>\n";
 
         if (session::logged_in() && ($folder_info[$folder_number]['INTEREST'] == FOLDER_SUBSCRIBED)) {
             echo "            <a href=\"folder_options.php?webtag=$webtag&amp;fid=$folder_number\" target=\"_blank\" class=\"popup 550x400\">", html_style_image('folder_subscribed', gettext("Subscribed Folder")), "</a>\n";
@@ -501,6 +508,13 @@ foreach ($folder_order as $folder_number) {
 
         echo "        </tr>\n";
         echo "      </table>\n";
+
+        echo "    </td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
+
+//my addtional table
+
         echo "    </td>\n";
         echo "  </tr>\n";
         echo "</table>\n";

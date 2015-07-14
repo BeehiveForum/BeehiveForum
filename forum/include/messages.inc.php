@@ -1299,29 +1299,6 @@ function message_display_success_msg($tid, $pid, $first_msg, $message, $posts_pe
     }
 }
 
-function messages_start_panel()
-{
-    echo "<div align=\"center\">\n";
-    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
-    echo "  <tr>\n";
-    echo "    <td align=\"center\">\n";
-    echo "      <table class=\"box\" width=\"100%\">\n";
-    echo "        <tr>\n";
-    echo "          <td class=\"posthead\">\n";
-    echo "            <br />\n";
-}
-
-function messages_end_panel()
-{
-    echo "          </td>\n";
-    echo "        </tr>\n";
-    echo "      </table>\n";
-    echo "    </td>\n";
-    echo "  </tr>\n";
-    echo "</table>\n";
-    echo "</div>\n";
-}
-
 function messages_nav_strip($tid, $pid, $length, $posts_per_page)
 {
     $webtag = get_webtag();
@@ -1371,14 +1348,32 @@ function messages_nav_strip($tid, $pid, $length, $posts_per_page)
         }
     };
 
-    $html = "<table class=\"posthead\" width=\"100%\">\n";
-    $html .= "  <tr>\n";
-    $html .= "    <td align=\"center\">" . implode('&nbsp;&nbsp;', $navigation) . "</td>\n";
-    $html .= "  </tr>\n";
-    $html .= "</table>\n";
-    $html .= "<br />\n";
+    echo "<table class=\"messages_nav_strip\" width=\"100%\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"center\">" . implode('&nbsp;&nbsp;', $navigation) . "</td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "<br />\n";
+}
 
-    return $html;
+function messages_poll_results_link($thread_data)
+{
+    if ($thread_data['POLL_FLAG'] != 'Y') {
+        return null;
+    }
+
+    $webtag = get_webtag();
+
+    forum_check_webtag_available($webtag);
+
+    echo "<table class=\"messages_poll_results_link\" width=\"100%\">\n";
+    echo "  <tr>\n";
+    echo "    <td align=\"center\">\n";
+    echo "      <a href=\"poll_results.php?webtag=$webtag&amp;tid={$thread_data['TID']}\" target=\"_blank\" class=\"popup 800x600\">". gettext("View Results"). "</a>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "<br />\n";
 }
 
 function messages_interest_form($tid, $pid, $interest)
@@ -1394,7 +1389,7 @@ function messages_interest_form($tid, $pid, $interest)
         THREAD_SUBSCRIBED => gettext("Subscribed")
     );
 
-    echo "<table class=\"posthead\" width=\"100%\">\n";
+    echo "<table class=\"messages_interest_form\" width=\"100%\">\n";
     echo "  <tr>\n";
     echo "    <td align=\"center\">\n";
     echo "      <form accept-charset=\"utf-8\" name=\"rate_interest\" target=\"_self\" action=\"thread_options.php?webtag=$webtag&amp;msg=$tid.$pid\" method=\"post\">\n";
@@ -1725,7 +1720,7 @@ function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
     if ($return === true) return implode(' ', $font_size_html);
 
     // Construct rest of HTML.
-    $html = "<table class=\"posthead\" width=\"100%\">\n";
+    $html = "<table class=\"messages_fontsize_form\" width=\"100%\">\n";
     $html .= "  <tr>\n";
     $html .= "    <td align=\"center\">" . implode(' ', $font_size_html) . "</td>\n";
     $html .= "  </tr>\n";
@@ -1735,6 +1730,24 @@ function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
     echo $html;
 
     return true;
+}
+
+function messages_beehive_bar()
+{
+    echo "<div align=\"center\" class=\"beehive_bar\">\n";
+    echo "<table width=\"98%\">\n";
+    echo "  <tr>\n";
+    echo "    <td width=\"60%\" align=\"left\">\n";
+    echo "      Beehive Forum ", BEEHIVE_VERSION, "&nbsp;|&nbsp;\n";
+    echo "      <a href=\"http://www.beehiveforum.co.uk/faq/\" target=\"_blank\">", gettext("FAQ"), "</a>&nbsp;|&nbsp;\n";
+    echo "      <a href=\"http://www.beehiveforum.co.uk/docs/\" target=\"_blank\">", gettext("Docs"), "</a>&nbsp;|&nbsp;\n";
+    echo "      <a href=\"http://www.beehiveforum.co.uk/support/\" target=\"_blank\">", gettext("Support"), "</a>&nbsp;|&nbsp;\n";
+    echo "      <a href=\"http://www.beehiveforum.co.uk/donate/\" target=\"_blank\">", gettext("Donate!"), "</a>\n";
+    echo "    </td>\n";
+    echo "    <td width=\"40%\" align=\"right\">&copy;2002 - ", strftime("%Y", time()), " <a href=\"http://www.beehiveforum.co.uk/\" target=\"_blank\">Project&nbsp;Beehive&nbsp;Forum</a></td>\n";
+    echo "  </tr>\n";
+    echo "</table>\n";
+    echo "</div>\n";
 }
 
 function validate_msg($msg)
@@ -1751,7 +1764,7 @@ function messages_forum_stats($tid, $pid)
     if (forum_get_setting('show_stats', 'Y')) {
 
         echo "<br />\n";
-        echo "<div align=\"center\">\n";
+        echo "<div align=\"center\" class=\"messages_forum_stats\">\n";
         echo "  <form action=\"user_stats.php\" method=\"get\" target=\"_self\">\n";
         echo "    ", form_input_hidden('webtag', $webtag), "\n";
         echo "    ", form_input_hidden('msg', "$tid.$pid"), "\n";

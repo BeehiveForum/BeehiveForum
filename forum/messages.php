@@ -26,7 +26,6 @@ require_once 'boot.php';
 
 // Required includes
 require_once BH_INCLUDE_PATH . 'adsense.inc.php';
-require_once BH_INCLUDE_PATH . 'beehive.inc.php';
 require_once BH_INCLUDE_PATH . 'cache.inc.php';
 require_once BH_INCLUDE_PATH . 'constants.inc.php';
 require_once BH_INCLUDE_PATH . 'form.inc.php';
@@ -458,30 +457,32 @@ echo "    <td align=\"left\" colspan=\"3\">&nbsp;</td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>\n";
+echo "<div align=\"center\" class=\"messages_panel\">\n";
+echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"96%\">\n";
+echo "  <tr>\n";
+echo "    <td align=\"center\">\n";
+echo "      <table class=\"box\" width=\"100%\">\n";
+echo "        <tr>\n";
+echo "          <td class=\"posthead\">\n";
+echo "            <br />\n";
 
-messages_start_panel();
+messages_nav_strip($tid, $pid, $thread_data['LENGTH'], $posts_per_page);
 
-echo messages_nav_strip($tid, $pid, $thread_data['LENGTH'], $posts_per_page);
-
-if ($thread_data['POLL_FLAG'] == 'Y') {
-
-    echo "            <table class=\"posthead\" width=\"100%\">\n";
-    echo "              <tr>\n";
-    echo "                <td align=\"center\">\n";
-    echo "                  <a href=\"poll_results.php?webtag=$webtag&amp;tid=$tid\" target=\"_blank\" class=\"popup 800x600\">", gettext("View Results"), "</a>\n";
-    echo "                </td>\n";
-    echo "              </tr>\n";
-    echo "            </table>\n";
-    echo "            <br />\n";
-}
+messages_poll_results_link($thread_data);
 
 messages_interest_form($tid, $pid, $thread_data['INTEREST']);
 
 messages_fontsize_form($tid, $pid);
 
-draw_beehive_bar();
+messages_beehive_bar();
 
-messages_end_panel();
+echo "          </td>\n";
+echo "        </tr>\n";
+echo "      </table>\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "</table>\n";
+echo "</div>\n";
 
 messages_forum_stats($tid, $pid);
 

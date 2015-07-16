@@ -335,11 +335,11 @@ if (session::logged_in()) {
         echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
         echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "            <td align=\"left\" class=\"forums_list\">\n";
+        echo "              <table class=\"subhead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-        echo "                  <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">\n";
+        echo "                  <td align=\"left\"  width=\"1%\">&nbsp;</td>\n";
+        echo "                  <td align=\"left\" style=\"white-space: nowrap\">\n";
 
         if ($sort_by == 'FORUM_NAME' && $sort_dir == 'ASC') {
             echo "                    <a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">", gettext("Forum Name"), "</a>\n";
@@ -354,7 +354,7 @@ if (session::logged_in()) {
         }
 
         echo "                  </td>\n";
-        echo "                  <td class=\"subhead\" align=\"left\">\n";
+        echo "                  <td align=\"left\">\n";
 
         if ($sort_by == 'FORUM_DESC' && $sort_dir == 'ASC') {
             echo "                    <a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">", gettext("Forum Description"), "</a>\n";
@@ -369,8 +369,8 @@ if (session::logged_in()) {
         }
 
         echo "                  </td>\n";
-        echo "                  <td class=\"subhead\" align=\"left\">", gettext("Unread Messages"), "</td>\n";
-        echo "                  <td class=\"subhead\" align=\"left\">\n";
+        echo "                  <td align=\"left\">", gettext("Unread Messages"), "</td>\n";
+        echo "                  <td align=\"left\">\n";
 
         if ($sort_by == 'LAST_VISIT' && $sort_dir == 'ASC') {
             echo "                    <a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">", gettext("Last Visited"), "</a>\n";
@@ -384,9 +384,11 @@ if (session::logged_in()) {
             echo "                    <a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">", gettext("Last Visited"), "</a>\n";
         }
 
-        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
+        echo "                  <td align=\"left\" width=\"1%\">&nbsp;</td>\n";
         echo "                </tr>\n";
-
+        echo "             </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
         if (isset($forums_array['forums_array']) && sizeof($forums_array['forums_array']) > 0) {
 
             foreach ($forums_array['forums_array'] as $forum) {
@@ -562,11 +564,11 @@ if (session::logged_in()) {
         echo "      <td align=\"left\">\n";
         echo "        <table class=\"box\" width=\"100%\">\n";
         echo "          <tr>\n";
-        echo "            <td align=\"left\" class=\"posthead\">\n";
-        echo "              <table class=\"posthead\" width=\"100%\">\n";
+        echo "            <td align=\"left\" class=\"forums_list\">\n";
+        echo "              <table class=\"subhead\" width=\"100%\">\n";
         echo "                <tr>\n";
-        echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-        echo "                  <td class=\"subhead\" align=\"left\" style=\"white-space: nowrap\">\n";
+        echo "                  <td align=\"left\" width=\"1%\">&nbsp;</td>\n";
+        echo "                  <td align=\"left\" style=\"white-space: nowrap\">\n";
 
         if ($sort_by == 'FORUM_NAME' && $sort_dir == 'ASC') {
             echo "                    <a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_NAME&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">", gettext("Forum Name"), "</a>\n";
@@ -581,7 +583,7 @@ if (session::logged_in()) {
         }
 
         echo "                  </td>\n";
-        echo "                  <td class=\"subhead\" align=\"left\">\n";
+        echo "                  <td align=\"left\">\n";
 
         if ($sort_by == 'FORUM_DESC' && $sort_dir == 'ASC') {
             echo "                    <a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=FORUM_DESC&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">", gettext("Forum Description"), "</a>\n";
@@ -596,8 +598,8 @@ if (session::logged_in()) {
         }
 
         echo "                  </td>\n";
-        echo "                  <td class=\"subhead\" align=\"left\">", gettext("Unread Messages"), "</td>\n";
-        echo "                  <td class=\"subhead\" align=\"left\">\n";
+        echo "                  <td align=\"left\">", gettext("Unread Messages"), "</td>\n";
+        echo "                  <td align=\"left\">\n";
 
         if ($sort_by == 'LAST_VISIT' && $sort_dir == 'ASC') {
             echo "                    <a href=\"forums.php?webtag=$webtag&amp;view_type=$view_type&amp;sort_by=LAST_VISIT&amp;sort_dir=DESC&amp;webtag_search=", htmlentities_array($webtag_search), "&amp;page=$page\" target=\"_self\">", gettext("Last Visited"), "</a>\n";
@@ -613,6 +615,9 @@ if (session::logged_in()) {
 
         echo "                  </td>\n";
         echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
+        echo "                </tr>\n";
+        echo "             </table>\n";
+        echo "                  </td>\n";
         echo "                </tr>\n";
 
         if (sizeof($forums_array['forums_array']) > 0) {
@@ -751,7 +756,7 @@ if (session::logged_in()) {
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
+    echo "            <td align=\"left\" class=\"forums_list_search\">\n";
     echo "              <table width=\"100%\">\n";
     echo "                <tr>\n";
     echo "                  <td class=\"subhead\" align=\"left\">", gettext("Search"), "</td>\n";
@@ -800,14 +805,17 @@ if (session::logged_in()) {
     echo "      <td align=\"left\">\n";
     echo "        <table class=\"box\" width=\"100%\">\n";
     echo "          <tr>\n";
-    echo "            <td align=\"left\" class=\"posthead\">\n";
-    echo "              <table class=\"posthead\" width=\"100%\">\n";
+    echo "            <td align=\"left\" class=\"forums_list\">\n";
+    echo "              <table class=\"subhead\" width=\"100%\">\n";
     echo "                <tr>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Available Forums"), "</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\">", gettext("Messages"), "</td>\n";
-    echo "                  <td align=\"left\" class=\"subhead\" width=\"1%\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\" width=\"1%\">&nbsp;</td>\n";
+    echo "                  <td align=\"left\">", gettext("Available Forums"), "</td>\n";
+    echo "                  <td align=\"left\">", gettext("Messages"), "</td>\n";
+    echo "                  <td align=\"left\" width=\"1%\">&nbsp;</td>\n";
     echo "                </tr>\n";
+    echo "             </table>\n";
+    echo "                  </td>\n";
+     echo "                </tr>\n";
 
     if (isset($forums_array['forums_array']) && sizeof($forums_array['forums_array']) > 0) {
 

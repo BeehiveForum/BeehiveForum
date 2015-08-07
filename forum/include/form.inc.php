@@ -34,11 +34,7 @@ function form_csrf_token_field()
         forum_save_settings(array('csrf_token_name' => $token_name = md5(uniqid(mt_rand()))));
     }
 
-    if (!isset($_SESSION['csrf'][$token_name])) {
-        $_SESSION['csrf'][$token_name] = $token_value = md5(uniqid(mt_rand(), true));
-    }
-
-    return form_input_hidden($token_name, $_SESSION['csrf'][$token_name]);
+    return form_input_hidden($token_name, session::get_csrf_token());
 }
 
 function form_check_csrf_token()
@@ -55,13 +51,16 @@ function form_check_csrf_token()
         html_draw_error(gettext('Sorry, you do not have access to this page.'));
     }
 
-    if (!isset($_POST[$token_name], $_SESSION['csrf'][$token_name]) || (($_POST[$token_name] !== $_SESSION['csrf'][$token_name]))) {
+    if (!isset($_POST[$token_name]) || ($_POST[$token_name] != session::get_csrf_token())) {
 
-        unset($_POST[$token_name], $_SESSION['csrf'][$token_name]);
+        unset($_POST[$token_name]);
+
+        session::refresh_csrf_token();
+
         html_draw_error(gettext('Sorry, you do not have access to this page.'));
     }
 
-    unset($_POST[$token_name], $_SESSION['csrf'][$token_name]);
+    unset($_POST[$token_name]);
 }
 
 // Create a form field

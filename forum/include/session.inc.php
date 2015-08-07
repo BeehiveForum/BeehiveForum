@@ -68,14 +68,20 @@ abstract class session
 
                 session_id($hash);
 
+                session_start();
+
+                session::refresh_csrf_token();
+
             } else {
 
                 html_set_cookie('user_logon', '', time() - YEAR_IN_SECONDS);
                 html_set_cookie('user_token', '', time() - YEAR_IN_SECONDS);
             }
-        }
 
-        session_start();
+        } else {
+
+            session_start();
+        }
 
         if (!isset($_SESSION['UID'])) {
             $_SESSION['UID'] = 0;
@@ -536,5 +542,19 @@ abstract class session
         }
 
         return true;
+    }
+
+    public static function get_csrf_token()
+    {
+        if (!isset($_SESSION['csrf']) || !is_string($_SESSION['csrf'])) {
+            session::refresh_csrf_token();
+        }
+
+        return $_SESSION['csrf'];
+    }
+
+    public static function refresh_csrf_token()
+    {
+        return $_SESSION['csrf'] = md5(uniqid(mt_rand(), true));
     }
 }

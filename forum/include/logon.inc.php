@@ -43,6 +43,9 @@ function logon_perform()
         // Initialise Guest user session.
         session::start(0);
 
+        // Generate new CSRF token
+        session::refresh_csrf_token();
+
         // Update the visitor log
         session::update_visitor_log(0, true);
 
@@ -62,6 +65,9 @@ function logon_perform()
 
             // Initialise a user session.
             session::start($uid);
+
+            // Generate new CSRF token
+            session::refresh_csrf_token();
 
             // Update User's last forum visit
             forum_update_last_visit($uid);

@@ -60,6 +60,8 @@ abstract class session
             array('session', 'gc')
         );
 
+        $hash = null;
+
         session_name('sess_hash');
 
         if (!html_get_cookie('sess_hash')) {
@@ -68,23 +70,21 @@ abstract class session
 
                 session_id($hash);
 
-                session_start();
-
-                session::refresh_csrf_token();
-
             } else {
 
                 html_set_cookie('user_logon', '', time() - YEAR_IN_SECONDS);
                 html_set_cookie('user_token', '', time() - YEAR_IN_SECONDS);
             }
-
-        } else {
-
-            session_start();
         }
+
+        session_start();
 
         if (!isset($_SESSION['UID'])) {
             $_SESSION['UID'] = 0;
+        }
+
+        if (!is_null($hash)) {
+            session::refresh_csrf_token();
         }
     }
 
@@ -546,15 +546,15 @@ abstract class session
 
     public static function get_csrf_token()
     {
-        if (!isset($_SESSION['csrf']) || !is_string($_SESSION['csrf'])) {
+        if (!isset($_SESSION['CSRF_TOKEN']) || !is_string($_SESSION['CSRF_TOKEN'])) {
             session::refresh_csrf_token();
         }
 
-        return $_SESSION['csrf'];
+        return $_SESSION['CSRF_TOKEN'];
     }
 
     public static function refresh_csrf_token()
     {
-        return $_SESSION['csrf'] = md5(uniqid(mt_rand(), true));
+        return $_SESSION['CSRF_TOKEN'] = md5(uniqid(mt_rand(), true));
     }
 }

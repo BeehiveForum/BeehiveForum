@@ -966,8 +966,8 @@ function poll_vertical_graph($options_array, $total_votes)
         $poll_bar_height = ($total_votes > 0) ? (100 / $total_votes) * sizeof($option['VOTES_ARRAY']) : 0;
 
         $poll_display .= "      <td align=\"center\" width=\"$poll_cell_width%\">\n";
-        $poll_display .= "        <div class=\"poll_bar poll_bar_vertical poll_bar_$bar_color\" style=\"width: {$poll_bar_width}px\">\n";
-        $poll_display .= "          <div class=\"poll_bar_inner poll_bar_inner_$bar_color\" style=\"width: {$poll_bar_width}px; height: {$poll_bar_height}%; bottom: -{$poll_bar_height}%\"></div>\n";
+        $poll_display .= "        <div class=\"poll_bar poll_bar_vertical poll_bar_$bar_color\" style=\"width: " . $poll_bar_width . "px\">\n";
+        $poll_display .= "          <div class=\"poll_bar_inner poll_bar_inner_$bar_color\" style=\"width: " . $poll_bar_width . "px; height: " . $poll_bar_height . "%; bottom: -" . $poll_bar_height . "%\"></div>\n";
         $poll_display .= "        </div>\n";
         $poll_display .= "      </td>\n";
 

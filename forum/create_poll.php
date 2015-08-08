@@ -600,7 +600,7 @@ if ($valid && isset($_POST['post'])) {
 
                     email_send_thread_subscription($tid, $new_pid);
 
-                    email_send_folder_subscription($fid, $tid, $new_pid);
+                    email_send_folder_subscription($fid, $tid);
 
                     if (perm_check_folder_permissions($fid, USER_PERM_POST_APPROVAL, $_SESSION['UID']) && !perm_is_moderator($_SESSION['UID'], $fid)) {
                         admin_send_post_approval_notification($fid);
@@ -742,7 +742,7 @@ if ($valid && (isset($_POST['preview_poll']) || isset($_POST['preview_form']))) 
         if ($poll_data['POLLTYPE'] == POLL_TABLE_GRAPH) {
 
             $poll_display .= "          <tr>\n";
-            $poll_display .= "            <td align=\"left\" colspan=\"2\">" . poll_table_graph($poll_preview_questions_array, $poll_data, $total_vote_count) . "</td>\n";
+            $poll_display .= "            <td align=\"left\" colspan=\"2\">" . poll_table_graph($poll_preview_questions_array, $total_vote_count) . "</td>\n";
             $poll_display .= "           </tr>\n";
 
         } else {
@@ -886,9 +886,9 @@ if (($emoticon_preview_html = emoticons_preview($user_emoticon_pack)) !== false)
     echo "                        <td align=\"left\" class=\"subhead\">", gettext("Emoticons"), "</td>\n";
 
     if (($page_prefs & POST_EMOTICONS_DISPLAY) > 0) {
-        echo "                        <td class=\"subhead\" align=\"right\">", form_submit_image('hide', 'emots_toggle', 'hide', null, 'button_image toggle_button', null, 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('hide', 'emots_toggle', 'hide', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     } else {
-        echo "                        <td class=\"subhead\" align=\"right\">", form_submit_image('show', 'emots_toggle', 'show', null, 'button_image toggle_button', null, 'button_image toggle_button'), "&nbsp;</td>\n";
+        echo "                              <td class=\"subhead\" align=\"right\">", form_submit_image('show', 'emots_toggle', 'show', null, 'button_image toggle_button'), "&nbsp;</td>\n";
     }
 
     echo "                      </tr>\n";

@@ -105,8 +105,7 @@ if (isset($_POST['delete'])) {
 
         if ($valid) {
 
-            $redirect = "edit_relations.php?webtag=$webtag&relupdated=true";
-            header_redirect($redirect, gettext("Relationships Updated!"));
+            header_redirect($redirect = "edit_relations.php?webtag=$webtag&relupdated=true");
             exit;
         }
     }

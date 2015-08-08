@@ -119,7 +119,7 @@ if (isset($_POST['save'])) {
 
                 // Force redirect to prevent refreshing the page
                 // prompting to user to resubmit form data.
-                header_redirect("edit_password.php?webtag=$webtag&updated=true", gettext("Password changed"));
+                header_redirect("edit_password.php?webtag=$webtag&updated=true");
                 exit;
 
             } else {

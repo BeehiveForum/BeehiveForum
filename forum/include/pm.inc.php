@@ -37,7 +37,7 @@ require_once BH_INCLUDE_PATH . 'word_filter.inc.php';
 
 function pm_enabled()
 {
-    if (!forum_get_setting('show_pms', 'Y', false, true)) {
+    if (!forum_get_setting('show_pms', 'Y', false)) {
         html_draw_error(gettext("Personal Messages have been disabled by the forum owner."));
     }
 }

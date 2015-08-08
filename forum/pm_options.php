@@ -118,7 +118,7 @@ if (isset($_POST['save'])) {
     if (user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
         // Redirect back to the page so we correctly reload the user's preferences.
-        header_redirect("pm_options.php?webtag=$webtag&updated=true", gettext("Preferences were successfully updated."));
+        header_redirect("pm_options.php?webtag=$webtag&updated=true");
         exit;
 
     } else {

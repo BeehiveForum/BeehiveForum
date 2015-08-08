@@ -623,7 +623,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
             if (isset($_POST['confirm_unread_cutoff'])) forum_update_unread_data($unread_cutoff_stamp);
 
-            header_redirect("admin_default_forum_settings.php?webtag=$webtag&updated=true", gettext("Forum settings successfully updated"));
+            header_redirect("admin_default_forum_settings.php?webtag=$webtag&updated=true");
 
         } else {
 

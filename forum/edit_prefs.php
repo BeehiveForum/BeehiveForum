@@ -426,12 +426,12 @@ if (isset($_POST['save'])) {
                 // Force redirect to prevent refreshing the page prompting to user to resubmit form data.
                 if ($admin_edit === true) {
 
-                    header_redirect("admin_user.php?webtag=$webtag&uid=$profile_uid&profile_updated=true", gettext("Profile updated."));
+                    header_redirect("admin_user.php?webtag=$webtag&uid=$profile_uid&profile_updated=true");
                     exit;
 
                 } else {
 
-                    header_redirect("edit_prefs.php?webtag=$webtag&updated=true", gettext("Preferences were successfully updated."));
+                    header_redirect("edit_prefs.php?webtag=$webtag&updated=true");
                     exit;
                 }
 

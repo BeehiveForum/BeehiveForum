@@ -136,12 +136,12 @@ if (isset($_POST['save'])) {
 
                 if ($admin_edit === true) {
 
-                    header_redirect("admin_user.php?webtag=$webtag&uid=$profile_uid&profile_updated=true", gettext("Profile updated."));
+                    header_redirect("admin_user.php?webtag=$webtag&uid=$profile_uid&profile_updated=true");
                     exit;
 
                 } else {
 
-                    header_redirect("edit_profile.php?webtag=$webtag&uid=$profile_uid&profile_updated=true", gettext("Profile updated."));
+                    header_redirect("edit_profile.php?webtag=$webtag&uid=$profile_uid&profile_updated=true");
                     exit;
                 }
             }

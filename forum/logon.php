@@ -68,25 +68,25 @@ if (isset($_GET['delete_cookie']) && ($_GET['delete_cookie'] == 'yes')) {
     if (isset($final_uri)) {
 
         $final_uri = rawurlencode($final_uri);
-        header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", gettext("Cookies successfully deleted"));
+        header_redirect("index.php?webtag=$webtag&final_uri=$final_uri");
 
     } else {
 
-        header_redirect("index.php?webtag=$webtag", gettext("Cookies successfully deleted"));
+        header_redirect("index.php?webtag=$webtag");
     }
 
 } else if (isset($_POST['logon']) || isset($_POST['guest_logon'])) {
 
-    if (logon_perform(true)) {
+    if (logon_perform()) {
 
         if (isset($final_uri)) {
 
             $final_uri = rawurlencode($final_uri);
-            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", gettext("You logged in successfully."));
+            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri");
 
         } else {
 
-            header_redirect("index.php?webtag=$webtag", gettext("You logged in successfully."));
+            header_redirect("index.php?webtag=$webtag");
         }
 
     } else {
@@ -94,12 +94,12 @@ if (isset($_GET['delete_cookie']) && ($_GET['delete_cookie'] == 'yes')) {
         if (isset($final_uri)) {
 
             $final_uri = rawurlencode(sprintf("logon.php?webtag=$webtag&logon_failed=true&final_uri=%s", rawurlencode($final_uri)));
-            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", gettext("The username or password you supplied is not valid."));
+            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri");
 
         } else {
 
             $final_uri = rawurlencode("logon.php?webtag=$webtag&logon_failed=true");
-            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri", gettext("The username or password you supplied is not valid."));
+            header_redirect("index.php?webtag=$webtag&final_uri=$final_uri");
         }
     }
 

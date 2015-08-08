@@ -238,7 +238,7 @@ echo "<h3>", gettext("Edit Message"), "</h3>\n";
 echo "<div class=\"post_inner\">\n";
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    light_html_display_error_array($error_msg_array, '720', 'left');
+    light_html_display_error_array($error_msg_array);
 }
 
 echo "<div class=\"post_thread_title\">", gettext("Subject"), ":", light_form_input_text(

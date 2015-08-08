@@ -448,6 +448,7 @@ function unregister_globals()
 
 function disable_magic_quotes()
 {
+    /** @noinspection PhpDeprecationInspection */
     if (!get_magic_quotes_gpc()) return;
 
     $process = array(

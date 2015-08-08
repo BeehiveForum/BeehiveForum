@@ -366,7 +366,7 @@ if (isset($_POST['register'])) {
 
                     light_navigation_bar();
 
-                    light_html_display_msg(gettext("Successfully created user account"), gettext("Your user account has been created but before you can start posting you must confirm your email address. Please check your email for a link that will allow you to confirm your address."), 'index.php', 'get', array('continue' => gettext("Continue")), array('final_uri' => $final_uri), '_top', 'center');
+                    light_html_display_msg(gettext("Successfully created user account"), gettext("Your user account has been created but before you can start posting you must confirm your email address. Please check your email for a link that will allow you to confirm your address."), 'index.php', 'get', array('continue' => gettext("Continue")), array('final_uri' => $final_uri));
                     light_html_draw_bottom();
                     exit;
 
@@ -380,7 +380,7 @@ if (isset($_POST['register'])) {
 
                     light_navigation_bar();
 
-                    light_html_display_msg(gettext("Successfully created user account"), gettext("Your user account has been created but the required confirmation email was not sent. Please contact the forum owner to rectify this. In this meantime please click the continue button to login."), 'index.php', 'get', array('continue' => gettext("Continue")), array('final_uri' => $final_uri), '_top', 'center');
+                    light_html_display_msg(gettext("Successfully created user account"), gettext("Your user account has been created but the required confirmation email was not sent. Please contact the forum owner to rectify this. In this meantime please click the continue button to login."), 'index.php', 'get', array('continue' => gettext("Continue")), array('final_uri' => $final_uri));
                     light_html_draw_bottom();
                     exit;
                 }
@@ -395,7 +395,7 @@ if (isset($_POST['register'])) {
 
                 light_navigation_bar();
 
-                light_html_display_msg(gettext("Successfully created user account"), gettext("Your user account has been created successfully! Click the continue button below to login"), 'index.php', 'get', array('continue' => gettext("Continue")), array('final_uri' => $final_uri), '_top', 'center');
+                light_html_display_msg(gettext("Successfully created user account"), gettext("Your user account has been created successfully! Click the continue button below to login"), 'index.php', 'get', array('continue' => gettext("Continue")), array('final_uri' => $final_uri));
                 light_html_draw_bottom();
                 exit;
             }
@@ -420,7 +420,7 @@ light_html_draw_top(
 light_navigation_bar();
 
 if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
-    light_html_display_error_array($error_msg_array, '700', 'center');
+    light_html_display_error_array($error_msg_array);
 }
 
 echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">\n";

@@ -1,7 +1,8 @@
 .image {
     display: inline-block;
-    background-image: url('./images/images.png');
-    background-repeat: no-repeat;
+    width: 350px;
+    height: 167px;
+    background: url('./images/images.png') no-repeat;
     overflow: hidden;
     text-indent: -9999px;
     text-align: left;

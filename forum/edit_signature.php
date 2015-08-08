@@ -129,19 +129,14 @@ if (isset($_POST['save'])) {
             if ($admin_edit === true) {
 
                 $redirect_uri = "admin_user.php?webtag=$webtag&signature_updated=true&uid=$sig_uid";
-                header_redirect($redirect_uri, gettext("Signature Updated"));
+                header_redirect($redirect_uri);
 
             } else {
 
                 if ($t_sig_global == 'Y' && forums_get_available_count() > 1) {
-
-                    $redirect_uri = "edit_signature.php?webtag=$webtag&updated_global=true";
-                    header_redirect($redirect_uri, gettext("Signature Updated For All Forums"));
-
+                    header_redirect("edit_signature.php?webtag=$webtag&updated_global=true");
                 } else {
-
-                    $redirect_uri = "edit_signature.php?webtag=$webtag&updated=true";
-                    header_redirect($redirect_uri, gettext("Signature Updated"));
+                    header_redirect($redirect_uri = "edit_signature.php?webtag=$webtag&updated=true");
                 }
             }
         }

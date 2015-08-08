@@ -199,8 +199,8 @@ if (sizeof($user_stats_array['user_stats']) > 0) {
         echo "                  <td align=\"left\">", word_filter_add_ob_tags(format_user_name($user_stats['LOGON'], $user_stats['NICKNAME']), true), "</td>\n";
         echo "                  <td align=\"center\">", user_get_post_count($user_stats['UID']), "</td>\n";
         echo "                  <td align=\"center\">{$user_stats['POST_COUNT']}</td>\n";
-        echo "                  <td align=\"center\">", format_number(round((100 / $user_stats_array['post_count']) * $user_stats['POST_COUNT'], 2), 2, '.', ','), "%</td>\n";
-        echo "                  <td align=\"center\">", format_number(round($user_stats['POST_COUNT'] / ($num_days), 2), 2, '.', ','), "</td>\n";
+        echo "                  <td align=\"center\">", format_number(round((100 / $user_stats_array['post_count']) * $user_stats['POST_COUNT'], 2), 2), "%</td>\n";
+        echo "                  <td align=\"center\">", format_number(round($user_stats['POST_COUNT'] / ($num_days), 2), 2), "</td>\n";
         echo "                </tr>\n";
     }
 

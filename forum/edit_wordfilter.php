@@ -94,8 +94,7 @@ if (isset($_POST['delete'])) {
 
         if ($valid) {
 
-            $redirect = "edit_wordfilter.php?webtag=$webtag&updated=true";
-            header_redirect($redirect, gettext("Word Filter updated"));
+            header_redirect("edit_wordfilter.php?webtag=$webtag&updated=true");
             exit;
         }
     }
@@ -116,7 +115,7 @@ if (isset($_POST['delete'])) {
 
     if (user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
-        header_redirect("edit_wordfilter.php?webtag=$webtag&updated=true", gettext("Preferences were successfully updated."));
+        header_redirect("edit_wordfilter.php?webtag=$webtag&updated=true");
         exit;
 
     } else {
@@ -175,8 +174,7 @@ if (isset($_POST['delete'])) {
 
             if (user_add_word_filter($add_new_filter_name, $add_new_match_text, $add_new_replace_text, $add_new_filter_option, $add_new_filter_enabled)) {
 
-                $redirect = "edit_wordfilter.php?webtag=$webtag&updated=true";
-                header_redirect($redirect, gettext("Word Filter updated"));
+                header_redirect("edit_wordfilter.php?webtag=$webtag&updated=true");
                 exit;
             }
         }
@@ -232,8 +230,7 @@ if (isset($_POST['delete'])) {
 
         if (user_update_word_filter($filter_id, $filter_name, $match_text, $replace_text, $filter_option, $filter_enabled)) {
 
-            $redirect = "edit_wordfilter.php?webtag=$webtag&updated=true";
-            header_redirect($redirect, gettext("Word Filter updated"));
+            header_redirect("edit_wordfilter.php?webtag=$webtag&updated=true");
             exit;
 
         } else {

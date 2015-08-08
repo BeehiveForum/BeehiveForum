@@ -372,7 +372,7 @@ if (isset($_POST['save'])) {
     // Update USER_PREFS
     if (user_update_prefs($_SESSION['UID'], $user_prefs, $user_prefs_global)) {
 
-        header_redirect("forum_options.php?webtag=$webtag&updated=true", gettext("Preferences were successfully updated."));
+        header_redirect("forum_options.php?webtag=$webtag&updated=true");
         exit;
 
     } else {

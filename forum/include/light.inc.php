@@ -821,29 +821,29 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
     // If no threads are returned, say something to that effect
     if (isset($_REQUEST['mark_read_success'])) {
 
-        light_html_display_success_msg(gettext("Successfully marked selected threads as read"), '100%', 'left');
+        light_html_display_success_msg(gettext("Successfully marked selected threads as read"));
 
     } else if (!is_array($thread_info)) {
 
         if (is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
 
             $all_discussions_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;folder=$folder&amp;mode=0\">%s</a>", gettext("click here"));
-            light_html_display_warning_msg(sprintf(gettext("No &quot;%s&quot; in &quot;%s&quot; folder. Please select another folder, or %s for all threads."), $available_views[$mode], $folder_title, $all_discussions_link), '100%', 'left');
+            light_html_display_warning_msg(sprintf(gettext("No &quot;%s&quot; in &quot;%s&quot; folder. Please select another folder, or %s for all threads."), $available_views[$mode], $folder_title, $all_discussions_link));
 
         } else {
 
             $all_discussions_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;mode=0\">%s</a>", gettext("click here"));
-            light_html_display_warning_msg(sprintf(gettext("No &quot;%s&quot; available. Please %s for all threads."), $available_views[$mode], $all_discussions_link), '100%', 'left');
+            light_html_display_warning_msg(sprintf(gettext("No &quot;%s&quot; available. Please %s for all threads."), $available_views[$mode], $all_discussions_link));
         }
 
     } else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
-        light_html_display_error_array($error_msg_array, '100%', 'left');
+        light_html_display_error_array($error_msg_array);
 
     } else if (is_numeric($folder) && ($folder_title = folder_get_title($folder))) {
 
         $all_folders_link = sprintf("<a href=\"lthread_list.php?webtag=$webtag&amp;mode=$mode\">%s</a>", gettext("click here"));
-        light_html_display_warning_msg(sprintf(gettext("Viewing &quot;%s&quot; in &quot;%s&quot; only. To view threads in all folders %s."), $available_views[$mode], $folder_title, $all_folders_link), '100%', 'left');
+        light_html_display_warning_msg(sprintf(gettext("Viewing &quot;%s&quot; in &quot;%s&quot; only. To view threads in all folders %s."), $available_views[$mode], $folder_title, $all_folders_link));
     }
 
     if (($page > 1) && !is_numeric($folder)) {
@@ -1150,7 +1150,7 @@ function light_draw_pm_inbox()
 
         if (isset($_POST['pm_delete_confirm'])) {
 
-            if (pm_delete_message($delete_mid, $type)) {
+            if (pm_delete_message($delete_mid)) {
 
                 header_redirect("lpm.php?webtag=$webtag&folder=$current_folder&deleted=true");
                 exit;
@@ -2246,7 +2246,7 @@ function light_form_input_password($name, $value = null, $width = null, $maxleng
     return light_form_field($name, $value, $width, $maxlength, "password", $custom_html, $placeholder);
 }
 
-function light_form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true, $custom_html = null, $class = 'bhselect')
+function light_form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank = true, $custom_html = null)
 {
     if ($show_blank) {
 
@@ -2264,9 +2264,9 @@ function light_form_dob_dropdowns($dob_year, $dob_month, $dob_day, $show_blank =
         $birthday_years = range_keys(1900, date('Y', time()));
     }
 
-    $output = light_form_dropdown_array("dob_day", $birthday_days, $dob_day, $custom_html, $class) . "&nbsp;";
-    $output .= light_form_dropdown_array("dob_month", $birthday_months, $dob_month, $custom_html, $class) . "&nbsp;";
-    $output .= light_form_dropdown_array("dob_year", $birthday_years, $dob_year, $custom_html, $class) . "&nbsp;";
+    $output = light_form_dropdown_array("dob_day", $birthday_days, $dob_day, $custom_html) . "&nbsp;";
+    $output .= light_form_dropdown_array("dob_month", $birthday_months, $dob_month, $custom_html) . "&nbsp;";
+    $output .= light_form_dropdown_array("dob_year", $birthday_years, $dob_year, $custom_html) . "&nbsp;";
 
     return $output;
 }

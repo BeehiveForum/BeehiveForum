@@ -50,7 +50,7 @@ if (isset($_GET['msg']) && validate_msg($_GET['msg'])) {
 
     if (user_update_prefs($_SESSION['UID'], $user_prefs)) {
 
-        header_redirect("messages.php?webtag=$webtag&msg=$msg&setstats=1", gettext("Stats Display Changed"));
+        header_redirect("messages.php?webtag=$webtag&msg=$msg&setstats=1");
         exit;
 
     } else {

@@ -944,12 +944,12 @@ function thread_split($tid, $spid, $split_type, &$error_str)
 
         case THREAD_SPLIT_REPLIES:
 
-            $pid_array = thread_split_get_replies($tid, $spid, $pid_array);
+            $pid_array = thread_split_get_replies($tid, $spid);
             break;
 
         case THREAD_SPLIT_FOLLOWING:
 
-            $pid_array = thread_split_get_following($tid, $spid, $pid_array);
+            $pid_array = thread_split_get_following($tid, $spid);
             break;
     }
 

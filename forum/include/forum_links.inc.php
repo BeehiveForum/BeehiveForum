@@ -153,7 +153,7 @@ function forum_links_fix_url($uri)
 
 function forum_links_draw_dropdown()
 {
-    if (($forum_links_array = forum_links_get_links(false)) !== false) {
+    if (($forum_links_array = forum_links_get_links()) !== false) {
 
         $html = form_dropdown_array('forum_links', $forum_links_array, null, null, "forumlinks");
         return $html;

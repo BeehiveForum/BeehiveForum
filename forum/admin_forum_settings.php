@@ -383,7 +383,7 @@ if (isset($_POST['changepermissions'])) {
         if (forum_save_settings($new_forum_settings)) {
 
             admin_add_log_entry(EDIT_FORUM_SETTINGS, array($new_forum_settings['forum_name']));
-            header_redirect("admin_forum_settings.php?webtag=$webtag&updated=true", gettext("Forum settings successfully updated"));
+            header_redirect("admin_forum_settings.php?webtag=$webtag&updated=true");
 
         } else {
 

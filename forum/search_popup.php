@@ -141,7 +141,7 @@ if (isset($search_query) && strlen(trim($search_query)) > 0) {
 
     if ($type == SEARCH_LOGON) {
 
-        $search_results_array = user_search($search_query, $selected_array);
+        $search_results_array = user_search($search_query);
 
     } else if ($type == SEARCH_THREAD) {
 

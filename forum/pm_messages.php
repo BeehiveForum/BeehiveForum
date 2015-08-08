@@ -232,7 +232,7 @@ if (isset($_POST['pm_delete_messages'])) {
 
     if (sizeof($process_messages) > 0) {
 
-        if (pm_archive_messages($process_messages, $current_folder)) {
+        if (pm_archive_messages($process_messages)) {
 
             header_redirect("pm_messages.php?webtag=$webtag&mid=$mid&folder=$current_folder&page=$page&archived=true#message");
             exit;

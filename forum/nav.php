@@ -96,7 +96,7 @@ if (!session::logged_in()) {
 echo "</div>\n";
 echo "<div class=\"navright\">\n";
 
-echo forum_links_draw_dropdown('openForumLink');
+echo forum_links_draw_dropdown();
 
 echo "</div>\n";
 echo "<div style=\"clear: both\"></div>\n";

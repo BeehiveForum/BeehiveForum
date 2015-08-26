@@ -43,7 +43,7 @@ function form_check_csrf_token()
         return;
     }
 
-    if (in_array(basename($_SERVER['PHP_SELF']), get_csrf_exempt_files())) {
+    if (in_array(basename($_SERVER['PHP_SELF']), get_csrf_exempt_files()) || defined('BH_DISABLE_CSRF')) {
         return;
     }
 

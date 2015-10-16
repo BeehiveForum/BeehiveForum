@@ -146,8 +146,11 @@ function ban_check($user_data, $send_error = true)
                     $user_data['IPADDRESS'],
                     $user_data['LOGON'],
                     $user_data['EMAIL'],
-                    $user_data['UID']
                 );
+
+                if (isset($user_data['UID'])) {
+                    $log_data[] = $user_data['UID'];
+                }
 
                 admin_add_log_entry(BAN_HIT_TYPE_SFS, $log_data);
             }

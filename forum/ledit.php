@@ -22,7 +22,7 @@ USA
 ======================================================================*/
 
 // Bootstrap
-require_once 'boot.php';
+require_once 'lboot.php';
 
 // Required includes
 require_once BH_INCLUDE_PATH . 'admin.inc.php';

@@ -779,7 +779,7 @@ if (!is_numeric($folder) && ($thread_count >= 50)) {
     echo "  <td colspan=\"2\">&nbsp;</td>\n";
     echo "</tr>\n";
     echo "<tr>\n";
-    echo "  <td align=\"left\" valign=\"top\" colspan=\"2\">", html_style_image('current_thread'), "&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page + 1), "\" title=\"", gettext("Show next 50 threads"), "\">", gettext("Next 50 threads"), "</a></td>\n";
+    echo "  <td align=\"left\" valign=\"top\" colspan=\"2\">", html_style_image('forward'), "&nbsp;<a href=\"thread_list.php?webtag=$webtag&amp;mode=$mode&amp;page=", ($page + 1), "\" title=\"", gettext("Show next 50 threads"), "\">", gettext("Next 50 threads"), "</a></td>\n";
     echo "</tr>\n";
 }
 

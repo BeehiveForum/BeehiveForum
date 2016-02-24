@@ -19,7 +19,9 @@
  USA
  ======================================================================*/
 
-$(top.window.beehive).bind('init', function () {
+$(document).bind('beehive.init', function ($event, beehive) {
+
+    'use strict';
 
     $('input.search_input').each(function () {
 
@@ -32,14 +34,14 @@ $(top.window.beehive).bind('init', function () {
         $search_button.bind('click', function () {
 
             var popup_query = {
-                webtag: top.window.beehive.webtag,
+                webtag: beehive.webtag,
                 obj_id: $search_input.prop('id'),
                 type: $search_input.hasClass('search_logon') ? 1 : 2,
                 multi: $search_input.hasClass('allow_multi') ? 'Y' : 'N',
                 selected: $search_input.val()
             };
 
-            window.open('search_popup.php?' + $.param(popup_query), null, top.window.beehive.window_options.join(','));
+            window.open('search_popup.php?' + $.param(popup_query), 'search_popup', beehive.window_options.join(','));
         });
 
         $search_input.before($container);
@@ -70,12 +72,12 @@ $(top.window.beehive).bind('init', function () {
                     $.ajax({
                         cache: false,
                         data: {
-                            webtag: top.window.beehive.webtag,
+                            webtag: beehive.webtag,
                             ajax: true,
                             action: 'user_autocomplete',
                             term: term
                         },
-                        url: top.window.beehive.forum_path + '/ajax.php',
+                        url: 'ajax.php',
                         success: function (data) {
 
                             //noinspection JSUnresolvedVariable
@@ -130,7 +132,7 @@ $(top.window.beehive).bind('init', function () {
 
             var $search_container = $search_input.closest('div.bhinputsearch');
 
-            if ($search_container.length != 1) {
+            if ($search_container.length !== 1) {
                 return;
             }
 

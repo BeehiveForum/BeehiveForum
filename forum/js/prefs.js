@@ -19,7 +19,9 @@
  USA
  ======================================================================*/
 
-$(top.window.beehive).bind('init', function () {
+$(document).bind('beehive.init', function ($event, beehive) {
+
+    'use strict';
 
     $('.upload').each(function () {
 
@@ -29,9 +31,9 @@ $(top.window.beehive).bind('init', function () {
 
         var $select = $upload.closest('td').find('select');
 
-        var $upload_button = $('<a class="button upload">').text(top.window.beehive.lang['upload']);
+        var $upload_button = $('<a class="button upload">').text(beehive.lang.upload);
 
-        var $cancel_button = $('<a class="button cancel" style="display: none">').text(top.window.beehive.lang['cancel']);
+        var $cancel_button = $('<a class="button cancel" style="display: none">').text(beehive.lang.cancel);
 
         $upload.append($upload_button).append('&nbsp;').append($cancel_button);
 
@@ -44,7 +46,7 @@ $(top.window.beehive).bind('init', function () {
             request: {
                 endpoint: 'attachments.php',
                 params: {
-                    webtag: top.window.beehive.webtag
+                    webtag: beehive.webtag
                 },
                 forceMultipart: false,
                 inputName: 'upload[]'
@@ -83,13 +85,13 @@ $(top.window.beehive).bind('init', function () {
                     $.ajax({
                         cache: true,
                         data: {
-                            webtag: top.window.beehive.webtag,
+                            webtag: beehive.webtag,
                             ajax: 'true',
                             action: 'pref_attachment',
                             type: $select.prop('id')
                         },
                         dataType: 'json',
-                        url: top.window.beehive.forum_path + '/ajax.php',
+                        url: 'ajax.php',
                         success: function (data) {
 
                             $option.remove();
@@ -145,7 +147,7 @@ $(top.window.beehive).bind('init', function () {
     $(window).bind('beforeunload', function () {
 
         if ($('form.dirty').length > 0) {
-            return top.window.beehive.lang['preferencesnotsaved'];
+            return beehive.lang.preferencesnotsaved;
         }
     });
 });

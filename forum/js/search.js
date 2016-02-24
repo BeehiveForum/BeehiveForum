@@ -19,7 +19,9 @@
  USA
  ======================================================================*/
 
-$(top.window.beehive).bind('init', function () {
+$(document).bind('beehive.init', function ($event, beehive) {
+
+    'use strict';
 
     var search_logon = false;
 
@@ -31,10 +33,10 @@ $(top.window.beehive).bind('init', function () {
 
         var $search_field = $('input.search_logon');
 
-        var window_options = top.window.beehive.window_options;
+        var window_options = beehive.window_options;
 
         var search_query = {
-            webtag: top.window.beehive.webtag,
+            webtag: beehive.webtag,
             type: '1',
             selection: $search_field.val(),
             obj_name: $search_field.prop('name')
@@ -53,7 +55,7 @@ $(top.window.beehive).bind('init', function () {
     $('#search_submit').bind('click', function () {
 
         //noinspection JSUnresolvedVariable
-        $(this).addClass('button_disabled').prop('disabled', true).val(top.window.beehive.lang.waitdotdotdot);
+        $(this).addClass('button_disabled').prop('disabled', true).val(beehive.lang.waitdotdotdot);
         $('#search_reset').addClass('button_disabled').prop('disabled', true);
         $('#search_form').submit();
     });
@@ -64,13 +66,13 @@ $(top.window.beehive).bind('init', function () {
 
         if (top.document.body.rows) {
             //noinspection JSUnresolvedVariable
-            top.frames[top.window.beehive.frames.main].frames[top.window.beehive.frames.left].location.replace('search.php?webtag=' + top.window.beehive.webtag + '&page=1');
+            top.frames[beehive.frames.main].frames[beehive.frames.left].location.replace('search.php?webtag=' + beehive.webtag + '&page=1');
         } else if (top.document.body.cols) {
             //noinspection JSUnresolvedVariable
-            top.frames[top.window.beehive.frames.left].location.replace('search.php?webtag=$webtag&page=1');
+            top.frames[beehive.frames.left].location.replace('search.php?webtag=$webtag&page=1');
         }
 
         //noinspection JSUnresolvedVariable
-        $(this).find('.success_msg_text').html($.sprintf(top.window.beehive.lang.searchsuccessfullycompleted, ''));
+        $(this).find('.success_msg_text').html(sprintf(beehive.lang.searchsuccessfullycompleted, ''));
     });
 });

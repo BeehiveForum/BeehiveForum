@@ -19,7 +19,9 @@
  USA
  ======================================================================*/
 
-$(top.window.beehive).bind('init', function () {
+$(document).bind('beehive.init', function () {
+
+    'use strict';
 
     $('body').bind('click', function (e) {
 

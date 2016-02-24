@@ -19,19 +19,21 @@
  USA
  ======================================================================*/
 
-$(top.window.beehive).bind('init', function () {
+$(document).bind('beehive.init', function ($event, beehive) {
+
+    'use strict';
 
     $.ajax({
 
         cache: true,
 
         data: {
-            webtag: top.window.beehive.webtag,
+            webtag: beehive.webtag,
             ajax: 'true',
             action: 'get_forum_stats'
         },
 
-        url: top.window.beehive.forum_path + '/ajax.php',
+        url: 'ajax.php',
 
         success: function (data) {
 

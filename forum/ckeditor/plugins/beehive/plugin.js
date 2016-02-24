@@ -24,6 +24,8 @@
 
         requires: ['dialog'],
 
+        lang: ['en'],
+
         init: function (editor) {
 
             //noinspection JSPotentiallyInvalidConstructorUsage
@@ -106,7 +108,7 @@
                             selectedText = selection.getNative();
                         }
 
-                        quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><strong>' + top.window.beehive.lang.code + ':</strong>&nbsp;</div>');
+                        quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><strong>' + editor.lang.beehive.code + '</strong>&nbsp;</div>');
                         codeElement = CKEDITOR.dom.element.createFromHtml('<pre class="code">' + selectedText + '</pre>');
 
                         selection.getRanges()[0].deleteContents();
@@ -171,7 +173,7 @@
                         }
 
                         //noinspection JSUnresolvedVariable
-                        quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><strong>' + top.window.beehive.lang.quote + ':</strong>&nbsp;</div>');
+                        quoteTextElement = CKEDITOR.dom.element.createFromHtml('<div class="quotetext"><strong>' + editor.lang.beehive.quote + '</strong>&nbsp;</div>');
                         quoteElement = CKEDITOR.dom.element.createFromHtml('<div class="quote">' + selectedText + '</div>');
 
                         selection.getRanges()[0].deleteContents();
@@ -251,17 +253,17 @@
             });
 
             editor.ui.addButton('Code', {
-                label: 'Add Code',
+                label: editor.lang.beehive.addCode,
                 command: 'code'
             });
 
             editor.ui.addButton('Quote', {
-                label: 'Add Quote',
+                label: editor.lang.beehive.addQuote,
                 command: 'quote'
             });
 
             editor.ui.addButton('Spoiler', {
-                label: 'Add Spoiler',
+                label: editor.lang.beehive.addSpoiler,
                 command: 'spoiler'
             });
         },

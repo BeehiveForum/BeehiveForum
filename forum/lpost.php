@@ -500,7 +500,7 @@ light_html_draw_top(
     array(
         'title' => gettext('Post message'),
         'js' => array(
-            'js/fineuploader.min.js',
+            'js/lib/fineuploader.min.js',
             'js/attachments.js'
         )
     )

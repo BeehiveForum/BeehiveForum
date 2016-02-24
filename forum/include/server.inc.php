@@ -507,12 +507,3 @@ function server_get_config()
 
     return $config;
 }
-
-function server_get_forum_path()
-{
-    if (defined('BH_FORUM_PATH')) {
-        return rtrim(BH_FORUM_PATH, '/');
-    }
-
-    return rtrim(dirname($_SERVER['PHP_SELF']), '/');
-}

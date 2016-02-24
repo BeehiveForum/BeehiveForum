@@ -19,15 +19,17 @@
  USA
  ======================================================================*/
 
-$(top.window.beehive).bind('init', function () {
+$(document).bind('beehive.init', function ($event, beehive) {
+
+    'use strict';
 
     $('a.emoticon_preview_popup').bind('click', function () {
 
-        var window_options = top.window.beehive.window_options;
+        var window_options = beehive.window_options;
 
         var emoticon_pack = $('select#emoticons').val();
 
-        var emoticon_preview_href = 'display_emoticons.php?webtag=' + top.window.beehive.webtag + '&pack=' + emoticon_pack;
+        var emoticon_preview_href = 'display_emoticons.php?webtag=' + beehive.webtag + '&pack=' + emoticon_pack;
 
         window_options.unshift('width=400,height=500');
 

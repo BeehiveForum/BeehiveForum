@@ -19,11 +19,19 @@
  USA
  ======================================================================*/
 
-$(top.window.beehive).bind('init', function () {
+$(document).bind('beehive.init', function ($event, beehive) {
+
+    'use strict';
 
     $('input#toggle_main').bind('click', function () {
+
         var $checkboxes = $(this).closest('table.posthead').find('input:checkbox');
-        $(this).prop('checked') ? $checkboxes.prop('checked', 'checked') : $checkboxes.removeAttr('checked');
+
+        if ($(this).prop('checked')) {
+            $checkboxes.prop('checked', 'checked');
+        } else {
+            $checkboxes.removeProp('checked');
+        }
     });
 
     var format_file_size = function (filesize) {
@@ -32,16 +40,19 @@ $(top.window.beehive).bind('init', function () {
 
         while (99 < filesize) {
             filesize /= 1024;
-            b++;
+            b = b + 1;
         }
 
-        return (Math.floor(filesize * 100) / 100).toFixed(2) + "B kB MB GB TB PB EB".split(" ")[b];
+        return (Math.floor(filesize * 100) / 100).toFixed(2) + 'B kB MB GB TB PB EB'.split(' ')[b];
     };
 
     var format_file_name = function (filename) {
 
-        33 < filename.length && (filename = filename.slice(0, 19) + "&hellip;" + filename.slice(-13));
-        return filename
+        if (filename.length > 33) {
+            return filename.slice(0, 19) + '&hellip;' + filename.slice(-13);
+        }
+
+        return filename;
     };
 
     $('.attachments').each(function () {
@@ -58,9 +69,9 @@ $(top.window.beehive).bind('init', function () {
 
         var $free_upload_space = $attachments.find('span.free_upload_space');
 
-        $buttons.append($('<a class="button upload">' + top.window.beehive.lang['upload'] + '</a>')).append('&nbsp;');
+        $buttons.append($('<a class="button upload">' + beehive.lang.upload + '</a>')).append('&nbsp;');
 
-        $buttons.append($('<a class="button delete" style="display: none">' + top.window.beehive.lang['delete'] + '</a>'));
+        $buttons.append($('<a class="button delete" style="display: none">' + beehive.lang['delete'] + '</a>'));
 
         var $upload_button = $buttons.find('a.button.upload');
 
@@ -72,7 +83,7 @@ $(top.window.beehive).bind('init', function () {
 
             $.ajax({
                 data: {
-                    webtag: top.window.beehive.webtag,
+                    webtag: beehive.webtag,
                     ajax: true,
                     summary: true,
                     hashes: $.map($selected, function (selected) {
@@ -109,41 +120,41 @@ $(top.window.beehive).bind('init', function () {
             request: {
                 endpoint: 'attachments.php',
                 params: {
-                    webtag: top.window.beehive.webtag
+                    webtag: beehive.webtag
                 },
                 forceMultipart: false,
                 inputName: 'upload[]'
             },
 
             validation: {
-                sizeLimit: top.window.beehive.attachment_size_limit
+                sizeLimit: beehive.attachment_size_limit
             },
 
             callbacks: {
 
                 onSubmit: function (id, filename) {
 
-                    $attachment_list.append($.vsprintf(
-                        '<li class="attachment" data-hash="%(0)s">\
-                           <label>\
-                             <input checked="checked" class="bhinputcheckbox" name="attachment[]" type="checkbox" value="%(0)s" />\
-                             <span class="image"></span>\
-                             <span class="filename">%(1)s</span>\
-                             <span class="progress"></span>\
-                             <span class="retry" title="%(2)s">%(2)s</span>\
-                             <span class="cancel" title="%(3)s">%(3)s</span>\
-                             <span class="filesize"></span>\
-                           </label>\
-                         </li>',
-                        [
+                    $attachment_list.append(
+                        vsprintf(
+                            '<li class="attachment" data-hash="%1$s">\
+                               <label>\
+                                 <input checked="checked" class="bhinputcheckbox" name="attachment[]" type="checkbox" value="%1$s" />\
+                                 <span class="image"></span>\
+                                 <span class="filename">%2$s</span>\
+                                 <span class="progress"></span>\
+                                 <span class="retry" title="%3$s">%3$s</span>\
+                                 <span class="cancel" title="%4$s">%4$s</span>\
+                                 <span class="filesize"></span>\
+                               </label>\
+                             </li>',
                             [
                                 id,
                                 format_file_name(filename),
-                                top.window.beehive.lang.retry,
-                                top.window.beehive.lang.cancel
+                                beehive.lang.retry,
+                                beehive.lang.cancel
                             ]
-                        ]
-                    ));
+                        )
+                    );
                 },
 
                 onUpload: function (id) {
@@ -190,17 +201,15 @@ $(top.window.beehive).bind('init', function () {
 
                     //noinspection JSUnresolvedVariable
                     $filename.html(
-                        '<a href="'
-                        + top.window.beehive.forum_path
-                        + '/get_attachment.php?webtag='
-                        + encodeURIComponent(top.window.beehive.webtag)
-                        + '&amp;hash='
-                        + encodeURIComponent(responseJSON.attachment.hash)
-                        + '&amp;filename='
-                        + encodeURIComponent(filename)
-                        + '">'
-                        + filename
-                        + '</a>'
+                        vsprintf(
+                            '<a href="get_attachment.php?webtag=%s&amp;hash=%s&amp;filename=%s">%s</a>',
+                            [
+                                encodeURIComponent(beehive.webtag),
+                                encodeURIComponent(responseJSON.attachment.hash),
+                                encodeURIComponent(filename),
+                                encodeURIComponent(filename)
+                            ]
+                        )
                     );
 
                     if ($attachments.find('li.attachment input:checkbox:checked').length > 0) {
@@ -210,13 +219,11 @@ $(top.window.beehive).bind('init', function () {
                     }
                 },
 
-                onError: function (id, filename, errorReason) {
+                onError: function (id) {
 
                     $attachment_list.find('li.' + id + '.attachment')
                         .removeClass('uploading')
                         .addClass('error');
-
-                    alert(errorReason);
                 }
             }
         });
@@ -246,20 +253,20 @@ $(top.window.beehive).bind('init', function () {
 
             var $selected = $attachments.find('li.attachment').has('input:checkbox:checked');
 
-            if ($selected.length == 0) {
+            if ($selected.length === 0) {
                 return;
             }
 
             //noinspection JSUnresolvedVariable
-            if (!window.confirm(top.window.beehive.lang.deleteattachmentconfirmation)) {
+            if (!window.confirm(beehive.lang.deleteattachmentconfirmation)) {
                 return;
             }
 
             $.ajax({
                 data: {
-                    webtag: top.window.beehive.webtag,
+                    webtag: beehive.webtag,
                     ajax: true,
-                    delete: true,
+                    'delete': true,
                     hashes: $.map($selected, function (selected) {
                         return $(selected).data('hash');
                     })
@@ -270,7 +277,7 @@ $(top.window.beehive).bind('init', function () {
 
                     $selected.remove();
 
-                    if ($attachments.find('li.attachment.complete').length == 0) {
+                    if ($attachments.find('li.attachment.complete').length === 0) {
                         $delete_button.hide();
                     }
 

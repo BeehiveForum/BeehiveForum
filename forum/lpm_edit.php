@@ -211,7 +211,7 @@ light_html_draw_top(
     array(
         'title' => gettext('Edit Message'),
         'js' => array(
-            'js/fineuploader.min.js'
+            'js/lib/fineuploader.min.js'
         )
     )
 );

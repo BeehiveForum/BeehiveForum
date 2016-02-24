@@ -344,7 +344,7 @@ light_html_draw_top(
     array(
         'title' => $page_title,
         'js' => array(
-            'js/fineuploader.min.js',
+            'js/lib/fineuploader.min.js',
             'js/attachments.js'
         )
     )

@@ -21,11 +21,13 @@
 
 $(document).ready(function () {
 
+    'use strict';
+
     $('#install_button').bind('click', function () {
 
         var confirm_text = '';
 
-        switch (parseInt($('#install_method').val())) {
+        switch (parseInt($('#install_method').val(), 10)) {
 
             case 1:
 

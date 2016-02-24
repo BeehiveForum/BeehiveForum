@@ -19,7 +19,9 @@
  USA
  ======================================================================*/
 
-$(top.window.beehive).bind('init', function () {
+$(document).bind('beehive.init', function ($event, beehive) {
+
+    'use strict';
 
     var $window = $(window),
         $body = $('body'),
@@ -30,7 +32,7 @@ $(top.window.beehive).bind('init', function () {
         navigation_options;
 
     //noinspection JSUnresolvedVariable
-    if (top.window.beehive.auto_scroll_messages == 'Y') {
+    if (beehive.auto_scroll_messages === 'Y') {
 
         navigation_options = $messages.data('navigation')
             .split('_').map(function (option) {
@@ -53,7 +55,7 @@ $(top.window.beehive).bind('init', function () {
             loading_messages = true;
 
             var pid = navigation_options[1] + navigation_options[3],
-                msg = navigation_options[0] + "." + Math.min(navigation_options[2] + 1, pid),
+                msg = navigation_options[0] + '.' + Math.min(navigation_options[2] + 1, pid),
                 last_pid;
 
             last_pid = $messages.find('.message').last()
@@ -68,17 +70,17 @@ $(top.window.beehive).bind('init', function () {
                 cache: true,
 
                 data: {
-                    webtag: top.window.beehive.webtag,
+                    webtag: beehive.webtag,
                     msg: msg
                 },
 
-                url: top.window.beehive.forum_path + ((top.window.beehive.mobile_version) ? '/lmessages.php' : '/messages.php'),
+                url: (beehive.mobile_version) ? '/lmessages.php' : '/messages.php',
 
                 success: function (data) {
 
                     var $data;
 
-                    if (top.window.beehive.mobile_version) {
+                    if (beehive.mobile_version) {
                         $data = $(data).find('div#messages').children();
                     } else {
                         $data = $(data).filter('div#messages').children();
@@ -93,7 +95,7 @@ $(top.window.beehive).bind('init', function () {
 
                     loading_messages = false;
                 }
-            })
+            });
         });
 
         $body.on('click', '.navigation a', function (event) {

@@ -527,7 +527,7 @@ light_html_draw_top(
     array(
         'title' => gettext('Send New PM'),
         'js' => array(
-            'js/fineuploader.min.js',
+            'js/lib/fineuploader.min.js',
             'js/attachments.js'
         )
     )

@@ -19,36 +19,16 @@
  USA
  ======================================================================*/
 
-$(document).bind('beehive.init', function ($event, beehive) {
+$(document).bind('beehive.init', function () {
 
     'use strict';
 
-    $('#text_captcha_reload').bind('click', function () {
+    $('select#forum_links').bind('change', function () {
 
-        $.ajax({
-            cache: true,
-            data: {
-                webtag: beehive.webtag,
-                ajax: 'true',
-                action: 'reload_captcha'
-            },
-            dataType: 'json',
-            url: 'ajax.php',
-            success: function (data) {
+        var link = $(this).val();
 
-                try {
-
-                    $('#text_captcha_image').css('background-image', 'url(' + data.image + ')');
-
-                    //noinspection JSUnresolvedVariable
-                    $('#public_key').val(data.key).prop('maxLength', data.chars);
-                    $('#private_key').val('');
-
-                } catch (exception) {
-
-                    beehive.ajax_error(exception);
-                }
-            }
-        });
+        if (/^[a-z0-9]+:\/\//.test(link)) {
+            window.open(link);
+        }
     });
 });

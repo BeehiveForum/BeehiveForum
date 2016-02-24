@@ -220,11 +220,11 @@ function light_html_draw_top(array $options = array())
         printf("<link rel=\"shortcut icon\" type=\"image/ico\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
     }
 
-    echo html_include_javascript(html_get_forum_file_path('js/jquery.min.js'));
-    echo html_include_javascript(html_get_forum_file_path('js/jquery.mobile.zoom.min.js'));
-    echo html_include_javascript(html_get_forum_file_path('js/jquery.placeholder.min.js'));
-    echo html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.min.js'));
-    echo html_include_javascript(html_get_forum_file_path('js/jquery.url.min.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/lib/jquery.min.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/lib/jquery.mobile.zoom.min.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/lib/jquery.placeholder.min.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/lib/jquery.url.min.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/lib/sprintf.min.js'));
     echo html_include_javascript(html_get_forum_file_path('js/general.js'));
     echo html_include_javascript(html_get_forum_file_path('js/light.js'));
 
@@ -245,8 +245,6 @@ function light_html_draw_top(array $options = array())
     foreach ($js as $js_file) {
         echo html_include_javascript(html_get_forum_file_path($js_file));
     }
-
-    echo html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag"));
 
     echo "</head>\n";
     echo "<body id=\"mobile\">\n";
@@ -1980,6 +1978,10 @@ function light_message_get_vote_form_html($message)
     $webtag = get_webtag();
 
     forum_check_webtag_available($webtag);
+
+    if ($_SESSION['UID'] == $message['FROM_UID']){
+        return '';
+    }
 
     if (isset($message['POST_RATING'])) {
         $html = "  <span class=\"rating\">" . ($message['POST_RATING'] > 0 ? '+' : '') . $message['POST_RATING'] . "/" . $message['POST_RATING_COUNT'] . "</span>";

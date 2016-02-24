@@ -582,6 +582,7 @@ function html_draw_top(array $options = array())
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"", gettext('en-gb'), "\" lang=\"", gettext('en-gb'), "\" dir=\"", gettext('ltr'), "\">\n";
     echo "<head>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
+    echo "<base href=\"./\">\n";
 
     // Default Meta keywords and description.
     $meta_keywords = html_get_forum_keywords();
@@ -735,12 +736,12 @@ function html_draw_top(array $options = array())
 
     if ($base_target) echo "<base target=\"", htmlentities_array($base_target), "\" />\n";
 
-    echo html_include_javascript(html_get_forum_file_path('js/jquery.min.js'));
-    echo html_include_javascript(html_get_forum_file_path('js/jquery.placeholder.min.js'));
-    echo html_include_javascript(html_get_forum_file_path('js/jquery.ui.autocomplete.min.js'));
-    echo html_include_javascript(html_get_forum_file_path('js/jquery.parsequery.min.js'));
-    echo html_include_javascript(html_get_forum_file_path('js/jquery.sprintf.min.js'));
-    echo html_include_javascript(html_get_forum_file_path('js/jquery.url.min.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/lib/jquery.min.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/lib/jquery.placeholder.min.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/lib/jquery.ui.autocomplete.min.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/lib/jquery.parsequery.min.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/lib/jquery.url.min.js'));
+    echo html_include_javascript(html_get_forum_file_path('js/lib/sprintf.min.js'));
     echo html_include_javascript(html_get_forum_file_path('js/general.js'));
 
     if ($frame_set_html === false) {
@@ -795,8 +796,6 @@ function html_draw_top(array $options = array())
     foreach ($js as $js_file) {
         echo html_include_javascript(html_get_forum_file_path($js_file));
     }
-
-    echo html_include_javascript(html_get_forum_file_path("json.php?webtag=$webtag"));
 
     if (($frame_set_html === true) && $google_analytics_code = html_get_google_analytics_code()) {
 
@@ -1429,9 +1428,6 @@ function html_get_forum_file_path($file_path, $allow_cdn = true)
     // Check if the path is in the cache.
     if (!isset($file_path_cache_array[$file_path])) {
 
-        // Get the BH_FORUM_PATH prefix.
-        $forum_path = server_get_forum_path();
-
         // HTTP schema
         $http_scheme = (isset($_SERVER['HTTPS']) && mb_strtolower($_SERVER['HTTPS']) == 'on') ? 'https' : 'http';
 
@@ -1444,7 +1440,7 @@ function html_get_forum_file_path($file_path, $allow_cdn = true)
         if (($allow_cdn === true) && ($cdn_domain = forum_get_content_delivery_path($file_path))) {
             $final_file_path = sprintf('%s://%s/%s', $http_scheme, trim($cdn_domain, '/'), $file_path);
         } else {
-            $final_file_path = rtrim($forum_path, '/') . '/' . $file_path;
+            $final_file_path = $file_path;
         }
 
         // Add final file path to the cache.

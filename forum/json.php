@@ -98,7 +98,6 @@ $json_data = array(
     'emoticons' => $user_emoticons,
     'top_frame' => html_get_top_page(),
     'left_frame_width' => max(100, $left_frame_width),
-    'forum_path' => server_get_forum_path(),
     'use_mover_spoiler' => (isset($_SESSION['USE_MOVER_SPOILER']) && $_SESSION['USE_MOVER_SPOILER'] == 'Y') ? 'Y' : 'N',
     'show_share_links' => (isset($_SESSION['SHOW_SHARE_LINKS']) && $_SESSION['SHOW_SHARE_LINKS'] == 'Y') ? 'Y' : 'N',
     'auto_scroll_messages' => (isset($_SESSION['AUTO_SCROLL_MESSAGES']) && $_SESSION['AUTO_SCROLL_MESSAGES'] == 'Y') ? 'Y' : 'N',
@@ -120,28 +119,11 @@ $json_data = array(
     )
 );
 
-// Decide on the correct Content-Type and encoding
-// of the content. This allows Beehive to reload the
-// JSON data via the same script, either for use
-// in a <script> tag or via AJAX.
-if (isset($_GET['json'])) {
-
-    $content_type = 'application/json';
-
-    $content = json_encode($json_data);
-
-} else {
-
-    $content_type = 'text/javascript';
-
-    $content = sprintf('top.window.beehive = $.extend({}, top.window.beehive, %s);
-                        $(document).ready(function() {
-                          $(top.window.beehive).trigger("init");
-                        });', json_encode($json_data));
-}
+// JSON encode the data
+$content = json_encode($json_data);
 
 // Send correct Content-Type header
-header(sprintf('Content-type: %s; charset=UTF-8', $content_type), true);
+header('Content-type: application/json; charset=UTF-8', true);
 
 // Check the cache of the file.
 cache_check_last_modified(time(), md5($_SESSION['UID'] . $_SESSION['LOGON'] . $content));

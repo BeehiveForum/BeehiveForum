@@ -19,40 +19,16 @@
  USA
  ======================================================================*/
 
-$(top.window.beehive).bind('init', function () {
+$(document).bind('beehive.init', function ($event, beehive) {
+
+    'use strict';
 
     var $body = $('body'),
         $header = $('div#header'),
         $menu = $header.find('ul');
 
-    function render_message_form() {
-
-        var $message_vote_form = $(this);
-
-        $message_vote_form.addClass('popup');
-
-        /*rating_position = $rating_text.position();
-
-         $vote_down.css(
-         {
-         left: (($rating_text.width()) * 4) + (rating_position.left * 2),
-         top: (($rating_text.height() - $vote_down.height()) / 2) * 4
-         }
-         );
-
-         $vote_up.css(
-         {
-         left: (($rating_text.width() + $vote_down.width()) * 4) + (rating_position.left * 3),
-         top: (($rating_text.height() - $vote_down.height()) / 2) * 4
-         }
-         );
-
-         $message_vote_form.css(
-         {
-         width: (($vote_up.width() + $vote_down.width() + $rating_text.width()) * 4) + (rating_position.left * 4),
-         height: $rating_text.height() * 4
-         }
-         );*/
+    function render_message_form(element) {
+        $(element).addClass('popup');
     }
 
     $body.bind('click', function () {
@@ -67,7 +43,7 @@ $(top.window.beehive).bind('init', function () {
             $menuItem = $body.find('div.menu.' + this.className),
             right = $menu.width() - $link.position().left - $menuItem.outerWidth(true);
 
-        if ($menuItem.length == 0) {
+        if ($menuItem.length === 0) {
             return;
         }
 
@@ -98,7 +74,7 @@ $(top.window.beehive).bind('init', function () {
     $body.on('click', '.message_vote_form', function (event) {
 
         event.stopPropagation();
-        render_message_form.call(this);
+        render_message_form(this);
     });
 
     $body.on('click', '.message_vote_form.popup span.vote', function (event) {
@@ -113,7 +89,7 @@ $(top.window.beehive).bind('init', function () {
             cache: true,
 
             data: {
-                webtag: top.window.beehive.webtag,
+                webtag: beehive.webtag,
                 ajax: 'true',
                 action: 'post_vote',
                 post_rating: $button.hasClass('vote_up') ? 1 : -1,
@@ -121,18 +97,18 @@ $(top.window.beehive).bind('init', function () {
                 msg: $container.data('msg')
             },
 
-            url: top.window.beehive.forum_path + '/ajax.php',
+            url: 'ajax.php',
 
             success: function (data) {
 
                 try {
 
                     $container.html(data).show();
-                    render_message_form.call($container[0]);
+                    render_message_form($container[0]);
 
                 } catch (exception) {
 
-                    top.window.beehive.ajax_error(exception);
+                    beehive.ajax_error(exception);
                 }
             }
         });

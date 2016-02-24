@@ -19,7 +19,9 @@
  USA
  ======================================================================*/
 
-$(top.window.beehive).bind('init', function () {
+$(document).bind('beehive.init', function ($event, beehive) {
+
+    'use strict';
 
     $('.emoticon_preview .emoticon').bind('click', function () {
 
@@ -40,10 +42,10 @@ $(top.window.beehive).bind('init', function () {
             'alt': $emoticon.prop('title')
         });
 
-        if (top.window.beehive.active_editor) {
-            top.window.beehive.active_editor.insertText(' ');
-            top.window.beehive.active_editor.insertElement(element);
-            top.window.beehive.active_editor.insertText(' ');
+        if (beehive.active_editor) {
+            beehive.active_editor.insertText(' ');
+            beehive.active_editor.insertElement(element);
+            beehive.active_editor.insertText(' ');
         }
     });
 });

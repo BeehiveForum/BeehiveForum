@@ -765,21 +765,20 @@ function install_set_timezones()
 
 function install_draw_top()
 {
-    $forum_path = rtrim(server_get_forum_path(), '/');
-
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
     echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en-gb\" lang=\"en-gb\" dir=\"ltr\">\n";
     echo "<head>\n";
     echo "<title>Beehive Forum ", BEEHIVE_VERSION, " Installation</title>\n";
     echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-    echo "<link rel=\"icon\" href=\"", $forum_path, "/styles/images/favicon.ico\" type=\"image/ico\" />\n";
-    echo "<link rel=\"stylesheet\" href=\"", $forum_path, "/styles/default/style.css?", md5(uniqid(rand())), "\" type=\"text/css\" />\n";
+    echo "<base href=\"../\">\n";
+    echo "<link rel=\"icon\" href=\"styles/default/images/favicon.ico\" type=\"image/ico\" />\n";
+    echo "<link rel=\"stylesheet\" href=\"styles/default/style.css\" type=\"text/css\" />\n";
 
     $arg_array = func_get_args();
 
     foreach ($arg_array as $script_file_path) {
-        echo "<script type=\"text/javascript\" src=\"", $forum_path, "/", $script_file_path, "\"></script>\n";
+        echo "<script type=\"text/javascript\" src=\"", $script_file_path, "\"></script>\n";
     }
 
     echo "</head>\n";

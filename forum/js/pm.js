@@ -19,7 +19,9 @@
  USA
  ======================================================================*/
 
-$(top.window.beehive).bind('init', function () {
+$(document).bind('beehive.init', function ($event, beehive) {
+
+    'use strict';
 
     $('div#page_content select#folder').bind('change', function () {
         $(this).closest('form').submit();
@@ -27,14 +29,14 @@ $(top.window.beehive).bind('init', function () {
 
     $('#pm_delete_messages,#pm_save_messages,#pm_export_messages').bind('click', function () {
 
-        if ($('input[name^="process"]:checked').length == 0) {
+        if ($('input[name^="process"]:checked').length === 0) {
             return false;
         }
 
-        if ($(this).prop('id') == 'pm_delete_messages') {
+        if ($(this).prop('id') === 'pm_delete_messages') {
 
             //noinspection JSUnresolvedVariable
-            if (!window.confirm(top.window.beehive.lang.deletemessagesconfirmation)) {
+            if (!window.confirm(beehive.lang.deletemessagesconfirmation)) {
                 return false;
             }
 
@@ -48,10 +50,10 @@ $(top.window.beehive).bind('init', function () {
 
         if (top.document.body.rows) {
             //noinspection JSUnresolvedVariable
-            top.frames[top.window.beehive.frames.main].frames[top.window.beehive.frames.pm_folders].location.reload();
+            top.frames[beehive.frames.main].frames[beehive.frames.pm_folders].location.reload();
         } else if (top.document.body.cols) {
             //noinspection JSUnresolvedVariable
-            top.frames[top.window.beehive.frames.pm_folders].location.reload();
+            top.frames[beehive.frames.pm_folders].location.reload();
         }
 
         return false;
@@ -60,12 +62,12 @@ $(top.window.beehive).bind('init', function () {
     $.ajax({
         cache: true,
         data: {
-            webtag: top.window.beehive.webtag,
+            webtag: beehive.webtag,
             ajax: true,
             action: 'pm_check_messages'
         },
         dataType: 'json',
-        url: top.window.beehive.forum_path + '/ajax.php',
+        url: 'ajax.php',
         success: function (data) {
 
             try {
@@ -76,12 +78,12 @@ $(top.window.beehive).bind('init', function () {
                 if (data.notification && window.confirm(data.notification)) {
 
                     //noinspection JSUnresolvedVariable
-                    top.frames[top.window.beehive.frames.main].location.replace('pm.php?webtag=' + top.window.beehive.webtag);
+                    top.frames[beehive.frames.main].location.replace('pm.php?webtag=' + beehive.webtag);
                 }
 
             } catch (exception) {
 
-                top.window.beehive.ajax_error(exception);
+                beehive.ajax_error(exception);
             }
         }
     });

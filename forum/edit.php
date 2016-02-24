@@ -347,7 +347,7 @@ html_draw_top(
             'js/emoticons.js',
             'js/post.js',
             'ckeditor/ckeditor.js',
-            'js/fineuploader.min.js'
+            'js/lib/fineuploader.min.js'
         ),
         'class' => 'window_title max_width'
     )

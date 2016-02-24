@@ -82,32 +82,25 @@
                 minWidth: 485,
                 onShow: function () {
 
-                    var inputElement = this.getContentElement('general', 'contents')
-                            .getInputElement(),
+                    var inputElement = this.getContentElement('general', 'contents').getInputElement(),
                         selectedElement = this.getSelectedElement(),
                         originalElement;
 
                     if (selectedElement && selectedElement.data('cke-real-element-type') && selectedElement.data('cke-real-element-type') == 'youtube') {
 
                         this.fakeImage = selectedElement;
-
                         originalElement = editor.restoreRealElement(selectedElement);
-
                         inputElement.setValue(originalElement.getOuterHtml());
-
                         this.showPreview(inputElement.getValue());
                     }
                 },
                 onOk: function () {
 
                     var self = this,
-                        embedCode = this.getContentElement('general', 'contents')
-                            .getInputElement()
-                            .getValue(),
+                        embedCode = this.getContentElement('general', 'contents').getInputElement().getValue(),
                         realElement = checkEmbedCode(embedCode, true),
                         fakeElement = editor.createFakeElement(realElement, 'cke_youtube', 'youtube', false),
-                        videoCode = realElement.getAttribute('src')
-                            .match(/^http(s)?:\/\/www\.youtube\.com\/embed\/(.+)/);
+                        videoCode = realElement.getAttribute('src').match(/^http(s)?:\/\/www\.youtube\.com\/embed\/(.+)/);
 
                     fakeElement.setAttribute('src', 'http://img.youtube.com/vi/' + videoCode[2] + '/0.jpg');
                     fakeElement.setAttribute('height', realElement.getAttribute('height') || 360);
@@ -117,8 +110,7 @@
                     if (self.fakeImage) {
 
                         fakeElement.replace(self.fakeImage);
-                        editor.getSelection()
-                            .selectElement(fakeElement);
+                        editor.getSelection().selectElement(fakeElement);
 
                     } else {
 
@@ -134,7 +126,7 @@
                         children: [{
                             id: 'contents',
                             type: 'textarea',
-                            label: 'Youtube Embed Code or URL:',
+                            label: editor.lang.youtube.youTubeEmbedCodeOrURL,
                             cols: 15,
                             rows: 3,
                             onLoad: function () {

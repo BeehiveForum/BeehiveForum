@@ -542,7 +542,7 @@ html_draw_top(
             'js/search.js',
             'js/search_popup.js',
             'ckeditor/ckeditor.js',
-            'js/fineuploader.min.js'
+            'js/lib/fineuploader.min.js'
         ),
         'class' => 'window_title max_width'
     )

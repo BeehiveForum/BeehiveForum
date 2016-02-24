@@ -41,7 +41,7 @@ html_draw_top(
     array(
         'class' => 'navpage',
         'js' => array(
-            'js/forumlinks.js'
+            'js/forum_links.js'
         )
     )
 );

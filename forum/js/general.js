@@ -19,506 +19,519 @@
  USA
  ======================================================================*/
 
-top.window.beehive = {
+$(document).ready(
+    function () {
 
-    window_options: [
-        'toolbox=0',
-        'location=0',
-        'directories=0',
-        'status=0',
-        'menubar=0',
-        'resizeable=yes',
-        'scrollbars=yes'
-    ],
+        'use strict';
 
-    ajax_error: function (message) {
+        var beehive = {
 
-        if ((typeof(console) !== 'undefined') && (typeof(console.log) !== 'undefined')) {
-            console.log('AJAX ERROR', message);
-        }
-    },
-
-    get_resize_width: function () {
-
-        var $max_width = $(this).closest('.max_width[width]');
-
-        if ($max_width.length > 0) {
-            return $max_width.prop('width');
-        }
-
-        return $(this).find('body').prop('clientWidth');
-    },
-
-    reload_frame: function (context, frame_name) {
-
-        $(context).find('frame').each(function () {
-
-            if ($(this).prop('name') == frame_name) {
-
-                $(this).prop('src', $(this).prop('src'));
-                return false;
-            }
-
-            return top.window.beehive.reload_frame(this.contentDocument, frame_name);
-        });
-    },
-
-    reload_top_frame: function (context, src) {
-
-        $(context).find('frame').each(function () {
-
-            //noinspection JSUnresolvedVariable
-            if ($(this).prop('name') == top.window.beehive.frames.ftop) {
-
-                $(this).prop('src', src);
-                return false;
-            }
-
-            return top.window.beehive.reload_top_frame(this.contentDocument, src);
-        });
-    },
-
-    reload_user_font: function (context) {
-
-        $(context).find('frame').each(function () {
-
-            //noinspection JSUnresolvedVariable
-            if (!$.inArray($(this).prop('name'), top.window.beehive.frames)) {
-                return true;
-            }
-
-            return top.window.beehive.reload_user_font(this.contentDocument);
-        });
-
-        var $user_font = $(context.head).find('link#user_font');
-
-        $user_font.prop('href', top.window.beehive.forum_path + '/font_size.php?webtag=' + top.window.beehive.webtag + '&_=' + new Date().getTime() / 1000);
-    },
-
-    active_editor: null,
-
-    init_editor: function () {
-
-        CKEDITOR.on('dialogDefinition', function (event) {
-
-            var dialogName = event.data.name;
-            var dialogDefinition = event.data.definition;
-
-            switch (dialogName) {
-
-                case 'link':
-
-                    dialogDefinition.removeContents('target');
-                    dialogDefinition.removeContents('advanced');
-                    dialogDefinition.minHeight = 150;
-                    break;
-
-                case 'image':
-
-                    dialogDefinition.removeContents('Link');
-                    dialogDefinition.removeContents('advanced');
-                    break;
-
-                case 'flash':
-
-                    dialogDefinition.removeContents('advanced');
-                    dialogDefinition.getContents('properties').remove('menu');
-                    dialogDefinition.getContents('properties').remove('scale');
-                    dialogDefinition.getContents('properties').remove('align');
-                    dialogDefinition.getContents('properties').remove('bgcolor');
-                    dialogDefinition.getContents('properties').remove('base');
-                    dialogDefinition.getContents('properties').remove('flashvars');
-                    dialogDefinition.getContents('properties').remove('allowScriptAccess');
-                    dialogDefinition.getContents('properties').remove('allowFullScreen');
-                    break;
-
-                case 'allMedias':
-
-                    dialogDefinition.getContents('properties').remove('allowScriptAccess');
-                    dialogDefinition.getContents('properties').remove('allowFullScreen');
-                    dialogDefinition.getContents('properties').remove('scale');
-                    dialogDefinition.getContents('properties').remove('align');
-                    dialogDefinition.getContents('properties').remove('play');
-                    dialogDefinition.removeContents('advanced');
-                    break;
-            }
-        });
-
-        top.window.beehive.init_editor = function () {
-        };
-    },
-
-    editor: function () {
-
-        var $editor = $(this);
-
-        var editor_id = $editor.prop('id');
-
-        //noinspection JSUnresolvedVariable
-        var skin = top.window.beehive.forum_path + '/styles/' + top.window.beehive.user_style + '/editor/';
-
-        //noinspection JSUnresolvedVariable
-        var emoticons = top.window.beehive.forum_path + '/emoticons/' + top.window.beehive.emoticons + '/style.css';
-
-        var contents = skin + 'content.css';
-
-        var toolbar = $editor.hasClass('mobile') ? 'mobile' : 'full';
-
-        //noinspection JSCheckFunctionSignatures
-        $('<div id="toolbar">').insertBefore($editor);
-
-        var editor = CKEDITOR.replace(editor_id, {
-            allowedContent: true,
-            browserContextMenuOnCtrl: true,
-            contentsCss: [
-                emoticons,
-                contents
+            window_options: [
+                'toolbox=0',
+                'location=0',
+                'directories=0',
+                'status=0',
+                'menubar=0',
+                'resizeable=yes',
+                'scrollbars=yes'
             ],
-            customConfig: '',
-            disableNativeSpellChecker: false,
-            enterMode: CKEDITOR.ENTER_BR,
-            extraPlugins: 'fakeobjects,sharedspace,beehive,youtube,allMedias',
-            font_defaultLabel: 'Verdana',
-            fontSize_defaultLabel: '12',
-            height: $editor.height() - 35,
-            language: 'en',
-            removePlugins: 'elementspath,contextmenu,tabletools,liststyle,iframe',
-            resize_maxWidth: '100%',
-            resize_minWidth: '100%',
-            shiftEnterMode: CKEDITOR.ENTER_BR,
-            skin: 'beehive,' + skin,
-            startupFocus: $editor.hasClass('focus'),
-            sharedSpaces: {
-                top: 'toolbar'
-            },
-            toolbarCanCollapse: false,
-            toolbar_mobile: [
-                [
-                    'Bold',
-                    'Italic',
-                    'Underline'
-                ]
-            ],
-            toolbar_full: [
-                [
-                    'Bold',
-                    'Italic',
-                    'Underline',
-                    'Strike',
-                    'Superscript',
-                    'Subscript',
-                    'JustifyLeft',
-                    'JustifyCenter',
-                    'JustifyRight',
-                    'NumberedList',
-                    'BulletedList',
-                    'Indent',
-                    'Code',
-                    'Quote',
-                    'Spoiler',
-                    'HorizontalRule',
-                    'Image',
-                    'Youtube',
-                    'Flash',
-                    'Link',
-                    'allMedias'
-                ],
-                [
-                    'Font',
-                    'FontSize',
-                    'TextColor',
-                    'Source'
-                ]
-            ],
-            toolbar: toolbar,
-            width: $editor.width()
-        });
 
-        top.window.beehive.init_editor();
+            ajax_error: function (message) {
 
-        if (editor) {
-
-            editor.on('focus', function (event) {
-                if (event.editor) {
-                    top.window.beehive.active_editor = event.editor;
+                if ((typeof(console) !== 'undefined') && (typeof(console.log) !== 'undefined')) {
+                    console.log('AJAX ERROR', message);
                 }
-            });
-        }
+            },
 
-        if ($editor.hasClass('quick_reply')) {
+            get_resize_width: function (element) {
 
-            var $post_button = $editor.closest('form').find('input#post');
+                var $max_width = $(element).closest('.max_width[width]');
 
-            if (editor) {
+                if ($max_width.length > 0) {
+                    return $max_width.prop('width');
+                }
 
-                editor.on('key', function (event) {
+                return $(this).find('body').prop('clientWidth');
+            },
 
-                    if (event.data.keyCode != CKEDITOR.CTRL + 13) {
-                        return;
+            reload_frame: function (context, frame_name) {
+
+                $(context).find('frame').each(function () {
+
+                    if ($(this).prop('name') === frame_name) {
+
+                        $(this).prop('src', $(this).prop('src'));
+                        return false;
                     }
 
-                    if (event.editor.getData().length == 0) {
-                        return;
-                    }
-
-                    $editor.val(event.editor.getData());
-
-                    $post_button.click();
+                    return beehive.reload_frame(this.contentDocument, frame_name);
                 });
+            },
+
+            reload_top_frame: function (context, src) {
+
+                $(context).find('frame').each(function () {
+
+                    //noinspection JSUnresolvedVariable
+                    if ($(this).prop('name') === beehive.frames.ftop) {
+
+                        $(this).prop('src', src);
+                        return false;
+                    }
+
+                    return beehive.reload_top_frame(this.contentDocument, src);
+                });
+            },
+
+            reload_user_font: function (context) {
+
+                $(context).find('frame').each(function () {
+
+                    //noinspection JSUnresolvedVariable
+                    if (!$.inArray($(this).prop('name'), beehive.frames)) {
+                        return true;
+                    }
+
+                    return beehive.reload_user_font(this.contentDocument);
+                });
+
+                var $user_font = $(context.head).find('link#user_font');
+
+                $user_font.prop('href', 'font_size.php?webtag=' + beehive.webtag + '&_=' + new Date().getTime() / 1000);
+            },
+
+            active_editor: null,
+
+            init_editor: function () {
+
+                CKEDITOR.on('dialogDefinition', function (event) {
+
+                    var dialogName = event.data.name;
+                    var dialogDefinition = event.data.definition;
+
+                    switch (dialogName) {
+
+                        case 'link':
+
+                            dialogDefinition.removeContents('target');
+                            dialogDefinition.removeContents('advanced');
+                            dialogDefinition.minHeight = 150;
+                            break;
+
+                        case 'image':
+
+                            dialogDefinition.removeContents('Link');
+                            dialogDefinition.removeContents('advanced');
+                            break;
+
+                        case 'flash':
+
+                            dialogDefinition.removeContents('advanced');
+                            dialogDefinition.getContents('properties').remove('menu');
+                            dialogDefinition.getContents('properties').remove('scale');
+                            dialogDefinition.getContents('properties').remove('align');
+                            dialogDefinition.getContents('properties').remove('bgcolor');
+                            dialogDefinition.getContents('properties').remove('base');
+                            dialogDefinition.getContents('properties').remove('flashvars');
+                            dialogDefinition.getContents('properties').remove('allowScriptAccess');
+                            dialogDefinition.getContents('properties').remove('allowFullScreen');
+                            break;
+
+                        case 'allMedias':
+
+                            dialogDefinition.getContents('properties').remove('allowScriptAccess');
+                            dialogDefinition.getContents('properties').remove('allowFullScreen');
+                            dialogDefinition.getContents('properties').remove('scale');
+                            dialogDefinition.getContents('properties').remove('align');
+                            dialogDefinition.getContents('properties').remove('play');
+                            dialogDefinition.removeContents('advanced');
+                            break;
+                    }
+                });
+
+                beehive.init_editor = function () {
+                };
+            },
+
+            editor: function () {
+
+                var $editor = $(this);
+
+                var editor_id = $editor.prop('id');
+
+                //noinspection JSUnresolvedVariable
+                var skin = '../styles/' + beehive.user_style + '/editor/';
+
+                //noinspection JSUnresolvedVariable
+                var emoticons = '../emoticons/' + beehive.emoticons + '/style.css';
+
+                var contents = skin + 'content.css';
+
+                var toolbar = $editor.hasClass('mobile') ? 'mobile' : 'full';
+
+                //noinspection JSCheckFunctionSignatures
+                $('<div id="toolbar">').insertBefore($editor);
+
+                var editor = CKEDITOR.replace(editor_id, {
+                    allowedContent: true,
+                    browserContextMenuOnCtrl: true,
+                    contentsCss: [
+                        emoticons,
+                        contents
+                    ],
+                    customConfig: '',
+                    disableNativeSpellChecker: false,
+                    enterMode: CKEDITOR.ENTER_BR,
+                    extraPlugins: 'fakeobjects,sharedspace,beehive,youtube,allMedias',
+                    font_defaultLabel: 'Verdana',
+                    fontSize_defaultLabel: '12',
+                    height: $editor.height() - 35,
+                    language: 'en',
+                    removePlugins: 'elementspath,contextmenu,tabletools,liststyle,iframe',
+                    resize_maxWidth: '100%',
+                    resize_minWidth: '100%',
+                    shiftEnterMode: CKEDITOR.ENTER_BR,
+                    skin: 'beehive,' + skin,
+                    startupFocus: $editor.hasClass('focus'),
+                    sharedSpaces: {
+                        top: 'toolbar'
+                    },
+                    toolbarCanCollapse: false,
+                    toolbar_mobile: [
+                        [
+                            'Bold',
+                            'Italic',
+                            'Underline'
+                        ]
+                    ],
+                    toolbar_full: [
+                        [
+                            'Bold',
+                            'Italic',
+                            'Underline',
+                            'Strike',
+                            'Superscript',
+                            'Subscript',
+                            'JustifyLeft',
+                            'JustifyCenter',
+                            'JustifyRight',
+                            'NumberedList',
+                            'BulletedList',
+                            'Indent',
+                            'Code',
+                            'Quote',
+                            'Spoiler',
+                            'HorizontalRule',
+                            'Image',
+                            'Youtube',
+                            'Flash',
+                            'Link',
+                            'allMedias'
+                        ],
+                        [
+                            'Font',
+                            'FontSize',
+                            'TextColor',
+                            'Source'
+                        ]
+                    ],
+                    toolbar: toolbar,
+                    width: $editor.width()
+                });
+
+                beehive.init_editor();
+
+                if (editor) {
+
+                    editor.on('focus', function (event) {
+                        if (event.editor) {
+                            beehive.active_editor = event.editor;
+                        }
+                    });
+                }
+
+                if ($editor.hasClass('quick_reply')) {
+
+                    var $post_button = $editor.closest('form').find('input#post');
+
+                    if (editor) {
+
+                        editor.on('key', function (event) {
+
+                            if (event.data.keyCode !== CKEDITOR.CTRL + 13) {
+                                return;
+                            }
+
+                            if (event.editor.getData().length === 0) {
+                                return;
+                            }
+
+                            $editor.val(event.editor.getData());
+
+                            $post_button.click();
+                        });
+                    }
+                }
+            },
+
+            mobile_version: false,
+
+            use_mover_spoiler: 'N',
+
+            lang: {}
+        };
+
+        $.ajaxSetup({
+            cache: true,
+            error: function (data) {
+                beehive.ajax_error(data);
             }
-        }
-    },
+        });
 
-    mobile_version: false,
+        $(document).bind('beehive.init', function ($event, beehive) {
 
-    use_mover_spoiler: 'N',
+            var frame_resize_timeout;
 
-    forum_path: null,
+            beehive.mobile_version = $('body#mobile').length > 0;
 
-    lang: {}
-};
+            $('form[method="get"]').append(
+                $('<input type="hidden" name="_">').val((new Date()).getTime())
+            );
 
-$.ajaxSetup({
+            $('.move_up_ctrl_disabled, .move_down_ctrl_disabled').bind('click', function () {
+                return false;
+            });
 
-    cache: true,
+            var $body = $('body').on('click', 'a.popup', function () {
 
-    error: function (data) {
-        top.window.beehive.ajax_error(data);
-    }
-});
+                var class_names = $(this).prop('class').split(' ');
 
-$(top.window.beehive).bind('init', function () {
+                var window_options = beehive.window_options;
 
-    var frame_resize_timeout;
+                var dimensions;
 
-    top.window.beehive.mobile_version = $('body#mobile').length > 0;
+                for (var key = 0; key < class_names.length; key = key + 1) {
 
-    $('form[method="get"]').append(
-        $('<input type="hidden" name="_">').val((new Date()).getTime())
-    );
+                    dimensions = /^([0-9]+)x([0-9]+)$/.exec(class_names[key]);
 
-    $('.move_up_ctrl_disabled, .move_down_ctrl_disabled').bind('click', function () {
-        return false;
-    });
+                    if (dimensions && dimensions[1] && dimensions[2]) {
 
-    var $body = $('body').on('click', 'a.popup', function () {
+                        window_options.unshift('width=' + dimensions[1], 'height=' + dimensions[2]);
+                    }
+                }
 
-        var class_names = $(this).prop('class').split(' ');
+                window.open($(this).prop('href'), $(this).prop('id'), window_options.join(','));
 
-        var window_options = top.window.beehive.window_options;
+                return false;
+            });
 
-        var dimensions;
+            $('input#close_popup').bind('click', function () {
+                window.close();
+            });
 
-        for (var key = 0; key < class_names.length; key++) {
+            $('select.user_in_thread_dropdown').bind('change', function () {
+                $('input[name="to_radio"][value="in_thread"]').prop('checked', true);
+            });
 
-            dimensions = /^([0-9]+)x([0-9]+)$/.exec(class_names[key]);
+            $('select.recent_user_dropdown').bind('change', function () {
+                $('input[name="to_radio"][value="recent"]').prop('checked', true);
+            });
 
-            if (dimensions && dimensions[1] && dimensions[2]) {
+            $('select.friends_dropdown').bind('change', function () {
+                $('input[name="to_radio"][value="friends"]').prop('checked', true);
+            });
 
-                window_options.unshift('width=' + dimensions[1], 'height=' + dimensions[2]);
+            $('input.post_to_others').bind('focus', function () {
+                $('input[name="to_radio"][value="others"]').prop('checked', true);
+            });
+
+            $('input#toggle_all').bind('change', function () {
+                $(this).closest('form').find('input:checkbox').prop('checked', $(this).is(':checked'));
+            });
+
+            $body.on('click', 'a.font_size_larger, a.font_size_smaller', function () {
+
+                var $this = $(this);
+
+                var $parent = $this.closest('td');
+
+                //noinspection JSUnresolvedVariable
+                if (beehive.uid === 0) {
+                    return true;
+                }
+
+                $.ajax({
+                    cache: true,
+                    data: {
+                        webtag: beehive.webtag,
+                        ajax: 'true',
+                        action: $this.prop('class'),
+                        msg: $this.data('msg')
+                    },
+                    dataType: 'json',
+                    url: 'ajax.php',
+                    success: function (data) {
+
+                        try {
+
+                            $parent.html(data.html);
+
+                            beehive.font_size = data.font_size;
+
+                            beehive.reload_user_font(top.document);
+
+                            $(top.document).find('frameset#index').prop('rows', '60,' + Math.max(beehive.font_size * 2, 22) + ',*');
+
+                        } catch (exception) {
+
+                            beehive.ajax_error(exception);
+                        }
+                    }
+                });
+
+                return false;
+            });
+
+            $('#preferences_updated').each(function () {
+
+                //noinspection JSUnresolvedVariable
+                beehive.reload_frame(top.document, beehive.frames.fnav);
+
+                //noinspection JSUnresolvedVariable
+                beehive.reload_frame(top.document, beehive.frames.left);
+
+                //noinspection JSUnresolvedVariable
+                beehive.reload_top_frame(top.document, beehive.top_frame);
+            });
+
+            $('input#print').bind('click', function () {
+                window.print();
+            });
+
+            $('a.button').bind('mousedown', function () {
+                $(this).css('border', '1px inset');
+            }).bind('mouseup mouseout', function () {
+                $(this).css('border', '1px outset');
+            });
+
+            if ($body.hasClass('window_title')) {
+                top.document.title = document.title;
             }
-        }
 
-        window.open($(this).prop('href'), $(this).prop('id'), window_options.join(','));
+            $(window).bind('resize', function () {
 
-        return false;
-    });
+                var frame_name = $(this).prop('name');
 
-    $('input#close_popup').bind('click', function () {
-        window.close();
-    });
+                //noinspection JSUnresolvedVariable
+                if ((frame_name !== beehive.frames.left) && (frame_name !== beehive.frames.pm_folders)) {
+                    return;
+                }
 
-    $('select.user_in_thread_dropdown').bind('change', function () {
-        $('input[name="to_radio"][value="in_thread"]').prop('checked', true);
-    });
+                //noinspection JSUnresolvedVariable
+                if (beehive.uid === 0) {
+                    return;
+                }
 
-    $('select.recent_user_dropdown').bind('change', function () {
-        $('input[name="to_radio"][value="recent"]').prop('checked', true);
-    });
+                window.clearTimeout(frame_resize_timeout);
 
-    $('select.friends_dropdown').bind('change', function () {
-        $('input[name="to_radio"][value="friends"]').prop('checked', true);
-    });
+                frame_resize_timeout = window.setTimeout(function () {
 
-    $('input.post_to_others').bind('focus', function () {
-        $('input[name="to_radio"][value="others"]').prop('checked', true);
-    });
+                    $.ajax({
 
-    $('input#toggle_all').bind('change', function () {
-        $(this).closest('form').find('input:checkbox').prop('checked', $(this).is(':checked'));
-    });
+                        cache: true,
 
-    $body.on('click', 'a.font_size_larger, a.font_size_smaller', function () {
+                        data: {
+                            webtag: beehive.webtag,
+                            ajax: true,
+                            action: 'frame_resize',
+                            size: Math.max(100, this.innerWidth)
+                        },
 
-        var $this = $(this);
+                        url: 'ajax.php'
+                    });
 
-        var $parent = $this.closest('td');
+                }, 500);
+            });
 
-        //noinspection JSUnresolvedVariable
-        if (top.window.beehive.uid == 0) {
-            return true;
-        }
+            $('.toggle_button').bind('click', function () {
+
+                var $button = $(this);
+
+                var $element = $('.' + $button.prop('id'));
+
+                if ($element.is(':visible')) {
+
+                    $element.slideUp(150, function () {
+
+                        $button.removeClass('hide').addClass('show');
+
+                        $.ajax({
+
+                            cache: true,
+
+                            data: {
+                                webtag: beehive.webtag,
+                                ajax: true,
+                                action: $button.prop('id'),
+                                display: 'false'
+                            },
+
+                            url: 'ajax.php'
+                        });
+                    });
+
+                } else {
+
+                    $element.slideDown(150, function () {
+
+                        $button.removeClass('show').addClass('hide');
+
+                        $.ajax({
+
+                            cache: true,
+
+                            data: {
+                                webtag: beehive.webtag,
+                                ajax: true,
+                                action: $button.prop('id'),
+                                display: 'true'
+                            },
+
+                            url: 'ajax.php',
+
+                            success: function () {
+                                $element.find('textarea.editor:visible').each(beehive.editor);
+                            }
+                        });
+                    });
+                }
+
+                return false;
+            });
+
+            $('textarea.editor:visible').each(beehive.editor);
+
+            $('input, textarea').placeholder();
+
+            //noinspection JSUnresolvedVariable
+            if (beehive.show_share_links === 'Y') {
+
+                $.getScript(document.location.protocol + '//apis.google.com/js/plusone.js');
+
+                $.getScript(document.location.protocol + '//platform.twitter.com/widgets.js');
+
+                $.getScript(document.location.protocol + '//connect.facebook.net/en_US/all.js');
+            }
+        });
 
         $.ajax({
-            cache: true,
-            data: {
-                webtag: top.window.beehive.webtag,
-                ajax: 'true',
-                action: $this.prop('class'),
-                msg: $this.data('msg')
-            },
-            dataType: 'json',
-            url: top.window.beehive.forum_path + '/ajax.php',
+            cache: false,
+            url: 'json.php',
             success: function (data) {
 
-                try {
-
-                    $parent.html(data.html);
-
-                    top.window.beehive.font_size = data.font_size;
-
-                    top.window.beehive.reload_user_font(top.document);
-
-                    $(top.document).find('frameset#index').prop('rows', '60,' + Math.max(top.window.beehive.font_size * 2, 22) + ',*');
-
-                } catch (exception) {
-
-                    top.window.beehive.ajax_error(exception);
-                }
+                $.extend(beehive, data);
+                $(document).trigger('beehive.init', beehive);
             }
         });
-
-        return false;
-    });
-
-    $('#preferences_updated').each(function () {
-
-        //noinspection JSUnresolvedVariable
-        top.window.beehive.reload_frame(top.document, top.window.beehive.frames.fnav);
-
-        //noinspection JSUnresolvedVariable
-        top.window.beehive.reload_frame(top.document, top.window.beehive.frames.left);
-
-        //noinspection JSUnresolvedVariable
-        top.window.beehive.reload_top_frame(top.document, top.window.beehive.top_frame);
-    });
-
-    $('input#print').bind('click', function () {
-        window.print();
-    });
-
-    $('a.button').bind('mousedown', function () {
-        $(this).css('border', '1px inset');
-    }).bind('mouseup mouseout', function () {
-        $(this).css('border', '1px outset');
-    });
-
-    if ($body.hasClass('window_title')) {
-        top.document.title = document.title;
     }
-
-    $(window).bind('resize', function () {
-
-        var frame_name = $(this).prop('name');
-
-        //noinspection JSUnresolvedVariable
-        if ((frame_name != top.window.beehive.frames.left) && (frame_name != top.window.beehive.frames.pm_folders)) {
-            return;
-        }
-
-        //noinspection JSUnresolvedVariable
-        if (top.window.beehive.uid == 0) {
-            return;
-        }
-
-        window.clearTimeout(frame_resize_timeout);
-
-        frame_resize_timeout = window.setTimeout(function () {
-
-            $.ajax({
-
-                cache: true,
-
-                data: {
-                    webtag: top.window.beehive.webtag,
-                    ajax: true,
-                    action: 'frame_resize',
-                    size: Math.max(100, this.innerWidth)
-                },
-
-                url: top.window.beehive.forum_path + '/ajax.php'
-            });
-
-        }, 500);
-    });
-
-    $('.toggle_button').bind('click', function () {
-
-        var $button = $(this);
-
-        var $element = $('.' + $button.prop('id'));
-
-        if ($element.is(':visible')) {
-
-            $element.slideUp(150, function () {
-
-                $button.removeClass('hide').addClass('show');
-
-                $.ajax({
-
-                    cache: true,
-
-                    data: {
-                        webtag: top.window.beehive.webtag,
-                        ajax: true,
-                        action: $button.prop('id'),
-                        display: 'false'
-                    },
-
-                    url: top.window.beehive.forum_path + '/ajax.php'
-                });
-            });
-
-        } else {
-
-            $element.slideDown(150, function () {
-
-                $button.removeClass('show').addClass('hide');
-
-                $.ajax({
-
-                    cache: true,
-
-                    data: {
-                        webtag: top.window.beehive.webtag,
-                        ajax: true,
-                        action: $button.prop('id'),
-                        display: 'true'
-                    },
-
-                    url: top.window.beehive.forum_path + '/ajax.php',
-
-                    success: function () {
-                        $element.find('textarea.editor:visible').each(top.window.beehive.editor);
-                    }
-                });
-            });
-        }
-
-        return false;
-    });
-
-    $('textarea.editor:visible').each(top.window.beehive.editor);
-
-    $('input, textarea').placeholder();
-
-    //noinspection JSUnresolvedVariable
-    if (top.window.beehive.show_share_links == 'Y') {
-
-        $.getScript(document.location.protocol + '//apis.google.com/js/plusone.js');
-
-        $.getScript(document.location.protocol + '//platform.twitter.com/widgets.js');
-
-        $.getScript(document.location.protocol + '//connect.facebook.net/en_US/all.js');
-    }
-});
+);

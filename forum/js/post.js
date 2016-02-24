@@ -19,10 +19,12 @@
  USA
  ======================================================================*/
 
-$(top.window.beehive).bind('init', function () {
+$(document).bind('beehive.init', function ($event, beehive) {
+
+    'use strict';
 
     //noinspection JSLint
-    top.window.beehive.quote_list = [];
+    beehive.quote_list = [];
 
     function hide_post_options_containers() {
 
@@ -40,9 +42,9 @@ $(top.window.beehive).bind('init', function () {
         });
     }
 
-    function show_post_options_container() {
+    function show_post_options_container(element) {
 
-        var $link = $(this),
+        var $link = $(element),
             $post_options_container = $link.next('.post_options_container'),
             container_offset = $post_options_container.offset(),
             link_offset = $link.offset();
@@ -73,15 +75,15 @@ $(top.window.beehive).bind('init', function () {
             cache: true,
 
             data: {
-                webtag: top.window.beehive.webtag,
+                webtag: beehive.webtag,
                 ajax: 'true',
                 action: 'post_vote',
                 post_rating: $button.hasClass('vote_up') ? 1 : -1,
-                mobile: top.window.beehive.mobile_version ? 'Y' : 'N',
+                mobile: beehive.mobile_version ? 'Y' : 'N',
                 msg: $container.data('msg')
             },
 
-            url: top.window.beehive.forum_path + '/ajax.php',
+            url: 'ajax.php',
 
             success: function (data) {
 
@@ -91,7 +93,7 @@ $(top.window.beehive).bind('init', function () {
 
                 } catch (exception) {
 
-                    top.window.beehive.ajax_error(exception);
+                    beehive.ajax_error(exception);
                 }
             }
         });
@@ -114,7 +116,7 @@ $(top.window.beehive).bind('init', function () {
 
         if ($link.next('.post_options_container').length > 0) {
 
-            show_post_options_container.call(this);
+            show_post_options_container(this);
             return;
         }
 
@@ -123,25 +125,25 @@ $(top.window.beehive).bind('init', function () {
             cache: true,
 
             data: {
-                webtag: top.window.beehive.webtag,
+                webtag: beehive.webtag,
                 ajax: 'true',
                 action: 'post_options',
                 msg: options[1] + '.' + options[2],
                 pid: options[3]
             },
 
-            url: top.window.beehive.forum_path + '/ajax.php',
+            url: 'ajax.php',
 
             success: function (data) {
 
                 try {
 
                     $link.after(data);
-                    show_post_options_container.call(link);
+                    show_post_options_container(link);
 
                 } catch (exception) {
 
-                    top.window.beehive.ajax_error(exception);
+                    beehive.ajax_error(exception);
                 }
             }
         });
@@ -187,7 +189,7 @@ $(top.window.beehive).bind('init', function () {
 
                 $quick_reply_container.appendTo($quick_reply_location).show();
 
-                $quick_reply_container.find('#content').each(top.window.beehive.editor);
+                $quick_reply_container.find('#content').each(beehive.editor);
 
                 $quick_reply_container.find('input#post').get(0).scrollIntoView(false);
             }
@@ -201,28 +203,28 @@ $(top.window.beehive).bind('init', function () {
             pid = $link.data('pid'),
             check_post_id;
 
-        if ($.inArray(pid, top.window.beehive.quote_list) < 0) {
+        if ($.inArray(pid, beehive.quote_list) < 0) {
 
             $('span.image#quote_img_' + pid).removeClass('quote_disabled').addClass('quote_enabled');
 
             //noinspection JSUnresolvedVariable
-            $link.html(top.window.beehive.lang.unquote);
+            $link.html(beehive.lang.unquote);
 
-            top.window.beehive.quote_list.push(pid);
+            beehive.quote_list.push(pid);
 
         } else {
 
             $('span.image#quote_img_' + pid).addClass('quote_enabled').removeClass('quote_disabled');
 
             //noinspection JSUnresolvedVariable
-            $link.html(top.window.beehive.lang.quote);
+            $link.html(beehive.lang.quote);
 
-            for (check_post_id in top.window.beehive.quote_list) {
+            for (check_post_id in beehive.quote_list) {
 
-                if (top.window.beehive.quote_list.hasOwnProperty(check_post_id)) {
+                if (beehive.quote_list.hasOwnProperty(check_post_id)) {
 
-                    if (top.window.beehive.quote_list[check_post_id] === pid) {
-                        top.window.beehive.quote_list.splice(check_post_id, 1);
+                    if (beehive.quote_list[check_post_id] === pid) {
+                        beehive.quote_list.splice(check_post_id, 1);
                     }
                 }
             }
@@ -232,8 +234,8 @@ $(top.window.beehive).bind('init', function () {
 
             var query_string = $.parseQuery($(this).prop('href').split('?')[1]);
 
-            if (top.window.beehive.quote_list.length > 0) {
-                query_string.quote_list = top.window.beehive.quote_list.join(',');
+            if (beehive.quote_list.length > 0) {
+                query_string.quote_list = beehive.quote_list.join(',');
             } else {
                 delete query_string.quote_list;
             }

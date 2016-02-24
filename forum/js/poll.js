@@ -19,12 +19,14 @@
  USA
  ======================================================================*/
 
-$(top.window.beehive).bind('init', function () {
+$(document).bind('beehive.init', function ($event, beehive) {
+
+    'use strict';
 
     var add_process_running = false;
 
     var toggle_add_buttons = function () {
-        $('button.add_question, button.add_option').toggleClass('disabled', !($('div.poll_options_list ol li').length < 20));
+        $('button.add_question, button.add_option').toggleClass('disabled', $('div.poll_options_list ol li').length >= 20);
     };
 
     var toggle_delete_buttons = function () {
@@ -33,72 +35,72 @@ $(top.window.beehive).bind('init', function () {
         $poll_questions.each(function () {
 
             var $delete_buttons = $(this).find('button.delete_option');
-            $delete_buttons.toggleClass('disabled', $delete_buttons.length == 2);
+            $delete_buttons.toggleClass('disabled', $delete_buttons.length === 2);
         });
 
         var $delete_buttons = $poll_questions.find('button.delete_question');
-        $delete_buttons.toggleClass('disabled', $delete_buttons.length == 1);
+        $delete_buttons.toggleClass('disabled', $delete_buttons.length === 1);
     };
 
-    var hide_delete_buttons = function () {
-        $(this).find('button.delete_question, button.delete_option').hide();
+    var hide_delete_buttons = function (element) {
+        $(element).find('button.delete_question, button.delete_option').hide();
     };
 
     var option_html = function (question_id, option_id) {
         //noinspection JSUnresolvedVariable
-        return $.vsprintf(
-            '<li><input type="text" dir="ltr" maxlength="255" size="45" value="" class="bhinputtext" name="poll_questions[%(0)d][options][%(1)d]">&nbsp;\
-               <button title="%(2)s" class="button_image delete_option disabled" name="delete_option[%(0)d][%(1)d]" type="submit">\
+        return vsprintf(
+            '<li><input type="text" dir="ltr" maxlength="255" size="45" value="" class="bhinputtext" name="poll_questions[%1$d][options][%2$d]">&nbsp;\
+               <button title="%3$s" class="button_image delete_option disabled" name="delete_option[%1$d][%2$d]" type="submit">\
                  <span class="image delete"></span>\
                </button>\
-             </li>', [
-                [
-                    question_id,
-                    option_id,
-                    top.window.beehive.lang.deleteoption
-                ]
-            ]);
+             </li>',
+            [
+                question_id,
+                option_id,
+                beehive.lang.deleteoption
+            ]
+        );
     };
 
     var question_html = function (question_id) {
         //noinspection JSUnresolvedVariable
-        return $.vsprintf(
+        return vsprintf(
             '<fieldset class="poll_question">\
                <div>\
-                 <h2>%(1)s</h2>\
+                 <h2>%2$s</h2>\
                  <div class="poll_question_input">\
-                   <input type="text" dir="ltr" maxlength="255" size="40" value="" class="bhinputtext" name="poll_questions[%(0)d][question]">&nbsp;\
-                   <button title="%(2)s" class="button_image delete_question disabled" name="delete_question[%(0)d]" type="submit">\
+                   <input type="text" dir="ltr" maxlength="255" size="40" value="" class="bhinputtext" name="poll_questions[%1$d][question]">&nbsp;\
+                   <button title="%3$s" class="button_image delete_question disabled" name="delete_question[%1$d]" type="submit">\
                      <span class="image delete"></span>\
                    </button>\
                  </div>\
                  <div class="poll_question_checkbox">\
                    <span class="bhinputcheckbox">\
-                     <input type="checkbox" value="Y" id="poll_questions>%(3)sallow_multi" name="poll_questions[%(0)d][allow_multi]">\
-                     <label for="poll_questions>%(3)sallow_multi">%(3)s</label>\
+                     <input type="checkbox" value="Y" id="poll_questions%1$sallow_multi" name="poll_questions[%1$d][allow_multi]">\
+                     <label for="poll_questions%1$sallow_multi]">%4$s</label>\
                    </span>\
                  </div>\
                  <div class="poll_options_list">\
-                   <ol>%(4)s%(5)s</ol>\
+                   <ol>%5$s%6$s</ol>\
                  </div>\
                </div>\
-               <button class="button_image add_option" name="add_option[%(0)d]" type="submit"><span class="image add"></span>&nbsp;%(6)s</button>\
-             </fieldset>', [
-                [
-                    question_id,
-                    top.window.beehive.lang.pollquestion,
-                    top.window.beehive.lang.deletequestion,
-                    top.window.beehive.lang.allowmultipleoptions,
-                    option_html(question_id, 1),
-                    option_html(question_id, 2),
-                    top.window.beehive.lang.addnewoption
-                ]
-            ]);
+               <button class="button_image add_option" name="add_option[%1$d]" type="submit"><span class="image add"></span>&nbsp;%7$s</button>\
+             </fieldset>',
+            [
+                question_id,
+                beehive.lang.pollquestion,
+                beehive.lang.deletequestion,
+                beehive.lang.allowmultipleoptions,
+                option_html(question_id, 1),
+                option_html(question_id, 2),
+                beehive.lang.addnewoption
+            ]
+        );
     };
 
     var $body = $('body');
 
-    hide_delete_buttons.call($body);
+    hide_delete_buttons($body);
 
     toggle_delete_buttons();
 
@@ -186,7 +188,7 @@ $(top.window.beehive).bind('init', function () {
 
         var $html = $(option_html(question_id, option_id));
 
-        hide_delete_buttons.call($html);
+        hide_delete_buttons($html);
 
         $html.hide().appendTo($poll_options_list).show(200, function () {
 
@@ -220,7 +222,7 @@ $(top.window.beehive).bind('init', function () {
 
         var $html = $(question_html(question_id));
 
-        hide_delete_buttons.call($html);
+        hide_delete_buttons($html);
 
         $html.hide().appendTo($poll_questions_container).show(200, function () {
 

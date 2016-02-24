@@ -491,7 +491,7 @@ if ($admin_edit === true) {
             'class' => 'window_title',
             'js' => array(
                 'js/prefs.js',
-                'js/fineuploader.min.js'
+                'js/lib/fineuploader.min.js'
             )
         )
     );
@@ -506,7 +506,7 @@ if ($admin_edit === true) {
             'class' => 'window_title',
             'js' => array(
                 'js/prefs.js',
-                'js/fineuploader.min.js'
+                'js/lib/fineuploader.min.js'
             )
         )
     );

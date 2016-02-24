@@ -24,6 +24,8 @@
 
         requires: ['dialog', 'fakeobjects'],
 
+        lang: ['en'],
+
         init: function (editor) {
 
             //noinspection JSPotentiallyInvalidConstructorUsage
@@ -44,7 +46,7 @@
             editor.addCommand(commandName, new CKEDITOR.dialogCommand(commandName));
 
             editor.ui.addButton('Youtube', {
-                label: 'Embed Youtube Video',
+                label: editor.lang.youtube.embedYouTubeVideo,
                 command: commandName,
                 icon: iconPath
             });
@@ -90,8 +92,6 @@
                             var fakeElement,
                                 videoCode;
 
-                            console.log(element);
-
                             if (element && element.attributes && element.attributes.src) {
 
                                 videoCode = element.attributes.src.match(/^http(s)?:\/\/www\.youtube\.com\/embed\/(.+)/);
@@ -103,7 +103,7 @@
                                     fakeElement.attributes.src = 'http://img.youtube.com/vi/' + videoCode[2] + '/0.jpg';
                                     fakeElement.attributes.height = element.attributes.height || 360;
                                     fakeElement.attributes.width = element.attributes.width || 480;
-                                    fakeElement.attributes.title = 'Youtube Video';
+                                    fakeElement.attributes.title = editor.lang.youtube.youTubeVideo;
 
                                     return fakeElement;
                                 }

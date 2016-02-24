@@ -215,7 +215,7 @@ html_draw_top(
             'js/pm.js',
             'js/emoticons.js',
             'ckeditor/ckeditor.js',
-            'js/fineuploader.min.js'
+            'js/lib/fineuploader.min.js'
         ),
         'base_target' => '_blank',
         'pm_popup_disabled' => true,

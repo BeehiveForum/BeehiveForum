@@ -106,17 +106,15 @@ function bh_exception_handler(Exception $exception)
 
         header_status(500, 'Internal Server Error');
 
-        $forum_path = server_get_forum_path();
-
         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
         echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n";
         echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en-gb\" lang=\"en-gb\" dir=\"ltr\">\n";
         echo "<head>\n";
         echo "<title>Beehive Forum - Error Handler</title>\n";
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n";
-        echo "<link rel=\"icon\" href=\"", rtrim($forum_path, '/'), "/styles/images/favicon.ico\" type=\"image/ico\" />\n";
-        echo "<link rel=\"stylesheet\" href=\"", rtrim($forum_path, '/'), "/styles/default/style.css?", md5(uniqid(rand())), "\" type=\"text/css\" />\n";
-        echo "<link rel=\"stylesheet\" href=\"", rtrim($forum_path, '/'), "/styles/default/images.css?", md5(uniqid(rand())), "\" type=\"text/css\" />\n";
+        echo "<link rel=\"icon\" href=\"styles/default/images/favicon.ico\" type=\"image/ico\" />\n";
+        echo "<link rel=\"stylesheet\" href=\"styles/default/style.css?", md5(uniqid(rand())), "\" type=\"text/css\" />\n";
+        echo "<link rel=\"stylesheet\" href=\"styles/default/images.css?", md5(uniqid(rand())), "\" type=\"text/css\" />\n";
         echo "</head>\n";
         echo "<body>\n";
         echo "<h1>Error</h1>\n";

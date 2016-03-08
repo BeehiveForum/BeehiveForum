@@ -31,10 +31,18 @@ require_once BH_INCLUDE_PATH . 'server.inc.php';
 
 // End Required includes
 
-class Error extends Exception
+class BeehiveException extends Exception
 {
     protected $severity;
 
+    /**
+     * BeehiveException constructor.
+     * @param string $message
+     * @param int $code
+     * @param int $severity
+     * @param string $file
+     * @param string $line
+     */
     public function __construct($message, $code, $severity, $file, $line)
     {
         $this->message = $message;
@@ -50,14 +58,14 @@ class Error extends Exception
     }
 }
 
-function bh_error_handler($errno, $errstr, $errfile, $errline)
+function bh_error_handler($code, $message, $file, $line)
 {
     if (error_reporting() == 0) {
         return;
     }
 
-    if (error_reporting() & $errno) {
-        throw new Error($errstr, 0, $errno, $errfile, $errline);
+    if (error_reporting() & $code) {
+        throw new BeehiveException($message, $code, 0, $file, $line);
     }
 }
 
@@ -71,7 +79,7 @@ function bh_fatal_error_handler()
         return;
     }
 
-    $exception = new Error($error['message'], 0, $error['type'], $error['file'], $error['line']);
+    $exception = new BeehiveException($error['message'], 0, $error['type'], $error['file'], $error['line']);
 
     bh_exception_handler($exception);
 }

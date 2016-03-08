@@ -1142,8 +1142,6 @@ function light_draw_pm_inbox()
 
         $delete_mid = $_GET['delete_msg'];
 
-        $type = pm_get_folder_type($current_folder);
-
         $message_data['CONTENT'] = pm_get_content($delete_mid);
 
         if (isset($_POST['pm_delete_confirm'])) {

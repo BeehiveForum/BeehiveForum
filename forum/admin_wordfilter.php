@@ -57,6 +57,7 @@ $add_new_filter_option = null;
 $add_new_filter_name = null;
 $match_text = null;
 $filter_option = null;
+$filter_id = null;
 $filter_name = null;
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {

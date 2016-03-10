@@ -20,6 +20,8 @@
  ======================================================================*/
 (function () {
 
+    'use strict';
+
     CKEDITOR.plugins.add('beehive', {
 
         requires: ['dialog'],
@@ -39,34 +41,63 @@
                 return ascendant && ascendant.hasClass(className);
             };
 
+            editor.lang.beehive = editor.lang.beehive || {};
+
             editor.attachStyleStateChange(allStyles, function () {
 
                 var element = this.getSelection().getStartElement();
 
-                if ((element.getName() == 'div' && element.hasClass('quote')) || findAscendant(element, 'div', 'quote')) {
-                    !editor.readOnly && editor.getCommand('quote').setState(CKEDITOR.TRISTATE_ON);
-                    return
-                }
+                if ((element.getName() === 'div' && element.hasClass('quote')) || findAscendant(element, 'div', 'quote')) {
 
-                if ((element.getName() == 'pre' && element.hasClass('code')) || findAscendant(element, 'pre', 'code')) {
-                    !editor.readOnly && editor.getCommand('code').setState(CKEDITOR.TRISTATE_ON);
-                    return
-                }
+                    if (!editor.readOnly) {
+                        editor.getCommand('quote').setState(CKEDITOR.TRISTATE_ON);
+                    }
 
-                if ((element.getName() == 'span' && element.hasClass('spoiler')) || findAscendant(element, 'span', 'spoiler')) {
-                    !editor.readOnly && editor.getCommand('spoiler').setState(CKEDITOR.TRISTATE_ON);
                     return;
                 }
 
-                if ((element.getName() == 'img' && element.hasClass('emoticon')) || findAscendant(element, 'img', 'emoticon')) {
-                    !editor.readOnly && editor.getCommand('image').setState(CKEDITOR.TRISTATE_DISABLED);
+                if ((element.getName() === 'pre' && element.hasClass('code')) || findAscendant(element, 'pre', 'code')) {
+
+                    if (!editor.readOnly) {
+                        editor.getCommand('code').setState(CKEDITOR.TRISTATE_ON);
+                    }
+
                     return;
                 }
 
-                !editor.readOnly && editor.getCommand('quote').setState(CKEDITOR.TRISTATE_OFF);
-                !editor.readOnly && editor.getCommand('code').setState(CKEDITOR.TRISTATE_OFF);
-                !editor.readOnly && editor.getCommand('spoiler').setState(CKEDITOR.TRISTATE_OFF);
-                !editor.readOnly && editor.getCommand('image').setState(CKEDITOR.TRISTATE_OFF);
+                if ((element.getName() === 'span' && element.hasClass('spoiler')) || findAscendant(element, 'span', 'spoiler')) {
+
+                    if (!editor.readOnly) {
+                        editor.getCommand('spoiler').setState(CKEDITOR.TRISTATE_ON);
+                    }
+
+                    return;
+                }
+
+                if ((element.getName() === 'img' && element.hasClass('emoticon')) || findAscendant(element, 'img', 'emoticon')) {
+
+                    if (!editor.readOnly) {
+                        editor.getCommand('image').setState(CKEDITOR.TRISTATE_DISABLED);
+                    }
+
+                    return;
+                }
+
+                if (!editor.readOnly) {
+                    editor.getCommand('quote').setState(CKEDITOR.TRISTATE_OFF);
+                }
+
+                if (!editor.readOnly) {
+                    editor.getCommand('code').setState(CKEDITOR.TRISTATE_OFF);
+                }
+
+                if (!editor.readOnly) {
+                    editor.getCommand('spoiler').setState(CKEDITOR.TRISTATE_OFF);
+                }
+
+                if (!editor.readOnly) {
+                    editor.getCommand('image').setState(CKEDITOR.TRISTATE_OFF);
+                }
             });
 
             editor.addCommand('code', {
@@ -80,7 +111,7 @@
                         selectedText,
                         range;
 
-                    if (state == CKEDITOR.TRISTATE_ON) {
+                    if (state === CKEDITOR.TRISTATE_ON) {
 
                         codeElement = editor.getSelection().getStartElement();
 
@@ -124,8 +155,8 @@
 
                         var nextElement = codeElement.getNext();
 
-                        if (!nextElement || nextElement.type == CKEDITOR.NODE_ELEMENT && !nextElement.isEditable()) {
-                            range.fixBlock(true, editor.config.enterMode == CKEDITOR.ENTER_DIV ? 'div' : 'p');
+                        if (!nextElement || nextElement.type === CKEDITOR.NODE_ELEMENT && !nextElement.isEditable()) {
+                            range.fixBlock(true, editor.config.enterMode === CKEDITOR.ENTER_DIV ? 'div' : 'p');
                         }
 
                         range.select();
@@ -144,7 +175,7 @@
                         selectedText,
                         range;
 
-                    if (state == CKEDITOR.TRISTATE_ON) {
+                    if (state === CKEDITOR.TRISTATE_ON) {
 
                         quoteElement = editor.getSelection().getStartElement();
 
@@ -188,8 +219,8 @@
 
                         var nextElement = quoteElement.getNext();
 
-                        if (!nextElement || nextElement.type == CKEDITOR.NODE_ELEMENT && !nextElement.isEditable()) {
-                            range.fixBlock(true, editor.config.enterMode == CKEDITOR.ENTER_DIV ? 'div' : 'p');
+                        if (!nextElement || nextElement.type === CKEDITOR.NODE_ELEMENT && !nextElement.isEditable()) {
+                            range.fixBlock(true, editor.config.enterMode === CKEDITOR.ENTER_DIV ? 'div' : 'p');
                         }
 
                         range.select();
@@ -208,7 +239,7 @@
                         selectedText,
                         range;
 
-                    if (state == CKEDITOR.TRISTATE_ON) {
+                    if (state === CKEDITOR.TRISTATE_ON) {
 
                         spoilerElement = editor.getSelection().getStartElement();
                         spoilerContainer = spoilerElement.getParent();
@@ -243,8 +274,8 @@
 
                         var nextElement = spoilerElement.getNext();
 
-                        if (!nextElement || nextElement.type == CKEDITOR.NODE_ELEMENT && !nextElement.isEditable()) {
-                            range.fixBlock(true, editor.config.enterMode == CKEDITOR.ENTER_DIV ? 'div' : 'p');
+                        if (!nextElement || nextElement.type === CKEDITOR.NODE_ELEMENT && !nextElement.isEditable()) {
+                            range.fixBlock(true, editor.config.enterMode === CKEDITOR.ENTER_DIV ? 'div' : 'p');
                         }
 
                         range.select();
@@ -281,21 +312,22 @@
                             span: function (element) {
 
                                 var test = element.attributes &&
-                                    element.attributes['title'] &&
+                                    element.attributes.title &&
                                     element.attributes['class'] &&
                                     element.attributes['class'].match(/emoticon/);
 
-                                if (!test || test.length == 0) {
+                                if (!test || test.length === 0) {
                                     return null;
                                 }
 
                                 var emoticon = editor.createFakeParserElement(element, 'cke_emoticon', 'emoticon', 'false');
 
-                                emoticon.attributes.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAABGdBTUEAALGPC/xhBQAAAANQTFRF////p8QbyAAAAAF0Uk5TAEDm2GYAAAAJcEhZcwAAHsEAAB7BAcNpVFMAAAAHdElNRQfcDB4LNzBmlcQgAAAACklEQVQIHWNgAAAAAgABz8g15QAAAABJRU5ErkJggg==";
+                                emoticon.attributes.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAABGdBTUEAALGPC/xhBQAAAANQTFRF////p8QbyAAAAAF0Uk5TAEDm2GYAAAAJcEhZcwAAHsEAAB7BAcNpVFMAAAAHdElNRQfcDB4LNzBmlcQgAAAACklEQVQIHWNgAAAAAgABz8g15QAAAABJRU5ErkJggg==';
 
                                 emoticon.attributes['class'] = element.attributes['class'];
-                                emoticon.attributes['title'] = element.attributes['title'];
-                                emoticon.attributes['alt'] = element.attributes['title'];
+
+                                emoticon.attributes.title = element.attributes.title;
+                                emoticon.attributes.alt = element.attributes.title;
 
                                 return emoticon;
                             }

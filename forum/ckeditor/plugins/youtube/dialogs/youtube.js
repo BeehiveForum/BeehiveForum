@@ -19,6 +19,9 @@
  USA
  ======================================================================*/
 (function () {
+
+    'use strict';
+
     CKEDITOR.dialog.add('youtube',
 
         function (editor) {
@@ -35,7 +38,7 @@
                         return false;
                     }
 
-                    if (element.type == 1 && element.getName() == 'iframe' && element.getAttribute('src')) {
+                    if (element.type === 1 && element.getName() === 'iframe' && element.getAttribute('src')) {
 
                         src = element.getAttribute('src');
 
@@ -43,7 +46,7 @@
                             return false;
                         }
 
-                    } else if (element.type == 3) {
+                    } else if (element.type === 3) {
 
                         src = element.getText();
 
@@ -86,7 +89,7 @@
                         selectedElement = this.getSelectedElement(),
                         originalElement;
 
-                    if (selectedElement && selectedElement.data('cke-real-element-type') && selectedElement.data('cke-real-element-type') == 'youtube') {
+                    if (selectedElement && selectedElement.data('cke-real-element-type') && selectedElement.data('cke-real-element-type') === 'youtube') {
 
                         this.fakeImage = selectedElement;
                         originalElement = editor.restoreRealElement(selectedElement);

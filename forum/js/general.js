@@ -163,9 +163,10 @@ $(document).ready(
                 var skin = '../styles/' + beehive.user_style + '/editor/';
 
                 //noinspection JSUnresolvedVariable
-                var emoticons = '../emoticons/' + beehive.emoticons + '/style.css';
+                var emoticons = 'emoticons/' + beehive.emoticons + '/style.css';
 
-                var contents = skin + 'content.css';
+                //noinspection JSUnresolvedVariable
+                var contents = 'styles/' + beehive.user_style + '/editor/content.css';
 
                 var toolbar = $editor.hasClass('mobile') ? 'mobile' : 'full';
 

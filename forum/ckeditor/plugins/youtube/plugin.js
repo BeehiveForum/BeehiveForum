@@ -20,6 +20,8 @@
  ======================================================================*/
 (function () {
 
+    'use strict';
+
     CKEDITOR.plugins.add('youtube', {
 
         requires: ['dialog', 'fakeobjects'],
@@ -39,7 +41,10 @@
                 });
 
             editor.attachStyleStateChange(youtubeTag, function (state) {
-                !editor.readOnly && editor.getCommand(commandName).setState(state);
+
+                if (!editor.readOnly) {
+                    editor.getCommand(commandName).setState(state);
+                }
             });
 
             //noinspection JSPotentiallyInvalidConstructorUsage
@@ -65,7 +70,7 @@
                 });
 
                 editor.contextMenu.addListener(function (selectedElement) {
-                    if (selectedElement && selectedElement.data('cke-real-element-type') && selectedElement.data('cke-real-element-type') == 'youtube') {
+                    if (selectedElement && selectedElement.data('cke-real-element-type') && selectedElement.data('cke-real-element-type') === 'youtube') {
 
                         return {
                             'youtube': CKEDITOR.TRISTATE_OFF

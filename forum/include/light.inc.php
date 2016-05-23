@@ -1977,10 +1977,6 @@ function light_message_get_vote_form_html($message)
 
     forum_check_webtag_available($webtag);
 
-    if ($_SESSION['UID'] == $message['FROM_UID']){
-        return '';
-    }
-
     if (isset($message['POST_RATING'])) {
         $html = "  <span class=\"rating\">" . ($message['POST_RATING'] > 0 ? '+' : '') . $message['POST_RATING'] . "/" . $message['POST_RATING_COUNT'] . "</span>";
     } else {

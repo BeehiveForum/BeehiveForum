@@ -43,7 +43,7 @@ $(document).bind('beehive.init', function ($event, beehive) {
         };
 
         if ($(this).hasClass('allow_multi')) {
-            search_query.allow_multi = 'Y';
+            search_query.allow_multi = true;
         }
 
         search_logon = window.open('search_popup.php?' + $.param(search_query), $(this).prop('id'), window_options.join(','));

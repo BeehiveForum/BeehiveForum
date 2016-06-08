@@ -275,6 +275,8 @@ $(document).ready(
                 }
             },
 
+            left_frame_width: 280,
+
             mobile_version: false,
 
             use_mover_spoiler: 'N',
@@ -421,19 +423,24 @@ $(document).ready(
 
             $(window).bind('resize', function () {
 
-                var frame_name = $(this).prop('name');
+                var frame_name = $(this).prop('name'),
+                    frame_width = Math.max(100, this.innerWidth);
 
-                //noinspection JSUnresolvedVariable
-                if ((frame_name !== beehive.frames.left) && (frame_name !== beehive.frames.pm_folders)) {
-                    return;
-                }
+                window.clearTimeout(frame_resize_timeout);
 
                 //noinspection JSUnresolvedVariable
                 if (beehive.uid === 0) {
                     return;
                 }
 
-                window.clearTimeout(frame_resize_timeout);
+                //noinspection JSUnresolvedVariable
+                if ((frame_name !== beehive.frames.left) && (frame_name !== beehive.frames.pm_folders)) {
+                    return;
+                }
+
+                if (frame_width === beehive.left_frame_width) {
+                    return;
+                }
 
                 frame_resize_timeout = window.setTimeout(function () {
 
@@ -445,13 +452,17 @@ $(document).ready(
                             webtag: beehive.webtag,
                             ajax: true,
                             action: 'frame_resize',
-                            size: Math.max(100, this.innerWidth)
+                            size: frame_width
                         },
 
-                        url: 'ajax.php'
+                        url: 'ajax.php',
+
+                        success: function () {
+                            beehive.left_frame_width = frame_width;
+                        }
                     });
 
-                }, 500);
+                }, 1000);
             });
 
             $('.toggle_button').bind('click', function () {
@@ -515,7 +526,7 @@ $(document).ready(
             $('input, textarea').placeholder();
 
             //noinspection JSUnresolvedVariable
-            if (beehive.show_share_links === 'Y') {
+            if (beehive.show_share_links) {
 
                 $.getScript(document.location.protocol + '//apis.google.com/js/plusone.js');
 

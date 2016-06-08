@@ -23,7 +23,7 @@ $(document).bind('beehive.init', function ($event, beehive) {
 
     'use strict';
 
-    if (beehive.use_mover_spoiler === 'Y' && !beehive.mobile_version) {
+    if (beehive.use_mover_spoiler && !beehive.mobile_version) {
 
         $('.spoiler').hover(function () {
 

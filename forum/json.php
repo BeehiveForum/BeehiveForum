@@ -69,7 +69,7 @@ if (($attachment_size_limit = forum_get_setting('attachment_size_limit', 'is_num
 // Construct the Javascript / JSON array
 $json_data = array(
     'webtag' => $webtag,
-    'uid' => $_SESSION['UID'],
+    'uid' => intval($_SESSION['UID']),
     'lang' => array(
         'loadingdotdotdot' => gettext("Loading..."),
         'imageresized' => gettext("This image has been resized (original size %dx%d). To view the full-size image click here."),
@@ -93,14 +93,14 @@ $json_data = array(
         'upload' => gettext('Upload'),
         'preferencesnotsaved' => gettext('Your preferences have not been saved'),
     ),
-    'font_size' => $font_size,
+    'font_size' => intval($font_size),
     'user_style' => $user_style,
     'emoticons' => $user_emoticons,
     'top_frame' => html_get_top_page(),
-    'left_frame_width' => max(100, $left_frame_width),
-    'use_mover_spoiler' => (isset($_SESSION['USE_MOVER_SPOILER']) && $_SESSION['USE_MOVER_SPOILER'] == 'Y') ? 'Y' : 'N',
-    'show_share_links' => (isset($_SESSION['SHOW_SHARE_LINKS']) && $_SESSION['SHOW_SHARE_LINKS'] == 'Y') ? 'Y' : 'N',
-    'auto_scroll_messages' => (isset($_SESSION['AUTO_SCROLL_MESSAGES']) && $_SESSION['AUTO_SCROLL_MESSAGES'] == 'Y') ? 'Y' : 'N',
+    'left_frame_width' => intval($left_frame_width),
+    'use_mover_spoiler' => (isset($_SESSION['USE_MOVER_SPOILER']) && $_SESSION['USE_MOVER_SPOILER'] == 'Y'),
+    'show_share_links' => (isset($_SESSION['SHOW_SHARE_LINKS']) && $_SESSION['SHOW_SHARE_LINKS'] == 'Y'),
+    'auto_scroll_messages' => (isset($_SESSION['AUTO_SCROLL_MESSAGES']) && $_SESSION['AUTO_SCROLL_MESSAGES'] == 'Y'),
     'attachment_size_limit' => $attachment_size_limit,
     'frames' => array(
         'index' => html_get_frame_name('index'),

@@ -32,7 +32,7 @@ $(document).bind('beehive.init', function ($event, beehive) {
         navigation_options;
 
     //noinspection JSUnresolvedVariable
-    if (beehive.auto_scroll_messages === 'Y') {
+    if (beehive.auto_scroll_messages) {
 
         navigation_options = $messages.data('navigation')
             .split('_').map(function (option) {

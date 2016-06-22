@@ -8,7 +8,6 @@
 .cke a:visited,
 .cke a:active {
     background: transparent;
-    border: none;
     cursor: auto;
     float: none;
     height: auto;
@@ -64,6 +63,7 @@
 
 textarea.cke_source {
     background-color: #FFFFFF;
+    border: none;
     font-family: 'Courier New', monospace;
     font-size: small;
     white-space: pre;
@@ -290,6 +290,7 @@ a.cke_button {
     display: inline-block;
     height: 22px;
     width: 24px;
+    border: 1px outset transparent;
 }
 
 a.cke_button,

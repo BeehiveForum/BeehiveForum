@@ -364,3 +364,8 @@ a.cke_dialog_close_button span {
     font-weight: bold;
     margin-bottom: auto;
 }
+
+.cke_dialog input:focus,
+.cke_dialog textarea:focus {
+    outline: none;
+}

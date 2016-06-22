@@ -836,7 +836,7 @@ echo "                    <table class=\"posthead\" width=\"100%\">\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\">\n";
 echo "                          <h2>", gettext("Message"), "</h2>\n";
-echo "                          ", form_textarea("content", htmlentities_array(emoticons_apply($content)), 22, 100, 'tabindex="1"', 'post_content editor focus'), "\n";
+echo "                          ", form_textarea("content", htmlentities_array(emoticons_apply($content)), 30, 100, 'tabindex="1"', 'post_content editor focus'), "\n";
 echo "                        </td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
@@ -907,7 +907,7 @@ if ($allow_sig == true) {
     echo "                            <tr>\n";
     echo "                              <td align=\"left\" colspan=\"2\">\n";
     echo "                                <div class=\"sig_toggle\" style=\"display: ", (($page_prefs & POST_SIGNATURE_DISPLAY) > 0) ? "block" : "none", "\">\n";
-    echo "                                  ", form_textarea("sig", htmlentities_array(emoticons_apply($sig)), 7, 100, 'tabindex="7"', 'signature_content editor');
+    echo "                                  ", form_textarea("sig", htmlentities_array(emoticons_apply($sig)), 10, 100, 'tabindex="7"', 'signature_content editor');
     echo "                                </div>\n";
     echo "                              </td>\n";
     echo "                            </tr>\n";

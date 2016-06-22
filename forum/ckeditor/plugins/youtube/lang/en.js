@@ -5,5 +5,5 @@
 CKEDITOR.plugins.setLang('youtube', 'en', {
     embedYouTubeVideo: 'Embed Youtube Video',
     youTubeVideo: 'YouTube Video',
-    youTubeEmbedCodeOrURL: 'Youtube Embed Code or URL:'
+    youTubeEmbedCodeOrURL: 'Youtube Embed Code or URL'
 });

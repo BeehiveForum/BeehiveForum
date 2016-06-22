@@ -15,12 +15,13 @@
 }
 
 .cke_dialog {
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
     visibility: visible;
 }
 
 .cke_dialog_body {
-    background-color: #FFFFC1;
-    border: 1px solid #000000;
+    background-color: #FFC846;
     margin: 0;
     padding: 2px;
     z-index: 1;
@@ -42,20 +43,14 @@
     color: #FFFFFF;
     cursor: move;
     font-size: 12px;
-    margin-bottom: 10px;
     padding: 3px 5px;
     position: relative;
 }
 
 .cke_dialog_contents {
     background-color: #FFC846;
-    margin: 0 10px 10px;
     overflow: auto;
     padding: 5px;
-}
-
-table.cke_dialog_contents {
-    border: 1px solid #000000;
 }
 
 td.cke_dialog_contents_body {
@@ -67,7 +62,9 @@ td.cke_dialog_contents_body {
 }
 
 .cke_dialog_footer .cke_resizer {
-    margin-top: 21px;
+    bottom: 0;
+    position: absolute;
+    right: 5px;
     width: 12px;
 }
 
@@ -364,5 +361,11 @@ a.cke_dialog_close_button span {
 .cke_dialog label {
     cursor: default;
     display: inline;
+    font-weight: bold;
     margin-bottom: auto;
+}
+
+.cke_dialog input:focus,
+.cke_dialog textarea:focus {
+    outline: none;
 }

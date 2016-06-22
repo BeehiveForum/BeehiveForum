@@ -178,7 +178,7 @@
                             type: 'html',
                             id: 'preview',
                             style: 'width:100%;',
-                            html: '<div>Preview:<br /><div id="cke_YoutubePreviewBox' + CKEDITOR.tools.getNextNumber() + '" style="width: 100%; height: 360px; background-color: #000000"></div></div>'
+                            html: '<div><label class="cke_dialog_ui_labeled_label">Preview</label><div id="cke_YoutubePreviewBox' + CKEDITOR.tools.getNextNumber() + '" style="width: 100%; height: 360px; background-color: #000000"></div></div>'
                         }]
                     }]
                 }]

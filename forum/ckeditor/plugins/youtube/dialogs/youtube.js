@@ -141,7 +141,7 @@
                                     try {
 
                                         var element = checkEmbedCode(code, true),
-                                            previewContainer = this.getContentElement('general', 'preview').getElement().getChild(2);
+                                            previewContainer = this.getContentElement('general', 'preview').getElement().getChild(1);
 
                                         if (element) {
 

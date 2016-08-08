@@ -657,8 +657,8 @@ function html_draw_top(array $options = array())
         echo "<meta name=\"robots\" content=\"", htmlentities_array($robots), "\" />\n";
     }
 
-    printf("<meta name=\"application-name\" content=\"%s\" />\n", htmlentities_array(word_filter_add_ob_tags($forum_name, true)));
-    printf("<meta name=\"msapplication-tooltip\" content=\"%s\" />\n", htmlentities_array(word_filter_add_ob_tags($meta_description, true)));
+    printf("<meta name=\"application-name\" content=\"%s\" />\n", word_filter_add_ob_tags($forum_name, true));
+    printf("<meta name=\"msapplication-tooltip\" content=\"%s\" />\n", word_filter_add_ob_tags($meta_description, true));
 
     if (forum_check_webtag_available($webtag)) {
 

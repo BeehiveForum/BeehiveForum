@@ -123,10 +123,10 @@ function logon_draw_form($logon_options)
     // If the request is for logon.php then we are performing
     // a normal login, otherwise potentially a failed session.
     if (stristr($request_uri, 'logon.php')) {
-        echo "  <form accept-charset=\"utf-8\" name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"", html_get_top_frame_name(), "\">\n";
+        echo "  <form accept-charset=\"utf-8\" name=\"logonform\" method=\"post\" action=\"", htmlentities_array($request_uri), "\" target=\"", html_get_top_frame_name(), "\">\n";
         echo "    ", form_csrf_token_field(), "\n";
     } else {
-        echo "  <form accept-charset=\"utf-8\" name=\"logonform\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+        echo "  <form accept-charset=\"utf-8\" name=\"logonform\" method=\"post\" action=\"", htmlentities_array($request_uri), "\" target=\"_self\">\n";
         echo "    ", form_csrf_token_field(), "\n";
     }
 

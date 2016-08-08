@@ -128,7 +128,7 @@ function light_html_draw_top(array $options = array())
         if (($thread_data = thread_get($tid)) !== false) {
 
             echo "<title>", word_filter_add_ob_tags($thread_data['TITLE'], true), " - ", word_filter_add_ob_tags($forum_name, true), "</title>\n";
-            echo "<link rel=\"canonical\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.1"), "\" />\n";
+            echo "<link rel=\"canonical\" href=\"", htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.1")), "\" />\n";
 
             if ($thread_data['LENGTH'] > $posts_per_page) {
 
@@ -136,15 +136,15 @@ function light_html_draw_top(array $options = array())
                 $next_page = ($pid + $posts_per_page < $thread_data['LENGTH']) ? $pid + $posts_per_page : $thread_data['LENGTH'];
                 $last_page = (floor($thread_data['LENGTH'] / $posts_per_page) * $posts_per_page) + 1;
 
-                echo "<link rel=\"first\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.1"), "\" />\n";
-                echo "<link rel=\"last\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$last_page"), "\" />\n";
+                echo "<link rel=\"first\" href=\"", htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.1")), "\" />\n";
+                echo "<link rel=\"last\" href=\"", htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$last_page")), "\" />\n";
 
                 if (($pid + $posts_per_page) < $thread_data['LENGTH']) {
-                    echo "<link rel=\"next\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$next_page"), "\" />\n";
+                    echo "<link rel=\"next\" href=\"", htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$next_page")), "\" />\n";
                 }
 
                 if ($pid > 1) {
-                    echo "<link rel=\"prev\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$prev_page"), "\" />\n";
+                    echo "<link rel=\"prev\" href=\"", htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$prev_page")), "\" />\n";
                 }
             }
 
@@ -196,28 +196,23 @@ function light_html_draw_top(array $options = array())
         echo html_include_css($stylesheet);
     }
 
-    $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag");
-
-    printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array(gettext("RSS Feed")), $rss_feed_path);
+    printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array(gettext('RSS Feed')), htmlentities_array(html_get_forum_file_path("threads_rss.php?webtag=$webtag")));
 
     if (($folders_array = folder_get_available_details()) !== false) {
 
         foreach ($folders_array as $folder) {
-
-            $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag&amp;fid={$folder['FID']}");
-
-            printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array(gettext("RSS Feed")), $rss_feed_path);
+            printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array(gettext('RSS Feed')), htmlentities_array(html_get_forum_file_path("threads_rss.php?webtag=$webtag&amp;fid={$folder['FID']}")));
         }
     }
 
     if (($user_style_path = html_get_user_style_path()) !== false) {
 
-        printf("<link rel=\"apple-touch-icon\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-57x57.png', $user_style_path)));
-        printf("<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-72x72.png', $user_style_path)));
-        printf("<link rel=\"apple-touch-icon\" sizes=\"114x114\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-114x114.png', $user_style_path)));
-        printf("<link rel=\"apple-touch-icon\" sizes=\"144x144\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-144x144.png', $user_style_path)));
+        printf("<link rel=\"apple-touch-icon\" href=\"%s\" />\n", htmlentities_array(html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-57x57.png', $user_style_path))));
+        printf("<link rel=\"apple-touch-icon\" sizes=\"72x72\" href=\"%s\" />\n", htmlentities_array(html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-72x72.png', $user_style_path))));
+        printf("<link rel=\"apple-touch-icon\" sizes=\"114x114\" href=\"%s\" />\n", htmlentities_array(html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-114x114.png', $user_style_path))));
+        printf("<link rel=\"apple-touch-icon\" sizes=\"144x144\" href=\"%s\" />\n", htmlentities_array(html_get_forum_file_path(sprintf('styles/%s/images/apple-touch-icon-144x144.png', $user_style_path))));
 
-        printf("<link rel=\"shortcut icon\" type=\"image/ico\" href=\"%s\" />\n", html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
+        printf("<link rel=\"shortcut icon\" type=\"image/ico\" href=\"%s\" />\n", htmlentities_array(html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', $user_style_path))));
     }
 
     echo html_include_javascript(html_get_forum_file_path('js/lib/jquery.min.js'));
@@ -440,7 +435,7 @@ function light_draw_logon_form($error_msg_array = array())
     echo "<div class=\"logon\">\n";
     echo "<h3>", gettext("Logon"), "</h3>\n";
     echo "<div class=\"logon_inner\">\n";
-    echo "<form accept-charset=\"utf-8\" name=\"logonform\" action=\"$request_uri\" method=\"post\">\n";
+    echo "<form accept-charset=\"utf-8\" name=\"logonform\" action=\"", htmlentities_array($request_uri), "\" method=\"post\">\n";
     echo "  ", form_csrf_token_field(), "\n";
 
     // Check for any post data that we need to include in the form.
@@ -1453,7 +1448,7 @@ function light_messages_top($tid, $pid, $thread_title, $thread_interest_level = 
     forum_check_webtag_available($webtag);
 
     echo "<h3 class=\"thread_title\">";
-    echo "<a href=\"", html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.$pid"), "\">", word_filter_add_ob_tags($thread_title, true), "</a> ";
+    echo "<a href=\"", htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&amp;msg=$tid.$pid")), "\">", word_filter_add_ob_tags($thread_title, true), "</a> ";
 
     if ($closed) echo html_style_image('closed', gettext("Closed"));
     if ($thread_interest_level == THREAD_INTERESTED) echo html_style_image('high_interest', gettext("High Interest"));
@@ -1533,7 +1528,7 @@ function light_poll_display($tid, $msg_count, $folder_fid, $in_list = true, $clo
     $request_uri = get_request_uri();
 
     $poll_display = "<div class=\"poll\">\n";
-    $poll_display .= "<form accept-charset=\"utf-8\" method=\"post\" action=\"$request_uri\" target=\"_self\">\n";
+    $poll_display .= "<form accept-charset=\"utf-8\" method=\"post\" action=\"". htmlentities_array($request_uri). "\" target=\"_self\">\n";
     $poll_display .= form_csrf_token_field();
     $poll_display .= form_input_hidden('webtag', htmlentities_array($webtag));
     $poll_display .= form_input_hidden('msg', htmlentities_array("$tid.1"));

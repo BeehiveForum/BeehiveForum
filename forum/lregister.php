@@ -423,7 +423,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
     light_html_display_error_array($error_msg_array);
 }
 
-echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"", get_request_uri(), "\" method=\"post\" target=\"_self\">\n";
+echo "<form accept-charset=\"utf-8\" name=\"form_register\" action=\"", htmlentities_array(get_request_uri()), "\" method=\"post\" target=\"_self\">\n";
 echo "  ", form_csrf_token_field(), "\n";
 echo "<div class=\"register\">\n";
 echo "<h3>", gettext("Register"), "</h3>\n";

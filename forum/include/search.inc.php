@@ -955,8 +955,6 @@ function search_output_opensearch_xml()
 
     $forum_description = html_get_forum_description();
 
-    $forum_opensearch_uri = html_get_forum_uri("search.php?webtag=$webtag&search_string={searchTerms}");
-
     header('Content-type: text/xml; charset=UTF-8', true);
 
     echo "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
@@ -966,10 +964,10 @@ function search_output_opensearch_xml()
     echo "    <InputEncoding>UTF-8</InputEncoding>\n";
 
     if (($user_style_path = html_get_user_style_path()) !== false) {
-        printf("    <Image height=\"16\" width=\"16\" type=\"image/x-icon\">%s</Image>\n", html_get_forum_uri(sprintf('styles/%s/images/favicon.ico', $user_style_path)));
+        printf("    <Image height=\"16\" width=\"16\" type=\"image/x-icon\">%s</Image>\n", htmlentities_array(html_get_forum_uri(sprintf('styles/%s/images/favicon.ico', $user_style_path))));
     }
 
-    echo "    <Url type=\"text/html\" method=\"get\" template=\"", htmlentities_array($forum_opensearch_uri), "\"></Url>\n";
+    echo "    <Url type=\"text/html\" method=\"get\" template=\"", htmlentities_array(html_get_forum_uri("search.php?webtag=$webtag&search_string={searchTerms}")), "\"></Url>\n";
     echo "</OpenSearchDescription>\n";
     exit;
 }

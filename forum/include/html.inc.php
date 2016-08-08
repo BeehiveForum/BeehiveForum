@@ -65,7 +65,7 @@ function html_guest_error()
 
     } else {
 
-        html_draw_error(gettext("Sorry, you need to be logged in to use this feature."), html_get_forum_file_path('logout.php'), 'post', array('submit' => gettext("Login now"), 'register' => gettext("Register")), array('final_uri' => $final_uri), $frame_top_target);
+        html_draw_error(gettext("Sorry, you need to be logged in to use this feature."), htmlentities_array(html_get_forum_file_path('logout.php')), 'post', array('submit' => gettext("Login now"), 'register' => gettext("Register")), array('final_uri' => $final_uri), $frame_top_target);
     }
 }
 
@@ -406,7 +406,7 @@ function html_get_forum_email()
 
 function html_get_frame_name($basename)
 {
-    $forum_uri = html_get_forum_uri();
+    $forum_uri = htmlentities_array(html_get_forum_uri());
 
     $webtag = get_webtag();
 
@@ -603,7 +603,7 @@ function html_draw_top(array $options = array())
         if (($thread_data = thread_get($tid)) !== false) {
 
             echo "<title>", word_filter_add_ob_tags($thread_data['TITLE'], true), " - ", word_filter_add_ob_tags($forum_name, true), "</title>\n";
-            echo "<link rel=\"canonical\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.1"), "\" />\n";
+            echo "<link rel=\"canonical\" href=\"", htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.1")), "\" />\n";
 
             if ($thread_data['LENGTH'] > $posts_per_page) {
 
@@ -611,15 +611,15 @@ function html_draw_top(array $options = array())
                 $next_page = ($pid + $posts_per_page < $thread_data['LENGTH']) ? $pid + $posts_per_page : $thread_data['LENGTH'];
                 $last_page = (floor($thread_data['LENGTH'] / $posts_per_page) * $posts_per_page) + 1;
 
-                echo "<link rel=\"first\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.1"), "\" />\n";
-                echo "<link rel=\"last\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$last_page"), "\" />\n";
+                echo "<link rel=\"first\" href=\"", htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.1")), "\" />\n";
+                echo "<link rel=\"last\" href=\"", htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$last_page")), "\" />\n";
 
                 if (($pid + $posts_per_page) < $thread_data['LENGTH']) {
-                    echo "<link rel=\"next\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$next_page"), "\" />\n";
+                    echo "<link rel=\"next\" href=\"", htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$next_page")), "\" />\n";
                 }
 
                 if ($pid > 1) {
-                    echo "<link rel=\"prev\" href=\"", html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$prev_page"), "\" />\n";
+                    echo "<link rel=\"prev\" href=\"", htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&amp;msg=$tid.$prev_page")), "\" />\n";
                 }
             }
 
@@ -662,37 +662,33 @@ function html_draw_top(array $options = array())
 
     if (forum_check_webtag_available($webtag)) {
 
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Messages'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=discussion.php%3Fwebtag%3D$webtag")), html_get_style_file('images/msie/unread_thread.ico', true));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Messages'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=discussion.php%3Fwebtag%3D$webtag")), htmlentities_array(html_get_style_file('images/msie/unread_thread.ico', true)));
 
         if (forum_get_setting('show_links', 'Y')) {
-            printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Links'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=links.php%3Fwebtag%3D$webtag")), html_get_style_file('images/msie/link.ico', true));
+            printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Links'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=links.php%3Fwebtag%3D$webtag")), htmlentities_array(html_get_style_file('images/msie/link.ico', true)));
         }
     }
 
     if (forum_get_setting('show_pms', 'Y')) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Inbox'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=pm.php%3Fwebtag%3D$webtag")), html_get_style_file('images/msie/pm_unread.ico', true));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Inbox'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=pm.php%3Fwebtag%3D$webtag")), htmlentities_array(html_get_style_file('images/msie/pm_unread.ico', true)));
     }
 
     if (forum_check_webtag_available($webtag)) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('My Controls'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=user.php%3Fwebtag%3D$webtag")), html_get_style_file('images/msie/user_controls.ico', true));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('My Controls'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=user.php%3Fwebtag%3D$webtag")), htmlentities_array(html_get_style_file('images/msie/user_controls.ico', true)));
     }
 
     if (session::logged_in() && (session::check_perm(USER_PERM_FORUM_TOOLS, 0) || session::check_perm(USER_PERM_ADMIN_TOOLS, 0) || session::get_folders_by_perm(USER_PERM_FOLDER_MODERATE))) {
-        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Admin'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), html_get_style_file('images/msie/admin_tool.ico', true));
+        printf("<meta name=\"msapplication-task\" content=\"name=%s;action-uri=%s;icon-uri=%s\" />\n", gettext('Admin'), htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag&final_uri=admin.php%3Fwebtag%3D$webtag")), htmlentities_array(html_get_style_file('images/msie/admin_tool.ico', true)));
     }
 
     printf("<meta name=\"msapplication-starturl\" content=\"%s\" />\n", htmlentities_array(html_get_forum_file_path("index.php?webtag=$webtag")));
 
-    $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag");
-
-    printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array(gettext('RSS Feed')), htmlentities_array($rss_feed_path));
+    printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array(gettext('RSS Feed')), htmlentities_array(html_get_forum_file_path("threads_rss.php?webtag=$webtag")));
 
     if (($folders_array = folder_get_available_details()) !== false) {
 
         foreach ($folders_array as $folder) {
-
-            $rss_feed_path = html_get_forum_file_path("threads_rss.php?webtag=$webtag&amp;fid={$folder['FID']}");
-            printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array(gettext('RSS Feed')), htmlentities_array($rss_feed_path));
+            printf("<link rel=\"alternate\" type=\"application/rss+xml\" title=\"%s - %s - %s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($folder['TITLE']), htmlentities_array(gettext('RSS Feed')), htmlentities_array(html_get_forum_file_path("threads_rss.php?webtag=$webtag&amp;fid={$folder['FID']}")));
         }
     }
 
@@ -706,9 +702,7 @@ function html_draw_top(array $options = array())
         printf("<link rel=\"shortcut icon\" type=\"image/ico\" href=\"%s\" />\n", htmlentities_array(html_get_forum_file_path(sprintf('styles/%s/images/favicon.ico', $user_style_path))));
     }
 
-    $opensearch_path = html_get_forum_uri(sprintf('search.php?webtag=%s&opensearch', $webtag));
-
-    printf("<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"%s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array($opensearch_path));
+    printf("<link rel=\"search\" type=\"application/opensearchdescription+xml\" title=\"%s\" href=\"%s\" />\n", htmlentities_array($forum_name), htmlentities_array(html_get_forum_uri(sprintf('search.php?webtag=%s&opensearch', $webtag))));
 
     if (($style_sheet = html_get_style_file($main_css)) !== false) {
         echo html_include_css($style_sheet);

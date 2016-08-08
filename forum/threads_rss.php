@@ -47,7 +47,7 @@ $password_array = array();
 $passhash_array = array();
 
 // Get the forum location accounting for forward slashes, multiple slashes, etc.
-$forum_location = html_get_forum_uri();
+$forum_location = htmlentities_array(html_get_forum_uri());
 
 // Get the Forum Name
 $forum_name = forum_get_setting('forum_name', 'strlen', 'A Beehive Forum');
@@ -128,7 +128,7 @@ echo "<lastBuildDate>{$build_date}</lastBuildDate>\n";
 echo "<generator>Project Beehive Forum - www.beehiveforum.co.uk</generator>\n";
 echo "<image>\n";
 echo "<title>{$forum_name}</title>\n";
-echo "<url>", html_get_style_file('images/rss_icon.png', true), "</url>\n";
+echo "<url>", htmlentities_array(html_get_style_file('images/rss_icon.png', true)), "</url>\n";
 echo "<link>{$forum_location}/</link>\n";
 echo "</image>\n";
 

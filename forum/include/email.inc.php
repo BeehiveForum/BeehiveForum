@@ -93,9 +93,9 @@ function email_send_notification($tid, $pid)
 
         $thread_title = word_filter_apply($email_data['THREAD_TITLE'], $email_data['UID'], true);
 
-        $message_link = html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid");
+        $message_link = htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid"));
 
-        $forum_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=edit_email.php%3Fwebtag%3D$webtag");
+        $forum_link = htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&final_uri=edit_email.php%3Fwebtag%3D$webtag"));
 
         $message = Swift_MessageBeehive::newInstance();
 
@@ -198,7 +198,7 @@ function email_send_thread_subscription($tid, $pid)
 
         $thread_title = word_filter_apply($email_data['THREAD_TITLE'], $email_data['UID'], true);
 
-        $message_link = html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid");
+        $message_link = htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid"));
 
         $message = Swift_MessageBeehive::newInstance();
 
@@ -302,9 +302,9 @@ function email_send_folder_subscription($tid, $pid)
 
         $thread_title = word_filter_apply($email_data['THREAD_TITLE'], $email_data['UID'], true);
 
-        $forum_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=folder_subscriptions.php%3Fwebtag%3D$webtag");
+        $forum_link = htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&final_uri=folder_subscriptions.php%3Fwebtag%3D$webtag"));
 
-        $message_link = html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid");
+        $message_link = htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&msg=$tid.$pid"));
 
         $message = Swift_MessageBeehive::newInstance();
 
@@ -390,9 +390,9 @@ function email_send_pm_notification($mid)
 
         $recipient = format_user_name($email_data['LOGON'], $email_data['NICKNAME']);
 
-        $forum_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=pm_options.php%3Fwebtag%3D$webtag");
+        $forum_link = htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&final_uri=pm_options.php%3Fwebtag%3D$webtag"));
 
-        $message_link = html_get_forum_uri("index.php?webtag=$webtag&mid=$mid");
+        $message_link = htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&mid=$mid"));
 
         $message = Swift_MessageBeehive::newInstance();
 
@@ -461,7 +461,7 @@ function email_send_pw_reminder($logon)
 
     $change_pw_link = rawurlencode("change_pw.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
 
-    $change_pw_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$change_pw_link");
+    $change_pw_link = htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&final_uri=$change_pw_link"));
 
     $message->setTo($to_user['EMAIL'], $recipient);
 
@@ -583,7 +583,7 @@ function email_send_user_confirmation($to_uid)
 
     $confirm_link = rawurlencode("confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
 
-    $confirm_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$confirm_link");
+    $confirm_link = htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&final_uri=$confirm_link"));
 
     $message->setTo($to_user['EMAIL'], $recipient);
 
@@ -645,7 +645,7 @@ function email_send_changed_email_confirmation($to_uid)
 
     $confirm_link = rawurlencode("confirm_email.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
 
-    $confirm_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$confirm_link");
+    $confirm_link = htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&final_uri=$confirm_link"));
 
     $message->setTo($to_user['EMAIL'], $recipient);
 
@@ -709,7 +709,7 @@ function email_send_user_approval_notification($to_uid, $new_user_uid)
 
     $admin_users_link = rawurlencode("admin_users.php?webtag=$webtag&filter=4");
 
-    $admin_users_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_users_link");
+    $admin_users_link = htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_users_link"));
 
     $message->setTo($to_user['EMAIL'], $recipient);
 
@@ -775,7 +775,7 @@ function email_send_new_user_notification($to_uid, $new_user_uid)
 
     $admin_user_link = rawurlencode("admin_user.php?webtag=$webtag&uid=$new_user_uid");
 
-    $admin_user_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_user_link");
+    $admin_user_link = htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_user_link"));
 
     $message->setTo($to_user['EMAIL'], $recipient);
 
@@ -835,7 +835,7 @@ function email_send_user_approved_notification($to_uid)
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_uid, true);
 
-    $forum_link = html_get_forum_uri("index.php?webtag=$webtag");
+    $forum_link = htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag"));
 
     $message->setTo($to_user['EMAIL'], $recipient);
 
@@ -895,7 +895,7 @@ function email_send_post_approval_notification($to_uid)
 
     $admin_post_approval_link = rawurlencode("admin_post_approve.php?webtag=$webtag");
 
-    $admin_post_approval_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_post_approval_link");
+    $admin_post_approval_link = htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_post_approval_link"));
 
     $message->setTo($to_user['EMAIL'], $recipient);
 
@@ -953,7 +953,7 @@ function email_send_link_approval_notification($to_uid)
 
     $admin_post_approval_link = rawurlencode("admin_link_approve.php?webtag=$webtag");
 
-    $admin_post_approval_link = html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_post_approval_link");
+    $admin_post_approval_link = htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&final_uri=$admin_post_approval_link"));
 
     $message->setTo($to_user['EMAIL'], $recipient);
 

@@ -1625,7 +1625,7 @@ function pm_export_html_top($message = null)
     }
 
     if (($user_style = html_get_style_file('style.css'))) {
-        $html .= "<link rel=\"stylesheet\" href=\"" . html_get_forum_domain() . $user_style . "\" type=\"text/css\" media=\"screen\" />";
+        $html .= "<link rel=\"stylesheet\" href=\"" . htmlentities_array(html_get_forum_domain() . $user_style) . "\" type=\"text/css\" media=\"screen\" />";
     }
 
     $html .= "</head>\n";

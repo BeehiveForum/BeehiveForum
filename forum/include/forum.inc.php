@@ -390,7 +390,7 @@ function forum_check_password($forum_fid)
 
     echo "<br />\n";
     echo "<div align=\"center\">\n";
-    echo "  <form accept-charset=\"utf-8\" method=\"post\" action=\"", get_request_uri(), "\" target=\"_self\" autocomplete=\"off\">\n";
+    echo "  <form accept-charset=\"utf-8\" method=\"post\" action=\"", htmlentities_array(get_request_uri()), "\" target=\"_self\" autocomplete=\"off\">\n";
     echo "    ", form_csrf_token_field(), "\n";
 
     if (isset($_POST) && is_array($_POST) && sizeof($_POST) > 0) {

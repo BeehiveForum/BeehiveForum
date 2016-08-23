@@ -106,6 +106,7 @@ install_check();
 // Required includes
 require_once BH_INCLUDE_PATH . 'banned.inc.php';
 require_once BH_INCLUDE_PATH . 'constants.inc.php';
+require_once BH_INCLUDE_PATH . 'form.inc.php';
 require_once BH_INCLUDE_PATH . 'header.inc.php';
 require_once BH_INCLUDE_PATH . 'html.inc.php';
 require_once BH_INCLUDE_PATH . 'lang.inc.php';

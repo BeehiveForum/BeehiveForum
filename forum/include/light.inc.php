@@ -33,6 +33,7 @@ require_once BH_INCLUDE_PATH . 'format.inc.php';
 require_once BH_INCLUDE_PATH . 'forum.inc.php';
 require_once BH_INCLUDE_PATH . 'header.inc.php';
 require_once BH_INCLUDE_PATH . 'html.inc.php';
+require_once BH_INCLUDE_PATH . 'lang.inc.php';
 require_once BH_INCLUDE_PATH . 'messages.inc.php';
 require_once BH_INCLUDE_PATH . 'myforums.inc.php';
 require_once BH_INCLUDE_PATH . 'perm.inc.php';

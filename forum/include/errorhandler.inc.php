@@ -28,7 +28,6 @@ require_once BH_INCLUDE_PATH . 'db.inc.php';
 require_once BH_INCLUDE_PATH . 'format.inc.php';
 require_once BH_INCLUDE_PATH . 'header.inc.php';
 require_once BH_INCLUDE_PATH . 'server.inc.php';
-
 // End Required includes
 
 class BeehiveException extends Exception

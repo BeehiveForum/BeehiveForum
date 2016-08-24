@@ -1,5 +1,15 @@
 # Beehive Forum Release Notes
 
+## What's new in 1.5.0 (Released 24th August 2016)
+
+- Changes from 1.4.7
+
+    - Upgrade CKEditor to 4.5.9.
+    
+    - Fixed various XSS vulnerabilities.
+
+    - Fixes for PHP 7.x
+
 ## What's new in 1.4.7 (Released 4th June 2015)
 
 - Changes from 1.4.6

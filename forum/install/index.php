@@ -280,7 +280,7 @@ if (isset($_POST['install_method'])) {
                     }
                 }
 
-                install_draw_top("js/lib/jquery.min.js", "js/install.js");
+                install_draw_top("../js/lib/jquery.min.js", "../js/install.js");
 
                 if ($config_saved) {
 
@@ -465,7 +465,7 @@ if (isset($_POST['install_method'])) {
 
             install_msie_buffer_fix();
 
-            install_draw_top("js/lib/jquery.min.js", "js/install.js");
+            install_draw_top("../js/lib/jquery.min.js", "../js/install.js");
 
             echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";
             echo "    <tr>\n";
@@ -545,7 +545,7 @@ if (isset($_POST['install_method'])) {
     }
 }
 
-install_draw_top("js/lib/jquery.min.js", "js/install.js");
+install_draw_top("../js/lib/jquery.min.js", "../js/install.js");
 
 echo "<form accept-charset=\"utf-8\" id=\"install_form\" method=\"post\" action=\"index.php\">\n";
 echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"650\">\n";

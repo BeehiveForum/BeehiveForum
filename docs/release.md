@@ -1,5 +1,11 @@
 # Beehive Forum Release Notes
 
+## What's new in 1.5.1 (Released 31st August 2016)
+
+- Changes from 1.5.0
+
+    - Fixed issues with installer not working correctly.
+
 ## What's new in 1.5.0 (Released 24th August 2016)
 
 - Changes from 1.4.7

@@ -325,9 +325,6 @@ if (isset($_POST['register'])) {
             // Save the new user preferences
             user_update_prefs($new_uid, $new_user_prefs);
 
-            // Save the new user signature
-            user_update_sig($new_uid, $sig_content, true);
-
             // Initialise the new user session.
             session::start($new_uid);
 
@@ -432,9 +429,9 @@ if (isset($user_agree_rules) && $user_agree_rules == 'Y') {
 
     echo "  ", form_input_hidden('webtag', htmlentities_array($webtag)), "\n";
     echo "  ", form_input_hidden('user_agree_rules', htmlentities_array($user_agree_rules)), "\n";
-    echo "  <div class=\"register_username\"><span>", gettext("Username"), ":</span>", light_form_input_text("user_logon", null, 20, 15) . "</div>\n";
-    echo "  <div class=\"register_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("user_password", null, 20, 32), "</div>\n";
-    echo "  <div class=\"register_password\"><span>", gettext("Confirm Password"), ":</span>", light_form_input_password("user_password", null, 20, 32), "</div>\n";
+    echo "  <div class=\"register_username\"><span>", gettext("Username"), ":</span>", light_form_input_text("logon", null, 20, 15) . "</div>\n";
+    echo "  <div class=\"register_password\"><span>", gettext("Password"), ":</span>", light_form_input_password("pw", null, 20, 32), "</div>\n";
+    echo "  <div class=\"register_password\"><span>", gettext("Confirm Password"), ":</span>", light_form_input_password("cpw", null, 20, 32), "</div>\n";
     echo "  <div class=\"register_nickname\"><span>", gettext("Nickname"), ":</span>", light_form_input_text("nickname", null, 20, 32), "</div>\n";
     echo "  <div class=\"register_email\"><span>", gettext("Email"), ":</span>", light_form_input_text("email", null, 20, 32), "</div>\n";
     echo "  <div class=\"register_dob\"><span>", gettext("Date of Birth"), ":</span>\n";

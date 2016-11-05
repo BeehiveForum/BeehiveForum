@@ -1,5 +1,14 @@
 # Beehive Forum Release Notes
 
+## What's new in 1.5.2 (Released 5th November 2016)
+
+- Changes from 1.5.1
+
+    - Fixed issues with not being able to register on 
+      mobile version.
+       
+    - Updated Example Sphinxsearch configuration.
+
 ## What's new in 1.5.1 (Released 31st August 2016)
 
 - Changes from 1.5.0

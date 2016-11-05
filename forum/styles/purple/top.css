@@ -12,7 +12,7 @@ div.beehive-logo {
 }
 
 div.sourceforge-logo {
-    background: url('http://sourceforge.net/sflogo.php?group_id=50772&type=2') no-repeat transparent;
+    background: url('//sourceforge.net/sflogo.php?group_id=50772&type=2') no-repeat transparent;
     height: 37px;
     position: absolute;
     right: 10px;

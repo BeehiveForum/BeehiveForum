@@ -791,6 +791,8 @@ function html_draw_top(array $options = array())
         echo html_include_javascript(html_get_forum_file_path($js_file));
     }
 
+    echo html_include_javascript(html_get_forum_file_path(sprintf('json.php?webtag=%s', $webtag)));
+
     if (($frame_set_html === true) && $google_analytics_code = html_get_google_analytics_code()) {
 
         echo "<script type=\"text/javascript\">\n\n";

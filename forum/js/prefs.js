@@ -147,6 +147,7 @@ $(document).bind('beehive.init', function ($event, beehive) {
     $(window).bind('beforeunload', function () {
 
         if ($('form.dirty').length > 0) {
+            //noinspection JSUnresolvedVariable
             return beehive.lang.preferencesnotsaved;
         }
     });

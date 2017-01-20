@@ -24,7 +24,7 @@ $(document).ready(
 
         'use strict';
 
-        var beehive = {
+        window.beehive = {
 
             window_options: [
                 'toolbox=0',
@@ -533,16 +533,6 @@ $(document).ready(
                 $.getScript(document.location.protocol + '//platform.twitter.com/widgets.js');
 
                 $.getScript(document.location.protocol + '//connect.facebook.net/en_US/all.js');
-            }
-        });
-
-        $.ajax({
-            cache: false,
-            url: 'json.php',
-            success: function (data) {
-
-                $.extend(beehive, data);
-                $(document).trigger('beehive.init', beehive);
             }
         });
     }

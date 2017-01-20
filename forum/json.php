@@ -122,10 +122,15 @@ $json_data = array(
 $content = json_encode($json_data);
 
 // Send correct Content-Type header
-header('Content-type: application/json; charset=UTF-8', true);
+header('Content-type: text/javascript; charset=UTF-8', true);
 
 // Check the cache of the file.
 cache_check_last_modified(time(), md5($_SESSION['UID'] . $_SESSION['LOGON'] . $content));
 
 // Output the content
-echo $content;
+printf(
+    '$(document).ready(function(){
+        $(document).trigger("beehive.init", $.extend({}, window.beehive, %s)); 
+    });',
+    json_encode($json_data)
+);

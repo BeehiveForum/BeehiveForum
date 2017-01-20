@@ -72,7 +72,7 @@ $(document).bind('beehive.init', function ($event, beehive) {
             top.frames[beehive.frames.left].location.replace('search.php?webtag=$webtag&page=1');
         }
 
-        //noinspection JSUnresolvedVariable
+        //noinspection JSUnresolvedVariable,JSUnresolvedFunction
         $(this).find('.success_msg_text').html(sprintf(beehive.lang.searchsuccessfullycompleted, ''));
     });
 });

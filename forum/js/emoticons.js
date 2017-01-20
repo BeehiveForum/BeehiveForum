@@ -33,6 +33,7 @@ $(document).bind('beehive.init', function ($event, beehive) {
             '<img data-cke-real-element-type="emoticon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAABGdBTUEAALGPC/xhBQAAAANQTFRF////p8QbyAAAAAF0Uk5TAEDm2GYAAAAJcEhZcwAAHsEAAB7BAcNpVFMAAAAHdElNRQfcDB4LNzBmlcQgAAAACklEQVQIHWNgAAAAAgABz8g15QAAAABJRU5ErkJggg=="/>'
         );
 
+        //noinspection JSCheckFunctionSignatures
         element.setAttributes({
             'data-cke-real-node-type': '1',
             'data-cke-realelement': encodeURIComponent(html),

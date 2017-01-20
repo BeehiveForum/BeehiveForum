@@ -165,6 +165,7 @@ $(document).bind('beehive.init', function ($event, beehive) {
 
     $body.on('click', '.quick_reply_link', function () {
 
+        //noinspection JSCheckFunctionSignatures
         var $post_options_container = $('.post_options_container').hide(),
             quick_reply_data = /^([0-9]+)\.([0-9]+)$/.exec($(this).data('msg')),
             $quick_reply_location,

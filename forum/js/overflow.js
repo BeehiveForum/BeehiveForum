@@ -23,7 +23,7 @@ $(document).bind('beehive.init', function ($event, beehive) {
 
     'use strict';
 
-    beehive = $.extend({}, beehive, {
+    $.extend(beehive, {
 
         resize_image: function () {
 
@@ -51,7 +51,7 @@ $(document).bind('beehive.init', function ($event, beehive) {
 
                     $resize_banner.append($resize_icon);
 
-                    //noinspection JSUnresolvedVariable
+                    //noinspection JSUnresolvedVariable,JSUnresolvedFunction
                     $resize_banner.append(sprintf(beehive.lang.imageresized, $image.width(), $image.height()));
 
                     $image.wrap($parent_div).css({

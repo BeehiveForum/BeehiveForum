@@ -47,7 +47,7 @@ $(document).bind('beehive.init', function ($event, beehive) {
     };
 
     var option_html = function (question_id, option_id) {
-        //noinspection JSUnresolvedVariable
+        //noinspection JSUnresolvedVariable,JSUnresolvedFunction
         return vsprintf(
             '<li><input type="text" dir="ltr" maxlength="255" size="45" value="" class="bhinputtext" name="poll_questions[%1$d][options][%2$d]">&nbsp;\
                <button title="%3$s" class="button_image delete_option disabled" name="delete_option[%1$d][%2$d]" type="submit">\
@@ -63,7 +63,7 @@ $(document).bind('beehive.init', function ($event, beehive) {
     };
 
     var question_html = function (question_id) {
-        //noinspection JSUnresolvedVariable
+        //noinspection JSUnresolvedVariable,JSUnresolvedFunction
         return vsprintf(
             '<fieldset class="poll_question">\
                <div>\

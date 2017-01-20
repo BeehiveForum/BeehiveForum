@@ -134,8 +134,9 @@ $(document).bind('beehive.init', function ($event, beehive) {
 
                 onSubmit: function (id, filename) {
 
+                    //noinspection JSUnresolvedFunction
                     $attachment_list.append(
-                        vsprintf(
+                         vsprintf(
                             '<li class="attachment" data-hash="%1$s">\
                                <label>\
                                  <input checked="checked" class="bhinputcheckbox" name="attachment[]" type="checkbox" value="%1$s" />\
@@ -199,7 +200,7 @@ $(document).bind('beehive.init', function ($event, beehive) {
                     //noinspection JSUnresolvedVariable
                     $input.val(responseJSON.attachment.hash);
 
-                    //noinspection JSUnresolvedVariable
+                    //noinspection JSUnresolvedVariable,JSUnresolvedFunction
                     $filename.html(
                         vsprintf(
                             '<a href="get_attachment.php?webtag=%s&amp;hash=%s&amp;filename=%s">%s</a>',

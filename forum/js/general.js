@@ -24,276 +24,266 @@ $(document).ready(
 
         'use strict';
 
-        window.beehive = {
+        function ajax_error(message) {
 
-            window_options: [
-                'toolbox=0',
-                'location=0',
-                'directories=0',
-                'status=0',
-                'menubar=0',
-                'resizeable=yes',
-                'scrollbars=yes'
-            ],
-
-            ajax_error: function (message) {
-
-                if ((typeof(console) !== 'undefined') && (typeof(console.log) !== 'undefined')) {
-                    console.log('AJAX ERROR', message);
-                }
-            },
-
-            get_resize_width: function (element) {
-
-                var $max_width = $(element).closest('.max_width[width]');
-
-                if ($max_width.length > 0) {
-                    return $max_width.prop('width');
-                }
-
-                return $(this).find('body').prop('clientWidth');
-            },
-
-            reload_frame: function (context, frame_name) {
-
-                $(context).find('frame').each(function () {
-
-                    if ($(this).prop('name') === frame_name) {
-
-                        $(this).prop('src', $(this).prop('src'));
-                        return false;
-                    }
-
-                    return beehive.reload_frame(this.contentDocument, frame_name);
-                });
-            },
-
-            reload_top_frame: function (context, src) {
-
-                $(context).find('frame').each(function () {
-
-                    //noinspection JSUnresolvedVariable
-                    if ($(this).prop('name') === beehive.frames.ftop) {
-
-                        $(this).prop('src', src);
-                        return false;
-                    }
-
-                    return beehive.reload_top_frame(this.contentDocument, src);
-                });
-            },
-
-            reload_user_font: function (context) {
-
-                $(context).find('frame').each(function () {
-
-                    //noinspection JSUnresolvedVariable
-                    if (!$.inArray($(this).prop('name'), beehive.frames)) {
-                        return true;
-                    }
-
-                    return beehive.reload_user_font(this.contentDocument);
-                });
-
-                var $user_font = $(context.head).find('link#user_font');
-
-                $user_font.prop('href', 'font_size.php?webtag=' + beehive.webtag + '&_=' + new Date().getTime() / 1000);
-            },
-
-            active_editor: null,
-
-            init_editor: function () {
-
-                CKEDITOR.on('dialogDefinition', function (event) {
-
-                    var dialogName = event.data.name;
-                    var dialogDefinition = event.data.definition;
-
-                    switch (dialogName) {
-
-                        case 'link':
-
-                            dialogDefinition.removeContents('target');
-                            dialogDefinition.removeContents('advanced');
-                            dialogDefinition.minHeight = 150;
-                            break;
-
-                        case 'image':
-
-                            dialogDefinition.removeContents('Link');
-                            dialogDefinition.removeContents('advanced');
-                            break;
-
-                        case 'flash':
-
-                            dialogDefinition.removeContents('advanced');
-                            dialogDefinition.getContents('properties').remove('menu');
-                            dialogDefinition.getContents('properties').remove('scale');
-                            dialogDefinition.getContents('properties').remove('align');
-                            dialogDefinition.getContents('properties').remove('bgcolor');
-                            dialogDefinition.getContents('properties').remove('base');
-                            dialogDefinition.getContents('properties').remove('flashvars');
-                            dialogDefinition.getContents('properties').remove('allowScriptAccess');
-                            dialogDefinition.getContents('properties').remove('allowFullScreen');
-                            break;
-
-                        case 'allMedias':
-
-                            dialogDefinition.getContents('properties').remove('allowScriptAccess');
-                            dialogDefinition.getContents('properties').remove('allowFullScreen');
-                            dialogDefinition.getContents('properties').remove('scale');
-                            dialogDefinition.getContents('properties').remove('align');
-                            dialogDefinition.getContents('properties').remove('play');
-                            dialogDefinition.removeContents('advanced');
-                            break;
-                    }
-                });
-
-                beehive.init_editor = function () {
-                };
-            },
-
-            editor: function () {
-
-                var $editor = $(this);
-
-                var editor_id = $editor.prop('id');
-
-                //noinspection JSUnresolvedVariable
-                var skin = '../styles/' + beehive.user_style + '/editor/';
-
-                //noinspection JSUnresolvedVariable
-                var emoticons = 'emoticons/' + beehive.emoticons + '/style.css';
-
-                //noinspection JSUnresolvedVariable
-                var contents = 'styles/' + beehive.user_style + '/editor/content.css';
-
-                var toolbar = $editor.hasClass('mobile') ? 'mobile' : 'full';
-
-                //noinspection JSCheckFunctionSignatures
-                $('<div id="toolbar">').insertBefore($editor);
-
-                var editor = CKEDITOR.replace(editor_id, {
-                    allowedContent: true,
-                    browserContextMenuOnCtrl: true,
-                    contentsCss: [
-                        emoticons,
-                        contents
-                    ],
-                    customConfig: '',
-                    disableNativeSpellChecker: false,
-                    enterMode: CKEDITOR.ENTER_BR,
-                    extraPlugins: 'fakeobjects,sharedspace,beehive,youtube,allMedias',
-                    font_defaultLabel: 'Verdana',
-                    fontSize_defaultLabel: '12',
-                    height: $editor.height() - 35,
-                    language: 'en',
-                    removePlugins: 'elementspath,contextmenu,tabletools,liststyle,iframe',
-                    resize_maxWidth: '100%',
-                    resize_minWidth: '100%',
-                    shiftEnterMode: CKEDITOR.ENTER_BR,
-                    skin: 'beehive,' + skin,
-                    startupFocus: $editor.hasClass('focus'),
-                    sharedSpaces: {
-                        top: 'toolbar'
-                    },
-                    toolbarCanCollapse: false,
-                    toolbar_mobile: [
-                        [
-                            'Bold',
-                            'Italic',
-                            'Underline'
-                        ]
-                    ],
-                    toolbar_full: [
-                        [
-                            'Bold',
-                            'Italic',
-                            'Underline',
-                            'Strike',
-                            'Superscript',
-                            'Subscript',
-                            'JustifyLeft',
-                            'JustifyCenter',
-                            'JustifyRight',
-                            'NumberedList',
-                            'BulletedList',
-                            'Indent',
-                            'Code',
-                            'Quote',
-                            'Spoiler',
-                            'HorizontalRule',
-                            'Image',
-                            'Youtube',
-                            'Flash',
-                            'Link',
-                            'allMedias'
-                        ],
-                        [
-                            'Font',
-                            'FontSize',
-                            'TextColor',
-                            'Source'
-                        ]
-                    ],
-                    toolbar: toolbar,
-                    width: $editor.width()
-                });
-
-                beehive.init_editor();
-
-                if (editor) {
-
-                    editor.on('focus', function (event) {
-                        if (event.editor) {
-                            beehive.active_editor = event.editor;
-                        }
-                    });
-                }
-
-                if ($editor.hasClass('quick_reply')) {
-
-                    var $post_button = $editor.closest('form').find('input#post');
-
-                    if (editor) {
-
-                        editor.on('key', function (event) {
-
-                            if (event.data.keyCode !== CKEDITOR.CTRL + 13) {
-                                return;
-                            }
-
-                            if (event.editor.getData().length === 0) {
-                                return;
-                            }
-
-                            $editor.val(event.editor.getData());
-
-                            $post_button.click();
-                        });
-                    }
-                }
-            },
-
-            left_frame_width: 280,
-
-            mobile_version: false,
-
-            use_mover_spoiler: 'N',
-
-            lang: {}
-        };
+            if ((typeof(console) !== 'undefined') && (typeof(console.log) !== 'undefined')) {
+                console.log('AJAX ERROR', message);
+            }
+        }
 
         $.ajaxSetup({
             cache: true,
-            error: function (data) {
-                beehive.ajax_error(data);
-            }
+            error: ajax_error
         });
 
         $(document).bind('beehive.init', function ($event, beehive) {
 
             var frame_resize_timeout;
+
+            $.extend(
+                beehive,
+                {
+                    active_editor: null,
+                    left_frame_width: 280,
+                    mobile_version: false,
+                    lang: {},
+                    use_mover_spoiler: 'N',
+                    window_options: [
+                        'toolbox=0',
+                        'location=0',
+                        'directories=0',
+                        'status=0',
+                        'menubar=0',
+                        'resizeable=yes',
+                        'scrollbars=yes'
+                    ],
+                    ajax_error: ajax_error,
+                    get_resize_width: function (element) {
+
+                        var $max_width = $(element).closest('.max_width[width]');
+
+                        if ($max_width.length > 0) {
+                            return $max_width.prop('width');
+                        }
+
+                        return $(this).find('body').prop('clientWidth');
+                    },
+                    reload_frame: function (context, frame_name) {
+
+                        $(context).find('frame').each(function () {
+
+                            if ($(this).prop('name') === frame_name) {
+
+                                $(this).prop('src', $(this).prop('src'));
+                                return false;
+                            }
+
+                            return beehive.reload_frame(this.contentDocument, frame_name);
+                        });
+                    },
+                    reload_top_frame: function (context, src) {
+
+                        $(context).find('frame').each(function () {
+
+                            //noinspection JSUnresolvedVariable
+                            if ($(this).prop('name') === beehive.frames.ftop) {
+
+                                $(this).prop('src', src);
+                                return false;
+                            }
+
+                            return beehive.reload_top_frame(this.contentDocument, src);
+                        });
+                    },
+                    reload_user_font: function (context) {
+
+                        $(context).find('frame').each(function () {
+
+                            //noinspection JSUnresolvedVariable
+                            if (!$.inArray($(this).prop('name'), beehive.frames)) {
+                                return true;
+                            }
+
+                            return beehive.reload_user_font(this.contentDocument);
+                        });
+
+                        var $user_font = $(context.head).find('link#user_font');
+
+                        $user_font.prop('href', 'font_size.php?webtag=' + beehive.webtag + '&_=' + new Date().getTime() / 1000);
+                    },
+                    init_editor: function () {
+
+                        CKEDITOR.on('dialogDefinition', function (event) {
+
+                            var dialogName = event.data.name;
+                            var dialogDefinition = event.data.definition;
+
+                            switch (dialogName) {
+
+                                case 'link':
+
+                                    dialogDefinition.removeContents('target');
+                                    dialogDefinition.removeContents('advanced');
+                                    dialogDefinition.minHeight = 150;
+                                    break;
+
+                                case 'image':
+
+                                    dialogDefinition.removeContents('Link');
+                                    dialogDefinition.removeContents('advanced');
+                                    break;
+
+                                case 'flash':
+
+                                    dialogDefinition.removeContents('advanced');
+                                    dialogDefinition.getContents('properties').remove('menu');
+                                    dialogDefinition.getContents('properties').remove('scale');
+                                    dialogDefinition.getContents('properties').remove('align');
+                                    dialogDefinition.getContents('properties').remove('bgcolor');
+                                    dialogDefinition.getContents('properties').remove('base');
+                                    dialogDefinition.getContents('properties').remove('flashvars');
+                                    dialogDefinition.getContents('properties').remove('allowScriptAccess');
+                                    dialogDefinition.getContents('properties').remove('allowFullScreen');
+                                    break;
+
+                                case 'allMedias':
+
+                                    dialogDefinition.getContents('properties').remove('allowScriptAccess');
+                                    dialogDefinition.getContents('properties').remove('allowFullScreen');
+                                    dialogDefinition.getContents('properties').remove('scale');
+                                    dialogDefinition.getContents('properties').remove('align');
+                                    dialogDefinition.getContents('properties').remove('play');
+                                    dialogDefinition.removeContents('advanced');
+                                    break;
+                            }
+                        });
+
+                        beehive.init_editor = function () {
+                        };
+                    },
+                    editor: function () {
+
+                        var $editor = $(this);
+
+                        var editor_id = $editor.prop('id');
+
+                        //noinspection JSUnresolvedVariable
+                        var skin = '../styles/' + beehive.user_style + '/editor/';
+
+                        //noinspection JSUnresolvedVariable
+                        var emoticons = 'emoticons/' + beehive.emoticons + '/style.css';
+
+                        //noinspection JSUnresolvedVariable
+                        var contents = 'styles/' + beehive.user_style + '/editor/content.css';
+
+                        var toolbar = $editor.hasClass('mobile') ? 'mobile' : 'full';
+
+                        //noinspection JSCheckFunctionSignatures
+                        $('<div id="toolbar">').insertBefore($editor);
+
+                        var editor = CKEDITOR.replace(editor_id, {
+                            allowedContent: true,
+                            browserContextMenuOnCtrl: true,
+                            contentsCss: [
+                                emoticons,
+                                contents
+                            ],
+                            customConfig: '',
+                            disableNativeSpellChecker: false,
+                            enterMode: CKEDITOR.ENTER_BR,
+                            extraPlugins: 'fakeobjects,sharedspace,beehive,youtube,allMedias',
+                            font_defaultLabel: 'Verdana',
+                            fontSize_defaultLabel: '12',
+                            height: $editor.height() - 35,
+                            language: 'en',
+                            removePlugins: 'elementspath,contextmenu,tabletools,liststyle,iframe',
+                            resize_maxWidth: '100%',
+                            resize_minWidth: '100%',
+                            shiftEnterMode: CKEDITOR.ENTER_BR,
+                            skin: 'beehive,' + skin,
+                            startupFocus: $editor.hasClass('focus'),
+                            sharedSpaces: {
+                                top: 'toolbar'
+                            },
+                            toolbarCanCollapse: false,
+                            toolbar_mobile: [
+                                [
+                                    'Bold',
+                                    'Italic',
+                                    'Underline'
+                                ]
+                            ],
+                            toolbar_full: [
+                                [
+                                    'Bold',
+                                    'Italic',
+                                    'Underline',
+                                    'Strike',
+                                    'Superscript',
+                                    'Subscript',
+                                    'JustifyLeft',
+                                    'JustifyCenter',
+                                    'JustifyRight',
+                                    'NumberedList',
+                                    'BulletedList',
+                                    'Indent',
+                                    'Code',
+                                    'Quote',
+                                    'Spoiler',
+                                    'HorizontalRule',
+                                    'Image',
+                                    'Youtube',
+                                    'Flash',
+                                    'Link',
+                                    'allMedias'
+                                ],
+                                [
+                                    'Font',
+                                    'FontSize',
+                                    'TextColor',
+                                    'Source'
+                                ]
+                            ],
+                            toolbar: toolbar,
+                            width: $editor.width()
+                        });
+
+                        beehive.init_editor();
+
+                        if (editor) {
+
+                            editor.on('focus', function (event) {
+                                if (event.editor) {
+                                    beehive.active_editor = event.editor;
+                                }
+                            });
+                        }
+
+                        if ($editor.hasClass('quick_reply')) {
+
+                            var $post_button = $editor.closest('form').find('input#post');
+
+                            if (editor) {
+
+                                editor.on('key', function (event) {
+
+                                    if (event.data.keyCode !== CKEDITOR.CTRL + 13) {
+                                        return;
+                                    }
+
+                                    if (event.editor.getData().length === 0) {
+                                        return;
+                                    }
+
+                                    $editor.val(event.editor.getData());
+
+                                    $post_button.click();
+                                });
+                            }
+                        }
+                    }
+                }
+            );
 
             beehive.mobile_version = $('body#mobile').length > 0;
 

@@ -56,7 +56,7 @@ $error_msg_array = array();
 
 // Page number
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else {
     $page = 1;
 }
@@ -95,7 +95,7 @@ if (isset($_POST['lid'])) {
 
     if (is_numeric($_POST['lid'])) {
 
-        $lid = $_POST['lid'];
+        $lid = intval($_POST['lid']);
 
     } else {
 
@@ -106,7 +106,7 @@ if (isset($_POST['lid'])) {
 
     if (is_numeric($_GET['lid'])) {
 
-        $lid = $_GET['lid'];
+        $lid = intval($_GET['lid']);
 
     } else {
 
@@ -341,11 +341,11 @@ echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Link Appr
 
 if (isset($_GET['link_approve_success']) && is_numeric($_GET['link_approve_success'])) {
 
-    html_display_success_msg(sprintf(gettext("Successfully approved link %s"), $_GET['link_approve_success']), '86%', 'center');
+    html_display_success_msg(sprintf(gettext("Successfully approved link %s"), intval($_GET['link_approve_success'])), '86%', 'center');
 
 } else if (isset($_GET['delete_success']) && is_numeric($_GET['delete_success'])) {
 
-    html_display_success_msg(sprintf(gettext("Successfully deleted link %s"), $_GET['delete_success']), '86%', 'center');
+    html_display_success_msg(sprintf(gettext("Successfully deleted link %s"), intval($_GET['delete_success'])), '86%', 'center');
 
 } else if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 

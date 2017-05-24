@@ -50,11 +50,11 @@ $title = null;
 
 if (isset($_POST['lid']) && is_numeric($_POST['lid'])) {
 
-    $lid = $_POST['lid'];
+    $lid = intval($_POST['lid']);
 
 } else if (isset($_GET['lid']) && is_numeric($_GET['lid'])) {
 
-    $lid = $_GET['lid'];
+    $lid = intval($_GET['lid']);
 
 } else {
 
@@ -63,11 +63,11 @@ if (isset($_POST['lid']) && is_numeric($_POST['lid'])) {
 
 if (isset($_POST['parent_fid']) && is_numeric($_POST['parent_fid'])) {
 
-    $parent_fid = $_POST['parent_fid'];
+    $parent_fid = intval($_POST['parent_fid']);
 
 } else if (isset($_GET['parent_fid']) && is_numeric($_GET['parent_fid'])) {
 
-    $parent_fid = $_GET['parent_fid'];
+    $parent_fid = intval($_GET['parent_fid']);
 
 } else {
 
@@ -96,7 +96,7 @@ if (session::logged_in()) {
 
         if (isset($_POST['vote']) && is_numeric($_POST['vote'])) {
 
-            links_vote($lid, $_POST['vote'], $_SESSION['UID']);
+            links_vote($lid, intval($_POST['vote']), $_SESSION['UID']);
             $success_msg = gettext("Your vote has been recorded");
 
         } else {
@@ -144,7 +144,7 @@ if (session::logged_in()) {
 
             if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
 
-                $fid = $_POST['fid'];
+                $fid = intval($_POST['fid']);
 
             } else {
 
@@ -208,7 +208,7 @@ if (session::logged_in()) {
 
 if (isset($_GET['delete_comment']) && is_numeric($_GET['delete_comment'])) {
 
-    $comment_id = $_GET['delete_comment'];
+    $comment_id = intval($_GET['delete_comment']);
     $comment_uid = links_get_comment_uid($comment_id);
 
     if ($user_perm_links_moderate || $comment_uid == $_SESSION['UID']) {

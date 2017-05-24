@@ -85,11 +85,11 @@ if (isset($_POST['cancel'])) {
 
 if (isset($_GET['gid']) && is_numeric($_GET['gid'])) {
 
-    $gid = $_GET['gid'];
+    $gid = intval($_GET['gid']);
 
 } else if (isset($_POST['gid']) && is_numeric($_POST['gid'])) {
 
-    $gid = $_POST['gid'];
+    $gid = intval($_POST['gid']);
 
 } else {
 

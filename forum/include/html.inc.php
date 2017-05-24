@@ -595,7 +595,7 @@ function html_draw_top(array $options = array())
         message_get_meta_content($_GET['msg'], $meta_keywords, $meta_description);
 
         if (isset($_SESSION['POSTS_PER_PAGE']) && is_numeric($_SESSION['POSTS_PER_PAGE'])) {
-            $posts_per_page = max(min($_SESSION['POSTS_PER_PAGE'], 30), 10);
+            $posts_per_page = max(min(intval($_SESSION['POSTS_PER_PAGE']), 30), 10);
         } else {
             $posts_per_page = 20;
         }

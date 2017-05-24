@@ -61,7 +61,7 @@ $filter_id = null;
 $filter_name = null;
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else {
     $page = 1;
 }
@@ -149,14 +149,14 @@ if (isset($_POST['delete'])) {
     }
 
     if (isset($_POST['add_new_filter_option']) && is_numeric($_POST['add_new_filter_option'])) {
-        $add_new_filter_option = $_POST['add_new_filter_option'];
+        $add_new_filter_option = intval($_POST['add_new_filter_option']);
     } else {
         $valid = false;
         $error_msg_array[] = gettext("You must specify a filter option");
     }
 
     if (isset($_POST['add_new_filter_enabled']) && is_numeric($_POST['add_new_filter_enabled'])) {
-        $add_new_filter_enabled = $_POST['add_new_filter_enabled'];
+        $add_new_filter_enabled = intval($_POST['add_new_filter_enabled']);
     } else {
         $add_new_filter_enabled = WORD_FILTER_DISABLED;
     }
@@ -191,7 +191,7 @@ if (isset($_POST['delete'])) {
 } else if (isset($_POST['editfilter_submit'])) {
 
     if (isset($_POST['filter_id']) && is_numeric($_POST['filter_id'])) {
-        $filter_id = $_POST['filter_id'];
+        $filter_id = intval($_POST['filter_id']);
     } else {
         $valid = false;
         $error_msg_array[] = gettext("You must specify a filter ID");
@@ -212,14 +212,14 @@ if (isset($_POST['delete'])) {
     }
 
     if (isset($_POST['filter_option']) && is_numeric($_POST['filter_option'])) {
-        $filter_option = $_POST['filter_option'];
+        $filter_option = intval($_POST['filter_option']);
     } else {
         $valid = false;
         $error_msg_array[] = gettext("You must specify a filter option");
     }
 
     if (isset($_POST['filter_enabled']) && is_numeric($_POST['filter_enabled'])) {
-        $filter_enabled = $_POST['filter_enabled'];
+        $filter_enabled = intval($_POST['filter_enabled']);
     } else {
         $filter_enabled = WORD_FILTER_DISABLED;
     }
@@ -349,11 +349,11 @@ if (isset($_GET['addfilter']) || isset($_POST['addfilter'])) {
 
     if (isset($_POST['filter_id']) && is_numeric($_POST['filter_id'])) {
 
-        $filter_id = $_POST['filter_id'];
+        $filter_id = intval($_POST['filter_id']);
 
     } else if (isset($_GET['filter_id']) && is_numeric($_GET['filter_id'])) {
 
-        $filter_id = $_GET['filter_id'];
+        $filter_id = intval($_GET['filter_id']);
 
     } else {
 

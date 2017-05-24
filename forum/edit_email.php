@@ -88,7 +88,7 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['anon_logon']) && is_numeric($_POST['anon_logon'])) {
-        $user_prefs['ANON_LOGON'] = $_POST['anon_logon'];
+        $user_prefs['ANON_LOGON'] = intval($_POST['anon_logon']);
     } else {
         $user_prefs['ANON_LOGON'] = 0;
     }

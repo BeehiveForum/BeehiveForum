@@ -74,42 +74,42 @@ if (isset($_POST['update'])) {
     $valid = true;
 
     if (isset($_POST['from_day']) && is_numeric($_POST['from_day'])) {
-        $from_day = $_POST['from_day'];
+        $from_day = intval($_POST['from_day']);
     } else {
         $error_msg_array[] = gettext("Must choose a start day");
         $valid = false;
     }
 
     if (isset($_POST['from_month']) && is_numeric($_POST['from_month'])) {
-        $from_month = $_POST['from_month'];
+        $from_month = intval($_POST['from_month']);
     } else {
         $error_msg_array[] = gettext("Must choose a start month");
         $valid = false;
     }
 
     if (isset($_POST['from_year']) && is_numeric($_POST['from_year'])) {
-        $from_year = $_POST['from_year'];
+        $from_year = intval($_POST['from_year']);
     } else {
         $error_msg_array[] = gettext("Must choose a start year");
         $valid = false;
     }
 
     if (isset($_POST['to_day']) && is_numeric($_POST['to_day'])) {
-        $to_day = $_POST['to_day'];
+        $to_day = intval($_POST['to_day']);
     } else {
         $error_msg_array[] = gettext("Must choose an end day");
         $valid = false;
     }
 
     if (isset($_POST['to_month']) && is_numeric($_POST['to_month'])) {
-        $to_month = $_POST['to_month'];
+        $to_month = intval($_POST['to_month']);
     } else {
         $error_msg_array[] = gettext("Must choose an end month");
         $valid = false;
     }
 
     if (isset($_POST['to_year']) && is_numeric($_POST['to_year'])) {
-        $to_year = $_POST['to_year'];
+        $to_year = intval($_POST['to_year']);
     } else {
         $error_msg_array[] = gettext("Must choose an end year");
         $valid = false;

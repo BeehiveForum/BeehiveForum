@@ -34,7 +34,7 @@ require_once BH_INCLUDE_PATH . 'html.inc.php';
 
 // User font size
 if (isset($_SESSION['FONT_SIZE']) && is_numeric($_SESSION['FONT_SIZE'])) {
-    $font_size = max(min($_SESSION['FONT_SIZE'], 15), 5);
+    $font_size = max(min(intval($_SESSION['FONT_SIZE']), 15), 5);
 } else {
     $font_size = 10;
 }
@@ -55,7 +55,7 @@ if (isset($_SESSION['EMOTICONS']) && strlen(trim($_SESSION['EMOTICONS'])) > 0) {
 
 // Get the user's saved left frame width.
 if (isset($_SESSION['LEFT_FRAME_WIDTH']) && is_numeric($_SESSION['LEFT_FRAME_WIDTH'])) {
-    $left_frame_width = max(100, $_SESSION['LEFT_FRAME_WIDTH']);
+    $left_frame_width = max(100, intval($_SESSION['LEFT_FRAME_WIDTH']));
 } else {
     $left_frame_width = 280;
 }

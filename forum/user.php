@@ -43,7 +43,7 @@ if (!session::logged_in()) {
 
 // Get the user's saved left frame width.
 if (isset($_SESSION['LEFT_FRAME_WIDTH']) && is_numeric($_SESSION['LEFT_FRAME_WIDTH'])) {
-    $left_frame_width = max(100, $_SESSION['LEFT_FRAME_WIDTH']);
+    $left_frame_width = max(100, intval($_SESSION['LEFT_FRAME_WIDTH']));
 } else {
     $left_frame_width = 280;
 }

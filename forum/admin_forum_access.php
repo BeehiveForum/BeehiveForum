@@ -94,15 +94,15 @@ if (!forum_get_setting('access_level', FORUM_RESTRICTED)) {
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
     $main_page = $_GET['main_page'];
 } else if (isset($_POST['main_page']) && is_numeric($_POST['main_page'])) {
-    $main_page = $_POST['main_page'];
+    $main_page = intval($_POST['main_page']);
 } else {
     $main_page = 1;
 }
 
 if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
-    $search_page = $_GET['search_page'];
+    $search_page = intval($_GET['search_page']);
 } else if (isset($_POST['search_page']) && is_numeric($_POST['search_page'])) {
-    $search_page = $_POST['search_page'];
+    $search_page = intval($_POST['search_page']);
 } else {
     $search_page = 1;
 }

@@ -62,7 +62,7 @@ if (isset($_POST['update'])) {
     $valid = true;
 
     if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-        $fid = $_POST['fid'];
+        $fid = intval($_POST['fid']);
     } else {
         $fid = 1;
     }
@@ -91,7 +91,7 @@ if (isset($_POST['update'])) {
 
 } else if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
-    $fid = $_GET['fid'];
+    $fid = intval($_GET['fid']);
 
     if (!in_array($fid, array_keys($folders))) {
         html_draw_error(gettext("You must specify a valid folder!"));

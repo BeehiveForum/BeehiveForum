@@ -61,9 +61,9 @@ $t_database = null;
 $t_access = null;
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
-    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
+    $page = ($_POST['page'] > 0) ? intval($_POST['page']) : 1;
 } else {
     $page = 1;
 }
@@ -198,7 +198,7 @@ if (isset($_POST['delete'])) {
 
 } else if (isset($_GET['default']) && is_numeric($_GET['default'])) {
 
-    $fid = $_GET['default'];
+    $fid = intval($_GET['default']);
     forum_update_default($fid);
 
 } else if (isset($_POST['addforumsubmit'])) {
@@ -271,7 +271,7 @@ if (isset($_POST['delete'])) {
     }
 
     if (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) {
-        $t_access = $_POST['t_access'];
+        $t_access = intval($_POST['t_access']);
     } else {
         $error_msg_array[] = gettext("You must supply a forum access level");
         $valid = false;
@@ -304,7 +304,7 @@ if (isset($_POST['delete'])) {
     $valid = true;
 
     if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-        $fid = $_POST['fid'];
+        $fid = intval($_POST['fid']);
     } else {
         $error_msg_array[] = gettext("Invalid forum or forum is not available");
         $valid = false;
@@ -340,7 +340,7 @@ if (isset($_POST['delete'])) {
         }
 
         if (isset($_POST['t_access']) && is_numeric($_POST['t_access'])) {
-            $t_access = $_POST['t_access'];
+            $t_access = intval($_POST['t_access']);
         } else {
             $error_msg_array[] = gettext("You must supply a forum access level");
             $valid = false;
@@ -390,9 +390,9 @@ if (isset($_POST['delete'])) {
     $redirect_uri = "admin_forum_access.php?webtag=$forum_webtag&";
 
     if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-        $redirect_uri .= "ret=" . rawurlencode("admin_forums.php?webtag=$webtag&fid={$_POST['fid']}");
+        $redirect_uri .= "ret=" . rawurlencode(sprintf("admin_forums.php?webtag=%s&fid=%d", $webtag, intval($_POST['fid'])));
     } else if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
-        $redirect_uri .= "ret=" . rawurlencode("admin_forums.php?webtag=$webtag&fid={$_GET['fid']}");
+        $redirect_uri .= "ret=" . rawurlencode(sprintf("admin_forums.php?webtag=%s&fid=%d", $webtag, intval($_GET['fid'])));
     }
 
     header_redirect($redirect_uri);
@@ -405,9 +405,9 @@ if (isset($_POST['delete'])) {
     $redirect_uri = "admin_forum_set_passwd.php?webtag=$forum_webtag&";
 
     if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-        $redirect_uri .= "ret=" . rawurlencode("admin_forums.php?webtag=$webtag&fid={$_POST['fid']}");
+        $redirect_uri .= "ret=" . rawurlencode(sprintf("admin_forums.php?webtag=%s&fid=%d", $webtag, intval($_POST['fid'])));
     } else if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
-        $redirect_uri .= "ret=" . rawurlencode("admin_forums.php?webtag=$webtag&fid={$_GET['fid']}");
+        $redirect_uri .= "ret=" . rawurlencode(sprintf("admin_forums.php?webtag=%s&fid=%d", $webtag, intval($_GET['fid'])));
     }
 
     header_redirect($redirect_uri);
@@ -522,11 +522,11 @@ if (isset($_GET['addforum']) || isset($_POST['addforum'])) {
 
     if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
 
-        $fid = $_POST['fid'];
+        $fid = intval($_POST['fid']);
 
     } else if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
-        $fid = $_GET['fid'];
+        $fid = intval($_GET['fid']);
 
     } else {
 

@@ -71,17 +71,17 @@ if (isset($_POST['save'])) {
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = $_GET['page'];
+    $page = intval($_GET['page']);
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
-    $page = $_POST['page'];
+    $page = intval($_POST['page']);
 } else {
     $page = 1;
 }
 
 if (isset($_GET['view']) && is_numeric($_GET['view'])) {
-    $view = $_GET['view'];
+    $view = intval($_GET['view']);
 } else if (isset($_POST['view']) && is_numeric($_POST['view'])) {
-    $view = $_POST['view'];
+    $view = intval($_POST['view']);
 } else {
     $view = THREAD_INTERESTED;
 }

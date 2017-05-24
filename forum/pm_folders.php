@@ -92,7 +92,7 @@ if (isset($_GET['manage_folder'])) {
 
     if (is_numeric($_GET['manage_folder'])) {
 
-        $manage_folder = $_GET['manage_folder'];
+        $manage_folder = intval($_GET['manage_folder']);
 
     } else {
 
@@ -111,7 +111,7 @@ if (isset($_GET['manage_folder'])) {
 
     if (is_numeric($_POST['manage_folder'])) {
 
-        $manage_folder = $_POST['manage_folder'];
+        $manage_folder = intval($_POST['manage_folder']);
 
     } else {
 

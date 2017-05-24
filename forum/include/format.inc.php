@@ -125,19 +125,19 @@ function format_version_number($version, $glue = '.')
 function format_date_time($time, $date_only = false)
 {
     if (isset($_SESSION['TIMEZONE']) && is_numeric($_SESSION['TIMEZONE'])) {
-        $timezone_id = $_SESSION['TIMEZONE'];
+        $timezone_id = intval($_SESSION['TIMEZONE']);
     } else {
         $timezone_id = forum_get_setting('forum_timezone', 'is_numeric', 27);
     }
 
     if (isset($_SESSION['GMT_OFFSET']) && is_numeric($_SESSION['GMT_OFFSET'])) {
-        $gmt_offset = $_SESSION['GMT_OFFSET'];
+        $gmt_offset = intval($_SESSION['GMT_OFFSET']);
     } else {
         $gmt_offset = forum_get_setting('forum_gmt_offset', 'is_numeric', 0);
     }
 
     if (isset($_SESSION['DST_OFFSET']) && is_numeric($_SESSION['DST_OFFSET'])) {
-        $dst_offset = $_SESSION['DST_OFFSET'];
+        $dst_offset = intval($_SESSION['DST_OFFSET']);
     } else {
         $dst_offset = forum_get_setting('forum_dst_offset', 'is_numeric', 0);
     }

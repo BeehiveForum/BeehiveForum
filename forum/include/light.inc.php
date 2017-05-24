@@ -121,7 +121,7 @@ function light_html_draw_top(array $options = array())
         message_get_meta_content($_GET['msg'], $meta_keywords, $meta_description);
 
         if (isset($_SESSION['POSTS_PER_PAGE']) && is_numeric($_SESSION['POSTS_PER_PAGE'])) {
-            $posts_per_page = max(min($_SESSION['POSTS_PER_PAGE'], 30), 10);
+            $posts_per_page = max(min(intval($_SESSION['POSTS_PER_PAGE']), 30), 10);
         } else {
             $posts_per_page = 20;
         }
@@ -1081,20 +1081,20 @@ function light_draw_pm_inbox()
     }
 
     if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-        $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+        $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
     } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
-        $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
+        $page = ($_POST['page'] > 0) ? intval($_POST['page']) : 1;
     } else {
         $page = 1;
     }
 
     if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
-        $mid = ($_GET['mid'] > 0) ? $_GET['mid'] : 0;
+        $mid = ($_GET['mid'] > 0) ? intval($_GET['mid']) : 0;
 
     } else if (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
 
-        $mid = ($_POST['mid'] > 0) ? $_POST['mid'] : 0;
+        $mid = ($_POST['mid'] > 0) ? intval($_POST['mid']) : 0;
 
     } else {
 
@@ -1305,7 +1305,7 @@ function light_draw_my_forums()
     forum_check_webtag_available($webtag);
 
     if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-        $page = $_GET['page'];
+        $page = intval($_GET['page']);
     } else {
         $page = 1;
     }

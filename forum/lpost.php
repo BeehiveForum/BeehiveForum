@@ -126,7 +126,7 @@ if (isset($_POST['attachment']) && is_array($_POST['attachment'])) {
     $attachments = array();
 }
 if (isset($_POST['dedupe']) && is_numeric($_POST['dedupe'])) {
-    $dedupe = $_POST['dedupe'];
+    $dedupe = intval($_POST['dedupe']);
 } else {
     $dedupe = time();
 }
@@ -273,10 +273,10 @@ if (isset($_GET['reply_to']) && validate_msg($_GET['reply_to'])) {
         $new_thread = true;
 
         if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
-            $fid = $_GET['fid'];
+            $fid = intval($_GET['fid']);
         } else {
             if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-                $fid = $_POST['fid'];
+                $fid = intval($_POST['fid']);
             }
         }
 

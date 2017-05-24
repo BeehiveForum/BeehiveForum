@@ -118,7 +118,7 @@ if (isset($_GET['sort_dir'])) {
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else {
     $page = 1;
 }
@@ -136,9 +136,9 @@ if (isset($_GET['reset']) || isset($_POST['reset'])) {
 }
 
 if (isset($_GET['filter']) && is_numeric($_GET['filter'])) {
-    $filter = $_GET['filter'];
+    $filter = intval($_GET['filter']);
 } else if (isset($_POST['filter']) && is_numeric($_POST['filter'])) {
-    $filter = $_POST['filter'];
+    $filter = intval($_POST['filter']);
 } else {
     $filter = ADMIN_USER_FILTER_NONE;
 }

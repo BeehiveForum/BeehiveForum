@@ -116,7 +116,7 @@ if (isset($_GET['markasread']) && is_numeric($_GET['markasread'])) {
 
 } else if (isset($_POST['setinterest']) && is_numeric($_POST['setinterest'])) {
 
-    $thread_interest = $_POST['setinterest'];
+    $thread_interest = intval($_POST['setinterest']);
 
     if (thread_set_interest($tid, $thread_interest)) {
 
@@ -154,7 +154,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['interest']) && is_numeric($_POST['interest'])) {
 
-        $thread_data['INTEREST'] = $_POST['interest'];
+        $thread_data['INTEREST'] = intval($_POST['interest']);
 
         if (!thread_set_interest($tid, $thread_data['INTEREST'])) {
 
@@ -191,7 +191,7 @@ if (isset($_POST['save'])) {
 
         if (isset($_POST['move']) && is_numeric($_POST['move'])) {
 
-            $t_move = $_POST['move'];
+            $t_move = intval($_POST['move']);
 
             if (folder_is_valid($t_move) && ($t_move !== $thread_data['FID'])) {
 
@@ -220,7 +220,7 @@ if (isset($_POST['save'])) {
 
         if (isset($_POST['closed']) && is_numeric($_POST['closed'])) {
 
-            $t_closed = in_array($_POST['closed'], range(0, 1)) ? $_POST['closed'] : $thread_data['CLOSED'];
+            $t_closed = in_array($_POST['closed'], range(0, 1)) ? intval($_POST['closed']) : $thread_data['CLOSED'];
 
             if ($t_closed != $thread_data['CLOSED']) {
 
@@ -240,7 +240,7 @@ if (isset($_POST['save'])) {
 
         if (isset($_POST['admin_lock']) && is_numeric($_POST['admin_lock'])) {
 
-            $t_admin_lock = in_array($_POST['admin_lock'], range(0, 1)) ? $_POST['admin_lock'] : $thread_data['ADMIN_LOCK'];
+            $t_admin_lock = in_array($_POST['admin_lock'], range(0, 1)) ? intval($_POST['admin_lock']) : $thread_data['ADMIN_LOCK'];
 
             if ($t_admin_lock != $thread_data['ADMIN_LOCK']) {
 

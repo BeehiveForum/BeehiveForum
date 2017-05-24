@@ -1756,19 +1756,19 @@ function user_prefs_filter_attachments($image_attachments_array, $max_width, $ma
 function user_get_local_time()
 {
     if (isset($_SESSION['TIMEZONE']) && is_numeric($_SESSION['TIMEZONE'])) {
-        $timezone_id = $_SESSION['TIMEZONE'];
+        $timezone_id = intval($_SESSION['TIMEZONE']);
     } else {
         $timezone_id = forum_get_setting('forum_timezone', 'is_numeric', 27);
     }
 
     if (isset($_SESSION['GMT_OFFSET']) && is_numeric($_SESSION['GMT_OFFSET'])) {
-        $gmt_offset = $_SESSION['GMT_OFFSET'];
+        $gmt_offset = intval($_SESSION['GMT_OFFSET']);
     } else {
         $gmt_offset = forum_get_setting('forum_gmt_offset', 'is_numeric', 0);
     }
 
     if (isset($_SESSION['DST_OFFSET']) && is_numeric($_SESSION['DST_OFFSET'])) {
-        $dst_offset = $_SESSION['DST_OFFSET'];
+        $dst_offset = intval($_SESSION['DST_OFFSET']);
     } else {
         $dst_offset = forum_get_setting('forum_dst_offset', 'is_numeric', 0);
     }

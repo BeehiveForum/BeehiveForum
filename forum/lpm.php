@@ -38,9 +38,9 @@ if (!session::logged_in()) {
 }
 
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
-    $mid = ($_GET['mid'] > 0) ? $_GET['mid'] : 0;
+    $mid = ($_GET['mid'] > 0) ? intval($_GET['mid']) : 0;
 } else if (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
-    $mid = ($_POST['mid'] > 0) ? $_POST['mid'] : 0;
+    $mid = ($_POST['mid'] > 0) ? intval($_POST['mid']) : 0;
 } else {
     $mid = null;
 }

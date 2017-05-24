@@ -94,20 +94,20 @@ if (isset($_GET['sort_dir'])) {
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
-    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
+    $page = ($_POST['page'] > 0) ? intval($_POST['page']) : 1;
 } else {
     $page = 1;
 }
 
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
-    $mid = ($_GET['mid'] > 0) ? $_GET['mid'] : 0;
+    $mid = ($_GET['mid'] > 0) ? intval($_GET['mid']) : 0;
 
 } else if (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
 
-    $mid = ($_POST['mid'] > 0) ? $_POST['mid'] : 0;
+    $mid = ($_POST['mid'] > 0) ? intval($_POST['mid']) : 0;
 
 } else {
 

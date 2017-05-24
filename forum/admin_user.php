@@ -60,11 +60,11 @@ $uid = null;
 
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
-    $uid = $_GET['uid'];
+    $uid = intval($_GET['uid']);
 
 } else if (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
 
-    $uid = $_POST['uid'];
+    $uid = intval($_POST['uid']);
 
 } else {
 
@@ -216,7 +216,7 @@ if (isset($_POST['action_submit'])) {
 
         if (isset($_POST['t_post_count']) && is_numeric($_POST['t_post_count'])) {
 
-            $user_post_count = $_POST['t_post_count'];
+            $user_post_count = intval($_POST['t_post_count']);
 
             if (user_update_post_count($uid, $user_post_count)) {
 

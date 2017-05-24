@@ -41,7 +41,7 @@ $logon = null;
 
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
-    $uid = $_GET['uid'];
+    $uid = intval($_GET['uid']);
 
     if (!($logon = user_get_logon($uid))) {
         html_draw_error(gettext("Unknown user"));

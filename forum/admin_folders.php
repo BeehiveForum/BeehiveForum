@@ -51,9 +51,9 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 admin_check_credentials();
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
-    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
+    $page = ($_POST['page'] > 0) ? intval($_POST['page']) : 1;
 } else {
     $page = 1;
 }

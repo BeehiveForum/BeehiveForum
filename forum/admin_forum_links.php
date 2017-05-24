@@ -60,9 +60,9 @@ $t_title = null;
 
 // Get page number and offset for SQL queries.
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
-    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
+    $page = ($_POST['page'] > 0) ? intval($_POST['page']) : 1;
 } else {
     $page = 1;
 }
@@ -183,7 +183,7 @@ if (isset($_POST['delete'])) {
 
     if (isset($_POST['lid']) && is_numeric($_POST['lid'])) {
 
-        $lid = $_POST['lid'];
+        $lid = intval($_POST['lid']);
 
         if (isset($_POST['t_title']) && strlen(trim($_POST['t_title'])) > 0) {
             $t_title = trim($_POST['t_title']);
@@ -340,11 +340,11 @@ if (isset($_GET['addlink']) || isset($_POST['addlink'])) {
 
     if (isset($_POST['lid']) && is_numeric($_POST['lid'])) {
 
-        $lid = $_POST['lid'];
+        $lid = intval($_POST['lid']);
 
     } else if (isset($_GET['lid']) && is_numeric($_GET['lid'])) {
 
-        $lid = $_GET['lid'];
+        $lid = intval($_GET['lid']);
 
     } else {
 

@@ -102,7 +102,7 @@ function cache_check_thread_list()
 
     if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-        $folder = $db->escape($_GET['folder']);
+        $folder = $db->escape(intval($_GET['folder']));
 
         $sql = "SELECT * FROM (SELECT UNIX_TIMESTAMP(MAX(THREAD.CREATED)) AS CREATED, ";
         $sql .= "UNIX_TIMESTAMP(MAX(THREAD.MODIFIED)) AS MODIFIED ";

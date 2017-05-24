@@ -42,11 +42,11 @@ if (!session::logged_in()) {
 
 if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
-    $fid = $_GET['fid'];
+    $fid = intval($_GET['fid']);
 
 } else if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
 
-    $fid = $_POST['fid'];
+    $fid = intval($_POST['fid']);
 
 } else {
 

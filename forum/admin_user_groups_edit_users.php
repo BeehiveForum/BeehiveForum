@@ -82,11 +82,11 @@ if (isset($_POST['back'])) {
 
 if (isset($_GET['gid']) && is_numeric($_GET['gid'])) {
 
-    $gid = $_GET['gid'];
+    $gid = intval($_GET['gid']);
 
 } else if (isset($_POST['gid']) && is_numeric($_POST['gid'])) {
 
-    $gid = $_POST['gid'];
+    $gid = intval($_POST['gid']);
 
 } else {
 
@@ -94,10 +94,10 @@ if (isset($_GET['gid']) && is_numeric($_GET['gid'])) {
 }
 
 if (isset($_GET['main_page']) && is_numeric($_GET['main_page'])) {
-    $main_page = $_GET['main_page'];
+    $main_page = intval($_GET['main_page']);
     $start_main = floor($main_page - 1) * 20;
 } else if (isset($_POST['main_page']) && is_numeric($_POST['main_page'])) {
-    $main_page = $_POST['main_page'];
+    $main_page = intval($_POST['main_page']);
     $start_main = floor($main_page - 1) * 20;
 } else {
     $main_page = 1;
@@ -105,10 +105,10 @@ if (isset($_GET['main_page']) && is_numeric($_GET['main_page'])) {
 }
 
 if (isset($_GET['search_page']) && is_numeric($_GET['search_page'])) {
-    $search_page = $_GET['search_page'];
+    $search_page = intval($_GET['search_page']);
     $start_search = floor($search_page - 1) * 20;
 } else if (isset($_POST['search_page']) && is_numeric($_POST['search_page'])) {
-    $search_page = $_POST['search_page'];
+    $search_page = intval($_POST['search_page']);
     $start_search = floor($search_page - 1) * 20;
 } else {
     $search_page = 1;

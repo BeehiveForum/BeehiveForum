@@ -51,7 +51,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         if (is_numeric($_GET['profile_uid'])) {
 
-            $profile_uid = $_GET['profile_uid'];
+            $profile_uid = intval($_GET['profile_uid']);
             $admin_edit = true;
 
         } else {
@@ -63,7 +63,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         if (is_numeric($_POST['profile_uid'])) {
 
-            $profile_uid = $_POST['profile_uid'];
+            $profile_uid = intval($_POST['profile_uid']);
             $admin_edit = true;
 
         } else {

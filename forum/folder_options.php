@@ -43,11 +43,11 @@ if (!session::logged_in()) {
 // Check that required variables are set
 if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
-    $fid = $_GET['fid'];
+    $fid = intval($_GET['fid']);
 
 } else if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
 
-    $fid = $_POST['fid'];
+    $fid = intval($_POST['fid']);
 
 } else {
 
@@ -74,7 +74,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['interest']) && is_numeric($_POST['interest'])) {
 
-        $folder_data['INTEREST'] = $_POST['interest'];
+        $folder_data['INTEREST'] = intval($_POST['interest']);
 
         if (!user_set_folder_interest($fid, $folder_data['INTEREST'])) {
 

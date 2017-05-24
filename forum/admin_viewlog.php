@@ -171,7 +171,7 @@ if (isset($_GET['sort_dir'])) {
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else {
     $page = 1;
 }
@@ -183,7 +183,7 @@ if (isset($_POST['prune_log'])) {
 
     if (isset($_POST['remove_type']) && is_numeric($_POST['remove_type'])) {
 
-        $remove_type = $_POST['remove_type'];
+        $remove_type = intval($_POST['remove_type']);
 
     } else {
 
@@ -192,7 +192,7 @@ if (isset($_POST['prune_log'])) {
     }
 
     if (isset($_POST['remove_days']) && is_numeric($_POST['remove_days'])) {
-        $remove_days = $_POST['remove_days'];
+        $remove_days = intval($_POST['remove_days']);
     } else {
         $remove_days = 0;
     }

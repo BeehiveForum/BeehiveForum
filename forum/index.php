@@ -100,7 +100,7 @@ if (!browser_mobile() && !session::is_search_engine()) {
     );
 
     if (isset($_SESSION['FONT_SIZE']) && is_numeric($_SESSION['FONT_SIZE'])) {
-        $navsize = max(max(min($_SESSION['FONT_SIZE'], 15), 5) * 2, 22);
+        $navsize = max(max(min(intval($_SESSION['FONT_SIZE']), 15), 5) * 2, 22);
     } else {
         $navsize = 22;
     }
@@ -113,11 +113,11 @@ if (!browser_mobile() && !session::is_search_engine()) {
 
         } else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-            $final_uri = "discussion.php?webtag=$webtag&folder={$_GET['folder']}";
+            $final_uri = sprintf("discussion.php?webtag=%s&folder=%d", $webtag, intval($_GET['folder']));
 
         } else if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
-            $final_uri = "pm.php?webtag=$webtag&mid={$_GET['mid']}";
+            $final_uri = sprintf("pm.php?webtag=%s&mid=%d", $webtag, intval($_GET['mid']));
 
         } else {
 
@@ -269,13 +269,13 @@ if (forum_check_webtag_available($webtag, false)) {
         }
 
         if (isset($_REQUEST['start_from']) && is_numeric($_REQUEST['start_from'])) {
-            $start_from = $_REQUEST['start_from'];
+            $start_from = intval($_REQUEST['start_from']);
         } else {
             $start_from = 0;
         }
 
         if (isset($_REQUEST['mode']) && is_numeric($_REQUEST['mode'])) {
-            $mode = $_REQUEST['mode'];
+            $mode = intval($_REQUEST['mode']);
         }
 
         if (!session::logged_in()) {
@@ -295,7 +295,7 @@ if (forum_check_webtag_available($webtag, false)) {
             } else {
 
                 if (isset($_SESSION['THREAD_MODE']) && is_numeric($_SESSION['THREAD_MODE'])) {
-                    $mode = $_SESSION['THREAD_MODE'];
+                    $mode = intval($_SESSION['THREAD_MODE']);
                 } else {
                     $mode = UNREAD_DISCUSSIONS;
                 }

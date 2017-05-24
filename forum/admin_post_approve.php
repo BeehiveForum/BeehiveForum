@@ -61,7 +61,7 @@ $show_sigs = session::show_sigs();
 
 // Page number
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else {
     $page = 1;
 }

@@ -51,9 +51,9 @@ if (!(session::check_perm(USER_PERM_ADMIN_TOOLS, 0))) {
 admin_check_credentials();
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
-    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
+    $page = ($_POST['page'] > 0) ? intval($_POST['page']) : 1;
 } else {
     $page = 1;
 }
@@ -66,11 +66,11 @@ if (isset($_POST['cancel'])) {
 
 if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
 
-    $fid = $_POST['fid'];
+    $fid = intval($_POST['fid']);
 
 } else if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
-    $fid = $_GET['fid'];
+    $fid = intval($_GET['fid']);
 
 } else {
 
@@ -123,7 +123,7 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['allowed_types']) && is_numeric($_POST['allowed_types'])) {
-        $folder_data['ALLOWED_TYPES'] = $_POST['allowed_types'];
+        $folder_data['ALLOWED_TYPES'] = intval($_POST['allowed_types']);
     }
 
     if (isset($_POST['old_allowed_types']) && is_numeric($_POST['old_allowed_types'])) {
@@ -131,11 +131,11 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['position']) && is_numeric($_POST['position'])) {
-        $folder_data['POSITION'] = $_POST['position'];
+        $folder_data['POSITION'] = intval($_POST['position']);
     }
 
     if (isset($_POST['old_perms']) && is_numeric($_POST['old_perms'])) {
-        $folder_data['OLD_PERMS'] = (double)$_POST['old_perms'];
+        $folder_data['OLD_PERMS'] = (double)intval($_POST['old_perms']);
     }
 
     $t_post_read = (double)(isset($_POST['t_post_read'])) ? $_POST['t_post_read'] : 0;
@@ -168,7 +168,7 @@ if (isset($_POST['save'])) {
 
                 if (isset($_POST['fid_move']) && is_numeric($_POST['fid_move'])) {
 
-                    $fid_move = $_POST['fid_move'];
+                    $fid_move = intval($_POST['fid_move']);
 
                     if (($fid != $fid_move) && ($new_folder_title = folder_get_title($fid_move))) {
 

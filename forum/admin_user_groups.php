@@ -85,7 +85,7 @@ if (isset($_GET['sort_dir'])) {
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else {
     $page = 1;
 }
@@ -127,7 +127,7 @@ if (isset($_POST['delete'])) {
 
 } else if (isset($_GET['set_default']) && is_numeric($_GET['set_default'])) {
 
-    $forum_settings['default_user_group'] = $_GET['set_default'];
+    $forum_settings['default_user_group'] = intval($_GET['set_default']);
 
     if ((isset($user_group_name_array[$_GET['set_default']]) || $_GET['set_default'] == 0) && forum_save_settings($forum_settings)) {
         header_redirect("admin_user_groups.php?webtag=$webtag&page=$page&sort_by=$sort_by&sort_dir=$sort_dir&default={$_GET['set_default']}");

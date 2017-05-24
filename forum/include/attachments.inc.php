@@ -616,7 +616,7 @@ function attachments_make_link($attachment, $show_thumbs = true, $limit_filename
     forum_check_webtag_available($webtag);
 
     if (isset($_SESSION['SHOW_THUMBS']) && is_numeric($_SESSION['SHOW_THUMBS'])) {
-        $user_show_thumbs = $_SESSION['SHOW_THUMBS'];
+        $user_show_thumbs = intval($_SESSION['SHOW_THUMBS']);
     } else {
         $user_show_thumbs = 100;
     }

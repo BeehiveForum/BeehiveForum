@@ -55,7 +55,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         if (is_numeric($_GET['profile_uid'])) {
 
-            $profile_uid = $_GET['profile_uid'];
+            $profile_uid = intval($_GET['profile_uid']);
             $admin_edit = true;
 
         } else {
@@ -67,7 +67,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         if (is_numeric($_POST['profile_uid'])) {
 
-            $profile_uid = $_POST['profile_uid'];
+            $profile_uid = intval($_POST['profile_uid']);
             $admin_edit = true;
 
         } else {
@@ -266,7 +266,7 @@ if (isset($_POST['save'])) {
 
         if (is_numeric($_POST['pic_aid'])) {
 
-            $user_prefs['PIC_AID'] = $_POST['pic_aid'];
+            $user_prefs['PIC_AID'] = intval($_POST['pic_aid']);
 
             if (isset($user_prefs['PIC_URL']) && strlen(trim($user_prefs['PIC_URL'])) > 0) {
 
@@ -331,7 +331,7 @@ if (isset($_POST['save'])) {
 
         if (is_numeric($_POST['avatar_aid'])) {
 
-            $user_prefs['AVATAR_AID'] = $_POST['avatar_aid'];
+            $user_prefs['AVATAR_AID'] = intval($_POST['avatar_aid']);
 
             if (isset($user_prefs['AVATAR_URL']) && strlen(trim($user_prefs['AVATAR_URL'])) > 0) {
 

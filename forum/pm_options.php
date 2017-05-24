@@ -71,7 +71,7 @@ if (isset($_POST['save'])) {
 
         if (isset($_POST['pm_auto_prune']) && is_numeric($_POST['pm_auto_prune'])) {
 
-            $user_prefs['PM_AUTO_PRUNE'] = $_POST['pm_auto_prune'];
+            $user_prefs['PM_AUTO_PRUNE'] = intval($_POST['pm_auto_prune']);
 
         } else {
 
@@ -82,7 +82,7 @@ if (isset($_POST['save'])) {
 
         if (isset($_POST['pm_auto_prune']) && is_numeric($_POST['pm_auto_prune'])) {
 
-            $user_prefs['PM_AUTO_PRUNE'] = $_POST['pm_auto_prune'] * -1;
+            $user_prefs['PM_AUTO_PRUNE'] = intval($_POST['pm_auto_prune']) * -1;
 
         } else {
 
@@ -91,13 +91,13 @@ if (isset($_POST['save'])) {
     }
 
     if (isset($_POST['pm_export_file']) && is_numeric($_POST['pm_export_file'])) {
-        $user_prefs['PM_EXPORT_FILE'] = $_POST['pm_export_file'];
+        $user_prefs['PM_EXPORT_FILE'] = intval($_POST['pm_export_file']);
     } else {
         $user_prefs['PM_EXPORT_FILE'] = 0;
     }
 
     if (isset($_POST['pm_export_type']) && is_numeric($_POST['pm_export_type'])) {
-        $user_prefs['PM_EXPORT_TYPE'] = $_POST['pm_export_type'];
+        $user_prefs['PM_EXPORT_TYPE'] = intval($_POST['pm_export_type']);
     } else {
         $user_prefs['PM_EXPORT_TYPE'] = 0;
     }

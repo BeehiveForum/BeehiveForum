@@ -53,14 +53,14 @@ if (isset($_REQUEST['folder']) && in_array($_REQUEST['folder'], $available_folde
 
 // View offset.
 if (isset($_REQUEST['page']) && is_numeric($_REQUEST['page'])) {
-    $page = $_REQUEST['page'];
+    $page = intval($_REQUEST['page']);
 } else {
     $page = 1;
 }
 
 // View mode
 if (isset($_REQUEST['mode']) && is_numeric($_REQUEST['mode'])) {
-    $mode = $_REQUEST['mode'];
+    $mode = intval($_REQUEST['mode']);
 }
 
 // Check that required variables are set

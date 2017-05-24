@@ -37,7 +37,7 @@ require_once BH_INCLUDE_PATH . 'thread.inc.php';
 
 if (isset($_GET['tid']) && is_numeric($_GET['tid'])) {
 
-    $tid = $_GET['tid'];
+    $tid = intval($_GET['tid']);
 
     if (!$t_fid = thread_get_folder_fid($tid)) {
         html_draw_error(gettext("The requested thread could not be found or access was denied."));

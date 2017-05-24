@@ -58,7 +58,7 @@ $current_folder = PM_FOLDER_INBOX;
 
 // Get the user's saved left frame width.
 if (isset($_SESSION['LEFT_FRAME_WIDTH']) && is_numeric($_SESSION['LEFT_FRAME_WIDTH'])) {
-    $left_frame_width = max(100, $_SESSION['LEFT_FRAME_WIDTH']);
+    $left_frame_width = max(100, intval($_SESSION['LEFT_FRAME_WIDTH']));
 } else {
     $left_frame_width = 280;
 }
@@ -76,7 +76,7 @@ $frameset = new html_frameset_cols('pm', "$left_frame_width,*");
 // If we're viewing a message we need to know the folder it is in.
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
-    $mid = $_GET['mid'];
+    $mid = intval($_GET['mid']);
 
     if (($message_data = pm_message_get($mid))) {
 
@@ -104,7 +104,7 @@ if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
 } else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-    $current_folder = (in_array($_GET['folder'], $available_folders)) ? $_GET['folder'] : PM_FOLDER_INBOX;
+    $current_folder = (in_array($_GET['folder'], $available_folders)) ? intval($_GET['folder']) : PM_FOLDER_INBOX;
 
     if (isset($_GET['message_sent'])) {
 

@@ -121,9 +121,9 @@ if (isset($_POST['thread_title']) && strlen(trim($_POST['thread_title'])) > 0) {
 }
 
 if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-    $fid = $_POST['fid'];
+    $fid = intval($_POST['fid']);
 } else if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
-    $fid = $_GET['fid'];
+    $fid = intval($_GET['fid']);
 } else {
     $fid = 1;
 }
@@ -218,23 +218,23 @@ if (isset($_POST['delete_question']) && is_array($_POST['delete_question'])) {
 }
 
 if (isset($_POST['poll_type']) && is_numeric($_POST['poll_type'])) {
-    $poll_type = $_POST['poll_type'];
+    $poll_type = intval($_POST['poll_type']);
 }
 
 if (isset($_POST['show_results']) && is_numeric($_POST['show_results'])) {
-    $show_results = $_POST['show_results'];
+    $show_results = intval($_POST['show_results']);
 }
 
 if (isset($_POST['poll_vote_type']) && is_numeric($_POST['poll_vote_type'])) {
-    $poll_vote_type = $_POST['poll_vote_type'];
+    $poll_vote_type = intval($_POST['poll_vote_type']);
 }
 
 if (isset($_POST['option_type']) && is_numeric($_POST['option_type'])) {
-    $option_type = $_POST['option_type'];
+    $option_type = intval($_POST['option_type']);
 }
 
 if (isset($_POST['change_vote']) && is_numeric($_POST['change_vote'])) {
-    $change_vote = $_POST['change_vote'];
+    $change_vote = intval($_POST['change_vote']);
 }
 
 if (forum_get_setting('poll_allow_guests', 'Y')) {
@@ -251,7 +251,7 @@ if (forum_get_setting('poll_allow_guests', 'Y')) {
 }
 
 if (isset($_POST['close_poll']) && is_numeric($_POST['close_poll'])) {
-    $close_poll = $_POST['close_poll'];
+    $close_poll = intval($_POST['close_poll']);
 }
 
 if (isset($_POST['message_text']) && strlen(trim($_POST['message_text'])) > 0) {
@@ -558,7 +558,7 @@ if ((mb_strlen($message_text) + mb_strlen($sig_text)) >= 65535) {
 }
 
 if (isset($_POST['dedupe']) && is_numeric($_POST['dedupe'])) {
-    $dedupe = $_POST['dedupe'];
+    $dedupe = intval($_POST['dedupe']);
 } else {
     $dedupe = time();
 }

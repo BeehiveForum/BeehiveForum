@@ -58,28 +58,28 @@ $t_name_new = null;
 $psid = null;
 
 if (isset($_GET['sect_page']) && is_numeric($_GET['sect_page'])) {
-    $sect_page = ($_GET['sect_page'] > 0) ? $_GET['sect_page'] : 1;
+    $sect_page = ($_GET['sect_page'] > 0) ? intval($_GET['sect_page']) : 1;
 } else if (isset($_POST['sect_page']) && is_numeric($_POST['sect_page'])) {
-    $sect_page = ($_POST['sect_page'] > 0) ? $_POST['sect_page'] : 1;
+    $sect_page = ($_POST['sect_page'] > 0) ? intval($_POST['sect_page']) : 1;
 } else {
     $sect_page = 1;
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
-    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
+    $page = ($_POST['page'] > 0) ? intval($_POST['page']) : 1;
 } else {
     $page = 1;
 }
 
 if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
 
-    $psid = $_GET['psid'];
+    $psid = intval($_GET['psid']);
 
 } else if (isset($_POST['psid']) && is_numeric($_POST['psid'])) {
 
-    $psid = $_POST['psid'];
+    $psid = intval($_POST['psid']);
 
 } else {
 
@@ -261,7 +261,7 @@ if (isset($_POST['additemsubmit'])) {
 
     if (isset($_POST['piid']) && is_numeric($_POST['piid'])) {
 
-        $piid = $_POST['piid'];
+        $piid = intval($_POST['piid']);
 
     } else {
 
@@ -336,7 +336,7 @@ if (isset($_POST['additemsubmit'])) {
 
     if (isset($_POST['t_section_new']) && is_numeric($_POST['t_section_new'])) {
 
-        $t_section_new = $_POST['t_section_new'];
+        $t_section_new = intval($_POST['t_section_new']);
 
     } else {
 
@@ -479,11 +479,11 @@ if (isset($_GET['additem']) || isset($_POST['additem'])) {
 
     if (isset($_POST['piid']) && is_numeric($_POST['piid'])) {
 
-        $piid = $_POST['piid'];
+        $piid = intval($_POST['piid']);
 
     } else if (isset($_GET['piid']) && is_numeric($_GET['piid'])) {
 
-        $piid = $_GET['piid'];
+        $piid = intval($_GET['piid']);
 
     } else {
 

@@ -45,7 +45,7 @@ if (isset($_POST['save'])) {
 
     if (isset($_POST['u']) && is_numeric($_POST['u'])) {
 
-        $uid = $_POST['u'];
+        $uid = intval($_POST['u']);
 
     } else {
 

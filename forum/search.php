@@ -86,7 +86,7 @@ if (isset($_GET['sort_dir'])) {
 }
 
 if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-    $search_folder_fid = $_POST['fid'];
+    $search_folder_fid = intval($_POST['fid']);
 } else {
     $search_folder_fid = 0;
 }
@@ -160,7 +160,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     }
 
     if (isset($_POST['method']) && is_numeric($_POST['method'])) {
-        $search_arguments['method'] = $_POST['method'];
+        $search_arguments['method'] = intval($_POST['method']);
     }
 
     if (isset($_POST['username']) && strlen(trim($_POST['username'])) > 0) {
@@ -180,33 +180,33 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
     }
 
     if (isset($_POST['user_include']) && is_numeric($_POST['user_include'])) {
-        $search_arguments['user_include'] = $_POST['user_include'];
+        $search_arguments['user_include'] = intval($_POST['user_include']);
     } else if (isset($_GET['user_include']) && is_numeric($_GET['user_include'])) {
-        $search_arguments['user_include'] = $_GET['user_include'];
+        $search_arguments['user_include'] = intval($_GET['user_include']);
     }
 
     if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-        $search_arguments['fid'] = $_POST['fid'];
+        $search_arguments['fid'] = intval($_POST['fid']);
     }
 
     if (isset($_POST['date_from']) && is_numeric($_POST['date_from'])) {
-        $search_arguments['date_from'] = $_POST['date_from'];
+        $search_arguments['date_from'] = intval($_POST['date_from']);
     }
 
     if (isset($_POST['date_to']) && is_numeric($_POST['date_to'])) {
-        $search_arguments['date_to'] = $_POST['date_to'];
+        $search_arguments['date_to'] = intval($_POST['date_to']);
     }
 
     if (isset($_POST['sort_by']) && is_numeric($_POST['sort_by'])) {
-        $search_arguments['sort_by'] = $_POST['sort_by'];
+        $search_arguments['sort_by'] = intval($_POST['sort_by']);
     }
 
     if (isset($_POST['sort_dir']) && is_numeric($_POST['sort_dir'])) {
-        $search_arguments['sort_dir'] = $_POST['sort_dir'];
+        $search_arguments['sort_dir'] = intval($_POST['sort_dir']);
     }
 
     if (isset($_POST['group_by_thread']) && is_numeric($_POST['group_by_thread'])) {
-        $search_arguments['group_by_thread'] = $_POST['group_by_thread'];
+        $search_arguments['group_by_thread'] = intval($_POST['group_by_thread']);
     }
 
     $error = SEARCH_NO_ERROR;
@@ -265,7 +265,7 @@ if (((isset($_POST) && sizeof($_POST) > 0 && !isset($_POST['search_reset'])) || 
 
 } else if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 
-    $page = $_GET['page'];
+    $page = intval($_GET['page']);
 
     if (($search_results_array = search_fetch_results($page, $sort_by, $sort_dir)) !== false) {
 
@@ -442,7 +442,7 @@ if (isset($error_msg_array) && sizeof($error_msg_array) > 0) {
 
 } else if (isset($_GET['search_error']) && is_numeric($_GET['search_error'])) {
 
-    $search_error = $_GET['search_error'];
+    $search_error = intval($_GET['search_error']);
 
     switch ($search_error) {
 

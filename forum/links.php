@@ -64,7 +64,7 @@ if (isset($_GET['action'])) {
         links_folder_change_visibility($fid, false);
 
         if (isset($_GET['new_fid']) && is_numeric($_GET['new_fid'])) {
-            $fid = $_GET['new_fid'];
+            $fid = intval($_GET['new_fid']);
         } else {
             $fid = 1;
         }
@@ -76,7 +76,7 @@ if (isset($_GET['action'])) {
         links_folder_change_visibility($fid, true);
 
         if (isset($_GET['new_fid']) && is_numeric($_GET['new_fid'])) {
-            $fid = $_GET['new_fid'];
+            $fid = intval($_GET['new_fid']);
         } else {
             $fid = 1;
         }
@@ -89,7 +89,7 @@ if (isset($_GET['action'])) {
         if (count(links_get_subfolders($fid, $folders)) == 0) links_folder_delete($fid);
 
         if (isset($_GET['new_fid']) && is_numeric($_GET['new_fid'])) {
-            $fid = $_GET['new_fid'];
+            $fid = intval($_GET['new_fid']);
         } else {
             $fid = 1;
         }
@@ -118,7 +118,7 @@ if (isset($_GET['viewmode']) && is_numeric($_GET['viewmode'])) {
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else {
     $page = 1;
 }

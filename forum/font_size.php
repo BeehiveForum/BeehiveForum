@@ -35,7 +35,7 @@ if (!session::logged_in()) exit;
 
 // User's font size.
 if (isset($_SESSION['FONT_SIZE']) && is_numeric($_SESSION['FONT_SIZE'])) {
-    $font_size = max(min($_SESSION['FONT_SIZE'], 15), 5);
+    $font_size = max(min(intval($_SESSION['FONT_SIZE']), 15), 5);
 } else {
     $font_size = 10;
 }

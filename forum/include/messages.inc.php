@@ -473,7 +473,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return;
 
     if (isset($_SESSION['POSTS_PER_PAGE']) && is_numeric($_SESSION['POSTS_PER_PAGE'])) {
-        $posts_per_page = max(min($_SESSION['POSTS_PER_PAGE'], 30), 10);
+        $posts_per_page = max(min(intval($_SESSION['POSTS_PER_PAGE']), 30), 10);
     } else {
         $posts_per_page = 20;
     }
@@ -1690,7 +1690,7 @@ function messages_fontsize_form($tid, $pid, $return = false, $font_size = false)
     if (!is_numeric($font_size)) {
 
         if (isset($_SESSION['FONT_SIZE']) && is_numeric($_SESSION['FONT_SIZE'])) {
-            $font_size = max(min($_SESSION['FONT_SIZE'], 15), 5);
+            $font_size = max(min(intval($_SESSION['FONT_SIZE']), 15), 5);
         } else {
             $font_size = 10;
         }

@@ -54,7 +54,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         if (is_numeric($_GET['sig_uid'])) {
 
-            $sig_uid = $_GET['sig_uid'];
+            $sig_uid = intval($_GET['sig_uid']);
             $admin_edit = true;
 
         } else {
@@ -66,7 +66,7 @@ if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) {
 
         if (is_numeric($_POST['sig_uid'])) {
 
-            $sig_uid = $_POST['sig_uid'];
+            $sig_uid = intval($_POST['sig_uid']);
             $admin_edit = true;
 
         } else {

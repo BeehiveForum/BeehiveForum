@@ -143,7 +143,7 @@ if (isset($_POST['changepermissions'])) {
     }
 
     if (isset($_POST['forum_content_rating']) && is_numeric($_POST['forum_content_rating'])) {
-        $new_forum_settings['forum_content_rating'] = $_POST['forum_content_rating'];
+        $new_forum_settings['forum_content_rating'] = intval($_POST['forum_content_rating']);
     } else {
         $new_forum_settings['forum_content_rating'] = FORUM_RATING_GENERAL;
     }
@@ -225,7 +225,7 @@ if (isset($_POST['changepermissions'])) {
     }
 
     if (isset($_POST['forum_timezone']) && is_numeric($_POST['forum_timezone'])) {
-        $new_forum_settings['forum_timezone'] = $_POST['forum_timezone'];
+        $new_forum_settings['forum_timezone'] = intval($_POST['forum_timezone']);
     } else {
         $new_forum_settings['forum_timezone'] = 27;
     }
@@ -237,7 +237,7 @@ if (isset($_POST['changepermissions'])) {
     }
 
     if (isset($_POST['access_level']) && is_numeric($_POST['access_level'])) {
-        forum_update_access($forum_settings['fid'], $_POST['access_level']);
+        forum_update_access($forum_settings['fid'], intval($_POST['access_level']));
     }
 
     if (isset($_POST['closed_message']) && strlen(trim($_POST['closed_message'])) > 0) {
@@ -265,25 +265,25 @@ if (isset($_POST['changepermissions'])) {
     }
 
     if (isset($_POST['post_edit_time']) && is_numeric($_POST['post_edit_time'])) {
-        $new_forum_settings['post_edit_time'] = $_POST['post_edit_time'];
+        $new_forum_settings['post_edit_time'] = intval($_POST['post_edit_time']);
     } else {
         $new_forum_settings['post_edit_time'] = 0;
     }
 
     if (isset($_POST['post_edit_grace_period']) && is_numeric($_POST['post_edit_grace_period'])) {
-        $new_forum_settings['post_edit_grace_period'] = $_POST['post_edit_grace_period'];
+        $new_forum_settings['post_edit_grace_period'] = intval($_POST['post_edit_grace_period']);
     } else {
         $new_forum_settings['post_edit_grace_period'] = 0;
     }
 
     if (isset($_POST['maximum_post_length']) && is_numeric($_POST['maximum_post_length'])) {
-        $new_forum_settings['maximum_post_length'] = $_POST['maximum_post_length'];
+        $new_forum_settings['maximum_post_length'] = intval($_POST['maximum_post_length']);
     } else {
         $new_forum_settings['maximum_post_length'] = 6226;
     }
 
     if (isset($_POST['minimum_post_frequency']) && is_numeric($_POST['minimum_post_frequency'])) {
-        $new_forum_settings['minimum_post_frequency'] = $_POST['minimum_post_frequency'];
+        $new_forum_settings['minimum_post_frequency'] = intval($_POST['minimum_post_frequency']);
     } else {
         $new_forum_settings['minimum_post_frequency'] = 0;
     }

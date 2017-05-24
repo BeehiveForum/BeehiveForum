@@ -95,9 +95,9 @@ if (isset($_GET['sort_dir'])) {
 }
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
-    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
+    $page = ($_POST['page'] > 0) ? intval($_POST['page']) : 1;
 } else {
     $page = 1;
 }
@@ -249,7 +249,7 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
     if (isset($_POST['newbantype']) && is_numeric($_POST['newbantype'])) {
 
-        $new_ban_type = $_POST['newbantype'];
+        $new_ban_type = intval($_POST['newbantype']);
 
         if ($new_ban_type < 1 || $new_ban_type > 5) {
 
@@ -342,11 +342,11 @@ if (isset($_POST['add']) || isset($_POST['check'])) {
 
     if (isset($_POST['ban_id']) && is_numeric($_POST['ban_id'])) {
 
-        $ban_id = $_POST['ban_id'];
+        $ban_id = intval($_POST['ban_id']);
 
         if (isset($_POST['bantype']) && is_numeric($_POST['bantype'])) {
 
-            $ban_type = $_POST['bantype'];
+            $ban_type = intval($_POST['bantype']);
 
             if ($ban_type < 1 || $ban_type > 5) {
 
@@ -483,7 +483,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     echo "<h1>", gettext("Admin"), html_style_image('separator'), gettext("Ban Controls"), "</h1>\n";
 
     if (isset($_POST['newbantype']) && is_numeric($_POST['newbantype'])) {
-        $add_new_ban_type = $_POST['newbantype'];
+        $add_new_ban_type = intval($_POST['newbantype']);
     }
 
     if (isset($_POST['newbandata']) && strlen(trim($_POST['newbandata'])) > 0) {
@@ -626,11 +626,11 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
 
     if (isset($_POST['ban_id']) && is_numeric($_POST['ban_id'])) {
 
-        $ban_id = $_POST['ban_id'];
+        $ban_id = intval($_POST['ban_id']);
 
     } else if (isset($_GET['ban_id']) && is_numeric($_GET['ban_id'])) {
 
-        $ban_id = $_GET['ban_id'];
+        $ban_id = intval($_GET['ban_id']);
 
     } else if (isset($remove_ban_id) && is_numeric($remove_ban_id)) {
 
@@ -658,7 +658,7 @@ if (isset($_GET['addban']) || isset($_POST['addban']) || (isset($add_new_ban_typ
     if (isset($_POST['edit_check'])) {
 
         if (isset($_POST['bantype']) && is_numeric($_POST['bantype'])) {
-            $ban_data_array['BANTYPE'] = $_POST['bantype'];
+            $ban_data_array['BANTYPE'] = intval($_POST['bantype']);
         }
 
         if (isset($_POST['bandata']) && strlen(trim($_POST['bandata'])) > 0) {

@@ -61,12 +61,12 @@ $t_content = null;
 // Get the Message ID (MID)
 if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
-    $mid = $_GET['mid'];
+    $mid = intval($_GET['mid']);
 
 } else {
     if (isset($_POST['mid']) && is_numeric($_POST['mid'])) {
 
-        $mid = $_POST['mid'];
+        $mid = intval($_POST['mid']);
 
     } else {
 
@@ -173,7 +173,7 @@ if ($valid && isset($_POST['preview'])) {
             }
 
             if (isset($_POST['t_to_uid']) && is_numeric($_POST['t_to_uid'])) {
-                $t_to_uid = $_POST['t_to_uid'];
+                $t_to_uid = intval($_POST['t_to_uid']);
             } else {
                 $t_to_uid = 0;
             }

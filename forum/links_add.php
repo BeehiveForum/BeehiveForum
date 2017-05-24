@@ -104,7 +104,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
     $valid = true;
 
     if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-        $fid = $_POST['fid'];
+        $fid = intval($_POST['fid']);
     } else {
         $fid = 1;
     }
@@ -166,7 +166,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
     $valid = true;
 
     if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-        $fid = $_POST['fid'];
+        $fid = intval($_POST['fid']);
     } else {
         $fid = 1;
     }
@@ -203,7 +203,7 @@ if (isset($_POST['add']) && $mode == LINKS_ADD_LINK) {
 
 } else if (isset($_GET['fid']) && is_numeric($_GET['fid'])) {
 
-    $fid = $_GET['fid'];
+    $fid = intval($_GET['fid']);
 
     if ($_GET['mode'] == 'link' && !in_array($fid, array_keys($folders))) {
         html_draw_error(gettext("You must specify a valid folder!"));

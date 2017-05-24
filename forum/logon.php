@@ -53,11 +53,11 @@ if (isset($_GET['final_uri']) && strlen(trim($_GET['final_uri'])) > 0) {
 
 } else if (isset($_GET['folder']) && is_numeric($_GET['folder'])) {
 
-    $final_uri = "discussion.php?webtag=$webtag&amp;folder=" . $_GET['folder'];
+    $final_uri = "discussion.php?webtag=$webtag&amp;folder=" . intval($_GET['folder']);
 
 } else if (isset($_GET['mid']) && is_numeric($_GET['mid'])) {
 
-    $final_uri = "pm.php?webtag=$webtag&amp;mid=" . $_GET['mid'];
+    $final_uri = "pm.php?webtag=$webtag&amp;mid=" . intval($_GET['mid']);
 }
 
 // Delete the user's cookie as requested and send them back to the login form.

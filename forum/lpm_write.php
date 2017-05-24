@@ -67,46 +67,46 @@ $reply_all = false;
 
 if (isset($_GET['reply_to']) && is_numeric($_GET['reply_to'])) {
 
-    $reply_mid = $_GET['reply_to'];
+    $reply_mid = intval($_GET['reply_to']);
 
 } else {
     if (isset($_POST['reply_to']) && is_numeric($_POST['reply_to'])) {
 
-        $reply_mid = $_POST['reply_to'];
+        $reply_mid = intval($_POST['reply_to']);
 
     } else {
         if (isset($_GET['replyall']) && is_numeric($_GET['replyall'])) {
 
-            $reply_mid = $_GET['replyall'];
+            $reply_mid = intval($_GET['replyall']);
 
             $reply_all = true;
 
         } else {
             if (isset($_POST['replyall']) && is_numeric($_POST['replyall'])) {
 
-                $reply_mid = $_POST['replyall'];
+                $reply_mid = intval($_POST['replyall']);
 
                 $reply_all = true;
 
             } else {
                 if (isset($_GET['fwdmsg']) && is_numeric($_GET['fwdmsg'])) {
 
-                    $forward_mid = $_GET['fwdmsg'];
+                    $forward_mid = intval($_GET['fwdmsg']);
 
                 } else {
                     if (isset($_POST['fwdmsg']) && is_numeric($_POST['fwdmsg'])) {
 
-                        $forward_mid = $_POST['fwdmsg'];
+                        $forward_mid = intval($_POST['fwdmsg']);
 
                     } else {
                         if (isset($_GET['editmsg']) && is_numeric($_GET['editmsg'])) {
 
-                            $edit_mid = $_GET['editmsg'];
+                            $edit_mid = intval($_GET['editmsg']);
 
                         } else {
                             if (isset($_POST['editmsg']) && is_numeric($_POST['editmsg'])) {
 
-                                $edit_mid = $_POST['editmsg'];
+                                $edit_mid = intval($_POST['editmsg']);
                             }
                         }
                     }
@@ -398,7 +398,7 @@ if (mb_strlen($content) >= 65535) {
 }
 
 if (isset($_POST['dedupe']) && is_numeric($_POST['dedupe'])) {
-    $dedupe = $_POST['dedupe'];
+    $dedupe = intval($_POST['dedupe']);
 } else {
     $dedupe = time();
 }

@@ -67,19 +67,19 @@ if (isset($_REQUEST['folder']) && in_array($_REQUEST['folder'], $available_folde
 
 // View offset.
 if (isset($_REQUEST['page']) && is_numeric($_REQUEST['page'])) {
-    $page = $_REQUEST['page'];
+    $page = intval($_REQUEST['page']);
 } else {
     $page = 1;
 }
 
 // View mode
 if (isset($_REQUEST['mode']) && is_numeric($_REQUEST['mode'])) {
-    $mode = $_REQUEST['mode'];
+    $mode = intval($_REQUEST['mode']);
 }
 
 // Number of posts per page
 if (isset($_SESSION['POSTS_PER_PAGE']) && is_numeric($_SESSION['POSTS_PER_PAGE'])) {
-    $posts_per_page = max(min($_SESSION['POSTS_PER_PAGE'], 30), 10);
+    $posts_per_page = max(min(intval($_SESSION['POSTS_PER_PAGE']), 30), 10);
 } else {
     $posts_per_page = 20;
 }

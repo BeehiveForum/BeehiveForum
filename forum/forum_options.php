@@ -145,7 +145,7 @@ if (isset($_POST['save'])) {
     if (isset($_POST['show_thumbs_enabled']) && $_POST['show_thumbs_enabled'] == "Y") {
 
         if (isset($_POST['show_thumbs']) && is_numeric($_POST['show_thumbs'])) {
-            $user_prefs['SHOW_THUMBS'] = $_POST['show_thumbs'];
+            $user_prefs['SHOW_THUMBS'] = intval($_POST['show_thumbs']);
         } else {
             $user_prefs['SHOW_THUMBS'] = 2;
         }
@@ -153,7 +153,7 @@ if (isset($_POST['save'])) {
     } else {
 
         if (isset($_POST['show_thumbs']) && is_numeric($_POST['show_thumbs'])) {
-            $user_prefs['SHOW_THUMBS'] = $_POST['show_thumbs'] * -1;
+            $user_prefs['SHOW_THUMBS'] = intval($_POST['show_thumbs']) * -1;
         } else {
             $user_prefs['SHOW_THUMBS'] = -2;
         }

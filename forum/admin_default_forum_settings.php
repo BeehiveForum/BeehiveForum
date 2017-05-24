@@ -154,7 +154,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     }
 
     if (isset($_POST['smtp_port']) && is_numeric($_POST['smtp_port'])) {
-        $new_forum_settings['smtp_port'] = $_POST['smtp_port'];
+        $new_forum_settings['smtp_port'] = intval($_POST['smtp_port']);
     } else {
         $new_forum_settings['smtp_port'] = '';
     }
@@ -208,13 +208,13 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     }
 
     if (isset($_POST['search_limit_count']) && is_numeric($_POST['search_limit_count'])) {
-        $new_forum_settings['search_limit_count'] = $_POST['search_limit_count'];
+        $new_forum_settings['search_limit_count'] = intval($_POST['search_limit_count']);
     } else {
         $new_forum_settings['search_limit_count'] = 1;
     }
 
     if (isset($_POST['search_limit_time']) && is_numeric($_POST['search_limit_time'])) {
-        $new_forum_settings['search_limit_time'] = $_POST['search_limit_time'];
+        $new_forum_settings['search_limit_time'] = intval($_POST['search_limit_time']);
     } else {
         $new_forum_settings['search_limit_time'] = 1;
     }
@@ -232,7 +232,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     }
 
     if (isset($_POST['sphinx_search_port']) && is_numeric($_POST['sphinx_search_port'])) {
-        $new_forum_settings['sphinx_search_port'] = $_POST['sphinx_search_port'];
+        $new_forum_settings['sphinx_search_port'] = intval($_POST['sphinx_search_port']);
     } else {
         $new_forum_settings['sphinx_search_port'] = '';
     }
@@ -316,7 +316,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     }
 
     if (isset($_POST['adsense_message_number']) && is_numeric($_POST['adsense_message_number'])) {
-        $new_forum_settings['adsense_message_number'] = $_POST['adsense_message_number'];
+        $new_forum_settings['adsense_message_number'] = intval($_POST['adsense_message_number']);
     } else {
         $new_forum_settings['adsense_message_number'] = 1;
     }
@@ -368,7 +368,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     }
 
     if (isset($_POST['pm_max_user_messages']) && is_numeric($_POST['pm_max_user_messages'])) {
-        $new_forum_settings['pm_max_user_messages'] = $_POST['pm_max_user_messages'];
+        $new_forum_settings['pm_max_user_messages'] = intval($_POST['pm_max_user_messages']);
     } else {
         $new_forum_settings['pm_max_user_messages'] = 100;
     }
@@ -377,7 +377,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
         if (isset($_POST['pm_auto_prune']) && is_numeric($_POST['pm_auto_prune'])) {
 
-            $new_forum_settings['pm_auto_prune'] = $_POST['pm_auto_prune'];
+            $new_forum_settings['pm_auto_prune'] = intval($_POST['pm_auto_prune']);
 
         } else {
 
@@ -388,7 +388,7 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
 
         if (isset($_POST['pm_auto_prune']) && is_numeric($_POST['pm_auto_prune'])) {
 
-            $new_forum_settings['pm_auto_prune'] = $_POST['pm_auto_prune'] * -1;
+            $new_forum_settings['pm_auto_prune'] = intval($_POST['pm_auto_prune']) * -1;
 
         } else {
 
@@ -503,19 +503,19 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
     }
 
     if (isset($_POST['attachments_max_user_space']) && is_numeric($_POST['attachments_max_user_space'])) {
-        $new_forum_settings['attachments_max_user_space'] = ($_POST['attachments_max_user_space'] * 1024) * 1024;
+        $new_forum_settings['attachments_max_user_space'] = (intval($_POST['attachments_max_user_space']) * 1024) * 1024;
     } else {
         $new_forum_settings['attachments_max_user_space'] = 1048576; // 1MB in bytes
     }
 
     if (isset($_POST['attachments_max_post_space']) && is_numeric($_POST['attachments_max_post_space'])) {
-        $new_forum_settings['attachments_max_post_space'] = ($_POST['attachments_max_post_space'] * 1024) * 1024;
+        $new_forum_settings['attachments_max_post_space'] = (intval($_POST['attachments_max_post_space']) * 1024) * 1024;
     } else {
         $new_forum_settings['attachments_max_post_space'] = 1048576; // 1MB in bytes
     }
 
     if (isset($_POST['attachment_size_limit']) && is_numeric($_POST['attachment_size_limit'])) {
-        $new_forum_settings['attachment_size_limit'] = ($_POST['attachment_size_limit'] * 1024) * 1024;
+        $new_forum_settings['attachment_size_limit'] = (intval($_POST['attachment_size_limit']) * 1024) * 1024;
     } else {
         $new_forum_settings['attachment_size_limit'] = "";
     }

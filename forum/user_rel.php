@@ -86,7 +86,7 @@ if (isset($_POST['cancel'])) {
 // Check the provided peer UID.
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
-    $peer_uid = $_GET['uid'];
+    $peer_uid = intval($_GET['uid']);
 
     if (!($user_peer = user_get($peer_uid))) {
         html_draw_error(gettext("Invalid username!"));
@@ -94,7 +94,7 @@ if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
 } else if (isset($_POST['uid']) && is_numeric($_POST['uid'])) {
 
-    $peer_uid = $_POST['uid'];
+    $peer_uid = intval($_POST['uid']);
 
     if (!($user_peer = user_get($peer_uid))) {
         html_draw_error(gettext("Invalid username!"));

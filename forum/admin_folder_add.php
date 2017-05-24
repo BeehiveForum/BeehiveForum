@@ -54,9 +54,9 @@ $t_prefix = null;
 $t_allowed_types = null;
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
-    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
+    $page = ($_POST['page'] > 0) ? intval($_POST['page']) : 1;
 } else {
     $page = 1;
 }
@@ -91,7 +91,7 @@ if (isset($_POST['add'])) {
     }
 
     if (isset($_POST['t_allowed_types']) && is_numeric($_POST['t_allowed_types'])) {
-        $t_allowed_types = $_POST['t_allowed_types'];
+        $t_allowed_types = intval($_POST['t_allowed_types']);
     } else {
         $t_allowed_types = FOLDER_ALLOW_ALL_THREAD;
     }

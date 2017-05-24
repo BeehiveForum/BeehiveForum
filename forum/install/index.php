@@ -96,7 +96,7 @@ if (isset($_POST['install_method'])) {
 
     if (isset($_POST['install_method']) && is_numeric($_POST['install_method'])) {
 
-        $install_method = $_POST['install_method'];
+        $install_method = intval($_POST['install_method']);
 
     } else {
 
@@ -136,7 +136,7 @@ if (isset($_POST['install_method'])) {
     }
 
     if (isset($_POST['db_port']) && is_numeric($_POST['db_port'])) {
-        $config['db_port'] = $_POST['db_port'];
+        $config['db_port'] = intval($_POST['db_port']);
     } else {
         $config['db_port'] = '';
     }
@@ -410,7 +410,7 @@ if (isset($_POST['install_method'])) {
         }
 
         if (isset($_POST['db_port']) && is_numeric($_POST['db_port'])) {
-            $config['db_port'] = $_POST['db_port'];
+            $config['db_port'] = intval($_POST['db_port']);
         }
 
         if (isset($_POST['db_database']) && strlen(trim($_POST['db_database'])) > 0) {

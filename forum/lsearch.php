@@ -48,7 +48,7 @@ if (!session::logged_in()) {
 }
 
 if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-    $search_folder_fid = $_POST['fid'];
+    $search_folder_fid = intval($_POST['fid']);
 } else {
     $search_folder_fid = 0;
 }
@@ -111,19 +111,19 @@ if (isset($_POST) && sizeof($_POST) > 0) {
     }
 
     if (isset($_POST['user_include']) && is_numeric($_POST['user_include'])) {
-        $search_arguments['user_include'] = $_POST['user_include'];
+        $search_arguments['user_include'] = intval($_POST['user_include']);
     }
 
     if (isset($_POST['fid']) && is_numeric($_POST['fid'])) {
-        $search_arguments['fid'] = $_POST['fid'];
+        $search_arguments['fid'] = intval($_POST['fid']);
     }
 
     if (isset($_POST['date_from']) && is_numeric($_POST['date_from'])) {
-        $search_arguments['date_from'] = $_POST['date_from'];
+        $search_arguments['date_from'] = intval($_POST['date_from']);
     }
 
     if (isset($_POST['date_to']) && is_numeric($_POST['date_to'])) {
-        $search_arguments['date_to'] = $_POST['date_to'];
+        $search_arguments['date_to'] = intval($_POST['date_to']);
     }
 
     $error = SEARCH_NO_ERROR;
@@ -167,7 +167,7 @@ if (isset($_POST) && sizeof($_POST) > 0) {
 
 } else if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 
-    $page = $_GET['page'];
+    $page = intval($_GET['page']);
 
     if (($search_results_array = search_fetch_results($page)) !== false) {
 

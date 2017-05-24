@@ -59,9 +59,9 @@ html_draw_top(
 echo "<h1>", gettext("User Relationships"), "</h1>\n";
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = $_GET['page'];
+    $page = intval($_GET['page']);
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
-    $page = $_POST['page'];
+    $page = intval($_POST['page']);
 } else {
     $page = 1;
 }

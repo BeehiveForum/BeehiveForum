@@ -52,11 +52,11 @@ $to_uid = null;
 // User UID to send email to.
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
 
-    $to_uid = $_GET['uid'];
+    $to_uid = intval($_GET['uid']);
 
 } else if (isset($_POST['to_uid']) && is_numeric($_POST['to_uid'])) {
 
-    $to_uid = $_POST['to_uid'];
+    $to_uid = intval($_POST['to_uid']);
 
 } else {
 

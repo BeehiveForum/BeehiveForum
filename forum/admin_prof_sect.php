@@ -58,9 +58,9 @@ $t_new_name = null;
 $psid = null;
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
-    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
+    $page = ($_POST['page'] > 0) ? intval($_POST['page']) : 1;
 } else {
     $page = 1;
 }
@@ -126,7 +126,7 @@ if (isset($_POST['delete_sections'])) {
     $valid = true;
 
     if (isset($_POST['psid']) && is_numeric($_POST['psid'])) {
-        $psid = $_POST['psid'];
+        $psid = intval($_POST['psid']);
     } else {
         $error_msg_array[] = gettext("Must specify a profile section ID");
         $valid = false;
@@ -249,11 +249,11 @@ if (isset($_GET['addsection']) || isset($_POST['addsection'])) {
 
     if (isset($_POST['psid']) && is_numeric($_POST['psid'])) {
 
-        $psid = $_POST['psid'];
+        $psid = intval($_POST['psid']);
 
     } else if (isset($_GET['psid']) && is_numeric($_GET['psid'])) {
 
-        $psid = $_GET['psid'];
+        $psid = intval($_GET['psid']);
 
     } else {
 

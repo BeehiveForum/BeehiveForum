@@ -36,9 +36,9 @@ $uid = null;
 $key = null;
 
 if (isset($_GET['uid']) && is_numeric($_GET['uid'])) {
-    $uid = $_GET['uid'];
+    $uid = intval($_GET['uid']);
 } else if (isset($_GET['u']) && is_numeric($_GET['u'])) {
-    $uid = $_GET['u'];
+    $uid = intval($_GET['u']);
 }
 
 if (isset($_GET['h']) && is_string($_GET['h'])) {

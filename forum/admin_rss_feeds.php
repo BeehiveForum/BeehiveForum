@@ -70,9 +70,9 @@ $t_max_item_count = null;
 $t_url = null;
 
 if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $page = ($_GET['page'] > 0) ? $_GET['page'] : 1;
+    $page = ($_GET['page'] > 0) ? intval($_GET['page']) : 1;
 } else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
-    $page = ($_POST['page'] > 0) ? $_POST['page'] : 1;
+    $page = ($_POST['page'] > 0) ? intval($_POST['page']) : 1;
 } else {
     $page = 1;
 }
@@ -195,7 +195,7 @@ if (isset($_POST['delete'])) {
 
     if (isset($_POST['t_fid_new']) && is_numeric($_POST['t_fid_new'])) {
 
-        $t_fid_new = $_POST['t_fid_new'];
+        $t_fid_new = intval($_POST['t_fid_new']);
 
     } else {
 
@@ -241,7 +241,7 @@ if (isset($_POST['delete'])) {
 
     if (isset($_POST['t_frequency_new']) && is_numeric($_POST['t_frequency_new'])) {
 
-        $t_frequency_new = $_POST['t_frequency_new'];
+        $t_frequency_new = intval($_POST['t_frequency_new']);
 
     } else {
 
@@ -279,7 +279,7 @@ if (isset($_POST['delete'])) {
 
     if (isset($_POST['feed_id']) && is_numeric($_POST['feed_id'])) {
 
-        $feed_id = $_POST['feed_id'];
+        $feed_id = intval($_POST['feed_id']);
 
         if (isset($_POST['t_name']) && strlen(trim($_POST['t_name'])) > 0) {
 
@@ -315,7 +315,7 @@ if (isset($_POST['delete'])) {
 
         if (isset($_POST['t_fid']) && is_numeric($_POST['t_fid'])) {
 
-            $t_new_fid = $_POST['t_fid'];
+            $t_new_fid = intval($_POST['t_fid']);
 
         } else {
 
@@ -324,7 +324,7 @@ if (isset($_POST['delete'])) {
         }
 
         if (isset($_POST['t_old_fid']) && is_numeric($_POST['t_old_fid'])) {
-            $t_old_fid = $_POST['t_old_fid'];
+            $t_old_fid = intval($_POST['t_old_fid']);
         } else {
             $t_old_fid = "";
         }
@@ -356,7 +356,7 @@ if (isset($_POST['delete'])) {
 
         if (isset($_POST['t_frequency']) && is_numeric($_POST['t_frequency'])) {
 
-            $t_new_frequency = $_POST['t_frequency'];
+            $t_new_frequency = intval($_POST['t_frequency']);
 
         } else {
 
@@ -365,7 +365,7 @@ if (isset($_POST['delete'])) {
         }
 
         if (isset($_POST['t_old_frequency']) && is_numeric($_POST['t_old_frequency'])) {
-            $t_old_frequency = $_POST['t_old_frequency'];
+            $t_old_frequency = intval($_POST['t_old_frequency']);
         } else {
             $t_old_frequency = "";
         }
@@ -381,7 +381,7 @@ if (isset($_POST['delete'])) {
         }
 
         if (isset($_POST['t_old_max_item_count']) && is_numeric($_POST['t_old_max_item_count'])) {
-            $t_old_max_item_count = $_POST['t_old_max_item_count'];
+            $t_old_max_item_count = intval($_POST['t_old_max_item_count']);
         } else {
             $t_old_max_item_count = 0;
         }
@@ -555,11 +555,11 @@ if (isset($_GET['addfeed']) || isset($_POST['addfeed'])) {
 
     if (isset($_POST['feed_id']) && is_numeric($_POST['feed_id'])) {
 
-        $feed_id = $_POST['feed_id'];
+        $feed_id = intval($_POST['feed_id']);
 
     } else if (isset($_GET['feed_id']) && is_numeric($_GET['feed_id'])) {
 
-        $feed_id = $_GET['feed_id'];
+        $feed_id = intval($_GET['feed_id']);
 
     } else {
 

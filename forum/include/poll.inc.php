@@ -239,6 +239,8 @@ function poll_get_random_users($limit)
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
+    $limit = intval(abs($limit));
+
     $sql = "SELECT UID, LOGON, NICKNAME, PEER_NICKNAME FROM (SELECT USER.UID, ";
     $sql .= "USER.LOGON, USER.NICKNAME, USER_PEER.PEER_NICKNAME, VISITOR_LOG.LAST_LOGON, ";
     $sql .= "(SELECT COUNT(*) FROM VISITOR_LOG WHERE FORUM = $forum_fid) ";
@@ -525,7 +527,7 @@ function poll_display($tid, $msg_count, $first_msg, $folder_fid, $in_list = true
     $poll_display .= "  <table class=\"box\" cellpadding=\"0\" cellspacing=\"0\" width=\"580\">\n";
     $poll_display .= "    <tr>\n";
     $poll_display .= "      <td align=\"center\">\n";
-    $poll_display .= "        <form accept-charset=\"utf-8\" method=\"post\" action=\"". htmlentities_array($request_uri). "\" target=\"_self\">\n";
+    $poll_display .= "        <form accept-charset=\"utf-8\" method=\"post\" action=\"" . htmlentities_array($request_uri) . "\" target=\"_self\">\n";
     $poll_display .= "          " . form_csrf_token_field() . "\n";
     $poll_display .= "          " . form_input_hidden("webtag", htmlentities_array($webtag)) . "\n";
     $poll_display .= "          " . form_input_hidden('msg', htmlentities_array("$tid.1")) . "\n";

@@ -859,8 +859,7 @@ function get_request_uri($include_webtag = true, $encode_uri_query = true)
 
 function calculate_page_offset($page, $limit)
 {
-    if (!is_numeric($page) || !is_numeric($limit)) return 0;
-    return (($page * $limit) - $limit);
+    return intval((abs($page) * abs($limit)) - abs($limit));
 }
 
 function print_r_pre($expression, $return = false)

@@ -97,7 +97,7 @@ function pm_get_inbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limi
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    $limit = abs($limit);
+    $limit = intval(abs($limit));
 
     $offset = calculate_page_offset($page, $limit);
 
@@ -152,7 +152,7 @@ function pm_get_outbox($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    $limit = abs($limit);
+    $limit = intval(abs($limit));
 
     $offset = calculate_page_offset($page, $limit);;
 
@@ -210,7 +210,7 @@ function pm_get_sent($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $limit
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    $limit = abs($limit);
+    $limit = intval(abs($limit));
 
     $offset = calculate_page_offset($page, $limit);
 
@@ -270,7 +270,7 @@ function pm_get_saved_items($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1,
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    $limit = abs($limit);
+    $limit = intval(abs($limit));
 
     $offset = calculate_page_offset($page, $limit);
 
@@ -324,7 +324,7 @@ function pm_get_drafts($sort_by = 'CREATED', $sort_dir = 'DESC', $page = 1, $lim
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
-    $limit = abs($limit);
+    $limit = intval(abs($limit));
 
     $offset = calculate_page_offset($page, $limit);
 
@@ -534,7 +534,7 @@ function pm_fetch_search_results($sort_by = 'CREATED', $sort_dir = 'DESC', $page
 
     if (!is_numeric($limit)) $limit = 10;
 
-    $limit = abs($limit);
+    $limit = intval(abs($limit));
 
     $offset = calculate_page_offset($page, $limit);
 
@@ -1254,7 +1254,7 @@ function pm_get_new_messages($limit)
 
     if (!is_numeric($limit)) return false;
 
-    $limit = abs($limit);
+    $limit = intval(abs($limit));
 
     if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 

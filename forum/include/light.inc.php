@@ -242,6 +242,8 @@ function light_html_draw_top(array $options = array())
         echo html_include_javascript(html_get_forum_file_path($js_file));
     }
 
+    echo html_include_javascript(html_get_forum_file_path(sprintf('json.php?webtag=%s', $webtag)));
+
     echo "</head>\n";
     echo "<body id=\"mobile\">\n";
 

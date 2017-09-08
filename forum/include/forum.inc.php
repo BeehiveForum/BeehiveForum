@@ -257,17 +257,15 @@ function forum_closed_message()
 
     echo "<h1>", gettext("Closed"), "</h1>\n";
 
-    if (($closed_message = forum_get_setting('closed_message')) !== false) {
+    $closed_message = forum_get_setting('closed_message');
 
+    if (strlen(trim($closed_message)) > 0) {
         html_display_error_msg(fix_html($closed_message), '600', 'center');
-
     } else {
-
         html_display_error_msg(sprintf(gettext("%s is currently closed"), htmlentities_array($forum_name)), '600', 'center');
     }
 
     if (session::check_perm(USER_PERM_ADMIN_TOOLS, 0) || session::check_perm(USER_PERM_FORUM_TOOLS, 0)) {
-
         html_display_warning_msg(gettext("If you want to change some settings on your forum click the Admin link in the navigation bar above."), '600', 'center');
     }
 
@@ -289,7 +287,9 @@ function forum_restricted_message()
         $forum_owner_link_target = html_get_top_frame_name();
     }
 
-    if (($restricted_message = forum_get_setting('restricted_message', null, false)) !== false) {
+    $restricted_message = forum_get_setting('restricted_message');
+
+    if (strlen(trim($restricted_message)) > 0) {
 
         html_draw_error(fix_html($restricted_message), '600', 'center');
 
@@ -379,7 +379,9 @@ function forum_check_password($forum_fid)
         html_display_error_msg(gettext("The username or password you supplied is not valid."), '550', 'center');
     }
 
-    if (($password_protected_message = forum_get_setting('password_protected_message')) !== false) {
+    $password_protected_message = forum_get_setting('password_protected_message');
+
+    if (strlen(trim($password_protected_message)) > 0) {
 
         echo fix_html($password_protected_message);
 

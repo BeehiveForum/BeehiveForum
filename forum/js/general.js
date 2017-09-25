@@ -196,7 +196,7 @@ $(document).ready(
                             fontSize_defaultLabel: '12',
                             height: $editor.height() - 35,
                             language: 'en',
-                            removePlugins: 'elementspath,contextmenu,tabletools,liststyle,iframe',
+                            removePlugins: 'elementspath,contextmenu,tabletools,tableselection,liststyle,iframe',
                             resize_maxWidth: '100%',
                             resize_minWidth: '100%',
                             shiftEnterMode: CKEDITOR.ENTER_BR,

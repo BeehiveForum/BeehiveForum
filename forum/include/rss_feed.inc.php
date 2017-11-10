@@ -37,7 +37,7 @@ class rss_feed_item
     public $description;
     public $pubDate;
 
-    function rss_feed_item($aa)
+    function __construct($aa)
     {
         foreach ($aa as $key => $value) {
             $this->$key = $value;

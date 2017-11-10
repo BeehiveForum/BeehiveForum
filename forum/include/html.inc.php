@@ -939,7 +939,7 @@ class html_frameset_rows extends html_frameset
         );
 
         /** @var html_frame[] $frames_array */
-        $frames_array = parent::get_frames();
+        $frames_array = $this->get_frames();
 
         foreach ($frames_array as $frame) {
             $frame->output_html();
@@ -990,7 +990,7 @@ class html_frameset_cols extends html_frameset
         );
 
         /** @var html_frame[] $frames_array */
-        $frames_array = parent::get_frames();
+        $frames_array = $this->get_frames();
 
         foreach ($frames_array as $frame) {
             $frame->output_html();
@@ -1009,7 +1009,7 @@ class html_frame
     private $noresize;
     private $allowtransparency = '';
 
-    function html_frame($src, $name, $frameborder = 0, $scrolling = '', $noresize = '')
+    public function __construct($src, $name, $frameborder = 0, $scrolling = '', $noresize = '')
     {
         $this->src = $src;
         $this->name = $name;
@@ -1033,7 +1033,7 @@ class html_frame
         }
     }
 
-    function output_html()
+    public function output_html()
     {
         printf(
             "<frame src=\"%s\" name=\"%s\" frameborder=\"%s\" class=\"%s\"%s%s%s/>\n",

@@ -800,7 +800,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
         echo "                <td class=\"postbody overflow_content\" align=\"left\">{$message['CONTENT']}</td>\n";
         echo "              </tr>\n";
 
-        if (!$is_preview && isset($message['EDITED'])) {
+        if (!$is_preview && isset($message['EDITED']) && $post_edit_grace_period > 0) {
 
             if (($post_edit_grace_period == 0) || ($message['EDITED'] - $message['CREATED']) > ($post_edit_grace_period * MINUTE_IN_SECONDS)) {
 

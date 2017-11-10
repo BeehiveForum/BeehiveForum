@@ -732,7 +732,7 @@ echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">\n";
 echo "                          <p>", gettext("<b>Enable Post Tagging</b> allows users to tag posts by add alpha-numeric tags to posts prefixed with a hash(#) character. These tags can be clicked to find all similarly tagged posts quickly and easily."), "</p>\n";
 echo "                          <p>", gettext("<b>Post Edit Timeout</b> is the time in minutes after posting that a user can edit their post. If set to 0 there is no limit."), "</p>\n";
-echo "                          <p>", gettext("<b>Post Edit Grace Period</b> allows you to define a period in minutes where users may edit posts without the 'EDITED BY' text appearing on their posts. If set to 0 the 'EDITED BY' text will always appear."), "</p>\n";
+echo "                          <p>", gettext("<b>Post Edit Grace Period</b> allows you to define a period in minutes where users may edit posts without the 'EDITED BY' text appearing on their posts. If set to 0 the 'EDITED BY' text will always appear and if set to -1 the 'EDITED BY' text will always remain hidden."), "</p>\n";
 echo "                          <p>", gettext("<b>Maximum Post Length</b> is the maximum number of characters that will be displayed in a post. If a post is longer than the number of characters defined here it will be cut short and a link added to the bottom to allow users to read the whole post on a separate page."), "</p>\n";
 echo "                          <p>", gettext("<b>Post Frequency</b> is the minimum time a user must wait before they can post again. This setting also affects the creation of polls. Set to 0 to disable the restriction."), "</p>\n";
 echo "                        </td>\n";

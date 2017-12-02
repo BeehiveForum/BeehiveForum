@@ -638,9 +638,7 @@ function strip_paragraphs($string)
 
 function range_keys($low, $high)
 {
-    $array_range = array_flip(range($low, $high));
-    array_walk($array_range, create_function('&$item, $key', '$item = $key;'));
-    return $array_range;
+    return array_combine(range($low, $high), range($low, $high));
 }
 
 function in_range($var, $low, $high)
@@ -775,17 +773,6 @@ function flatten_array($array, &$result_keys, &$result_values, $key_str = "")
 function preg_quote_callback($str)
 {
     return preg_quote($str, "/");
-}
-
-function rand_array($start_index, $num, $range_min, $range_max)
-{
-    $mt_rand_call = sprintf('$item = mt_rand(%d, %d);', $range_min, $range_max);
-
-    $array_rand = array_fill($start_index, $num, 1);
-
-    array_walk($array_rand, create_function('&$item', $mt_rand_call));
-
-    return $array_rand;
 }
 
 function implode_assoc($array, $separator = ': ', $glue = ', ')

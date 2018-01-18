@@ -41,6 +41,7 @@ $(document).ready(
             var frame_resize_timeout;
 
             $.extend(
+                true,
                 beehive,
                 {
                     active_editor: null,

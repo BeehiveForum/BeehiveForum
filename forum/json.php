@@ -130,7 +130,8 @@ cache_check_last_modified(time(), md5($_SESSION['UID'] . $_SESSION['LOGON'] . $c
 // Output the content
 printf(
     '$(document).ready(function(){
-        $(document).trigger("beehive.init", $.extend({}, window.beehive, %s)); 
+        var beehive = %s;
+        $(document).trigger("beehive.init", beehive); 
     });',
     json_encode($json_data)
 );

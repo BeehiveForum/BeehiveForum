@@ -48,7 +48,7 @@ $(document).ready(
                     left_frame_width: 280,
                     mobile_version: false,
                     lang: {},
-                    use_mover_spoiler: 'N',
+                    use_mover_spoiler: false,
                     window_options: [
                         'toolbox=0',
                         'location=0',

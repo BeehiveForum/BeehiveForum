@@ -184,7 +184,7 @@ echo "                      <tr>\n";
 echo "                        <td>\n";
 echo "                          <table width=\"95%\">\n";
 
-if (isset($user_profile['GROUPS']) && sizeof($user_profile['GROUPS']) > 0) {
+if (isset($user_profile['GROUPS']) && strlen($user_profile['GROUPS']) > 0) {
 
     $user_groups_list = (mb_strlen(trim($user_profile['GROUPS'])) > 50) ? mb_substr($user_profile['GROUPS'], 0, 47) . "&hellip;" : $user_profile['GROUPS'];
 

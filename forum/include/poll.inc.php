@@ -67,7 +67,7 @@ function poll_create($tid, $poll_question_array, $poll_closes, $poll_change_vote
         $poll_option_count += sizeof($poll_question['OPTIONS_ARRAY']);
     }
 
-    if (sizeof($poll_option_count) > 20) return false;
+    if ($poll_option_count > 20) return false;
 
     if (is_numeric($poll_closes) && ($poll_closes > 0)) {
 
@@ -149,7 +149,7 @@ function poll_edit($tid, $poll_question_array, $poll_closes, $poll_change_vote, 
         $poll_option_count += sizeof($poll_question['OPTIONS_ARRAY']);
     }
 
-    if (sizeof($poll_option_count) > 20) return false;
+    if ($poll_option_count > 20) return false;
 
     if (is_numeric($poll_closes) && ($poll_closes > 0)) {
 

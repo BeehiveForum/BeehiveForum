@@ -73,6 +73,7 @@ Vagrant.configure("2") do |config|
 		vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
 		vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
 		vb.customize ["modifyvm", :id, "--ostype", "Ubuntu_64"]
+		vb.customize ["modifyvm", :id, "--uartmode1", "disconnected"]
 	end
 
 	["vmware_fusion", "vmware_workstation"].each do |vmware|

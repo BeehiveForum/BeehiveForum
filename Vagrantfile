@@ -7,7 +7,7 @@ echo "Adding Ondřej Surý PHP Ubuntu PPA..."
 LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php -y > /dev/null 2>&1
 echo "Installing packages..."
 apt-get update > /dev/null 2>&1
-apt-get install git mysql-server nginx php5.6-curl php5.6-fpm php5.6-gd php5.6-intl php5.6-json php5.6-mbstring php5.6-mysql php5.6-sqlite3 php5.6-xml php5.6-zip php-pear -y > /dev/null 2>&1
+apt-get install git mysql-server nginx php7.2-curl php7.2-fpm php7.2-gd php7.2-intl php7.2-json php7.2-mbstring php7.2-mysql php7.2-sqlite3 php7.2-xml php7.2-zip php-pear -y > /dev/null 2>&1
 echo "Installing pear packages..."
 pear channel-update pear.php.net > /dev/null 2>&1
 pear channel-discover bartlett.laurent-laville.org > /dev/null 2>&1
@@ -27,7 +27,7 @@ echo 'server {
     location ~ \.php\$ {
         try_files \$uri =404;
         fastcgi_split_path_info ^(.+\.php)(.*)\$;
-        fastcgi_pass unix:/var/run/php/php5.6-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php7.2-fpm.sock;
         fastcgi_index index.php;
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
@@ -54,13 +54,13 @@ SCRIPT
 
 Vagrant.configure("2") do |config|
 
-	config.vm.box = "ubuntu/trusty64"
+	config.vm.box = "ubuntu/bionic64"
 	config.vm.hostname = "beehiveforum"
 	config.vm.define "beehiveforum"
 	
 	config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
 	config.vm.network "forwarded_port", guest: 3306, host: 33060, host_ip: "127.0.0.1"
-	config.vm.network "private_network", ip: "192.168.192.209"
+	config.vm.network "private_network", type: "dhcp"
 
 	config.vm.synced_folder "./", "/home/vagrant/beehiveforum"
 	config.vm.provision "shell", inline: $script

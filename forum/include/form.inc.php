@@ -406,7 +406,7 @@ function form_submit_image($image, $name = "submit", $value = 'Submit', $custom_
         $custom_html = sprintf(" %s", trim($custom_html));
     }
 
-    $html = '<input type="image" name="%s" id="%s" class="image %s %s"%s value="%s" />';
+    $html = '<input type="submit" name="%s" id="%s" class="image %s %s"%s value="%s" />';
 
     return sprintf($html, $name, $id, $class, $image, $custom_html, $value);
 }

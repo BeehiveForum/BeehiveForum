@@ -474,12 +474,8 @@ div.poll_option_list ol li {
     overflow: auto;
     padding: 10px 10px 0;
     text-align: left;
-    white-space: nowrap;
+    white-space: pre;
     width: 745px;
-}
-
-.error_handler_details pre {
-    font-size: 100%;
 }
 
 .error_msg {

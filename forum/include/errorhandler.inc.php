@@ -30,33 +30,6 @@ require_once BH_INCLUDE_PATH . 'header.inc.php';
 require_once BH_INCLUDE_PATH . 'server.inc.php';
 // End Required includes
 
-class BeehiveException extends Exception
-{
-    protected $severity;
-
-    /**
-     * BeehiveException constructor.
-     * @param string $message
-     * @param int $code
-     * @param int $severity
-     * @param string $file
-     * @param string $line
-     */
-    public function __construct($message, $code, $severity, $file, $line)
-    {
-        $this->message = $message;
-        $this->code = $code;
-        $this->severity = $severity;
-        $this->file = $file;
-        $this->line = $line;
-    }
-
-    public function getSeverity()
-    {
-        return $this->severity;
-    }
-}
-
 function bh_error_handler($code, $message, $file, $line)
 {
     if (error_reporting() == 0) {
@@ -64,7 +37,7 @@ function bh_error_handler($code, $message, $file, $line)
     }
 
     if (error_reporting() & $code) {
-        throw new BeehiveException($message, $code, 0, $file, $line);
+        throw new ErrorException($message, $code, 1, $file, $line);
     }
 }
 
@@ -78,7 +51,7 @@ function bh_fatal_error_handler()
         return;
     }
 
-    $exception = new BeehiveException($error['message'], 0, $error['type'], $error['file'], $error['line']);
+    $exception = new ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']);
 
     bh_exception_handler($exception);
 }
@@ -107,9 +80,7 @@ function bh_exception_handler(Exception $exception)
 
         $error_msg_array = bh_error_process($exception);
 
-        $error_log_message = sprintf('BEEHIVE_ERROR: %s', strip_tags(implode(". ", $error_msg_array)));
-
-        @error_log($error_log_message);
+        @error_log(implode(' ', $error_msg_array));
 
         header_status(500, 'Internal Server Error');
 
@@ -143,7 +114,7 @@ function bh_exception_handler(Exception $exception)
                 echo "  </tr>\n";
                 echo "</table>\n";
 
-                echo "<p>", implode("</p><p>", $error_msg_array), "</p>\n";
+                echo "<p>", implode("\n\n", htmlentities_array($error_msg_array)), "</p>\n";
             }
 
         } else {
@@ -163,7 +134,7 @@ function bh_exception_handler(Exception $exception)
             echo "                  <td align=\"center\">\n";
             echo "                    <table class=\"posthead\" width=\"98%\">\n";
             echo "                      <tr>\n";
-            echo "                        <td align=\"left\" class=\"postbody\">An error has occured. Please wait a few moments and then click the Retry button below. Details of the error have been saved to the default error log.</td>\n";
+            echo "                        <td align=\"left\" class=\"postbody\">An error has occurred. Please wait a few moments and then click the Retry button below. Details of the error have been saved to the default error log.</td>\n";
             echo "                      </tr>\n";
             echo "                      <tr>\n";
             echo "                        <td align=\"left\">&nbsp;</td>\n";
@@ -221,7 +192,7 @@ function bh_exception_handler(Exception $exception)
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
                 echo "                        <td>\n";
-                echo "                          <div class=\"error_handler_details\">", implode("\n", $error_msg_array), "</div>\n";
+                echo "                          <div class=\"error_handler_details\">", implode("\n\n", htmlentities_array($error_msg_array)), "</div>\n";
                 echo "                        </td>\n";
                 echo "                      </tr>\n";
                 echo "                      <tr>\n";
@@ -254,7 +225,7 @@ function bh_exception_handler(Exception $exception)
         echo "</html>\n";
         exit;
 
-    } catch (Exception $e) {
+    } catch (Exception $exception) {
 
         printf('Exception thrown when handling an exception: %s', $exception->getMessage());
         exit;
@@ -267,34 +238,38 @@ function bh_error_process(Exception $exception)
 
     $version_strings = array();
 
-    $error_msg_array[] = sprintf('<p><b>E_USER_ERROR</b> %s</p>', $exception->getMessage());
+    $error_msg_array[] = sprintf('E_USER_ERROR: %s', $exception->getMessage());
 
     if (strlen(trim(basename($exception->getFile()))) > 0) {
 
-        $error_msg_array[] = '<p><b>Error Message:</b></p>';
-        $error_msg_array[] = sprintf('<p>Error in line %s of file %s</p>', $exception->getLine(), basename($exception->getFile()));
+        $error_msg_array[] = 'Error Message:';
+        $error_msg_array[] = sprintf('Error in line %s of file %s', $exception->getLine(), basename($exception->getFile()));
     }
 
-    $error_msg_array[] = '<hr />';
+    $stack_trace_array = $exception->getTrace();
 
-    $stack_trace = array_values(array_filter($exception->getTrace(), 'bh_error_stack_trace_tidy'));
+    if (count($stack_trace_array) > 0) {
 
-    if (count($stack_trace) > 0) {
+        $error_msg_array[] = 'Stack trace:';
 
-        $error_msg_array[] = '<p><b>Stack trace:</b></p>';
+        $stack_trace_result_array = [];
 
-        foreach ($stack_trace as $key => $trace_data) {
+        foreach ($stack_trace_array as $key => $stack_trace_data) {
 
-            $error_msg_array[] = sprintf(
-                '#%s %s(%s): %s%s%s(%s)<br />',
+            $stack_trace_result_array[] = sprintf(
+                '#%s %s(%s): %s%s%s(%s)',
                 $key,
-                isset($trace_data['file']) ? $trace_data['file'] : 'unknown',
-                isset($trace_data['line']) ? $trace_data['line'] : 'unknown',
-                isset($trace_data['class']) ? $trace_data['class'] : '',
-                isset($trace_data['type']) ? $trace_data['type'] : '',
-                isset($trace_data['function']) ? $trace_data['function'] : 'unknown',
-                isset($trace_data['args']) ? implode(', ', array_map('gettype', $trace_data['args'])) : 'void'
+                isset($stack_trace_data['file']) ? $stack_trace_data['file'] : 'unknown',
+                isset($stack_trace_data['line']) ? $stack_trace_data['line'] : 'unknown',
+                isset($stack_trace_data['class']) ? $stack_trace_data['class'] : '',
+                isset($stack_trace_data['type']) ? $stack_trace_data['type'] : '',
+                isset($stack_trace_data['function']) ? $stack_trace_data['function'] : 'unknown',
+                isset($stack_trace_data['args']) ? implode(', ', array_map('gettype', $stack_trace_data['args'])) : 'void'
             );
+        }
+
+        if (count($stack_trace_result_array) > 0) {
+            $error_msg_array[] = implode("\n", $stack_trace_result_array);
         }
     }
 
@@ -318,7 +293,7 @@ function bh_error_process(Exception $exception)
 
         $mysql_version = sprintf('MySQL/%s', db::get_version());
 
-    } catch (Exception $e) {
+    } catch (Exception $exception) {
 
         $mysql_version = 'MySQL Version Unknown';
     }
@@ -327,26 +302,24 @@ function bh_error_process(Exception $exception)
 
     if (isset($version_strings) && sizeof($version_strings) > 0) {
 
-        $error_msg_array[] = '<p><b>Version Strings:</b></p>';
-        $error_msg_array[] = sprintf('<p>%s</p>', implode(', ', $version_strings));
+        $error_msg_array[] = 'Version Strings:';
+        $error_msg_array[] = sprintf('%s', implode(', ', $version_strings));
     }
 
-    $error_msg_array[] = '<p><b>HTTP Request:</b></p>';
-
-    $error_msg_array[] = $_SERVER['PHP_SELF'];
+    $error_msg_array[] = sprintf('HTTP Request: %s', $_SERVER['PHP_SELF']);
 
     if (isset($_GET)) {
 
         $error_msg_array[] = sprintf(
-            '<pre><b>$_GET</b> = %s;</pre>',
-            htmlentities_array(var_export($_GET, true))
+            '$_GET = %s;',
+            var_export($_GET, true)
         );
     }
 
     if (isset($_POST)) {
 
         $error_msg_array[] = sprintf(
-            '<pre><b>$_POST</b> = %s;</pre>',
+            '$_POST = %s;',
             var_export($_POST, true)
         );
     }
@@ -354,7 +327,7 @@ function bh_error_process(Exception $exception)
     if (isset($_COOKIE)) {
 
         $error_msg_array[] = sprintf(
-            '<pre><b>$_COOKIE</b> = %s;</pre>',
+            '$_COOKIE = %s;',
             var_export($_COOKIE, true)
         );
     }
@@ -362,7 +335,7 @@ function bh_error_process(Exception $exception)
     if (isset($_SESSION)) {
 
         $error_msg_array[] = sprintf(
-            '<pre><b>$_SESSION</b> = %s;</pre>',
+            '$_SESSION = %s;',
             var_export($_SESSION, true)
         );
     }
@@ -370,7 +343,7 @@ function bh_error_process(Exception $exception)
     if (isset($_ENV)) {
 
         $error_msg_array[] = sprintf(
-            '<pre><b>$_ENV</b> = %s;</pre>',
+            '$_ENV = %s;',
             var_export($_ENV, true)
         );
     }
@@ -378,27 +351,12 @@ function bh_error_process(Exception $exception)
     if (isset($_SERVER)) {
 
         $error_msg_array[] = sprintf(
-            '<pre><b>$_SERVER</b> = %s;</pre>',
+            '$_SERVER = %s;',
             var_export($_SERVER, true)
         );
     }
 
     return $error_msg_array;
-}
-
-function bh_error_stack_trace_tidy($trace_data)
-{
-    $ignore_functions = array(
-        'bh_error_display',
-        'bh_error_handler',
-        'bh_error_process',
-        'bh_error_send_email',
-        'bh_error_stack_trace_tidy',
-        'bh_exception_handler',
-        'bh_fatal_error_handler',
-    );
-
-    return !(isset($trace_data['function']) && in_array($trace_data['function'], $ignore_functions));
 }
 
 function bh_error_send_email(Exception $exception)
@@ -421,7 +379,7 @@ function bh_error_send_email(Exception $exception)
 
         $error_msg_array = bh_error_process($exception);
 
-        $error_log_email_message = implode("\n\n", array_filter(array_map('strip_tags', $error_msg_array), 'strlen'));
+        $error_log_email_message = implode("\n\n", $error_msg_array);
 
         $headers = "Return-path: $error_report_email_addr_from\n";
         $headers .= "From: \"Beehive Forum Error Report\" <$error_report_email_addr_from>\n";

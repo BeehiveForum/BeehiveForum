@@ -816,8 +816,6 @@ nasty exploits.
 JimL for beating Mike in our being obsessed with Beehive Forum
 competition.
 
-SourceForge <http://sourceforge.net> for providing top-notch
-facilities to us (and to thousands of other projects) at absolutely
-no cost.
-
-Github for their excellent version control and web-related services.
+Github <http://github.com> and Sourceforge <http://sourceforget.net> 
+for providing top-notch facilities to us (and to thousands of other 
+projects) at absolutely no cost.

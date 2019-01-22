@@ -12,8 +12,5 @@
 <div class="image beehive-logo">
     <a href="http://www.beehiveforum.co.uk/" target="_blank">Project Beehive Forum</a>
 </div>
-<div class="sourceforge-logo">
-    <a href="http://sourceforge.net" target="_blank">Sourceforge.net</a>
-</div>
 </body>
 </html>

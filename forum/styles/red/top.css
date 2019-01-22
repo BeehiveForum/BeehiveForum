@@ -11,26 +11,11 @@ div.beehive-logo {
     width: 350px;
 }
 
-div.sourceforge-logo {
-    background: url('//sourceforge.net/sflogo.php?group_id=50772&type=2') no-repeat transparent;
-    height: 37px;
-    position: absolute;
-    right: 10px;
-    top: 11px;
-    width: 125px;
-}
+
 
 div.beehive-logo a {
     display: block;
     height: 60px;
     text-indent: -9999px;
     width: 350px;
-}
-
-div.sourceforge-logo a {
-    display: block;
-    height: 37px;
-    text-indent: -9999px;
-    top: 11px;
-    width: 125px;
 }

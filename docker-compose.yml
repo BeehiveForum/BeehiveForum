@@ -19,8 +19,12 @@ services:
     image: mysql:5
     ports:
       - 3306:3306
+    volumes:
+      - mysql:/var/lib/mysql
     environment:
       MYSQL_DATABASE: beehiveforum
       MYSQL_USER: beehiveforum
       MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: password
+volumes:
+  mysql:

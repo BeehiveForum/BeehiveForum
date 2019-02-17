@@ -1,6 +1,8 @@
 FROM php:7-fpm-alpine
 
-RUN apk add freetype-dev gettext-dev icu-dev libjpeg-turbo-dev libpng-dev gnu-iconvlib
+RUN apk update && apk upgrade
+
+RUN apk add freetype-dev gettext-dev icu-dev libjpeg-turbo-dev libpng-dev
 
 RUN docker-php-ext-install mysqli
 RUN docker-php-ext-install gd

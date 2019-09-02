@@ -7,7 +7,7 @@ echo "Adding Ondřej Surý PHP Ubuntu PPA..."
 LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php -y > /dev/null 2>&1
 echo "Installing packages..."
 apt-get update > /dev/null 2>&1
-apt-get install git mysql-server nginx php7.2-curl php7.2-fpm php7.2-gd php7.2-intl php7.2-json php7.2-mbstring php7.2-mysql php7.2-sqlite3 php7.2-xml php7.2-zip php-pear -y > /dev/null 2>&1
+apt-get install git mysql-server nginx php7.2-curl php7.2-exif php7.2-fpm php7.2-gd php7.2-intl php7.2-json php7.2-mbstring php7.2-mysql php7.2-sqlite3 php7.2-xml php7.2-zip php-pear -y > /dev/null 2>&1
 echo "Installing pear packages..."
 pear channel-update pear.php.net > /dev/null 2>&1
 pear channel-discover bartlett.laurent-laville.org > /dev/null 2>&1

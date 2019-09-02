@@ -1,15 +1,30 @@
-FROM php:7-fpm-alpine
+FROM php:7-fpm-alpine as base
 
-RUN apk update && apk upgrade
+RUN apk --no-cache update \
+    && apk --no-cache upgrade \
+    && apk add --no-cache $PHPIZE_DEPS \
+        freetype \
+        freetype-dev \
+        gettext-dev \
+        icu-dev \
+        libjpeg-turbo \
+        libjpeg-turbo-dev \
+        libpng \
+        libpng-dev \
+    && docker-php-ext-configure gd \
+        --with-freetype-dir=/usr/include/ \
+        --with-jpeg-dir=/usr/include/ \
+        --with-png-dir=/usr/include/ \
+    && docker-php-ext-install -j$(getconf _NPROCESSORS_ONLN) exif \
+        gd \
+        gettext \
+        intl \
+        mysqli
 
-RUN apk add freetype-dev gettext-dev icu-dev libjpeg-turbo-dev libpng-dev
+FROM base as local
 
-RUN docker-php-ext-install mysqli
-RUN docker-php-ext-install gd
-RUN docker-php-ext-install gettext
-RUN docker-php-ext-install intl
-
-RUN docker-php-ext-enable mysqli
-RUN docker-php-ext-enable gd
-RUN docker-php-ext-enable gettext
-RUN docker-php-ext-enable intl
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug-config.ini \
+    && echo "xdebug.remote_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug-config.ini \
+    && echo "xdebug.remote_port=9000" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug-config.ini

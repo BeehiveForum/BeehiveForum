@@ -44,99 +44,8 @@ function image_enable_transparency($im)
     return $im;
 }
 
-function image_resize($src, $dest, $max_width = 150, $max_height = 150)
+function image_read_function(array $image_info)
 {
-    // Check attachment thumbnails are enabled.
-    if (forum_get_setting('attachment_thumbnails', 'N')) return false;
-
-    // Get the thumbnail method.
-    $attachment_thumbnail_method = forum_get_setting('attachment_thumbnail_method');
-
-    // Different function for each method.
-    switch ($attachment_thumbnail_method) {
-
-        // Use external ImageMagick binary.
-        case ATTACHMENT_THUMBNAIL_IMAGEMAGICK:
-
-            return image_resize_imagemagick($src, $dest, $max_width, $max_height);
-            break;
-
-        // Use PHP's GD image library.
-        default:
-
-            return image_resize_gd($src, $dest, $max_width, $max_height);
-            break;
-    }
-}
-
-function image_resize_imagemagick($src, $dest, $max_width = 150, $max_height = 150)
-{
-    if (!is_numeric($max_width)) return false;
-    if (!is_numeric($max_height)) return false;
-
-    // Array of mime-types to encoding types for imagemagick
-    $mime_type_encoding = array(
-        'image/gif' => 'gif',
-        'image/jpeg' => 'jpg',
-        'image/png' => 'png',
-    );
-
-    // Get the imagemagick path from settings.
-    if (!($imagemagick_path = forum_get_global_setting('attachment_imagemagick_path'))) return false;
-
-    // Check that imagemagick is executable.
-    if (!is_executable($imagemagick_path)) return false;
-
-    // Check the destination directory is writable.
-    if (!is_writable(dirname($dest))) return false;
-
-    // Check the file exists and we can get some image data from it.
-    if (!file_exists($src) || !($image_info = @getimagesize($src))) return false;
-
-    // Check it's an image type we support.
-    if (!isset($image_info['mime']) || !isset($mime_type_encoding[$image_info['mime']])) return false;
-
-    // If we're dealing with a GIF image, we need to
-    // process it to correctly resize all the frames it
-    // might contain - in the case of animated gifs.
-    if (false || ($image_info[2] == IMAGETYPE_GIF)) {
-
-        // Resize the gif, dropping all but the first frame.
-        exec(sprintf(
-            'convert -size "%3$dx%4$d" xc:transparent %1$s[0] -resize "%3$dx%4$d^>" -gravity center -compose over -composite %5$s:%2$s',
-            escapeshellarg($src),
-            escapeshellarg($dest),
-            $max_width,
-            $max_height,
-            $mime_type_encoding[$image_info['mime']]
-        ));
-
-    } else {
-
-        // It's not a gif, so carry on and resize the image.
-        exec(sprintf(
-            'convert -size "%3$dx%4$d" xc:transparent %1$s -resize "%3$dx%4$d^>" -gravity center -compose over -composite %5$s:%2$s',
-            escapeshellarg($src),
-            escapeshellarg($dest),
-            $max_width,
-            $max_height,
-            $mime_type_encoding[$image_info['mime']]
-        ));
-    }
-
-    // if imagemagick fails, it won't create the final image
-    // so we test that exists before returning the result.
-    if (!file_exists($dest)) return false;
-
-    // Success
-    return true;
-}
-
-function image_resize_gd($src, $dest, $max_width, $max_height)
-{
-    if (!is_numeric($max_width)) return false;
-    if (!is_numeric($max_height)) return false;
-
     // Required PHP image create from functions
     $required_read_functions = array(
         1 => 'imagecreatefromgif',
@@ -144,6 +53,13 @@ function image_resize_gd($src, $dest, $max_width, $max_height)
         3 => 'imagecreatefrompng'
     );
 
+    if (!function_exists($required_read_functions[$image_info[2]])) return false;
+
+    return $required_read_functions[$image_info[2]];
+}
+
+function image_write_function(array $image_info)
+{
     // Required PHP image output functions
     $required_write_functions = array(
         1 => 'imagegif',
@@ -151,6 +67,14 @@ function image_resize_gd($src, $dest, $max_width, $max_height)
         3 => 'imagepng'
     );
 
+    // Even if GD says it supports the image format check the php functions actually exist!
+    if (!function_exists($required_write_functions[$image_info[2]])) return false;
+
+    return $required_write_functions[$image_info[2]];
+}
+
+function image_verify_functionality(array $image_info)
+{
     // Required GD read support
     $required_read_support = array(
         1 => array('GIF Read Support'),
@@ -165,20 +89,17 @@ function image_resize_gd($src, $dest, $max_width, $max_height)
         3 => array('PNG Support')
     );
 
-    // Check the file exists and we can get some image data from it.
-    if (!file_exists($src) || !($image_info = @getimagesize($src))) return false;
-
-    // Check the destination directory is writable.
-    if (!is_writable(dirname($dest))) return false;
-
     // Check the gd_info function exists
     if (!function_exists('gd_info') || !($gd_info = gd_info())) return false;
 
     // Check the 'GD Version' key exists
     if (!isset($gd_info['GD Version']) || empty($gd_info['GD Version'])) return false;
 
+    // Extract only the version number
+    if (!preg_match('/\\d+\\.\\d+(?:\\.\\d+)?/', $gd_info['GD Version'], $gd_version)) return false;
+
     // Do we have a new enough version of GD?
-    if (version_compare($gd_info['GD Version'], '2.0', '>=') === false) return false;
+    if (version_compare($gd_version[0], '2.0', '>=') === false) return false;
 
     // Is the image format in our list of supported image types.
     if (!isset($required_read_support[$image_info[2]])) return false;
@@ -188,39 +109,7 @@ function image_resize_gd($src, $dest, $max_width, $max_height)
     if (!image_check_gd_info_key($required_read_support[$image_info[2]])) return false;
     if (!image_check_gd_info_key($required_write_support[$image_info[2]])) return false;
 
-    // Even if GD says it supports the image format check the php functions actually exist!
-    if (!function_exists($required_read_functions[$image_info[2]])) return false;
-    if (!function_exists($required_write_functions[$image_info[2]])) return false;
-
-    // Can we actually read the image using the function?
-    if (!($src_im = @$required_read_functions[$image_info[2]]($src))) return false;
-
-    // Extract the dimensions from the image info.
-    $target_width = $image_info[0];
-    $target_height = $image_info[1];
-
-    // Scale the width and height till we fit in 1 of the dimensions.
-    while ($target_width > $max_width && $target_height > $max_height) {
-
-        $target_width--;
-        $target_height = $target_width * ($image_info[1] / $image_info[0]);
-    }
-
-    // Calculate the offset.
-    $offset_width = floor(($max_width - $target_width) / 2);
-    $offset_height = floor(($max_height - $target_height) / 2);
-
-    // Create a new true colour image
-    $dest_im = imagecreatetruecolor($max_width, $max_height);
-
-    // Fill the background in white.
-    $dest_im = image_enable_transparency($dest_im);
-
-    // Copy the source image onto the destination.
-    imagecopyresampled($dest_im, $src_im, $offset_width, $offset_height, 0, 0, $target_width, $target_height, $image_info[0], $image_info[1]);
-
-    // Write the file and return the result.
-    return $required_write_functions[$image_info[2]]($dest_im, $dest);
+    return true;
 }
 
 function image_check_gd_info_key($image_types_array)
@@ -234,4 +123,98 @@ function image_check_gd_info_key($image_types_array)
     }
 
     return false;
+}
+
+function image_resize($src, $dest, $max_width = 100, $max_height = 100)
+{
+    if (!is_numeric($max_width)) return false;
+    if (!is_numeric($max_height)) return false;
+
+    // Check the file exists and we can get some image data from it.
+    if (!file_exists($src) || !($image_info = @getimagesize($src))) return false;
+
+    // Check the destination directory is writable.
+    if (!is_writable(dirname($dest))) return false;
+
+    // Verify the GD image library has the required functionality
+    if (!image_verify_functionality($image_info)) return false;
+
+    // Fetch the image read function for the image type.
+    if (!($image_read_function = image_read_function($image_info))) return false;
+
+    // Fetch the image read function for the image type.
+    if (!($image_write_function = image_write_function($image_info))) return false;
+
+    // Can we actually read the image using the function?
+    if (!($src_im = @$image_read_function($src))) return false;
+
+    // Extract the dimensions from the image info.
+    $image_width = $image_info[0];
+    $image_height = $image_info[1];
+
+    // Calculate image ratio
+    $ratio = $image_info[1] / $image_info[0];
+
+    // Scale the width and height till we fit in 1 of the dimensions.
+    while (($image_width > $max_width) || ($image_height > $max_height)) {
+
+        $image_width--;
+        $image_height = floor($image_width * $ratio);
+    }
+
+    // Create a new true colour image
+    $dest_im = imagecreatetruecolor($image_width, $image_height);
+
+    // Fill the background in white.
+    $dest_im = image_enable_transparency($dest_im);
+
+    // Copy the source image onto the destination.
+    imagecopyresampled($dest_im, $src_im, 0, 0, 0, 0, $image_width, $image_height, $image_info[0], $image_info[1]);
+
+    // Write the file and return the result.
+    return $image_write_function($dest_im, $dest);
+}
+
+function image_rotate($src)
+{
+    // Check the file exists and we can get some image data from it.
+    if (!file_exists($src) || !($image_info = @getimagesize($src))) return false;
+
+    // Fetch the image read function for the image type.
+    if (!($image_read_function = image_read_function($image_info))) return false;
+
+    // Fetch the image read function for the image type.
+    if (!($image_write_function = image_write_function($image_info))) return false;
+
+    // Check if exif_read_data function exists
+    if (!function_exists('exif_read_data')) return false;
+
+    // Can we read the exit data from the image?
+    if (!($exif_data = @exif_read_data($src))) return false;
+
+    // Can we actually read the image using the function?
+    if (!($src_im = @$image_read_function($src))) return false;
+
+    // Handle 180 degree rotation
+    if (in_array($exif_data['Orientation'], [3, 4])) {
+        $src_im = imagerotate($src_im, 180, 0);
+    }
+
+    // Handle 90 degree rotation
+    if (in_array($exif_data['Orientation'], [5, 6])) {
+        $src_im = imagerotate($src_im, -90, 0);
+    }
+
+    // Handle -90 degree rotation
+    if (in_array($exif_data['Orientation'], [7, 8])) {
+        $src_im = imagerotate($src_im, 90, 0);
+    }
+
+    // Handle horizontally flipped image
+    if (in_array($exif_data['Orientation'], [2, 5, 7, 4])) {
+        imageflip($src_im, IMG_FLIP_HORIZONTAL);
+    }
+
+    // Write the file and return the result.
+    return $image_write_function($src_im, $src);
 }

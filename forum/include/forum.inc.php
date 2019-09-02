@@ -653,7 +653,6 @@ function forum_check_global_setting_name($setting_name)
         'attachment_allow_guests',
         'attachment_dir',
         'attachment_mime_types',
-        'attachment_imagemagick_path',
         'cache_dir',
         'content_delivery_domains',
         'forum_desc',

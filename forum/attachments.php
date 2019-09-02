@@ -201,6 +201,8 @@ if (isset($_POST['summary'])) {
 
                 $image_height = $image_info[1];
 
+                image_rotate($file_path);
+
                 $thumbnail = image_resize($file_path, $file_path . '.thumb');
             }
 

@@ -583,14 +583,6 @@ msgstr "Use Sendmail"
 msgid "Do not send email"
 msgstr "Do not send email"
 
-#: ../../../../admin_default_forum_settings.php:111
-msgid "Use Imagemagick"
-msgstr "Use Imagemagick"
-
-#: ../../../../admin_default_forum_settings.php:112
-msgid "Use PHP GD library"
-msgstr "Use PHP GD library"
-
 #: ../../../../admin_default_forum_settings.php:128
 #: ../../../../admin_forum_settings.php:128 ../../../../admin_forums.php:233
 #: ../../../../admin_forums.php:318
@@ -1568,10 +1560,6 @@ msgstr "Attachment Dir"
 #: ../../../../admin_default_forum_settings.php:1553
 msgid "Attachment thumbnail method"
 msgstr "Attachment thumbnail method"
-
-#: ../../../../admin_default_forum_settings.php:1557
-msgid "Path to Imagemagick convert binary"
-msgstr "Path to Imagemagick convert binary"
 
 #: ../../../../admin_default_forum_settings.php:1564
 msgid "Maximum attachment space per user"

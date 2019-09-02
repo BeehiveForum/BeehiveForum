@@ -35,7 +35,7 @@ define('BEEHIVE_PHP_MIN_VERSION', '5.4.0');
 define('BEEHIVE_MYSQL_MIN_VERSION', '5.1.41');
 
 // Require PHP extensions
-define('BEEHIVE_PHP_REQUIRED_EXT', 'curl,date,fileinfo,gd,gettext,intl,json,mbstring,mysqli,pcre,xml');
+define('BEEHIVE_PHP_REQUIRED_EXT', 'curl,date,exif,fileinfo,gd,gettext,intl,json,mbstring,mysqli,pcre,xml');
 
 // Constants for date / time.
 define('YEAR_IN_SECONDS', 31536000);
@@ -256,10 +256,6 @@ define('POLL_HIDE_RESULTS', 0);
 define('ATTACHMENT_THUMB_SMALL', 1);
 define('ATTACHMENT_THUMB_MEDIUM', 2);
 define('ATTACHMENT_THUMB_LARGE', 3);
-
-// Attachment thumbnail methods.
-define('ATTACHMENT_THUMBNAIL_PHPGD', 0);
-define('ATTACHMENT_THUMBNAIL_IMAGEMAGICK', 1);
 
 // PM Constants
 define('PM_OUTBOX', 1);

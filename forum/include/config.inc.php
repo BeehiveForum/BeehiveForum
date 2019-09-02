@@ -24,7 +24,7 @@ USA
 // MAIN CONFIGURATION FILE
 
 // Database stuff ------------------------------------------------------
-$db_server = "localhost"; // The address of your MySQL server
+$db_server = "mysql"; // The address of your MySQL server
 $db_port = "3306"; // The port of your MySQL server
 $db_username = "beehiveforum"; // Your MySQL username
 $db_password = "password"; // Your MySQL password

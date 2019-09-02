@@ -106,12 +106,6 @@ $mail_functions_array = array(
     MAIL_FUNCTION_NONE => gettext("Do not send email"),
 );
 
-// Array of valid attachment thumbnail methods.
-$attachment_thumbnail_methods = array(
-    ATTACHMENT_THUMBNAIL_IMAGEMAGICK => gettext("Use Imagemagick"),
-    ATTACHMENT_THUMBNAIL_PHPGD => gettext("Use PHP GD library")
-);
-
 // Get the global forum settings
 $forum_global_settings = forum_get_global_settings();
 
@@ -488,18 +482,6 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['attachment_mime_types'] = trim($_POST['attachment_mime_types']);
     } else {
         $new_forum_settings['attachment_mime_types'] = "";
-    }
-
-    if (isset($_POST['attachment_thumbnail_method']) && in_array($_POST['attachment_thumbnail_method'], array_keys($attachment_thumbnail_methods))) {
-        $new_forum_settings['attachment_thumbnail_method'] = trim($_POST['attachment_thumbnail_method']);
-    } else {
-        $new_forum_settings['attachment_thumbnail_method'] = ATTACHMENT_THUMBNAIL_PHPGD;
-    }
-
-    if (isset($_POST['attachment_imagemagick_path']) && strlen(trim($_POST['attachment_imagemagick_path'])) > 0) {
-        $new_forum_settings['attachment_imagemagick_path'] = trim($_POST['attachment_imagemagick_path']);
-    } else {
-        $new_forum_settings['attachment_imagemagick_path'] = "";
     }
 
     if (isset($_POST['attachments_max_user_space']) && is_numeric($_POST['attachments_max_user_space'])) {
@@ -1548,14 +1530,6 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"270\">", gettext("Attachment Dir"), ":</td>\n";
 echo "                        <td align=\"left\">", form_input_text("attachment_dir", (isset($forum_global_settings['attachment_dir'])) ? htmlentities_array($forum_global_settings['attachment_dir']) : "attachments", 35, 255), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"270\">", gettext("Attachment thumbnail method"), ":</td>\n";
-echo "                        <td align=\"left\">", form_dropdown_array('attachment_thumbnail_method', $attachment_thumbnail_methods, (isset($forum_global_settings['attachment_thumbnail_method']) ? $forum_global_settings['attachment_thumbnail_method'] : ATTACHMENT_THUMBNAIL_PHPGD)), "</td>\n";
-echo "                      </tr>\n";
-echo "                      <tr>\n";
-echo "                        <td align=\"left\" width=\"270\">", gettext("Path to Imagemagick convert binary"), ":</td>\n";
-echo "                        <td align=\"left\">", form_input_text("attachment_imagemagick_path", (isset($forum_global_settings['attachment_imagemagick_path'])) ? htmlentities_array($forum_global_settings['attachment_imagemagick_path']) : '', 35, 255), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" colspan=\"2\">&nbsp;</td>\n";

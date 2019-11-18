@@ -195,6 +195,9 @@ function image_rotate($src)
     // Can we actually read the image using the function?
     if (!($src_im = @$image_read_function($src))) return false;
 
+    // Does the image contain the exif orientation data?
+    if (!array_key_exists('Orientation', $exif_data)) return false;
+
     // Handle 180 degree rotation
     if (in_array($exif_data['Orientation'], [3, 4])) {
         $src_im = imagerotate($src_im, 180, 0);

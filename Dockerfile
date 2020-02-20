@@ -1,4 +1,4 @@
-FROM php:7-fpm-alpine as base
+FROM php:7.0-fpm-alpine as base
 
 RUN apk --no-cache update \
     && apk --no-cache upgrade \
@@ -23,7 +23,7 @@ RUN apk --no-cache update \
 
 FROM base as local
 
-RUN pecl install xdebug \
+RUN pecl install xdebug-2.6.1 \
     && docker-php-ext-enable xdebug \
     && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug-config.ini \
     && echo "xdebug.remote_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug-config.ini \

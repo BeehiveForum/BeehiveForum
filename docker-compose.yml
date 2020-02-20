@@ -1,7 +1,7 @@
 version: '3.5'
 services:
   nginx:
-    image: nginx:1-alpine
+    image: nginx:1.17-alpine
     ports:
       - 80:80
     volumes:
@@ -16,7 +16,7 @@ services:
     depends_on:
       - mysql
   mysql:
-    image: mysql:5
+    image: mysql:5.6
     ports:
       - 3306:3306
     volumes:

@@ -775,7 +775,7 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
 
                 if (intval($message['REPLY_TO_PID']) >= intval($first_msg)) {
 
-                    echo "<a href=\"#a{$tid}_{$message['REPLY_TO_PID']}\" target=\"_self\" title=\"$title\">";
+                    echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.{$first_msg}#a{$tid}_{$message['REPLY_TO_PID']}\" target=\"_self\" title=\"$title\">";
                     echo "{$tid}.{$message['REPLY_TO_PID']}</a>";
 
                 } else {
@@ -1117,7 +1117,7 @@ function message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_p
 
         } else {
 
-            echo "<a href=\"#a{$tid}_", $pid - 1, "\" target=\"_self\">";
+            echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.{$first_msg}#a{$tid}_", $pid - 1, "\" target=\"_self\">";
             echo html_style_image('message_up', gettext("Previous")), "</a>";
         }
     }
@@ -1136,7 +1136,7 @@ function message_display_navigation($tid, $pid, $first_msg, $msg_count, $posts_p
 
         } else {
 
-            echo "<a href=\"#a{$tid}_", $pid + 1, "\" target=\"_self\">";
+            echo "<a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.{$first_msg}#a{$tid}_", $pid + 1, "\" target=\"_self\">";
             echo html_style_image('message_down', gettext("Next")), "</a>";
         }
     }
@@ -1291,7 +1291,7 @@ function message_display_success_msg($tid, $pid, $first_msg, $message, $posts_pe
         html_display_success_msg(
             sprintf(
                 $message,
-                "<a href=\"#a{$tid}_{$pid}\" target=\"_self\">{$tid}.{$pid}</a>"
+                "<a href=\"messages.php?webtag=$webtag&amp;msg={$tid}.{$first_msg}#a{$tid}_{$pid}\" target=\"_self\">{$tid}.{$pid}</a>"
             ),
             '96%',
             'center'

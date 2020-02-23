@@ -1870,7 +1870,7 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
 
                 if (intval($message['REPLY_TO_PID']) >= intval($first_msg)) {
 
-                    echo "<a href=\"#a{$tid}_{$message['REPLY_TO_PID']}\" target=\"_self\">$tid.{$message['REPLY_TO_PID']}</a>";
+                    echo "<a href=\"lmessages.php?webtag=$webtag&amp;msg={$tid}.{$first_msg}#a{$tid}_{$message['REPLY_TO_PID']}\" target=\"_self\">$tid.{$message['REPLY_TO_PID']}</a>";
 
                 } else {
 

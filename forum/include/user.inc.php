@@ -357,7 +357,7 @@ function user_logon($logon, $password)
 
     if (!($result = $db->query($sql))) return false;
 
-    user_prune_expired_tokens($uid);
+    user_prune_expired_tokens();
 
     return $uid;
 }
@@ -394,7 +394,7 @@ function user_logon_token($logon, $token)
 
     if (!user_renew_token($uid, $token)) return false;
 
-    user_prune_expired_tokens($uid);
+    user_prune_expired_tokens();
 
     return $uid;
 }
@@ -405,7 +405,7 @@ function user_generate_token($uid)
 
     if (!$db = db::get()) return false;
 
-    user_prune_expired_tokens($uid);
+    user_prune_expired_tokens();
 
     $token = md5(uniqid(mt_rand()));
 
@@ -419,16 +419,13 @@ function user_generate_token($uid)
     return $token;
 }
 
-function user_prune_expired_tokens($uid)
+function user_prune_expired_tokens()
 {
-    if (!is_numeric($uid)) return false;
-
     if (!$db = db::get()) return false;
 
     $current_datetime = date(MYSQL_DATETIME, time());
 
-    $sql = "DELETE QUICK FROM USER_TOKEN WHERE UID = '$uid' ";
-    $sql .= "AND EXPIRES < '$current_datetime'";
+    $sql = "DELETE QUICK FROM USER_TOKEN WHERE EXPIRES < '$current_datetime'";
 
     if (!($db->query($sql))) return false;
 
@@ -450,7 +447,7 @@ function user_renew_token($uid, $token)
 
     if (!($db->query($sql))) return false;
 
-    user_prune_expired_tokens($uid);
+    user_prune_expired_tokens();
 
     return true;
 }

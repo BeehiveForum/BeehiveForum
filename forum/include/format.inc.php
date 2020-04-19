@@ -57,25 +57,13 @@ function format_file_name($filename)
 
 function format_file_size($size)
 {
-    $b = -1;
+    if ($size <= 0) return '0B';
 
-    $units = array(
-        "kB",
-        "MB",
-        "GB",
-        "TB",
-        "PB",
-        "EB"
-    );
+    $size = (int) $size;
+    $base = log($size) / log(1024);
+    $units = ['B', 'KB', 'MB', 'GB', 'TB'];
 
-    do {
-
-        $size = $size / 1024;
-        $b++;
-
-    } while ($size > 99);
-
-    return format_number(floor($size * 100) / 100, 2) . $units[$b];
+    return round(pow(1024, $base - floor($base)), 2) . ' ' . $units[floor($base)];
 }
 
 function convert_shorthand_filesize($size)

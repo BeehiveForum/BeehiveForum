@@ -650,6 +650,7 @@ function forum_check_global_setting_name($setting_name)
         'attachment_thumbnail_method',
         'attachments_max_user_space',
         'attachments_max_post_space',
+        'attachment_size_limit',
         'attachment_allow_guests',
         'attachment_dir',
         'attachment_mime_types',

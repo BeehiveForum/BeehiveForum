@@ -1436,7 +1436,9 @@ div.spoiler_reveal * {
     margin-bottom: 10px;
 }
 
+.attachments ul li label input,
 .attachments ul li label span {
+    float: left;
     margin-right: 5px;
 }
 
@@ -1453,12 +1455,17 @@ div.spoiler_reveal * {
     background-position: -294px -90px;
 }
 
+.attachments ul li.cancelled span.image {
+    background-position: -64px -138px;
+}
+
 .attachments ul li.error span.image {
     background-position: -278px -106px;
 }
 
 .attachments ul li label {
-    display: block;
+    display: inline-block;
+    width: 100%;
 }
 
 .attachments ul li.attachment span.cancel,

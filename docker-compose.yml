@@ -12,6 +12,7 @@ services:
   web:
     build: .
     volumes:
+      - ./docker/overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini
       - ./forum:/var/www/html
     depends_on:
       - mysql

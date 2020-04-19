@@ -1062,31 +1062,40 @@ span.thread_length {
     margin-bottom: 10px;
 }
 
+.attachments ul li label {
+    display: inline-block;
+    width: 100%;
+}
+
+.attachments ul li label input,
 .attachments ul li label span {
+    float: left;
     margin-right: 5px;
 }
 
 .attachments ul li span.filename {
     display: inline-block;
-    padding-left: 20px;
+}
+
+.attachments ul li span.image {
+    width: 16px;
+    height: 16px;
 }
 
 .attachments ul li.complete span.image {
-    background-position: -272px -94px;
-    width: 16px;
-    height: 16px;
+    background-position: -294px -90px;
+}
+
+.attachments ul li.cancelled span.image {
+    background-position: -64px -138px;
 }
 
 .attachments ul li.error span.image {
-    background-position: -110px -110px;
-    width: 16px;
-    height: 16px;
+    background-position: -278px -106px;
 }
 
 .attachments ul li.uploading span.image {
     background: transparent url('./images/loading.gif') no-repeat 0 50%;
-    width: 16px;
-    height: 16px;
 }
 
 .attachments ul li button {
@@ -1114,6 +1123,7 @@ span.thread_length {
 }
 
 .attachments ul li.error span.progress,
+
 .attachments ul li.cancelled span.progress,
 .attachments ul li.complete span.progress,
 .attachments ul li.complete span.cancel,
@@ -1122,10 +1132,6 @@ span.thread_length {
 .attachments ul li.uploading span.retry,
 .attachments ul li.error span.delete {
     display: none;
-}
-
-.attachments ul li.attachment span.filesize {
-    float: right;
 }
 
 .attachments .buttons {

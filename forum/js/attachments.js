@@ -35,21 +35,18 @@ $(document).bind('beehive.init', function ($event, beehive) {
     });
 
     var format_file_size = function (filesize) {
+        if (filesize <= 0) return '0B';
 
-        var b = 0;
+        var base = Math.log(filesize) / Math.log(1024);
+        var units = ['B', 'KB', 'MB', 'GB', 'TB'];
 
-        while (99 < filesize) {
-            filesize /= 1024;
-            b = b + 1;
-        }
-
-        return (Math.floor(filesize * 100) / 100).toFixed(2) + 'B kB MB GB TB PB EB'.split(' ')[b];
+        return Math.pow(1024, base - Math.floor(base)).toFixed(2) + ' ' + units[Math.floor(base)];
     };
 
     var format_file_name = function (filename) {
 
         if (filename.length > 33) {
-            return filename.slice(0, 19) + '&hellip;' + filename.slice(-13);
+            return filename.slice(0, 19) + '…' + filename.slice(-13);
         }
 
         return filename;
@@ -77,11 +74,18 @@ $(document).bind('beehive.init', function ($event, beehive) {
 
         var $delete_button = $buttons.find('a.button.delete');
 
-        var refresh_summary = function () {
+        var refresh_request;
 
+        var refresh = function () {
             var $selected = $attachments.find('li.attachment').has('input:checkbox:checked');
 
-            $.ajax({
+            $delete_button.toggle($selected.length > 0);
+
+            if (refresh_request) {
+                refresh_request.abort();
+            }
+
+            refresh_request = $.ajax({
                 data: {
                     webtag: beehive.webtag,
                     ajax: true,
@@ -106,17 +110,45 @@ $(document).bind('beehive.init', function ($event, beehive) {
             });
         };
 
+        var attachment = function (id, filename) {
+            $attachment = $attachment_list.find('li.attachment[data-id="' + id + '"]');
+
+            if ($attachment.length > 0) {
+                return $attachment;
+            }
+
+            var $attachment = $(
+                '<li class="attachment">\
+                   <label>\
+                     <input checked="checked" class="bhinputcheckbox" name="attachment[]" type="checkbox" />\
+                     <span class="image"></span>\
+                     <span class="filename">%2$s</span>\
+                     <span class="progress"></span>\
+                     <span class="retry" title="%3$s">%3$s</span>\
+                     <span class="cancel" title="%4$s">%4$s</span>\
+                     <span class="filesize"></span>\
+                   </label>\
+                 </li>'
+            );
+
+            $attachment.attr('data-id', id);
+            $attachment.find('.filename').text(format_file_name(filename));
+            $attachment.find('.retry').text(beehive.lang.retry).attr('title', beehive.lang.retry);
+            $attachment.find('.cancel').text(beehive.lang.cancel).attr('title', beehive.lang.cancel);
+
+            $attachment_list.append($attachment);
+
+            return $attachment;
+        };
+
         if ($attachments.find('li.attachment input:checkbox:checked').length > 0) {
             $delete_button.show();
         }
 
         //noinspection JSUnresolvedVariable
         var uploader = new qq.FineUploaderBasic({
-
             button: $upload_button[0],
-
             debug: false,
-
             request: {
                 endpoint: 'attachments.php',
                 params: {
@@ -125,80 +157,53 @@ $(document).bind('beehive.init', function ($event, beehive) {
                 forceMultipart: false,
                 inputName: 'upload[]'
             },
-
             validation: {
                 sizeLimit: beehive.attachment_size_limit
             },
-
             callbacks: {
+                onSubmit: attachment,
+                onUpload: function (id, filename) {
+                    var $attachment = attachment(id, filename);
 
-                onSubmit: function (id, filename) {
-
-                    //noinspection JSUnresolvedFunction
-                    $attachment_list.append(
-                         vsprintf(
-                            '<li class="attachment" data-hash="%1$s">\
-                               <label>\
-                                 <input checked="checked" class="bhinputcheckbox" name="attachment[]" type="checkbox" value="%1$s" />\
-                                 <span class="image"></span>\
-                                 <span class="filename">%2$s</span>\
-                                 <span class="progress"></span>\
-                                 <span class="retry" title="%3$s">%3$s</span>\
-                                 <span class="cancel" title="%4$s">%4$s</span>\
-                                 <span class="filesize"></span>\
-                               </label>\
-                             </li>',
-                            [
-                                id,
-                                format_file_name(filename),
-                                beehive.lang.retry,
-                                beehive.lang.cancel
-                            ]
-                        )
-                    );
-                },
-
-                onUpload: function (id) {
-
-                    $attachment_list.find('li.attachment[data-hash="' + id + '"]')
-                        .removeClass('error')
+                    $attachment.removeClass('cancelled complete error')
                         .addClass('uploading');
+
+                    refresh();
                 },
+                onCancel: function (id, filename) {
+                    var $attachment = attachment(id, filename);
 
-                onCancel: function (id) {
-
-                    $attachment_list.find('li.attachment[data-hash="' + id + '"]')
-                        .removeClass('error')
-                        .removeClass('uploading')
+                    $attachment.removeClass('complete error uploading')
                         .addClass('cancelled');
+
+                    refresh();
                 },
-
                 onProgress: function (id, filename, loaded, total) {
+                    var $attachment = attachment(id, filename);
 
-                    $attachment_list.find('li.attachment[data-hash="' + id + '"]')
-                        .find('span.progress')
+                    $attachment.removeClass('cancelled complete error')
+                        .addClass('uploading');
+
+                    $attachment.find('span.progress')
                         .html(Math.round(loaded / total * 100) + '%');
 
-                    $attachment_list.find('li.attachment[data-hash="' + id + '"]')
-                        .find('span.filesize')
+                    $attachment.find('span.filesize')
                         .html(format_file_size(total));
                 },
-
-                onComplete: function (id, filename, responseJSON) {
-
-                    var $attachment = $attachment_list.find('li.attachment[data-hash="' + id + '"]');
+                onComplete: function (id, filename, response) {
+                    var $attachment = attachment(id, filename);
 
                     var $input = $attachment.find('input:checkbox');
 
                     var $filename = $attachment.find('span.filename');
 
                     //noinspection JSUnresolvedVariable
-                    $attachment.data('hash', responseJSON.attachment.hash)
-                        .removeClass('uploading')
-                        .addClass(responseJSON.success ? 'complete' : 'error');
+                    $attachment.data('hash', response.attachment.hash)
+                        .removeClass('cancelled complete error uploading')
+                        .addClass(response.success ? 'attachment complete' : 'attachment error');
 
                     //noinspection JSUnresolvedVariable
-                    $input.val(responseJSON.attachment.hash);
+                    $input.val(response.attachment.hash);
 
                     //noinspection JSUnresolvedVariable,JSUnresolvedFunction
                     $filename.html(
@@ -206,25 +211,23 @@ $(document).bind('beehive.init', function ($event, beehive) {
                             '<a href="get_attachment.php?webtag=%s&amp;hash=%s&amp;filename=%s">%s</a>',
                             [
                                 encodeURIComponent(beehive.webtag),
-                                encodeURIComponent(responseJSON.attachment.hash),
+                                encodeURIComponent(response.attachment.hash),
                                 encodeURIComponent(filename),
                                 encodeURIComponent(filename)
                             ]
                         )
                     );
 
-                    if ($attachments.find('li.attachment input:checkbox:checked').length > 0) {
-
-                        $delete_button.show();
-                        refresh_summary();
-                    }
+                    refresh();
                 },
+                onError: function (id, filename, errorMessage) {
+                    var $attachment = attachment(id, filename);
 
-                onError: function (id) {
+                    $attachment.removeClass('cancelled complete uploading').addClass('error');
 
-                    $attachment_list.find('li.' + id + '.attachment')
-                        .removeClass('uploading')
-                        .addClass('error');
+                    refresh();
+
+                    window.alert(errorMessage);
                 }
             }
         });
@@ -240,14 +243,7 @@ $(document).bind('beehive.init', function ($event, beehive) {
         });
 
         $attachments.on('change', 'input:checkbox', function () {
-
-            if ($attachments.find('li.attachment input:checkbox:checked').length > 0) {
-                $delete_button.show();
-            } else {
-                $delete_button.hide();
-            }
-
-            refresh_summary();
+            refresh();
         });
 
         $delete_button.on('click', function () {
@@ -282,7 +278,7 @@ $(document).bind('beehive.init', function ($event, beehive) {
                         $delete_button.hide();
                     }
 
-                    refresh_summary();
+                    refresh();
                 }
             });
         });

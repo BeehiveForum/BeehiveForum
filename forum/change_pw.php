@@ -129,8 +129,8 @@ if (isset($_POST['save'])) {
 
 if (isset($_REQUEST['u']) && isset($_REQUEST['h'])) {
 
-    $uid = $_GET['u'];
-    $key = $_GET['h'];
+    $uid = $_REQUEST['u'];
+    $key = $_REQUEST['h'];
 
 } else {
 

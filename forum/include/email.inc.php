@@ -459,7 +459,7 @@ function email_send_pw_reminder($logon)
 
     $recipient = word_filter_apply(format_user_name($to_user['LOGON'], $to_user['NICKNAME']), $to_user['UID'], true);
 
-    $change_pw_link = rawurlencode("change_pw.php?webtag=$webtag&u={$to_user['UID']}&h={$to_user['PASSWD']}");
+    $change_pw_link = rawurlencode(sprintf('change_pw.php?webtag=%s&u=%d&h=%s', $webtag, $to_user['UID'], rawurlencode($to_user['PASSWD'])));
 
     $change_pw_link = htmlentities_array(html_get_forum_uri("index.php?webtag=$webtag&final_uri=$change_pw_link"));
 

@@ -134,7 +134,7 @@ if (session::logged_in()) {
             links_delete($lid);
 
             if (session::check_perm(USER_PERM_FOLDER_MODERATE, 0) && ($link['UID'] != $_SESSION['UID'])) {
-                admin_add_log_entry(DELETE_LINK, array($link['LID'], $link['TITLE'], $link['URI']));
+                admin_add_log_entry(DELETE_LINK, array($lid, $link['TITLE'], $link['URI']));
             }
 
             header_redirect("links.php?webtag=$webtag&fid=$parent_fid");

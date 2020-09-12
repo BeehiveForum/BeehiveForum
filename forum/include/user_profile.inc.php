@@ -196,6 +196,8 @@ function user_get_profile($uid)
 
     if (($user_local_time = user_format_local_time($user_prefs)) !== false) {
         $user_profile['LOCAL_TIME'] = $user_local_time;
+    } else {
+        $user_profile['LOCAL_TIME'] = gettext("Unknown");
     }
 
     if (user_is_banned($uid)) {

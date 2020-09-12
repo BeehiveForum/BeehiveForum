@@ -75,7 +75,7 @@ if (!session::logged_in()) {
 
 } else {
 
-    $threads_any_unread = threads_any_unread();
+    $threads_any_unread = threads_any_unread($_SESSION['UID']);
 
     if (isset($mode) && is_numeric($mode)) {
 
@@ -116,7 +116,7 @@ if (!session::logged_in()) {
 
                     threads_get_unread_data($thread_data, $mark_read_threads_array);
 
-                    if (threads_mark_read($thread_data)) {
+                    if (threads_mark_read($_SESSION['UID'], $thread_data)) {
 
                         header_redirect("lthread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
                         exit;
@@ -130,7 +130,7 @@ if (!session::logged_in()) {
 
             } else if ($_REQUEST['mark_read_type'] == THREAD_MARK_READ_ALL) {
 
-                if (threads_mark_all_read()) {
+                if (threads_mark_all_read($_SESSION['UID'])) {
 
                     header_redirect("lthread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
                     exit;
@@ -143,7 +143,7 @@ if (!session::logged_in()) {
 
             } else if ($_REQUEST['mark_read_type'] == THREAD_MARK_READ_FIFTY) {
 
-                if (threads_mark_50_read()) {
+                if (threads_mark_50_read($_SESSION['UID'])) {
 
                     header_redirect("lthread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
                     exit;
@@ -156,7 +156,7 @@ if (!session::logged_in()) {
 
             } else if (($_REQUEST['mark_read_type'] == THREAD_MARK_READ_FOLDER) && (isset($folder) && is_numeric($folder))) {
 
-                if (threads_mark_folder_read($folder)) {
+                if (threads_mark_folder_read($_SESSION['UID'], $folder)) {
 
                     header_redirect("lthread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
                     exit;

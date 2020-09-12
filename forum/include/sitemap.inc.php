@@ -50,8 +50,9 @@ function sitemap_forum_get_threads($forum_fid)
     // If there are any problems with the function arguments we bail out.
     if (!is_numeric($forum_fid)) return false;
 
-    // Constant for Guest access.
+    // Constants for query
     $user_perm_guest_access = USER_PERM_GUEST_ACCESS;
+    $user_perm_wormed = USER_PERM_WORMED;
 
     // Get the table prefix from the forum fid
     if (!($table_prefix = forum_get_table_prefix($forum_fid))) return false;
@@ -60,8 +61,14 @@ function sitemap_forum_get_threads($forum_fid)
     $sql .= "FROM `{$table_prefix}THREAD` THREAD ";
     $sql .= "INNER JOIN `{$table_prefix}FOLDER` FOLDER ";
     $sql .= "ON (FOLDER.FID = THREAD.FID) ";
+    $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum_fid' AND USER_PERM.FID = 0) ";
     $sql .= "WHERE FOLDER.PERM & $user_perm_guest_access > 0 ";
-    $sql .= "ORDER BY THREAD.TID";
+    $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
+    $sql .= "AND THREAD.APPROVED IS NOT NULL ";
+    $sql .= "AND USER_PERM.PERM & ${user_perm_wormed} = 0 ";
+    $sql .= "ORDER BY THREAD.TID ";
 
     if (!($result = $db->query($sql))) return false;
 

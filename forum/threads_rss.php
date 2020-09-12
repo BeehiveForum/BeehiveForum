@@ -133,7 +133,7 @@ echo "<link>{$forum_location}/</link>\n";
 echo "</image>\n";
 
 // Get the 20 most recent threads
-if (($threads_array = threads_get_most_recent($limit, $fid, ($sort_created == 'Y'))) !== false) {
+if (($threads_array = threads_get_most_recent($_SESSION['UID'], $limit, $fid, ($sort_created == 'Y'))) !== false) {
 
     foreach ($threads_array as $thread) {
 

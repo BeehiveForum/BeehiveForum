@@ -495,8 +495,6 @@ function message_display($tid, $message, $msg_count, $first_msg, $folder_fid, $i
     if ($_SESSION['UID'] != $message['FROM_UID']) {
 
         if (($from_user_permissions & USER_PERM_WORMED) && !$perm_is_moderator) {
-
-            message_display_deleted($tid, $message['PID'], $message, $in_list, $is_preview, $first_msg, $msg_count, $posts_per_page);
             return;
         }
     }

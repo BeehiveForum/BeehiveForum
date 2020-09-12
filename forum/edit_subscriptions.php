@@ -118,9 +118,9 @@ $interest_level_array = array(
 );
 
 if (isset($search_keyword) && strlen(trim($search_keyword)) > 0) {
-    $thread_subscriptions = threads_search_user_subscriptions($search_keyword, $view, $page);
+    $thread_subscriptions = threads_search_user_subscriptions($_SESSION['UID'], $search_keyword, $view, $page);
 } else {
-    $thread_subscriptions = threads_get_user_subscriptions($view, $page);
+    $thread_subscriptions = threads_get_user_subscriptions($_SESSION['UID'], $view, $page);
 }
 
 html_draw_top(

@@ -48,7 +48,7 @@ if (isset($_SESSION['LEFT_FRAME_WIDTH']) && is_numeric($_SESSION['LEFT_FRAME_WID
 // Prevent the frame width from being less than 100px
 $left_frame_width = max(100, $left_frame_width);
 
-if (!$folder_info = threads_get_folders()) {
+if (!$folder_info = threads_get_folders($_SESSION['UID'])) {
     html_draw_error(gettext("There are no folders available."));
 }
 

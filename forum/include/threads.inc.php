@@ -32,9 +32,9 @@ require_once BH_INCLUDE_PATH . 'html.inc.php';
 require_once BH_INCLUDE_PATH . 'session.inc.php';
 // End Required includes
 
-function threads_get_folders()
+function threads_get_folders($uid)
 {
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+    if (!is_numeric($uid)) return false;
 
     if (!$db = db::get()) return false;
 
@@ -45,7 +45,7 @@ function threads_get_folders()
     $sql = "SELECT FOLDER.FID, FOLDER.TITLE, FOLDER.DESCRIPTION, USER_FOLDER.INTEREST ";
     $sql .= "FROM `{$table_prefix}FOLDER` FOLDER ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-    $sql .= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "ON (USER_FOLDER.FID = FOLDER.FID AND USER_FOLDER.UID = '$uid') ";
     $sql .= "ORDER BY USER_FOLDER.INTEREST DESC, FOLDER.POSITION";
 
     if (!($result = $db->query($sql))) return false;
@@ -93,34 +93,30 @@ function threads_get_folders()
     return $folder_info;
 }
 
-function threads_get_all($uid, $folder, $page = 1) // get "all" threads (i.e. most recent threads, irrespective of read or unread status).
+function threads_get_all($uid, $folder, $page = 1)
 {
-    // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0, 0);
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
     $offset = calculate_page_offset($page, 50);
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+    $forum = get_forum_fid();
+
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
-    // Get the folders the user can see.
     if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
-    // Check the selected folder is in those available.
     if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
-    // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
-    // Constants for user relationships.
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+    $user_perm_wormed = USER_PERM_WORMED;
 
     if (!session::logged_in()) {
 
-        // Formulate query.
         $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
         $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
         $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, NULL AS LAST_READ, ";
@@ -132,17 +128,19 @@ function threads_get_all($uid, $folder, $page = 1) // get "all" threads (i.e. mo
         $sql .= "LEFT JOIN `{$table_prefix}THREAD_STATS` THREAD_STATS ";
         $sql .= "ON (THREAD_STATS.TID = THREAD.TID) ";
         $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+        $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+        $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
         $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
         $sql .= "ON (FOLDER.FID = THREAD.FID) ";
         $sql .= "WHERE THREAD.FID IN ($folder) ";
         $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
         $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
-        $sql .= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
+        $sql .= "AND (USER_PERM.PERM IS NULL OR USER_PERM.PERM & ${user_perm_wormed} = 0 ";
+        $sql .= "OR THREAD.BY_UID = '$uid') ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
         $sql .= "LIMIT $offset, 50";
 
     } else {
 
-        // Formulate query.
         $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
         $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
         $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -158,6 +156,8 @@ function threads_get_all($uid, $folder, $page = 1) // get "all" threads (i.e. mo
         $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON ";
         $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
         $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+        $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+        $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
         $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
         $sql .= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
         $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
@@ -171,39 +171,36 @@ function threads_get_all($uid, $folder, $page = 1) // get "all" threads (i.e. mo
         $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
         $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
         $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
-        $sql .= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
+        $sql .= "AND (USER_PERM.PERM IS NULL OR USER_PERM.PERM & ${user_perm_wormed} = 0 ";
+        $sql .= "OR THREAD.BY_UID = '$uid') ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
         $sql .= "LIMIT $offset, 50";
     }
 
     return threads_process_list($sql);
 }
 
-function threads_get_started_by_me($uid, $folder, $page = 1) // get threads started by user
+function threads_get_started_by_me($uid, $folder, $page = 1)
 {
-    // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0, 0);
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
     $offset = calculate_page_offset($page, 50);
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+    $forum = get_forum_fid();
+
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
-    // Guests can't view unread messages.
     if (!session::logged_in()) return array(0, 0, 0);
 
-    // Get the folders the user can see.
     if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
-    // Check the selected folder is in those available.
     if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
-    // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
-    // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
-    // for threads with unread messages, so the UID needs to be passed to the function
+    $user_perm_wormed = USER_PERM_WORMED;
+
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
     $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -219,6 +216,8 @@ function threads_get_started_by_me($uid, $folder, $page = 1) // get threads star
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
     $sql .= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
@@ -228,13 +227,14 @@ function threads_get_started_by_me($uid, $folder, $page = 1) // get threads star
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
-    $sql .= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
+    $sql .= "AND (USER_PERM.PERM IS NULL OR USER_PERM.PERM & ${user_perm_wormed} = 0 ";
+    $sql .= "OR THREAD.BY_UID = '$uid') ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql .= "LIMIT $offset, 50";
 
     return threads_process_list($sql);
 }
 
-function threads_get_unread($uid, $folder, $page = 1) // get unread messages for $uid
+function threads_get_unread($uid, $folder, $page = 1)
 {
     if (!is_numeric($uid)) return array(0, 0, 0);
 
@@ -242,29 +242,24 @@ function threads_get_unread($uid, $folder, $page = 1) // get unread messages for
 
     $offset = calculate_page_offset($page, 50);
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+    $forum = get_forum_fid();
+
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
-    // Guests can't view unread messages.
     if (!session::logged_in()) return array(0, 0, 0);
 
-    // Get the folders the user can see.
     if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
-    // Check the selected folder is in those available.
     if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
-    // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
-    // Constants for user relationship
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+    $user_perm_wormed = USER_PERM_WORMED;
 
-    // Check to see if unread messages have been disabled.
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0, 0);
 
-    // Formulate query
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
     $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -280,6 +275,8 @@ function threads_get_unread($uid, $folder, $page = 1) // get unread messages for
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
     $sql .= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
     $sql .= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '$uid') ";
     $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
@@ -295,41 +292,37 @@ function threads_get_unread($uid, $folder, $page = 1) // get unread messages for
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
-    $sql .= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
+    $sql .= "AND (USER_PERM.PERM IS NULL OR USER_PERM.PERM & ${user_perm_wormed} = 0 ";
+    $sql .= "OR THREAD.BY_UID = '$uid') ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql .= "LIMIT $offset, 50";
 
     return threads_process_list($sql);
 }
 
-function threads_get_unread_to_me($uid, $folder, $page = 1) // get unread messages to $uid (ignores folder interest level)
+function threads_get_unread_to_me($uid, $folder, $page = 1)
 {
-    // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0, 0);
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
     $offset = calculate_page_offset($page, 50);
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+    $forum = get_forum_fid();
+
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
-    // Guests can't view unread messages.
     if (!session::logged_in()) return array(0, 0, 0);
 
-    // Get the folders the user can see.
     if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
-    // Check the selected folder is in those available.
     if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
-    // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
-    // Constants for user relationships
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+    $user_perm_wormed = USER_PERM_WORMED;
 
-    // Formulate query
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
     $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -346,6 +339,8 @@ function threads_get_unread_to_me($uid, $folder, $page = 1) // get unread messag
     $sql .= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ON ";
     $sql .= "(USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
     $sql .= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
@@ -359,15 +354,15 @@ function threads_get_unread_to_me($uid, $folder, $page = 1) // get unread messag
     $sql .= "AND POST_RECIPIENT.TO_UID = '$uid' AND POST_RECIPIENT.VIEWED IS NULL ";
     $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
+    $sql .= "AND (USER_PERM.PERM & ${user_perm_wormed} = 0 OR THREAD.BY_UID = '$uid') ";
     $sql .= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql .= "LIMIT $offset, 50";
 
     return threads_process_list($sql);
 }
 
-function threads_get_by_days($uid, $folder, $page = 1, $days = 1) // get threads from the last $days days
+function threads_get_by_days($uid, $folder, $page = 1, $days = 1)
 {
-    // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0, 0);
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
@@ -376,28 +371,24 @@ function threads_get_by_days($uid, $folder, $page = 1, $days = 1) // get threads
 
     $offset = calculate_page_offset($page, 50);
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+    $forum = get_forum_fid();
+
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
-    // Get the folders the user can see.
     if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
-    // Check the selected folder is in those available.
     if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
-    // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
-    // Constants for user relationships.
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+    $user_perm_wormed = USER_PERM_WORMED;
 
-    // Generate datetime for '$days' days ago.
     $threads_modified_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($days * DAY_IN_SECONDS));
 
     if (!session::logged_in()) {
 
-        // Formulate query.
         $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
         $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
         $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, NULL AS LAST_READ, ";
@@ -409,18 +400,20 @@ function threads_get_by_days($uid, $folder, $page = 1, $days = 1) // get threads
         $sql .= "LEFT JOIN `{$table_prefix}THREAD_STATS` THREAD_STATS ";
         $sql .= "ON (THREAD_STATS.TID = THREAD.TID) ";
         $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+        $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+        $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
         $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
         $sql .= "ON (FOLDER.FID = THREAD.FID) ";
         $sql .= "WHERE THREAD.FID IN ($folder) ";
         $sql .= "AND THREAD.MODIFIED >= CAST('$threads_modified_datetime' AS DATETIME) ";
         $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
         $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
+        $sql .= "AND (USER_PERM.PERM & ${user_perm_wormed} = 0 OR THREAD.BY_UID = '$uid') ";
         $sql .= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
         $sql .= "LIMIT $offset, 50";
 
     } else {
 
-        // Formulate query.
         $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
         $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
         $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -436,6 +429,8 @@ function threads_get_by_days($uid, $folder, $page = 1, $days = 1) // get threads
         $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON ";
         $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
         $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+        $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+        $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
         $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
         $sql .= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
         $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
@@ -450,6 +445,7 @@ function threads_get_by_days($uid, $folder, $page = 1, $days = 1) // get threads
         $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
         $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
         $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
+        $sql .= "AND (USER_PERM.PERM & ${user_perm_wormed} = 0 OR THREAD.BY_UID = '$uid') ";
         $sql .= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
         $sql .= "LIMIT $offset, 50";
     }
@@ -457,9 +453,8 @@ function threads_get_by_days($uid, $folder, $page = 1, $days = 1) // get threads
     return threads_process_list($sql);
 }
 
-function threads_get_by_interest($uid, $folder, $page = 1, $interest = THREAD_INTERESTED) // get messages for $uid by interest (default High Interest)
+function threads_get_by_interest($uid, $folder, $page = 1, $interest = THREAD_INTERESTED)
 {
-    // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0, 0);
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
@@ -468,26 +463,22 @@ function threads_get_by_interest($uid, $folder, $page = 1, $interest = THREAD_IN
 
     $offset = calculate_page_offset($page, 50);
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+    $forum = get_forum_fid();
+
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
-    // Guests can't view this thread type
     if (!session::logged_in()) return array(0, 0, 0);
 
-    // Get the folders the user can see.
     if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
-    // Check the selected folder is in those available.
     if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
-    // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
-    // Constants for user relationships
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+    $user_perm_wormed = USER_PERM_WORMED;
 
-    // Formulate query
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
     $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -501,6 +492,8 @@ function threads_get_by_interest($uid, $folder, $page = 1, $interest = THREAD_IN
     $sql .= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
     $sql .= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
     $sql .= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON ";
@@ -517,13 +510,14 @@ function threads_get_by_interest($uid, $folder, $page = 1, $interest = THREAD_IN
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
+    $sql .= "AND (USER_PERM.PERM & ${user_perm_wormed} = 0 OR THREAD.BY_UID = '$uid') ";
     $sql .= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql .= "LIMIT $offset, 50";
 
     return threads_process_list($sql);
 }
 
-function threads_get_unread_by_interest($uid, $folder, $page = 1, $interest = THREAD_INTERESTED) // get unread messages for $uid by interest (default High Interest)
+function threads_get_unread_by_interest($uid, $folder, $page = 1, $interest = THREAD_INTERESTED)
 {
     if (!is_numeric($uid)) return array(0, 0, 0);
 
@@ -533,29 +527,24 @@ function threads_get_unread_by_interest($uid, $folder, $page = 1, $interest = TH
 
     $offset = calculate_page_offset($page, 50);
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+    $forum = get_forum_fid();
+
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
-    // Guests can't view this thread type
     if (!session::logged_in()) return array(0, 0, 0);
 
-    // Get the folders the user can see.
     if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
-    // Check the selected folder is in those available.
     if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
-    // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
-    // Constants for user relationships
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+    $user_perm_wormed = USER_PERM_WORMED;
 
-    // Check to see if unread messages have been disabled.
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0, 0);
 
-    // Formulate query
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
     $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -569,6 +558,8 @@ function threads_get_unread_by_interest($uid, $folder, $page = 1, $interest = TH
     $sql .= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
     $sql .= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
     $sql .= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON ";
@@ -587,44 +578,39 @@ function threads_get_unread_by_interest($uid, $folder, $page = 1, $interest = TH
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
+    $sql .= "AND (USER_PERM.PERM & ${user_perm_wormed} = 0 OR THREAD.BY_UID = '$uid') ";
     $sql .= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql .= "LIMIT $offset, 50";
 
     return threads_process_list($sql);
 }
 
-function threads_get_recently_viewed($uid, $folder, $page = 1) // get messages recently seen by $uid
+function threads_get_recently_viewed($uid, $folder, $page = 1)
 {
-    // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0, 0);
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
     $offset = calculate_page_offset($page, 50);
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+    $forum = get_forum_fid();
+
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
-    // Guests can't view this thread type
     if (!session::logged_in()) return array(0, 0, 0);
 
-    // Get the folders the user can see.
     if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
-    // Check the selected folder is in those available.
     if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
-    // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
-    // Constants for user relationships
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+    $user_perm_wormed = USER_PERM_WORMED;
 
-    // Generate datetime for yesterday
     $threads_viewed_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - DAY_IN_SECONDS);
 
-    // Formulate query
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
     $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -638,6 +624,8 @@ function threads_get_recently_viewed($uid, $folder, $page = 1) // get messages r
     $sql .= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
     $sql .= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
     $sql .= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON ";
@@ -655,15 +643,15 @@ function threads_get_recently_viewed($uid, $folder, $page = 1) // get messages r
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
+    $sql .= "AND (USER_PERM.PERM & ${user_perm_wormed} = 0 OR THREAD.BY_UID = '$uid') ";
     $sql .= "ORDER BY THREAD.MODIFIED DESC ";
     $sql .= "LIMIT $offset, 50";
 
     return threads_process_list($sql);
 }
 
-function threads_get_by_relationship($uid, $folder, $page = 1, $relationship = USER_FRIEND) // get threads started by people of a particular relationship (default friend)
+function threads_get_by_relationship($uid, $folder, $page = 1, $relationship = USER_FRIEND)
 {
-    // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0, 0);
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
@@ -672,22 +660,20 @@ function threads_get_by_relationship($uid, $folder, $page = 1, $relationship = U
 
     $offset = calculate_page_offset($page, 50);
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+    $forum = get_forum_fid();
+
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
-    // Guests can't view this thread type
     if (!session::logged_in()) return array(0, 0, 0);
 
-    // Get the folders the user can see.
     if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
-    // Check the selected folder is in those available.
     if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
-    // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
-    // Formulate query
+    $user_perm_wormed = USER_PERM_WORMED;
+
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
     $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -703,6 +689,8 @@ function threads_get_by_relationship($uid, $folder, $page = 1, $relationship = U
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
     $sql .= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
@@ -713,15 +701,15 @@ function threads_get_by_relationship($uid, $folder, $page = 1, $relationship = U
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
+    $sql .= "AND (USER_PERM.PERM & ${user_perm_wormed} = 0 OR THREAD.BY_UID = '$uid') ";
     $sql .= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql .= "LIMIT $offset, 50";
 
     return threads_process_list($sql);
 }
 
-function threads_get_unread_by_relationship($uid, $folder, $page = 1, $relationship = USER_FRIEND) // get unread messages started by people of a particular relationship (default friend)
+function threads_get_unread_by_relationship($uid, $folder, $page = 1, $relationship = USER_FRIEND)
 {
-    // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0, 0);
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
@@ -730,25 +718,22 @@ function threads_get_unread_by_relationship($uid, $folder, $page = 1, $relations
 
     $offset = calculate_page_offset($page, 50);
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+    $forum = get_forum_fid();
+
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
-    // Guests can't view this thread type
     if (!session::logged_in()) return array(0, 0, 0);
 
-    // Get the folders the user can see.
     if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
-    // Check the selected folder is in those available.
     if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
-    // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
-    // Check to see if unread messages are disabled.
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0, 0);
 
-    // Formulate query
+    $user_perm_wormed = USER_PERM_WORMED;
+
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
     $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -764,6 +749,8 @@ function threads_get_unread_by_relationship($uid, $folder, $page = 1, $relations
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
     $sql .= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
@@ -776,6 +763,7 @@ function threads_get_unread_by_relationship($uid, $folder, $page = 1, $relations
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
+    $sql .= "AND (USER_PERM.PERM & ${user_perm_wormed} = 0 OR THREAD.BY_UID = '$uid') ";
     $sql .= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql .= "LIMIT $offset, 50";
 
@@ -784,34 +772,28 @@ function threads_get_unread_by_relationship($uid, $folder, $page = 1, $relations
 
 function threads_get_polls($uid, $folder, $page = 1)
 {
-    // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0, 0);
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
     $offset = calculate_page_offset($page, 50);
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+    $forum = get_forum_fid();
+
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
-    // Guests can't view this thread type
     if (!session::logged_in()) return array(0, 0, 0);
 
-    // Get the folders the user can see.
     if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
-    // Check the selected folder is in those available.
     if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
-    // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
-    // Constants for user relationships
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+    $user_perm_wormed = USER_PERM_WORMED;
 
-    // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
-    // for threads with unread messages, so the UID needs to be passed to the function
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
     $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -827,6 +809,8 @@ function threads_get_polls($uid, $folder, $page = 1)
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
     $sql .= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
@@ -841,6 +825,7 @@ function threads_get_polls($uid, $folder, $page = 1)
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
+    $sql .= "AND (USER_PERM.PERM & ${user_perm_wormed} = 0 OR THREAD.BY_UID = '$uid') ";
     $sql .= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql .= "LIMIT $offset, 50";
 
@@ -849,34 +834,28 @@ function threads_get_polls($uid, $folder, $page = 1)
 
 function threads_get_sticky($uid, $folder, $page = 1)
 {
-    // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0, 0);
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
     $offset = calculate_page_offset($page, 50);
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+    $forum = get_forum_fid();
+
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
-    // Guests can't view this thread type
     if (!session::logged_in()) return array(0, 0, 0);
 
-    // Get the folders the user can see.
     if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
-    // Check the selected folder is in those available.
     if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
-    // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
-    // Constants for user relationships
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+    $user_perm_wormed = USER_PERM_WORMED;
 
-    // Formulate query - the join with USER_THREAD is needed because even in "all" mode we need to display [x new of y]
-    // for threads with unread messages, so the UID needs to be passed to the function
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
     $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -892,6 +871,8 @@ function threads_get_sticky($uid, $folder, $page = 1)
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
     $sql .= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
@@ -906,44 +887,39 @@ function threads_get_sticky($uid, $folder, $page = 1)
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0  ";
     $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
+    $sql .= "AND (USER_PERM.PERM & ${user_perm_wormed} = 0 OR THREAD.BY_UID = '$uid') ";
     $sql .= "ORDER BY THREAD.MODIFIED DESC ";
     $sql .= "LIMIT $offset, 50";
 
     return threads_process_list($sql);
 }
 
-function threads_get_longest_unread($uid, $folder, $page = 1) // get unread messages for $uid
+function threads_get_longest_unread($uid, $folder, $page = 1)
 {
-    // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0, 0);
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
     $offset = calculate_page_offset($page, 50);
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+    $forum = get_forum_fid();
+
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
-    // Guests can't view this thread type
     if (!session::logged_in()) return array(0, 0, 0);
 
-    // Get the folders the user can see.
     if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
-    // Check the selected folder is in those available.
     if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
-    // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
-    // Constants for user relationships
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+    $user_perm_wormed = USER_PERM_WORMED;
 
-    // Check to see if unread messages have been disabled.
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0, 0);
 
-    // Formulate query
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
     $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -960,6 +936,8 @@ function threads_get_longest_unread($uid, $folder, $page = 1) // get unread mess
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
     $sql .= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
@@ -975,6 +953,7 @@ function threads_get_longest_unread($uid, $folder, $page = 1) // get unread mess
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0  ";
     $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
+    $sql .= "AND (USER_PERM.PERM & ${user_perm_wormed} = 0 OR THREAD.BY_UID = '$uid') ";
     $sql .= "ORDER BY T_LENGTH DESC, THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql .= "LIMIT $offset, 50";
 
@@ -983,7 +962,6 @@ function threads_get_longest_unread($uid, $folder, $page = 1) // get unread mess
 
 function threads_get_folder($uid, $folder, $page = 1)
 {
-    // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0, 0);
     if (!is_numeric($folder)) return array(0, 0, 0);
 
@@ -991,20 +969,18 @@ function threads_get_folder($uid, $folder, $page = 1)
 
     $offset = calculate_page_offset($page, 50);
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+    $forum = get_forum_fid();
+
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
-    // Get the folders the user can see.
     if (!$folders_array = folder_get_available_array()) return array(0, 0, 0);
 
-    // Check to make sure the specified folder is available to the user.
     if (!in_array($folder, $folders_array)) return array(0, 0, 0);
 
-    // Constants for user relationships
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+    $user_perm_wormed = USER_PERM_WORMED;
 
-    // Formulate query
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
     $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -1020,6 +996,8 @@ function threads_get_folder($uid, $folder, $page = 1)
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
     $sql .= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
@@ -1032,6 +1010,7 @@ function threads_get_folder($uid, $folder, $page = 1)
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0  ";
     $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
+    $sql .= "AND (USER_PERM.PERM & ${user_perm_wormed} = 0 OR THREAD.BY_UID = '$uid') ";
     $sql .= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql .= "LIMIT $offset, 50";
 
@@ -1040,34 +1019,28 @@ function threads_get_folder($uid, $folder, $page = 1)
 
 function threads_get_deleted($uid, $folder, $page = 1)
 {
-    // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0, 0);
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
 
     $offset = calculate_page_offset($page, 50);
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+    $forum = get_forum_fid();
+
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
-    // Only Admins can view deleted threads.
     if (!session::check_perm(USER_PERM_ADMIN_TOOLS, 0)) return array(0, 0, 0);
 
-    // Get the folders the user can see.
     if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
-    // Check the selected folder is in those available.
     if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
-    // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
-    // Constants for user relationships
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+    $user_perm_wormed = USER_PERM_WORMED;
 
-    // Formulate query - the join with USER_THREAD is needed becuase even in "all" mode we need to display [x new of y]
-    // for threads with unread messages, so the UID needs to be passed to the function
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
     $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -1083,6 +1056,8 @@ function threads_get_deleted($uid, $folder, $page = 1)
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
     $sql .= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
@@ -1096,15 +1071,15 @@ function threads_get_deleted($uid, $folder, $page = 1)
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql .= "AND THREAD.DELETED = 'Y' AND THREAD.LENGTH > 0 ";
     $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
+    $sql .= "AND (USER_PERM.PERM & ${user_perm_wormed} = 0 OR THREAD.BY_UID = '$uid') ";
     $sql .= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql .= "LIMIT $offset, 50";
 
     return threads_process_list($sql);
 }
 
-function threads_get_unread_by_days($uid, $folder, $page = 1, $days = 0) // get unread messages for $uid
+function threads_get_unread_by_days($uid, $folder, $page = 1, $days = 0)
 {
-    // If there are any problems with the function arguments we bail out.
     if (!is_numeric($uid)) return array(0, 0, 0);
 
     if (!is_numeric($page) || ($page < 1)) $page = 1;
@@ -1113,32 +1088,26 @@ function threads_get_unread_by_days($uid, $folder, $page = 1, $days = 0) // get 
 
     $offset = calculate_page_offset($page, 50);
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
+    $forum = get_forum_fid();
+
     if (!($table_prefix = get_table_prefix())) return array(0, 0, 0);
 
-    // Guests can't view this thread type.
     if (!session::logged_in()) return array(0, 0, 0);
 
-    // Get the folders the user can see.
     if (!$available_folders = folder_get_available_array()) return array(0, 0, 0);
 
-    // Check the selected folder is in those available.
     if (is_numeric($folder) && !in_array($folder, $available_folders)) return array(0, 0, 0);
 
-    // If the folder is not numeric use the available folders.
     if (!is_numeric($folder)) $folder = implode(',', $available_folders);
 
-    // Constants for user relationships
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+    $user_perm_wormed = USER_PERM_WORMED;
 
-    // Check to see if unread messages have been disabled.
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return array(0, 0, 0);
 
-    // Generate datetime for '$days' days ago.
     $threads_modified_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($days * DAY_IN_SECONDS));
 
-    // Formulate query
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
     $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -1154,6 +1123,8 @@ function threads_get_unread_by_days($uid, $folder, $page = 1, $days = 0) // get 
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON ";
     $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
     $sql .= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
@@ -1170,26 +1141,25 @@ function threads_get_unread_by_days($uid, $folder, $page = 1, $days = 0) // get 
     $sql .= "AND THREAD.MODIFIED >= CAST('$threads_modified_datetime' AS DATETIME) ";
     $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
     $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
+    $sql .= "AND (USER_PERM.PERM & ${user_perm_wormed} = 0 OR THREAD.BY_UID = '$uid') ";
     $sql .= "ORDER BY THREAD.STICKY DESC, THREAD.MODIFIED DESC ";
     $sql .= "LIMIT $offset, 50";
 
     return threads_process_list($sql);
 }
 
-function threads_get_most_recent($limit = 10, $fid = false, $creation_order = false)
+function threads_get_most_recent($uid, $limit = 10, $fid = false, $creation_order = false)
 {
+    if (!is_numeric($uid)) return array(0, 0, 0);
+
     if (!($db = db::get())) return array(0, 0, 0);
 
-    // If there are any problems with the function arguments we bail out.
     if (!is_numeric($limit)) return false;
 
-    // If there are problems with fetching the webtag / table prefix we need to bail out as well.
     if (!($table_prefix = get_table_prefix())) return false;
 
-    // Get the folders the user can see.
     if (!$available_folders_array = folder_get_available_array()) return false;
 
-    // If we have aa folder specified we should only use the ones the user can see.
     if (is_numeric($fid) && in_array($fid, $available_folders_array)) {
 
         $available_folders_array = array(
@@ -1197,27 +1167,22 @@ function threads_get_most_recent($limit = 10, $fid = false, $creation_order = fa
         );
     }
 
-    // Convert the array into a comma-separated list.
     $folders = implode(',', $available_folders_array);
 
-    // Do we want to sort by thread created or thread modified?
     if ($creation_order === true) {
         $order_by = "THREAD.CREATED DESC";
     } else {
         $order_by = "THREAD.MODIFIED DESC";
     }
 
-    // Constants for user relationships
     $user_ignored = USER_IGNORED;
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
+    $user_perm_wormed = USER_PERM_WORMED;
 
-    // User UID
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
-
-    // Unread cutoff
     $unread_cutoff_timestamp = threads_get_unread_cutoff();
 
-    // Forumlate query
+    $forum = get_forum_fid();
+
     $sql = "SELECT THREAD.TID, THREAD.FID, THREAD.DELETED, THREAD.LENGTH, THREAD.POLL_FLAG, ";
     $sql .= "TRIM(CONCAT_WS(' ', COALESCE(FOLDER.PREFIX, ''), THREAD.TITLE)) AS TITLE, ";
     $sql .= "THREAD.STICKY, THREAD.UNREAD_PID, THREAD_STATS.VIEWCOUNT, USER_THREAD.LAST_READ, ";
@@ -1229,12 +1194,14 @@ function threads_get_most_recent($limit = 10, $fid = false, $creation_order = fa
     $sql .= "LEFT JOIN `{$table_prefix}THREAD_STATS` THREAD_STATS ";
     $sql .= "ON (THREAD_STATS.TID = THREAD.TID) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql .= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') ";
+    $sql .= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ";
-    $sql .= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "ON (USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
     $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ";
-    $sql .= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '{$_SESSION['UID']}') ";
+    $sql .= "ON (USER_PEER.PEER_UID = THREAD.BY_UID AND USER_PEER.UID = '$uid') ";
     $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ";
     $sql .= "ON (FOLDER.FID = THREAD.FID) ";
     $sql .= "WHERE THREAD.FID IN ($folders) ";
@@ -1245,7 +1212,8 @@ function threads_get_most_recent($limit = 10, $fid = false, $creation_order = fa
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
     $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
     $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
-    $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '{$_SESSION['UID']}') ";
+    $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
+    $sql .= "AND (USER_PERM.PERM & ${user_perm_wormed} = 0 OR THREAD.BY_UID = '$uid') ";
     $sql .= "ORDER BY $order_by ";
     $sql .= "LIMIT 0, $limit";
 
@@ -1305,7 +1273,6 @@ function threads_get_unread_cutoff()
     return (mktime(0, 0, 0, $month, $day, $year) - $unread_cutoff_stamp);
 }
 
-// Arrange the results of a query into the right order for display
 function threads_process_list($sql)
 {
     if (!($db = db::get())) return array(0, 0, 0);
@@ -1369,26 +1336,26 @@ function threads_process_list($sql)
     );
 }
 
-function threads_get_folder_msgs()
+function threads_get_folder_msgs($uid)
 {
-    $folder_msgs = array();
+    if (!is_numeric($uid)) return false;
 
     if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
-
     if (!$available_folders = folder_get_available_array()) return false;
 
-    $folder = implode(',', $available_folders);
-
     $sql = "SELECT FID, COUNT(*) AS TOTAL FROM `{$table_prefix}THREAD` ";
+
+    $folder = implode(',', $available_folders);
     $sql .= "WHERE FID IN ($folder) AND DELETED = 'N' AND LENGTH > 0 ";
-    $sql .= "AND (APPROVED IS NOT NULL OR BY_UID = '{$_SESSION['UID']}') ";
+    $sql .= "AND (APPROVED IS NOT NULL OR BY_UID = '$uid') ";
     $sql .= "GROUP BY FID";
 
     if (!($result = $db->query($sql))) return false;
+
+    $folder_msgs = array();
 
     while (($folder = $result->fetch_assoc()) !== null) {
         $folder_msgs[$folder['FID']] = $folder['TOTAL'];
@@ -1397,17 +1364,20 @@ function threads_get_folder_msgs()
     return $folder_msgs;
 }
 
-function threads_any_unread()
+function threads_any_unread($uid)
 {
-    if (!$db = db::get()) return false;
+    if (!is_numeric($uid)) return false;
 
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+    if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
-    $fidlist = folder_get_available();
+    $folders = folder_get_available();
+
+    $forum = get_forum_fid();
 
     $user_ignored = USER_IGNORED;
+    $user_perm_wormed = USER_PERM_WORMED;
 
     $user_ignored_completely = USER_IGNORED_COMPLETELY;
 
@@ -1416,20 +1386,26 @@ function threads_any_unread()
     $sql = "SELECT COUNT(THREAD.TID) AS UNREAD_THREAD_COUNT ";
     $sql .= "FROM `{$table_prefix}THREAD` THREAD ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql .= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') ";
+    $sql .= "ON (THREAD.TID = USER_THREAD.TID AND USER_THREAD.UID = '$uid') ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_PEER` USER_PEER ON ";
-    $sql .= "(USER_PEER.UID = '{$_SESSION['UID']}' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
+    $sql .= "(USER_PEER.UID = '$uid' AND USER_PEER.PEER_UID = THREAD.BY_UID) ";
     $sql .= "LEFT JOIN `{$table_prefix}USER_FOLDER` USER_FOLDER ON ";
-    $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '{$_SESSION['UID']}') ";
-    $sql .= "WHERE THREAD.FID in ($fidlist) AND THREAD.DELETED = 'N' ";
+    $sql .= "(USER_FOLDER.FID = THREAD.FID AND USER_FOLDER.UID = '$uid') ";
+    $sql .= "LEFT JOIN USER USER ON (USER.UID = THREAD.BY_UID) ";
+    $sql .= "LEFT JOIN USER_PERM ON (USER_PERM.UID = USER.UID ";
+    $sql .= "AND USER_PERM.FORUM = '$forum' AND USER_PERM.FID = 0) ";
+    $sql .= "WHERE THREAD.FID IN ($folders) ";
     $sql .= "AND ((USER_PEER.RELATIONSHIP & $user_ignored_completely) = 0 ";
     $sql .= "OR USER_PEER.RELATIONSHIP IS NULL) ";
     $sql .= "AND ((USER_PEER.RELATIONSHIP & $user_ignored) = 0 ";
     $sql .= "OR USER_PEER.RELATIONSHIP IS NULL OR THREAD.LENGTH > 1) ";
     $sql .= "AND (USER_THREAD.LAST_READ < THREAD.LENGTH OR USER_THREAD.LAST_READ IS NULL) ";
-    $sql .= "AND THREAD.MODIFIED >= CAST('$unread_cutoff_datetime' AS DATETIME) ";
+    $sql .= "AND (THREAD.MODIFIED >= CAST('$unread_cutoff_datetime' AS DATETIME)) ";
     $sql .= "AND (USER_THREAD.INTEREST IS NULL OR USER_THREAD.INTEREST > -1) ";
-    $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1)";
+    $sql .= "AND (USER_FOLDER.INTEREST IS NULL OR USER_FOLDER.INTEREST > -1) ";
+    $sql .= "AND THREAD.DELETED = 'N' AND THREAD.LENGTH > 0 ";
+    $sql .= "AND (THREAD.APPROVED IS NOT NULL OR THREAD.BY_UID = '$uid') ";
+    $sql .= "AND (USER_PERM.PERM & ${user_perm_wormed} = 0 OR THREAD.BY_UID = '$uid') ";
 
     if (!($result = $db->query($sql))) return false;
 
@@ -1438,9 +1414,9 @@ function threads_any_unread()
     return ($unread_thread_count > 0);
 }
 
-function threads_mark_all_read()
+function threads_mark_all_read($uid)
 {
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+    if (!is_numeric($uid)) return false;
 
     if (!$db = db::get()) return false;
 
@@ -1451,9 +1427,9 @@ function threads_mark_all_read()
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_prefix}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-    $sql .= "SELECT {$_SESSION['UID']}, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
+    $sql .= "SELECT $uid, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
     $sql .= "FROM `{$table_prefix}THREAD` THREAD LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql .= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE (THREAD.LENGTH > USER_THREAD.LAST_READ ";
+    $sql .= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE (THREAD.LENGTH > USER_THREAD.LAST_READ ";
     $sql .= "OR USER_THREAD.LAST_READ IS NULL) AND (THREAD.MODIFIED >= CAST('$unread_cutoff_datetime' AS DATETIME)) ";
     $sql .= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
@@ -1462,9 +1438,9 @@ function threads_mark_all_read()
     return true;
 }
 
-function threads_mark_50_read()
+function threads_mark_50_read($uid)
 {
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+    if (!is_numeric($uid)) return false;
 
     if (!$db = db::get()) return false;
 
@@ -1475,9 +1451,9 @@ function threads_mark_50_read()
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_prefix}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-    $sql .= "SELECT {$_SESSION['UID']}, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
+    $sql .= "SELECT $uid, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
     $sql .= "FROM `{$table_prefix}THREAD` THREAD LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql .= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE (THREAD.LENGTH > USER_THREAD.LAST_READ ";
+    $sql .= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE (THREAD.LENGTH > USER_THREAD.LAST_READ ";
     $sql .= "OR USER_THREAD.LAST_READ IS NULL) AND (THREAD.MODIFIED >= CAST('$unread_cutoff_datetime' AS DATETIME)) ";
     $sql .= "ORDER BY THREAD.MODIFIED DESC LIMIT 0, 50 ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
 
@@ -1486,8 +1462,10 @@ function threads_mark_50_read()
     return true;
 }
 
-function threads_mark_folder_read($fid)
+function threads_mark_folder_read($uid, $fid)
 {
+    if (!is_numeric($uid)) return false;
+
     if (!$db = db::get()) return false;
 
     if (!is_numeric($fid)) return false;
@@ -1496,14 +1474,12 @@ function threads_mark_folder_read($fid)
 
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return false;
 
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
-
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_prefix}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-    $sql .= "SELECT {$_SESSION['UID']}, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
+    $sql .= "SELECT $uid, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
     $sql .= "FROM `{$table_prefix}THREAD` THREAD LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql .= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE THREAD.FID = '$fid' ";
+    $sql .= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.FID = '$fid' ";
     $sql .= "AND (THREAD.MODIFIED >= CAST('$unread_cutoff_datetime' AS DATETIME)) ";
     $sql .= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
     $sql .= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
@@ -1513,15 +1489,15 @@ function threads_mark_folder_read($fid)
     return true;
 }
 
-function threads_mark_read($tid_array)
+function threads_mark_read($uid, $tid_array)
 {
+    if (!is_numeric($uid)) return false;
+
     if (!$db = db::get()) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
 
     if (!is_array($tid_array)) return false;
-
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
 
     if (($unread_cutoff_datetime = forum_get_unread_cutoff_datetime()) === false) return false;
 
@@ -1530,9 +1506,9 @@ function threads_mark_read($tid_array)
     $current_datetime = date(MYSQL_DATE_HOUR_MIN, time());
 
     $sql = "INSERT INTO `{$table_prefix}USER_THREAD` (UID, TID, LAST_READ, LAST_READ_AT, INTEREST) ";
-    $sql .= "SELECT {$_SESSION['UID']}, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
+    $sql .= "SELECT $uid, THREAD.TID, THREAD.LENGTH, CAST('$current_datetime' AS DATETIME), USER_THREAD.INTEREST ";
     $sql .= "FROM `{$table_prefix}THREAD` THREAD LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ";
-    $sql .= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE THREAD.TID IN ($tid_list) ";
+    $sql .= "ON (USER_THREAD.TID = THREAD.TID AND USER_THREAD.UID = '$uid') WHERE THREAD.TID IN ($tid_list) ";
     $sql .= "AND (THREAD.MODIFIED >= CAST('$unread_cutoff_datetime' AS DATETIME)) ";
     $sql .= "AND (THREAD.LENGTH > USER_THREAD.LAST_READ OR USER_THREAD.LAST_READ IS NULL) ";
     $sql .= "ON DUPLICATE KEY UPDATE LAST_READ = VALUES(LAST_READ)";
@@ -1545,6 +1521,7 @@ function threads_mark_read($tid_array)
 function threads_get_unread_data(&$threads_array, $tid_array)
 {
     if (!is_array($tid_array)) return false;
+
     if (sizeof($tid_array) < 1) return false;
 
     if (!($table_prefix = get_table_prefix())) return false;
@@ -1656,21 +1633,16 @@ function thread_list_available_views()
 
             if ($unread_cutoff_stamp === false) {
 
-                // Remove unread thread options (Unread Discussions, Unread Today,
-                // Unread High Interest, Unread Started By Friend, Most Unread Posts).
                 unset($available_views[UNREAD_DISCUSSIONS], $available_views[UNREAD_TODAY], $available_views[UNREAD_HIGH_INTEREST]);
                 unset($available_views[UNREAD_STARTED_BY_FRIEND], $available_views[MOST_UNREAD_POSTS]);
             }
 
         } else {
 
-            // Remove Admin Deleted Threads option.
             unset($available_views[DELETED_THREADS]);
 
             if ($unread_cutoff_stamp === false) {
 
-                // Remove unread thread options (Unread Discussions, Unread Today,
-                // Unread High Interest, Unread Started By Friend, Most Unread Posts).
                 unset($available_views[UNREAD_DISCUSSIONS], $available_views[UNREAD_TODAY], $available_views[UNREAD_HIGH_INTEREST]);
                 unset($available_views[UNREAD_STARTED_BY_FRIEND], $available_views[MOST_UNREAD_POSTS]);
             }
@@ -1727,11 +1699,11 @@ function thread_auto_prune_unread_data()
     return true;
 }
 
-function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $page = 1)
+function threads_get_user_subscriptions($uid, $interest_type = THREAD_NOINTEREST, $page = 1)
 {
-    if (!$db = db::get()) return false;
+    if (!is_numeric($uid)) return false;
 
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($interest_type)) $interest_type = THREAD_NOINTEREST;
 
@@ -1750,7 +1722,7 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $pag
         $sql .= "USER_THREAD.INTEREST FROM `{$table_prefix}THREAD` THREAD ";
         $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
         $sql .= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID ";
-        $sql .= "AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE USER_THREAD.INTEREST = '$interest_type' ";
+        $sql .= "AND USER_THREAD.UID = '$uid') WHERE USER_THREAD.INTEREST = '$interest_type' ";
         $sql .= "ORDER BY THREAD.MODIFIED DESC LIMIT $offset, 20";
 
     } else {
@@ -1760,7 +1732,7 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $pag
         $sql .= "USER_THREAD.INTEREST FROM `{$table_prefix}THREAD` THREAD ";
         $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
         $sql .= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID ";
-        $sql .= "AND USER_THREAD.UID = '{$_SESSION['UID']}') ORDER BY THREAD.MODIFIED DESC ";
+        $sql .= "AND USER_THREAD.UID = '$uid') ORDER BY THREAD.MODIFIED DESC ";
         $sql .= "LIMIT $offset, 20";
     }
 
@@ -1773,7 +1745,7 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $pag
     list($thread_subscriptions_count) = $result_count->fetch_row();
 
     if (($result->num_rows == 0) && ($thread_subscriptions_count > 0) && ($page > 1)) {
-        return threads_get_user_subscriptions($interest_type, $page - 1);
+        return threads_get_user_subscriptions($uid, $interest_type, $page - 1);
     }
 
     while (($thread_data_array = $result->fetch_assoc()) !== null) {
@@ -1786,11 +1758,11 @@ function threads_get_user_subscriptions($interest_type = THREAD_NOINTEREST, $pag
     );
 }
 
-function threads_search_user_subscriptions($thread_search, $interest_type = THREAD_NOINTEREST, $page = 1)
+function threads_search_user_subscriptions($uid, $thread_search, $interest_type = THREAD_NOINTEREST, $page = 1)
 {
-    if (!$db = db::get()) return false;
+    if (!is_numeric($uid)) return false;
 
-    if (!isset($_SESSION['UID']) || !is_numeric($_SESSION['UID'])) return false;
+    if (!$db = db::get()) return false;
 
     if (!is_numeric($interest_type)) $interest_type = THREAD_NOINTEREST;
 
@@ -1811,7 +1783,7 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
         $sql .= "USER_THREAD.INTEREST FROM `{$table_prefix}THREAD` THREAD ";
         $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
         $sql .= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID ";
-        $sql .= "AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE USER_THREAD.INTEREST = '$interest_type' ";
+        $sql .= "AND USER_THREAD.UID = '$uid') WHERE USER_THREAD.INTEREST = '$interest_type' ";
         $sql .= "AND THREAD.TITLE LIKE '$thread_search%' ORDER BY THREAD.MODIFIED DESC ";
         $sql .= "LIMIT $offset, 20";
 
@@ -1822,7 +1794,7 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
         $sql .= "USER_THREAD.INTEREST FROM `{$table_prefix}THREAD` THREAD ";
         $sql .= "LEFT JOIN `{$table_prefix}FOLDER` FOLDER ON (FOLDER.FID = THREAD.FID) ";
         $sql .= "LEFT JOIN `{$table_prefix}USER_THREAD` USER_THREAD ON (USER_THREAD.TID = THREAD.TID ";
-        $sql .= "AND USER_THREAD.UID = '{$_SESSION['UID']}') WHERE USER_THREAD.INTEREST <> 0 ";
+        $sql .= "AND USER_THREAD.UID = '$uid') WHERE USER_THREAD.INTEREST <> 0 ";
         $sql .= "AND THREAD.TITLE LIKE '$thread_search%' ORDER BY THREAD.MODIFIED DESC ";
         $sql .= "LIMIT $offset, 20";
     }
@@ -1836,7 +1808,7 @@ function threads_search_user_subscriptions($thread_search, $interest_type = THRE
     list($thread_subscriptions_count) = $result_count->fetch_row();
 
     if (($result->num_rows == 0) && ($thread_subscriptions_count > 0) && ($page > 1)) {
-        return threads_search_user_subscriptions($thread_search, $interest_type, $page - 1);
+        return threads_search_user_subscriptions($uid, $thread_search, $interest_type, $page - 1);
     }
 
     while (($thread_data_array = $result->fetch_assoc()) !== null) {

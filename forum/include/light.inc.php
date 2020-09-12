@@ -717,14 +717,14 @@ function light_draw_thread_list($mode = ALL_DISCUSSIONS, $folder = false, $page 
 
     // Now, the actual bit that displays the threads...
     // Get folder FIDs and titles
-    if (!$folder_info = threads_get_folders()) {
+    if (!$folder_info = threads_get_folders($_SESSION['UID'])) {
 
         light_html_display_error_msg(gettext("There are no folders available."));
         return;
     }
 
     // Get total number of messages for each folder
-    $folder_msgs = threads_get_folder_msgs();
+    $folder_msgs = threads_get_folder_msgs($_SESSION['UID']);
 
     // Check that the folder order is a valid array.
     if (!is_array($folder_order)) $folder_order = array();
@@ -1708,8 +1708,6 @@ function light_message_display($tid, $message, $msg_count, $first_msg, $folder_f
     if ($_SESSION['UID'] != $message['FROM_UID']) {
 
         if (($from_user_permissions & USER_PERM_WORMED) && !$perm_is_moderator) {
-
-            light_message_display_deleted($tid, $message['PID']);
             return;
         }
     }

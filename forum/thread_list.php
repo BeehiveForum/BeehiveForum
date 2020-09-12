@@ -96,7 +96,7 @@ if (!session::logged_in()) {
 
 } else {
 
-    $threads_any_unread = threads_any_unread();
+    $threads_any_unread = threads_any_unread($_SESSION['UID']);
 
     if (isset($mode) && is_numeric($mode)) {
 
@@ -137,7 +137,7 @@ if (!session::logged_in()) {
 
                     threads_get_unread_data($thread_data, $mark_read_threads_array);
 
-                    if (threads_mark_read($thread_data)) {
+                    if (threads_mark_read($_SESSION['UID'], $thread_data)) {
 
                         header_redirect("thread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
                         exit;
@@ -151,7 +151,7 @@ if (!session::logged_in()) {
 
             } else if ($_REQUEST['mark_read_type'] == THREAD_MARK_READ_ALL) {
 
-                if (threads_mark_all_read()) {
+                if (threads_mark_all_read($_SESSION['UID'])) {
 
                     header_redirect("thread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
                     exit;
@@ -164,7 +164,7 @@ if (!session::logged_in()) {
 
             } else if ($_REQUEST['mark_read_type'] == THREAD_MARK_READ_FIFTY) {
 
-                if (threads_mark_50_read()) {
+                if (threads_mark_50_read($_SESSION['UID'])) {
 
                     header_redirect("thread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
                     exit;
@@ -177,7 +177,7 @@ if (!session::logged_in()) {
 
             } else if (($_REQUEST['mark_read_type'] == THREAD_MARK_READ_FOLDER) && (isset($folder) && is_numeric($folder))) {
 
-                if (threads_mark_folder_read($folder)) {
+                if (threads_mark_folder_read($_SESSION['UID'], $folder)) {
 
                     header_redirect("thread_list.php?webtag=$webtag&mode=$mode&folder=$folder&mark_read_success=true");
                     exit;
@@ -319,12 +319,12 @@ switch ($mode) {
 
 // Now, the actual bit that displays the threads...
 // Get folder FIDs and titles
-if (!$folder_info = threads_get_folders()) {
+if (!$folder_info = threads_get_folders($_SESSION['UID'])) {
     html_draw_error(gettext("There are no folders available."));
 }
 
 // Get total number of messages for each folder
-$folder_msgs = threads_get_folder_msgs();
+$folder_msgs = threads_get_folder_msgs($_SESSION['UID']);
 
 // Check that the folder order is a valid array.
 if (!is_array($folder_order)) $folder_order = array();

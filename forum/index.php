@@ -286,7 +286,7 @@ if (forum_check_webtag_available($webtag, false)) {
 
         } else {
 
-            $threads_any_unread = threads_any_unread();
+            $threads_any_unread = threads_any_unread($_SESSION['UID']);
 
             if (isset($mode) && is_numeric($mode)) {
 

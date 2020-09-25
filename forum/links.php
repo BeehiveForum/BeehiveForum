@@ -96,7 +96,7 @@ if (isset($_GET['action'])) {
 
         header_redirect("links.php?webtag=$webtag&fid=$fid");
 
-    } else if ($_GET['action'] == "go") {
+    } else if ($_GET['action'] == "go" && isset($_GET['lid'])) {
 
         links_click($_GET['lid']);
         exit;

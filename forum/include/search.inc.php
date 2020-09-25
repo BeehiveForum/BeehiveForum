@@ -153,13 +153,13 @@ function search_mysql_execute($search_arguments, &$error)
         // Base query slightly different if you're not searching by keywords
         if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS) {
 
-            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, TID, PID, RELEVANCE) SELECT SQL_NO_CACHE ";
+            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, TID, PID, RELEVANCE) SELECT DISTINCT SQL_NO_CACHE ";
             $select_sql .= "SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, POST.TID, MIN(POST.PID), ";
             $select_sql .= "1.0 AS RELEVANCE ";
 
         } else {
 
-            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, TID, PID, RELEVANCE) SELECT SQL_NO_CACHE ";
+            $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, TID, PID, RELEVANCE) SELECT DISTINCT SQL_NO_CACHE ";
             $select_sql .= "SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, POST.TID, POST.PID, ";
             $select_sql .= "1.0 AS RELEVANCE ";
         }
@@ -207,14 +207,14 @@ function search_mysql_execute($search_arguments, &$error)
         if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS) {
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, TID, PID, RELEVANCE) ";
-            $select_sql .= "SELECT SQL_NO_CACHE SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, ";
+            $select_sql .= "SELECT DISTINCT SQL_NO_CACHE SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, ";
             $select_sql .= "POST.TID, MIN(POST.PID), MATCH(POST_CONTENT.CONTENT, THREAD.TITLE) ";
             $select_sql .= "AGAINST('$search_string' IN BOOLEAN MODE) AS RELEVANCE ";
 
         } else {
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, TID, PID, RELEVANCE) ";
-            $select_sql .= "SELECT SQL_NO_CACHE SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, ";
+            $select_sql .= "SELECT DISTINCT SQL_NO_CACHE SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, ";
             $select_sql .= "POST.TID, POST.PID, MATCH(POST_CONTENT.CONTENT, THREAD.TITLE) ";
             $select_sql .= "AGAINST('$search_string' IN BOOLEAN MODE) AS RELEVANCE ";
         }
@@ -236,13 +236,13 @@ function search_mysql_execute($search_arguments, &$error)
         if (isset($search_arguments['group_by_thread']) && $search_arguments['group_by_thread'] == SEARCH_GROUP_THREADS) {
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, TID, PID, RELEVANCE) ";
-            $select_sql .= "SELECT SQL_NO_CACHE SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, ";
+            $select_sql .= "SELECT DISTINCT SQL_NO_CACHE SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, ";
             $select_sql .= "POST.TID, MIN(POST.PID), 1.0 AS RELEVANCE ";
 
         } else {
 
             $select_sql = "INSERT INTO SEARCH_RESULTS (UID, FORUM, TID, PID, RELEVANCE) ";
-            $select_sql .= "SELECT SQL_NO_CACHE SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, ";
+            $select_sql .= "SELECT DISTINCT SQL_NO_CACHE SQL_BUFFER_RESULT {$_SESSION['UID']}, $forum_fid, ";
             $select_sql .= "POST.TID, POST.PID, 1.0 AS RELEVANCE ";
         }
 

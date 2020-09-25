@@ -122,7 +122,10 @@ $admin_log_type_array = array(
     BAN_HIT_TYPE_NICK => gettext("Nickname Ban Check Results"),
     BAN_HIT_TYPE_EMAIL => gettext("Email Ban Check Results"),
     BAN_HIT_TYPE_REF => gettext("HTTP Referer Ban Check Results"),
-    BAN_HIT_TYPE_SFS => gettext("StopForumSpam Ban Check Results")
+    BAN_HIT_TYPE_SFS => gettext("StopForumSpam Ban Check Results"),
+    APPROVED_LINK => gettext("Approved Link"),
+    DELETE_LINK => gettext("Deleted Link"),
+    EDIT_LINK => gettext("Edited Link"),
 );
 
 $admin_log_group_type_array = array(

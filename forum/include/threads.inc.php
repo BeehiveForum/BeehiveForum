@@ -1677,7 +1677,7 @@ function threads_have_attachments(&$threads_array)
     return true;
 }
 
-function thread_auto_prune_unread_data()
+function thread_unread_data_prune()
 {
     if (!$db = db::get()) return false;
 

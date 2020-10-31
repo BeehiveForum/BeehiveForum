@@ -468,21 +468,22 @@ function visitor_log_prof_item_column($column)
     return $profile_column_sql;
 }
 
-function visitor_log_clean_up()
+function visitor_log_prune()
 {
     if (!$db = db::get()) return false;
 
-    if (!($table_prefix = get_table_prefix())) return false;
+    $forum_fids = forum_get_all_fids();
 
-    if (!($forum_fid = get_forum_fid())) return false;
+    $visitor_log_prune_length = intval(forum_get_setting('visitor_log_auto_prune', null, 0));
 
-    // Keep visitor log for 7 days.
-    $visitor_cutoff_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - (DAY_IN_SECONDS * 7));
+    $remove_days_datetime = date(MYSQL_DATETIME_MIDNIGHT, time() - ($visitor_log_prune_length * DAY_IN_SECONDS));
 
-    $sql = "DELETE QUICK FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";
-    $sql .= "AND LAST_LOGON < CAST('$visitor_cutoff_datetime' AS DATETIME)";
+    foreach ($forum_fids as $forum_fid) {
+        $sql = "DELETE LOW_PRIORITY FROM VISITOR_LOG WHERE FORUM = '$forum_fid' ";
+        $sql .= "AND LAST_LOGON < CAST('$remove_days_datetime' AS DATETIME)";
 
-    if (!$db->query($sql)) return false;
+        if (!$db->query($sql)) return false;
+    }
 
     return true;
 }

@@ -666,8 +666,8 @@ function forum_check_global_setting_name($setting_name)
         'forum_maintenance_function',
         'forum_maintenance_schedule',
         'forum_timezone',
-        'pm_system_prune_folders_last_run',
-        'thread_auto_prune_unread_data_last_run',
+        'pm_folder_prune_last_run',
+        'thread_unread_data_prune_last_run',
         'sitemap_create_file_last_run',
         'enable_google_analytics',
         'allow_forum_google_analytics',
@@ -714,6 +714,8 @@ function forum_check_global_setting_name($setting_name)
         'sfs_api_url',
         'sfs_min_confidence',
         'ajax_chat_enabled',
+        'visitor_log_auto_prune',
+        'visitor_log_prune_last_run',
     );
 
     return in_array($setting_name, $valid_global_forum_settings);
@@ -2205,9 +2207,10 @@ function forum_self_clean_check_ajax()
 function forum_check_maintenance()
 {
     $forum_maintenance_functions_array = array(
-        'pm_system_prune_folders',
-        'thread_auto_prune_unread_data',
-        'sitemap_create_file'
+        'pm_folder_prune',
+        'thread_unread_data_prune',
+        'visitor_log_prune',
+        'sitemap_create_file',
     );
 
     $new_forum_settings = array();

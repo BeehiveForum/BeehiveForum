@@ -514,6 +514,29 @@ if (isset($_POST['save']) || isset($_POST['confirm_unread_cutoff']) || isset($_P
         $new_forum_settings['attachment_allow_guests'] = "N";
     }
 
+    if (isset($_POST['visitor_log_auto_prune_enabled']) && $_POST['visitor_log_auto_prune_enabled'] == "Y") {
+
+        if (isset($_POST['visitor_log_auto_prune']) && is_numeric($_POST['visitor_log_auto_prune'])) {
+
+            $new_forum_settings['visitor_log_auto_prune'] = intval($_POST['visitor_log_auto_prune']);
+
+        } else {
+
+            $new_forum_settings['visitor_log_auto_prune'] = "-60";
+        }
+
+    } else {
+
+        if (isset($_POST['visitor_log_auto_prune']) && is_numeric($_POST['visitor_log_auto_prune'])) {
+
+            $new_forum_settings['visitor_log_auto_prune'] = intval($_POST['visitor_log_auto_prune']) * -1;
+
+        } else {
+
+            $new_forum_settings['visitor_log_auto_prune'] = "-60";
+        }
+    }
+
     if ($valid) {
 
         $unread_cutoff_stamp = $new_forum_settings['messages_unread_cutoff'];
@@ -1395,6 +1418,10 @@ echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"350\">", gettext("Show Search Engine Bots in Visitor Log"), ":</td>\n";
 echo "                        <td align=\"left\">", form_radio("searchbots_show_recent", "Y", gettext("Yes"), (isset($forum_global_settings['searchbots_show_recent']) && $forum_global_settings['searchbots_show_recent'] == 'Y')), "&nbsp;", form_radio("searchbots_show_recent", "N", gettext("No"), (isset($forum_global_settings['searchbots_show_recent']) && $forum_global_settings['searchbots_show_recent'] == 'N') || !isset($forum_global_settings['searchbots_show_recent'])), "</td>\n";
+echo "                      </tr>\n";
+echo "                      <tr>\n";
+echo "                        <td align=\"left\" width=\"350\">", gettext("Auto prune Visitor Log every"), " ", form_dropdown_array('visitor_log_auto_prune', array(1 => 10, 2 => 15, 3 => 30, 4 => 60), (isset($forum_global_settings['visitor_log_auto_prune']) ? ($forum_global_settings['visitor_log_auto_prune'] > 0 ? $forum_global_settings['visitor_log_auto_prune'] : $forum_global_settings['visitor_log_auto_prune'] * -1) : 4)), " ", gettext("days"), ":</td>\n";
+echo "                        <td align=\"left\">", form_radio("visitor_log_auto_prune_enabled", "Y", gettext("Yes"), (isset($forum_global_settings['visitor_log_auto_prune']) && $forum_global_settings['visitor_log_auto_prune'] > 0)), "&nbsp;", form_radio("visitor_log_auto_prune_enabled", "N", gettext("No"), ((isset($forum_global_settings['visitor_log_auto_prune']) && $forum_global_settings['visitor_log_auto_prune'] < 0)) || !isset($forum_global_settings['visitor_log_auto_prune'])), "</td>\n";
 echo "                      </tr>\n";
 echo "                      <tr>\n";
 echo "                        <td align=\"left\" width=\"350\">", gettext("Show Search Engine Bots in Active Users"), ":</td>\n";

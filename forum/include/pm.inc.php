@@ -1453,7 +1453,7 @@ function pm_user_prune_folders($uid)
     return true;
 }
 
-function pm_system_prune_folders()
+function pm_folder_prune()
 {
     if (!$db = db::get()) return false;
 

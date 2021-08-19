@@ -30,6 +30,27 @@ require_once BH_INCLUDE_PATH . 'header.inc.php';
 require_once BH_INCLUDE_PATH . 'server.inc.php';
 // End Required includes
 
+function enable_error_reporting()
+{
+    // Disable deprecated notices if developer mode switched on
+    $deprecations = defined('BEEHIVE_DEVELOPER_MODE') ? 0 : E_DEPRECATED;
+
+    // Set the error reporting level to report all errors
+    error_reporting(E_ALL & ~$deprecations);
+
+    // Enable the error handler
+    set_error_handler('bh_error_handler');
+
+    // Attempt to handle fatal errors
+    register_shutdown_function('bh_fatal_error_handler');
+
+    // Enable the exception handler
+    set_exception_handler('bh_exception_handler');
+
+    // Don't output errors to the browser
+    @ini_set('display_errors', '0');
+}
+
 function bh_error_handler($code, $message, $file, $line)
 {
     if (error_reporting() == 0) {
@@ -56,7 +77,7 @@ function bh_fatal_error_handler()
     bh_exception_handler($exception);
 }
 
-function bh_exception_handler(Exception $exception)
+function bh_exception_handler($exception)
 {
     try {
 
@@ -232,7 +253,7 @@ function bh_exception_handler(Exception $exception)
     }
 }
 
-function bh_error_process(Exception $exception)
+function bh_error_process($exception)
 {
     $error_msg_array = array();
 
@@ -359,7 +380,7 @@ function bh_error_process(Exception $exception)
     return $error_msg_array;
 }
 
-function bh_error_send_email(Exception $exception)
+function bh_error_send_email($exception)
 {
     $config = server_get_config();
 

@@ -446,38 +446,6 @@ function unregister_globals()
     }
 }
 
-function disable_magic_quotes()
-{
-    /** @noinspection PhpDeprecationInspection */
-    if (!get_magic_quotes_gpc()) return;
-
-    $process = array(
-        &$_GET,
-        &$_POST,
-        &$_COOKIE,
-        &$_REQUEST
-    );
-
-    foreach ($process as $index => $array) {
-
-        foreach ($array as $key => $value) {
-
-            unset($process[$index][$key]);
-
-            if (is_array($value)) {
-
-                $process[$index][stripslashes($key)] = $value;
-
-                $process[] = &$process[$index][stripslashes($key)];
-
-            } else {
-
-                $process[$index][stripslashes($key)] = stripslashes($value);
-            }
-        }
-    }
-}
-
 function set_server_protocol()
 {
     if (!isset($_SERVER['SERVER_PROTOCOL']) || !in_array($_SERVER['SERVER_PROTOCOL'], array('HTTP/1.0', 'HTTP/1.1'))) {

@@ -38,6 +38,8 @@ function install_check()
 
     install_check_php_extensions();
 
+    install_check_php_configuration();
+
     install_check_mysql_version();
 
     if (@file_exists('./install/index.php') && !defined("BEEHIVE_DEVELOPER_MODE")) {
@@ -238,6 +240,47 @@ function install_check_php_version()
         echo "                    <table class=\"posthead\" width=\"95%\">\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">PHP Version ", BEEHIVE_PHP_MIN_VERSION, " or newer is required to run Beehive Forum. Please upgrade your PHP installation.</td>\n";
+        echo "                      </tr>\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">&nbsp;</td>\n";
+        echo "                      </tr>\n";
+        echo "                    </table>\n";
+        echo "                  </td>\n";
+        echo "                </tr>\n";
+        echo "              </table>\n";
+        echo "            </td>\n";
+        echo "          </tr>\n";
+        echo "        </table>\n";
+        echo "      </td>\n";
+        echo "    </tr>\n";
+        echo "  </table>\n";
+
+        install_draw_bottom();
+        exit;
+    }
+}
+
+function install_check_php_configuration()
+{
+    if (ini_get('magic_quotes_gpc')) {
+
+        install_draw_top();
+
+        echo "  <table cellpadding=\"0\" cellspacing=\"0\" width=\"400\">\n";
+        echo "    <tr>\n";
+        echo "      <td align=\"left\">\n";
+        echo "        <table class=\"box\">\n";
+        echo "          <tr>\n";
+        echo "            <td align=\"left\" class=\"posthead\">\n";
+        echo "              <table class=\"posthead\" width=\"500\">\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"left\" colspan=\"2\" class=\"subhead\">PHP magic_quotes_gpc detected</td>\n";
+        echo "                </tr>\n";
+        echo "                <tr>\n";
+        echo "                  <td align=\"center\">\n";
+        echo "                    <table class=\"posthead\" width=\"95%\">\n";
+        echo "                      <tr>\n";
+        echo "                        <td align=\"left\">PHP magic_quotes_gpc is deprecated and should be disabled.</td>\n";
         echo "                      </tr>\n";
         echo "                      <tr>\n";
         echo "                        <td align=\"left\">&nbsp;</td>\n";

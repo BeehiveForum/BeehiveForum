@@ -36,20 +36,8 @@ require_once BH_INCLUDE_PATH . 'constants.inc.php';
 // Enable the error handler
 require_once BH_INCLUDE_PATH . 'errorhandler.inc.php';
 
-// Set the error reporting level to report all errors
-error_reporting(E_ALL | E_STRICT);
-
-// Enable the error handler
-set_error_handler('bh_error_handler');
-
-// Attempt to handle fatal errors
-register_shutdown_function('bh_fatal_error_handler');
-
-// Enable the exception handler
-set_exception_handler('bh_exception_handler');
-
-// Don't output errors to the browser
-@ini_set('display_errors', '0');
+// Set-up error handler
+enable_error_reporting();
 
 // Server checking functions
 require_once BH_INCLUDE_PATH . 'server.inc.php';
@@ -70,8 +58,6 @@ $error_html = null;
 
 unregister_globals();
 
-disable_magic_quotes();
-
 set_server_protocol();
 
 cache_disable_aol();
@@ -81,6 +67,8 @@ cache_disable_proxy();
 install_check_php_version();
 
 install_check_php_extensions();
+
+install_check_php_configuration();
 
 if (isset($_POST['install_method'])) {
 

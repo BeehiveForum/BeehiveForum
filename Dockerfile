@@ -1,4 +1,4 @@
-FROM php:7.0-fpm-alpine as base
+FROM php:7.4-fpm-alpine as base
 
 RUN apk --no-cache update \
     && apk --no-cache upgrade \
@@ -10,12 +10,9 @@ RUN apk --no-cache update \
         libjpeg-turbo \
         libjpeg-turbo-dev \
         libpng \
-        libpng-dev \
-    && docker-php-ext-configure gd \
-        --with-freetype-dir=/usr/include/ \
-        --with-jpeg-dir=/usr/include/ \
-        --with-png-dir=/usr/include/ \
-    && docker-php-ext-install -j$(getconf _NPROCESSORS_ONLN) exif \
+        libpng-dev
+
+RUN docker-php-ext-install -j$(getconf _NPROCESSORS_ONLN) exif \
         gd \
         gettext \
         intl \
@@ -23,7 +20,7 @@ RUN apk --no-cache update \
 
 FROM base as local
 
-RUN pecl install xdebug-2.6.1 \
+RUN pecl install xdebug-2.9.8 \
     && docker-php-ext-enable xdebug \
     && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug-config.ini \
     && echo "xdebug.remote_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug-config.ini \

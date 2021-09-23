@@ -31,8 +31,8 @@ define('BEEHIVE_VERSION_UPGRADE', "1.3.1");
 define('BEEHIVE_DOB', 1018220400);
 
 // Minimum requirements.
-define('BEEHIVE_PHP_MIN_VERSION', '5.4.0');
-define('BEEHIVE_MYSQL_MIN_VERSION', '5.1.41');
+define('BEEHIVE_PHP_MIN_VERSION', '7.4.0');
+define('BEEHIVE_MYSQL_MIN_VERSION', '5.7.0');
 
 // Require PHP extensions
 define('BEEHIVE_PHP_REQUIRED_EXT', 'curl,date,exif,fileinfo,gd,gettext,intl,json,mbstring,mysqli,pcre,xml');

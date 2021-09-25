@@ -140,7 +140,7 @@ function thread_get($tid, $inc_deleted = false, $inc_empty = false, $inc_unappro
     if (!isset($thread_data['LOGON'])) $thread_data['LOGON'] = gettext("Unknown user");
     if (!isset($thread_data['NICKNAME'])) $thread_data['NICKNAME'] = "";
 
-    thread_has_attachments($thread_data);
+    $thread_data['ATTACHMENT_COUNT'] = thread_get_attachment_count($tid);
 
     return $thread_data;
 }
@@ -1343,28 +1343,28 @@ function thread_get_last_page_pid($length, $posts_per_page)
     return ($last_page_pid > 1) ? $last_page_pid : 1;
 }
 
-function thread_has_attachments(&$thread_data)
+function thread_get_attachment_count($tid)
 {
-    if (!($table_prefix = get_table_prefix())) return false;
-
     if (!($forum_fid = get_forum_fid())) return false;
 
-    if (!isset($thread_data['TID'])) return false;
+    if (!isset($tid)) return false;
 
-    if (!is_numeric($thread_data['TID'])) return false;
+    if (!is_numeric($tid)) return false;
 
     if (!$db = db::get()) return false;
 
     $sql = "SELECT PAI.TID, COUNT(PAF.HASH) AS ATTACHMENT_COUNT ";
     $sql .= "FROM POST_ATTACHMENT_IDS PAI INNER JOIN POST_ATTACHMENT_FILES PAF ";
     $sql .= "ON (PAF.AID = PAI.AID) WHERE PAI.FID = '$forum_fid' ";
-    $sql .= "AND PAI.TID = '{$thread_data['TID']}' GROUP BY PAI.TID";
+    $sql .= "AND PAI.TID = '{$tid}' GROUP BY PAI.TID";
 
     if (!($result = $db->query($sql))) return false;
 
     $attachment_data = $result->fetch_assoc();
 
-    $thread_data['ATTACHMENT_COUNT'] = $attachment_data['ATTACHMENT_COUNT'];
+    if (isset($attachment_data['ATTACHMENT_COUNT'])) {
+        return $attachment_data['ATTACHMENT_COUNT'];
+    }
 
-    return true;
+    return 0;
 }
